@@ -339,6 +339,21 @@
   .farm[data-weather="blood"]  .wtint { background: rgba(140,0,0,.30); }
   .farm[data-weather="meteor"] .wtint { background: rgba(15,15,60,.38); }
   .farm[data-weather="fog"]    .wtint { background: rgba(110,70,140,.30); }
+  .farm[data-weather="drizzle"] .wtint { background: rgba(60,90,120,.10); }
+  .farm[data-weather="hail"] .wtint, .farm[data-weather="blizzard"] .wtint { background: rgba(220,235,255,.26); }
+  .farm[data-weather="firefly"] .wtint, .farm[data-weather="fairynight"] .wtint { background: rgba(20,30,70,.38); }
+  .farm[data-weather="monsoon"] .wtint { background: rgba(20,40,60,.34); }
+  .farm[data-weather="rainbowsky"] .wtint { background: linear-gradient(90deg,rgba(255,0,0,.06),rgba(255,200,0,.06),rgba(0,200,0,.06),rgba(0,120,255,.06),rgba(160,0,255,.06)); }
+  .farm[data-weather="acidrain"] .wtint { background: rgba(120,200,0,.18); }
+  .farm[data-weather="mirage"] .wtint { background: rgba(255,200,120,.20); animation: heatA 1.6s ease-in-out infinite alternate; }
+  .farm[data-weather="ashfall"] .wtint { background: rgba(70,60,60,.32); }
+  .farm[data-weather="ashfall"] .d.snow { filter: grayscale(1) brightness(.55); }
+  .farm[data-weather="candyrain"] .wtint { background: rgba(255,150,200,.14); }
+  .farm[data-weather="crystalrain"] .wtint { background: rgba(120,255,230,.14); }
+  .farm[data-weather="aurorasky"] .wtint { background: linear-gradient(180deg,rgba(0,255,170,.20),rgba(120,0,255,.10) 50%,rgba(10,20,60,.30)); }
+  .farm[data-weather="eclipseday"] .wtint, .farm[data-weather="cometnight"] .wtint { background: rgba(10,10,40,.48); }
+  .farm[data-weather="goldrush"] .wtint { background: rgba(255,200,0,.16); }
+  .farm[data-weather="dragonstorm"] .wtint { background: rgba(0,40,70,.40); }
   @keyframes heatA { to { background: rgba(255,80,0,.24); } }
 
   .farm[data-weather="rain"] .sky, .farm[data-weather="storm"] .sky, .farm[data-weather="fog"] .sky
@@ -1444,10 +1459,16 @@
     left: calc(50% + var(--u,58px) * 0.02); bottom: calc(var(--u,58px) * 2.05 - var(--u,58px) * var(--fk,0) * 0.35); }
   #garden .plot.split.multi .fruit.f2 { left: calc(50% - var(--u,58px) * 0.36); bottom: calc(var(--u,58px) * 1.55 - var(--u,58px) * var(--fk,0) * 0.35); }
   #garden .plot.split.multi .fruit.f3 { left: calc(50% + var(--u,58px) * 0.40); bottom: calc(var(--u,58px) * 1.45 - var(--u,58px) * var(--fk,0) * 0.35); animation-delay: -.4s; }
+  #plantInfo .pi-btn.pi-lock { background: #78909c; box-shadow: 0 2px 0 #455a64; margin-top: 4px; font-size: 11px; padding: 4px 8px; }
+  #plantInfo .pi-btn.pi-lock.on { background: #ffb300; box-shadow: 0 2px 0 #ff8f00; color: #3e2723; }
+  .pi-fruits { font-size: 11px; text-align: left; margin: 2px 0 4px; }
+  .pi-fruits > div { white-space: nowrap; }
   #garden .plot.split.multi .fruit.facet { filter: drop-shadow(0 0 6px rgba(255,213,79,.95)); }
   #garden .plot.split.multi .aura { display: none; }
-  #garden .plot.split.multi .mut, #garden .plot.split.multi.ready .mut { bottom: calc(var(--u,58px) * 2.72); }
-  #garden .plot.split.multi .label, #garden .plot.split.multi.fruiting .label { bottom: calc(var(--u,58px) * 2.72 - 14px); }
+  #garden .plot.split.multi .mut, #garden .plot.split.multi .label { display: none !important; }
+  #garden .plot.split.multi .fruit .fmut { position: absolute; left: 50%; top: -2px; transform: translate(-50%, -100%); white-space: nowrap; font-size: 9px; line-height: 1.1;
+    background: rgba(0,0,0,.55); color: #fff; border-radius: 8px; padding: 1px 4px; pointer-events: none; }
+  #garden .plot.split.multi .fruit .fmut b { color: #ffd54f; margin-left: 2px; font-size: 8.5px; }
   @keyframes vtFrames { to { background-position: 133.333% 0; } }
   @keyframes vtBob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
   #garden .plot.split .aura { top: auto; left: calc(50% + var(--u,58px) * 0.05); bottom: calc(var(--u,58px) * 2.3 - var(--u,58px) * var(--fz,0) * 0.2); width: calc(var(--u,58px) * var(--fz,0) * 1.35); height: calc(var(--u,58px) * var(--fz,0) * 1.45); translate: -50% 0; }
@@ -3032,6 +3053,32 @@ const MUTATIONS = [
   { id:'singularity',name:'ภาวะเอกฐาน',        emoji:'⚫', mult:100, group:'env', color:'#311b92', src:'🕳️ ถูกหลุมดำดูดตอนเกิดหลุมดำ' },
   { id:'supernova',  name:'ซูเปอร์โนวา',        emoji:'💥', mult:250, group:'env', secret:true, recipe:['singularity','fire'],  color:'#ffea00' },
   { id:'bigbang',    name:'บิ๊กแบง',           emoji:'✴️', mult:400, group:'env', secret:true, recipe:['supernova','cosmic'],  color:'#ffffff' },
+  // ===== สถานะจากสภาพอากาศชุดใหม่ =====
+  { id:'hailstruck', name:'ลูกเห็บกระหน่ำ',     emoji:'🧊', mult:7,   group:'env', color:'#b3e5fc', src:'🧊 ลูกเห็บตก' },
+  { id:'glowbug',    name:'แสงหิ่งห้อย',        emoji:'🪲', mult:5,   group:'env', color:'#eeff41', src:'🪲 คืนหิ่งห้อย' },
+  { id:'flooded',    name:'น้ำท่วมขัง',          emoji:'🛶', mult:10,  group:'env', color:'#4fc3f7', src:'🌬️ มรสุมกระหน่ำ' },
+  { id:'permafrost', name:'น้ำแข็งนิรันดร์',       emoji:'🏔️', mult:22,  group:'env', color:'#e1f5fe', src:'☃️ พายุหิมะ (หายาก)' },
+  { id:'rainpaint',  name:'แต้มสีรุ้ง',          emoji:'🎨', mult:20,  group:'env', color:'#ff80ab', src:'🌈 ฟ้าหลังฝนสายรุ้ง' },
+  { id:'acidic',     name:'กัดกร่อน',           emoji:'🧪', mult:9,   group:'env', color:'#c6ff00', src:'🧪 ฝนกรด' },
+  { id:'toxic',      name:'พิษสีเขียว',          emoji:'☣️', mult:28,  group:'env', color:'#76ff03', src:'🧪 ฝนกรด (หายาก)' },
+  { id:'mirage',     name:'ภาพลวงตา',          emoji:'🫥', mult:14,  group:'env', color:'#ffe0b2', src:'🏝️ ภาพลวงตากลางทะเลทราย' },
+  { id:'ashen',      name:'เถ้าถ่าน',            emoji:'🪨', mult:8,   group:'env', color:'#9e9e9e', src:'🪨 ฝนเถ้าภูเขาไฟ' },
+  { id:'obsidian',   name:'หินออบซิเดียน',       emoji:'🖤', mult:30,  group:'env', color:'#424242', src:'🪨 ฝนเถ้าภูเขาไฟ (หายาก)' },
+  { id:'sugary',     name:'เคลือบน้ำตาล',        emoji:'🍬', mult:7,   group:'env', color:'#f48fb1', src:'🍬 ฝนลูกกวาด' },
+  { id:'caramel',    name:'คาราเมลไหลเยิ้ม',      emoji:'🍮', mult:20,  group:'env', color:'#d7a86e', src:'🍬 ฝนลูกกวาด (หายาก)' },
+  { id:'fairydust',  name:'ผงภูตพราย',          emoji:'🧚', mult:12,  group:'env', color:'#e1bee7', src:'🧚 คืนภูตพราย' },
+  { id:'enchanted',  name:'มนตร์ภูต',            emoji:'🪄', mult:40,  group:'env', color:'#ce93d8', src:'🧚 คืนภูตพราย (หายาก)' },
+  { id:'crystal',    name:'ผลึกแก้ว',           emoji:'❇️', mult:18,  group:'env', color:'#a7ffeb', src:'❇️ ฝนผลึกแก้ว' },
+  { id:'polar',      name:'ขั้วแม่เหล็กโลก',      emoji:'🧭', mult:8,   group:'env', color:'#80cbc4', src:'🎆 ม่านแสงเหนือ' },
+  { id:'umbra',      name:'เงามืดคราส',          emoji:'🌑', mult:30,  group:'env', color:'#5c6bc0', src:'🌑 คราสมืดกลางวัน' },
+  { id:'gilded',     name:'เคลือบทองคำ',         emoji:'🪙', mult:45,  group:'env', color:'#ffd54f', src:'🪙 ฝนทองคำ' },
+  { id:'dragonbolt', name:'สายฟ้ามังกร',         emoji:'🐉', mult:80,  group:'env', color:'#00e5ff', src:'🐉 ถูกฟ้าผ่าตอนพายุมังกรสายฟ้า' },
+  { id:'stardust',   name:'ฝุ่นดาว',             emoji:'💫', mult:30,  group:'env', color:'#b39ddb', src:'💫 คืนดาวหางเฉียดโลก' },
+  { id:'comet',      name:'ดาวหางพุ่งชน',        emoji:'🌟', mult:120, group:'env', color:'#fff59d', src:'💫 ถูกดาวหางชนตอนคืนดาวหาง' },
+  // สูตรลับใหม่
+  { id:'molten',     name:'ลาวาหลอมละลาย',      emoji:'🫠', mult:150, group:'env', secret:true, recipe:['obsidian','fire'],      color:'#ff3d00' },
+  { id:'fairytale',  name:'เทพนิยาย',           emoji:'🏰', mult:90,  group:'env', secret:true, recipe:['fairydust','crystal'],  color:'#f8bbd0' },
+  { id:'emperor',    name:'จักรพรรดิมังกรทอง',    emoji:'🐲', mult:500, group:'env', secret:true, recipe:['dragonbolt','gilded'],  color:'#ffab00' },
 ];
 // เอฟเฟกต์ลอยรอบต้น (ค่าเริ่มต้น = อีโมจิของสถานะ)
 const MUT_FX = { wet: '💧', chilled: '❄️', ice: '❄️', windy: '🍃', sandy: '·', pollen: '🐝', moonlit: '✦', bloodlit: '🩸', celestial: '✦', shocked: '⚡',
@@ -3120,8 +3167,27 @@ const WEATHERS = [
   { id:'heartrain',  name:'ฝนหัวใจ',         emoji:'💕', weight:2, dur:[60,80], rolls:[['lovestruck',0.004],['heartgold',0.0006]], fx:['bee',14,'💕'] },
   { id:'blackhole',  name:'หลุมดำ',          emoji:'🕳️', weight:1, dur:[45,60], rolls:[['gravity',0.001]], fx:['star',30], strike:{ id:'singularity', every:40, fx:'🌀' } },
   { id:'meteor', name:'ฝนดาวตก',         emoji:'🌠', weight:3,  dur:[50,60], rolls:[],                 fx:['meteor',5], strike:{ id:'celestial', every:25, fx:'🌠' } },
+  // ===== สภาพอากาศชุดใหม่ =====
+  { id:'drizzle',    name:'ฝนปรอย',            emoji:'🌦️', weight:14, dur:[60,90], rolls:[['dew',0.006]],                            fx:['rain',18] },
+  { id:'hail',       name:'ลูกเห็บตก',          emoji:'🧊', weight:8,  dur:[50,70], rolls:[['hailstruck',0.005]],                     fx:['snow',55] },
+  { id:'firefly',    name:'คืนหิ่งห้อย',         emoji:'🪲', weight:6,  dur:[60,90], rolls:[['glowbug',0.005]],                        fx:['bee',18,'✨'] },
+  { id:'monsoon',    name:'มรสุมกระหน่ำ',        emoji:'🌬️', weight:5,  dur:[60,80], rolls:[['wet',0.008],['flooded',0.003]],          fx:['rain',85] },
+  { id:'blizzard',   name:'พายุหิมะ',           emoji:'☃️', weight:4,  dur:[60,80], rolls:[['chilled',0.008],['permafrost',0.0008]],   fx:['snow',90] },
+  { id:'rainbowsky', name:'ฟ้าหลังฝนสายรุ้ง',     emoji:'🌈', weight:4,  dur:[50,70], rolls:[['rainpaint',0.003]],                      fx:['star',18] },
+  { id:'acidrain',   name:'ฝนกรด',             emoji:'🧪', weight:4,  dur:[50,70], rolls:[['acidic',0.004],['toxic',0.0006]],         fx:['rain',50] },
+  { id:'mirage',     name:'ภาพลวงตากลางทะเลทราย', emoji:'🏝️', weight:3,  dur:[50,70], rolls:[['mirage',0.003]],                        fx:['sand',30] },
+  { id:'ashfall',    name:'ฝนเถ้าภูเขาไฟ',        emoji:'🪨', weight:3,  dur:[50,70], rolls:[['ashen',0.004],['obsidian',0.0005]],      fx:['snow',45] },
+  { id:'candyrain',  name:'ฝนลูกกวาด',          emoji:'🍬', weight:2,  dur:[50,70], rolls:[['sugary',0.004],['caramel',0.0006]],      fx:['bee',16,'🍬'] },
+  { id:'fairynight', name:'คืนภูตพราย',          emoji:'🧚', weight:2,  dur:[50,70], rolls:[['fairydust',0.004],['enchanted',0.0005]], fx:['bee',14,'🧚'] },
+  { id:'crystalrain',name:'ฝนผลึกแก้ว',          emoji:'❇️', weight:2,  dur:[50,70], rolls:[['crystal',0.003],['diamond',0.0004]],     fx:['snow',30] },
+  { id:'aurorasky',  name:'ม่านแสงเหนือ',        emoji:'🎆', weight:2,  dur:[60,80], rolls:[['polar',0.004],['aurora',0.0012]],        fx:['star',26] },
+  { id:'eclipseday', name:'คราสมืดกลางวัน',      emoji:'🌑', weight:2,  dur:[45,60], rolls:[['umbra',0.003]],                          fx:['star',10] },
+  { id:'goldrush',   name:'ฝนทองคำ',           emoji:'🪙', weight:1,  dur:[45,60], rolls:[['gilded',0.0015]],                        fx:['bee',14,'🪙'] },
+  { id:'dragonstorm',name:'พายุมังกรสายฟ้า',      emoji:'🐉', weight:1,  dur:[45,60], rolls:[['wet',0.004]],                            fx:['rain',70], strike:{ id:'dragonbolt', every:30, fx:'🐉' } },
+  { id:'cometnight', name:'คืนดาวหางเฉียดโลก',    emoji:'💫', weight:1,  dur:[45,60], rolls:[['stardust',0.002]],                       fx:['meteor',4,'💫'], strike:{ id:'comet', every:45, fx:'🌟' } },
 ];
-const WEATHER_GAP = [150, 300]; // วินาทีว่างระหว่างอากาศแต่ละรอบ
+const WEATHER_GAP = [3300, 3900]; // วินาทีว่างระหว่างอากาศแต่ละรอบ (~ชั่วโมงละ 1 ครั้ง)
+const WX_DUR_MULT = 3, WX_ROLL_MULT = 0.6;   // มาน้อยลง → อยู่นานขึ้น 3 เท่า (โอกาสติดต่อวินาทีลดลงเล็กน้อย)
 // ปุ่มทดสอบใต้สวน: เปิด/ปิดได้ที่ ☰ เพิ่มเติม → ⚙️ ตั้งค่า
 
 
@@ -4432,6 +4498,10 @@ function mutEmojis(ids) { return (ids || []).map(id => getMut(id).emoji).join(''
 
 // ใส่สถานะให้แปลง คืนค่า id ที่ได้จริง (หรือ null)
 function addMutation(plot, id) {
+  if (plot.seedId && !plot._sub) {   // 🍖 ต้นหลายผล: สถานะตกใส่ผลใดผลหนึ่งแบบสุ่ม
+    const xf = plotXf(plot);
+    if (xf) { const k = Math.floor(Math.random() * (xf.length + 1)); if (k > 0) { const t = xf[k - 1]; t._sub = true; const r = addMutation(t, id); delete t._sub; return r; } }
+  }
   const muts = plot.mutations || (plot.mutations = []);
   const m = getMut(id);
   if (!m || muts.includes(id)) return null;
@@ -4712,7 +4782,7 @@ function growTick(now) {
     }
     if (p.growth >= s.time && p.kgBoost > 0) {   // สุกแล้ว → ผลใหญ่ขึ้นจริง
       const old = p.kg;
-      p.kg = growKg(p.kg, p.kgBoost);
+      growPlotKg(p, p.kgBoost);
       if (!p.harvests) p.treeKg = Math.max(p.treeKg || 0, p.kg);
       p.boosted = Math.round(p.kgBoost * 100);
       p.kgBoost = 0;
@@ -4835,7 +4905,30 @@ function plantSeed(index, fx, fy, quiet) {
 }
 
 // สุ่มผลใหม่: น้ำหนัก + สถานะตอนปลูก (ใช้ทั้งตอนปลูกและตอนต้นออกผลรอบใหม่)
+// 🍖 ต้นหลายผล: ผลที่ 2,3 อยู่ใน plot.xf = [{kg, mutations}] แยกจากผลหลัก (plot.kg / plot.mutations)
+function plotXf(plot) {
+  const sd = getSeed(plot.seedId);
+  if (!sd || !sd.multi) return null;
+  if (!plot.xf || plot.xf.length !== sd.multi - 1) plot.xf = Array.from({ length: sd.multi - 1 }, (_, k) => ({ kg: Math.round((plot.kg || 10) * ((plot.mr || [])[k + 1] || 1) * 10) / 10, mutations: [] }));
+  return plot.xf;
+}
+function growPlotKg(p, f) {
+  p.kg = growKg(p.kg, f);
+  if (p.xf) p.xf.forEach(x => { x.kg = growKg(x.kg, f); });
+}
 function rollFruit(plot) {
+  plot._sub = true;   // ระหว่างสุ่มผล: สถานะลงผลที่กำลังสุ่มเท่านั้น
+  try { rollFruitAll(plot); } finally { delete plot._sub; }
+}
+function rollFruitAll(plot) {
+  const sd0 = getSeed(plot.seedId);
+  if (sd0 && sd0.multi) {   // ผลรองสุ่มน้ำหนัก/สถานะของตัวเองแยกจากผลหลัก
+    plot.xf = Array.from({ length: sd0.multi - 1 }, () => { rollFruitMain(plot); const x = { kg: plot.kg, mutations: plot.mutations }; return x; });
+    plot.mr = null;
+  } else { delete plot.xf; }
+  rollFruitMain(plot);
+}
+function rollFruitMain(plot) {
   // ดิน: ดินเสื่อม (<40) ผลมักเบา, ดินอุดมพิเศษ (>100) หรือเมล็ดลูกผสมพันธุ์หนัก ผลมักหนัก
   let kg = rollKg();
   if (Math.random() < Math.min(0.8, teamAbility('kg'))) kg = Math.max(kg, rollKg());   // จระเข้งับผล
@@ -4847,9 +4940,8 @@ function rollFruit(plot) {
   plot.kg = kg; plot.kgBoost = 0; plot.boosted = 0;
   plot.mutations = rollMutation(); plot.sprayed = false;
   const sd = getSeed(plot.seedId);
-  if (sd && sd.multi) {   // 🍖 หลายผล: ผลรองขนาดต่างกัน • แต่ละผลลุ้นเป็นผลเหลี่ยม
-    plot.mr = [1]; for (let k = 1; k < sd.multi; k++) plot.mr.push(+rand(0.5, 1.4).toFixed(3));
-    plot.facet = plot.mr.map(() => Math.random() < FACET_CHANCE * luckMultiplier());
+  if (sd && sd.multi) {   // 🍖 แต่ละผลลุ้นเป็นผลเหลี่ยมแยกกัน
+    plot.facet = Array.from({ length: sd.multi }, () => Math.random() < FACET_CHANCE * luckMultiplier());
   } else { delete plot.mr; delete plot.facet; }
   if (sd && sd.aura && Math.random() < sd.aura[1] * luckMultiplier()) addMutation(plot, sd.aura[0]);
   const ag = treeAge(plot);   // ต้นโบราณ: ผลใหม่มีโอกาสติดสถานะพิเศษ
@@ -4929,6 +5021,7 @@ let fossilTally = { n: 0, coins: 0, gems: 0 };
 async function digPlot(i, silent) {
   const plot = state.plots[i];
   if (!plot || !plot.seedId) return false;
+  if (plot.locked) { if (!silent) toast('🔒 ต้นนี้ล็อกอยู่ • ปลดล็อกก่อนถึงจะขุดได้'); return false; }
   const seed = getSeed(plot.seedId);
   spawnParticles(i, ['🟫','🍂','🟫'], 6);
   const gotSeed = !plot.harvests && plot.growth < seed.time && Math.random() < 0.35;   // ขุดต้นที่ยังไม่เคยสุก มีโอกาสได้เมล็ดคืน
@@ -4941,7 +5034,7 @@ async function digPlot(i, silent) {
     fossil = ` • 🦴 ฟอสซิล +💰${coins.toLocaleString()}${gem ? ` 💎+${gem}` : ''}`;
     spawnFloat(i, `🦴 +💰${fmtShort(coins)}${gem ? ' 💎' + gem : ''}`, '#ffe0b2');
   }
-  Object.assign(plot, { seedId: null, growth: 0, kg: 0, treeKg: 0, harvests: 0, mutations: [], sprayed: false, hyHeavy: false, hyInherit: null, kgBoost: 0, boosted: 0 });
+  Object.assign(plot, { locked: false, seedId: null, growth: 0, kg: 0, treeKg: 0, harvests: 0, mutations: [], sprayed: false, hyHeavy: false, hyInherit: null, kgBoost: 0, boosted: 0 });
   if (infoIdx === i) hidePlantInfo();
   if (shovelSel === i) { shovelSel = -1; digArmed = -1; }
   if (silent) return gotSeed;
@@ -4954,7 +5047,7 @@ async function digPlot(i, silent) {
 let bulkDigSel = new Set(), bulkDigArmed = false, bulkDigFilter = 'all';
 function bulkDigList() {
   const out = [];
-  state.plots.forEach((p, i) => { if (p && p.seedId && getSeed(p.seedId)) out.push(i); });
+  state.plots.forEach((p, i) => { if (p && p.seedId && getSeed(p.seedId) && !p.locked) out.push(i); });
   return out;
 }
 function openBulkDig(keep) {
@@ -5052,11 +5145,16 @@ function harvestPlot(index) {
   Object.defineProperty(item, '_span', { value: seed.time * (plot.harvests ? 1 - REGROW_AT : 1), enumerable: false });
   state.bag.push(item);
   if (seed.multi) {   // 🍖 เก็บได้ครบทุกผลบนต้น
-    const per = item.base / kgMult(plot.kg), mr = plot.mr || [1, 1, 1], fc = plot.facet || [];
+    const per = item.base / kgMult(plot.kg) / mult, xf = plotXf(plot), fc = plot.facet || [];
     let nF = 0;
     for (let k = 0; k < seed.multi; k++) {
-      const it2 = k === 0 ? item : { uid: state.uid++, seedId: seed.id, muts: [...muts], kg: Math.round(plot.kg * (mr[k] || 1) * 10) / 10, t: Date.now() };
-      if (k) { it2.base = per * kgMult(it2.kg); state.bag.push(it2); state.life.maxKg = Math.max(state.life.maxKg, it2.kg); }
+      const x = k ? xf[k - 1] : null;
+      const it2 = k === 0 ? item : { uid: state.uid++, seedId: seed.id, muts: [...(x.mutations || [])], kg: x.kg, t: Date.now() };
+      if (k) {
+        it2.base = per * mutMultiplier(it2.muts) * kgMult(it2.kg); state.bag.push(it2);
+        const l2 = state.life; l2.maxKg = Math.max(l2.maxKg, it2.kg); l2.maxMuts = Math.max(l2.maxMuts, it2.muts.length); l2.maxMult = Math.max(l2.maxMult, mutMultiplier(it2.muts));
+        it2.muts.forEach(id => addToCollection('mut_' + id));
+      }
       if (fc[k]) { it2.facet = true; it2.base *= FACET_MULT; nF++; }
     }
     if (nF) { setTimeout(() => { flashStrike(); sfx('rare'); toast(`💎 ได้เนื้อเหลี่ยมมหาโอชา ${nF} ชิ้น! ราคา ×${FACET_MULT}`); }, 600); state.life.facets = (state.life.facets || 0) + nF; }
@@ -5093,18 +5191,27 @@ function harvestPlot(index) {
   return item;
 }
 
+// 🔒 ต้นที่ล็อก: เก็บผลไม่ได้ (ทั้งกดเอง เก็บหมด และสัตว์เลี้ยง) และขุดทิ้งไม่ได้
+const canHarvest = p => isReady(p) && !p.locked;
+function togglePlotLock(i) {
+  const p = state.plots[i]; if (!p || !p.seedId) return;
+  p.locked = !p.locked;
+  toast(p.locked ? `🔒 ล็อก${getSeed(p.seedId).name}แล้ว • เก็บผล/ขุดทิ้งไม่ได้จนกว่าจะปลดล็อก` : `🔓 ปลดล็อก${getSeed(p.seedId).name}แล้ว`);
+  infoUntil = Date.now() + 7000; save(); render();
+}
 function harvest(index) {
   if (!isReady(state.plots[index])) return;
+  if (state.plots[index].locked) return toast('🔒 ต้นนี้ล็อกอยู่ • ปลดล็อกที่ป้ายต้นไม้ก่อนถึงจะเก็บได้');
   const free = bagCap() - state.bag.length;
   if (free <= 0) return toast(`🎒 กระเป๋าเต็ม! ไปขายหรือเก็บเข้าตู้โชว์ก่อน${upLv('bag') < UPG.bag.max ? ' • หรือขยายกระเป๋าที่แท็บ 🎒' : ''}`);
   const maxCount = Math.min(free, state.gear.includes('basket') ? 3 : 1);
   const order = [index];
-  state.plots.forEach((p, i) => { if (i !== index && isReady(p)) order.push(i); });
+  state.plots.forEach((p, i) => { if (i !== index && canHarvest(p)) order.push(i); });
   harvestMany(order.slice(0, maxCount));
 }
 function harvestAll() {
-  const ready = state.plots.map((p, i) => i).filter(i => isReady(state.plots[i]));
-  if (!ready.length) return toast('ยังไม่มีต้นไหนสุก');
+  const ready = state.plots.map((p, i) => i).filter(i => canHarvest(state.plots[i]));
+  if (!ready.length) return toast(state.plots.some(p => isReady(p) && p.locked) ? '🔒 ต้นที่สุกถูกล็อกไว้ทั้งหมด' : 'ยังไม่มีต้นไหนสุก');
   const free = bagCap() - state.bag.length;
   if (free <= 0) return toast(`🎒 กระเป๋าเต็ม! ไปขายหรือเก็บเข้าตู้โชว์ก่อน${upLv('bag') < UPG.bag.max ? ' • หรือขยายกระเป๋าที่แท็บ 🎒' : ''}`);
   harvestMany(ready.slice(0, free));
@@ -5119,6 +5226,8 @@ function harvestGemChance(it) {
 // 🦖 คอมโบเก็บผล (แร็พเตอร์)
 let comboNow = 0, comboAt = 0;
 function harvestMany(picked) {
+  picked = picked.filter(i => !state.plots[i].locked);
+  if (!picked.length) return;
   if (teamAbility('combo') > 0) {
     const now = Date.now();
     comboNow = now - comboAt <= 4000 ? Math.min(11, comboNow + 1) : 1; comboAt = now;
@@ -5211,16 +5320,20 @@ function renderPlantInfo() {
           <button class="pi-btn move" onclick="event.stopPropagation(); shovelMove()">🚚 ย้าย</button>
           <button class="pi-btn dig ${digArmed === infoIdx ? 'armed' : ''}" onclick="event.stopPropagation(); shovelDig()">${digArmed === infoIdx ? '⚠️ แตะอีกครั้ง<br><small>ต้นหายาก ยืนยันขุด</small>' : '⛏️ ขุดทิ้ง'}</button>
         </div><div class="pi-hint">💡 กดค้างที่ต้นแล้วลากเพื่อย้ายได้เลย</div>`}` : `
-    ${muts ? `<div class="pi-muts">${muts}</div>` : ''}
+    ${muts && !seed.multi ? `<div class="pi-muts">${muts}</div>` : ''}
     <div class="pi-name">${seed.name}</div>
+    ${seed.multi ? `<div class="pi-fruits">${[{ kg: plot.kg, mutations: plot.mutations || [] }, ...plotXf(plot)].map((x, k) => {
+      const mm = mutMultiplier(x.mutations), fc = (plot.facet || [])[k] && ready;
+      return `<div>${'①②③'[k]} ${fc ? '💎' : '🍖'} <b>${ready ? fmtKg(x.kg) + 'kg' : '❓kg'}</b> ${(x.mutations || []).map(id => getMut(id).emoji).join('')}${mm > 1 ? ` <span class="pi-mult">×${fmtMult(mm)}</span>` : ''}</div>`; }).join('')}</div>` : ''}
     <div class="pi-chips">${tierBadge(seed)}<span class="pi-chip">${seed.regrow ? (plot.harvests ? `🔁 ผลรอบที่ ${plot.harvests + 1}` : '🔁 เก็บซ้ำได้') : '1️⃣ ครั้งเดียว'}</span></div>
-    <div class="pi-stats"><span style="white-space:nowrap">⚖️ <b>${kgTxt}</b>${tag ? ` <em style="color:${kgColor(plot.kg)}">${tag}</em>` : ''}</span>${mult > 1 ? `<span class="pi-mult">×${fmtMult(mult)}</span>` : ''}</div>
+    <div class="pi-stats" ${seed.multi ? 'style="display:none"' : ''}><span style="white-space:nowrap">⚖️ <b>${kgTxt}</b>${tag ? ` <em style="color:${kgColor(plot.kg)}">${tag}</em>` : ''}</span>${mult > 1 ? `<span class="pi-mult">×${fmtMult(mult)}</span>` : ''}</div>
     <div class="pi-sub">${plot.harvests ? `🌳 ต้น ${fmtKg(plot.treeKg || plot.kg)}kg • ` : ''}🟫 ดิน ${Math.round(plot.soil ?? 100)}%${state.placed.some(d => devReach(d, plot)) ? ' • 📡 ในระยะอุปกรณ์' : ''}</div>
     ${!ready && (plot.kgBoost > 0 || plotSizeBonus(plot) > 0) ? `<div class="pi-boost">💦 ขยายผล +${Math.round((plot.kgBoost || 0) * 100)}% <small>(สูงสุด +${Math.round(Math.max(plotSizeBonus(plot), plot.kgBoost || 0) * 100)}%)</small></div>` : ''}
     ${ready && plot.boosted ? `<div class="pi-boost">💦 สปริงเกลอร์ขยายผลแล้ว +${plot.boosted}%</div>` : ''}
     ${ready
-      ? `<div class="pi-val">💰 ${plotValueNow(plot).toLocaleString()}</div><button class="pi-btn" onclick="event.stopPropagation(); harvestFromInfo()">🧺 เก็บผล</button>`
-      : `<div class="pi-bar"><i style="width:${Math.max(0, Math.min(100, prog * 100)).toFixed(1)}%"></i></div><div class="pi-time">⏳ ${fmtTime(left)}</div>`}`;
+      ? `<div class="pi-val">💰 ${plotValueNow(plot).toLocaleString()}</div>${plot.locked ? '' : `<button class="pi-btn" onclick="event.stopPropagation(); harvestFromInfo()">🧺 เก็บผล</button>`}`
+      : `<div class="pi-bar"><i style="width:${Math.max(0, Math.min(100, prog * 100)).toFixed(1)}%"></i></div><div class="pi-time">⏳ ${fmtTime(left)}</div>`}
+    <button class="pi-btn pi-lock ${plot.locked ? 'on' : ''}" onclick="event.stopPropagation(); togglePlotLock(${infoIdx})">${plot.locked ? '🔓 ปลดล็อก' : '🔒 ล็อกต้นนี้'}</button>`;
   if (el._h !== html) { el._h = html; el.innerHTML = html; }
   el.classList.toggle('fr', !ready && !!plot.harvests);
   const div = $('garden')._plots[infoIdx];
@@ -6483,7 +6596,7 @@ function pickPetTarget(ab) {
     if (ab.type === 'seed') return true;
     if (ab.type === 'soil') return (p.soil ?? 100) < 100;
     if (ab.type === 'grow' || ab.type === 'giant' || ab.type === 'fatten' || ab.type === 'timecut') return !isReady(p);
-    if (ab.type === 'harvestbot') return isReady(p);
+    if (ab.type === 'harvestbot') return canHarvest(p);
     if (ab.type === 'spread') return (p.mutations || []).some(id => getMut(id).group === 'env');
     if (ab.type === 'drain') return !isReady(p);
     if (ab.type === 'alchemy') return (p.mutations || []).some(id => ALCHEMY_UP[id] && !(p.mutations || []).includes(ALCHEMY_UP[id]));
@@ -6524,7 +6637,7 @@ function doPetSkill(w, p, target, abOver, vOver) {
       spawnParticles(target, ['💥', '⬆️', '✨'], 8); sfx('big');
     }
   } else if (ab.type === 'fatten' && !isReady(plot)) {
-    plot.kg = growKg(plot.kg, v);
+    growPlotKg(plot, v);
     if (!plot.harvests) plot.treeKg = Math.max(plot.treeKg || 0, plot.kg);
     ok = true; msg = `${sp.emoji} ขุนผล +${pctTxt(v)}`;
   } else if (ab.type === 'harvestbot' && isReady(plot)) {
@@ -6635,7 +6748,7 @@ function ripenTick() {
     p.ripeS = (p.ripeS || 0) + 1;
     if (p.ripeS >= 60) {
       p.ripeS = 0; p.ripeN = (p.ripeN || 0) + 1;
-      p.kg = growKg(p.kg, v);
+      growPlotKg(p, v);
       if (!p.harvests) p.treeKg = Math.max(p.treeKg || 0, p.kg);
       if (panelActive('garden')) spawnFloat(i, `🦕 บ่มผล +${pctTxt(v)} (${p.ripeN}/10)`, '#aed581');
     }
@@ -7259,7 +7372,7 @@ function startWeather(id) {
   const now = Date.now();
   state.weather = {
     id: w.id,
-    endsAt: now + rand(...w.dur) * 1000 * (1 + skillEff('wdur') + Math.min(1.5, teamAbility('wextend'))),
+    endsAt: now + rand(...w.dur) * 1000 * WX_DUR_MULT * (1 + skillEff('wdur') + Math.min(1.5, teamAbility('wextend'))),
     nextStrike: w.strike ? now + w.strike.every * 500 : 0,
   };
   toast(`${w.emoji} ${w.name}! พืชในสวนอาจติดสถานะใหม่`);
@@ -7269,7 +7382,7 @@ function startWeather(id) {
 function endWeather() {
   const w = getWeather(state.weather.id);
   state.weather = null;
-  state.nextWeatherAt = Date.now() + rand(...WEATHER_GAP) * 1000 * (1 - Math.min(0.6, skillEff('wfreq')));
+  state.nextWeatherAt = Date.now() + rand(...WEATHER_GAP) * 1000 * (1 - Math.min(0.4, skillEff('wfreq')));
   state.life.weathers++;
   if (w) toast(`${w.emoji} ${w.name} จบแล้ว`);
   save(); applyWeatherScene(); renderWeather();
@@ -7305,7 +7418,7 @@ function weatherTick(now) {
     if (!plot.seedId) return;
     if (Math.random() < 0.00002 * luck) { const got = addMutation(plot, 'glitch'); if (got) { changed = true; gainMutFx(i, got); } }
     w.rolls.forEach(([mid, chance]) => {
-      if (Math.random() < chance * luck * (1 + 0.1 * rbLv('weather') + skillEff('weather'))) {
+      if (Math.random() < chance * WX_ROLL_MULT * luck * (1 + 0.1 * rbLv('weather') + skillEff('weather'))) {
         const got = addMutation(plot, mid);
         if (got) { changed = true; gainMutFx(i, got); }
       }
@@ -7621,12 +7734,15 @@ function renderGarden() {
       if (p >= 1) cls += ' f-ripe';
       if (seed.multi) {
         cls += ' multi';
-        const mr = plot.mr || [1, 1, 1], fc = plot.facet || [];
-        const key = fz + '|' + mr.join() + '|' + fc.join() + '|' + (plot.kg || 0);
+        const xf = plotXf(plot), fc = plot.facet || [];
+        const fr = [{ kg: plot.kg, mutations: plot.mutations || [] }, ...xf];
+        const key = fz + '|' + fc.join() + '|' + fr.map(x => x.kg + ':' + (x.mutations || []).join('.')).join();
         if (div._mk !== key) {
           div._mk = key;
           e.fruits.forEach((f, k) => {
-            const z = fz && k < seed.multi ? +((0.3 + 0.5 * gardenScale((plot.kg || 10) * (mr[k] || 1))) * (0.25 + 0.75 * q) * 0.62).toFixed(3) : 0;
+            const z = fz && k < seed.multi ? +((0.3 + 0.5 * gardenScale(fr[k].kg || 10)) * (0.25 + 0.75 * q) * 0.62).toFixed(3) : 0;
+            const ms = fr[k] ? fr[k].mutations || [] : [], mm = mutMultiplier(ms);
+            f.innerHTML = ms.length && p >= 1 ? `<span class="fmut">${mutEmojis(ms)}${mm > 1 ? `<b>×${fmtMult(mm)}</b>` : ''}</span>` : '';
             f.style.setProperty('--fk', z);
             f.style.backgroundImage = `url(${fc[k] ? seed.art.facet : seed.art.fruit})`;
             f.classList.toggle('facet', !!fc[k] && p >= 1);
@@ -7635,7 +7751,7 @@ function renderGarden() {
         }
       }
     }
-    if (!seed.multi && div._mk) { div._mk = null; e.fruits.forEach((f, k) => { if (k) f.style.display = 'none'; f.style.backgroundImage = ''; f.classList.remove('facet'); }); }
+    if (!seed.multi && div._mk) { div._mk = null; e.fruits.forEach((f, k) => { if (k) f.style.display = 'none'; f.style.backgroundImage = ''; f.innerHTML = ''; f.classList.remove('facet'); }); }
     if (div._fz !== fz) { div._fz = fz; div.style.setProperty('--fz', fz); if (!seed.multi) e.fruit.style.display = fz ? 'block' : 'none'; }
     if (state.placed.some(d => devReach(d, plot))) cls += ' in-range';
     if (sprite) plant = '';
@@ -7658,7 +7774,7 @@ function renderGarden() {
     if (bar >= 0) e.fill.style.width = bar + '%';
     setText(e.label, label);
     const soil = plot.soil ?? 100;
-    setText(e.soil, soil > 100 ? '✨' : soil < 40 ? '🪨' : '');
+    setText(e.soil, (plot.locked ? '🔒' : '') + (soil > 100 ? '✨' : soil < 40 ? '🪨' : ''));
     const sc = soil > 100 ? 'rich' : soil < 30 ? 'bad' : soil < 60 ? 'poor' : '';
     if (div.dataset.soil !== sc) div.dataset.soil = sc;
   });
@@ -7694,7 +7810,7 @@ function renderGardenUI() {
   const n = state.bag.length;
   const sum = state.bag.reduce((a, it) => a + itemValue(it), 0);
   const next = EXPANSIONS[state.gardenLevel + 1];
-  const nReady = state.plots.filter(p => isReady(p)).length, nPlanted = plantedCount(), cap = gardenCap();
+  const nReady = state.plots.filter(p => canHarvest(p)).length, nPlanted = plantedCount(), cap = gardenCap();
   $('gardenActions').innerHTML = `
     <button class="gbtn sell" ${n ? '' : 'disabled'} onclick="sellAll()">💰 ขาย<small>🎒${n}/${bagCap()}</small></button>
     <button class="gbtn" ${nPlanted < cap && hasSelectedSeed() ? '' : 'disabled'} onclick="plantAll()">🌱 ปลูกเต็ม<small>${nPlanted}/${cap} ต้น</small></button>
@@ -8272,9 +8388,10 @@ window.addEventListener('resize', () => { if (panelActive('skill')) drawSkillLin
 
 // ==================== 📘 คู่มือ ====================
 function guideSections() {
-  const wx = WEATHERS.map(w => {
+  const wTot = WEATHERS.reduce((a, w) => a + w.weight, 0);
+  const wx = [...WEATHERS].sort((a, b) => b.weight - a.weight).map(w => {
     const muts = [...w.rolls.map(r => r[0]), ...(w.strike ? [w.strike.id] : [])].map(id => getMut(id)).filter(Boolean);
-    return `<tr><td>${w.emoji} ${w.name}</td><td>${muts.map(m => `${m.emoji}${m.name} ×${m.mult}`).join(', ') || '—'}${w.strike ? ' <small>(⚡ตกใส่ต้นสุ่มเป็นระยะ)</small>' : ''}</td></tr>`;
+    return `<tr><td>${w.emoji} ${w.name}<br><small>โอกาส ${(w.weight / wTot * 100).toFixed(1)}%</small></td><td>${muts.map(m => `${m.emoji}${m.name} ×${m.mult}`).join(', ') || '—'}${w.strike ? ' <small>(⚡ตกใส่ต้นสุ่มเป็นระยะ)</small>' : ''}</td></tr>`;
   }).join('');
   const gm = MUTATIONS.filter(m => m.group === 'growth').map(m => `${m.emoji}${m.name} ×${m.mult} (${(m.chance * 100).toFixed(2).replace(/\.?0+$/, '')}%)`).join(' • ');
   const tiers = Object.values(SEED_TIERS).sort((a, b) => a.rank - b.rank).map(t => `<span class="badge" style="background:${t.color}">${t.name}</span>`).join(' → ');
@@ -8298,7 +8415,7 @@ function guideSections() {
       สูตรคิดราคา: <code>ตัวคูณโต × (1 + ผลรวม(ตัวคูณสภาพแวดล้อม − 1))</code><br>
       🧪 <b>สูตรลับ</b>: ถ้าต้นมี 2 สถานะที่เข้าคู่กัน จะรวมร่างเป็นสถานะใหม่ที่แรงกว่า (เช่น 💧เปียก + 🥶หนาวสั่น = ❄️แช่แข็ง) ดูคำใบ้ได้ที่ ☰ → 📖 สะสม<br>
       ต้นที่สถานะแรงจะมีแสงและของลอยรอบ ๆ`],
-    ['🌦️ สภาพอากาศ → สถานะที่ได้', `<table class="g-tbl">${wx}</table><small>สภาพอากาศสุ่มมาเองทุก 2.5–5 นาที • เรียกเองได้ด้วย 🗿 โทเทม (ดู 🔨 คราฟต์)</small>`],
+    ['🌦️ สภาพอากาศ → สถานะที่ได้', `<table class="g-tbl">${wx}</table><small>สภาพอากาศสุ่มมาเองชั่วโมงละ 1 ครั้ง (อยู่ราว 3–4 นาที) • ยิ่งหายากยิ่งออกยาก • เรียกเองได้ด้วย 🗿 โทเทม (ดู 🔨 คราฟต์)</small>`],
     ['🕐 ช่วงเวลาจริง', `ตามนาฬิกาเครื่อง: 🌅 05:00–07:00 ลุ้น 💠น้ำค้าง • 🌆 17:30–19:00 ลุ้น 🌇แสงอัสดง • 🌙 19:00–05:00 ลุ้น 🌃เรืองแสงราตรี (รวมกับ 🌙แสงจันทร์ = สูตรลับ!)`],
     ['⛏️ พลั่ว / 💦 อุปกรณ์ / 🟫 ดิน', `
       <b>⛏️ พลั่ว</b> (ปุ่มใต้สวน): แตะต้นเพื่อ 🚚 ย้ายที่ หรือ ⛏️ ขุดทิ้ง • กด 📋 ขุดหลายต้น เพื่อติ๊กเลือกขุดทีละหลายต้น • กดค้างที่ต้นแล้วลากเพื่อย้ายได้เลย<br>
