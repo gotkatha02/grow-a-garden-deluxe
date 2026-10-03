@@ -323,6 +323,49 @@
     border-radius: 999px; box-shadow: 0 2px 0 rgba(0,0,0,.15);
   }
   .wtint, .wfx, .flashfx { position: absolute; inset: 0; pointer-events: none; }
+
+  /* 🎨 ธีมฟาร์ม (ตามต้นลับสุดยอด) — วางก่อนกฎสภาพอากาศ เพื่อให้อากาศ/กลางคืนทับได้ */
+  .farm[data-theme="vortex"] .sky { background: radial-gradient(circle at 70% 40%, rgba(255,64,129,.6), transparent 45%), linear-gradient(#1a0026, #6a1b9a); }
+  .farm[data-theme="vortex"] .sky::before { background: #4a148c; } .farm[data-theme="vortex"] .sky::after { background: #7b1fa2; }
+  .farm[data-theme="vortex"] .sun { background: conic-gradient(#ff4081, #7c4dff, #ff4081); box-shadow: 0 0 20px 8px rgba(255,64,129,.55); animation: vtSpin 4s linear infinite; }
+  @keyframes vtSpin { to { rotate: 360deg; } }
+  .farm[data-theme="vortex"] .field { background: radial-gradient(circle, rgba(255,128,171,.25) 0 1.5px, transparent 2px) 0 0 / 16px 16px, linear-gradient(#4a148c, #311b92); }
+  .farm[data-theme="vortex"] .fence { background: linear-gradient(transparent 5px, #ad1457 5px 8px, transparent 8px 14px, #ad1457 14px 17px, transparent 17px), repeating-linear-gradient(90deg, #ec407a 0 8px, transparent 8px 18px); }
+  .farm[data-theme="vortex"] #garden { border-color: #6a1b9a; background: radial-gradient(circle at 20% 30%, rgba(255,128,171,.25) 0 1.5px, transparent 2px) 0 0 / 15px 13px, linear-gradient(160deg, #3a1450, #24102f 55%, #160a1f); }
+
+  .farm[data-theme="meat"] .sky { background: linear-gradient(#b71c1c, #ff8a65); }
+  .farm[data-theme="meat"] .sky::before { background: #8d2c08; } .farm[data-theme="meat"] .sky::after { background: #a1381b; }
+  .farm[data-theme="meat"] .sun { background: radial-gradient(#fff3e0, #ff7043 70%); box-shadow: 0 0 20px 8px rgba(255,112,67,.6); }
+  .farm[data-theme="meat"] .field { background: radial-gradient(circle, rgba(255,224,178,.18) 0 1.5px, transparent 2px) 0 0 / 16px 16px, linear-gradient(#8d2c08, #5d1a04); }
+  .farm[data-theme="meat"] .fence { background: linear-gradient(transparent 5px, #efebe9 5px 8px, transparent 8px 14px, #efebe9 14px 17px, transparent 17px), repeating-linear-gradient(90deg, #fff8e1 0 8px, transparent 8px 18px); }
+  .farm[data-theme="meat"] #garden { border-color: #d7ccc8; background: radial-gradient(circle at 20% 30%, rgba(255,138,101,.25) 0 1.5px, transparent 2px) 0 0 / 15px 13px, linear-gradient(160deg, #6d2a14, #4e1a0b 55%, #3a1006); }
+
+  .farm[data-theme="galaxy"] .sky { background: radial-gradient(circle, #fff 0 1px, transparent 1.5px) 0 0 / 23px 19px, radial-gradient(circle, #b388ff 0 1px, transparent 1.5px) 9px 7px / 31px 27px, linear-gradient(#0d0b3a, #3949ab); }
+  .farm[data-theme="galaxy"] .sky::before { background: #283593; } .farm[data-theme="galaxy"] .sky::after { background: #3f51b5; }
+  .farm[data-theme="galaxy"] .sun { background: radial-gradient(circle at 35% 35%, #fff, #ce93d8 45%, #5e35b1 75%); box-shadow: 0 0 0 3px rgba(255,213,79,.8), 0 0 22px 8px rgba(179,136,255,.6); }
+  .farm[data-theme="galaxy"] .field { background: radial-gradient(circle, rgba(255,255,255,.35) 0 1px, transparent 1.5px) 0 0 / 19px 17px, linear-gradient(#1a237e, #0d1250); }
+  .farm[data-theme="galaxy"] .fence { background: linear-gradient(transparent 5px, #ffd54f 5px 8px, transparent 8px 14px, #ffd54f 14px 17px, transparent 17px), repeating-linear-gradient(90deg, #7e57c2 0 8px, transparent 8px 18px); }
+  .farm[data-theme="galaxy"] #garden { border-color: #ffca28; background: radial-gradient(circle, rgba(255,255,255,.3) 0 1px, transparent 1.5px) 0 0 / 21px 17px, radial-gradient(circle, rgba(179,136,255,.35) 0 1px, transparent 1.5px) 7px 5px / 29px 23px, linear-gradient(160deg, #241a5c, #170f3d 55%, #0c0826); }
+
+  .farm[data-theme="candy"] .sky { background: linear-gradient(#f48fb1, #e1bee7 60%, #b3e5fc); }
+  .farm[data-theme="candy"] .sky::before { background: #f8bbd0; } .farm[data-theme="candy"] .sky::after { background: #ce93d8; }
+  .farm[data-theme="candy"] .sun { background: conic-gradient(#ff80ab 0 25%, #fff 0 50%, #80d8ff 0 75%, #fff 0); box-shadow: 0 0 16px 6px rgba(255,128,171,.5); animation: vtSpin 6s linear infinite; }
+  .farm[data-theme="candy"] .field { background: radial-gradient(circle, #ff80ab 0 1.5px, transparent 2px) 0 0 / 15px 15px, radial-gradient(circle, #80d8ff 0 1.5px, transparent 2px) 7px 7px / 15px 15px, linear-gradient(#fce4ec, #f8bbd0); }
+  .farm[data-theme="candy"] .fence { background: repeating-linear-gradient(135deg, #e53935 0 6px, #fff 6px 12px); height: 10px; border-radius: 6px; }
+  .farm[data-theme="candy"] #garden { border-color: #f06292; background: radial-gradient(circle, rgba(255,235,59,.7) 0 1.5px, transparent 2px) 0 0 / 31px 27px, radial-gradient(circle, rgba(105,240,174,.7) 0 1.5px, transparent 2px) 14px 11px / 37px 33px, radial-gradient(circle, rgba(255,128,171,.7) 0 1.5px, transparent 2px) 23px 19px / 41px 29px, linear-gradient(160deg, #8d5a4b, #6d4033 55%, #55302a); }
+
+  .farm[data-theme="dragon"] .sky { background: linear-gradient(#3e0d0d, #e65100 75%, #ffb300); }
+  .farm[data-theme="dragon"] .sky::before { background: #212121; } .farm[data-theme="dragon"] .sky::after { background: #3e2723; }
+  .farm[data-theme="dragon"] .sun { background: radial-gradient(#fff8e1, #ff6f00 65%, #b71c1c); box-shadow: 0 0 24px 10px rgba(255,111,0,.65); }
+  .farm[data-theme="dragon"] .field { background: radial-gradient(circle, rgba(255,111,0,.4) 0 1.5px, transparent 2px) 0 0 / 16px 16px, linear-gradient(#263238, #120c0a); }
+  .farm[data-theme="dragon"] .fence { background: linear-gradient(transparent 5px, #ff6d00 5px 8px, transparent 8px 14px, #ff6d00 14px 17px, transparent 17px), repeating-linear-gradient(90deg, #4e342e 0 8px, transparent 8px 18px); }
+  .farm[data-theme="dragon"] #garden { border-color: #3e2723; background: radial-gradient(circle at 20% 30%, rgba(255,109,0,.45) 0 1.5px, transparent 2px) 0 0 / 15px 13px, radial-gradient(ellipse at 70% 80%, rgba(255,87,34,.25), transparent 55%), linear-gradient(160deg, #2b1d18, #1a110e 55%, #0d0807); }
+  .theme-row { display:flex; gap:10px; align-items:center; text-align:left; }
+  .theme-sw { flex:0 0 64px; height:44px; border-radius:10px; overflow:hidden; border:2px solid rgba(0,0,0,.2); display:flex; flex-direction:column; }
+  .theme-sw i { flex:1; } .theme-sw b { flex:1.3; }
+  .theme-row.on { border-color:#43a047 !important; background:#e8f5e9 !important; }
+  .theme-row.lock { opacity:.55; }
+  .farm-bar button.themeb { flex:0 0 auto; background:#fff3e0; border-color:#ffcc80; color:#e65100; box-shadow:0 2px 0 #ffb74d; }
   .wtint { z-index: 4; transition: background 1.5s; }
   .wfx { z-index: 5; overflow: hidden; }
   .flashfx { z-index: 6; background: #fff; opacity: 0; }
@@ -1710,6 +1753,56 @@
   .bd-foot { display:flex; gap:6px; }
   #modalBox .bd-foot button { flex:1; width:auto; margin:0; padding:10px 6px; font-size:13px; }
   #modalBox .bd-foot .bd-go { flex:2; background:#e53935; box-shadow:0 3px 0 #b71c1c; color:#fff; }
+  .item .btns button.xseed { background:#8bc34a; box-shadow:0 3px 0 #558b2f; }
+
+  .eg-box { border-radius:16px; padding:10px 12px; margin-bottom:12px; color:#fff; box-shadow:0 4px 0 rgba(0,0,0,.25); }
+  .eg-box.asc { background:linear-gradient(160deg,#1a237e,#7b1fa2 60%,#f50057); }
+  .eg-box.tower { background:linear-gradient(160deg,#37474f,#546e7a 60%,#8d6e63); }
+  .eg-box.forge { background:linear-gradient(160deg,#004d40,#00897b 60%,#7cb342); }
+  .eg-box.contest { background:linear-gradient(160deg,#e65100,#ffa000 60%,#ffd54f); color:#3e2723; }
+  .eg-box.mastery { background:linear-gradient(160deg,#33691e,#689f38 60%,#c0ca33); }
+  .eg-box.museum { background:linear-gradient(160deg,#3e2723,#6d4c41 60%,#a1887f); }
+  .eg-box.alien { background:linear-gradient(160deg,#0d0b3a,#283593 60%,#00acc1); }
+  .eg-t { font-weight:900; font-size:15px; display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+  .eg-pill { background:rgba(255,255,255,.25); border-radius:999px; padding:1px 8px; font-size:11px; }
+  .eg-n { font-size:11.5px; margin:5px 0 7px; opacity:.95; line-height:1.4; }
+  .eg-btn { width:100%; border:none; border-radius:12px; padding:9px; font-weight:900; font-size:14px; background:#fff; color:#311b92; box-shadow:0 3px 0 rgba(0,0,0,.25); }
+  .eg-btn:disabled { opacity:.5; }
+  .eg-shop { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:8px; }
+  .eg-it { background:rgba(255,255,255,.14); border-radius:10px; padding:6px; font-size:11.5px; }
+  .eg-it button { width:100%; margin-top:4px; border:none; border-radius:8px; padding:4px; font-weight:800; background:#ffd54f; color:#3e2723; }
+  .eg-it button:disabled { opacity:.5; }
+  .eg-pots { display:flex; flex-wrap:wrap; gap:4px; margin-bottom:7px; }
+  .eg-pots span { background:rgba(255,255,255,.2); border-radius:999px; padding:2px 8px; font-size:11.5px; font-weight:800; }
+  .eg-rank { margin:0 0 8px; padding-left:22px; font-size:12px; }
+  .eg-rank li { padding:2px 0; } .eg-rank .sc { float:right; }
+  .eg-mas { display:grid; grid-template-columns:repeat(auto-fill,minmax(96px,1fr)); gap:5px; }
+  .eg-mas > div { background:rgba(255,255,255,.15); border-radius:10px; padding:5px; text-align:center; font-size:11px; display:flex; flex-direction:column; align-items:center; }
+  .eg-mas > div.max { background:rgba(255,215,64,.45); box-shadow:0 0 0 2px #ffd740; }
+  .eg-mas span img.icon { width:30px; height:30px; } .eg-mas span { font-size:24px; }
+  .eg-mas i { font-style:normal; font-size:10px; } .eg-mas small { font-size:9.5px; opacity:.9; }
+  .eg-mus { display:flex; flex-wrap:wrap; gap:6px; }
+  .eg-mus span { background:rgba(255,255,255,.15); border-radius:10px; padding:4px 6px; font-size:20px; display:flex; flex-direction:column; align-items:center; width:72px; }
+  .eg-mus small { font-size:8.5px; text-align:center; line-height:1.15; }
+  .pet-card.awk { box-shadow:0 0 0 3px #fff, 0 0 14px 4px rgba(255,64,129,.6), 0 0 22px 8px rgba(124,77,255,.45) !important; }
+  .pet-walker.awk img { filter: drop-shadow(0 0 4px #ff4081) drop-shadow(0 0 6px #7c4dff) drop-shadow(0 0 8px #00e5ff); }
+  .s2-line.awk-line { background:linear-gradient(90deg,#ff80ab,#b388ff,#80d8ff); color:#1a1a1a; }
+  .pc-btns button.awaken3 { background:linear-gradient(90deg,#ff4081,#7c4dff,#00b0ff); color:#fff; }
+  #plantInfo .pi-btn.pi-pot { background:#00897b; box-shadow:0 2px 0 #004d40; margin-top:4px; font-size:11px; padding:4px 8px; }
+  .farm-bar { display:flex; gap:5px; overflow-x:auto; scrollbar-width:none; padding:4px 2px 6px; }
+  .farm-bar::-webkit-scrollbar { display:none; }
+  .farm-bar:empty { display:none; }
+  .farm-bar button { flex:1 0 auto; border:2px solid #a5d6a7; background:#fff; color:#33691e; border-radius:12px; padding:4px 8px; font-weight:800; font-size:12px; box-shadow:0 2px 0 #81c784; white-space:nowrap; }
+  .farm-bar button.on { background:linear-gradient(#66bb6a,#43a047); color:#fff; border-color:#2e7d32; box-shadow:0 2px 0 #1b5e20; }
+  .farm-bar button.lock { background:#eceff1; color:#78909c; border-color:#cfd8dc; box-shadow:0 2px 0 #b0bec5; }
+  .farm-bar button i { font-style:normal; background:#ffca28; color:#3e2723; border-radius:999px; padding:0 5px; font-size:10px; margin-left:2px; }
+  .farm-bar button small { display:block; font-size:9.5px; font-weight:700; }
+  .egg-chips { position:relative; display:flex; gap:4px; overflow-x:auto; scrollbar-width:none; padding:2px 0 6px; margin-bottom:4px; }
+  .egg-chips::-webkit-scrollbar { display:none; }
+  .egg-chips button, #modalBox .egg-chips button { flex:0 0 auto; width:auto; margin:0; display:flex; align-items:center; gap:3px; padding:3px 8px 3px 4px; font-size:11px; font-weight:800;
+    border-radius:999px; border:2px solid #d7ccc8; background:#fff; color:#5d4037; box-shadow:0 2px 0 #bcaaa4; white-space:nowrap; }
+  .egg-chips button img { width:20px; height:20px; object-fit:contain; }
+  .egg-chips button.on, #modalBox .egg-chips button.on { background:#ffb300; border-color:#ff8f00; color:#3e2723; }
   .pm-acts { display:grid; grid-template-columns: repeat(2, 1fr); gap:5px; margin:6px 0; }
   #modalBox .pm-acts button { width:auto; margin:0; padding:7px 4px; font-size:12px; border-radius:10px; background:#5c6bc0; box-shadow:0 3px 0 #3949ab; line-height:1.15; }
   #modalBox .pm-acts button small { display:block; font-size:9.5px; opacity:.9; font-weight:700; }
@@ -1768,12 +1861,14 @@
   <button class="tab" data-tab="collection">📖 สะสม</button>
   <button class="tab" data-tab="skill">🌳 สกิล</button>
   <button class="tab" data-tab="rebirth">🔄 Rebirth</button>
+  <button class="tab" data-tab="legend">🌠 ตำนาน</button>
   <button class="tab" data-tab="guide">📘 คู่มือ</button>
   <button class="tab" data-tab="settings">⚙️ ตั้งค่า</button>
 </div>
 
 <div id="content">
   <div class="panel active" id="panel-garden">
+    <div class="farm-bar" id="farmBar"></div>
     <div class="place-banner" id="placeBanner"></div>
     <div class="farm">
       <div class="weather-banner" id="weatherBanner"></div>
@@ -1820,6 +1915,7 @@
   <div class="panel" id="panel-collection"><div id="collection"></div></div>
   <div class="panel" id="panel-skill"><div id="skill"></div></div>
   <div class="panel" id="panel-rebirth"><div id="rebirthPanel"></div></div>
+  <div class="panel" id="panel-legend"><div id="legendPanel"></div></div>
   <div class="panel" id="panel-guide"><div id="guide"></div></div>
   <div class="panel" id="panel-settings"><div id="settings"></div></div>
 </div>
@@ -3743,6 +3839,313 @@ const EXPANSIONS = [
   { cap:100, cost:25000000 },
 ];
 const gardenCap = () => EXPANSIONS[state.gardenLevel].cap;
+// 🏡 หลายฟาร์ม: ฟาร์มที่เปิดดูอยู่ใช้ state.plots/gardenLevel/placed • ฟาร์มอื่นเก็บไว้ใน state.farms[i]
+const FARMS = [
+  { name: 'ฟาร์ม 1', emoji: '🏡' },
+  { name: 'ฟาร์ม 2', emoji: '🌾', coins: 5e6 },
+  { name: 'ฟาร์ม 3', emoji: '🏞️', coins: 1e8, gems: 50 },
+  { name: 'ฟาร์ม 4', emoji: '🏰', coins: 2e9, gems: 200 },
+  { name: 'ดาวต่างโลก', emoji: '🪐', coins: 5e9, gems: 300, quest: true },   // ฟาร์ม 5: ผลหนัก ×3 โตช้า ×2
+];
+const newFarm = () => ({ owned: true, gardenLevel: 0, placed: [], plots: Array.from({ length: GARDEN_MAX }, (_, i) => newPlot(i < EXPANSIONS[0].cap)) });
+function farmsInit() { if (!state.farms) state.farms = [{ owned: true }]; if (state.farmIdx == null) state.farmIdx = 0; }
+const farmOwned = i => i === 0 || !!(state.farms && state.farms[i] && state.farms[i].owned);
+function farmData(i) { farmsInit(); return i === state.farmIdx ? state : state.farms[i]; }
+function farmReady(i) { const f = farmData(i); return f && f.plots ? f.plots.filter(p => p.seedId && p.growth >= getSeed(p.seedId).time).length : 0; }
+function switchFarm(i) {
+  farmsInit();
+  if (i === state.farmIdx) return;
+  if (!farmOwned(i)) return buyFarm(i);
+  const cur = state.farmIdx;
+  state.farms[cur] = { owned: true, plots: state.plots, gardenLevel: state.gardenLevel, placed: state.placed };
+  const f = state.farms[i];
+  state.plots = f.plots; state.gardenLevel = f.gardenLevel || 0; state.placed = f.placed || [];
+  state.farms[i] = { owned: true };
+  state.farmIdx = i;
+  placing = null; shovelSel = -1; infoIdx = -1; hidePlantInfo();
+  if ($('garden')) $('garden')._plots = null;
+  toast(`${FARMS[i].emoji} ย้ายไป${FARMS[i].name}`);
+  save(); render(); syncWalkers(); window._gUI = null; renderGardenUI();
+}
+function buyFarm(i) {
+  farmsInit();
+  const F = FARMS[i]; if (!F || farmOwned(i)) return;
+  if (F.quest && !allChainsDone()) return toast('🔒 ต้องทำภารกิจต่อเนื่องครบทุกสายอย่างน้อยสายละ 1 รอบก่อน (🐉🐚🦖🚀)');
+  if (!farmOwned(i - 1)) return toast(`🔒 ต้องซื้อ${FARMS[i - 1].name}ก่อน`);
+  if (state.coins < (F.coins || 0) || state.gems < (F.gems || 0)) return toast(`💰 ต้องใช้ ${fmtShort(F.coins || 0)}${F.gems ? ` + 💎${F.gems}` : ''}`);
+  state.coins -= F.coins || 0; state.gems -= F.gems || 0;
+  state.farms[i] = newFarm();
+  flashStrike(); sfx('levelup'); toast(`${F.emoji} ได้${F.name}แล้ว! กดที่แถบฟาร์มเพื่อย้ายไปปลูก`);
+  save(); render();
+}
+
+// ==================== 🌠 ENDGAME ====================
+const ALIEN_FARM = 4;
+const allChainsDone = () => ['dragon', 'sweet', 'dino', 'space'].every(c => (cqState(c).round || 0) >= 1);
+function alienTick() {
+  if (state.farmIdx !== ALIEN_FARM) return;
+  state.plots.forEach((p, i) => { if (!p.seedId) return;
+    if (Math.random() < 0.0004) { const g = addMutation(p, 'aurora'); if (g) gainMutFx(i, g); }
+    if (Math.random() < 0.0002) { const g = addMutation(p, 'cratered'); if (g) gainMutFx(i, g); } });
+}
+// ---- 📜 Mastery ----
+const MASTERY_N = [10, 50, 200, 1000, 3000], MASTERY_KG = [0, 0, 0, 300, 1000];
+function masteryAdd(id, kg) { const m = (state.mastery = state.mastery || {}); const r = m[id] || (m[id] = { n: 0, kg: 0 }); const before = masteryStars(id); r.n++; r.kg = Math.max(r.kg, kg || 0);
+  const after = masteryStars(id); if (after > before) { const sd = getSeed(id); toast(`📜 ${sd.emoji} ${sd.name} ความชำนาญ ${'⭐'.repeat(after)}${after === 5 ? ' • ผลราคา +10% ถาวร!' : ''}`); if (after === 5) state.gems += 20; } }
+function masteryStars(id) { const r = (state.mastery || {})[id]; if (!r) return 0; let st = 0; for (let k = 0; k < 5; k++) if (r.n >= MASTERY_N[k] && r.kg >= MASTERY_KG[k]) st = k + 1; return st; }
+const masteryMult = id => masteryStars(id) >= 5 ? 1.1 : 1;
+const mastery5Count = () => Object.keys(state.mastery || {}).filter(id => masteryStars(id) >= 5).length;
+// ---- 🌟 Legend contest ----
+const legendScore = it => Math.round((it.kg || 0) * mutMultiplier(it.muts || []) * tierRank(getSeed(it.seedId)) * (it.facet ? 3 : 1));
+function openLegendSubmit() {
+  const list = [...state.bag].sort((a, b) => legendScore(b) - legendScore(a)).slice(0, 25);
+  if (!list.length) return toast('🎒 กระเป๋าว่าง');
+  const best = (state.legend || [])[0];
+  $('modalBox').innerHTML = `<h3 style="margin-top:0">🌟 ส่งผลประกวด</h3><p style="font-size:12px;color:#666;margin:0 0 6px">คะแนน = น้ำหนัก × ตัวคูณสถานะ × ระดับต้น • ผลที่ส่งจะเข้าหอเกียรติยศ (ไม่คืน) ${best ? `• สถิติสูงสุด ${best.score.toLocaleString()}` : ''}</p>
+    <div class="gp-list">${list.map(it => { const s2 = itemSeed(it); return `<div class="gp-row" onclick="submitLegend(${it.uid})"><span class="gp-ic">${seedIcon(s2)}</span><div style="flex:1"><b>${s2.name}</b> ${mutEmojis(it.muts)}<br><small>${fmtKg(it.kg)}kg • ×${fmtMult(mutMultiplier(it.muts))}</small></div><b style="color:#e65100">${legendScore(it).toLocaleString()}</b></div>`; }).join('')}</div>
+    <button onclick="closeModal()">ปิด</button>`;
+  $('modal').classList.add('show');
+}
+function submitLegend(uid) {
+  const it = state.bag.find(x => x.uid === uid); if (!it) return;
+  const L = (state.legend = state.legend || []), sc = legendScore(it), s2 = itemSeed(it);
+  const rank = L.filter(e => e.score > sc).length;
+  if (rank >= 10) return toast(`ยังไม่ติดท็อป 10 (ต้องเกิน ${L[9].score.toLocaleString()})`);
+  state.bag = state.bag.filter(x => x !== it);
+  L.splice(rank, 0, { score: sc, name: s2.name, emoji: s2.emoji, kg: it.kg, muts: [...it.muts], t: Date.now() }); L.length = Math.min(10, L.length);
+  const g = rank === 0 ? 50 : 10; state.gems += g;
+  if (rank === 0) { flashStrike(); sfx('rare'); }
+  toast(`🌟 ${rank === 0 ? 'ทำลายสถิติ! อันดับ 1' : 'ติดอันดับ ' + (rank + 1)} • คะแนน ${sc.toLocaleString()} • 💎+${g}`);
+  closeModal(); save(); render();
+}
+// ---- 🔆 Ascension ----
+const ASC_SHOP = [
+  { id:'grow', name:'🌱 ราชันย์แห่งการเติบโต', max:5, cost:n => n + 1,  desc:n => `ต้นโตเร็วขึ้น +${n * 10}%` },
+  { id:'sell', name:'💰 ราชันย์แห่งการค้า',    max:5, cost:n => n + 1,  desc:n => `ราคาขาย +${n * 20}%` },
+  { id:'luck', name:'🍀 ราชันย์แห่งโชค',      max:5, cost:n => n + 1,  desc:n => `โชค +${n * 10}%` },
+  { id:'slot', name:'🐾 ช่องลงสวนพิเศษ',      max:2, cost:() => 5,     desc:n => `ช่องลงสวนสัตว์สูงสุด +${n}` },
+];
+const ascLv = id => (state.ascShop || {})[id] || 0;
+const ASC_NEED = 10;
+const ascGain = () => Math.max(5, (state.rebirth || 0) - 5);
+async function doAscend() {
+  if ((state.rebirth || 0) < ASC_NEED) return toast(`🔒 ต้อง Rebirth ครบ ${ASC_NEED} ครั้ง`);
+  if (state.level < getRebirthRequirement()) return toast(`🔒 ต้องเลเวล ${getRebirthRequirement()} ก่อน (เหมือนเงื่อนไข Rebirth)`);
+  const gain = ascGain();
+  if (!await ask(`🌠 จุติ (Ascension)?\n\nรีเซ็ตทุกอย่างแบบ Rebirth และรีเซ็ตจำนวน Rebirth + 🔆แต้มเกิดใหม่ + ร้าน Rebirth ด้วย\nได้: 🌠 แก่นดาว ${gain} • ราคาขาย +50% ถาวรต่อการจุติ\nเก็บไว้: ทุกอย่างในแท็บ 🌠 ตำนาน, สัตว์เลี้ยง, เพชร, สกิล`, 'จุติเลย')) return;
+  const oldAsk = window.ask; window.ask = async () => true;
+  const keep = { asc: (state.ascend || 0) + 1, ess: (state.essence || 0) + gain };
+  const rb0 = state.rebirth;
+  try { await doRebirth(); } finally { window.ask = oldAsk; }
+  if (state.rebirth !== rb0 + 1) return;
+  state.ascend = keep.asc; state.essence = keep.ess; state.rebirth = 0; state.rbPts = 0; state.rbShop = {};
+  flashStrike(); sfx('levelup');
+  toast(`🌠 จุติครั้งที่ ${state.ascend}! ได้แก่นดาว ${gain} • ราคาขาย +${state.ascend * 50}% ถาวร`);
+  save(); render();
+}
+function buyAsc(id) {
+  const it = ASC_SHOP.find(x => x.id === id), n = ascLv(id); if (!it || n >= it.max) return;
+  const c = it.cost(n); if ((state.essence || 0) < c) return toast(`🌠 ต้องใช้แก่นดาว ${c}`);
+  state.essence -= c; state.ascShop = state.ascShop || {}; state.ascShop[id] = n + 1;
+  toast(`🌠 ${it.name} Lv.${n + 1} • ${it.desc(n + 1)}`); sfx('buy'); save(); render();
+}
+// ---- 🌈 Awakening ----
+const AWK_COST = 3;
+const canAwaken = p => !p.awakened && (p.level || 1) >= 50 && (p.stars || 1) >= 5 && (p.plus || 0) >= 10;
+async function awakenPet(uid) {
+  const p = getPetByUid(uid); if (!p || !canAwaken(p)) return;
+  if ((state.essence || 0) < AWK_COST) return toast(`🌠 ต้องใช้แก่นดาว ${AWK_COST} (ได้จากการจุติ / หอคอย)`);
+  const mat = fuseMats(p)[0]; if (!mat) return toast('ต้องมีตัวซ้ำชนิดเดียวกันอีก 1 ตัว (ไม่ล็อก ไม่ลงสวน)');
+  if (!await ask(`🌈 ปลุกร่างตื่นรู้ให้ ${getPet(p.id).name}?\nใช้ 🌠${AWK_COST} + ${getPet(mat.id).name} 1 ตัว (${gradeOf(mat.q).g} Lv.${mat.level})`, 'ตื่นรู้')) return;
+  state.essence -= AWK_COST; state.pets = state.pets.filter(x => x !== mat);
+  p.awakened = true; p.s3 = rollSkill2();
+  (state.awkSpecies = state.awkSpecies || []).includes(p.id) || state.awkSpecies.push(p.id);
+  flashStrike(); sfx('rare'); toast(`🌈 ${getPet(p.id).name} ตื่นรู้แล้ว! สกิลที่ 3: ${s2Text(p.s3)}`);
+  save(); render(); syncWalkers();
+}
+// ---- 🗼 Tower ----
+const TOWER_MAX = 100, SECRET_TREES = ['vortexking', 'meatking', 'galaxytree', 'candytree', 'dragontree'];
+function floorReq(f) {
+  return { kg: Math.round(30 * Math.pow(1.065, f)), muts: Math.min(7, 1 + Math.floor(f / 12)), rare: f % 10 === 0, secret: f % 25 === 0 };
+}
+const reqText = r => `⚖️ ${fmtKg(r.kg)}kg ขึ้นไป • สถานะ ${r.muts} อย่างขึ้นไป${r.rare ? ' • มี ✨สถานะหายาก' : ''}${r.secret ? ' • เป็นผลจากต้นลับสุดยอด' : ''}`;
+function fitsFloor(it, r) { return it.kg >= r.kg && it.muts.length >= r.muts && (!r.rare || it.muts.some(id => getMut(id) && getMut(id).secret)) && (!r.secret || SECRET_TREES.includes(it.seedId)); }
+const TOWER_CHEST = { 10:['gems',100], 20:['egg',1], 30:['ess',2], 40:['seed',1], 50:['egg',2], 60:['ess',3], 70:['seed',2], 80:['egg',3], 90:['ess',5], 100:['ess',10] };
+function towerFloor() { return (state.tower || {}).floor || 0; }
+function openTowerSubmit() {
+  const f = towerFloor() + 1; if (f > TOWER_MAX) return toast('🗼 พิชิตหอคอยครบ 100 ชั้นแล้ว!');
+  const r = floorReq(f), list = state.bag.filter(it => fitsFloor(it, r)).sort((a, b) => itemValue(a) - itemValue(b));
+  $('modalBox').innerHTML = `<h3 style="margin-top:0">🗼 ชั้นที่ ${f}</h3><p style="font-size:12px;color:#666;margin:0 0 6px">ต้องการผล: ${reqText(r)}<br>ผลที่ส่งจะถูกใช้ไป • เรียงจากราคาถูกไปแพง</p>
+    ${list.length ? `<div class="gp-list">${list.map(it => { const s2 = itemSeed(it); return `<div class="gp-row" onclick="submitTower(${it.uid})"><span class="gp-ic">${seedIcon(s2)}</span><div style="flex:1"><b>${s2.name}</b> ${mutEmojis(it.muts)}<br><small>${fmtKg(it.kg)}kg • 💰${fmtShort(itemValue(it))}</small></div><b>ส่ง ▶</b></div>`; }).join('')}</div>`
+      : '<p style="color:#c62828;font-weight:800">ยังไม่มีผลในกระเป๋าที่ผ่านเงื่อนไข</p>'}
+    <button onclick="closeModal()">ปิด</button>`;
+  $('modal').classList.add('show');
+}
+function submitTower(uid) {
+  const f = towerFloor() + 1, r = floorReq(f), it = state.bag.find(x => x.uid === uid);
+  if (!it || !fitsFloor(it, r)) return;
+  state.bag = state.bag.filter(x => x !== it);
+  state.tower = { floor: f };
+  const g = 2 + Math.floor(f / 5); state.gems += g;
+  let extra = '';
+  const ch = TOWER_CHEST[f];
+  if (ch) {
+    const [k, n] = ch;
+    if (k === 'gems') { state.gems += n; extra = `💎${n}`; }
+    if (k === 'ess') { state.essence = (state.essence || 0) + n; extra = `🌠${n}`; }
+    if (k === 'egg') { const eg = getEgg('dragonegg'); for (let t = 0; t < n; t++) state.eggInv.push({ uid: state.uid++, eggId: eg.id, species: rollEggPet(eg) }); fillIncubator(); extra = `🥚ไข่มังกร ×${n}`; }
+    if (k === 'seed') { for (let t = 0; t < n; t++) { const id = SECRET_TREES[Math.floor(Math.random() * SECRET_TREES.length)]; state.seeds[id] = (state.seeds[id] || 0) + 1; } extra = `🌳เมล็ดต้นลับ ×${n}`; }
+    if (f === 100) { state.gems += 1000; extra += ' + 💎1000'; }
+    flashStrike(); sfx('rare');
+  }
+  toast(`🗼 ผ่านชั้น ${f}! 💎+${g}${extra ? ' • 🎁 ' + extra : ''}`);
+  closeModal(); save(); render();
+}
+// ---- 🧪 Mutation forge ----
+const potionCount = () => Object.values(state.potions || {}).reduce((a, b) => a + b, 0);
+const extractCost = m => ({ coins: Math.round(m.mult * 1e5), gems: m.secret ? Math.ceil(m.mult / 50) : 0 });
+function openForge(uid) {
+  if (uid == null) {
+    const list = state.bag.filter(it => it.muts.length).sort((a, b) => mutMultiplier(b.muts) - mutMultiplier(a.muts)).slice(0, 30);
+    $('modalBox').innerHTML = `<h3 style="margin-top:0">🧪 สกัดสถานะเป็นน้ำยา</h3><p style="font-size:12px;color:#666;margin:0 0 6px">เลือกผล แล้วเลือกสถานะที่จะสกัด • ผลจะถูกใช้ไป • น้ำยาเอาไปแปะใส่ต้นไหนก็ได้ (แตะต้น → 🧪 ใช้น้ำยา)</p>
+      ${list.length ? `<div class="gp-list">${list.map(it => { const s2 = itemSeed(it); return `<div class="gp-row" onclick="openForge(${it.uid})"><span class="gp-ic">${seedIcon(s2)}</span><div style="flex:1"><b>${s2.name}</b><br><small>${mutEmojis(it.muts)} ×${fmtMult(mutMultiplier(it.muts))}</small></div><b>เลือก ▶</b></div>`; }).join('')}</div>` : '<p>ไม่มีผลที่ติดสถานะในกระเป๋า</p>'}
+      <button onclick="closeModal()">ปิด</button>`;
+  } else {
+    const it = state.bag.find(x => x.uid === uid); if (!it) return openForge();
+    $('modalBox').innerHTML = `<h3 style="margin-top:0">🧪 เลือกสถานะที่จะสกัด</h3><p style="font-size:12px;color:#666;margin:0 0 6px">${itemSeed(it).name} ${fmtKg(it.kg)}kg • สกัดได้ 1 อย่าง ผลจะหายไป</p>
+      <div class="gp-list">${it.muts.map(id => { const m = getMut(id), c = extractCost(m), ok = state.coins >= c.coins && state.gems >= c.gems;
+        return `<div class="gp-row ${ok ? '' : 'lock'}" ${ok ? `onclick="doExtract(${uid},'${id}')"` : ''} style="${ok ? '' : 'opacity:.5'}"><span class="gp-ic">${m.emoji}</span><div style="flex:1"><b>${m.name}</b> ×${m.mult}${m.secret ? ' ✨' : ''}<br><small>💰${fmtShort(c.coins)}${c.gems ? ' 💎' + c.gems : ''}</small></div></div>`; }).join('')}</div>
+      <button onclick="openForge()">◀ กลับ</button>`;
+  }
+  $('modal').classList.add('show');
+}
+function doExtract(uid, id) {
+  const it = state.bag.find(x => x.uid === uid), m = getMut(id); if (!it || !m) return;
+  const c = extractCost(m); if (state.coins < c.coins || state.gems < c.gems) return toast('เงิน/เพชรไม่พอ');
+  state.coins -= c.coins; state.gems -= c.gems; state.bag = state.bag.filter(x => x !== it);
+  state.potions = state.potions || {}; state.potions[id] = (state.potions[id] || 0) + 1;
+  toast(`🧪 ได้น้ำยา ${m.emoji} ${m.name}!`); sfx('buy'); closeModal(); save(); render();
+}
+function openPotionApply(i) {
+  const ids = Object.keys(state.potions || {}).filter(id => state.potions[id] > 0).sort((a, b) => getMut(b).mult - getMut(a).mult);
+  $('modalBox').innerHTML = `<h3 style="margin-top:0">🧪 ใช้น้ำยาสถานะ</h3><p style="font-size:12px;color:#666;margin:0 0 6px">แปะใส่ ${getSeed(state.plots[i].seedId).name} • ต้นหลายผลจะลงผลใดผลหนึ่งแบบสุ่ม</p>
+    <div class="gp-list">${ids.map(id => { const m = getMut(id); return `<div class="gp-row" onclick="applyPotion(${i},'${id}')"><span class="gp-ic">${m.emoji}</span><div style="flex:1"><b>${m.name}</b> ×${m.mult}</div><b>มี ${state.potions[id]}</b></div>`; }).join('')}</div>
+    <button onclick="closeModal()">ปิด</button>`;
+  $('modal').classList.add('show');
+}
+function applyPotion(i, id) {
+  const p = state.plots[i]; if (!p || !p.seedId || !(state.potions[id] > 0)) return;
+  const fr = [p, ...(p.xf || [])]; if (fr.every(f => (f.mutations || []).includes(id))) return toast('ต้นนี้มีสถานะนี้อยู่แล้ว');
+  let got = null; for (let t = 0; t < 8 && !got; t++) got = addMutation(p, id);
+  if (!got) return toast('แปะไม่ได้ (มีสถานะที่แรงกว่าในกลุ่มเดียวกันอยู่แล้ว)');
+  state.potions[id]--; gainMutFx(i, got); closeModal(); save(); render();
+}
+// ---- 🏛️ Museum ----
+function museumItems() {
+  const out = [];
+  for (let f = 10; f <= towerFloor(); f += 10) out.push(['🏆', `ถ้วยหอคอยชั้น ${f}`]);
+  Object.keys(state.mastery || {}).filter(id => masteryStars(id) >= 5).forEach(id => out.push([getSeed(id).emoji, `ตรา 5⭐ ${getSeed(id).name}`]));
+  (state.awkSpecies || []).forEach(id => out.push(['🌈', `ร่างตื่นรู้ ${getPet(id).name}`]));
+  (state.legend || []).slice(0, 10).forEach((e, k) => out.push([e.emoji, `ผลในตำนานอันดับ ${k + 1} (${e.score.toLocaleString()})`]));
+  for (let a = 1; a <= (state.ascend || 0); a++) out.push(['🌠', `ศิลาจุติครั้งที่ ${a}`]);
+  return out;
+}
+const museumBonus = () => Math.min(0.5, 0.01 * museumItems().length);
+function endgameSellMult() { return (1 + 0.5 * (state.ascend || 0)) * (1 + 0.2 * ascLv('sell')) * (1 + museumBonus()); }
+// ---- UI ----
+function renderLegend() {
+  const el = $('legendPanel'); if (!el) return;
+  const f = towerFloor(), r = floorReq(f + 1), L = state.legend || [];
+  const seeds = Object.keys(state.mastery || {}).map(getSeed).filter(Boolean).sort((a, b) => masteryStars(b.id) - masteryStars(a.id) || tierRank(b) - tierRank(a));
+  const mus = museumItems();
+  const pots = Object.keys(state.potions || {}).filter(id => state.potions[id] > 0);
+  el.innerHTML = `
+  <div class="eg-box asc"><div class="eg-t">🌠 จุติ (Ascension) <span class="eg-pill">🌠 แก่นดาว ${state.essence || 0}</span></div>
+    <p class="eg-n">จุติไปแล้ว ${state.ascend || 0} ครั้ง • ราคาขาย +${(state.ascend || 0) * 50}% ถาวร • ต้อง Rebirth ครบ ${ASC_NEED} ครั้ง (ตอนนี้ ${state.rebirth || 0})</p>
+    <button class="eg-btn" ${(state.rebirth || 0) >= ASC_NEED ? '' : 'disabled'} onclick="doAscend()">🌠 จุติ • ได้แก่นดาว ${ascGain()}</button>
+    <div class="eg-shop">${ASC_SHOP.map(it => { const n = ascLv(it.id), mx = n >= it.max; return `<div class="eg-it"><b>${it.name}</b> <small>Lv.${n}/${it.max}</small><br><small>${n ? it.desc(n) : 'ยังไม่มี'}${mx ? '' : ` → ${it.desc(n + 1)}`}</small><button ${mx || (state.essence || 0) < it.cost(n) ? 'disabled' : ''} onclick="buyAsc('${it.id}')">${mx ? 'ตันแล้ว' : '🌠' + it.cost(n)}</button></div>`; }).join('')}</div>
+    <p class="eg-n">🌈 ร่างตื่นรู้: สัตว์ Lv.50 ★5 +10 ใช้ 🌠${AWK_COST} + ตัวซ้ำ 1 ตัว → สกิลที่ 3, พลัง ×1.3, สกิลเร็วขึ้น 15% (ปุ่มอยู่ที่การ์ดสัตว์)</p></div>
+  <div class="eg-box tower"><div class="eg-t">🗼 หอคอยท้าทาย <span class="eg-pill">ชั้น ${f}/${TOWER_MAX}</span></div>
+    <div class="sq-bar"><i style="width:${f}%"></i></div>
+    ${f < TOWER_MAX ? `<p class="eg-n"><b>ชั้น ${f + 1}:</b> ${reqText(r)}<br>รางวัล 💎${2 + Math.floor((f + 1) / 5)}${(() => { const nx = Math.ceil((f + 1) / 10) * 10, c = TOWER_CHEST[nx]; return c ? ` • 🎁 หีบชั้น ${nx}: ${{ gems: '💎', egg: '🥚ไข่มังกร ×', ess: '🌠', seed: '🌳เมล็ดต้นลับ ×' }[c[0]]}${c[1]}` : ''; })()}</p>
+    <button class="eg-btn" onclick="openTowerSubmit()">🗼 ส่งผลขึ้นชั้น ${f + 1}</button>` : '<p class="eg-n">🏆 พิชิตครบ 100 ชั้นแล้ว!</p>'}</div>
+  <div class="eg-box forge"><div class="eg-t">🧪 ห้องทดลองสถานะ <span class="eg-pill">น้ำยา ${potionCount()}</span></div>
+    <p class="eg-n">สกัดสถานะจากผลในกระเป๋าเป็นน้ำยา แล้วแตะต้นในสวน → 🧪 ใช้น้ำยา เพื่อแปะสถานะที่ต้องการ • ค่าสกัด 💰ตัวคูณ×100k (+💎 ถ้าเป็นสถานะหายาก)</p>
+    ${pots.length ? `<div class="eg-pots">${pots.map(id => `<span>${getMut(id).emoji} ${getMut(id).name} ×${state.potions[id]}</span>`).join('')}</div>` : ''}
+    <button class="eg-btn" onclick="openForge()">🧪 สกัดน้ำยา</button></div>
+  <div class="eg-box contest"><div class="eg-t">🌟 หอเกียรติยศผลในตำนาน</div>
+    <p class="eg-n">ส่งผลสุดยอดเข้าประกวด • คะแนน = น้ำหนัก × ตัวคูณสถานะ × ระดับต้น • ติดท็อป 10 ได้ 💎10 • ทำลายสถิติอันดับ 1 ได้ 💎50</p>
+    ${L.length ? `<ol class="eg-rank">${L.map(e => `<li>${e.emoji} <b>${e.name}</b> ${(e.muts || []).map(id => getMut(id) ? getMut(id).emoji : '').join('')} <small>${fmtKg(e.kg)}kg</small><b class="sc">${e.score.toLocaleString()}</b></li>`).join('')}</ol>` : ''}
+    <button class="eg-btn" onclick="openLegendSubmit()">🌟 ส่งผลประกวด</button></div>
+  <div class="eg-box mastery"><div class="eg-t">📜 ความชำนาญ <span class="eg-pill">5⭐ ${mastery5Count()} ต้น</span></div>
+    <p class="eg-n">เก็บผลแต่ละพืชให้ครบเพื่อขึ้นดาว: ⭐${MASTERY_N[0]} • ⭐⭐${MASTERY_N[1]} • ⭐⭐⭐${MASTERY_N[2]} • 4⭐ ${MASTERY_N[3]} ลูก+ผล 300kg • 5⭐ ${MASTERY_N[4]} ลูก+ผล 1,000kg → ผลพืชนั้นราคา +10% ถาวร</p>
+    <div class="eg-mas">${seeds.map(sd => { const m = state.mastery[sd.id], st = masteryStars(sd.id), nx = MASTERY_N[st];
+      return `<div class="${st >= 5 ? 'max' : ''}"><span>${seedIcon(sd)}</span><b>${sd.name}</b><i>${'⭐'.repeat(st) || '—'}</i><small>${m.n.toLocaleString()}${nx ? '/' + nx.toLocaleString() : ''} • ${fmtKg(m.kg)}kg</small></div>`; }).join('') || '<small>ยังไม่เคยเก็บผล</small>'}</div></div>
+  <div class="eg-box museum"><div class="eg-t">🏛️ พิพิธภัณฑ์สวน <span class="eg-pill">${mus.length} ชิ้น • รายได้ +${Math.round(museumBonus() * 100)}%</span></div>
+    <p class="eg-n">ของจัดแสดงเพิ่มเองอัตโนมัติจาก: ถ้วยหอคอย (ทุก 10 ชั้น) • ตรา 5⭐ • สัตว์ร่างตื่นรู้ • ผลในตำนานท็อป 10 • ศิลาจุติ • ชิ้นละ +1% รายได้ (สูงสุด +50%)</p>
+    <div class="eg-mus">${mus.map(([e, n]) => `<span title="${n}">${e}<small>${n}</small></span>`).join('') || '<small>ยังไม่มีของจัดแสดง</small>'}</div></div>
+  <div class="eg-box alien"><div class="eg-t">🪐 ดาวต่างโลก (ฟาร์ม 5)</div>
+    <p class="eg-n">ผลหนัก ×3 แต่โตช้า ×2 • มีออโรรา 🎇 กับอุกกาบาต 🕳️ ตกใส่ต้นเรื่อย ๆ • ปลดล็อก: ทำภารกิจต่อเนื่องครบทุกสายสายละ 1 รอบ (${['dragon', 'sweet', 'dino', 'space'].map(c => QCHAINS[c].name.split(' ')[0] + ((cqState(c).round || 0) >= 1 ? '✅' : '⬜')).join(' ')}) + 💰5B + 💎300 • ซื้อที่แถบฟาร์มเหนือสวน</p></div>`;
+}
+// 🎨 ธีมฟาร์ม: ปลดล็อกเมื่อเคยปลูกต้นลับสุดยอดต้นนั้น • เลือกแยกได้ทุกฟาร์ม
+const FARM_THEMES = [
+  { id:'default', name:'ทุ่งหญ้าสีเขียว',      emoji:'🌿', trees:['🌳','🌲','🌳'], sw:['#4fc3f7','#66bb6a'] },
+  { id:'vortex',  name:'วังวนนิรันดร์',         emoji:'🌀', seed:'vortexking', trees:['🌀','✨','🌀'], sw:['#6a1b9a','#311b92'] },
+  { id:'meat',    name:'เนื้อมหาโอชา',          emoji:'🍖', seed:'meatking',   trees:['🍖','🔥','🍖'], sw:['#ff8a65','#5d1a04'] },
+  { id:'galaxy',  name:'ดาราจักร',             emoji:'🌌', seed:'galaxytree', trees:['🪐','⭐','🌙'], sw:['#0d0b3a','#1a237e'] },
+  { id:'candy',   name:'ลูกกวาดสายรุ้ง',        emoji:'🍭', seed:'candytree',  trees:['🍭','🧁','🍬'], sw:['#f48fb1','#f8bbd0'] },
+  { id:'dragon',  name:'ภูเขาไฟมังกร',          emoji:'🐉', seed:'dragontree', trees:['🌋','🐉','🌋'], sw:['#e65100','#120c0a'] },
+];
+const themeOpen = t => !t.seed || state.collection.includes('seed_' + t.seed) || (state.seeds[t.seed] || 0) > 0;
+function farmThemeId(i = state.farmIdx || 0) { const id = (state.farmThemes || {})[i]; const t = FARM_THEMES.find(x => x.id === id); return t && themeOpen(t) ? id : (i === ALIEN_FARM ? 'galaxy' : 'default'); }
+function applyFarmTheme() {
+  const farm = document.querySelector('.farm'); if (!farm) return;
+  const id = farmThemeId();
+  if (farm.dataset.theme !== id) {
+    farm.dataset.theme = id;
+    const t = FARM_THEMES.find(x => x.id === id), tr = document.querySelector('.farm .trees');
+    if (tr) tr.innerHTML = t.trees.map(e => `<span>${e}</span>`).join('');
+  }
+}
+function setFarmTheme(id) {
+  const t = FARM_THEMES.find(x => x.id === id); if (!t || !themeOpen(t)) return;
+  state.farmThemes = state.farmThemes || {}; state.farmThemes[state.farmIdx || 0] = id;
+  applyFarmTheme(); save(); openThemePicker();
+  toast(`🎨 ${FARMS[state.farmIdx || 0].name} ใช้ธีม ${t.emoji} ${t.name}`);
+}
+function openThemePicker() {
+  const cur = farmThemeId();
+  const rows = FARM_THEMES.map(t => { const open = themeOpen(t), sd = t.seed && getSeed(t.seed);
+    return `<div class="gp-row theme-row ${t.id === cur ? 'on' : ''} ${open ? '' : 'lock'}" ${open ? `onclick="setFarmTheme('${t.id}')"` : ''}>
+      <span class="theme-sw"><i style="background:${t.sw[0]}"></i><b style="background:${t.sw[1]}"></b></span>
+      <div style="flex:1"><b>${t.emoji} ${t.name}</b>${t.id === cur ? ' ✔' : ''}<br><small>${open ? t.trees.join(' ') : `🔒 ปลูก ${sd ? sd.emoji + ' ' + sd.name : ''} สักครั้งเพื่อปลดล็อก`}</small></div></div>`; }).join('');
+  $('modalBox').innerHTML = `<h3 style="margin-top:0">🎨 ธีมของ${FARMS[state.farmIdx || 0].name}</h3>
+    <p style="font-size:12px;color:#666;margin:0 0 6px">เปลี่ยนฉากท้องฟ้า พื้นดิน รั้ว และต้นไม้ฉากหลัง • แต่ละฟาร์มเลือกธีมแยกกันได้ • ธีมปลดล็อกตามต้นลับสุดยอดที่เคยปลูก</p>
+    <div class="gp-list">${rows}</div><button onclick="closeModal()">ปิด</button>`;
+  $('modal').classList.add('show');
+}
+function renderFarmBar() {
+  applyFarmTheme();
+  const el = $('farmBar'); if (!el) return;
+  farmsInit();
+  const html = FARMS.map((F, i) => {
+    const own = farmOwned(i), on = i === state.farmIdx, rd = own ? farmReady(i) : 0;
+    return `<button class="${on ? 'on' : ''} ${own ? '' : 'lock'}" onclick="switchFarm(${i})">${F.emoji} ${F.name}${own ? (rd ? ` <i>สุก ${rd}</i>` : '') : `<small>${i > 1 && !farmOwned(i - 1) ? '🔒' : '💰' + fmtShort(F.coins) + (F.gems ? ' 💎' + F.gems : '')}</small>`}</button>`;
+  }).join('') + `<button class="themeb" onclick="openThemePicker()">🎨 ธีม</button>`;
+  if (el._h !== html) { el._h = html; el.innerHTML = html; }
+}
+// ฟาร์มที่ไม่ได้เปิดดู: ยังโตต่อ (ไม่มีโบนัสอุปกรณ์/สัตว์เลี้ยง/อากาศ)
+function growOtherFarms(dt, gm) {
+  (state.farms || []).forEach((f, i) => {
+    if (i === state.farmIdx || !f || !f.plots) return;
+    const fm = i === ALIEN_FARM ? 0.5 : 1;
+    f.plots.forEach(p => {
+      if (!p.seedId) { if (p.unlocked && p.soil < 100) p.soil = Math.min(100, p.soil + dt / 6); return; }
+      const sd = getSeed(p.seedId); if (!sd || p.growth >= sd.time) return;
+      p.growth = Math.min(sd.time, p.growth + dt * gm * fm * soilFactor(p.soil ?? 100));
+    });
+  });
+}
 // ขนาดสวนบนจอ (อัปเดตตอนสวนแสดงผล) ใช้คำนวณระยะแม้สวนถูกซ่อน
 let GEO = { w: 360, h: 560, u: 58 };
 
@@ -3907,7 +4310,7 @@ const SKILL_TXT = {
 };
 const allSkills = () => Object.values(SKILLS).flatMap(b => b.skills);
 function skillEff(type) { return allSkills().reduce((a, sk) => a + (state.ownedSkills.includes(sk.id) && sk.effect === type ? sk.value : 0), 0); }
-const petSlotMax = () => PET_SLOT_MAX + skillEff('petslot');
+const petSlotMax = () => PET_SLOT_MAX + skillEff('petslot') + ascLv('slot');
 const spGemCost = () => 15 + 5 * (state.spBought || 0);
 function buySkillPoint() {
   const c = spGemCost();
@@ -4593,7 +4996,7 @@ function getBonus(type) {
     if (d && d.bonus && d.bonus[0] === type) total += d.bonus[1];
   });
   if (type === 'sell') total += showcaseBonus();
-  if (type === 'luck') total += 0.02 * rbLv('luck');
+  if (type === 'luck') total += 0.02 * rbLv('luck') + 0.1 * ascLv('luck');
   // 🌟 สกิลที่ 2 ของสัตว์ที่ลงสวน (โชค)
   if (type === 'luck') total += teamPets().reduce((a, q) => a + (q.s2 && q.s2.type === 'luck' ? q.s2.v : 0), 0);
   if (type === 'sell') total += (state.rebirth * 0.25);
@@ -4604,8 +5007,8 @@ function getBonus(type) {
 
 // เพดานแบบนุ่ม: โบนัสน้อย ๆ ได้เต็ม แต่ยิ่งสะสมเยอะยิ่งได้เพิ่มน้อยลง (กันเลขพุ่งไม่หยุด)
 function softcap(x, k) { return x <= 0 ? x : k * (1 - Math.exp(-x / k)); }
-function growthMultiplier() { return (1 + softcap(getBonus('speed'), 3)) * currentTier().bonus; }
-function sellMultiplier()   { return (1 + softcap(getBonus('sell') - state.rebirth * 0.25, 3) + state.rebirth * 0.25) * currentTier().bonus * collectionBonus(); }
+function growthMultiplier() { return (1 + softcap(getBonus('speed'), 3)) * currentTier().bonus * (1 + 0.1 * ascLv('grow')); }
+function sellMultiplier()   { return (1 + softcap(getBonus('sell') - state.rebirth * 0.25, 3) + state.rebirth * 0.25) * currentTier().bonus * collectionBonus() * endgameSellMult(); }
 function luckMultiplier()   { return 1 + softcap(getBonus('luck'), 1.5); }   // โชคสูงสุดราว ×2.5
 function freeSeedChance()   { return Math.min(0.5, getBonus('seed')); }
 function bagCap()           { return BAG_BASE + getBonus('bag') + upLv('bag') * 10; }
@@ -4899,7 +5302,8 @@ function growTick(now) {
   // 🌙 ตอนออฟไลน์ (ปิดเกม/สลับแอปนานเกิน 1 นาที) ต้นยังโตต่อ แต่ช้ากว่า: 30% (🐻‍❄️ หมีขาวจำศีลช่วยเร่ง)
   const offline = dt > 60, hib = Math.min(2, teamAbility('hibernate'));
   const offRate = offline ? Math.min(1, OFFLINE_RATE * (1 + hib)) : 1;
-  const gm = growthMultiplier() * (eventActive('timestorm') && !offline ? 3 : 1) * offRate;
+  const gm0 = growthMultiplier() * (eventActive('timestorm') && !offline ? 3 : 1) * offRate;
+  const gm = gm0 * (state.farmIdx === ALIEN_FARM ? 0.5 : 1);
   const readyBefore = offline ? state.plots.filter(p => p.seedId && p.growth >= getSeed(p.seedId).time).length : 0;
   if (offline) setTimeout(() => {
     const nowReady = state.plots.filter(p => p.seedId && p.growth >= getSeed(p.seedId).time).length;
@@ -4927,6 +5331,7 @@ function growTick(now) {
       if (p.kg - old >= 1 && $('garden')._plots) spawnFloat(i, `💦 +${fmtKg(p.kg - old)}kg`, '#81d4fa');
     }
   });
+  growOtherFarms(dt, gm0);
   // แปลงว่างค่อย ๆ ฟื้นดินเอง (+1 ทุก 6 วินาที, สูงสุด 100)
   state.plots.forEach(p => {
     if (p.unlocked && !p.seedId && p.soil < 100) p.soil = Math.min(100, p.soil + dt / 6);
@@ -5084,6 +5489,7 @@ function rollFruitMain(plot) {
   if (Math.random() < Math.min(0.75, plotSizeBonus(plot))) kg = Math.max(kg, rollKg());   // 💦 ปลูกในวงสปริงเกลอร์
   if (!plot.harvests && Math.random() < Math.min(0.6, teamAbility('shade'))) kg = Math.max(kg, rollKg(), rollKg());   // 🐢 ร่มเงากระดอง
   { const ag = treeAge(plot); if (ag) kg = growKg(kg, ag.id === 'age3' ? 0.5 : ag.id === 'age2' ? 0.25 : 0.1); }   // ต้นโบราณ: ผลหนักขึ้น
+  if (state.farmIdx === ALIEN_FARM && state.plots.includes(plot)) kg = Math.round(kg * 3 * 10) / 10;   // 🪐 แรงโน้มถ่วงต่ำ
   plot.kg = kg; plot.kgBoost = 0; plot.boosted = 0;
   plot.mutations = rollMutation(); plot.sprayed = false;
   const sd = getSeed(plot.seedId);
@@ -5302,6 +5708,8 @@ function harvestPlot(index) {
   }
   if (muts.includes('santahat')) santaGift(index, seed);   // 🎅 ของขวัญ
   item.base *= orbitBonus(plot);   // 🪐 วงโคจร
+  item.base *= masteryMult(seed.id);   // 📜 ดาวความชำนาญ 5★
+  masteryAdd(seed.id, item.kg);
   if (muts.includes('dragonfire') && hasTeamPet('babydragon')) item.base *= 1.5;      // 🦎
   if (muts.length >= 3 && hasTeamPet('crystaldragon')) item.base *= 2;               // 💎
   if ((state.dshadeUntil || 0) > Date.now()) item.base *= 2;                          // 🌑
@@ -5317,7 +5725,8 @@ function harvestPlot(index) {
       const x = k ? xf[k - 1] : null;
       const it2 = k === 0 ? item : { uid: state.uid++, seedId: seed.id, muts: [...(x.mutations || [])], kg: x.kg, t: Date.now() };
       if (k) {
-        it2.base = per * mutMultiplier(it2.muts) * kgMult(it2.kg) * ((state.dshadeUntil || 0) > Date.now() ? 2 : 1) * (it2.muts.length >= 3 && hasTeamPet('crystaldragon') ? 2 : 1); state.bag.push(it2); questHarvest(it2);
+        masteryAdd(seed.id, it2.kg);
+        it2.base = masteryMult(seed.id) * per * mutMultiplier(it2.muts) * kgMult(it2.kg) * ((state.dshadeUntil || 0) > Date.now() ? 2 : 1) * (it2.muts.length >= 3 && hasTeamPet('crystaldragon') ? 2 : 1); state.bag.push(it2); questHarvest(it2);
         const l2 = state.life; l2.maxKg = Math.max(l2.maxKg, it2.kg); l2.maxMuts = Math.max(l2.maxMuts, it2.muts.length); l2.maxMult = Math.max(l2.maxMult, mutMultiplier(it2.muts));
         it2.muts.forEach(id => addToCollection('mut_' + id));
       }
@@ -5516,6 +5925,7 @@ function renderPlantInfo() {
     ${ready
       ? `<div class="pi-val">💰 ${plotValueNow(plot).toLocaleString()}</div>${plot.locked ? '' : `<button class="pi-btn" onclick="event.stopPropagation(); harvestFromInfo()">🧺 เก็บผล</button>`}`
       : `<div class="pi-bar"><i style="width:${Math.max(0, Math.min(100, prog * 100)).toFixed(1)}%"></i></div><div class="pi-time">⏳ ${fmtTime(left)}</div>`}
+    ${potionCount() ? `<button class="pi-btn pi-pot" onclick="event.stopPropagation(); openPotionApply(${infoIdx})">🧪 ใช้น้ำยาสถานะ (${potionCount()})</button>` : ''}
     <button class="pi-btn pi-lock ${plot.locked ? 'on' : ''}" onclick="event.stopPropagation(); togglePlotLock(${infoIdx})">${plot.locked ? '🔓 ปลดล็อก' : '🔒 ล็อกต้นนี้'}</button>`;
   if (el._h !== html) { el._h = html; el.innerHTML = html; }
   el.classList.toggle('fr', !ready && !!plot.harvests);
@@ -5721,6 +6131,7 @@ function placeGearAt(fx, fy) {
 }
 // 📦 เลือกอุปกรณ์จากหน้าสวนได้เลย (วาง/ซื้อเพิ่ม)
 function openGearPicker() {
+  const ol = document.querySelector('#modal.show #modalBox .gp-list'), gTop = ol ? ol.scrollTop : 0, mTop = ol ? $('modalBox').scrollTop : 0;
   const rows = PLACEABLES.map(p => { const own = state.placeInv[p.id] || 0;
     return `<div class="gp-row"><span class="gp-ic">${p.emoji}</span><div style="flex:1;text-align:left"><b>${p.name}</b> ${own ? `<span class="badge b-rare">มี ${own}</span>` : ''}<br><small>${p.desc}</small></div>
       <div class="gp-btns">${own ? `<button class="gem" onclick="closeModal();startPlacing('${p.id}')">📍 วาง</button>` : ''}
@@ -5728,6 +6139,8 @@ function openGearPicker() {
   $('modalBox').innerHTML = `<h3 style="margin-top:0">📦 อุปกรณ์</h3><p style="font-size:12px;color:#666;margin:0 0 8px">กด 📍 วาง แล้วแตะในสวน • ถ้ามีหลายอัน วางต่อได้เรื่อย ๆ จนหมด</p>
     <div class="gp-list">${rows}</div><button onclick="closeModal()">ปิด</button>`;
   $('modal').classList.add('show');
+  if (gTop) document.querySelector('#modalBox .gp-list').scrollTop = gTop;
+  if (mTop) $('modalBox').scrollTop = mTop;
 }
 
 function deviceTick(now) {
@@ -6234,7 +6647,7 @@ function petScale(p) { const r = petScaleRaw(p); return r <= 1 ? r : 1 + PET_SCA
 // ⚡ เสริมพลัง +1 ถึง +10 (ไม่ต้องใช้ตัวซ้ำ ใช้เงิน + เศษอุ้งเท้า) • +8% ต่อขั้น • +5 สกิลเร็วขึ้น 15% • +10 เร็วขึ้นอีก 15%
 const PLUS_MAX = 10;
 function plusMult(p) { return 1 + 0.08 * (p.plus || 0); }
-function plusCdMult(p) { const n = p.plus || 0; return n >= 10 ? 0.85 : n >= 5 ? 0.93 : 1; }
+function plusCdMult(p) { const n = p.plus || 0; return (n >= 10 ? 0.85 : n >= 5 ? 0.93 : 1) * (p.awakened ? 0.85 : 1); }
 // ราคาขั้นที่ n: 💰 ×n² • 🐾 ×n • 💎 ตั้งแต่ +6 • โอกาสสำเร็จลดลงเรื่อย ๆ (โชคช่วยได้) • ล้มเหลว = เสียของ แต่ขั้นไม่ลด
 const PLUS_RATE = [1, 1, 1, 0.85, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2];
 function plusCost(p) {
@@ -6269,7 +6682,7 @@ function packMult() {
 }
 const DRAGON_PETS = ['babydragon', 'waterdragon', 'wyvern', 'crystaldragon', 'shadowdragon', 'emperordragon'];
 const hasTeamPet = id => teamPets().some(q => q.id === id);
-function abilityValue(p) { return p.val * petScale(p) * (getPet(p.id).ab.type === 'pack' ? 1 : packMult()) * (DRAGON_PETS.includes(p.id) && p.id !== 'emperordragon' && hasTeamPet('emperordragon') ? 1.5 : 1); }
+function abilityValue(p) { return p.val * petScale(p) * (p.awakened ? 1.3 : 1) * (getPet(p.id).ab.type === 'pack' ? 1 : packMult()) * (DRAGON_PETS.includes(p.id) && p.id !== 'emperordragon' && hasTeamPet('emperordragon') ? 1.5 : 1); }
 function petMaxLv(p) { return p.gold ? PET_GOLD_MAX_LV : PET_MAX_LV; }
 function petXpNeed(lv) { return Math.floor(60 * Math.pow(Math.min(lv, 15), 1.6) + 350 * Math.max(0, lv - 15)); }
 const fuseCost = p => rarityOf(p).fuse * (p.stars || 1);
@@ -6365,13 +6778,27 @@ function togglePetTeam(uid) {
   save(); render(); syncWalkers();
 }
 // เลือกสัตว์ลงช่องว่างในทีม
+// 🥚 ตัวกรองสัตว์ตามตู้กาชาที่มา
+const petEggOf = id => EGGS.find(e => e.pets.includes(id));
+let petEggF = 'all';
+function petEggChips(list, onclickFn) {
+  const cnt = {}; list.forEach(p => { const e = petEggOf(p.id); if (e) cnt[e.id] = (cnt[e.id] || 0) + 1; });
+  if (petEggF !== 'all' && !cnt[petEggF]) petEggF = 'all';
+  requestAnimationFrame(() => document.querySelectorAll('.egg-chips').forEach(row => { const on = row.querySelector('button.on');
+    if (!on) return; const L = on.offsetLeft, R = L + on.offsetWidth;
+    if (R > row.scrollLeft + row.clientWidth || L < row.scrollLeft) row.scrollLeft = L - (row.clientWidth - on.offsetWidth) / 2; }));
+  return `<div class="egg-chips">` + `<button class="${petEggF === 'all' ? 'on' : ''}" onclick="petEggF='all';${onclickFn}">ทั้งหมด (${list.length})</button>` +
+    EGGS.filter(e => cnt[e.id]).map(e => `<button class="${petEggF === e.id ? 'on' : ''}" onclick="petEggF='${e.id}';${onclickFn}"><img src="${eggSprites(e).f0}" alt="">${e.name.replace('โดมแก้ว', '')} (${cnt[e.id]})</button>`).join('') + `</div>`;
+}
+const eggMatch = p => petEggF === 'all' || (petEggOf(p.id) || {}).id === petEggF;
 function openTeamPicker() {
   const ol = document.querySelector('#modal.show #modalBox .tp-list'), tpTop = ol ? ol.scrollTop : 0;
   const team = teamUids(), free = state.petSlots - team.length;
   if (free <= 0) { closeModal(); return; }
-  const list = state.pets.filter(p => !team.includes(p.uid) && !p.inLab)
-    .sort((a, b) => rarityOf(b).rank - rarityOf(a).rank || b.q - a.q || (b.level || 1) - (a.level || 1));
-  if (!list.length) return toast('🐾 ไม่มีสัตว์ตัวอื่นให้เลือก • ไปเปิดไข่ที่แท็บ 🎰 ไข่');
+  const all = state.pets.filter(p => !team.includes(p.uid) && !p.inLab);
+  if (!all.length) return toast('🐾 ไม่มีสัตว์ตัวอื่นให้เลือก • ไปเปิดไข่ที่แท็บ 🎰 ไข่');
+  const chips = petEggChips(all, 'openTeamPicker()');
+  const list = all.filter(eggMatch).sort((a, b) => rarityOf(b).rank - rarityOf(a).rank || b.q - a.q || (b.level || 1) - (a.level || 1));
   const rows = list.map(p => {
     const sp = getPet(p.id), r = rarityOf(p);
     return `<div class="gp-row tp-row" onclick="pickTeamPet(${p.uid})">
@@ -6381,8 +6808,9 @@ function openTeamPicker() {
       <span class="tp-go">🚶 ลงสวน</span></div>`;
   }).join('');
   $('modalBox').innerHTML = `<h3 style="margin-top:0">🌱 เลือกสัตว์ลงสวน</h3>
-    <p style="font-size:12px;color:#666;margin:0 0 6px">ช่องว่างเหลือ ${free} ช่อง • แตะตัวที่อยากให้ลงสวน</p>
-    <div class="gp-list tp-list" style="max-height:56vh">${rows}</div><button onclick="closeModal()">เสร็จ</button>`;
+    <p style="font-size:12px;color:#666;margin:0 0 6px">ช่องว่างเหลือ ${free} ช่อง • แตะตัวที่อยากให้ลงสวน • กรองตามตู้ไข่ได้</p>
+    ${chips}
+    <div class="gp-list tp-list" style="max-height:50vh">${rows}</div><button onclick="closeModal()">เสร็จ</button>`;
   $('modal').classList.add('show');
   if (tpTop) document.querySelector('#modalBox .tp-list').scrollTop = tpTop;
 }
@@ -6408,7 +6836,7 @@ function buyPetSlot() {
 // ความสามารถติดตัวของทีม (sell / twin)
 function teamAbility(type) {
   const team = teamPets();
-  let total = team.reduce((a, p) => a + (getPet(p.id).ab.type === type ? abilityValue(p) : 0) + (p.s2 && p.s2.type === type ? p.s2.v : 0), 0);
+  let total = team.reduce((a, p) => a + (getPet(p.id).ab.type === type ? abilityValue(p) : 0) + (p.s2 && p.s2.type === type ? p.s2.v : 0) + (p.s3 && p.s3.type === type ? p.s3.v : 0), 0);
   if (type === 'kg' || type === 'gemfind' || type === 'twin' || type === 'leader') total += skillEff(type);   // 🌳 สกิลผู้เล่น
   // 👾 ผู้คัดลอก: ได้ความสามารถติดตัว (แบบไม่มีรอบ) ของเพื่อนร่วมทีมที่แรงที่สุด × พลังคัดลอก
   team.forEach(c => {
@@ -6614,7 +7042,7 @@ function openBulkRelease(keep) {
   if (!all.length) { closeModal(); return toast('🐾 ยังไม่มีสัตว์เลี้ยง'); }
   brSel.forEach(u => { if (!getPetByUid(u)) brSel.delete(u); });
   const rars = Object.keys(RARITIES).filter(k => all.some(p => getPet(p.id).rarity === k));
-  const shown = all.filter(p => brMatch(p, team))
+  const shown = all.filter(p => brMatch(p, team) && eggMatch(p))
     .sort((a, b) => (team.includes(b.uid) - team.includes(a.uid)) || rarityOf(a).rank - rarityOf(b).rank || a.id.localeCompare(b.id) || a.q - b.q);
   const rows = shown.map(p => {
     const sp = getPet(p.id), r = rarityOf(p), on = brSel.has(p.uid);
@@ -6635,6 +7063,7 @@ function openBulkRelease(keep) {
   $('modalBox').innerHTML = `<h3 style="margin-top:0">📋 จัดการสัตว์หลายตัว</h3>
     <p style="font-size:12px;color:#666;margin:0 0 6px">แตะเพื่อติ๊ก แล้วเลือกคำสั่งด้านล่าง • 🌱 ในทีม 🔒 ล็อก 🧪 อยู่ในเครื่อง ⚠️ หายาก/เกรดดี</p>
     <div class="bd-chips">${chips}</div>
+    ${petEggChips(all, 'openBulkRelease(1)')}
     <div class="bd-chips"><button onclick="brSelect('shown')">☑️ เลือกที่แสดงทั้งหมด</button><button onclick="brSelect('low')">🍂 เลือกเกรด B/C ที่ไม่มี ⚠️</button><button onclick="brSelect('none')">✖️ ล้างที่เลือก (${sel.length})</button></div>
     <div class="gp-list bd-list" style="max-height:40vh">${rows || '<small>ไม่มีตัวในกลุ่มนี้</small>'}</div>
     <div class="pm-acts">
@@ -6651,7 +7080,7 @@ function openBulkRelease(keep) {
 }
 function brToggle(uid) { if (brSel.has(uid)) brSel.delete(uid); else brSel.add(uid); brArmed = false; openBulkRelease(1); }
 function brSelect(mode) {
-  const team = teamUids(), list = state.pets.filter(p => brMatch(p, team));
+  const team = teamUids(), list = state.pets.filter(p => brMatch(p, team) && eggMatch(p));
   if (mode === 'none') brSel = new Set();
   else if (mode === 'shown') list.forEach(p => brSel.add(p.uid));
   else if (mode === 'low') list.forEach(p => { if (brCan(p) && p.q < 0.70 && rarityOf(p).rank < 4 && !p.variant && (p.stars || 1) <= 1 && !p.gold && !p.plus) brSel.add(p.uid); });
@@ -6878,7 +7307,7 @@ function moveWalker(w, pt) {
 }
 function syncWalkers() {
   const want = teamUids();
-  const key = want.map(u => { const p = getPetByUid(u); return u + ':' + (p.variant || '') + (p.gold ? 'g' : ''); }).join();
+  const key = want.map(u => { const p = getPetByUid(u); return u + ':' + (p.variant || '') + (p.gold ? 'g' : '') + (p.awakened ? 'a' : ''); }).join();
   if (walkers._key === key) return;
   walkers.forEach(w => { clearInterval(w.walkT); clearTimeout(w.t); });
   const layer = $('petLayer');
@@ -6886,7 +7315,7 @@ function syncWalkers() {
   walkers = want.map(uid => {
     const p = getPetByUid(uid);
     const el = document.createElement('div');
-    el.className = 'pet-walker' + (p.variant ? ' v-' + p.variant : '') + (p.gold ? ' gold' : '');
+    el.className = 'pet-walker' + (p.variant ? ' v-' + p.variant : '') + (p.gold ? ' gold' : '') + (p.awakened ? ' awk' : '');
     el.innerHTML = `<i><span><img alt=""></span></i><b class="lv"></b>`;
     layer.appendChild(el);
     const w = { uid, el, img: el.querySelector('img'), cd: rand(4, 12), busy: false, x: 0, y: 0, arriveAt: 0 }; w.cdMax = w.cd;
@@ -7541,7 +7970,7 @@ function petCardHTML(p, inTeam) {
   const st = p.stars || 1, mats = fuseMats(p).length;
   const canFuse = st < PET_MAX_STAR && mats >= 2, canEvolve = !p.gold && lv >= PET_EVOLVE_LV;
   const v = abilityValue(p), range = `${pctTxt(sp.ab.min)}–${pctTxt(sp.ab.max)}`;
-  return `<div class="pet-card ${inTeam ? 'in-team' : ''} ${p.gold ? 'gold' : ''} ${p.variant ? 'pv-' + p.variant : ''}" style="--rc:${r.color}">
+  return `<div class="pet-card ${p.awakened ? 'awk' : ''} ${inTeam ? 'in-team' : ''} ${p.gold ? 'gold' : ''} ${p.variant ? 'pv-' + p.variant : ''}" style="--rc:${r.color}">
     <div class="pc-top">
       <span class="pet-ic ${p.variant ? 'v-' + p.variant : ''}" style="--ps:${Math.min(1.35, Math.max(0.75, p.size || 1))}">${petImg(p.id, 0)}</span>
       <div class="pc-info">
@@ -7550,6 +7979,7 @@ function petCardHTML(p, inTeam) {
         <div class="ab"><b>${sp.ab.name}</b>: ${sp.ab.desc(v)}<br><small>ค่าที่สุ่มได้ ${pctTxt(p.val)} (ช่วง ${range}) × ${petScale(p).toFixed(2)} จากเลเวล/ดาว/ร่าง/ขนาด/เสริมพลัง${plusCdMult(p) < 1 && sp.ab.every ? ` • ⏩ สกิลเร็วขึ้น ${Math.round((1 - plusCdMult(p)) * 100)}%` : ''}</small></div>
         ${p.variant && getVariant(p.variant) && getVariant(p.variant).bdesc ? `<div class="s2-line vb">${getVariant(p.variant).emoji} ร่าง${getVariant(p.variant).name}: ${getVariant(p.variant).bdesc}</div>` : ''}
         ${p.s2 ? `<div class="s2-line">🌟 สกิลที่ 2: <b>${s2Text(p.s2)}</b></div>` : ''}
+        ${p.s3 ? `<div class="s2-line awk-line">🌈 ตื่นรู้ • สกิลที่ 3: <b>${s2Text(p.s3)}</b> • พลัง ×1.3 • สกิลเร็วขึ้น 15%</div>` : ''}
         <div class="xpbar"><i style="width:${pct}%"></i><span>${lv >= max ? 'เลเวลตัน' : `EXP ${p.xp || 0}/${need}`}</span></div>
       </div>
     </div>
@@ -7559,6 +7989,7 @@ function petCardHTML(p, inTeam) {
       ${st < PET_MAX_STAR ? `<button class="fuse" ${canFuse ? '' : 'disabled'} onclick="fusePet(${p.uid})">⭐ หลอม ★${st + 1}<br><small>${canFuse ? '💰' + fuseCost(p).toLocaleString() : `ต้องมีตัวซ้ำ 2 (มี ${mats})`}</small></button>` : ''}
       ${(p.plus || 0) < PLUS_MAX ? (() => { const c = plusCost(p), ok = state.coins >= c.coins && (state.shards || 0) >= c.shards && state.gems >= c.gems; return `<button class="enhance" ${ok ? '' : 'disabled'} onclick="enhancePet(${p.uid})">⚡ เสริมพลัง +${(p.plus || 0) + 1} <small>(สำเร็จ ${Math.round(plusRate(p) * 100)}%)</small><br><small>💰${fmtShort(c.coins)} 🐾${c.shards.toLocaleString()}${c.gems ? ' 💎' + c.gems : ''}</small></button>`; })() : '<button class="enhance" disabled>⚡ +10 ตันแล้ว</button>'}
       ${(p.plus || 0) >= PLUS_MAX ? `<button class="awaken2" onclick="awakenSkill2(${p.uid})">🌟 ${p.s2 ? 'สุ่มสกิลที่ 2 ใหม่' : 'ปลุกสกิลที่ 2'}<br><small>💎${p.s2 ? S2_REROLL : S2_COST.gems}${p.s2 ? '' : ' 💰' + fmtShort(rarityOf(p).fuse * S2_COST.coinsMult)}</small></button>` : ''}
+      ${canAwaken(p) ? `<button class="awaken3" onclick="awakenPet(${p.uid})">🌈 ตื่นรู้<br><small>🌠${AWK_COST} + ตัวซ้ำ 1</small></button>` : ''}
       ${canEvolve ? `<button class="evolve" onclick="evolvePet(${p.uid})">✨ ร่างทอง<br><small>💰${EVOLVE_COST.coins.toLocaleString()} 💎${EVOLVE_COST.gems}</small></button>` : ''}
       ${p.inLab ? '<button disabled>🧪 อยู่ในเครื่อง</button>' : `<button class="lab" onclick="sendToLab(${p.uid})">🧪 กลายพันธุ์<br><small>💰${fmtShort(mutLabCost(p).coins)} 💎${mutLabCost(p).gems}</small></button>`}
       ${inTeam || p.inLab || p.locked ? '' : `<button class="release" onclick="releasePet(${p.uid})">👋 ปล่อย<br><small>🐾 ${releaseValue(p)} เศษ</small></button>`}
@@ -7583,7 +8014,8 @@ function renderPets() {
   html += `<h3>🐾 สัตว์เลี้ยงของฉัน (${state.pets.length} ตัว) <span class="shard-pill">🐾 เศษ ${state.shards || 0}</span></h3>`;
   if (state.pets.length) html += `<button class="gbtn br-open" onclick="openBulkRelease()">📋 จัดการหลายตัว (ล็อก • ลงสวน • พัก • ปล่อย)</button>`;
   if (!state.pets.length) html += `<div class="empty">ยังไม่มีสัตว์เลี้ยง • ไปเปิดไข่ที่แท็บ 🎰 ไข่</div>`;
-  const sortedPets = [...state.pets].sort((a, b) => (team.includes(b.uid) - team.includes(a.uid)) || rarityOf(b).rank - rarityOf(a).rank || a.id.localeCompare(b.id) || b.q - a.q);
+  if (state.pets.length) html += petEggChips(state.pets, 'petShowN=30;renderPets()');
+  const sortedPets = [...state.pets].filter(eggMatch).sort((a, b) => (team.includes(b.uid) - team.includes(a.uid)) || rarityOf(b).rank - rarityOf(a).rank || a.id.localeCompare(b.id) || b.q - a.q);
   sortedPets.slice(0, petShowN).forEach(p => { html += petCardHTML(p, team.includes(p.uid)); });
   if (sortedPets.length > petShowN) html += `<button class="gbtn br-open" onclick="petShowN += 30; renderPets()">⬇️ แสดงเพิ่ม (เหลืออีก ${sortedPets.length - petShowN} ตัว)</button>`;
 
@@ -7814,8 +8246,9 @@ async function doRebirth() {
   s.rbPts = (state.rbPts || 0) + gain;
   keepIdx.forEach((i, k) => { s.plots[k] = { ...JSON.parse(JSON.stringify(state.plots[i])), unlocked: true }; });
   if (rbLv('keepdev')) { s.placed = state.placed; s.placeInv = state.placeInv; }
+  s.farmIdx = 0; s.farms = FARMS.map((_, i) => i === 0 ? { owned: true } : (farmOwned(i) ? newFarm() : null));
   ['ownedSkills','collection','gems','dailyLogin','dailyQuest','eggPity',
-   'showcase','showcaseSlots','decor','ach','life','uid','upg','devLv','rbShop','rbKeep','weather','nextWeatherAt','recipesFound','incSlots','settings','pets','petTeam','petSlots','eggInv','incubator','eggPity','shards','tut','spaceQuest','chainQ'].forEach(k => { s[k] = state[k]; });
+   'showcase','showcaseSlots','decor','ach','life','uid','upg','devLv','rbShop','rbKeep','weather','nextWeatherAt','recipesFound','incSlots','settings','pets','petTeam','petSlots','eggInv','incubator','eggPity','shards','tut','spaceQuest','chainQ','farmThemes','ascend','essence','ascShop','mastery','legend','tower','potions','awkSpecies'].forEach(k => { s[k] = state[k]; });
   state = s;
   restockShop(true);
   toast(`🔄 Rebirth ${state.rebirth} สำเร็จ! ได้ 🔆${gain} แต้มเกิดใหม่${keepIdx.length ? ` • เก็บต้นไม้ไว้ ${keepIdx.length} ต้น` : ''}`);
@@ -8031,7 +8464,7 @@ function renderStats() {
 // ⚡ วาดใหม่เฉพาะหน้าที่เปิดอยู่ (หน้าอื่นวาดตอนสลับไปดู) — ลดแลคเวลามีของเยอะ
 const PANEL_RENDER = { bag:() => renderBag(), showcase:() => renderShowcase(), kitchen:() => renderKitchen(), breed:() => renderBreed(), craft:() => renderCraft(),
   shop:() => renderShop(), gear:() => renderGear(), decor:() => renderDecor(), pets:() => renderPets(), gacha:() => renderGacha(), quest:() => renderQuest(),
-  guide:() => renderGuide(), collection:() => renderCollection(), skill:() => renderSkill(), rebirth:() => renderRebirth() };
+  guide:() => renderGuide(), collection:() => renderCollection(), skill:() => renderSkill(), rebirth:() => renderRebirth(), legend:() => renderLegend() };
 function render() {
   renderStats();
   renderGarden(); renderGardenUI(); renderBuffs();
@@ -8259,6 +8692,7 @@ function renderGarden() {
 
 // ส่วนใต้สวน: เมล็ดในมือ ปุ่มขาย/ขยาย ของแต่ง (อัปเดตเฉพาะตอนมีการกระทำ)
 function renderGardenUI() {
+  renderFarmBar();
   // ป้ายโหมดวางอุปกรณ์
   const pInfo = placing && placing !== 'dig' && !placing.startsWith('move:') && (placing.startsWith('fert:') ? getFert(placing.slice(5)) : getPlace(placing));
   $('placeBanner').innerHTML = placing === 'dig'
@@ -8306,6 +8740,18 @@ function renderGardenUI() {
     (state.gear.includes('spray') ? ' • กดค้างที่ต้นไม้เพื่อใช้สเปรย์' : '');
 }
 
+// 🌱 สกัดเมล็ด: ใช้ผล 1 ลูก ลุ้นได้เมล็ดชนิดเดียวกัน 1 เมล็ด (สถานะไม่ติดมา)
+const extractable = s => s && !s.gachaOnly && !s.questOnly && !s.eventOnly;
+const extractChance = () => Math.min(0.9, 0.5 * Math.sqrt(luckMultiplier()));
+function extractSeed(uid) {
+  const it = state.bag.find(x => x.uid === uid); if (!it) return;
+  const s = getSeed(it.seedId);
+  if (!extractable(s)) return toast('🚫 ผลจากต้นพิเศษ/ต้นลับ สกัดเมล็ดไม่ได้');
+  state.bag = state.bag.filter(x => x !== it);
+  if (Math.random() < extractChance()) { state.seeds[s.id] = (state.seeds[s.id] || 0) + 1; toast(`🌱 สกัดได้เมล็ด${s.name} 1 เมล็ด!`); sfx('plant'); }
+  else toast(`💨 สกัดไม่สำเร็จ ผล${s.name}เสียไป (โอกาส ${Math.round(extractChance() * 100)}%)`);
+  save(); render();
+}
 function itemRowHTML(it, buttons) {
   const s = itemSeed(it), tag = kgTag(it.kg), mult = mutMultiplier(it.muts);
   const f = marketFactor(it.seedId);
@@ -8353,7 +8799,7 @@ function renderBag() {
   html += `</div><small>🎒 = มีในกระเป๋า • เส้นประ = ราคาปกติ ×1 • เก็บของไว้รอราคาพุ่งก็ได้นะ</small></div>`;
   if (!n) html += '<div class="empty">กระเป๋าว่าง ไปเก็บเกี่ยวในสวนก่อนนะ</div>';
   [...state.bag].sort((a, b) => b.base - a.base).forEach(it => {
-    html += itemRowHTML(it, `<button onclick="sellItem(${it.uid})">💰 ขาย</button><button class="gem" onclick="toShowcase(${it.uid})">🏆 โชว์</button>`);
+    html += itemRowHTML(it, `<button onclick="sellItem(${it.uid})">💰 ขาย</button><button class="gem" onclick="toShowcase(${it.uid})">🏆 โชว์</button>${extractable(getSeed(it.seedId)) ? `<button class="xseed" onclick="extractSeed(${it.uid})">🌱 สกัดเมล็ด</button>` : ''}`);
   });
   html += seedSellHTML();
   el.innerHTML = html;
@@ -8918,6 +9364,10 @@ function guideSections() {
       หาได้จาก: อาหาร, ของแต่ง, สกิล, ร้าน Rebirth, สกิลที่ 2 ของสัตว์, 🍀ผงโชคลาภ • สูงสุดราว ×2.5`],
     ['🎒 กระเป๋า / 🏆 ตู้โชว์', `กระเป๋าเต็มแล้วเก็บผลไม่ได้ → ขาย หรือขยายกระเป๋า (+10 ช่อง/เลเวล) • 🏆 ตู้โชว์เก็บผลสวย ๆ ไว้ถาวร (ไม่หายตอน Rebirth) • อัปเกรด "ตู้โชว์วิเศษ" แล้วของในตู้ให้ราคาขายเพิ่มสูงสุด +30%`],
     ['🐉 ต้นลับสุดยอด #5', `พฤกษาไข่มังกร — ออกผลเกล็ดมังกร 3 ลูก (ขนาด/สถานะแยกกัน) • แต่ละลูกมีโอกาส 5% (คูณโชค) เป็น 🥚ไข่มังกร เก็บแล้วเข้าตู้ฟักทันที • ไข่มังกรฟัก 30 นาที สุ่มได้มังกร 6 แบบ: 🦎 ธรรมดา 40% • 🐲 ไม่ธรรมดา 28% • ⚡ หายาก 17% • 💎 เอพิค 10% • 🌑 ตำนาน 4% • 👑 มิธิค 1% (หาจากที่อื่นไม่ได้) • ได้ต้นจาก 🐉 ภารกิจปลุกมังกร (แท็บภารกิจ) ทำซ้ำได้`],
+    ['🏡 หลายฟาร์ม', `มีได้สูงสุด 4 ฟาร์ม (ซื้อที่แถบด้านบนสวน): ฟาร์ม 2 💰5M • ฟาร์ม 3 💰100M+💎50 • ฟาร์ม 4 💰2B+💎200 • แต่ละฟาร์มมีแปลง/การขยาย/อุปกรณ์ของตัวเอง • ฟาร์มที่ไม่ได้เปิดดูยังโตต่อ แต่สัตว์เลี้ยง สภาพอากาศ และอุปกรณ์ทำงานเฉพาะฟาร์มที่เปิดอยู่ • Rebirth แล้วฟาร์มยังเป็นของเรา (แปลงเริ่มใหม่)`],
+    ['🌠 ตำนาน (Endgame)', `แท็บ ☰ → 🌠 ตำนาน รวมระบบ endgame: 🌠 จุติ (หลัง Rebirth 10 ครั้ง ได้แก่นดาวไปซื้ออัปเกรดถาวร) • 🌈 ร่างตื่นรู้ของสัตว์ (Lv.50 ★5 +10) • 🗼 หอคอยท้าทาย 100 ชั้น • 🧪 ห้องทดลองสถานะ (สกัดสถานะเป็นน้ำยาแล้วแปะต้นไหนก็ได้) • 🌟 หอเกียรติยศผลในตำนาน • 📜 ความชำนาญ 5⭐ • 🏛️ พิพิธภัณฑ์ (รายได้สูงสุด +50%) • 🪐 ดาวต่างโลก (ฟาร์ม 5)`],
+    ['🎨 ธีมฟาร์ม', `กดปุ่ม 🎨 ธีม ที่แถบฟาร์มเหนือสวน เปลี่ยนท้องฟ้า พื้นดิน รั้ว และต้นไม้ฉากหลังได้ • แต่ละฟาร์มเลือกแยกกัน • ธีม: 🌿 ทุ่งหญ้า (ค่าเริ่มต้น) • 🌀 วังวนนิรันดร์ • 🍖 เนื้อมหาโอชา • 🌌 ดาราจักร • 🍭 ลูกกวาดสายรุ้ง • 🐉 ภูเขาไฟมังกร — ปลดล็อกเมื่อเคยปลูกต้นลับสุดยอดต้นนั้นสักครั้ง`],
+    ['🌱 สกัดเมล็ด', `ในกระเป๋า กด 🌱 สกัดเมล็ด: ใช้ผล 1 ลูก ลุ้นได้เมล็ดชนิดเดียวกัน 1 เมล็ด (โอกาส 50% • โชคช่วยได้ สูงสุด 90%) • สถานะไม่ติดมา • ผลจากต้นพิเศษ/ต้นลับสกัดไม่ได้ • อยากได้เมล็ดลูกผสมใช้ 🧬 ผสม`],
     ['🍭 ต้นลับสุดยอด #4', `พฤกษาลูกกวาดสายรุ้ง — ออกอมยิ้ม 5 ลูกพร้อมกัน แต่ละลูกสุ่มรส (🍓🫐🍋🍊🍇) ขนาด/สถานะแยกกัน • ถ้าออกครบ 5 รสในรอบเดียว ทุกลูกติด 🌈สายรุ้ง ×15 ทันที • ได้จาก 🐚 ภารกิจปาร์ตี้ทะเลขนมหวาน (แท็บภารกิจ) เท่านั้น ทำซ้ำได้`],
     ['🌌 ต้นลับสุดยอด #3', `พฤกษาดาราจักร — ผลเป็นดาวเคราะห์ 3 ดวงคนละชนิด: 🪐 ดาววงแหวน (บน • ลุ้น 🛰️โคจร 30%) • 🌋 ดาวลาวา (ซ้าย • ติด ☀️ไหม้แดดเสมอ) • 🧊 ดาวน้ำแข็ง (ขวา • ติด 🥶หนาวสั่นเสมอ) • แต่ละดวงมีโอกาส 1% (คูณโชค) เป็น ☀️ ดวงอาทิตย์จิ๋ว ราคา ×20 • ได้จาก 🚀 ภารกิจสถานีอวกาศ (แท็บภารกิจ) เท่านั้น ทำซ้ำได้`],
     ['🍖 ต้นลับสุดยอด #2', `พฤกษาเนื้อมหาโอชา — ต้นนิ่ง ออกผลพร้อมกัน 3 ลูก (บน/ซ้าย/ขวา) แต่ละลูกขนาดไม่เท่ากัน • เก็บครั้งเดียวได้ครบ 3 ผล • แต่ละผลมีโอกาส 2% (คูณโชค) เป็น 💎 เนื้อเหลี่ยม ราคา ×12 • ได้จาก 🦖 ภารกิจล่าเนื้อยุคดึกดำบรรพ์ (แท็บภารกิจ) เท่านั้น ทำซ้ำได้`],
@@ -8992,7 +9442,7 @@ const NAV = [
   { id:'harvest',icon:'🎒', name:'ผลผลิต',    tabs:['bag','showcase','kitchen','breed','craft'] },
   { id:'shop',   icon:'🛒', name:'ร้านค้า',    tabs:['shop','gear','decor'] },
   { id:'pets',   icon:'🐾', name:'สัตว์เลี้ยง', tabs:['pets','gacha'] },
-  { id:'more',   icon:'☰',  name:'เพิ่มเติม',   tabs:['quest','guide','collection','skill','rebirth','settings'] },
+  { id:'more',   icon:'☰',  name:'เพิ่มเติม',   tabs:['quest','legend','guide','collection','skill','rebirth','settings'] },
 ];
 const navOf = tab => NAV.find(g => g.tabs.includes(tab));
 const lastTabOf = {};
@@ -9040,7 +9490,7 @@ function tick() {
   weatherTick(now);
   todTick();
   petTick();
-  if (panelActive('garden')) renderPetCdBar(); else if (panelActive('pets')) updatePetCdBars();
+  if (panelActive('garden')) { renderPetCdBar(); renderFarmBar(); } else if (panelActive('pets')) updatePetCdBars();
   checkAchievements();
   renderStats();
   renderGarden();
@@ -9074,6 +9524,7 @@ function tick() {
   ripenTick();
   walkXpTick();
   spaceTick(now);
+  alienTick();
   Object.keys(QCHAINS).forEach(c => { const st = cqCur(c); if (st && st.live) cqCheck(c); });
   { const es = Math.min(1, teamAbility('eggsit')); if (es > 0) state.incubator.forEach(e => { if (e.doneAt > now) e.doneAt -= 1000 * es; }); }
   if (state.craftJob) {
