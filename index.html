@@ -1789,6 +1789,7 @@
   .s2-line.awk-line { background:linear-gradient(90deg,#ff80ab,#b388ff,#80d8ff); color:#1a1a1a; }
   .pc-btns button.awaken3 { background:linear-gradient(90deg,#ff4081,#7c4dff,#00b0ff); color:#fff; }
   #plantInfo .pi-btn.pi-pot { background:#00897b; box-shadow:0 2px 0 #004d40; margin-top:4px; font-size:11px; padding:4px 8px; }
+  #plantInfo .pi-btn.farmmv { background:#5c6bc0; box-shadow:0 2px 0 #3949ab; }
   .farm-bar { display:flex; gap:5px; overflow-x:auto; scrollbar-width:none; padding:4px 2px 6px; }
   .farm-bar::-webkit-scrollbar { display:none; }
   .farm-bar:empty { display:none; }
@@ -3867,6 +3868,42 @@ function switchFarm(i) {
   toast(`${FARMS[i].emoji} ย้ายไป${FARMS[i].name}`);
   save(); render(); syncWalkers(); window._gUI = null; renderGardenUI();
 }
+// 🚚 ย้ายต้นไม้ข้ามฟาร์ม (ย้ายไปทั้งต้น พร้อมผล/สถานะ/อายุต้น)
+function openFarmMove(i) {
+  const p = state.plots[i]; if (!p || !p.seedId) return;
+  const rows = FARMS.map((F, k) => {
+    if (k === (state.farmIdx || 0) || !farmOwned(k)) return '';
+    const f = farmData(k), cap = EXPANSIONS[f.gardenLevel || 0].cap, used = f.plots.filter(q => q.seedId).length, full = used >= cap;
+    return `<div class="gp-row" ${full ? 'style="opacity:.5"' : `onclick="moveToFarm(${i},${k})"`}><span class="gp-ic">${F.emoji}</span>
+      <div style="flex:1"><b>${F.name}</b><br><small>ปลูกอยู่ ${used}/${cap} ต้น${full ? ' • เต็มแล้ว' : ''}${k === ALIEN_FARM ? ' • ผลรอบใหม่หนัก ×3 โตช้า ×2' : ''}</small></div><b>${full ? '🚫' : 'ส่ง ▶'}</b></div>`;
+  }).join('');
+  $('modalBox').innerHTML = `<h3 style="margin-top:0">🏡 ส่ง${getSeed(p.seedId).name}ไปฟาร์มไหน?</h3>
+    <p style="font-size:12px;color:#666;margin:0 0 6px">ย้ายไปทั้งต้น: ความโต ผล น้ำหนัก สถานะ อายุต้น ติดไปด้วยครบ • ต้นจะไปอยู่ตรงที่ว่างในฟาร์มนั้น</p>
+    <div class="gp-list">${rows}</div><button onclick="closeModal()">ยกเลิก</button>`;
+  $('modal').classList.add('show');
+}
+function moveToFarm(i, k) {
+  const src = state.plots[i]; if (!src || !src.seedId) return;
+  const f = farmData(k), cap = EXPANSIONS[f.gardenLevel || 0].cap;
+  if (f.plots.filter(q => q.seedId).length >= cap) return toast('🚫 ฟาร์มปลายทางเต็มแล้ว');
+  const slot = f.plots.findIndex(q => q.unlocked && !q.seedId); if (slot < 0) return toast('🚫 ไม่มีแปลงว่าง');
+  // หาตำแหน่งว่างในฟาร์มปลายทาง
+  const taken = f.plots.filter(q => q.seedId && q.x != null), gap = 0.11;
+  let best = null, bd = -1;
+  for (let t = 0; t < 120; t++) {
+    const x = 0.08 + Math.random() * 0.84, y = 0.15 + Math.random() * 0.8;
+    const d = taken.reduce((m, q) => Math.min(m, Math.hypot(q.x - x, (q.y - y) * 0.8)), 9);
+    if (d > bd) { bd = d; best = [x, y]; } if (d > gap) break;
+  }
+  const dst = f.plots[slot], name = getSeed(src.seedId).name;
+  const keep = { unlocked: true, soil: dst.soil };
+  Object.assign(dst, JSON.parse(JSON.stringify(src)), keep, { x: +best[0].toFixed(4), y: +best[1].toFixed(4), locked: false });
+  Object.assign(src, newPlot(true), { soil: src.soil, x: src.x, y: src.y });
+  if (infoIdx === i) hidePlantInfo();
+  shovelSel = -1; digArmed = -1;
+  toast(`🚚 ส่ง${name}ไป ${FARMS[k].emoji} ${FARMS[k].name}แล้ว`); sfx('plant');
+  closeModal(); save(); render();
+}
 function buyFarm(i) {
   farmsInit();
   const F = FARMS[i]; if (!F || farmOwned(i)) return;
@@ -5910,6 +5947,7 @@ function renderPlantInfo() {
       ? `<div class="pi-time" style="margin:4px 0">🚚 แตะพื้นดินตรงที่จะย้ายไป</div><div class="pi-acts"><button class="pi-btn no" onclick="placing='dig';render()">ยกเลิกย้าย</button></div>`
       : `<div class="pi-acts">
           <button class="pi-btn move" onclick="event.stopPropagation(); shovelMove()">🚚 ย้าย</button>
+          ${FARMS.some((_, k) => k !== (state.farmIdx || 0) && farmOwned(k)) ? `<button class="pi-btn move farmmv" onclick="event.stopPropagation(); openFarmMove(${infoIdx})">🏡 ส่งไปฟาร์มอื่น</button>` : ''}
           <button class="pi-btn dig ${digArmed === infoIdx ? 'armed' : ''}" onclick="event.stopPropagation(); shovelDig()">${digArmed === infoIdx ? '⚠️ แตะอีกครั้ง<br><small>ต้นหายาก ยืนยันขุด</small>' : '⛏️ ขุดทิ้ง'}</button>
         </div><div class="pi-hint">💡 กดค้างที่ต้นแล้วลากเพื่อย้ายได้เลย</div>`}` : `
     ${muts && !seed.multi ? `<div class="pi-muts">${muts}</div>` : ''}
