@@ -7726,22 +7726,22 @@ const QCHAINS = {
   space: { name: '🚀 ภารกิจสถานีอวกาศ', seed: 'galaxytree', seedName: '🌌 เมล็ดพฤกษาดาราจักร', cls: 'sq-space', steps: [
     { id:'hatch',   icon:'🥚', txt:() => 'ฟักสัตว์ชุดอวกาศได้ 1 ตัว (จากตู้ 🚀 โดมแก้วสถานีอวกาศ)', target:() => 1, live:() => ownKinds(SPACE_PETS) ? 1 : 0, first:true },
     { id:'acts',    icon:'⚡', txt:n => `สัตว์อวกาศที่ลงสวนใช้สกิลสำเร็จ ${n} ครั้ง`, target:r => Math.round(25 * (1 + 0.5 * r)) },
-    { id:'fruit',   icon:'🧺', txt:n => `เก็บผลที่ติดสถานะอวกาศ (👽🚀🛰️🕳️🛸🌑) ${n} ลูก`, target:r => Math.round(15 * (1 + 0.5 * r)) },
+    { id:'pick',    icon:'🧺', txt:n => `เก็บผลผลิตอะไรก็ได้ ${n} ลูก`, target:r => Math.round(50 * (1 + 0.5 * r)) },
     { id:'species', icon:'🐾', txt:() => 'มีสัตว์อวกาศต่างชนิดกัน 3 ชนิด', target:() => 3, live:() => ownKinds(SPACE_PETS), first:true },
-    { id:'triple',  icon:'🌟', txt:n => `เก็บผลที่มีสถานะอวกาศ 3 อย่างขึ้นไปในลูกเดียว ${n} ลูก`, target:r => 1 + r },
+    { id:'heavy',   icon:'⚖️', txt:n => `เก็บผลหนัก 300kg ขึ้นไป ${n} ลูก`, target:r => Math.round(5 * (1 + 0.5 * r)) },
   ] },
   dragon: { name: '🐉 ภารกิจปลุกมังกร', seed: 'dragontree', seedName: '🐉 เมล็ดพฤกษาไข่มังกร', cls: 'sq-dragon', steps: [
-    { id:'fire',  icon:'🔥', txt:n => `เก็บผลที่ติด 🔥ลุกเป็นไฟ ${n} ลูก`, target:r => Math.round(5 * (1 + 0.5 * r)) },
-    { id:'shock', icon:'⚡', txt:n => `เก็บผลที่ติด ⚡ไฟฟ้าช็อต ${n} ลูก`, target:r => Math.round(5 * (1 + 0.5 * r)) },
+    { id:'pick',  icon:'🧺', txt:n => `เก็บผลผลิตอะไรก็ได้ ${n} ลูก`, target:r => Math.round(40 * (1 + 0.5 * r)) },
+    { id:'heavy', icon:'⚖️', txt:n => `เก็บผลหนัก 300kg ขึ้นไป ${n} ลูก`, target:r => Math.round(5 * (1 + 0.5 * r)) },
     { id:'storm', icon:'🌋', txt:() => 'เจอสภาพอากาศ 🐉 พายุมังกรสายฟ้า หรือ 🌋 ยุคดึกดำบรรพ์ 1 ครั้ง', target:() => 1 },
-    { id:'bolt',  icon:'🐉', txt:n => `เก็บผลที่ติด 🐉สายฟ้ามังกร หรือ 🦖จูราสสิก ${n} ลูก`, target:r => 1 + r },
+    { id:'huge',  icon:'🐉', txt:n => `เก็บผลหนัก 600kg ขึ้นไป ${n} ลูก`, target:r => 1 + r },
   ] },
   sweet: { name: '🐚 ภารกิจปาร์ตี้ทะเลขนมหวาน', seed: 'candytree', seedName: '🍭 เมล็ดพฤกษาลูกกวาดสายรุ้ง', cls: 'sq-sweet', steps: [
     { id:'hatch',   icon:'🥚', txt:() => 'ฟักสัตว์ชุดทะเลขนมหวานได้ 1 ตัว (จากตู้ 🐚 โดมแก้วทะเลขนมหวาน)', target:() => 1, live:() => ownKinds(SWEET_PETS) ? 1 : 0, first:true },
     { id:'acts',    icon:'🎉', txt:n => `สัตว์ทะเลขนมหวานที่ลงสวนใช้สกิลสำเร็จ ${n} ครั้ง`, target:r => Math.round(25 * (1 + 0.5 * r)) },
-    { id:'fruit',   icon:'🍬', txt:n => `เก็บผลที่ติดสถานะของหวาน/ปาร์ตี้ (🎅🍦🪼🎉💗🍨🍬🍯⛄) ${n} ลูก`, target:r => Math.round(20 * (1 + 0.5 * r)) },
+    { id:'pick',    icon:'🍬', txt:n => `เก็บผลผลิตอะไรก็ได้ ${n} ลูก`, target:r => Math.round(50 * (1 + 0.5 * r)) },
     { id:'species', icon:'🐾', txt:() => 'มีสัตว์ทะเลขนมหวานต่างชนิดกัน 3 ชนิด', target:() => 3, live:() => ownKinds(SWEET_PETS), first:true },
-    { id:'sundae',  icon:'🍨', txt:n => `เก็บผลที่ติด 🍨ซันเดย์ หรือ 💗รักล้นใจ ${n} ลูก`, target:r => Math.round(2 * (1 + 0.5 * r)) },
+    { id:'huge',    icon:'🍨', txt:n => `เก็บผลหนัก 600kg ขึ้นไป ${n} ลูก`, target:r => Math.round(2 * (1 + 0.5 * r)) },
   ] },
   dino: { name: '🦖 ภารกิจล่าเนื้อยุคดึกดำบรรพ์', seed: 'meatking', seedName: '🍖 เมล็ดพฤกษาเนื้อมหาโอชา', cls: 'sq-dino', steps: [
     { id:'hatch',   icon:'🥚', txt:() => 'ฟักไดโนเสาร์ได้ 1 ตัว (จากตู้ 🦖 โดมแก้วจูราสสิก)', target:() => 1, live:() => ownKinds(DINO_PETS) ? 1 : 0, first:true },
@@ -7758,13 +7758,13 @@ QCHAINS.olympus = { name: '🏛️ ภารกิจบททดสอบแห
   { id:'mythic',  icon:'🐾', txt:() => 'มีสัตว์ระดับมิธิคต่างชนิดกัน 8 ชนิด', target:() => 8, live:() => new Set(state.pets.filter(p => getPet(p.id).rarity === 'mythic').map(p => p.id)).size, first:true },
   { id:'awaken',  icon:'🌈', txt:() => 'ปลุกสัตว์ให้ตื่นรู้ 1 ตัว (ใช้ 🌠แก่นดาว)', target:() => 1, live:() => state.pets.some(p => p.awakened) ? 1 : 0, first:true },
   { id:'giant',   icon:'⚖️', txt:n => `เก็บผลหนัก 1,000kg ขึ้นไป ${n} ลูก`, target:r => Math.round(3 * (1 + 0.5 * r)) },
-  { id:'secret',  icon:'🔮', txt:n => `เก็บผลที่ติดสถานะลับ (สถานะรวมสูตร) ${n} ลูก`, target:r => Math.round(5 * (1 + 0.5 * r)) },
+  { id:'pick',    icon:'🧺', txt:n => `เก็บผลผลิตอะไรก็ได้ ${n} ลูก`, target:r => Math.round(100 * (1 + 0.5 * r)) },
   { id:'many',    icon:'🌟', txt:n => `เก็บผลที่ติดสถานะ 7 อย่างขึ้นไปในลูกเดียว ${n} ลูก`, target:r => Math.round(3 * (1 + 0.5 * r)) },
 ] };
 function olyQuestHarvest(it) {
   const ms = it.muts || [];
   if ((it.kg || 0) >= 1000) cqAdd('olympus', 'giant', 1);
-  if (ms.some(id => { const m = getMut(id); return m && m.secret; })) cqAdd('olympus', 'secret', 1);
+  cqAdd('olympus', 'pick', 1);
   if (ms.length >= 7) cqAdd('olympus', 'many', 1);
 }
 
@@ -7772,16 +7772,16 @@ function olyQuestHarvest(it) {
 const OLY_STATUSES = ['olybolt', 'olytide', 'olywisdom', 'olyhades', 'olysun', 'olymoon', 'olytitan', 'olympiad'];
 QCHAINS.ygg = { name: '❄️ ภารกิจบททดสอบแห่งยกก์ดราซิล', seed: 'yggtree', seedName: '❄️ เมล็ดพฤกษายกก์ดราซิลน้ำแข็ง', cls: 'sq-ygg', gems: 200, steps: [
   { id:'olyset',   icon:'🏛️', txt:() => 'มีเทพโอลิมปัสต่างชนิดกัน 4 ชนิด (ฟักจากไข่โอลิมปัส)', target:() => 4, live:() => new Set(state.pets.filter(p => getPet(p.id).rarity === 'olympian').map(p => p.id)).size, first:true },
-  { id:'olyfruit', icon:'⚡', txt:n => `เก็บผลที่ติดสถานะเทพโอลิมปัส ${n} ลูก`, target:r => Math.round(8 * (1 + 0.5 * r)) },
+  { id:'pick',    icon:'🧺', txt:n => `เก็บผลผลิตอะไรก็ได้ ${n} ลูก`, target:r => Math.round(150 * (1 + 0.5 * r)) },
   { id:'giant',    icon:'⚖️', txt:n => `เก็บผลหนัก 2,000kg ขึ้นไป ${n} ลูก`, target:r => Math.round(3 * (1 + 0.5 * r)) },
-  { id:'titan',    icon:'🌩️', txt:n => `เก็บผลที่ติดสถานะลับโอลิมปัส (ไททันสะท้านฟ้า/เทวสภาโอลิมปัส) ${n} ลูก`, target:r => Math.round(2 * (1 + 0.5 * r)) },
+  { id:'huge',    icon:'🌩️', txt:n => `เก็บผลหนัก 3,000kg ขึ้นไป ${n} ลูก`, target:r => Math.round(2 * (1 + 0.5 * r)) },
   { id:'many',     icon:'🌟', txt:n => `เก็บผลที่ติดสถานะ 9 อย่างขึ้นไปในลูกเดียว ${n} ลูก`, target:r => Math.round(3 * (1 + 0.5 * r)) },
 ] };
 function yggQuestHarvest(it) {
   const ms = it.muts || [];
-  if (ms.some(id => OLY_STATUSES.includes(id))) cqAdd('ygg', 'olyfruit', 1);
+  cqAdd('ygg', 'pick', 1);
   if ((it.kg || 0) >= 2000) cqAdd('ygg', 'giant', 1);
-  if (ms.includes('olytitan') || ms.includes('olympiad')) cqAdd('ygg', 'titan', 1);
+  if ((it.kg || 0) >= 3000) cqAdd('ygg', 'huge', 1);
   if (ms.length >= 9) cqAdd('ygg', 'many', 1);
 }
 function cqState(c) {
@@ -7825,15 +7825,10 @@ function cqClaim(c) {
 function questHarvest(it) {
   olyQuestHarvest(it);
   yggQuestHarvest(it);
-  const n = (it.muts || []).filter(id => SPACE_MUTS.includes(id)).length;
-  if (n >= 1) cqAdd('space', 'fruit', 1);
-  if (n >= 3) cqAdd('space', 'triple', 1);
-  if ((it.kg || 0) >= 300) cqAdd('dino', 'heavy', 1);
-  if ((it.muts || []).some(id => SWEETQ_MUTS.includes(id))) cqAdd('sweet', 'fruit', 1);
-  if ((it.muts || []).includes('fire')) cqAdd('dragon', 'fire', 1);
-  if ((it.muts || []).includes('shocked')) cqAdd('dragon', 'shock', 1);
-  if ((it.muts || []).some(id => id === 'dragonbolt' || id === 'jurassic')) cqAdd('dragon', 'bolt', 1);
-  if ((it.muts || []).some(id => id === 'sundae' || id === 'heartray')) cqAdd('sweet', 'sundae', 1);
+  const kg = it.kg || 0;
+  ['space', 'dragon', 'sweet'].forEach(c => cqAdd(c, 'pick', 1));
+  if (kg >= 300) { cqAdd('dino', 'heavy', 1); cqAdd('space', 'heavy', 1); cqAdd('dragon', 'heavy', 1); }
+  if (kg >= 600) { cqAdd('dragon', 'huge', 1); cqAdd('sweet', 'huge', 1); }
 }
 function chainHTML(c) {
   const q = cqState(c), ch = QCHAINS[c], steps = cqSteps(c);
@@ -10282,7 +10277,7 @@ function tick() {
   walkXpTick();
   spaceTick(now);
   alienTick();
-  Object.keys(QCHAINS).forEach(c => { if (cqSteps(c).some(st => st.live)) cqCheck(c); });
+  Object.keys(QCHAINS).forEach(c => cqCheck(c));
   { const es = Math.min(1, teamAbility('eggsit')); if (es > 0) state.incubator.forEach(e => { if (e.doneAt > now) e.doneAt -= 1000 * es; }); }
   if (state.craftJob) {
     const ct = document.querySelector('[data-crafttimer]');
