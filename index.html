@@ -3673,12 +3673,12 @@ async function sendToLab(uid) {
   if (!p) return;
   if (state.mutLab) return toast('🧪 เครื่องกลายพันธุ์ไม่ว่าง');
   const c = mutLabCost(p);
-  if (state.coins < c.coins || state.gems < c.gems) return toast(`ต้องใช้ 💰${c.coins.toLocaleString()} + 💎${c.gems}`);
+  if (state.coins < c.coins || state.gems < c.gems) return toast(`ต้องใช้ 💰${fmtShort(c.coins)} + 💎${c.gems}`);
   const cur = p.variant && getVariant(p.variant);
-  if (!await ask(`ส่ง${getPet(p.id).name}เข้าเครื่องกลายพันธุ์?\n💰${c.coins.toLocaleString()} + 💎${c.gems} • ${fmtTime(MUTLAB_TIME)}\n\nได้ร่างใหม่แบบสุ่ม (อาจดีขึ้นหรือแย่ลง!)${cur ? `\n⚠️ ร่างเดิม ${cur.emoji}${cur.name} จะถูกแทนที่` : ''}`, 'ส่งเข้าเครื่อง')) return;
+  if (!await ask(`ส่ง${getPet(p.id).name}เข้าเครื่องกลายพันธุ์?\n💰${fmtShort(c.coins)} + 💎${c.gems} • ${fmtTime(MUTLAB_TIME)}\n\nได้ร่างใหม่แบบสุ่ม (อาจดีขึ้นหรือแย่ลง!)${cur ? `\n⚠️ ร่างเดิม ${cur.emoji}${cur.name} จะถูกแทนที่` : ''}`, 'ส่งเข้าเครื่อง')) return;
   state.coins -= c.coins; state.gems -= c.gems;
   p.inLab = true;
-  state.petTeam = (state.petTeam || []).filter(u => u !== uid);
+  dropFromTeams(new Set([uid]));
   state.mutLab = { uid, doneAt: Date.now() + MUTLAB_TIME * 1000 };
   toast(`🧪 ${getPet(p.id).name} เข้าเครื่องกลายพันธุ์แล้ว (${fmtTime(MUTLAB_TIME)})`);
   save(); render(); syncWalkers();
@@ -3848,8 +3848,20 @@ const FARMS = [
   { name: 'ฟาร์ม 4', emoji: '🏰', coins: 2e9, gems: 200 },
   { name: 'ดาวต่างโลก', emoji: '🪐', coins: 5e9, gems: 300, quest: true },   // ฟาร์ม 5: ผลหนัก ×3 โตช้า ×2
 ];
-const newFarm = () => ({ owned: true, gardenLevel: 0, placed: [], plots: Array.from({ length: GARDEN_MAX }, (_, i) => newPlot(i < EXPANSIONS[0].cap)) });
-function farmsInit() { if (!state.farms) state.farms = [{ owned: true }]; if (state.farmIdx == null) state.farmIdx = 0; }
+const newFarm = () => ({ owned: true, gardenLevel: 0, placed: [], petTeam: [-1], plots: Array.from({ length: GARDEN_MAX }, (_, i) => newPlot(i < EXPANSIONS[0].cap)) });
+function farmsInit() {
+  if (!state.farms) state.farms = [{ owned: true }];
+  if (state.farmIdx == null) state.farmIdx = 0;
+  if (!state.farmTeamsV2) migrateFarmTeams();
+}
+// เซฟเก่ามีทีมสัตว์ก้อนเดียว → ใช้ทีมเดิมเป็นจุดเริ่มต้นของทุกฟาร์มที่เปิดแล้ว (หลังจากนี้แต่ละฟาร์มแก้แยกกันได้)
+function migrateFarmTeams() {
+  state.farmTeamsV2 = true;
+  const t = teamUids();
+  if (t.length) state.petTeam = t.slice();
+  const base = (state.petTeam || []).length ? state.petTeam.slice() : [-1];
+  (state.farms || []).forEach((f, i) => { if (i === state.farmIdx || !f || !f.owned) return; if (!f.petTeam) f.petTeam = base.slice(); });
+}
 const farmOwned = i => i === 0 || !!(state.farms && state.farms[i] && state.farms[i].owned);
 function farmData(i) { farmsInit(); return i === state.farmIdx ? state : state.farms[i]; }
 function farmReady(i) { const f = farmData(i); return f && f.plots ? f.plots.filter(p => p.seedId && p.growth >= getSeed(p.seedId).time).length : 0; }
@@ -3858,15 +3870,16 @@ function switchFarm(i) {
   if (i === state.farmIdx) return;
   if (!farmOwned(i)) return buyFarm(i);
   const cur = state.farmIdx;
-  state.farms[cur] = { owned: true, plots: state.plots, gardenLevel: state.gardenLevel, placed: state.placed };
+  state.farms[cur] = { owned: true, plots: state.plots, gardenLevel: state.gardenLevel, placed: state.placed, petTeam: stashFarmTeam() };
   const f = state.farms[i];
   state.plots = f.plots; state.gardenLevel = f.gardenLevel || 0; state.placed = f.placed || [];
+  state.petTeam = (f.petTeam && f.petTeam.length) ? f.petTeam : [-1];
   state.farms[i] = { owned: true };
   state.farmIdx = i;
   placing = null; shovelSel = -1; infoIdx = -1; hidePlantInfo();
   if ($('garden')) $('garden')._plots = null;
   toast(`${FARMS[i].emoji} ย้ายไป${FARMS[i].name}`);
-  save(); render(); syncWalkers(); window._gUI = null; renderGardenUI();
+  save(); render(); walkers._key = null; syncWalkers(); window._gUI = null; renderGardenUI();
 }
 // 🚚 ย้ายต้นไม้ข้ามฟาร์ม (ย้ายไปทั้งต้น พร้อมผล/สถานะ/อายุต้น)
 function openFarmMove(i) {
@@ -3917,6 +3930,116 @@ function buyFarm(i) {
 }
 
 // ==================== 🌠 ENDGAME ====================
+// ==================== 🐾 ทีมสัตว์แยกตามฟาร์ม ====================
+// • แต่ละฟาร์มมีทีมสัตว์ของตัวเอง เลือกตัวเดียวกันซ้ำข้ามฟาร์มได้
+// • ฟาร์มที่เปิดดูอยู่ใช้ state.petTeam • ฟาร์มอื่นเก็บที่ state.farms[i].petTeam
+// • ทุกฟาร์มทำงานตลอดที่เปิดเกม: ฟาร์มที่ไม่ได้ดูอยู่จะสลับ context ชั่วคราว (runInFarm) แล้วรันสกิลโดยปิดเอฟเฟกต์ภาพ/เสียง/เซฟ
+let BG_FARM = -1;       // >= 0 ขณะรันงานของฟาร์มเบื้องหลัง
+let bgPeers = [];       // สัตว์ในทีมของฟาร์มเบื้องหลังที่กำลังรัน (ใช้กับสกิลคำราม)
+const petCD = {};       // คูลดาวน์สัตว์ แยกตาม "ฟาร์ม:uid" (ไม่เซฟ)
+const STUB_EL = { classList: { add() {}, remove() {}, toggle() {}, contains() { return false; } }, offsetWidth: 0, style: {}, querySelector() { return null; } };
+
+function stashFarmTeam() {   // ทีมที่จะเก็บไว้เมื่อออกจากฟาร์ม (ถ้ายังเป็นโหมดอัตโนมัติ ให้ล็อกเป็นรายชื่อจริง)
+  const raw = state.petTeam || [];
+  if (raw.length) return raw.slice();
+  const t = teamUids();
+  return t.length ? t : [-1];
+}
+function farmTeamRaw(i) { farmsInit(); return i === state.farmIdx ? (state.petTeam || []) : ((state.farms[i] || {}).petTeam || [-1]); }
+function farmTeamUids(i) {
+  if (i === state.farmIdx) return teamUids();
+  return farmTeamRaw(i).filter(u => { const p = getPetByUid(u); return p && !p.inLab; }).slice(0, state.petSlots);
+}
+function allTeamUids() {   // สัตว์ที่ลงสวนอยู่ในฟาร์มใดฟาร์มหนึ่ง (ไม่ซ้ำ)
+  farmsInit();
+  const set = new Set();
+  FARMS.forEach((_, i) => { if (farmOwned(i)) farmTeamUids(i).forEach(u => set.add(u)); });
+  return [...set];
+}
+function farmsOfPet(uid) { farmsInit(); return FARMS.map((_, i) => i).filter(i => farmOwned(i) && farmTeamUids(i).includes(uid)); }
+function dropFromTeams(uids) {   // เอาสัตว์ออกจากทุกฟาร์ม (ปล่อย/ส่งเข้าเครื่องกลายพันธุ์)
+  farmsInit();
+  state.petTeam = (state.petTeam || []).filter(u => !uids.has(u));
+  (state.farms || []).forEach((f, i) => {
+    if (i === state.farmIdx || !f || !f.petTeam) return;
+    f.petTeam = f.petTeam.filter(u => !uids.has(u));
+    if (!f.petTeam.length) f.petTeam = [-1];
+  });
+}
+function rtOf(farm, uid) {
+  const k = farm + ':' + uid;
+  return petCD[k] || (petCD[k] = { uid, cd: rand(4, 12), cdMax: 8, busy: false, el: STUB_EL, img: {}, t: 0, fx: Math.random(), fy: Math.random() });
+}
+// รัน fn โดยสลับ state.plots/gardenLevel/placed/petTeam/farmIdx ไปเป็นของฟาร์ม i ชั่วคราว
+function runInFarm(i, fn) {
+  farmsInit();
+  const f = state.farms[i];
+  if (!f || !f.plots || i === state.farmIdx) return;
+  const keep = { plots: state.plots, gardenLevel: state.gardenLevel, placed: state.placed, petTeam: state.petTeam, farmIdx: state.farmIdx };
+  const prev = BG_FARM;
+  state.plots = f.plots; state.gardenLevel = f.gardenLevel || 0; state.placed = f.placed || [];
+  state.petTeam = (f.petTeam && f.petTeam.length) ? f.petTeam : [-1];
+  state.farmIdx = i; BG_FARM = i;
+  try { fn(); }
+  catch (e) { console.error('background farm error', i, e); }
+  finally {
+    f.plots = state.plots; f.gardenLevel = state.gardenLevel; f.placed = state.placed; f.petTeam = state.petTeam;
+    Object.assign(state, keep);
+    BG_FARM = prev;
+  }
+}
+// ทุกวินาที: สัตว์ของฟาร์มที่ไม่ได้เปิดดูก็ทำงานต่อ (คูลดาวน์/สกิล/สกิลติดตัว) เหมือนฟาร์มที่เปิดอยู่
+function bgFarmsTick() {
+  farmsInit();
+  const now = Date.now();
+  (state.farms || []).forEach((f, i) => {
+    if (i === state.farmIdx || !f || !f.owned || !f.plots) return;
+    runInFarm(i, () => {
+      // งาน UFO ที่ค้างบนแปลง (ลักพาตัว/ลำแสง)
+      state.plots.forEach((p, pi) => {
+        if (p.abductUntil && now >= p.abductUntil) { delete p.abductUntil; if (p.seedId) { growPlotKg(p, 0.1); const g = addMutation(p, 'alienmark'); if (g) gainMutFx(pi, g); } }
+        if (p.beamUntil && now >= p.beamUntil) { delete p.beamUntil; if (p.seedId) { growPlotKg(p, 1); const g = addMutation(p, 'ufobeam'); if (g) gainMutFx(pi, g); } }
+      });
+      const team = teamUids();
+      bgPeers = team.map(u => rtOf(i, u));
+      const rate = petCdRate();
+      team.forEach((uid, k) => {
+        const p = getPetByUid(uid); if (!p) return;
+        const w = bgPeers[k], ab = getPet(p.id).ab;
+        if (ab.type === 'lowgrav') {   // 🚀 สกิลติดตัว: เร่งต้นไม้รอบตัว (ฟาร์มเบื้องหลังใช้ตำแหน่งสุ่มเดินวน)
+          w.fx = Math.max(0.05, Math.min(0.95, w.fx + rand(-0.04, 0.04))); w.fy = Math.max(0.1, Math.min(0.95, w.fy + rand(-0.04, 0.04)));
+          const c = { x: w.fx, y: w.fy }, v = Math.min(0.6, abilityValue(p)), gm = growthMultiplier();
+          state.plots.forEach((pl, pi) => {
+            if (!pl.seedId || pl.x == null || isReady(pl) || plotDistU(pl, c) > 2.2) return;
+            pl.growth = Math.min(getSeed(pl.seedId).time, pl.growth + gm * v);
+            if (spaceT % 60 === 0 && Math.random() < 0.05) { const g = addMutation(pl, 'rocketed'); if (g) gainMutFx(pi, g); }
+          });
+        }
+        w.cd -= rate * (SPACE_PETS.includes(p.id) && state.weather && ['meteor', 'cometnight'].includes(state.weather.id) ? 1.5 : 1);
+        if (w.cd > 0 || !ab.every) { if (w.cd <= 0) w.cd = 20; return; }
+        let useAb = ab, useV;
+        if (ab.type === 'copy') {
+          const q = copyTarget(p);
+          if (!q) { w.cd = 20; return; }
+          useAb = getPet(q.id).ab; useV = abilityValue(q) * abilityValue(p);
+        }
+        const target = pickPetTarget(useAb);
+        if (target < 0) { w.cd = 8; return; }
+        doPetSkill(w, p, target, useAb === ab ? null : useAb, useV);
+        w.cd = ab.every * rand(0.8, 1.2) * plusCdMult(p); w.cdMax = w.cd;
+      });
+      bgPeers = [];
+      ripenTick();
+      petVariantTick();
+    });
+  });
+}
+// ปิดเอฟเฟกต์ภาพ/เสียง/เซฟ/วาดหน้าจอ ขณะรันงานฟาร์มเบื้องหลัง (กันไปโผล่บนฟาร์มที่กำลังดูอยู่)
+['spawnFloat', 'spawnParticles', 'flashStrike', 'showReveal', 'sfx', 'toast', 'render', 'renderGarden', 'renderGardenUI', 'save', 'syncWalkers', 'hidePlantInfo'].forEach(n => {
+  const o = window[n]; if (typeof o !== 'function') return;
+  window[n] = function (...a) { return BG_FARM >= 0 ? undefined : o.apply(this, a); };
+});
+
 const ALIEN_FARM = 4;
 const allChainsDone = () => ['dragon', 'sweet', 'dino', 'space'].every(c => (cqState(c).round || 0) >= 1);
 function alienTick() {
@@ -4173,13 +4296,18 @@ function renderFarmBar() {
 }
 // ฟาร์มที่ไม่ได้เปิดดู: ยังโตต่อ (ไม่มีโบนัสอุปกรณ์/สัตว์เลี้ยง/อากาศ)
 function growOtherFarms(dt, gm) {
+  // gm = ตัวคูณของฟาร์มที่เปิดอยู่ (รวมอีเวนต์/ออฟไลน์) → แยกเอาเฉพาะส่วนอีเวนต์/ออฟไลน์ แล้วคูณกับโบนัสทีมสัตว์ของแต่ละฟาร์มเอง
+  const extra = gm / (growthMultiplier() || 1);
   (state.farms || []).forEach((f, i) => {
     if (i === state.farmIdx || !f || !f.plots) return;
     const fm = i === ALIEN_FARM ? 0.5 : 1;
-    f.plots.forEach(p => {
-      if (!p.seedId) { if (p.unlocked && p.soil < 100) p.soil = Math.min(100, p.soil + dt / 6); return; }
-      const sd = getSeed(p.seedId); if (!sd || p.growth >= sd.time) return;
-      p.growth = Math.min(sd.time, p.growth + dt * gm * fm * soilFactor(p.soil ?? 100));
+    runInFarm(i, () => {
+      const g = growthMultiplier() * extra;
+      state.plots.forEach(p => {
+        if (!p.seedId) { if (p.unlocked && p.soil < 100) p.soil = Math.min(100, p.soil + dt / 6); return; }
+        const sd = getSeed(p.seedId); if (!sd || p.growth >= sd.time) return;
+        p.growth = Math.min(sd.time, p.growth + dt * g * fm * soilFactor(p.soil ?? 100));
+      });
     });
   });
 }
@@ -4384,7 +4512,7 @@ function buyUpgrade(k) {
   const u = UPG[k];
   if (upLv(k) >= u.max) return;
   const c = upgCost(k);
-  if (state.coins < c.coins) return toast(`💰 ต้องใช้ ${c.coins.toLocaleString()}`);
+  if (state.coins < c.coins) return toast(`💰 ต้องใช้ ${fmtShort(c.coins)}`);
   if (state.gems < c.gems) return toast(`💎 ต้องใช้ ${c.gems} เพชร`);
   state.coins -= c.coins; state.gems -= c.gems;
   state.upg = state.upg || {};
@@ -4550,7 +4678,7 @@ function load() {
       s.placed = [];
     }
     s.gardenLevel = Math.max(0, Math.min(s.gardenLevel || 0, EXPANSIONS.length - 1));
-    s.plots.forEach((p, i) => { p.unlocked = i < EXPANSIONS[s.gardenLevel].cap; });
+    s.plots.forEach((p, i) => { p.unlocked = i < EXPANSIONS[s.gardenLevel].cap || !!p.seedId; });
     checkNewDay(s);
     // ระบบสัตว์เลี้ยงใหม่ (กาชา): แปลงสัตว์เลี้ยง/ไข่ระบบเก่าเป็นเพชรและเงิน
     const OLD_R = { common:5, uncommon:10, rare:20, epic:40, mythic:80 };
@@ -4575,6 +4703,7 @@ function load() {
       s.uid = (s.uid || 1) + 2;
       s.petMigration = { pets: oldPets.length, gems, coins, eggs: 2 };
     }
+    if (s.rbShop && s.rbShop.keep) { const n = s.rbShop.keep; s.rbPts = (s.rbPts || 0) + [30, 60, 100].slice(0, n).reduce((a, b) => a + b, 0); delete s.rbShop.keep; }   // ไอเท็มเก็บต้นไม้ถูกยกเลิก (เก็บทุกต้นแล้ว) → คืนแต้ม
     s.pets.forEach(p => { p.stars = p.stars || 1; p.xp = p.xp || 0; if (!p.size) p.size = rollPetSize(1); });
     s.market = s.market && s.market.f ? s.market : defaultState().market;
     [...(s.bag || []), ...(s.showcase || [])].forEach(it => {
@@ -4670,7 +4799,7 @@ function applySave(obj, label) {
   closeModal();
   applyWeatherScene(); todTick(); syncWalkers(); render(); buildTestTools();
   $('chestFloat').style.display = 'none';
-  toast(`✅ โหลดเซฟแล้ว! Lv.${state.level} 💰${state.coins.toLocaleString()}`);
+  toast(`✅ โหลดเซฟแล้ว! Lv.${state.level} 💰${fmtShort(state.coins)}`);
 }
 // ==================== ☁️ เซฟคลาวด์ (Firebase • ล็อกอิน Google) ====================
 // ใส่ firebaseConfig จาก Firebase console ตรงนี้ (ค่าพวกนี้เปิดเผยได้ ความปลอดภัยอยู่ที่ Firestore Rules)
@@ -4734,8 +4863,8 @@ async function cloudFirstSync() {
     if (d.t === state.cloudT) { await cloudUpload(true); toast('☁️ ซิงก์เซฟคลาวด์แล้ว'); return; }
     if (isFreshSave()) { cloudApply(d); return; }
     const k = await askChoice(`☁️ <b>พบเซฟบนคลาวด์ที่ต่างจากเครื่องนี้</b><br><br>
-      ☁️ คลาวด์: Lv.${d.lv} • 💰${(d.coins || 0).toLocaleString()}<br><small>${new Date(d.t).toLocaleString('th-TH')}</small><br><br>
-      📱 เครื่องนี้: Lv.${state.level} • 💰${Math.floor(state.coins).toLocaleString()}<br><br>
+      ☁️ คลาวด์: Lv.${d.lv} • 💰${fmtShort((d.coins || 0))}<br><small>${new Date(d.t).toLocaleString('th-TH')}</small><br><br>
+      📱 เครื่องนี้: Lv.${state.level} • 💰${fmtShort(Math.floor(state.coins))}<br><br>
       <small>อีกอันจะถูกเก็บไว้ในสำรองอัตโนมัติ ย้อนกลับได้</small>`, [
       { k: 'cloud', label: '☁️ ใช้เซฟคลาวด์', cls: 'move' },
       { k: 'local', label: '📱 ใช้เซฟเครื่องนี้', cls: 'yes' },
@@ -4778,7 +4907,7 @@ async function cloudDownload() {
     const snap = await cloudDoc().get();
     if (!snap.exists) return toast('☁️ ยังไม่มีเซฟบนคลาวด์');
     const d = snap.data();
-    if (await ask(`โหลดเซฟคลาวด์ (Lv.${d.lv} • 💰${(d.coins || 0).toLocaleString()}) มาแทนเซฟเครื่องนี้?\nเซฟเครื่องนี้จะถูกเก็บไว้ในสำรองอัตโนมัติ`, '☁️ โหลดเลย')) { cloud.paused = false; cloudApply(d); }
+    if (await ask(`โหลดเซฟคลาวด์ (Lv.${d.lv} • 💰${fmtShort((d.coins || 0))}) มาแทนเซฟเครื่องนี้?\nเซฟเครื่องนี้จะถูกเก็บไว้ในสำรองอัตโนมัติ`, '☁️ โหลดเลย')) { cloud.paused = false; cloudApply(d); }
   } catch (e) { toast('☁️ โหลดไม่สำเร็จ: ' + (e.code || e.message)); }
 }
 async function cloudUploadNow() { cloud.paused = false; await cloudUpload(true); toast(cloud.err ? '☁️ อัปโหลดไม่สำเร็จ: ' + cloud.err : '☁️ อัปโหลดเซฟขึ้นคลาวด์แล้ว'); }
@@ -4822,7 +4951,7 @@ function downloadSave() {
 async function importFromText() {
   let obj;
   try { obj = parseSave($('loadCode').value); } catch { return toast('❌ โค้ดเซฟไม่ถูกต้อง'); }
-  if (!await ask(`โหลดเซฟนี้? (Lv.${obj.level || 1} • 💰${(obj.coins || 0).toLocaleString()})\nเซฟปัจจุบันจะถูกสำรองไว้ก่อนอัตโนมัติ`)) return;
+  if (!await ask(`โหลดเซฟนี้? (Lv.${obj.level || 1} • 💰${fmtShort((obj.coins || 0))})\nเซฟปัจจุบันจะถูกสำรองไว้ก่อนอัตโนมัติ`)) return;
   applySave(obj, 'จากโค้ด');
 }
 async function importFromFile(input) {
@@ -4832,7 +4961,7 @@ async function importFromFile(input) {
   r.onload = async () => {
     let obj;
     try { obj = parseSave(r.result); } catch { input.value = ''; return toast('❌ ไฟล์เซฟไม่ถูกต้อง'); }
-    if (await ask(`โหลดเซฟจากไฟล์? (Lv.${obj.level || 1} • 💰${(obj.coins || 0).toLocaleString()})\nเซฟปัจจุบันจะถูกสำรองไว้ก่อนอัตโนมัติ`)) applySave(obj, 'จากไฟล์');
+    if (await ask(`โหลดเซฟจากไฟล์? (Lv.${obj.level || 1} • 💰${fmtShort((obj.coins || 0))})\nเซฟปัจจุบันจะถูกสำรองไว้ก่อนอัตโนมัติ`)) applySave(obj, 'จากไฟล์');
     input.value = '';
   };
   r.readAsText(f);
@@ -4840,7 +4969,7 @@ async function importFromFile(input) {
 async function restoreBackup(k) {
   const b = readBackups()[k];
   if (!b) return;
-  if (!await ask(`ย้อนกลับไปเซฟเมื่อ ${new Date(b.t).toLocaleString('th-TH')}?\n(Lv.${b.lv} • 💰${b.coins.toLocaleString()})`)) return;
+  if (!await ask(`ย้อนกลับไปเซฟเมื่อ ${new Date(b.t).toLocaleString('th-TH')}?\n(Lv.${b.lv} • 💰${fmtShort(b.coins)})`)) return;
   applySave(JSON.parse(b.data), 'จากที่สำรองไว้');
 }
 async function resetGame() {
@@ -4885,7 +5014,7 @@ function renderSettings() {
     <div class="set-card">
       <h3>🕒 สำรองอัตโนมัติ</h3>
       <p class="set-note">เกมสำรองให้เองทุก 5 นาที ตอนเปิดเกม และก่อนโหลด/รีเซ็ต (เก็บ ${BK_MAX} อันล่าสุดในเครื่องนี้)</p>
-      ${bks.length ? bks.map((b, k) => `<div class="item"><div><b>${new Date(b.t).toLocaleString('th-TH')}</b><br><small>${b.reason} • Lv.${b.lv} • 💰${b.coins.toLocaleString()}</small></div>
+      ${bks.length ? bks.map((b, k) => `<div class="item"><div><b>${new Date(b.t).toLocaleString('th-TH')}</b><br><small>${b.reason} • Lv.${b.lv} • 💰${fmtShort(b.coins)}</small></div>
         <button onclick="restoreBackup(${k})">↩️ ย้อนกลับ</button></div>`).join('') : '<div class="empty">ยังไม่มี</div>'}
     </div>
     <div class="set-card">
@@ -4975,7 +5104,11 @@ function fmtTime(s) {
 function fmtMult(n) { return n >= 1000 ? Math.round(n).toLocaleString() : String(Math.round(n * 10) / 10); }
 function fmtKg(kg) { return kg >= 100 ? Math.round(kg).toLocaleString() : kg.toFixed(kg < 10 ? 2 : 1); }
 
-function xpNeeded(level) { return Math.floor(100 * Math.pow(1.15, level-1)); }
+function xpNeeded(level) {
+  // เลเวล 1-30 โตเร็วเหมือนเดิม (x1.15) หลังจากนั้นโตช้าลงมาก (x1.05) เพื่อให้ไปถึงเลเวล Rebirth รอบหลัง ๆ ได้
+  const L1 = Math.min(level, 30) - 1, L2 = Math.max(0, level - 30);
+  return Math.floor(100 * Math.pow(1.15, L1) * Math.pow(1.05, L2));
+}
 
 // 💰 ซื้อ EXP ผู้เล่นด้วยเงิน: ราคาต่อ EXP แพงขึ้น 12% ทุกเลเวล
 function xpCoinPrice(level) { return Math.ceil(100 * Math.pow(1.12, level - 1)); }
@@ -4984,7 +5117,7 @@ function openXpShop() {
   const need = xpNeeded(state.level), cur = Math.floor(state.xp || 0), rest = Math.max(1, need - cur), q = Math.min(rest, Math.ceil(need * 0.25));
   const opt = (n, label) => { const c = xpBuyCost(n); return `<button class="${state.coins < c ? '' : 'gem'}" ${state.coins < c ? 'disabled' : ''} onclick="buyXp(${n})">${label}<br><small>💰${fmtShort(c)}</small></button>`; };
   $('modalBox').innerHTML = `<h3 style="margin-top:0">📚 ซื้อ EXP ผู้เล่น</h3>
-    <p style="font-size:12px;color:#555;margin:0 0 6px">⭐ Lv.${state.level} • EXP ${cur.toLocaleString()} / ${need.toLocaleString()}<br>ราคาตอนนี้ 💰${xpCoinPrice(state.level).toLocaleString()} ต่อ 1 EXP (แพงขึ้น 12% ทุกเลเวล)</p>
+    <p style="font-size:12px;color:#555;margin:0 0 6px">⭐ Lv.${state.level} • EXP ${cur.toLocaleString()} / ${need.toLocaleString()}<br>ราคาตอนนี้ 💰${fmtShort(xpCoinPrice(state.level))} ต่อ 1 EXP (แพงขึ้น 12% ทุกเลเวล)</p>
     <div class="xs-btns">${opt(q, `+${q.toLocaleString()} EXP`)}${opt(rest, `⬆️ อัป Lv.${state.level + 1}`)}</div>
     <p style="font-size:11px;color:#777;margin:8px 0 0">EXP ปกติได้จาก: 🧺 เก็บผล (พืชแพงได้เยอะ) • 🏆 ภารกิจรายวัน +20 • เลเวลอัปได้ 1 สกิลพอยท์ และปลดล็อกเมล็ดใหม่</p>
     <button onclick="closeModal()">ปิด</button>`;
@@ -5264,7 +5397,7 @@ function showReveal(item) {
     <div class="rv-title" style="color:${kgColor(item.kg)}">${kgTag(item.kg)}!${giant ? '!!' : ''}</div>
     <div class="rv-kg">${fmtKg(item.kg)} kg</div>
     <div class="rv-sub">${s.name} • ราคา ×${kgMult(item.kg).toFixed(1)} จากน้ำหนัก</div>
-    <div class="rv-val">≈ 💰${itemValue(item).toLocaleString()}</div>`;
+    <div class="rv-val">≈ 💰${fmtShort(itemValue(item))}</div>`;
   document.body.appendChild(el);
   if (giant) flashStrike();
   const cx = innerWidth / 2, cy = innerHeight / 2;
@@ -5300,7 +5433,7 @@ function devUpCost(id) {
 function upgradeDevice(id) {
   if (devLv(id) >= DEV_MAX_LV) return;
   const c = devUpCost(id), P = getPlace(id);
-  if (state.coins < c.coins) return toast(`💰 ต้องใช้ ${c.coins.toLocaleString()}`);
+  if (state.coins < c.coins) return toast(`💰 ต้องใช้ ${fmtShort(c.coins)}`);
   if (state.gems < c.gems) return toast(`💎 ต้องใช้ ${c.gems} เพชร`);
   state.coins -= c.coins; state.gems -= c.gems;
   state.devLv = state.devLv || {};
@@ -5621,7 +5754,7 @@ async function digPlot(i, silent) {
     const coins = Math.floor((seed.price || 10) * rand(1, 3)), gem = Math.random() < 0.08 ? 1 + Math.floor(Math.random() * 3) : 0;
     state.coins += coins; if (gem) state.gems += gem;
     fossilTally.coins += coins; fossilTally.gems += gem; fossilTally.n++; cqAdd('dino', 'acts', 1);
-    fossil = ` • 🦴 ฟอสซิล +💰${coins.toLocaleString()}${gem ? ` 💎+${gem}` : ''}`;
+    fossil = ` • 🦴 ฟอสซิล +💰${fmtShort(coins)}${gem ? ` 💎+${gem}` : ''}`;
     spawnFloat(i, `🦴 +💰${fmtShort(coins)}${gem ? ' 💎' + gem : ''}`, '#ffe0b2');
   }
   Object.assign(plot, { locked: false, seedId: null, growth: 0, kg: 0, treeKg: 0, harvests: 0, mutations: [], sprayed: false, hyHeavy: false, hyInherit: null, kgBoost: 0, boosted: 0 });
@@ -5699,7 +5832,7 @@ function bulkDigGo() {
   closeModal();
   sfx('plant');
   save(); render();
-  toast(`⛏️ ขุดทิ้ง ${n} ต้นแล้ว${seeds ? ` • ได้เมล็ดคืน ${seeds} เมล็ด 🌱` : ''}${fossilTally.n ? ` • 🦴 เจอฟอสซิล ${fossilTally.n} ชิ้น +💰${fossilTally.coins.toLocaleString()}${fossilTally.gems ? ` 💎+${fossilTally.gems}` : ''}` : ''}`);
+  toast(`⛏️ ขุดทิ้ง ${n} ต้นแล้ว${seeds ? ` • ได้เมล็ดคืน ${seeds} เมล็ด 🌱` : ''}${fossilTally.n ? ` • 🦴 เจอฟอสซิล ${fossilTally.n} ชิ้น +💰${fmtShort(fossilTally.coins)}${fossilTally.gems ? ` 💎+${fossilTally.gems}` : ''}` : ''}`);
 }
 function movePlotTo(i, fx, fy) {
   const plot = state.plots[i], b = plantBounds();
@@ -5894,10 +6027,10 @@ function harvestMany(picked) {
   sfx(biggest && isBig(biggest) ? 'big' : 'harvest');
   if (items.length === 1) {
     const it = items[0], s = itemSeed(it), tag = kgTag(it.kg);
-    toast(`🎒 ${mutEmojis(it.muts)}${s.name} ${fmtKg(it.kg)}kg${tag ? ' ('+tag+')' : ''} ≈ 💰${itemValue(it).toLocaleString()}${gemGain ? ` • 💎+${gemGain}!` : ''}`);
+    toast(`🎒 ${mutEmojis(it.muts)}${s.name} ${fmtKg(it.kg)}kg${tag ? ' ('+tag+')' : ''} ≈ 💰${fmtShort(itemValue(it))}${gemGain ? ` • 💎+${gemGain}!` : ''}`);
   } else {
     const sum = items.reduce((a, it) => a + itemValue(it), 0);
-    toast(`🧺 เก็บ ${items.length} ผลเข้ากระเป๋า ≈ 💰${sum.toLocaleString()}${gemGain ? ` • 💎+${gemGain}!` : ''}`);
+    toast(`🧺 เก็บ ${items.length} ผลเข้ากระเป๋า ≈ 💰${fmtShort(sum)}${gemGain ? ` • 💎+${gemGain}!` : ''}`);
   }
   updateQuest('harvest10', items.length);
   save(); render();
@@ -5961,7 +6094,7 @@ function renderPlantInfo() {
     ${!ready && (plot.kgBoost > 0 || plotSizeBonus(plot) > 0) ? `<div class="pi-boost">💦 ขยายผล +${Math.round((plot.kgBoost || 0) * 100)}% <small>(สูงสุด +${Math.round(Math.max(plotSizeBonus(plot), plot.kgBoost || 0) * 100)}%)</small></div>` : ''}
     ${ready && plot.boosted ? `<div class="pi-boost">💦 สปริงเกลอร์ขยายผลแล้ว +${plot.boosted}%</div>` : ''}
     ${ready
-      ? `<div class="pi-val">💰 ${plotValueNow(plot).toLocaleString()}</div>${plot.locked ? '' : `<button class="pi-btn" onclick="event.stopPropagation(); harvestFromInfo()">🧺 เก็บผล</button>`}`
+      ? `<div class="pi-val">💰 ${fmtShort(plotValueNow(plot))}</div>${plot.locked ? '' : `<button class="pi-btn" onclick="event.stopPropagation(); harvestFromInfo()">🧺 เก็บผล</button>`}`
       : `<div class="pi-bar"><i style="width:${Math.max(0, Math.min(100, prog * 100)).toFixed(1)}%"></i></div><div class="pi-time">⏳ ${fmtTime(left)}</div>`}
     ${potionCount() ? `<button class="pi-btn pi-pot" onclick="event.stopPropagation(); openPotionApply(${infoIdx})">🧪 ใช้น้ำยาสถานะ (${potionCount()})</button>` : ''}
     <button class="pi-btn pi-lock ${plot.locked ? 'on' : ''}" onclick="event.stopPropagation(); togglePlotLock(${infoIdx})">${plot.locked ? '🔓 ปลดล็อก' : '🔒 ล็อกต้นนี้'}</button>`;
@@ -6052,7 +6185,7 @@ function sellItems(list) {
   state.life.earned += total;
   state.life.sold += list.length;
   state.life.maxSale = Math.max(state.life.maxSale, top);
-  toast(`💰 ขาย ${list.length} ชิ้น ได้ ${total.toLocaleString()}`);
+  toast(`💰 ขาย ${list.length} ชิ้น ได้ ${fmtShort(total)}`);
   updateQuest('earn1000', total);
   save(); render();
 }
@@ -6218,7 +6351,7 @@ function buyDecor(id) {
 function expandGarden() {
   const next = EXPANSIONS[state.gardenLevel + 1];
   if (!next) return toast('สวนใหญ่สุดแล้ว');
-  if (state.coins < next.cost) return toast(`💰 ต้องใช้ ${next.cost.toLocaleString()}`);
+  if (state.coins < next.cost) return toast(`💰 ต้องใช้ ${fmtShort(next.cost)}`);
   state.coins -= next.cost;
   state.gardenLevel++;
   state.plots.forEach((p, i) => { p.unlocked = i < next.cap; });
@@ -6513,7 +6646,7 @@ function collectCook(pi = 0) {
     <div class="reveal">${d.emoji}</div>
     ${c.chef ? '<div class="var-banner v-shiny">👨‍🍳 ฝีมือเชฟ! มูลค่าและบัฟ ×1.5</div>' : ''}
     <h2 style="margin:6px 0">${d.name}</h2>
-    <p>มูลค่า 💰${Math.floor(c.base * sellMultiplier()).toLocaleString()} (×${d.mult} จากวัตถุดิบ)
+    <p>มูลค่า 💰${fmtShort(Math.floor(c.base * sellMultiplier()))} (×${d.mult} จากวัตถุดิบ)
     ${d.buff ? `<br>กินแล้วได้: ${d.buff.map(([t, v]) => `${EFFECT_NAMES[t]} +${Math.round(v * 100)}%`).join(', ')} ${d.mins} นาที` : ''}</p>
     <button onclick="closeModal()">เยี่ยม!</button>`;
   $('modal').classList.add('show');
@@ -6527,7 +6660,7 @@ function sellDish(uid) {
   const x = state.dishes.splice(i, 1)[0], v = dishValue(x);
   state.coins += v; state.life.earned += v; state.stats.earnedToday += v;
   updateQuest('earn1000', v);
-  toast(`💰 ขาย${getDish(x.dishId).name} ได้ ${v.toLocaleString()}`);
+  toast(`💰 ขาย${getDish(x.dishId).name} ได้ ${fmtShort(v)}`);
   save(); render();
 }
 function eatDish(uid) {
@@ -6584,7 +6717,7 @@ function renderKitchen() {
     state.dishes.forEach(x => {
       const d = getDish(x.dishId);
       html += `<div class="item"><div><span style="font-size:24px">${d.emoji}</span> <b>${d.name}</b><br>
-        <small>💰${dishValue(x).toLocaleString()}${d.buff ? ` • บัฟ: ${d.buff.map(([t, v]) => `${EFFECT_NAMES[t]} +${Math.round(v * 100)}%`).join(', ')} ${d.mins} นาที` : ''}</small></div>
+        <small>💰${fmtShort(dishValue(x))}${d.buff ? ` • บัฟ: ${d.buff.map(([t, v]) => `${EFFECT_NAMES[t]} +${Math.round(v * 100)}%`).join(', ')} ${d.mins} นาที` : ''}</small></div>
         <div class="btns"><button onclick="sellDish(${x.uid})">💰 ขาย</button>${d.buff ? `<button class="gem" onclick="eatDish(${x.uid})">😋 กิน</button>` : ''}</div></div>`;
     });
   }
@@ -6611,7 +6744,7 @@ function renderKitchen() {
     html += `<div class="br-pick">` + [...state.bag].sort((a, b) => a.seedId.localeCompare(b.seedId) || b.base - a.base).map(it => {
       const s = getSeed(it.seedId), on = state.cookPick.includes(it.uid);
       return `<button class="${on ? 'on' : ''}" onclick="toggleCookPick(${it.uid})"><span class="it-ic">${seedIcon(s)}</span>
-        <span style="flex:1;text-align:left"><b>${s.name}</b> ${mutEmojis(it.muts)}<br><small>${fmtKg(it.kg)}kg • 💰${itemValue(it).toLocaleString()}</small></span>${on ? '✅' : ''}</button>`;
+        <span style="flex:1;text-align:left"><b>${s.name}</b> ${mutEmojis(it.muts)}<br><small>${fmtKg(it.kg)}kg • 💰${fmtShort(itemValue(it))}</small></span>${on ? '✅' : ''}</button>`;
     }).join('') + `</div>`;
   }
   el.innerHTML = html;
@@ -6697,7 +6830,7 @@ function enhancePet(uid) {
   const p = getPetByUid(uid);
   if (!p || (p.plus || 0) >= PLUS_MAX) return;
   const c = plusCost(p);
-  if (state.coins < c.coins) return toast(`💰 ต้องใช้ ${c.coins.toLocaleString()}`);
+  if (state.coins < c.coins) return toast(`💰 ต้องใช้ ${fmtShort(c.coins)}`);
   if ((state.shards || 0) < c.shards) return toast(`🐾 เศษไม่พอ (ต้องใช้ ${c.shards.toLocaleString()}) • ได้เศษจากการปล่อยสัตว์ที่ไม่ใช้`);
   if (state.gems < c.gems) return toast(`💎 ต้องใช้ ${c.gems} เพชร`);
   state.coins -= c.coins; state.shards -= c.shards; state.gems -= c.gems;
@@ -6732,7 +6865,7 @@ let walkXpT = 0;
 function walkXpTick() {
   if (++walkXpT < 60) return;
   walkXpT = 0;
-  teamPets().forEach(p => {
+  allTeamUids().map(getPetByUid).filter(Boolean).forEach(p => {
     if ((p.level || 1) >= petMaxLv(p)) return;
     addPetXp(p, Math.max(1, Math.round(petXpNeed(p.level || 1) * 0.01)));
   });
@@ -6789,8 +6922,10 @@ const getPetByUid = uid => state.pets.find(p => p.uid === uid);
 
 // ==================== Pets: team ====================
 function teamUids() {
-  const team = (state.petTeam || []).filter(u => getPetByUid(u) && !getPetByUid(u).inLab).slice(0, state.petSlots);
+  const raw = state.petTeam || [];
+  const team = raw.filter(u => getPetByUid(u) && !getPetByUid(u).inLab).slice(0, state.petSlots);
   if (team.length) return team;
+  if (raw.includes(-1)) return [];   // ตั้งใจไม่ส่งใครลงสวน (ฟาร์มนี้ไม่มีสัตว์)
   // ยังไม่ได้เลือกทีม: ส่งตัวที่หายากและเกรดดีที่สุดลงสวนให้อัตโนมัติ
   return state.pets.filter(p => !p.inLab).sort((a, b) => rarityOf(b).rank - rarityOf(a).rank || b.q - a.q)
     .slice(0, state.petSlots).map(p => p.uid);
@@ -6845,7 +6980,7 @@ function openTeamPicker() {
         <small><span class="bd-r" style="background:${r.color};color:#fff;padding:0 5px;border-radius:6px">${r.name}</span> Lv.${p.level || 1} ${'★'.repeat(p.stars || 1)}${p.plus ? ' +' + p.plus : ''}<br>${sp.ab.name}: ${sp.ab.desc(abilityValue(p))}</small></div>
       <span class="tp-go">🚶 ลงสวน</span></div>`;
   }).join('');
-  $('modalBox').innerHTML = `<h3 style="margin-top:0">🌱 เลือกสัตว์ลงสวน</h3>
+  $('modalBox').innerHTML = `<h3 style="margin-top:0">🌱 เลือกสัตว์ลงสวน (${FARMS[state.farmIdx || 0].emoji} ${FARMS[state.farmIdx || 0].name})</h3>
     <p style="font-size:12px;color:#666;margin:0 0 6px">ช่องว่างเหลือ ${free} ช่อง • แตะตัวที่อยากให้ลงสวน • กรองตามตู้ไข่ได้</p>
     ${chips}
     <div class="gp-list tp-list" style="max-height:50vh">${rows}</div><button onclick="closeModal()">เสร็จ</button>`;
@@ -6913,7 +7048,7 @@ async function awakenSkill2(uid) {
   if (!p || (p.plus || 0) < PLUS_MAX) return toast('ต้องเสริมพลังถึง +10 ก่อน');
   const reroll = !!p.s2, gems = reroll ? S2_REROLL : S2_COST.gems, coins = reroll ? 0 : rarityOf(p).fuse * S2_COST.coinsMult;
   if (state.gems < gems) return toast(`💎 ต้องใช้ ${gems} เพชร`);
-  if (state.coins < coins) return toast(`💰 ต้องใช้ ${coins.toLocaleString()}`);
+  if (state.coins < coins) return toast(`💰 ต้องใช้ ${fmtShort(coins)}`);
   if (reroll && !await ask(`สุ่มสกิลที่ 2 ใหม่ (💎${gems})?\nสกิลเดิม: ${s2Text(p.s2)}`, 'สุ่มใหม่')) return;
   state.gems -= gems; state.coins -= coins;
   p.s2 = rollSkill2();
@@ -6962,7 +7097,7 @@ function openFeed(uid) {
   items.forEach(it => {
     const s = getSeed(it.seedId);
     html += `<button onclick="feedPet(${uid},${it.uid})"><span class="it-ic">${seedIcon(s)}</span>
-      <span style="flex:1;text-align:left">${s.name} ${mutEmojis(it.muts)}<br><small>${fmtKg(it.kg)}kg • 💰${itemValue(it).toLocaleString()}</small></span>
+      <span style="flex:1;text-align:left">${s.name} ${mutEmojis(it.muts)}<br><small>${fmtKg(it.kg)}kg • 💰${fmtShort(itemValue(it))}</small></span>
       <b>+${feedXp(it)} EXP</b></button>`;
   });
   html += `</div><button onclick="closeModal()">ปิด</button>`;
@@ -6971,7 +7106,7 @@ function openFeed(uid) {
 }
 // หลอมรวม: ใช้ตัวชนิดเดียวกันอีก 2 ตัว (ที่ไม่ได้ลงสวน) → ★+1 และเก็บเกรด/ร่างที่ดีที่สุดไว้
 function fuseMats(p) {
-  const team = teamUids();
+  const team = allTeamUids();
   return state.pets.filter(x => x.id === p.id && x.uid !== p.uid && !team.includes(x.uid) && !x.inLab && !x.locked)
     .sort((a, b) => (a.stars || 1) - (b.stars || 1) || a.q - b.q || (a.level || 1) - (b.level || 1));
 }
@@ -6981,7 +7116,7 @@ async function fusePet(uid) {
   const mats = fuseMats(p).slice(0, 2);
   if (mats.length < 2) return toast(`ต้องมี${pet.name}ตัวอื่นอีก 2 ตัวที่ไม่ได้ลงสวน`);
   const cost = fuseCost(p);
-  if (state.coins < cost) return toast(`💰 ต้องใช้ ${cost.toLocaleString()}`);
+  if (state.coins < cost) return toast(`💰 ต้องใช้ ${fmtShort(cost)}`);
   const desc = mats.map(m => `${gradeOf(m.q).g} Lv.${m.level}${m.variant ? ' ' + getVariant(m.variant).name : ''}`).join(' และ ');
   if (mats.some(m => gradeOf(m.q).q >= 0.88 || m.variant || (m.stars || 1) > 1) && !await ask(`หลอมรวมจะใช้${pet.name} ${desc} แน่ใจไหม?`)) return;
   state.coins -= cost;
@@ -7010,7 +7145,7 @@ async function fusePet(uid) {
 function evolvePet(uid) {
   const p = getPetByUid(uid), pet = p && getPet(p.id);
   if (!p || p.gold || (p.level || 1) < PET_EVOLVE_LV) return;
-  if (state.coins < EVOLVE_COST.coins || state.gems < EVOLVE_COST.gems) return toast(`ต้องใช้ 💰${EVOLVE_COST.coins.toLocaleString()} + 💎${EVOLVE_COST.gems}`);
+  if (state.coins < EVOLVE_COST.coins || state.gems < EVOLVE_COST.gems) return toast(`ต้องใช้ 💰${fmtShort(EVOLVE_COST.coins)} + 💎${EVOLVE_COST.gems}`);
   state.coins -= EVOLVE_COST.coins; state.gems -= EVOLVE_COST.gems;
   p.gold = true;
   flashStrike();
@@ -7053,11 +7188,12 @@ async function releasePet(uid) {
   if (!p) return;
   if (p.inLab) return toast('🧪 ตัวนี้อยู่ในเครื่องกลายพันธุ์');
   if (p.locked) return toast('🔒 ตัวนี้ล็อกไว้ • ปลดล็อกก่อนถึงจะปล่อยได้');
+  if (allTeamUids().includes(uid)) return toast('🏡 ตัวนี้ทำงานอยู่ในฟาร์ม • ให้พักจากทุกฟาร์มก่อนถึงจะปล่อยได้');
   const v = releaseValue(p), pet = getPet(p.id);
   const precious = rarityOf(p).rank >= 4 || p.q >= 0.88 || p.variant || (p.stars || 1) > 1 || p.gold;
   if (!await ask(`ปล่อย${pet.name} (${gradeOf(p.q).g} Lv.${p.level}) แลก 🐾 ${v} เศษ?${precious ? '\n⚠️ ตัวนี้หายาก/เกรดดีนะ!' : ''}`)) return;
   state.pets = state.pets.filter(x => x.uid !== uid);
-  state.petTeam = (state.petTeam || []).filter(x => x !== uid);
+  dropFromTeams(new Set([uid]));
   state.shards = (state.shards || 0) + v;
   toast(`👋 ปล่อย${pet.name}กลับป่า +🐾 ${v} เศษ`);
   save(); render(); syncWalkers();
@@ -7065,7 +7201,7 @@ async function releasePet(uid) {
 
 // ==================== จัดการสัตว์ทีละหลายตัว (ลิสต์ให้ติ๊ก) ====================
 let brSel = new Set(), brArmed = false, brFilter = 'all';
-const brCan = p => p && !p.locked && !p.inLab && !teamUids().includes(p.uid);   // ปล่อยได้
+const brCan = p => p && !p.locked && !p.inLab && !allTeamUids().includes(p.uid);   // ปล่อยได้
 const isPrecious = p => rarityOf(p).rank >= 4 || p.q >= 0.88 || p.variant || (p.stars || 1) > 1 || p.gold;
 function brMatch(p, team) {
   if (brFilter === 'all') return true;
@@ -7076,15 +7212,15 @@ function brMatch(p, team) {
 }
 function openBulkRelease(keep) {
   if (!keep) { brSel = new Set(); brArmed = false; brFilter = 'all'; }
-  const all = state.pets, team = teamUids();
+  const all = state.pets, team = teamUids(), anyT = allTeamUids();
   if (!all.length) { closeModal(); return toast('🐾 ยังไม่มีสัตว์เลี้ยง'); }
   brSel.forEach(u => { if (!getPetByUid(u)) brSel.delete(u); });
   const rars = Object.keys(RARITIES).filter(k => all.some(p => getPet(p.id).rarity === k));
-  const shown = all.filter(p => brMatch(p, team) && eggMatch(p))
-    .sort((a, b) => (team.includes(b.uid) - team.includes(a.uid)) || rarityOf(a).rank - rarityOf(b).rank || a.id.localeCompare(b.id) || a.q - b.q);
+  const shown = all.filter(p => brMatch(p, anyT) && eggMatch(p))
+    .sort((a, b) => (anyT.includes(b.uid) - anyT.includes(a.uid)) || rarityOf(a).rank - rarityOf(b).rank || a.id.localeCompare(b.id) || a.q - b.q);
   const rows = shown.map(p => {
     const sp = getPet(p.id), r = rarityOf(p), on = brSel.has(p.uid);
-    const tags = (team.includes(p.uid) ? ' 🌱' : '') + (p.locked ? ' 🔒' : '') + (p.inLab ? ' 🧪' : '') + (isPrecious(p) ? ' ⚠️' : '');
+    const tags = (anyT.includes(p.uid) ? ' 🌱' : '') + (p.locked ? ' 🔒' : '') + (p.inLab ? ' 🧪' : '') + (isPrecious(p) ? ' ⚠️' : '');
     return `<div class="gp-row bd-row ${on ? 'sel' : ''}" onclick="brToggle(${p.uid})">
       <span class="bd-ck">${on ? '✓' : ''}</span>
       <span class="pet-ic ${p.variant ? 'v-' + p.variant : ''}">${petImg(p.id, 0)}</span>
@@ -7094,7 +7230,7 @@ function openBulkRelease(keep) {
   const sel = all.filter(p => brSel.has(p.uid));
   const rel = sel.filter(brCan), relV = rel.reduce((a2, p) => a2 + releaseValue(p), 0), nPrecious = rel.filter(isPrecious).length;
   const oldList = keep && document.querySelector('#modalBox .bd-list'), oldTop = oldList ? oldList.scrollTop : 0;
-  const cnt = f => all.filter(p => { const o = brFilter; brFilter = f; const m = brMatch(p, team); brFilter = o; return m; }).length;
+  const cnt = f => all.filter(p => { const o = brFilter; brFilter = f; const m = brMatch(p, anyT); brFilter = o; return m; }).length;
   const chip = (f, label) => `<button class="${brFilter === f ? 'on' : ''}" onclick="brFilter='${f}';openBulkRelease(1)">${label} (${cnt(f)})</button>`;
   const chips = chip('all', 'ทั้งหมด') + chip('team', '🌱 ในทีม') + chip('free', '🏠 ว่าง') + chip('lock', '🔒 ล็อก') + rars.map(k => chip(k, RARITIES[k].name)).join('');
   const dis = c => c ? '' : 'disabled';
@@ -7118,7 +7254,7 @@ function openBulkRelease(keep) {
 }
 function brToggle(uid) { if (brSel.has(uid)) brSel.delete(uid); else brSel.add(uid); brArmed = false; openBulkRelease(1); }
 function brSelect(mode) {
-  const team = teamUids(), list = state.pets.filter(p => brMatch(p, team) && eggMatch(p));
+  const team = allTeamUids(), list = state.pets.filter(p => brMatch(p, team) && eggMatch(p));
   if (mode === 'none') brSel = new Set();
   else if (mode === 'shown') list.forEach(p => brSel.add(p.uid));
   else if (mode === 'low') list.forEach(p => { if (brCan(p) && p.q < 0.70 && rarityOf(p).rank < 4 && !p.variant && (p.stars || 1) <= 1 && !p.gold && !p.plus) brSel.add(p.uid); });
@@ -7155,7 +7291,7 @@ function brGo() {
   if (!brArmed) { brArmed = true; return openBulkRelease(1); }
   const total = sel.reduce((a2, p) => a2 + releaseValue(p), 0), uids = new Set(sel.map(p => p.uid));
   state.pets = state.pets.filter(p => !uids.has(p.uid));
-  state.petTeam = (state.petTeam || []).filter(u => !uids.has(u));
+  dropFromTeams(uids);
   state.shards = (state.shards || 0) + total;
   uids.forEach(u => brSel.delete(u)); brArmed = false;
   sfx('buy');
@@ -7347,6 +7483,7 @@ function syncWalkers() {
   const want = teamUids();
   const key = want.map(u => { const p = getPetByUid(u); return u + ':' + (p.variant || '') + (p.gold ? 'g' : '') + (p.awakened ? 'a' : ''); }).join();
   if (walkers._key === key) return;
+  if (walkers._farm != null) walkers.forEach(w => { const r = rtOf(walkers._farm, w.uid); r.cd = w.busy ? (w.cdMax || 10) : w.cd; r.cdMax = w.cdMax || r.cdMax; });   // เก็บคูลดาวน์ไว้ให้ทำงานต่อ
   walkers.forEach(w => { clearInterval(w.walkT); clearTimeout(w.t); });
   const layer = $('petLayer');
   layer.innerHTML = '';
@@ -7356,13 +7493,14 @@ function syncWalkers() {
     el.className = 'pet-walker' + (p.variant ? ' v-' + p.variant : '') + (p.gold ? ' gold' : '') + (p.awakened ? ' awk' : '');
     el.innerHTML = `<i><span><img alt=""></span></i><b class="lv"></b>`;
     layer.appendChild(el);
-    const w = { uid, el, img: el.querySelector('img'), cd: rand(4, 12), busy: false, x: 0, y: 0, arriveAt: 0 }; w.cdMax = w.cd;
+    const w = { uid, el, img: el.querySelector('img'), cd: rand(4, 12), busy: false, x: 0, y: 0, arriveAt: 0 };
+    { const sv = petCD[state.farmIdx + ':' + uid]; if (sv) { w.cd = sv.cd; w.cdMax = sv.cdMax || sv.cd; } else w.cdMax = w.cd; }
     w.img.style.setProperty('--ps', p.size || 1);
     setFrame(w, 0);
     placeWalker(w, randomSpot());
     return w;
   });
-  walkers._key = key;
+  walkers._key = key; walkers._farm = state.farmIdx;
 }
 
 function randomSeedDrop(rare) {
@@ -7505,7 +7643,7 @@ function doPetSkill(w, p, target, abOver, vOver) {
   } else if (ab.type === 'meteor') {
     const c = { x: plot.x ?? 0.5, y: plot.y ?? 0.5 };
     spawnParticles(target, ['⚠️'], 3);
-    setTimeout(() => {
+    const fi0 = state.farmIdx, boom = () => {
       flashStrike(); sfx('thunder');
       let n = 0;
       state.plots.forEach((q, k) => {
@@ -7517,7 +7655,8 @@ function doPetSkill(w, p, target, abOver, vOver) {
       });
       toast(`☄️ อุกกาบาตตก! ${n ? `🕳️ ${n} ต้น` : ''} • ต้นกลางจุดผลหนักขึ้น +50%`);
       save(); renderGarden();
-    }, 2000);
+    };
+    if (BG_FARM >= 0) boom(); else setTimeout(() => { if (state.farmIdx === fi0) boom(); else runInFarm(fi0, boom); }, 2000);
     ok = true; msg = `${sp.emoji} อุกกาบาตมา!`;
   } else if (ab.type === 'beam') {
     if (!isReady(plot) && !isAway(plot) && Math.random() < Math.min(0.9, v)) { plot.beamUntil = Date.now() + 30000; ok = true; msg = `${sp.emoji} ดูดขึ้นยาน!`; spawnParticles(target, ['🛸', '✨'], 6); }
@@ -7597,7 +7736,7 @@ function doPetSkill(w, p, target, abOver, vOver) {
     if (Math.random() < Math.min(0.9, v)) {
       state.roarUntil = Date.now() + 45000;
       let n = 0;
-      walkers.forEach(o => { if (o === w) return; const q = getPetByUid(o.uid); if (!q) return;
+      (BG_FARM >= 0 ? bgPeers : walkers).forEach(o => { if (o === w) return; const q = getPetByUid(o.uid); if (!q) return;
         const t = getPet(q.id).ab.type; if (t === 'roar' || t === 'copy' || !getPet(q.id).ab.every) return; o.cd = 0; n++; });
       flashStrike(); sfx('rare'); ok = true; msg = `${sp.emoji} ROAR!!`;
       toast(`🦖 ${sp.name}คำราม! ${n ? `สัตว์ ${n} ตัวใช้สกิลทันที • ` : ''}45 วิ ผลที่เก็บราคา ×2!`);
@@ -7746,11 +7885,13 @@ function petTick() {
     const target = pickPetTarget(useAb);
     if (target < 0) { w.cd = 8; return; }
     w.busy = true;
+    const fi = state.farmIdx;   // ฟาร์มที่เริ่มใช้สกิล (ถ้าสลับฟาร์มระหว่างเดิน ผลต้องไปลงฟาร์มเดิม)
     const travel = lw ? moveWalker(w, plotSpot(target)) : 0;
     setTimeout(() => {
       setFrame(w, 2);
       setTimeout(() => {
-        doPetSkill(w, p, target, useAb === ab ? null : useAb, useV);
+        if (state.farmIdx === fi) doPetSkill(w, p, target, useAb === ab ? null : useAb, useV);
+        else runInFarm(fi, () => doPetSkill(w, p, target, useAb === ab ? null : useAb, useV));
         w.busy = false;
         w.cd = ab.every * rand(0.8, 1.2) * plusCdMult(p); w.cdMax = w.cd;
       }, 500);
@@ -7945,7 +8086,7 @@ function renderGacha() {
   const allN = state.incubator.length + state.eggInv.length, iCost = instantHatchCost();
   if (allN > 0 && iCost > 0) html += `<button class="gbtn" style="width:100%;margin-top:8px;background:linear-gradient(#7c4dff,#5e35b1);box-shadow:0 3px 0 #311b92;color:#fff" onclick="instantHatchAll()">⚡ ฟักทันทีทั้งหมด ${allN} ฟอง • 💎${iCost}</button>`;
   if (ready > 1) html += `<button class="gbtn" style="width:100%;margin-top:8px;background:#fb8c00;box-shadow:0 3px 0 #e65100" onclick="hatchAllReady()">🐣 ฟักทั้งหมดที่พร้อม (${ready})</button>`;
-  if (state.incSlots < INC_MAX) html += `<button class="gbtn" style="width:100%;margin-top:8px" onclick="buyIncSlot()">➕ เพิ่มช่องฟัก • 💰${incSlotCost(state.incSlots).toLocaleString()}</button>`;
+  if (state.incSlots < INC_MAX) html += `<button class="gbtn" style="width:100%;margin-top:8px" onclick="buyIncSlot()">➕ เพิ่มช่องฟัก • 💰${fmtShort(incSlotCost(state.incSlots))}</button>`;
   html += `</div>`;
 
   const lim = limitedEggFor(limitedPeriod());
@@ -8018,19 +8159,20 @@ function petCardHTML(p, inTeam) {
         ${p.variant && getVariant(p.variant) && getVariant(p.variant).bdesc ? `<div class="s2-line vb">${getVariant(p.variant).emoji} ร่าง${getVariant(p.variant).name}: ${getVariant(p.variant).bdesc}</div>` : ''}
         ${p.s2 ? `<div class="s2-line">🌟 สกิลที่ 2: <b>${s2Text(p.s2)}</b></div>` : ''}
         ${p.s3 ? `<div class="s2-line awk-line">🌈 ตื่นรู้ • สกิลที่ 3: <b>${s2Text(p.s3)}</b> • พลัง ×1.3 • สกิลเร็วขึ้น 15%</div>` : ''}
+        ${farmsOfPet(p.uid).length ? `<div class="s2-line">🏡 ทำงานที่: ${farmsOfPet(p.uid).map(k => FARMS[k].emoji + ' ' + FARMS[k].name).join(' • ')}</div>` : ''}
         <div class="xpbar"><i style="width:${pct}%"></i><span>${lv >= max ? 'เลเวลตัน' : `EXP ${p.xp || 0}/${need}`}</span></div>
       </div>
     </div>
     <div class="pc-btns">
       <button class="${inTeam ? 'gem' : ''}" onclick="togglePetTeam(${p.uid})">${inTeam ? '🏠 พัก' : '🚶 ลงสวน'}</button>
       ${lv < max ? `<button onclick="openFeed(${p.uid})">🍎 อาหาร</button><button class="gem" onclick="feedCommon(${p.uid})">🧺 ป้อนธรรมดา</button>` : ''}
-      ${st < PET_MAX_STAR ? `<button class="fuse" ${canFuse ? '' : 'disabled'} onclick="fusePet(${p.uid})">⭐ หลอม ★${st + 1}<br><small>${canFuse ? '💰' + fuseCost(p).toLocaleString() : `ต้องมีตัวซ้ำ 2 (มี ${mats})`}</small></button>` : ''}
+      ${st < PET_MAX_STAR ? `<button class="fuse" ${canFuse ? '' : 'disabled'} onclick="fusePet(${p.uid})">⭐ หลอม ★${st + 1}<br><small>${canFuse ? '💰' + fmtShort(fuseCost(p)) : `ต้องมีตัวซ้ำ 2 (มี ${mats})`}</small></button>` : ''}
       ${(p.plus || 0) < PLUS_MAX ? (() => { const c = plusCost(p), ok = state.coins >= c.coins && (state.shards || 0) >= c.shards && state.gems >= c.gems; return `<button class="enhance" ${ok ? '' : 'disabled'} onclick="enhancePet(${p.uid})">⚡ เสริมพลัง +${(p.plus || 0) + 1} <small>(สำเร็จ ${Math.round(plusRate(p) * 100)}%)</small><br><small>💰${fmtShort(c.coins)} 🐾${c.shards.toLocaleString()}${c.gems ? ' 💎' + c.gems : ''}</small></button>`; })() : '<button class="enhance" disabled>⚡ +10 ตันแล้ว</button>'}
       ${(p.plus || 0) >= PLUS_MAX ? `<button class="awaken2" onclick="awakenSkill2(${p.uid})">🌟 ${p.s2 ? 'สุ่มสกิลที่ 2 ใหม่' : 'ปลุกสกิลที่ 2'}<br><small>💎${p.s2 ? S2_REROLL : S2_COST.gems}${p.s2 ? '' : ' 💰' + fmtShort(rarityOf(p).fuse * S2_COST.coinsMult)}</small></button>` : ''}
       ${canAwaken(p) ? `<button class="awaken3" onclick="awakenPet(${p.uid})">🌈 ตื่นรู้<br><small>🌠${AWK_COST} + ตัวซ้ำ 1</small></button>` : ''}
-      ${canEvolve ? `<button class="evolve" onclick="evolvePet(${p.uid})">✨ ร่างทอง<br><small>💰${EVOLVE_COST.coins.toLocaleString()} 💎${EVOLVE_COST.gems}</small></button>` : ''}
+      ${canEvolve ? `<button class="evolve" onclick="evolvePet(${p.uid})">✨ ร่างทอง<br><small>💰${fmtShort(EVOLVE_COST.coins)} 💎${EVOLVE_COST.gems}</small></button>` : ''}
       ${p.inLab ? '<button disabled>🧪 อยู่ในเครื่อง</button>' : `<button class="lab" onclick="sendToLab(${p.uid})">🧪 กลายพันธุ์<br><small>💰${fmtShort(mutLabCost(p).coins)} 💎${mutLabCost(p).gems}</small></button>`}
-      ${inTeam || p.inLab || p.locked ? '' : `<button class="release" onclick="releasePet(${p.uid})">👋 ปล่อย<br><small>🐾 ${releaseValue(p)} เศษ</small></button>`}
+      ${inTeam || p.inLab || p.locked || farmsOfPet(p.uid).length ? '' : `<button class="release" onclick="releasePet(${p.uid})">👋 ปล่อย<br><small>🐾 ${releaseValue(p)} เศษ</small></button>`}
     </div>
   </div>`;
 }
@@ -8039,14 +8181,16 @@ let petShowN = 30;   // แสดงการ์ดทีละ 30 ตัว ก
 function renderPets() {
   const el = $('pets');
   const team = teamUids();
-  let html = `<div class="team-box"><div class="br-title">🌱 ทีมในสวน (${team.length}/${state.petSlots})</div><div class="team-slots">`;
+  const ownedN = FARMS.filter((_, i) => farmOwned(i)).length, curF = FARMS[state.farmIdx || 0];
+  const fbtns = ownedN > 1 ? `<div style="margin:4px 0 6px">${FARMS.map((F, i) => farmOwned(i) ? `<button class="${i === state.farmIdx ? 'gem' : ''}" style="padding:4px 8px;font-size:12px;margin:2px" onclick="switchFarm(${i})">${F.emoji} ${F.name}</button>` : '').join('')}</div>` : '';
+  let html = `<div class="team-box"><div class="br-title">🌱 ทีมของ ${curF.emoji} ${curF.name} (${team.length}/${state.petSlots})</div>${fbtns}<div class="team-slots">`;
   for (let k = 0; k < state.petSlots; k++) {
     const p = getPetByUid(team[k]);
     html += p ? `<div class="ts" onclick="togglePetTeam(${p.uid})" title="แตะเพื่อให้พัก"><span class="pet-ic ${p.variant ? 'v-' + p.variant : ''}">${petImg(p.id, 0)}</span><small>${getPet(p.id).name}</small>${gradeBadge(p)}${getPet(p.id).ab.every ? cdBarHTML(p.uid) : '<span class="ts-pass">✨ ติดตัว (ทำงานตลอด)</span>'}</div>`
               : `<div class="ts empty" onclick="openTeamPicker()"><b style="font-size:22px">➕</b>ว่าง<small>แตะเพื่อเลือก</small></div>`;
   }
-  html += `</div>${state.petSlots < petSlotMax() ? `<button class="gbtn" style="width:100%;margin-top:8px" onclick="buyPetSlot()">➕ เพิ่มช่องลงสวน • 💰${petSlotCost(state.petSlots).toLocaleString()}</button>` : ''}
-    <p class="br-note">เฉพาะตัวที่ลงสวนเท่านั้นที่ใช้ความสามารถ • ถ้ายังไม่เลือก เกมจะส่งตัวที่ดีที่สุดให้อัตโนมัติ</p></div>`;
+  html += `</div>${state.petSlots < petSlotMax() ? `<button class="gbtn" style="width:100%;margin-top:8px" onclick="buyPetSlot()">➕ เพิ่มช่องลงสวน • 💰${fmtShort(petSlotCost(state.petSlots))}</button>` : ''}
+    <p class="br-note">เฉพาะตัวที่ลงสวนเท่านั้นที่ใช้ความสามารถ • แต่ละฟาร์มมีทีมของตัวเอง เลือกตัวซ้ำกับฟาร์มอื่นได้ และทุกฟาร์มทำงานตลอดที่เปิดเกม${(state.petTeam || []).length ? '' : ' • ถ้ายังไม่เลือก เกมจะส่งตัวที่ดีที่สุดให้อัตโนมัติ'}</p></div>`;
 
   html += labBoxHTML();
   html += `<h3>🐾 สัตว์เลี้ยงของฉัน (${state.pets.length} ตัว) <span class="shard-pill">🐾 เศษ ${state.shards || 0}</span></h3>`;
@@ -8090,7 +8234,7 @@ function claimDailyLogin() {
   const r = DAILY_REWARDS[day - 1];
   state.coins += r.coins || 0;
   state.gems += r.gems || 0;
-  let msg = `🎁 วันที่ ${day}! +💰${(r.coins||0).toLocaleString()}${r.gems?` +💎${r.gems}`:''}`;
+  let msg = `🎁 วันที่ ${day}! +💰${fmtShort((r.coins||0))}${r.gems?` +💎${r.gems}`:''}`;
   if (r.freeEgg) {
     state.eggInv.push({ uid: state.uid++, eggId: r.freeEgg, species: rollEggPet(getEgg(r.freeEgg)) });
     fillIncubator();
@@ -8139,7 +8283,7 @@ function openFloatingChest() {
 
   setTimeout(() => {
     let body;
-    if (reward.type === 'coins') body = `<h2>+💰${reward.amount.toLocaleString()}</h2>`;
+    if (reward.type === 'coins') body = `<h2>+💰${fmtShort(reward.amount)}</h2>`;
     else if (reward.type === 'gems') body = `<h2>+💎${reward.amount}</h2>`;
     else if (reward.type === 'seeds') body = `<h2>เมล็ด${reward.seed.name} ×${reward.amount}</h2>`;
     else body = `<h2>${reward.egg.name}!</h2><p>ใส่ตู้ฟักให้แล้ว</p>`;
@@ -8159,7 +8303,7 @@ function updateQuest(id, amount=1) {
     state.dailyQuest.claimed.push(id);
     state.coins += questReward(q);
     state.gems += QUEST_GEMS + skillEff('questgem');
-    toast(`🏆 ภารกิจสำเร็จ! +💰${questReward(q).toLocaleString()} +💎${QUEST_GEMS + skillEff('questgem')}`);
+    toast(`🏆 ภารกิจสำเร็จ! +💰${fmtShort(questReward(q))} +💎${QUEST_GEMS + skillEff('questgem')}`);
     addXP(20);
   }
 }
@@ -8216,12 +8360,11 @@ function learnSkill(skillId) {
 }
 
 // ==================== Rebirth ====================
-function getRebirthRequirement() { return 20 + state.rebirth * 10; }
+function getRebirthRequirement() { return Math.min(70, 20 + state.rebirth * 5); }   // +5 เลเวลต่อรอบ สูงสุด 70
 // ===== 🔆 แต้มเกิดใหม่ + ร้าน Rebirth =====
 const RB_SHOP = [
   { id:'luck',    name:'🍀 โชคถาวร',             max:10, cost:n => 5 * n,           desc:n => `โชค +${2 * n}%` },
   { id:'weather', name:'🌦️ ฟ้าประทาน',            max:10, cost:n => 6 * n,           desc:n => `โอกาสติดสถานะจากสภาพอากาศ +${10 * n}%` },
-  { id:'keep',    name:'🌳 เก็บต้นไม้ข้ามรอบ',      max:3,  cost:n => [30, 60, 100][n - 1], desc:n => `ตอน Rebirth เก็บต้นไม้ในสวนไว้ได้ ${n} ต้น (เลือกเองได้)` },
   { id:'keepdev', name:'📦 เก็บอุปกรณ์ข้ามรอบ',     max:1,  cost:() => 40,              desc:() => 'อุปกรณ์ที่วางอยู่และในคลังไม่หายตอน Rebirth' },
   { id:'inc',     name:'🥚 ช่องฟักไข่พิเศษ',        max:2,  cost:n => 40 * n,          desc:n => `ช่องฟักไข่ +${n} (นอกเหนือจากที่ซื้อด้วยเงิน)` },
 ];
@@ -8275,21 +8418,38 @@ function toggleRbKeep(i) {
 async function doRebirth() {
   const req = getRebirthRequirement();
   if (state.level < req) return toast(`🔒 ต้องเลเวล ${req}`);
-  if (!await ask(`Rebirth?\n\nรีเซ็ต: เงิน, Gear, Level, สวน, กระเป๋า, เมล็ด\nเก็บไว้: เพชร, สกิล, ตู้โชว์, ของแต่ง, ความสำเร็จ, สมุดสะสม\nได้: รายได้ +25% ถาวร และสกิลพอยท์ +5`)) return;
+  if (!await ask(`Rebirth?\n\nรีเซ็ต: เงิน, Gear, Level, กระเป๋า, เมล็ด (ต้นไม้ที่ปลูกอยู่ทุกฟาร์มไม่หาย)\nเก็บไว้: ระดับขยายสวน, เพชร, สกิล, ตู้โชว์, ของแต่ง, ความสำเร็จ, สมุดสะสม\nได้: รายได้ +25% ถาวร และสกิลพอยท์ +5`)) return;
 
-  const gain = rebirthPoints(), keepIdx = rbKeepList();
+  const gain = rebirthPoints();
+  // 🌳 ต้นไม้ที่ปลูกอยู่ทุกฟาร์มไม่รีเซ็ต: เก็บทุกต้นไว้ช่อง/ตำแหน่งเดิม
+  farmsInit();
+  const keptFarms = FARMS.map((_, i) => { if (!farmOwned(i)) return null; const f = farmData(i);
+    return (f && f.plots ? f.plots : []).map(pl => pl && pl.seedId ? { ...JSON.parse(JSON.stringify(pl)), unlocked: true } : null); });
+  const keepN = keptFarms.reduce((a, arr) => a + (arr ? arr.filter(Boolean).length : 0), 0);
+  // 🌳 ระดับการขยายสวนของแต่ละฟาร์ม: ต้องเก็บไว้ ไม่งั้นแปลงช่องหลัง ๆ จะถูกล็อก/ซ่อน ต้นหาย (cap เหลือ 20)
+  const keptLv = FARMS.map((_, i) => { if (!farmOwned(i)) return 0; const f = farmData(i); return Math.max(0, Math.min((f && f.gardenLevel) || 0, EXPANSIONS.length - 1)); });
+  const withKept = (plots, kept, lv) => {
+    (kept || []).forEach((pl, k) => { if (pl && plots[k]) plots[k] = pl; });
+    const cap = EXPANSIONS[lv || 0].cap;
+    plots.forEach((pl, k) => { if (k < cap || pl.seedId) pl.unlocked = true; });   // ต้นที่ปลูกอยู่ห้ามถูกล็อก
+    return plots;
+  };
   const s = defaultState();
   s.rebirth = state.rebirth + 1;
   s.skillPoints = state.skillPoints + 5;
   s.rbPts = (state.rbPts || 0) + gain;
-  keepIdx.forEach((i, k) => { s.plots[k] = { ...JSON.parse(JSON.stringify(state.plots[i])), unlocked: true }; });
+  s.gardenLevel = keptLv[0];
+  withKept(s.plots, keptFarms[0], keptLv[0]);
   if (rbLv('keepdev')) { s.placed = state.placed; s.placeInv = state.placeInv; }
-  s.farmIdx = 0; s.farms = FARMS.map((_, i) => i === 0 ? { owned: true } : (farmOwned(i) ? newFarm() : null));
+  const rbTeams = FARMS.map((_, i) => !farmOwned(i) ? null : (i === state.farmIdx ? stashFarmTeam() : farmTeamRaw(i).slice()));
+  s.farmIdx = 0; s.farmTeamsV2 = true;
+  s.farms = FARMS.map((_, i) => i === 0 ? { owned: true } : (farmOwned(i) ? (() => { const nf = newFarm(); nf.gardenLevel = keptLv[i]; withKept(nf.plots, keptFarms[i], keptLv[i]); return { ...nf, petTeam: rbTeams[i] }; })() : null));
   ['ownedSkills','collection','gems','dailyLogin','dailyQuest','eggPity',
    'showcase','showcaseSlots','decor','ach','life','uid','upg','devLv','rbShop','rbKeep','weather','nextWeatherAt','recipesFound','incSlots','settings','pets','petTeam','petSlots','eggInv','incubator','eggPity','shards','tut','spaceQuest','chainQ','farmThemes','ascend','essence','ascShop','mastery','legend','tower','potions','awkSpecies'].forEach(k => { s[k] = state[k]; });
+  s.petTeam = (rbTeams[0] && rbTeams[0].length) ? rbTeams[0] : [];
   state = s;
   restockShop(true);
-  toast(`🔄 Rebirth ${state.rebirth} สำเร็จ! ได้ 🔆${gain} แต้มเกิดใหม่${keepIdx.length ? ` • เก็บต้นไม้ไว้ ${keepIdx.length} ต้น` : ''}`);
+  toast(`🔄 Rebirth ${state.rebirth} สำเร็จ! ได้ 🔆${gain} แต้มเกิดใหม่${keepN ? ` • ต้นไม้ที่ปลูกอยู่ ${keepN} ต้นไม่รีเซ็ต` : ''}`);
   save(); render();
 }
 
@@ -8486,7 +8646,7 @@ function renderStats() {
     pill.classList.remove('bump'); void pill.offsetWidth; pill.classList.add('bump');
   }
   lastCoins = state.coins;
-  $('coins').textContent = state.coins.toLocaleString();
+  $('coins').textContent = fmtShort(state.coins);
   $('gems').textContent = state.gems;
   $('level').textContent = state.level;
   { const need = xpNeeded(state.level), cur = Math.max(0, Math.floor(state.xp || 0));
@@ -8799,7 +8959,7 @@ function itemRowHTML(it, buttons) {
         <span class="it-ic">${seedIcon(s)}</span>
         <div><b>${s.name}</b> ${tag ? `<span class="badge" style="background:${kgColor(it.kg)}">${tag}</span>` : ''}<br>
           <small>⚖️ ${fmtKg(it.kg)}kg ${mutEmojis(it.muts)}${mult > 1 ? ' ×' + fmtMult(mult) : ''}</small><br>
-          <small style="color:#2e7d32;font-weight:800">💰${itemValue(it).toLocaleString()}</small>
+          <small style="color:#2e7d32;font-weight:800">💰${fmtShort(itemValue(it))}</small>
           <small class="${f >= 1 ? 'up' : 'down'}">ตลาด ×${f.toFixed(2)}</small>
         </div>
       </div>
@@ -8814,7 +8974,7 @@ function renderBag() {
   const common = state.bag.filter(it => !it.muts.length && !isBig(it)).length;
   let html = `<div class="stand">
       <div class="stand-roof"></div>
-      <div class="stand-body">🧑‍🌾 ร้านรับซื้อผลผลิต<br><small>🎒 ${n}/${cap} ชิ้น • มูลค่ารวม 💰${sum.toLocaleString()}</small></div>
+      <div class="stand-body">🧑‍🌾 ร้านรับซื้อผลผลิต<br><small>🎒 ${n}/${cap} ชิ้น • มูลค่ารวม 💰${fmtShort(sum)}</small></div>
     </div>` + upgBoxHTML('bag');
   html += `<div class="row-btns">
       <button class="gbtn sell" ${n ? '' : 'disabled'} onclick="sellAll()">💰 ขายทั้งหมด</button>
@@ -8849,7 +9009,7 @@ const GACHA_SEED_GEMS = { rare: 1, legendary: 3, mythic: 8, divine: 20, prismati
 function seedSellValue(s) {
   return s.gachaOnly ? { gems: GACHA_SEED_GEMS[s.tier] || 1, coins: 0 } : { gems: 0, coins: Math.max(1, Math.floor(s.price * 0.5)) };
 }
-const fmtSeedVal = v => v.gems ? `💎${v.gems.toLocaleString()}` : `💰${v.coins.toLocaleString()}`;
+const fmtSeedVal = v => v.gems ? `💎${v.gems.toLocaleString()}` : `💰${fmtShort(v.coins)}`;
 async function sellSeed(id, n) {
   const s = getSeed(id), have = state.seeds[id] || 0;
   if (!s || have <= 0) return;
@@ -8883,7 +9043,7 @@ function renderShowcase() {
   const top = items.reduce((b, it) => (!b || it.base > b.base) ? it : b, null);
   const total = items.reduce((a, it) => a + itemValue(it), 0);
   let html = `<h3>🏆 ตู้โชว์ (${items.length}/${state.showcaseSlots})</h3>
-    <p style="font-size:12px;color:#555;margin:0 0 8px">มูลค่ารวมในตู้ 💰${total.toLocaleString()} • ⭐ = ชิ้นที่แพงที่สุด</p>`;
+    <p style="font-size:12px;color:#555;margin:0 0 8px">มูลค่ารวมในตู้ 💰${fmtShort(total)} • ⭐ = ชิ้นที่แพงที่สุด</p>`;
   html += `<div class="shelf"><div class="shelf-grid">`;
   for (let k = 0; k < state.showcaseSlots; k++) {
     const it = items[k];
@@ -8897,14 +9057,14 @@ function renderShowcase() {
         <div class="ic" style="--s:${scale}">${seedIcon(s)}</div>
         <div class="muts">${mutEmojis(it.muts)}</div>
         <div class="nm">${s.name} ${fmtKg(it.kg)}kg</div>
-        <div class="val">${mult > 1 ? '×' + fmtMult(mult) + ' • ' : ''}💰${itemValue(it).toLocaleString()}</div>
+        <div class="val">${mult > 1 ? '×' + fmtMult(mult) + ' • ' : ''}💰${fmtShort(itemValue(it))}</div>
         <button onclick="fromShowcase(${it.uid})">เอาออก</button>
       </div>`;
   }
   html += `</div></div>`;
   html = html.replace('</h3>', `</h3>${upgBoxHTML('show')}${upLv('show') ? `<p class="upg-bonus">✨ ตู้โชว์ให้ราคาขาย +${(showcaseBonus() * 100).toFixed(1)}% (ของยิ่งหายาก/สถานะเยอะ ยิ่งให้มาก • สูงสุด +30%)</p>` : ''}`);
   html += state.showcaseSlots < showcaseMax()
-    ? `<button class="skill-btn" style="margin-top:10px;background:#a86d36" onclick="buyShowcaseSlot()">🪵 เพิ่มชั้นวาง +3 ช่อง • 💰${showcaseSlotCost().toLocaleString()}</button>`
+    ? `<button class="skill-btn" style="margin-top:10px;background:#a86d36" onclick="buyShowcaseSlot()">🪵 เพิ่มชั้นวาง +3 ช่อง • 💰${fmtShort(showcaseSlotCost())}</button>`
     : '';
   html += `<p style="font-size:12px;color:#555">วางของได้จากแท็บ 🎒 กระเป๋า (ปุ่ม 🏆 โชว์) ของในตู้ไม่หาย แม้จะทำ Rebirth</p>`;
   el.innerHTML = html;
@@ -9008,16 +9168,28 @@ function buyGems(k) {
   const cost = gemExCost(k);
   if (state.coins < cost) return toast('💰 เงินไม่พอ');
   state.coins -= cost; state.gems += k; gemEx().n += k;
-  toast(`💎 แลกเพชร +${k}! (-💰${cost.toLocaleString()})`);
+  toast(`💎 แลกเพชร +${k}! (-💰${fmtShort(cost)})`);
   sfx('buy');
   save(); render();
 }
-function fmtShort(c) { return c >= 1e9 ? (c / 1e9).toFixed(2) + 'B' : c >= 1e6 ? (c / 1e6).toFixed(2) + 'M' : c.toLocaleString(); }
+function fmtShort(n) {
+  n = Number(n);
+  if (!isFinite(n)) return n > 0 ? '∞' : '0';
+  const neg = n < 0 ? '-' : '';
+  n = Math.floor(Math.abs(n));
+  if (n < 10000) return neg + n.toLocaleString();          // ต่ำกว่า 10,000 โชว์เลขเต็ม เช่น 9,999
+  const S = ['', 'K', 'M', 'B', 'T', 'Qa', 'Qi', 'Sx', 'Sp', 'Oc', 'No', 'Dc'];
+  let i = 0, v = n;
+  while (v >= 1000 && i < S.length - 1) { v /= 1000; i++; }
+  if (v >= 1000) return neg + n.toExponential(2).replace('e+', 'e');   // ใหญ่เกิน Dc → 1.23e36
+  const x = Math.floor(v * 100 + 1e-6) / 100;                // ปัดลง ไม่ปัดขึ้น (1,999,999 จะไม่โชว์ 2M)
+  return neg + String(x) + S[i];
+}
 function gemExHTML() {
   const ex = gemEx(), next = gemExCost(1);
   return `<div class="gemex"><div class="gemex-title">💎 แลกเพชร <small>ยิ่งแลกเยอะในวันเดียว ยิ่งแพงขึ้น • รีเซ็ตทุกวัน</small></div>
-    <div class="gemex-info">ตอนนี้ 💎1 = 💰${next.toLocaleString()} • วันนี้แลกไป ${ex.n} เม็ด</div>
-    <div class="gemex-reset">🔄 ราคากลับเป็น 💰${GEM_EX_BASE.toLocaleString()} ในอีก <b id="gemExTimer">${fmtClock(msToMidnight())}</b></div>
+    <div class="gemex-info">ตอนนี้ 💎1 = 💰${fmtShort(next)} • วันนี้แลกไป ${ex.n} เม็ด</div>
+    <div class="gemex-reset">🔄 ราคากลับเป็น 💰${fmtShort(GEM_EX_BASE)} ในอีก <b id="gemExTimer">${fmtClock(msToMidnight())}</b></div>
     <div class="gemex-row">${[10, 50, 100].map(k => {
       const c = gemExCost(k);
       return `<button ${state.coins >= c ? '' : 'disabled'} onclick="buyGems(${k})"><b>💎${k}</b><small>💰${fmtShort(c)}</small></button>`;
@@ -9032,7 +9204,7 @@ function renderShop() {
       const odds = Object.entries(pk.w).map(([t, w]) => `<span style="color:${SEED_TIERS[t].color}">${SEED_TIERS[t].name} ${w}%</span>`).join(' ');
       return `<button class="pack pk-${pk.id}" ${can ? '' : 'disabled'} onclick="openPack('${pk.id}')">
         <span class="pk-ic">${pk.emoji}</span><b>${pk.name}</b><small class="odds">${odds}</small>
-        <span class="pk-cost">${pk.cost.coins ? '💰' + pk.cost.coins.toLocaleString() : '💎' + pk.cost.gems}</span></button>`;
+        <span class="pk-cost">${pk.cost.coins ? '💰' + fmtShort(pk.cost.coins) : '💎' + pk.cost.gems}</span></button>`;
     }).join('') + `</div></div>`;
   html += gachaBoxHTML('prehistoric');
   html += gachaBoxHTML('halloween');
@@ -9065,7 +9237,7 @@ function renderShop() {
     html += `
       <div class="item ${locked ? 'locked' : ''} ${rare ? 'gold' : ''} ${s.special ? 'sp-row tier-' + s.tier : ''}">
         <div style="display:flex;gap:8px;align-items:center">${s.special ? `<span class="sp-ic">${seedIcon(s)}</span>` : ''}<div>${state.selectedSeed === s.id && own ? '✅ ' : ''}${s.special ? '' : seedIcon(s)} <b>${s.name}</b> ${tierBadge(s)}<br>
-          <small>💰${s.price.toLocaleString()} • ขาย 💰${s.sell.toLocaleString()} • ⏱️${fmtTime(s.time)} • ${s.regrow ? `🔁 เก็บซ้ำทุก ${fmtTime(s.time * (1 - REGROW_AT))} (ผลรอบหลัง ${Math.round(REGROW_VALUE * 100)}%)` : '1️⃣ เก็บครั้งเดียว'} ${locked ? `🔒Lv.${s.unlock}` : ''}</small><br>
+          <small>💰${fmtShort(s.price)} • ขาย 💰${fmtShort(s.sell)} • ⏱️${fmtTime(s.time)} • ${s.regrow ? `🔁 เก็บซ้ำทุก ${fmtTime(s.time * (1 - REGROW_AT))} (ผลรอบหลัง ${Math.round(REGROW_VALUE * 100)}%)` : '1️⃣ เก็บครั้งเดียว'} ${locked ? `🔒Lv.${s.unlock}` : ''}</small><br>
           <small>${stock ? `📦 สต็อก ${stock}` : '<span style="color:#e53935;font-weight:800">หมด</span>'} • 🎒 มี ${own}</small>
         </div></div>
         <div class="btns">
@@ -9093,7 +9265,7 @@ function renderDaily() {
       <div class="daily-cell ${cls}">
         <div class="big">${r.freeEgg?'🥚':(r.gems?'💎':'💰')}</div>
         <div>วันที่ ${r.day}</div>
-        <small>${r.coins?('💰'+r.coins.toLocaleString()):''}${r.gems?(' 💎'+r.gems):''}${r.freeEgg?' ไข่':''}</small>
+        <small>${r.coins?('💰'+fmtShort(r.coins)):''}${r.gems?(' 💎'+r.gems):''}${r.freeEgg?' ไข่':''}</small>
       </div>`;
   });
   html += `</div>`;
@@ -9123,7 +9295,7 @@ function renderGear() {
         <div>${p.emoji} <b>${p.name}</b> <span class="dev-lv">Lv.${devLv(p.id)}/${DEV_MAX_LV}</span> ${own ? `<span class="badge b-rare">มี ${own}</span>` : ''}<br><small>${p.desc}</small>
           ${devLv(p.id) ? `<br><small class="dev-up">🔧 พลัง ×${devPower(p.id).toFixed(1)} • วง ×${(devRange(p.id) / 1.8).toFixed(2)} • อยู่ ${fmtTime(devDur(p.id))}</small>` : ''}</div>
         <div class="btns">
-          <button ${state.coins < p.price ? 'disabled' : ''} onclick="buyPlaceable('${p.id}')">💰${p.price.toLocaleString()}</button>
+          <button ${state.coins < p.price ? 'disabled' : ''} onclick="buyPlaceable('${p.id}')">💰${fmtShort(p.price)}</button>
           ${devLv(p.id) < DEV_MAX_LV ? (() => { const c = devUpCost(p.id); return `<button class="devup" ${state.coins >= c.coins && state.gems >= c.gems ? '' : 'disabled'} onclick="upgradeDevice('${p.id}')">🔧 Lv.${devLv(p.id) + 1}<br><small>💰${fmtShort(c.coins)}${c.gems ? ' 💎' + c.gems : ''}</small></button>`; })() : '<button class="devup" disabled>🔧 MAX</button>'}
           ${own ? `<button class="gem" onclick="startPlacing('${p.id}')">📍 วาง</button>` : ''}
         </div>
@@ -9137,7 +9309,7 @@ function renderGear() {
       <div class="item">
         <div>${f.emoji} <b>${f.name}</b> ${own ? `<span class="badge b-rare">มี ${own}</span>` : ''}<br><small>${f.desc}</small></div>
         <div class="btns">
-          <button ${state.coins < f.price ? 'disabled' : ''} onclick="buyFert('${f.id}')">💰${f.price.toLocaleString()}</button>
+          <button ${state.coins < f.price ? 'disabled' : ''} onclick="buyFert('${f.id}')">💰${fmtShort(f.price)}</button>
           ${own ? `<button class="gem" onclick="startFert('${f.id}')">🌱 ใส่</button>` : ''}
         </div>
       </div>`;
@@ -9149,7 +9321,7 @@ function renderGear() {
       <div class="item">
         <div>${g.emoji} <b>${g.name}</b><br><small>${g.desc}</small></div>
         <button ${owned||state.coins<g.price?'disabled':''} onclick="buyGear('${g.id}')">
-          ${owned ? 'มีแล้ว' : '💰'+g.price.toLocaleString()}
+          ${owned ? 'มีแล้ว' : '💰'+fmtShort(g.price)}
         </button>
       </div>`;
   });
@@ -9166,7 +9338,7 @@ function renderDecor() {
     html += `
       <div class="item ${owned ? 'gold' : ''}">
         <div><span style="font-size:22px">${d.emoji}</span> <b>${d.name}</b><br><small>${bonus}</small></div>
-        <button ${owned || state.coins < d.price ? 'disabled' : ''} onclick="buyDecor('${d.id}')">${owned ? '✅ วางแล้ว' : '💰' + d.price.toLocaleString()}</button>
+        <button ${owned || state.coins < d.price ? 'disabled' : ''} onclick="buyDecor('${d.id}')">${owned ? '✅ วางแล้ว' : '💰' + fmtShort(d.price)}</button>
       </div>`;
   });
   el.innerHTML = html;
@@ -9182,7 +9354,7 @@ function renderQuest() {
     html += `
       <div class="item">
         <div style="flex:1">${done?'✅':''} ${q.desc}<br>
-          <small>${Math.min(prog,q.target).toLocaleString()}/${q.target.toLocaleString()} • 💰${questReward(q).toLocaleString()} +💎${QUEST_GEMS + skillEff('questgem')}</small>
+          <small>${Math.min(prog,q.target).toLocaleString()}/${q.target.toLocaleString()} • 💰${fmtShort(questReward(q))} +💎${QUEST_GEMS + skillEff('questgem')}</small>
           <div style="background:#eee;height:6px;border-radius:3px;margin-top:4px">
             <div style="background:#4caf50;height:100%;width:${pct}%;border-radius:3px"></div>
           </div>
@@ -9410,7 +9582,7 @@ function guideSections() {
     ['🌌 ต้นลับสุดยอด #3', `พฤกษาดาราจักร — ผลเป็นดาวเคราะห์ 3 ดวงคนละชนิด: 🪐 ดาววงแหวน (บน • ลุ้น 🛰️โคจร 30%) • 🌋 ดาวลาวา (ซ้าย • ติด ☀️ไหม้แดดเสมอ) • 🧊 ดาวน้ำแข็ง (ขวา • ติด 🥶หนาวสั่นเสมอ) • แต่ละดวงมีโอกาส 1% (คูณโชค) เป็น ☀️ ดวงอาทิตย์จิ๋ว ราคา ×20 • ได้จาก 🚀 ภารกิจสถานีอวกาศ (แท็บภารกิจ) เท่านั้น ทำซ้ำได้`],
     ['🍖 ต้นลับสุดยอด #2', `พฤกษาเนื้อมหาโอชา — ต้นนิ่ง ออกผลพร้อมกัน 3 ลูก (บน/ซ้าย/ขวา) แต่ละลูกขนาดไม่เท่ากัน • เก็บครั้งเดียวได้ครบ 3 ผล • แต่ละผลมีโอกาส 2% (คูณโชค) เป็น 💎 เนื้อเหลี่ยม ราคา ×12 • ได้จาก 🦖 ภารกิจล่าเนื้อยุคดึกดำบรรพ์ (แท็บภารกิจ) เท่านั้น ทำซ้ำได้`],
     ['🌀 ต้นลับสุดยอด', `พฤกษาวังวนนิรันดร์ — ต้นนิ่ง ขนาดคงที่ ผลแยกจากต้น สุ่มขนาด/สถานะ • ได้จาก: ร้านเมล็ด (0.4% ต่อรอบ), ผสมผลปริซึม (1.5–3%), ร้าน Rebirth (รอบ 3+)`],
-    ['🔄 Rebirth', `ถึงเลเวลที่กำหนดแล้ว Rebirth ได้: รีเซ็ตเงิน/เลเวล/สวน แต่ได้รายได้ +25% ถาวร, สกิลพอยท์ +5, <b>🔆 แต้มเกิดใหม่</b> ไว้ซื้อของถาวรในร้าน Rebirth (โชค, ฟ้าประทาน, เก็บต้นไม้ข้ามรอบ, เก็บอุปกรณ์, ช่องฟักไข่, เมล็ดต้นลับสุดยอด) • สัตว์ เพชร ตู้โชว์ อัปเกรด ไม่หาย`],
+    ['🔄 Rebirth', `ถึงเลเวลที่กำหนดแล้ว Rebirth ได้: รีเซ็ตเงิน/เลเวล/สวน แต่ต้นไม้ที่ปลูกอยู่ทุกฟาร์มไม่หาย • ได้รายได้ +25% ถาวร, สกิลพอยท์ +5, <b>🔆 แต้มเกิดใหม่</b> ไว้ซื้อของถาวรในร้าน Rebirth (โชค, ฟ้าประทาน, เก็บอุปกรณ์, ช่องฟักไข่, เมล็ดต้นลับสุดยอด) • สัตว์ เพชร ตู้โชว์ อัปเกรด ไม่หาย`],
     ['☁️ เซฟ', `เกมเซฟอัตโนมัติในเครื่อง • ล็อกอิน Google ที่ ☰ → ⚙️ ตั้งค่า เพื่อเซฟขึ้นคลาวด์และเล่นต่อได้ทุกเครื่อง`],
   ];
 }
@@ -9442,7 +9614,7 @@ function renderRebirth() {
     ต้องเลเวล: ${req} (ตอนนี้ Lv.${state.level})
   </div>`;
   html += `<p style="font-size:12px;color:#666">
-    • รีเซ็ต: เงิน, Gear, Level, สวน, กระเป๋า, เมล็ด${rbLv('keep') ? ` (ยกเว้นต้นไม้ที่เลือกเก็บ ${rbLv('keep')} ต้น)` : ''}${rbLv('keepdev') ? ' (อุปกรณ์ไม่หาย)' : ''}<br>
+    • รีเซ็ต: เงิน, Gear, Level, กระเป๋า, เมล็ด (🌳 ต้นไม้ที่ปลูกอยู่ทุกฟาร์มไม่หาย)${rbLv('keepdev') ? ' (อุปกรณ์ไม่หาย)' : ''}<br>
     • เก็บไว้: เพชร, สัตว์เลี้ยง, ไข่, สกิล, ตู้โชว์, ของแต่ง, ความสำเร็จ, สมุดสะสม, สูตรอาหาร, อัปเกรดทั้งหมด<br>
     • ได้: +25% รายได้ถาวร, +5 สกิลพอยท์, <b>🔆 ${rebirthPoints()} แต้มเกิดใหม่</b> <small>(ยิ่งเลเวล/เงิน/สถานะหายากที่เคยได้เยอะ ยิ่งได้มาก)</small>
   </p>`;
@@ -9450,15 +9622,6 @@ function renderRebirth() {
     ${canRebirth?'':'disabled'} onclick="doRebirth()">
     ${canRebirth?'🔄 ทำ Rebirth เลย!':`🔒 ต้องเลเวล ${req}`}
   </button>`;
-  // ต้นที่จะเก็บข้ามรอบ
-  if (rbLv('keep')) {
-    const keep = rbKeepList(), planted = state.plots.map((p, i) => i).filter(i => state.plots[i].seedId)
-      .sort((a, b) => tierRank(getSeed(state.plots[b].seedId)) - tierRank(getSeed(state.plots[a].seedId)));
-    html += `<h3>🌳 ต้นไม้ที่จะเก็บไว้ตอน Rebirth (${keep.length}/${rbLv('keep')})</h3>
-      <p style="font-size:12px;color:#666">แตะเลือกต้นที่อยากเก็บ • ถ้าไม่เลือก ระบบเก็บต้นระดับสูงสุดให้อัตโนมัติ • ต้นที่เก็บไว้คงขนาด สถานะ และจำนวนรอบเก็บเดิม</p>
-      <div class="rb-keep">${planted.length ? planted.slice(0, 40).map(i => { const pl = state.plots[i], sd = getSeed(pl.seedId);
-        return `<button class="${keep.includes(i) ? 'on' : ''}" onclick="toggleRbKeep(${i})">${seedIcon(sd)}<small>${sd.name}${pl.harvests ? ' 🔁' + pl.harvests : ''}</small>${keep.includes(i) ? '<b>📌</b>' : ''}</button>`; }).join('') : '<div class="empty">ยังไม่มีต้นไม้ในสวน</div>'}</div>`;
-  }
   // ร้าน Rebirth
   html += `<h3>🔆 ร้าน Rebirth <span class="rb-pts">🔆 ${state.rbPts || 0}</span></h3>
     <p style="font-size:12px;color:#666">ได้แต้มเกิดใหม่ทุกครั้งที่ Rebirth • ของที่ซื้ออยู่ถาวรทุกรอบ</p>`;
@@ -9528,6 +9691,7 @@ function tick() {
   weatherTick(now);
   todTick();
   petTick();
+  bgFarmsTick();
   if (panelActive('garden')) { renderPetCdBar(); renderFarmBar(); } else if (panelActive('pets')) updatePetCdBars();
   checkAchievements();
   renderStats();
@@ -9742,7 +9906,7 @@ function showPetMigration() {
   $('modalBox').innerHTML = `<div class="reveal"><img src="${EGG_SPRITES.paw.big}" style="height:150px"></div>
     <h2 style="margin:4px 0">🐾 ระบบสัตว์เลี้ยงใหม่!</h2>
     <p style="font-size:14px">สัตว์เลี้ยงได้จากไข่กาชาเท่านั้น ทุกตัวมีความสามารถเฉพาะ และสุ่มเกรด/ตัวเลขตอนฟัก<br><br>
-    สัตว์เลี้ยงเก่า ${m.pets} ตัวถูกแปลงเป็น <b>💎${m.gems}</b>${m.coins ? ` และไข่เก่าคืนเป็น <b>💰${m.coins.toLocaleString()}</b>` : ''}<br>
+    สัตว์เลี้ยงเก่า ${m.pets} ตัวถูกแปลงเป็น <b>💎${m.gems}</b>${m.coins ? ` และไข่เก่าคืนเป็น <b>💰${fmtShort(m.coins)}</b>` : ''}<br>
     แถม <b>🥚 ไข่อุ้งเท้าทอง ×${m.eggs}</b> ใส่ตู้ฟักให้แล้ว!</p>
     <button onclick="closeModal(); showNav('pets'); showTab('gacha')">ไปดูไข่เลย!</button>`;
   $('modal').classList.add('show');
