@@ -7717,7 +7717,7 @@ function orbitBonus(plot) {
   return 1 + Math.min(0.6, 0.1 * n);
 }
 // ==================== 🗺️ ภารกิจต่อเนื่อง (รางวัล: เมล็ดต้นลับ) ====================
-// รอบแรกทำทุกขั้น • ทำครบแล้ววนรอบใหม่ (ข้ามขั้นที่มี first) เป้าหมายเพิ่มขึ้นทีละ 50% ต่อรอบ
+// ทำทุกข้อพร้อมกันได้ ข้อไหนผ่านก็ติ๊กถูก • ครบทุกข้อแล้วรับรางวัล แล้ววนรอบใหม่ (ข้ามขั้นที่มี first) เป้าหมายเพิ่มขึ้นทีละ 50% ต่อรอบ
 const SWEET_PETS = ['clownfish', 'hermit', 'jelly', 'seahorse', 'meowray', 'icesquid'];
 const SWEETQ_MUTS = ['santahat', 'softserve', 'jellied', 'partying', 'heartray', 'sundae', 'sugary', 'caramel', 'honey', 'frosted', 'candycane', 'sweetheart', 'dessertking'];
 const DINO_PETS = ['raptor', 'ptero', 'trike', 'brachio', 'spino', 'trex'];
@@ -7752,10 +7752,9 @@ const QCHAINS = {
   ] },
 };
 
-// 🏛️ ภารกิจสุดโหดแห่งโอลิมปัส: ใช้ของที่มีในเกมทั้งหมด (ภารกิจทุกสาย • หอคอย • สัตว์มิธิค • ตื่นรู้ • ผลหนัก/สถานะลับ)
+// 🏛️ ภารกิจสุดโหดแห่งโอลิมปัส: ใช้ของที่มีในเกมทั้งหมด (ภารกิจทุกสาย • สัตว์มิธิค • ตื่นรู้ • ผลหนัก/สถานะลับ)
 QCHAINS.olympus = { name: '🏛️ ภารกิจบททดสอบแห่งโอลิมปัส', seed: 'olympustree', seedName: '🏛️ เมล็ดพฤกษาเทวสภาโอลิมปัส', cls: 'sq-olympus', gems: 100, steps: [
   { id:'chains',  icon:'🗺️', txt:() => 'ทำภารกิจต่อเนื่องครบทุกสาย (🐉 ปลุกมังกร • 🐚 ทะเลขนมหวาน • 🦖 ล่าเนื้อ • 🚀 อวกาศ) สายละ 1 รอบ', target:() => 4, live:() => ['dragon', 'sweet', 'dino', 'space'].filter(c => (cqState(c).round || 0) >= 1).length, first:true },
-  { id:'tower',   icon:'🗼', txt:() => 'พิชิตหอคอยให้ถึงชั้นที่ 50', target:() => 50, live:() => Math.min(50, towerFloor()), first:true },
   { id:'mythic',  icon:'🐾', txt:() => 'มีสัตว์ระดับมิธิคต่างชนิดกัน 8 ชนิด', target:() => 8, live:() => new Set(state.pets.filter(p => getPet(p.id).rarity === 'mythic').map(p => p.id)).size, first:true },
   { id:'awaken',  icon:'🌈', txt:() => 'ปลุกสัตว์ให้ตื่นรู้ 1 ตัว (ใช้ 🌠แก่นดาว)', target:() => 1, live:() => state.pets.some(p => p.awakened) ? 1 : 0, first:true },
   { id:'giant',   icon:'⚖️', txt:n => `เก็บผลหนัก 1,000kg ขึ้นไป ${n} ลูก`, target:r => Math.round(3 * (1 + 0.5 * r)) },
@@ -7769,11 +7768,10 @@ function olyQuestHarvest(it) {
   if (ms.length >= 7) cqAdd('olympus', 'many', 1);
 }
 
-// ❄️ ภารกิจบททดสอบแห่งยกก์ดราซิล: ต่อยอดจากโอลิมปัส (เทพโอลิมปัส • หอคอยชั้น 80 • ผลหนัก/สถานะลับโอลิมปัส)
+// ❄️ ภารกิจบททดสอบแห่งยกก์ดราซิล: ต่อยอดจากโอลิมปัส (เทพโอลิมปัส • ผลหนัก/สถานะลับโอลิมปัส)
 const OLY_STATUSES = ['olybolt', 'olytide', 'olywisdom', 'olyhades', 'olysun', 'olymoon', 'olytitan', 'olympiad'];
 QCHAINS.ygg = { name: '❄️ ภารกิจบททดสอบแห่งยกก์ดราซิล', seed: 'yggtree', seedName: '❄️ เมล็ดพฤกษายกก์ดราซิลน้ำแข็ง', cls: 'sq-ygg', gems: 200, steps: [
   { id:'olyset',   icon:'🏛️', txt:() => 'มีเทพโอลิมปัสต่างชนิดกัน 4 ชนิด (ฟักจากไข่โอลิมปัส)', target:() => 4, live:() => new Set(state.pets.filter(p => getPet(p.id).rarity === 'olympian').map(p => p.id)).size, first:true },
-  { id:'tower',    icon:'🗼', txt:() => 'พิชิตหอคอยให้ถึงชั้นที่ 80', target:() => 80, live:() => Math.min(80, towerFloor()), first:true },
   { id:'olyfruit', icon:'⚡', txt:n => `เก็บผลที่ติดสถานะเทพโอลิมปัส ${n} ลูก`, target:r => Math.round(8 * (1 + 0.5 * r)) },
   { id:'giant',    icon:'⚖️', txt:n => `เก็บผลหนัก 2,000kg ขึ้นไป ${n} ลูก`, target:r => Math.round(3 * (1 + 0.5 * r)) },
   { id:'titan',    icon:'🌩️', txt:n => `เก็บผลที่ติดสถานะลับโอลิมปัส (ไททันสะท้านฟ้า/เทวสภาโอลิมปัส) ${n} ลูก`, target:r => Math.round(2 * (1 + 0.5 * r)) },
@@ -7789,26 +7787,37 @@ function yggQuestHarvest(it) {
 function cqState(c) {
   state.chainQ = state.chainQ || {};
   if (c === 'space' && !state.chainQ.space && state.spaceQuest) state.chainQ.space = state.spaceQuest;   // ย้ายเซฟเก่า
-  return state.chainQ[c] || (state.chainQ[c] = { step: 0, prog: 0, round: 0 });
+  const q = state.chainQ[c] || (state.chainQ[c] = { round: 0 });
+  if (!q.done || typeof q.p !== 'object' || q.p === null) {   // ย้ายเซฟแบบ "ทีละขั้น" → แบบ "พร้อมกัน"
+    const oldStep = q.step || 0, oldProg = typeof q.prog === 'number' ? q.prog : 0, round = q.round || 0;
+    const old = QCHAINS[c].steps.filter(st => !(st.first && round > 0));
+    if ((c === 'olympus' || c === 'ygg') && round === 0) old.splice(1, 0, { id: '_tower' });   // ขั้นหอคอยที่ถูกลบออกไปแล้ว
+    q.done = {}; q.p = {};
+    old.forEach((st, k) => { if (q.ready || k < oldStep) q.done[st.id] = true; else if (k === oldStep && !st.live) q.p[st.id] = oldProg; });
+    delete q.step; delete q.prog;
+  }
+  return q;
 }
 function cqSteps(c) { const q = cqState(c); return QCHAINS[c].steps.filter(st => !(st.first && q.round > 0)); }
-function cqCur(c) { return cqSteps(c)[cqState(c).step] || null; }
-function cqProgress(c) { const st = cqCur(c); if (!st) return 0; return st.live ? st.live() : cqState(c).prog; }
-function cqAdd(c, id, n) { const st = cqCur(c); if (!st || st.id !== id || cqState(c).ready) return; cqState(c).prog += n; cqCheck(c); }
+function cqStepProg(c, st) { const q = cqState(c); return q.done[st.id] ? st.target(q.round) : (st.live ? st.live() : (q.p[st.id] || 0)); }
+function cqAdd(c, id, n) {
+  const q = cqState(c), st = cqSteps(c).find(s => s.id === id);
+  if (!st || st.live || q.ready || q.done[id]) return;
+  q.p[id] = (q.p[id] || 0) + n; cqCheck(c);
+}
 function cqCheck(c) {
-  const q = cqState(c), st = cqCur(c), ch = QCHAINS[c]; if (!st || q.ready) return;
-  if (cqProgress(c) >= st.target(q.round)) {
-    q.step++; q.prog = 0;
-    if (q.step >= cqSteps(c).length) { q.ready = true; toast(`${ch.name} ครบแล้ว! ไปรับ${ch.seedName}ที่แท็บภารกิจ`); sfx('rare'); }
-    else { const nx = cqCur(c); toast(`${ch.name}: ผ่านขั้นที่ ${q.step}! ถัดไป: ${nx.icon} ${nx.txt(nx.target(q.round))}`); }
-    cqCheck(c);
-  }
+  const q = cqState(c), ch = QCHAINS[c]; if (q.ready) return;
+  const steps = cqSteps(c);
+  steps.forEach(st => {
+    if (!q.done[st.id] && cqStepProg(c, st) >= st.target(q.round)) { q.done[st.id] = true; toast(`${ch.name}: ✅ ${st.icon} ผ่านแล้ว!`); }
+  });
+  if (steps.every(st => q.done[st.id])) { q.ready = true; toast(`${ch.name} ครบแล้ว! ไปรับ${ch.seedName}ที่แท็บภารกิจ`); sfx('rare'); }
 }
 function cqClaim(c) {
   const q = cqState(c), ch = QCHAINS[c]; if (!q.ready) return;
   state.seeds[ch.seed] = (state.seeds[ch.seed] || 0) + 1; state.gems += (ch.gems || 30);
   addToCollection('seed_' + ch.seed);
-  q.ready = false; q.round++; q.step = 0; q.prog = 0;
+  q.ready = false; q.round++; q.done = {}; q.p = {};
   flashStrike(); sfx('rare');
   toast(`🎁 ได้${ch.seedName} 1 เมล็ด + 💎${ch.gems || 30}! ภารกิจรอบใหม่เริ่มแล้ว`);
   save(); render();
@@ -7828,13 +7837,14 @@ function questHarvest(it) {
 }
 function chainHTML(c) {
   const q = cqState(c), ch = QCHAINS[c], steps = cqSteps(c);
-  const rows = steps.map((st, k) => {
-    const done = q.ready || k < q.step, cur = !q.ready && k === q.step, tgt = st.target(q.round), pr = cur ? Math.min(tgt, cqProgress(c)) : done ? tgt : 0;
-    return `<div class="sq-step ${done ? 'done' : cur ? 'cur' : ''}"><span>${done ? '✅' : cur ? st.icon : '🔒'}</span><div style="flex:1">${st.txt(tgt)}
-      ${cur ? `<div class="sq-bar"><i style="width:${(pr / tgt * 100).toFixed(1)}%"></i></div><small>${pr}/${tgt}</small>` : ''}</div></div>`;
+  const nDone = steps.filter(st => q.ready || q.done[st.id]).length;
+  const rows = steps.map(st => {
+    const tgt = st.target(q.round), done = !!(q.ready || q.done[st.id]), pr = done ? tgt : Math.min(tgt, cqStepProg(c, st));
+    return `<div class="sq-step ${done ? 'done' : ''}"><span>${done ? '✅' : st.icon}</span><div style="flex:1">${st.txt(tgt)}
+      ${done ? '' : `<div class="sq-bar"><i style="width:${(pr / tgt * 100).toFixed(1)}%"></i></div><small>${pr.toLocaleString()}/${tgt.toLocaleString()}</small>`}</div></div>`;
   }).join('');
-  return `<div class="sq-box ${ch.cls}"><div class="sq-title">${ch.name} ${q.round ? `<small>(รอบที่ ${q.round + 1})</small>` : ''}</div>
-    <p class="sq-note">รางวัล: <b>${ch.seedName}</b> + 💎${ch.gems || 30} • หาได้จากภารกิจนี้เท่านั้น • ทำซ้ำได้เรื่อย ๆ (รอบถัดไปเป้าหมายเพิ่มขึ้น)</p>
+  return `<div class="sq-box ${ch.cls}"><div class="sq-title">${ch.name} <small>${q.round ? `(รอบที่ ${q.round + 1}) ` : ''}• ผ่านแล้ว ${nDone}/${steps.length}</small></div>
+    <p class="sq-note">รางวัล: <b>${ch.seedName}</b> + 💎${ch.gems || 30} • ทำทุกข้อพร้อมกันได้ ข้อไหนผ่านจะติ๊กถูก ✅ • ทำซ้ำได้เรื่อย ๆ (รอบถัดไปเป้าหมายเพิ่มขึ้น)</p>
     ${rows}
     ${q.ready ? `<button class="sq-claim" onclick="cqClaim('${c}')">🎁 รับ${ch.seedName}</button>` : ''}</div>`;
 }
@@ -10272,7 +10282,7 @@ function tick() {
   walkXpTick();
   spaceTick(now);
   alienTick();
-  Object.keys(QCHAINS).forEach(c => { const st = cqCur(c); if (st && st.live) cqCheck(c); });
+  Object.keys(QCHAINS).forEach(c => { if (cqSteps(c).some(st => st.live)) cqCheck(c); });
   { const es = Math.min(1, teamAbility('eggsit')); if (es > 0) state.incubator.forEach(e => { if (e.doneAt > now) e.doneAt -= 1000 * es; }); }
   if (state.craftJob) {
     const ct = document.querySelector('[data-crafttimer]');
