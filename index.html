@@ -2008,6 +2008,16 @@
   <div id="modalBox"></div>
 </div>
 
+<style>
+  #modalBox .au-top { display:flex; gap:6px; margin-bottom:8px; }
+  #modalBox .au-top button { flex:1; width:auto; margin:0; padding:8px 4px; font-size:12px; }
+  .au-row { flex-wrap:wrap; }
+  .au-row .au-info { flex:1 1 120px; min-width:0; }
+  .au-row .au-btns { display:flex; gap:5px; flex:1 0 100%; }
+  #modalBox .au-t { flex:1 1 0; width:auto; margin:0; padding:6px 3px; font-size:11px; border-radius:10px; background:#cfd8dc; color:#546e7a; box-shadow:0 2px 0 #b0bec5; line-height:1.2; }
+  #modalBox .au-t.on { background:#43a047; color:#fff; box-shadow:0 2px 0 #1b5e20; }
+  #modalBox .au-t.go { flex:0 0 auto; background:#5c6bc0; color:#fff; box-shadow:0 2px 0 #3949ab; padding:6px 10px; font-size:12px; }
+</style>
 <script>
 // ==================== DATA ====================
 // สไปรต์ 3 ขั้นของพฤกษาต้องสาป (ฝังในไฟล์ ไม่ต้องใช้ไฟล์รูปแยก)
@@ -4155,10 +4165,20 @@ const FARMS = [
   { name: 'ดาวต่างโลก', emoji: '🪐', coins: 5e9, gems: 300, quest: true },   // ฟาร์ม 5: ผลหนัก ×3 โตช้า ×2
 ];
 const newFarm = () => ({ owned: true, gardenLevel: 0, placed: [], petTeam: [-1], plots: Array.from({ length: GARDEN_MAX }, (_, i) => newPlot(i < EXPANSIONS[0].cap)) });
+// ➕ ฟาร์มไม่จำกัด: ฟาร์ม 1-5 เป็นของเดิม • ฟาร์มที่ซื้อเพิ่มเริ่มที่ลำดับ 6 เป็นต้นไป
+const FARM_BASE_N = 5;
+const EXTRA_FARM = { coins: 1e10, coinGrow: 2, gems: 400, gemStep: 100 };   // ราคาฟาร์มเพิ่มลำดับแรก และอัตราที่แพงขึ้นต่อฟาร์ม (แก้ตรงนี้ได้)
+const EXTRA_FARM_EMOJI = ['🌻', '🍀', '🌵', '🏝️', '🌋', '⛩️', '🏯', '🛖', '🌌', '🎪', '🍄', '🏔️'];
+function syncFarmList() {
+  const want = Math.max(FARM_BASE_N, (state.farms || []).length);
+  while (FARMS.length < want) { const i = FARMS.length; FARMS.push({ name: 'ฟาร์ม ' + (i + 1), emoji: EXTRA_FARM_EMOJI[(i - FARM_BASE_N) % EXTRA_FARM_EMOJI.length], extra: true }); }
+  if (FARMS.length > want) FARMS.length = want;
+}
 function farmsInit() {
   if (!state.farms) state.farms = [{ owned: true }];
   if (state.farmIdx == null) state.farmIdx = 0;
   if (!state.farmTeamsV2) migrateFarmTeams();
+  syncFarmList();
 }
 // เซฟเก่ามีทีมสัตว์ก้อนเดียว → ใช้ทีมเดิมเป็นจุดเริ่มต้นของทุกฟาร์มที่เปิดแล้ว (หลังจากนี้แต่ละฟาร์มแก้แยกกันได้)
 function migrateFarmTeams() {
@@ -4345,6 +4365,131 @@ function bgFarmsTick() {
   const o = window[n]; if (typeof o !== 'function') return;
   window[n] = function (...a) { return BG_FARM >= 0 ? undefined : o.apply(this, a); };
 });
+
+// ==================== 🤖 ฟาร์มไม่จำกัด + เก็บ/ขายอัตโนมัติ (แยกรายฟาร์ม) ====================
+// state.farmAuto[i] = { h: เก็บอัตโนมัติ, s: ขายอัตโนมัติ, k: ขายเฉพาะผลธรรมดา(เก็บผลมีสถานะ/ยักษ์ไว้), nh/ns/ec: สถิติ }
+// ผลที่เก็บจะถูกติดป้ายว่ามาจากฟาร์มไหน (it.farm) → ขายอัตโนมัติขายเฉพาะผลของฟาร์มที่เปิดสวิตช์ไว้
+function autoCfg(i, create) {
+  if (!state.farmAuto) { if (!create) return null; state.farmAuto = {}; }
+  let a = state.farmAuto[i];
+  if (!a && create) a = state.farmAuto[i] = { h: 0, s: 0, k: 0, nh: 0, ns: 0, ec: 0 };
+  return a || null;
+}
+function extraFarmCount() { return (state.farms || []).filter((f, i) => i >= FARM_BASE_N && f && f.owned).length; }
+function nextExtraFarmCost() {
+  const n = extraFarmCount();
+  return { coins: Math.round(EXTRA_FARM.coins * Math.pow(EXTRA_FARM.coinGrow, n)), gems: EXTRA_FARM.gems + EXTRA_FARM.gemStep * n };
+}
+function buyExtraFarm() {
+  farmsInit();
+  if (!farmOwned(3)) return toast('🔒 ต้องซื้อ ฟาร์ม 4 ก่อนถึงจะเพิ่มฟาร์มใหม่ได้');
+  const c = nextExtraFarmCost();
+  if (state.coins < c.coins || state.gems < c.gems) return toast(`💰 ต้องใช้ ${fmtShort(c.coins)} + 💎${c.gems}`);
+  state.coins -= c.coins; state.gems -= c.gems;
+  const idx = Math.max(FARM_BASE_N, state.farms.length);
+  state.farms[idx] = newFarm(); syncFarmList();
+  flashStrike(); sfx('levelup'); toast(`${FARMS[idx].emoji} ได้${FARMS[idx].name}แล้ว! (เพิ่มได้ไม่จำกัด)`);
+  save(); render(); refreshAutoPanel();
+}
+function toggleAuto(i, k) { const a = autoCfg(i, true); a[k] = a[k] ? 0 : 1; save(); renderFarmBar(); refreshAutoPanel(); }
+function setAutoAll(k) {
+  const owned = FARMS.map((_, i) => i).filter(i => farmOwned(i));
+  const allOn = owned.every(i => (autoCfg(i) || {})[k]);
+  owned.forEach(i => { autoCfg(i, true)[k] = allOn ? 0 : 1; });
+  save(); renderFarmBar(); refreshAutoPanel();
+}
+function openAutoPanel() {
+  farmsInit();
+  const c = nextExtraFarmCost();
+  const rows = FARMS.map((F, i) => {
+    if (!farmOwned(i)) return '';
+    const f = farmData(i), a = autoCfg(i) || {}, cap = EXPANSIONS[f.gardenLevel || 0].cap, used = f.plots.filter(q => q.seedId).length;
+    const st = (a.nh || a.ns) ? `<br><small>🤖 เก็บแล้ว ${a.nh || 0} • ขาย ${a.ns || 0} • ได้ 💰${fmtShort(a.ec || 0)}</small>` : '';
+    return `<div class="gp-row au-row"><span class="gp-ic">${F.emoji}</span>
+      <div class="au-info"><b>${F.name}</b>${i === state.farmIdx ? ' ✔' : ''}<br><small>ปลูก ${used}/${cap} • สุก ${farmReady(i)}</small>${st}</div>
+      <button class="au-t go" onclick="closeModal();switchFarm(${i})">ไป ▶</button>
+      <div class="au-btns">
+        <button class="au-t ${a.h ? 'on' : ''}" onclick="toggleAuto(${i},'h')">🧺 เก็บอัตโนมัติ ${a.h ? 'เปิด' : 'ปิด'}</button>
+        <button class="au-t ${a.s ? 'on' : ''}" onclick="toggleAuto(${i},'s')">💰 ขายอัตโนมัติ ${a.s ? 'เปิด' : 'ปิด'}</button>
+        <button class="au-t ${a.k ? 'on' : ''}" onclick="toggleAuto(${i},'k')">🛡️ เว้นผลหายาก ${a.k ? 'เปิด' : 'ปิด'}</button>
+      </div></div>`;
+  }).join('');
+  $('modalBox').innerHTML = `<div class="au-wrap"><h3 style="margin-top:0">🤖 ฟาร์ม & ระบบออโต้</h3>
+    <p style="font-size:12px;color:#666;margin:0 0 6px">ตั้งค่าแยกแต่ละฟาร์ม • เก็บ = เก็บผลที่สุกเข้ากระเป๋า • ขาย = ขายเฉพาะผลที่มาจากฟาร์มนั้น • 🛡️ = ไม่ขายผลที่มีสถานะ/ผลยักษ์ • ต้นที่ 🔒 ล็อกไว้จะไม่ถูกเก็บ • ทำงานตอนเปิดเกมอยู่</p>
+    <div class="au-top"><button onclick="setAutoAll('h')">🧺 เก็บ: ทุกฟาร์ม</button><button onclick="setAutoAll('s')">💰 ขาย: ทุกฟาร์ม</button></div>
+    <div class="au-top"><button style="background:#ffb300;box-shadow:0 3px 0 #ff8f00;color:#3e2723" onclick="buyExtraFarm()">➕ ซื้อฟาร์มใหม่ 💰${fmtShort(c.coins)} 💎${c.gems}</button></div>
+    <div class="gp-list">${rows}</div><button onclick="closeModal()">ปิด</button></div>`;
+  $('modal').classList.add('show');
+}
+function refreshAutoPanel() {
+  const box = $('modalBox');
+  if (!box || !$('modal').classList.contains('show') || !box.querySelector('.au-wrap')) return;
+  const y = box.scrollTop; openAutoPanel(); box.scrollTop = y;
+}
+
+// ติดป้ายฟาร์มที่มาของผลที่เก็บ (รวมถึงตอนเก็บมือ)
+(function () {
+  const o = harvestMany;
+  window.harvestMany = function (picked) {
+    const u0 = state.uid, fi = state.farmIdx || 0;
+    const r = o.apply(this, arguments);
+    for (let k = state.bag.length - 1; k >= 0; k--) { const it = state.bag[k]; if (it.uid < u0) break; if (it.farm == null) it.farm = fi; }
+    return r;
+  };
+})();
+
+// ระหว่างระบบออโต้ทำงาน: ปิดข้อความ/เสียงรัว ๆ แล้วสรุปให้ทุก ~20 วินาที
+let AUTO_Q = 0, autoPend = { h: 0, e: 0 }, autoToastAt = Date.now();
+['toast', 'sfx'].forEach(n => { const o = window[n]; if (typeof o !== 'function') return; window[n] = function (...a) { return AUTO_Q ? undefined : o.apply(this, a); }; });
+
+function autoHarvestHere() {   // เก็บทุกต้นที่สุกของฟาร์มที่เป็น context อยู่ตอนนี้
+  const free = bagCap() - state.bag.length; if (free <= 0) return 0;
+  const ready = []; state.plots.forEach((p, k) => { if (canHarvest(p)) ready.push(k); });
+  if (!ready.length) return 0;
+  const pick = ready.slice(0, free);
+  harvestMany(pick);
+  return pick.length;
+}
+function autoHarvestFarm(i) {
+  if (i === state.farmIdx) return autoHarvestHere();
+  let n = 0;
+  // ฟาร์มเบื้องหลัง: ตัดตัวหน่วงเวลาที่จะไปเด้งตัวเลขผิดตำแหน่งบนฟาร์มที่เปิดดูอยู่
+  const st = window.setTimeout;
+  window.setTimeout = function (fn, ...r) { return (typeof fn === 'function' && /spawnFloat|spawnParticles|showReveal/.test(Function.prototype.toString.call(fn))) ? 0 : st.call(window, fn, ...r); };
+  try { runInFarm(i, () => { n = autoHarvestHere(); }); } finally { window.setTimeout = st; }
+  return n;
+}
+function autoSellFarms() {
+  const A = state.farmAuto; if (!A || !state.bag.length) return;
+  const list = [], by = {};
+  state.bag.forEach(it => {
+    if (it.farm == null) return;
+    const a = A[it.farm]; if (!a || !a.s || !farmOwned(it.farm)) return;
+    if (a.k && (it.muts.length || isBig(it))) return;
+    list.push(it); const g = by[it.farm] || (by[it.farm] = { n: 0, v: 0 }); g.n++; g.v += itemValue(it);
+  });
+  if (!list.length) return;
+  sellItems(list);
+  Object.keys(by).forEach(i => { const a = A[i], g = by[i]; a.ns = (a.ns || 0) + g.n; a.ec = (a.ec || 0) + g.v; autoPend.e += g.v; });
+}
+function autoFarmTick() {
+  const A = state.farmAuto; if (!A) return;
+  farmsInit();
+  const on = Object.keys(A).map(Number).filter(i => farmOwned(i) && A[i] && (A[i].h || A[i].s));
+  if (!on.length) return;
+  AUTO_Q++;
+  try {
+    autoSellFarms();   // ขายก่อนเพื่อเคลียร์กระเป๋า
+    on.forEach(i => { const a = A[i]; if (!a.h) return; const n = autoHarvestFarm(i); if (n) { a.nh = (a.nh || 0) + n; autoPend.h += n; } });
+    autoSellFarms();
+  } catch (e) { console.error('auto farm error', e); }
+  finally { AUTO_Q--; }
+  const now = Date.now();
+  if (now - autoToastAt > 20000) {
+    if (autoPend.h || autoPend.e) toast(`🤖 ออโต้: เก็บ ${autoPend.h} ผล${autoPend.e ? ` • ขายได้ 💰${fmtShort(autoPend.e)}` : ''}`);
+    autoPend = { h: 0, e: 0 }; autoToastAt = now;
+  }
+}
 
 const ALIEN_FARM = 4;
 const allChainsDone = () => ['dragon', 'sweet', 'dino', 'space'].every(c => (cqState(c).round || 0) >= 1);
@@ -4598,10 +4743,13 @@ function renderFarmBar() {
   applyFarmTheme();
   const el = $('farmBar'); if (!el) return;
   farmsInit();
+  const A = state.farmAuto || {}, c = nextExtraFarmCost();
   const html = FARMS.map((F, i) => {
-    const own = farmOwned(i), on = i === state.farmIdx, rd = own ? farmReady(i) : 0;
-    return `<button class="${on ? 'on' : ''} ${own ? '' : 'lock'}" onclick="switchFarm(${i})">${F.emoji} ${F.name}${own ? (rd ? ` <i>สุก ${rd}</i>` : '') : `<small>${i > 1 && !farmOwned(i - 1) ? '🔒' : '💰' + fmtShort(F.coins) + (F.gems ? ' 💎' + F.gems : '')}</small>`}</button>`;
-  }).join('') + `<button class="themeb" onclick="openThemePicker()">🎨 ธีม</button>`;
+    const own = farmOwned(i); if (!own && i >= FARM_BASE_N) return '';
+    const on = i === state.farmIdx, rd = own ? farmReady(i) : 0, a = own ? A[i] : null;
+    const ic = a && (a.h || a.s) ? `<em style="font-style:normal;font-size:10px">${a.h ? '🧺' : ''}${a.s ? '💰' : ''}</em>` : '';
+    return `<button class="${on ? 'on' : ''} ${own ? '' : 'lock'}" onclick="switchFarm(${i})">${F.emoji} ${F.name}${ic}${own ? (rd ? ` <i>สุก ${rd}</i>` : '') : `<small>${i > 1 && !farmOwned(i - 1) ? '🔒' : '💰' + fmtShort(F.coins) + (F.gems ? ' 💎' + F.gems : '')}</small>`}</button>`;
+  }).join('') + `<button class="lock" onclick="buyExtraFarm()">➕ ฟาร์มใหม่<small>💰${fmtShort(c.coins)} 💎${c.gems}</small></button><button onclick="openAutoPanel()">🤖 ออโต้</button><button class="themeb" onclick="openThemePicker()">🎨 ธีม</button>`;
   if (el._h !== html) { el._h = html; el.innerHTML = html; }
 }
 // ฟาร์มที่ไม่ได้เปิดดู: ยังโตต่อ (ไม่มีโบนัสอุปกรณ์/สัตว์เลี้ยง/อากาศ)
@@ -10648,6 +10796,7 @@ function tick() {
   todTick();
   petTick();
   bgFarmsTick();
+  autoFarmTick();
   if (panelActive('garden')) { renderPetCdBar(); renderFarmBar(); } else if (panelActive('pets')) updatePetCdBars();
   checkAchievements();
   renderStats();
