@@ -628,7 +628,7 @@ document.write('<script src="vfx_layer.js"><\/script>');if(c==='jaguar')document
 <script src="maps/snowpine.js"></script>
 <script src="maps/viking-catalog.js"></script>
 <script src="maps/craft-halls.js?v=7"></script>
-<script src="maps/fieldmap.js?v=2"></script>
+<script src="maps/fieldmap.js?v=3"></script>
 <script src="maps/viking-maps.js"></script>
 <script src="maps/aztec-maps.js"></script>
 <script src="maps/egypt-maps.js"></script>
@@ -5624,7 +5624,7 @@ function render(){
   const list=[],MF=curMap&&mapHost()&&mapHost().charFilter;
   /* only what is on screen gets drawn (a field has 40+ monsters, a town a dozen walkers; drawing them all every frame was a big cost) */
   const onScr=(wx,wy)=>{const [px,py]=P(wx,wy),sx=px*Z+ox,sy=py*Z+oy;return sx>-160&&sx<VW+160&&sy>-60&&sy<VH+260;};
-  for(const e of enemies){if(curMap&&!onScr(e.x,e.y))continue;list.push({y:e.y,x:e.x,f:MF?()=>{ctx.save();ctx.filter=MF;drawEnemy(e);ctx.restore();}:()=>drawEnemy(e)});}
+  for(const e of enemies){if(curMap&&!onScr(e.x,e.y))continue;const sp=MF&&window.MSPR_HAS&&MSPR_HAS(e);list.push({y:e.y,x:e.x,f:MF&&!sp?()=>{ctx.save();ctx.filter=MF;drawEnemy(e);ctx.restore();}:()=>{window.MSPR_FILTER=MF||null;drawEnemy(e);window.MSPR_FILTER=null;}});}
   list.push({y:player.y,x:player.x,f:drawPlayer});if(curMap)for(const t of TF){const [wx,wy]=M2W({x:t.x,y:t.y});if(onScr(wx,wy))list.push({y:wy,x:wx,f:()=>drawTownsfolk(t)});}
   for(const f of fx)if(f.layer==='sorted')list.push({y:f.sy,f:()=>f.draw()});
   if(curMap){mapDrawSorted(list);mapGhost();mapDrawFore();}else{list.sort((a,b)=>a.y-b.y);for(const it of list)it.f();}
@@ -5674,7 +5674,7 @@ function vkMake(def,x,y){const lv=def.lv[0]+Math.floor(Math.random()*(def.lv[1]-
 function spawnFieldMons(id){enemies.length=0;const h=mapHosts[id],L=(window.VK_MONS||{})[id];if(!L)return;if(!h||!h.ready){setTimeout(()=>{if(curMap===id&&!enemies.length)spawnFieldMons(id);},300);return;}
   const pool=[];for(const d of L)for(let i=0;i<(d.w??2);i++)pool.push(d);if(!pool.length)return;   // spawn share per monster (critters more, brutes fewer)
   for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
-  let k=0;for(const p of h.spawns){const n=1+(Math.random()<.4?1:0);for(let i=0;i<n;i++){const [x,y]=M2W({x:p.x+rnd(-60,60),y:p.y+rnd(-45,45)});vkMake(pool[k++%pool.length],x,y);}}}
+  let k=0;for(const p of h.spawns){const n=2+(Math.random()<.3?1:0);   /* owner 2026-11-19: more monsters, groups of 2–3 */for(let i=0;i<n;i++){const [x,y]=M2W({x:p.x+rnd(-60,60),y:p.y+rnd(-45,45)});vkMake(pool[k++%pool.length],x,y);}}}
 function fieldRespawn(e){const h=mapHost();if(!h||!h.ready||!h.randomSpawn)return false;const m=W2M(player.x,player.y),p=h.randomSpawn(m.x,m.y,650);if(!p)return false;const [x,y]=M2W(p);
   const n=vkMake(e.vdef,x,y);Object.assign(e,n,{id:e.id});enemies.pop();return true;}
 const FIELD_BOUNDS={...BOUNDS};

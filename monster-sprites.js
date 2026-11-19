@@ -77,11 +77,14 @@ function cframe(e,m){const C=m.clip,t=gameTime,ok=k=>C[k]&&C[k].ok;
     const ha=t-(e._hitT??-9),f=hit+Math.floor(ha*a.fps);if(f<a.n)return ['attack',f];}
   if(e._mv>0&&ok('walk')){const a=C.walk;return ['walk',Math.floor((e._wp||0)*a.n)%a.n];}
   const a=C.idle;return ['idle',Math.floor((t+(e.bob||0))*a.fps)%a.n];}
+/* map colour grade (map charFilter) baked once per sheet instead of ctx.filter on every draw (ctx.filter per monster was the biggest frame cost on fields) */
+const FSH=new Map();function fsrc(img){const f=window.MSPR_FILTER;if(!f||!img||!img.naturalWidth)return img;let m=FSH.get(img);if(!m){m={};FSH.set(img,m);}let c=m[f];if(c)return c;
+  c=document.createElement('canvas');c.width=img.naturalWidth;c.height=img.naturalHeight;const g=c.getContext('2d');g.filter=f;g.drawImage(img,0,0);m[f]=c;return c;}
 function drawClip(e,m,x,y,al,cold,fl){const H=MSPR_H(e),k=H/m.ref;
   if(e._lx!==undefined&&!e.dead){const d=Math.hypot(e.x-e._lx,e.y-e._ly);if(d<60)e._wp=((e._wp||0)+d/(H*1.1))%1000;}e._lx=e.x;e._ly=e.y;
   const [ak,f]=cframe(e,m),a=m.clip[ak];
   if(!(e.clipA&&e.clipA.noShadow)&&!e.dead){ctx.save();ctx.globalAlpha=al*.26;ctx.fillStyle='#14182a';ctx.beginPath();const sw=m.sw*(e.boss?1.5:1);ctx.ellipse(x,y+1+(e.z||0),sw,sw*.27,0,0,TAU);ctx.fill();ctx.restore();}
-  let src=a.img,sx=(f%a.cols)*a.cw,sy=Math.floor(f/a.cols)*a.ch;
+  let src=fsrc(a.img),sx=(f%a.cols)*a.cw,sy=Math.floor(f/a.cols)*a.ch;
   if(fl>.02||cold>0){if(tintC.width!==a.cw||tintC.height!==a.ch){tintC.width=a.cw;tintC.height=a.ch;}
     tg.globalCompositeOperation='copy';tg.drawImage(src,sx,sy,a.cw,a.ch,0,0,a.cw,a.ch);tg.globalCompositeOperation='source-atop';
     if(cold>0){tg.fillStyle=`rgba(120,200,255,${cold*.5})`;tg.fillRect(0,0,a.cw,a.ch);}if(fl>.02){tg.fillStyle=`rgba(255,120,110,${fl*.45})`;tg.fillRect(0,0,a.cw,a.ch);}src=tintC;sx=sy=0;}
@@ -92,7 +95,7 @@ window.MSPR_DRAW=function(e,x,y,al,cold,fl){const m=def(e);if(!m||!m.ok)return f
   let bob=0,tilt=0;if(e._mv>0&&!e.dead&&!m.fly&&!m.wok&&!(e.st&&e.st.frozen>0)){const p=(e._wp||0)*Math.PI*2;bob=Math.abs(Math.sin(p))*H*.045;tilt=Math.sin(p)*.035;}
   /* ground shadow */
   ctx.save();ctx.globalAlpha=al*(m.fly?.16:.24);ctx.fillStyle='#27324a';ctx.beginPath();const sw=m.sw*(e.boss?1.5:1)*(m.fly?.8:1);ctx.ellipse(x,y+1,sw,sw*.27,0,0,TAU);ctx.fill();ctx.restore();
-  const [r,f]=frame(e,m);let src=r==='W'?m.wimg:m.img,sx=f*m.cw,sy=r==='W'?0:r*m.ch;
+  const [r,f]=frame(e,m);let src=fsrc(r==='W'?m.wimg:m.img),sx=f*m.cw,sy=r==='W'?0:r*m.ch;
   if(fl>.02||cold>0){if(tintC.width!==m.cw||tintC.height!==m.ch){tintC.width=m.cw;tintC.height=m.ch;}
     tg.globalCompositeOperation='copy';tg.drawImage(src,sx,sy,m.cw,m.ch,0,0,m.cw,m.ch);tg.globalCompositeOperation='source-atop';
     if(cold>0){tg.fillStyle=`rgba(120,200,255,${cold*.55})`;tg.fillRect(0,0,m.cw,m.ch);}if(fl>.02){tg.fillStyle=`rgba(255,110,100,${fl*.55})`;tg.fillRect(0,0,m.cw,m.ch);}src=tintC;sx=sy=0;}

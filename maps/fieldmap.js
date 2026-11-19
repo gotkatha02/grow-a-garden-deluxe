@@ -525,7 +525,7 @@ function build(){try{
       while(h<t){const i=q[h++],x=i%COLS,y=(i/COLS)|0;for(const j of [x>0?i-1:-1,x<COLS-1?i+1:-1,y>0?i-COLS:-1,y<ROWS-1?i+COLS:-1])if(j>=0&&!grid[j]&&!reach[j]){reach[j]=1;q[t++]=j;}}}}
   buckets.clear();for(const o of objs.concat(seaObjs)){const k=((o.x/CH)|0)+','+((o.y/CH)|0);(buckets.get(k)||buckets.set(k,[]).get(k)).push(o);}
   const reachable=(x,y)=>reach[((y/CELL)|0)*COLS+((x/CELL)|0)]===1;
-  if(cfg.mons!==false)for(let i=0;i<8000&&spawns.length<(cfg.spawnN||32);i++){const x=R(250,W-250),y=R(220,H-220);if(!reachable(x,y)||nearTrail(x,y,20)||warps.some(w=>Math.hypot(x-w.x,y-w.y)<520))continue;if(spawns.some(s=>Math.hypot(s.x-x,s.y-y)<(cfg.spawnGap||320)))continue;spawns.push({x,y});}
+  if(cfg.mons!==false)for(let i=0;i<8000&&spawns.length<Math.round((cfg.spawnN||32)*1.5);i++){const x=R(250,W-250),y=R(220,H-220);if(!reachable(x,y)||nearTrail(x,y,20)||warps.some(w=>Math.hypot(x-w.x,y-w.y)<520))continue;if(spawns.some(s=>Math.hypot(s.x-x,s.y-y)<(cfg.spawnGap||320)*.78))continue;spawns.push({x,y});}
   makeMinimap();ready=true;}catch(e){console.error(e);failed=true;}}
 let spawnPt={x:W/2,y:H/2},reach=null;
 
@@ -628,8 +628,11 @@ function lawn(q,L,x0,y0){const r=L.r,k=L.kerb??12,hgt=L.h??9,rad=L.rad??28,w=r[2
   for(let i=0;i<4;i++){const cx=r[0]+w*hash(i+(r[0]|0),r[1]|0),cy=r[1]+h*hash(r[1]|0,i+(r[2]|0)),rr=Math.max(w,h)*(.25+.25*hash(i,7)),gr=q.createRadialGradient(cx,cy,0,cx,cy,rr),c=i%2?'255,240,170':'30,70,20';gr.addColorStop(0,`rgba(${c},.14)`);gr.addColorStop(1,`rgba(${c},0)`);q.fillStyle=gr;q.fillRect(r[0],r[1],w,h);}
   let g=q.createLinearGradient(0,r[1],0,r[1]+26);g.addColorStop(0,'rgba(20,35,10,.42)');g.addColorStop(1,'rgba(20,35,10,0)');q.fillStyle=g;q.fillRect(r[0],r[1],w,26);
   g=q.createLinearGradient(r[0],0,r[0]+16,0);g.addColorStop(0,'rgba(20,35,10,.25)');g.addColorStop(1,'rgba(20,35,10,0)');q.fillStyle=g;q.fillRect(r[0],r[1],16,h);q.restore();}
-function bake(ci,cj){const c=document.createElement('canvas');c.width=c.height=CH;const q=c.getContext('2d'),x0=ci*CH,y0=cj*CH,x1=x0+CH,y1=y0+CH,inR=(x,y,m)=>x>x0-m&&x<x1+m&&y>y0-m&&y<y1+m;
-  q.imageSmoothingQuality='high';q.translate(-x0,-y0);q.fillStyle=pat(q,GROUND);q.fillRect(x0,y0,CH,CH);
+/* chunks are baked with a BP-pixel margin and the centre is cut out: blurred shapes that cross a chunk edge then blur the same way on both sides (no seam lines) */
+const BP=32;let bakeOut=null;
+function bake(ci,cj){const c0=bakeRaw(ci,cj),c=document.createElement('canvas');c.width=c.height=CH;const g=c.getContext('2d');g.drawImage(c0,BP,BP,CH,CH,0,0,CH,CH);return c;}
+function bakeRaw(ci,cj){if(!bakeOut){bakeOut=document.createElement('canvas');bakeOut.width=bakeOut.height=CH+2*BP;}const c=bakeOut;const q=c.getContext('2d');q.setTransform(1,0,0,1,0,0);q.globalAlpha=1;q.globalCompositeOperation='source-over';q.filter='none';q.clearRect(0,0,c.width,c.height);const x0=ci*CH,y0=cj*CH,x1=x0+CH,y1=y0+CH,inR=(x,y,m)=>x>x0-m-BP&&x<x1+m+BP&&y>y0-m-BP&&y<y1+m+BP;
+  q.imageSmoothingQuality='high';q.translate(-x0+BP,-y0+BP);q.fillStyle=pat(q,GROUND);q.fillRect(x0-BP,y0-BP,CH+2*BP,CH+2*BP);
   /* texture patches: union of jittered discs where the noise field crosses the threshold */
   /* texture patches: a soft noise mask (low-res, smoothed) with a ragged fine edge, filled with the texture */
   for(const P of cfg.patches||[]){const tp=pat(q,P.tex);if(!tp)continue;const m=patchMask(P,x0,y0);if(!m)continue;
@@ -776,8 +779,10 @@ function drawWalls(q,ci,cj){const x0=ci*CH,y0=cj*CH,i0=Math.max(0,(x0/CELL|0)-2)
     const g=q.createLinearGradient(0,yb,0,yb+22);g.addColorStop(0,'rgba(20,12,6,.45)');g.addColorStop(1,'rgba(20,12,6,0)');q.fillStyle=g;q.fillRect(x,yb,CELL,22);}}
 const silCache=new Map();const SHC=cfg.shadowCol||(CAVE?'#1c1828':GROUND==='texMud'?'#2a2030':TH.sh);
 function sil(img){let s=silCache.get(img);if(s)return s;s=document.createElement('canvas');s.width=img.naturalWidth;s.height=img.naturalHeight;const q=s.getContext('2d');q.drawImage(img,0,0);q.globalCompositeOperation='source-in';q.fillStyle=SHC;q.fillRect(0,0,s.width,s.height);silCache.set(img,s);return s;}
-function chunk(ci,cj){const k=ci+','+cj;let c=chunks.get(k);if(c){chunks.delete(k);chunks.set(k,c);return c;}if(bakesThisFrame>=4)return null;bakesThisFrame++;c=bake(ci,cj);chunks.set(k,c);
-  if(chunks.size>70)chunks.delete(chunks.keys().next().value);return c;}
+/* baking budget: at most ~6 ms of baking per frame (always one chunk if one on screen is missing), so walking never freezes the game */
+let bakeT0=0;function chunk(ci,cj,pre){const k=ci+','+cj;let c=chunks.get(k);if(c){chunks.delete(k);chunks.set(k,c);return c;}
+  if(bakesThisFrame>0&&(performance.now()-bakeT0>6||pre))return null;if(!bakesThisFrame)bakeT0=performance.now();bakesThisFrame++;c=bake(ci,cj);chunks.set(k,c);
+  if(chunks.size>90)chunks.delete(chunks.keys().next().value);return c;}
 
 /* ---------- wind ---------- */
 const WINDK=MOOD==='storm'||MOOD==='sandstorm'?1.7:CAVE?0:MOOD==='town'?.7:1;
@@ -897,7 +902,11 @@ function drawBase(g,t,night){if(!ready)return false;bakesThisFrame=0;const v=vie
   const cx=(v.x0+v.x1)/2,cy=(v.y0+v.y1)/2,list=[];for(let j=j0;j<=j1;j++)for(let i=i0;i<=i1;i++)list.push([i,j,(i*CH+CH/2-cx)**2+(j*CH+CH/2-cy)**2]);list.sort((a,b)=>a[2]-b[2]);
   /* the plain ground pattern only fills the tiles whose baked chunk is not ready yet (painting the whole screen twice was the biggest cost) */
   for(const [i,j] of list)if(!chunks.has(i+','+j)){g.fillStyle=pat(g,GROUND);g.fillRect(i*CH,j*CH,Math.min(CH,W-i*CH),Math.min(CH,H-j*CH));}
-  for(const [i,j] of list){const c=chunk(i,j);if(!c)continue;const cw=Math.min(CH,W-i*CH),chh=Math.min(CH,H-j*CH);if(cw===CH&&chh===CH)g.drawImage(c,i*CH,j*CH);else g.drawImage(c,0,0,cw,chh,i*CH,j*CH,cw,chh);}
+  /* each chunk is drawn 1 px larger so the next one overlaps it: no hairline gaps at fractional zoom */
+  for(const [i,j] of list){const c=chunk(i,j);if(!c)continue;const cw=Math.min(CH,W-i*CH),chh=Math.min(CH,H-j*CH),ex=cw===CH?1:0,ey=chh===CH?1:0;g.drawImage(c,0,0,cw,chh,i*CH,j*CH,cw+ex,chh+ey);}
+  /* nothing missing on screen: bake one chunk just outside the view so walking finds it ready */
+  if(!bakesThisFrame){const pi0=Math.max(0,i0-1),pi1=Math.min(Math.ceil(W/CH)-1,i1+1),pj0=Math.max(0,j0-1),pj1=Math.min(Math.ceil(H/CH)-1,j1+1);
+    outer:for(let j=pj0;j<=pj1;j++)for(let i=pi0;i<=pi1;i++)if(!chunks.has(i+','+j)){chunk(i,j);break outer;}}
   /* moving water: the sea texture drifts slowly over itself */
 
   if(LIFE){const dtw=Math.min(.05,Math.max(0,(t-lastW)/1000));lastW=t;lifeKit().waterFx(g,t,dtw,v);}
