@@ -219,6 +219,9 @@ class Piece{
       ctx.drawImage(src,-w*this.ax,-h*this.ay,w,h);ctx.restore();};
     /* afterimages for moving pieces */
     if(this.type==='streak')for(let i=1;i<this.trail.length;i++){const [tx,ty]=this.trail[i];ctx.save();ctx.globalAlpha=a*.28*(1-i/this.trail.length);ctx.translate(tx,ty);ctx.rotate(this.rot);if(this.fy)ctx.scale(1,-1);ctx.drawImage(im,-w*this.ax,-h*this.ay,w,h);ctx.restore();}
+    /* soft dark halo behind the picture so pale effects still read on snow, sand and marble */
+    if(FEEL.on()&&this.type!=='hit'){const hb=haloOf(im);if(hb){const f=w/im.naturalWidth;ctx.save();ctx.globalAlpha=a*.42;ctx.translate(x,y);ctx.rotate(this.rot+this.spin*this.t+wob);if(this.fy)ctx.scale(1,-1);ctx.scale(sxm,sym);
+      ctx.drawImage(hb,-w*this.ax-HP*f,-h*this.ay-HP*f+3,w+2*HP*f,h+2*HP*f);ctx.restore();}}
     drawIm(im,a,false);
     if(this.glow&&k<.35)drawIm(im,this.glow*a*(1-k/.35),true);
     /* white flash on the first frames (impact frame) */
@@ -272,5 +275,36 @@ TV.Companion=Companion;
 TV.attachOld=()=>{if(TV._att||typeof addFx!=='function')return;TV._att=1;const A=window.addFx;
   window.addFx=addFx=function(f){const r=A.apply(this,arguments);try{if(f&&!f._tvc){const m=OLD[f.constructor&&f.constructor.name];
       if(m&&m[0]===CHAR&&f.n&&f.cell==null&&f.half!=='front'&&(f.w||0)>=34&&typeof window[m[1]]==='function'){f._tvc=1;TV.toonify();const c=new Companion(f,window[m[1]]);c.hero=m[0];A(c);}}}catch(e){}return r;};};
+/* =====================================================================
+   FEEL PASS (owner 2026-11-19: "skills are so fast I can't see anything")
+   Visual-only: effects stay on screen longer and a bit bigger, a short charge-up glow
+   before every skill, a little more hit-stop and shake. Damage timing is untouched.
+   ===================================================================== */
+const FEEL={life:1.45,size:1.18,bit:1.35,on:()=>typeof CHAR!=='undefined'&&TV.toonHeroes.has(CHAR)};TV.FEEL=FEEL;
+const HP=10,HALO=new WeakMap();function haloOf(im){let c=HALO.get(im);if(c!==undefined)return c;c=null;try{const w=im.naturalWidth,h=im.naturalHeight;if(w&&h){
+  c=document.createElement('canvas');c.width=w+2*HP;c.height=h+2*HP;const g=c.getContext('2d');g.filter=`blur(${HP*.55}px)`;g.drawImage(im,HP,HP);g.filter='none';g.globalCompositeOperation='source-in';g.fillStyle='#2a1810';g.fillRect(0,0,c.width,c.height);}}catch(e){c=null;}HALO.set(im,c);return c;}
+const HCOL={dragon:'#5ad1ff',kitsune:'#ff8a3a',anubis:'#ffcc4a',lion:'#ffe08a',wolf:'#9fd8ff',cat:'#ff8ab0',hippo:'#5ad8c8',croc:'#7ad86a',jaguar:'#ffb03a',owl:'#c8a0ff',rhino:'#ff7a4a'};
+function stretch(f){if(!f||f._feel)return;f._feel=1;const fixed=f.speed||f.slide||f.until||f.hold||f.follow===undefined&&false;
+  if(f instanceof Piece){if(!f.speed&&!f.until&&!f.hold){f.life*=FEEL.life;f.fadeOut=Math.max(f.fadeOut,.5);}f.w*=FEEL.size;return;}
+  if(f instanceof Bit){f.life*=FEEL.bit;f.size*=1.15;return;}
+  if(f instanceof Ring){f.life*=1.4;f.r1*=1.15;return;}
+  if(f instanceof Glow){f.life*=1.4;f.r*=1.15;return;}
+  if(f instanceof Burst){f.life*=1.6;f.r*=1.2;return;}
+  if(f instanceof Companion||f instanceof Contact)return;
+  const n=f.constructor&&f.constructor.name;
+  if(OLD[n]){if(typeof f.life==='number'&&!fixed&&f.life<3)f.life*=1.35;if(f.w)f.w*=1.12;return;}
+  if(typeof GRing!=='undefined'&&f instanceof GRing){f.life*=1.4;f.r1*=1.12;return;}
+  if(typeof Impact!=='undefined'&&f instanceof Impact){f.life*=1.5;f.size*=1.2;return;}}
+TV.feel=()=>{if(TV._feel||!FEEL.on()||typeof addFx!=='function')return;TV._feel=1;
+  const A=window.addFx;window.addFx=addFx=function(f){try{stretch(f);}catch(e){}return A.apply(this,arguments);};
+  if(typeof stop==='function'){const S=stop;window.stop=stop=ms=>S(Math.min(150,ms*1.45));}
+  if(typeof shake==='function'){const H=shake;window.shake=shake=a=>H(a*1.3);}
+  /* charge-up: a glow gathers under the hero and sparks are pulled in during the wind-up */
+  if(typeof startAction==='function'){const SA=startAction;window.startAction=startAction=function(a){const r=SA.apply(this,arguments);try{
+    if(a&&a.key&&a.key!=='basic'&&(a.windup||0)>=.08&&typeof player!=='undefined'){const col=HCOL[CHAR]||'#ffd36a',wu=a.windup,[px,py]=P(player.x,player.y,0);
+      addFx(new Glow({x:px,y:py,r:70,col,a0:.5,life:wu+.35,follow:player}));
+      addFx(new Ring({x:px,y:py,r0:70,r1:18,w:5,col,life:Math.max(.15,wu)}));
+      const n=Math.min(10,4+Math.round(wu*20));for(let i=0;i<n;i++){const an=i/n*6.283+Math.random()*.4,R=55+Math.random()*25,T=Math.max(.12,wu*.9);
+        bit({kind:i%3?'dot':'star',x:px+Math.cos(an)*R,y:py-30+Math.sin(an)*R*.6,vx:-Math.cos(an)*R/T,vy:-Math.sin(an)*R*.6/T,drag:0,life:T,size:3.4,col:i%2?col:mix(col,'#ffffff',.6),_feel:1});}}}catch(e){}return r;};}};
 window.TV=TV;
 })();
