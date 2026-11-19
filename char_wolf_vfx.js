@@ -12,7 +12,7 @@ const DROPN=['Bolt','ClawMarks','Constellation','Crack','CrackStar','Crystal','C
 const A_SET=new Set(['warFury','bloodCleave','savageRend','axeDance','wolfFinale','ironCounter','revengeBreaker','vampiricAxe','bloodRush','axeCyclone','cycloneLeap','executioner','predatorsLeap','valhallasWrath','reversalSlash','armorBreak','basic']);
 
 function install(){const X=window.V25;if(!X||typeof CHAR==='undefined'||CHAR!=='wolf')return;
-  const {im,add,punch,scr,aim,ribbon,GPic,SPic,XPic,HPic,Shock,Crack,Puffs,Debris,Whirl,Pillar,Pool,Speed,Stain,Bolt,V,c01}=X;
+  const {im,add,punch,scr,aim,ribbon,eo,GPic,SPic,XPic,HPic,Shock,Crack,Puffs,Debris,Whirl,Pillar,Pool,Speed,Stain,Bolt,V,c01}=X;
   PIC.forEach(n=>im(N(n)));['09_crater','25_shock'].forEach(n=>im('cat/'+n));
   if(window.TV&&TV.toonHeroes)TV.toonHeroes.delete('wolf');
   const blood=(x,y,n,o={})=>add(new Debris(Object.assign({x,y,n,kind:'drop',col:WC.blood,col2:'#ff9aa8',v0:60,v1:180,up:220,z:26,life:.8},o)));
@@ -30,15 +30,48 @@ function install(){const X=window.V25;if(!X||typeof CHAR==='undefined'||CHAR!=='
       add(new Whirl({x,y,R:R*.8,n:4,w:20,col:o.col||'#cfeaff',col2:'#ffffff',life:dur,spd:o.spd||5,follow:o.follow}));
       if(o.funnel)add(new Whirl({x,y,R:R*.5,n:3,w:13,col:o.col||'#e8f6ff',col2:'#fff',life:dur,spd:(o.spd||5)*1.4,h:o.funnel,a0:.55,follow:o.follow}));},
   };
+  /* ---- painted swing (owner 2026-11-19: the slash picture must come out in time with the hand) ----
+     Same arc as the old code slash: centred on the shoulder, from the wind-up axe-head position through the contact-frame
+     axe-head position. The picture is bent onto that arc in thin slices and revealed only as far as the live axe head has gone. */
+  const DEG=Math.PI/180;
+  const ART={axe:{n:N('w01_axe'),c:[200,80],a0:164*DEG,a1:-94*DEG,rp:118},frost:{n:N('w11_frost'),c:[240,130],a0:49*DEG,a1:335*DEG,rp:135}};
+  const hue=h=>{const r=parseInt(h.slice(1,3),16)/255,g=parseInt(h.slice(3,5),16)/255,b=parseInt(h.slice(5,7),16)/255,M=Math.max(r,g,b),m=Math.min(r,g,b);if(M===m)return 0;let H=M===r?(g-b)/(M-m):M===g?2+(b-r)/(M-m):4+(r-g)/(M-m);return (H*60+360)%360;};
+  const angD=(a,b)=>{let d=(a-b)%(2*Math.PI);if(d>Math.PI)d-=2*Math.PI;if(d<-Math.PI)d+=2*Math.PI;return d;};
+  class PSlash{constructor(o){Object.assign(this,{t:0,layer:'top',prog:0,er:0,hold:.05,fade:.16},o);this.done=-1;}
+    p3(th,r){return [player.x+Math.cos(th)*r*.6,player.y,30-Math.sin(th)*r*.6];}
+    C(){const [px,py]=P(player.x,player.y,player.z||0);return [px+this.cx,py+this.cy];}
+    update(dt){this.t+=dt;const T=(typeof ACTION_TEMPO!=='undefined'?ACTION_TEMPO:1);
+      const L=(player.action===this.act)&&liveSocket();let pr=L?c01((this.t*T/this.grow-.5)*2):c01(this.t*T/this.grow);
+      if(L){const [cx,cy]=this.C(),ha=Math.atan2(L.head[1]-cy,L.head[0]-cx);pr=Math.max(pr,c01(angD(ha,this.ta)*this.sg/Math.abs(this.span)));}
+      this.prog=Math.max(this.prog,pr);if(this.prog>=1&&this.done<0)this.done=this.t;
+      if(this.done>=0){const q=(this.t-this.done-this.hold)/this.fade;this.er=c01(q);if(q>=1)return false;}
+      return this.t<3;}
+    draw(){const A=ART[this.art],i=im(A.n);if(!i||this.prog<=0)return;const [cx,cy]=this.C(),ta=this.ta,sp=this.span,th0=A.a0,th1=A.a1,ts=th1-th0;
+      const k=Math.abs(sp/ts),m=Math.sign(sp/ts),s=this.sc,f0=eo(this.er),f1=this.prog,al=this.al*(1-.6*this.er);
+      const N2=22;ctx.save();
+      for(let j=0;j<N2;j++){let u0=j/N2,u1=(j+1)/N2;if(u1<=f0||u0>=f1)continue;u0=Math.max(u0,f0);u1=Math.min(u1,f1);
+        const pa=ta+sp*u0,pb=ta+sp*u1,pm=(pa+pb)/2,tm=th0+ts*(u0+u1)/2,lo=Math.min(pa,pb)-.012,hi=Math.max(pa,pb)+.012;
+        ctx.save();ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,s*420,lo,hi);ctx.closePath();ctx.clip();
+        ctx.globalAlpha=al;ctx.translate(cx,cy);ctx.rotate(pm);ctx.scale(s,s*k*m);ctx.rotate(-tm);ctx.translate(-A.c[0],-A.c[1]);ctx.drawImage(i,0,0);
+        if(this.t<.06){ctx.globalCompositeOperation='lighter';ctx.globalAlpha=al*.6*(1-this.t/.06);ctx.drawImage(i,0,0);}
+        ctx.restore();}
+      ctx.restore();ctx.globalAlpha=1;}}
+  const pslash=(s,k1,o={})=>{const B=headR(s,k1);if(!B)return null;const [px,py]=P(player.x,player.y,player.z||0),C=[px,py-44];
+    let A=null,best=0;for(let k=Math.max(0,k1-3);k<k1;k++){const h=headR(s,k);if(h){const dd=Math.hypot(h[0]-B[0],h[1]-B[1]);if(dd>best){best=dd;A=h;}}}
+    if(!A||best<14)A=[C[0]-(B[0]-C[0])*.6,C[1]-Math.abs(B[1]-C[1])-26];
+    const r=Math.max(26,Math.min(72,Math.hypot(B[0]-C[0],B[1]-C[1])));let ta=Math.atan2(A[1]-C[1],A[0]-C[0]);const tb=Math.atan2(B[1]-C[1],B[0]-C[0]);
+    const md=x=>((x%(2*Math.PI))+2*Math.PI)%(2*Math.PI),d1=md(tb-ta),d2=d1-2*Math.PI;let sw=Math.abs(d1)<Math.abs(d2)?d1:d2;
+    if(Math.abs(Math.abs(d1)-Math.abs(d2))<1)sw=Math.sin(ta+d1/2)<Math.sin(ta+d2/2)?d1:d2;
+    const mp=o.maxPre??1.9;if(Math.abs(sw)>mp)sw=Math.sign(sw)*mp;if(Math.abs(sw)<.8)sw=Math.sign(sw||1)*.8;ta=tb-sw+(o.rot||0);sw=tb-ta;const sg=Math.sign(sw),over=o.over??.45;
+    const W=o.W||20,cl=o.colors||{},art=o.art||((hue(cl.glow||'#ff0000')>150&&hue(cl.glow||'#ff0000')<260)?'frost':'axe');
+    const R=r*(o.rs??1.08)+W*.3,sc=R*.6/ART[art].rp*(.85+W/70)*(o.szMul||1);
+    return add(new PSlash({art,cx:C[0]-px,cy:C[1]-py,ta,span:sw+sg*over,sg,sc,al:o.alpha??1,grow:o.grow||.12,fade:o.editor?Math.max(.05,o.fade||.2):Math.max(.12,(o.fade||.15)+.04),hold:o.hold??.05,act:player.action,a0:ta,a1:tb+sg*over,R}));};
+  window._wPSlash=pslash;
   const AT={
-    reversalSlash:()=>W.slash(player.phi,130,'axe',1),
-    bloodCleave:()=>W.slash(player.phi,150,'axe'),
-    savageRend:()=>W.slash(player.phi,140,'axe',1),
-    axeDance:()=>{for(let i=0;i<3;i++)setFxTimer(i*.12,()=>W.slash(player.phi+rnd(-.4,.4),130,'axe',i%2));},
-    wolfFinale:()=>{W.slash(player.phi,170,'axe');W.crater(player.x+Math.cos(player.phi)*40,player.y+Math.sin(player.phi)*40,170);},
-    revengeBreaker:c=>{W.slash(player.phi,160,'axe');const t=tgt(c);if(t)add(new HPic({n:N('w03_hitred'),x:t.x,y:t.y,e:t,w:110,z:30,life:.3}));},
-    vampiricAxe:()=>{W.slash(player.phi,140,'axe');add(new SPic({n:N('w06_vamp'),x:player.x,y:player.y,w:90,follow:player,sortOff:-4,life:.9,a0:.85,shadow:0,pool:WC.red}));},
-    armorBreak:c=>{const t=tgt(c);W.slash(player.phi,130,'axe');if(t){add(new HPic({n:N('w10_armor'),x:t.x,y:t.y,e:t,w:t.boss?140:100,z:30,life:.55}));add(new Debris({x:t.x,y:t.y,n:6,kind:'rock',col:'#a8a8b8',col2:'#fff',v0:80,v1:200,up:240,z:30}));}},
+    wolfFinale:()=>{W.crater(player.x+Math.cos(player.phi)*40,player.y+Math.sin(player.phi)*40,170);},
+    revengeBreaker:c=>{const t=tgt(c);if(t)add(new HPic({n:N('w03_hitred'),x:t.x,y:t.y,e:t,w:110,z:30,life:.3}));},
+    vampiricAxe:()=>{add(new SPic({n:N('w06_vamp'),x:player.x,y:player.y,w:90,follow:player,sortOff:-4,life:.9,a0:.85,shadow:0,pool:WC.red}));},
+    armorBreak:c=>{const t=tgt(c);if(t){add(new HPic({n:N('w10_armor'),x:t.x,y:t.y,e:t,w:t.boss?140:100,z:30,life:.55}));add(new Debris({x:t.x,y:t.y,n:6,kind:'rock',col:'#a8a8b8',col2:'#fff',v0:80,v1:200,up:240,z:30}));}},
     executioner:c=>{const t=tgt(c)||player;add(new SPic({n:N('w08_exec'),x:t.x,y:t.y,w:t.boss?115:90,life:.55,fadeIn:.001,pool:WC.red,sink:.5}));W.crater(t.x,t.y,150);flash.a=Math.max(flash.a,.2);flash.c=WC.red;},
     cycloneLeap:()=>W.crater(player.x,player.y,170),
     ironCounter:()=>add(new SPic({n:N('w09_parry'),x:player.x+Math.cos(player.phi)*24,y:player.y+Math.sin(player.phi)*24,w:80,ay:.6,z:10,life:.5,fadeIn:.001,shadow:0,pool:WC.gold})),
@@ -48,11 +81,10 @@ function install(){const X=window.V25;if(!X||typeof CHAR==='undefined'||CHAR!=='
     predatorsLeap:()=>{add(new XPic({n:N('w19_spirit'),x:player.x,y:player.y,phi:player.phi,w:150,z:40,life:.45,trail:5}));setFxTimer(.3,()=>W.crater(player.x,player.y,160));},
     valhallasWrath:c=>{const t=tgt(c,260)||player;add(new SPic({n:N('w07_rage'),x:player.x,y:player.y,w:130,follow:player,sortOff:-4,life:1,a0:.8,shadow:0}));
       setFxTimer(.15,()=>{add(new SPic({n:N('w08_exec'),x:t.x,y:t.y,w:t.boss?150:125,life:.6,fadeIn:.001,pool:WC.red,sink:.5}));W.crater(t.x,t.y,220);V.release(t.x,t.y,WC.red,{R:160,h:300,w:90});});},
-    frostFang:()=>W.slash(player.phi,140,'frost'),
-    iceBreak:c=>{const t=tgt(c);W.slash(player.phi,130,'frost',1);if(t)W.shatter(t.x,t.y,t.boss?150:110);},
+    iceBreak:c=>{const t=tgt(c);if(t)W.shatter(t.x,t.y,t.boss?150:110);},
     runeBurst:()=>{add(new GPic({n:N('w14_rune'),x:player.x,y:player.y,w:200,life:.8,s0:.4,grow:1.1,add:.35}));W.shatter(player.x,player.y,150);V.release(player.x,player.y,WC.ice,{R:120,h:220,w:70});},
     runeGuard:()=>add(new Shock({x:player.x,y:player.y,R:80,col:WC.ice,w:10})),
-    thunderFang:c=>{const t=tgt(c,240);W.slash(player.phi,130,'frost');if(t)W.bolt(t.x,t.y,150);},
+    thunderFang:c=>{const t=tgt(c,240);if(t)W.bolt(t.x,t.y,150);},
     lightningPursuit:c=>{const t=tgt(c,300);if(t)W.bolt(t.x,t.y,170);},
     stormStep:()=>{W.bolt(player.x,player.y,140);add(new Speed({x:player.x,y:player.y,phi:player.phi,life:.3,col:WC.bolt}));},
     shatterPulse:()=>{W.shatter(player.x,player.y,180);V.slam(player.x,player.y,140,WC.ice,{kind:'shard',dcol:'#d8f4ff',crack:false});},
@@ -90,24 +122,24 @@ function install(){const X=window.V25;if(!X||typeof CHAR==='undefined'||CHAR!=='
       ctx.save();ctx.globalAlpha=a*.95;ctx.translate(x0,y0);ctx.rotate(Math.atan2(y1-y0,x1-x0));ctx.drawImage(i,0,-this.w*.6,L,this.w*1.2);ctx.restore();ctx.globalAlpha=1;};
     /* 2. watchers: rage, rune guard, banner, fenrir */
     const live=[];const watch=(test,mk)=>live.push({test,mk,on:null});
-    watch(()=>hasBuff('warFury'),()=>add(new SPic({n:N('w07_rage'),x:player.x,y:player.y,w:110,ay:.9,follow:player,oy:2,sortOff:-4,life:99,a0:.75,pulse:.2,shadow:0,until:()=>!hasBuff('warFury')})));
-    watch(()=>hasBuff('runeGuard'),()=>add(new GPic({n:N('w14_rune'),x:player.x,y:player.y,w:130,follow:player,life:99,a0:.85,breathe:.03,add:.2,until:()=>!hasBuff('runeGuard')})));
-    watch(()=>hasBuff('banner')&&window._wBAN,()=>{const B=window._wBAN;return add(new SPic({n:N('w20_banner'),obj:1,x:B.x,y:B.y,w:56,ay:.96,life:99,shadow:.3,pool:WC.gold,until:()=>!hasBuff('banner')||window._wBAN!==B}));});
-    watch(()=>hasBuff('fenrir'),()=>add(new SPic({n:N('w19_spirit'),x:player.x,y:player.y,w:100,ay:.6,z:24,follow:player,ox:-30,sortOff:-10,life:99,a0:.45,pulse:.2,shadow:0,until:()=>!hasBuff('fenrir')})));
+    watch(()=>!(window.FXED&&FXED.off('warFury'))&&hasBuff('warFury'),()=>add(new SPic({n:N('w07_rage'),x:player.x,y:player.y,w:110,ay:.9,follow:player,oy:2,sortOff:-4,life:99,a0:.75,pulse:.2,shadow:0,until:()=>!hasBuff('warFury')})));
+    watch(()=>!(window.FXED&&FXED.off('runeGuard'))&&hasBuff('runeGuard'),()=>add(new GPic({n:N('w14_rune'),x:player.x,y:player.y,w:130,follow:player,life:99,a0:.85,breathe:.03,add:.2,until:()=>!hasBuff('runeGuard')})));
+    watch(()=>!(window.FXED&&FXED.off('warBanner'))&&hasBuff('banner')&&window._wBAN,()=>{const B=window._wBAN;return add(new SPic({n:N('w20_banner'),obj:1,x:B.x,y:B.y,w:56,ay:.96,life:99,shadow:.3,pool:WC.gold,until:()=>!hasBuff('banner')||window._wBAN!==B}));});
+    watch(()=>!(window.FXED&&FXED.off('fenrirsSpirit'))&&hasBuff('fenrir'),()=>add(new SPic({n:N('w19_spirit'),x:player.x,y:player.y,w:100,ay:.6,z:24,follow:player,ox:-30,sortOff:-10,life:99,a0:.45,pulse:.2,shadow:0,until:()=>!hasBuff('fenrir')})));
     A({layer:'none',_v2:1,draw(){},update(){if(CHAR!=='wolf')return false;for(const w of live){const on=!!w.test();if(on&&!w.was)w.on=w.mk();w.was=on;}return true;}});
     /* 3. hits */
     const h0=hurt;let last=0;
     hurt=function(e,mult,o={}){const wasDead=e&&e.dead;const r=h0.apply(this,arguments);if(CHAR!=='wolf'||!e||wasDead||!r||(o&&o.dot))return r;
-      const k=(o&&o.skill)||(o&&o.auto?'basic':null)||window.SKCTX||'basic';if(gameTime-last<.035&&!(o&&o.big))return r;last=gameTime;const z=(e.boss?40:26)+rnd(-6,8);
-      if(!A_SET.has(k)){add(new HPic({n:N('w18_shatter'),x:e.x,y:e.y,e,w:e.boss?70:50,z,life:.22}));ice(e.x,e.y,2,{v0:40,v1:120,up:160});}
-      else{add(new HPic({n:N('w03_hitred'),x:e.x,y:e.y,e,w:(o&&o.big?80:56)*(e.boss?1.3:1),z,life:.22}));blood(e.x,e.y,2,{v0:40,v1:120,up:160});}
+      const k=(o&&o.skill)||(o&&o.auto?'basic':null)||window.SKCTX||'basic';if(window.FXED&&FXED.off(k))return r;if(gameTime-last<.035&&!(o&&o.big))return r;last=gameTime;const z=(e.boss?40:26)+rnd(-6,8);
+      if(!A_SET.has(k)){add(new HPic({n:N('w18_shatter'),x:e.x,y:e.y,e,w:e.boss?70:50,z,life:.22}));}
+      else{add(new HPic({n:N('w03_hitred'),x:e.x,y:e.y,e,w:(o&&o.big?80:56)*(e.boss?1.3:1),z,life:.22}));}
       return r;};
-    /* 4. normal attack: painted axe swing */
-    if(typeof mkBasic==='function'){const mb=mkBasic;mkBasic=function(t){const a=mb.apply(this,arguments);if(a&&a.events){const tt=Math.max(.02,(a.windup||.1)-.03);const fl=(player.basicIdx||0)%2;a.events.push({t:tt,f:()=>W.slash(player.phi,110,'axe',fl)});}return a;};}
+    /* 4. every swing on the real attack clip (basic + slash skills) → painted swing in time with the axe head */
+    if(typeof spriteSlash==='function'){const ss=spriteSlash;spriteSlash=function(sq,k0,k1,k2,o){if(CHAR!=='wolf')return ss.apply(this,arguments);const key=player.action&&player.action.key;if(window.FXED&&FXED.off(key)){const sw=FXED.swing(key);if(!sw)return null;return pslash(sq,k1,Object.assign({},o||{},{art:sw.art,szMul:sw.size,rot:((o&&o.rot)||0)+(sw.rot||0)*DEG,alpha:sw.alpha,fade:sw.fade,editor:1}));}return pslash(sq,k1,o||{});};}
   }
   /* 5. per-skill moments at the contact time (+ a charge-up for longer wind-ups) */
   for(const k in AT){const sk=SKILLS[k]||(typeof CSK!=='undefined'&&CSK[k]);if(!sk||!sk.make||sk._wv2)continue;const mk=sk.make;sk._wv2=1;
-    sk.make=function(c){const a=mk.apply(this,arguments);if(a&&a.events){const t=Math.max(.02,Math.min(a.windup||.02,(a.dur||1)-.02));if(t>=.12&&!(c&&c.gx!=null&&(SKILLS[k]||{}).type==='ground'))V.charge(A_SET.has(k)?WC.red:WC.ice,t);a.events.push({t,f:()=>{try{AT[k](c||{},a);}catch(e){console.error('wolf v2 '+k+': '+e);}}});}return a;};}
+    sk.make=function(c){const a=mk.apply(this,arguments);if(a&&a.events&&k==='iceBreak'&&a.seq&&!(window.FXED&&FXED.off(k))){let kh=0;while(kh<a.seq.length&&seqTimeAt(a.seq,kh+1)<=a.windup+1e-6)kh++;const sq=a.seq;a.events.push({t:seqTimeAt(sq,Math.max(0,kh-1)),f:()=>pslash(sq,kh,{W:20,art:'frost',grow:seqTimeAt(sq,kh+1)-seqTimeAt(sq,Math.max(0,kh-1)),fade:.2})});}if(a&&a.events&&!(window.FXED&&FXED.off(k))){const t=Math.max(.02,Math.min(a.windup||.02,(a.dur||1)-.02));if(t>=.12&&!(c&&c.gx!=null&&(SKILLS[k]||{}).type==='ground'))V.charge(A_SET.has(k)?WC.red:WC.ice,t);a.events.push({t,f:()=>{try{AT[k](c||{},a);}catch(e){console.error('wolf v2 '+k+': '+e);}}});}return a;};}
   /* painted skill icons (assets/icons/wolf/<key>.webp); a missing file keeps the old icon */
   if(typeof SKILL_ICON_ART!=='undefined'&&!window._wv2i){window._wv2i=1;const all=Object.assign({},SKILLS,typeof CSK!=='undefined'?CSK:{});
     for(const k in all){const sk=all[k];if(!sk||!sk.name)continue;const src='assets/icons/wolf/'+k+'.webp',ic=new Image();
