@@ -1,21 +1,28 @@
-# 🌱 Grow a Garden Deluxe
+# Totem Legend
 
-เกมปลูกผักบนมือถือ เล่นในเบราว์เซอร์ได้เลย (ไฟล์เดียว `index.html` ไม่ต้องติดตั้งอะไร)
+2D idle action RPG with animal heroes from world myths (Norse, Aztec, Greek, Egyptian, Japanese). Systems follow 12 Tails Online.
 
-## วิธีเล่น
-เปิด `index.html` ในเบราว์เซอร์ หรือเปิดผ่าน GitHub Pages
+## Play
+- **Windows:** double-click `เปิดเกม-Windows.bat` (needs Python from python.org)
+- **Mac:** double-click `เปิดเกม-Mac.command`
+- Or run `python3 -m http.server 8000` in this folder and open http://localhost:8000/index.html
+- Pick a hero with `?char=wolf` (wolf · jaguar · owl · rhino · croc · cat · hippo · sheep · axolotl)
 
-## ระบบในเกม
-- 🌱 สวนแบบทุ่งโล่ง แตะตรงไหนก็ปลูกได้ สูงสุด 100 ต้น
-- 🔁 ต้นไม้เก็บผลซ้ำได้ ผลแต่ละรอบสุ่มน้ำหนัก (10–1,000 kg) และสถานะใหม่
-- ✨ สถานะ (Mutation) กว่า 30 แบบ ซ้อนกันได้หลายอย่าง
-- 💦 สปริงเกลอร์ทำให้ผลใหญ่ขึ้น, ⛏️ พลั่วย้าย/ขุดต้นไม้
-- 🐾 สัตว์เลี้ยงระบบกาชา (ไข่ 2 ชุด + ไข่จำกัดเวลา) สุ่มเกรด สุ่มขนาด
-- 🎰 กาชาต้นไม้ 3 ตู้ (แฟนตาซี / 🎃 ฮาโลวีน / 🦖 ดึกดำบรรพ์) วาดด้วย SVG
-- 🌦️ สภาพอากาศ, อีเวนต์, ตลาด, ผสมพันธุ์, ครัว, ความสำเร็จ, Rebirth
-- 💾 เซฟอัตโนมัติ + โค้ดเซฟสำหรับย้ายเครื่อง
+Do not open `index.html` by double-click: the browser blocks map images on `file://`.
 
-## ตัวอย่างต้นไม้กาชา
-![ตู้แฟนตาซี](gacha-trees-preview.png)
-![ตู้ฮาโลวีน](halloween-trees-preview.png)
-![ตู้ดึกดำบรรพ์](prehistoric-trees-preview.png)
+## Working on it with Claude
+Start any chat with: **"ทำงานต่อใน repo gotkatha02/totem-legend"**.
+Claude clones this repo, works on it, then commits and pushes. No zip files needed.
+Game rules for every change are in `CLAUDE.md`.
+
+## Main files
+| File | What |
+|---|---|
+| `index.html` | engine, stats, damage, wolf / jaguar / rhino / axolotl / croc base code, UI windows |
+| `char_*.js` | one module per hero (owl, cat, hippo, sheep, croc rework, rhino rework, jaguar rework) |
+| `skill_rules.js` | damage type per skill (ATK / TAL / best-of), crowd control, KO |
+| `items.js` | items, crafting, refine, sockets / orbs, shops |
+| `ui_v2.js` | code-drawn UI theme (Golden Forge colours, fonts Mitr + Prompt) |
+| `progress.js` | save / load, play mode, character creation roll |
+| `tools/balance_bench.js` | fast-forward combat benchmark |
+| `assets/` | art, icons, fonts, effects |
