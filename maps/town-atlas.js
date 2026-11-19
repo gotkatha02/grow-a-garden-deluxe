@@ -1,0 +1,1 @@
+window.TOWN_SPRITES={"hunter": ["homes", 154, 2, 449, 499], "fisher": ["homes", 811, 57, 673, 435], "elder": ["homes", 133, 513, 550, 490], "weaver": ["homes", 838, 512, 597, 486], "market": ["services", 100, 17, 568, 486], "smith": ["services", 809, 1, 673, 511], "well": ["services", 136, 513, 485, 506], "yardFence": ["services", 772, 625, 753, 320]};

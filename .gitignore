@@ -1,0 +1,17 @@
+# OS / editor junk
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# backups and exports (git keeps the history, so these are not needed)
+*.bak*
+*.before_*
+_backup*/
+*.zip
+
+# Python / Node caches from tools
+__pycache__/
+*.pyc
+node_modules/
