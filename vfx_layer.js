@@ -296,12 +296,12 @@ function stretch(f){if(!f||f._feel)return;f._feel=1;const fixed=f.speed||f.slide
   if(typeof GRing!=='undefined'&&f instanceof GRing){f.life*=1.4;f.r1*=1.12;return;}
   if(typeof Impact!=='undefined'&&f instanceof Impact){f.life*=1.5;f.size*=1.2;return;}}
 TV.feel=()=>{if(TV._feel||!FEEL.on()||typeof addFx!=='function')return;TV._feel=1;
-  const A=window.addFx;window.addFx=addFx=function(f){try{stretch(f);}catch(e){}return A.apply(this,arguments);};
+  const A=window.addFx;window.addFx=addFx=function(f){try{if(FEEL.on())stretch(f);}catch(e){}return A.apply(this,arguments);};
   if(typeof stop==='function'){const S=stop;window.stop=stop=ms=>S(Math.min(150,ms*1.45));}
   if(typeof shake==='function'){const H=shake;window.shake=shake=a=>H(a*1.3);}
   /* charge-up: a glow gathers under the hero and sparks are pulled in during the wind-up */
   if(typeof startAction==='function'){const SA=startAction;window.startAction=startAction=function(a){const r=SA.apply(this,arguments);try{
-    if(a&&a.key&&a.key!=='basic'&&(a.windup||0)>=.08&&typeof player!=='undefined'){const col=HCOL[CHAR]||'#ffd36a',wu=a.windup,[px,py]=P(player.x,player.y,0);
+    if(FEEL.on()&&a&&a.key&&a.key!=='basic'&&(a.windup||0)>=.08&&typeof player!=='undefined'){const col=HCOL[CHAR]||'#ffd36a',wu=a.windup,[px,py]=P(player.x,player.y,0);
       addFx(new Glow({x:px,y:py,r:70,col,a0:.5,life:wu+.35,follow:player}));
       addFx(new Ring({x:px,y:py,r0:70,r1:18,w:5,col,life:Math.max(.15,wu)}));
       const n=Math.min(10,4+Math.round(wu*20));for(let i=0;i<n;i++){const an=i/n*6.283+Math.random()*.4,R=55+Math.random()*25,T=Math.max(.12,wu*.9);
