@@ -55,3 +55,23 @@ A single slash effect for a 2D game skill: a crescent axe-slash made of electric
 ```
 A single ground effect for a 2D game: a ring of kicked-up snow and frost dust bursting outward around an impact point, chunky cartoon snow clumps and puffs along the rim, the centre left empty. Seen from a 3/4 top-down view, laid flat on the ground as a wide ellipse ring. Friendly hand-painted chibi cartoon style matching the attached game art, thick clean dark-brown outlines, cel shading with 2–3 flat tones, soft cartoon glow, bright and warm. Not realistic, not painterly smoke, not 3D. Only this one effect, no character, no text, no logo, no watermark. Transparent PNG background with empty space on every side.
 ```
+
+---
+
+# ชุดท่ายาก (ประกอบหลายชั้น)
+
+| ช่อง | ไฟล์ | ใช้กับ |
+|---|---|---|
+| 9 | y01_spin_ring | Axe Cyclone |
+| 10 | y02_snow_curtain | Blizzard |
+| 11 | y03_icicle_fall | Blizzard, Frozen Descent |
+| 12 | y04_sky_lightning | Ragnarok's Judgment, Tempest Field, Rune Storm |
+| 13 | y05_ground_rift | Ragnarok's Judgment, Frozen Descent |
+| 14 | y06_wolf_dive | Wolf Finale, Cycline Leap, Predator's Leap, Ravenous Leap |
+| 15 | y07_rock_shock | ทุกท่ากระโดดทุบ |
+| 16 | y08_fenrir_spirit | Fenrir's Spirit |
+| 17 | y09_frost_aura | Fenrir's Spirit, Frostblood Pact |
+| 18 | y10_spear_burst | Thunder Spear, Lightning Pursuit |
+| 19 | y11_red_cleave | Executioner, Valhalla's Wrath |
+
+(prompt เต็มอยู่ในข้อความแชท 2026-11-19 — ใช้ STYLE เดียวกับด้านบน)
