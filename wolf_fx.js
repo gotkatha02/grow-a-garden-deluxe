@@ -129,6 +129,10 @@ const AT={   // key: (a,c) => visuals ; a = the action, c = cast context
 class WDelay{constructor(t,f){this.t=t;this.f=f;this.layer='none';}update(dt){this.t-=dt;if(this.t<=0){try{this.f();}catch(_){}return false;}return true;}draw(){}}
 function setFxT(t,f){addFx(new WDelay(t,f));}
 let BAN=null;
+/* owner 2026-11-20: Blood Cleave / Savage Rend / Axe Dance without sparkle bursts or dot particles */
+const W_QUIET=new Set(['bloodCleave','savageRend','axeDance']);
+function wQuiet(){return CHAR==='wolf'&&player.action&&W_QUIET.has(player.action.key);}
+if(!window._wQE&&typeof emit==='function'){window._wQE=1;const E0=emit;window.emit=emit=function(o){if(wQuiet())return;return E0.apply(this,arguments);};}
 /* War Fury: the wolf's own sprite glazed red (no flames) + a thin red rim */
 function wRedCoat(a){if(typeof playerFrame!=='function'||typeof tinted!=='function')return;const e=playerFrame();if(!e)return;const [x,y]=P(player.x,player.y,player.z||0);
   ctx.save();if(typeof CHAR_SCALE!=='undefined'&&CHAR_SCALE!==1){ctx.translate(x,y);ctx.scale(CHAR_SCALE,CHAR_SCALE);ctx.translate(-x,-y);}
@@ -164,6 +168,7 @@ function install(){
   if(typeof CHAR==='undefined'||CHAR!=='wolf')return;
   if(!window._wDrop){window._wDrop=1;const D=['RuneCircle','RuneShield','LightPillar'].map(n=>{try{return eval(n);}catch(e){return null;}}).filter(Boolean);
     const A0=window.addFx;window.addFx=addFx=function(f){if(CHAR==='wolf'&&f&&D.some(c=>f instanceof c))return f;
+      if(wQuiet()&&f&&(/^(Bit|WBit|Burst|Impact)$/.test(f.constructor.name)||(f.n&&/^(w03|x03|x04)/.test(f.n))))return f;
       if(CHAR==='wolf'&&f&&typeof FallObj!=='undefined'&&f instanceof FallObj&&f.kind==='axe'&&player.action&&player.action.key==='ragnaroksJudgment')wMjolnir(f);return A0.apply(this,arguments);};
     if(typeof BannerObj!=='undefined'){const d0=BannerObj.prototype.draw;BannerObj.prototype.draw=function(){if(CHAR==='wolf')return;return d0.apply(this,arguments);};}}
   for(const n of ['w25_thunder_burst','w24_rune_shield','w01_axe','w02_blood','w03_hitred','w04_cyclone','w05_howl','w06_vamp','w07_rage','w08_exec','w09_parry','w10_armor','w11_frost','w12_ice','w13_prison','w14_rune','w15_bolt','w16_spear','w17_blizzard','w18_shatter','w19_spirit','w20_banner','w23_mjolnir','w21_glacial','w22_worldstorm','09_crater','22_pow','23_dust','25_shock'])wImg(n);
