@@ -5448,16 +5448,18 @@ const MG=[['statb','A','<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="15" 
  ['mgmap','M','<svg viewBox="0 0 40 40"><path d="M5 9 L14 5 L26 9 L35 5 V31 L26 35 L14 31 L5 35 Z" fill="#9fe08a" stroke="#3a2a1f" stroke-width="2.5"/><path d="M14 5 V31 M26 9 V35" stroke="#3a2a1f" stroke-width="2"/><circle cx="20" cy="19" r="3" fill="#e2574c"/></svg>','Minimap'],
  ['mgchat','C','<svg viewBox="0 0 40 40"><path d="M6 8 H34 V27 H17 L10 34 V27 H6 Z" fill="#fff" stroke="#3a2a1f" stroke-width="2.5" stroke-linejoin="round"/><circle cx="14" cy="18" r="2" fill="#3a2a1f"/><circle cx="20" cy="18" r="2" fill="#3a2a1f"/><circle cx="26" cy="18" r="2" fill="#3a2a1f"/></svg>','Chat'],
  ['mgslow','L','<svg viewBox="0 0 40 40"><circle cx="20" cy="21" r="14" fill="#ffe9b0" stroke="#3a2a1f" stroke-width="2.5"/><path d="M20 12 V21 L26 25" stroke="#3a2a1f" stroke-width="2.5" fill="none" stroke-linecap="round"/><rect x="16" y="3" width="8" height="4" rx="1" fill="#3a2a1f"/></svg>','Slow-mo ×0.25'],
+ ['mgfx','F','<svg viewBox="0 0 40 40"><path d="M20 3 l4 11 11 4 -11 4 -4 11 -4-11 -11-4 11-4z" fill="#ffd36a" stroke="#3a2a1f" stroke-width="2.2" stroke-linejoin="round"/><circle cx="31" cy="30" r="4" fill="#9fd8ff" stroke="#3a2a1f" stroke-width="2"/></svg>','ปรับเอฟเฟคสกิล (F)'],
  ['mggear','O','<svg viewBox="0 0 40 40"><path d="M20 4 l3 5 6-1 1 6 5 3 -3 5 3 5 -5 3 -1 6 -6-1 -3 5 -3-5 -6 1 -1-6 -5-3 3-5 -3-5 5-3 1-6 6 1z" fill="#c9ccd8" stroke="#3a2a1f" stroke-width="2.2" stroke-linejoin="round"/><circle cx="20" cy="20" r="6" fill="#fff" stroke="#3a2a1f" stroke-width="2.2"/></svg>','ตั้งค่า (เลเวลสกิล, VFX, Debug)']];
 const mgEl=document.getElementById('mgrid');mgEl.innerHTML=MG.map(([id,k,svg,t])=>`<button data-m="${id}" title="${t} (${k})"><span class="kb">${k}</span>${svg}</button>`).join('');
 mgEl.querySelectorAll('button').forEach(b=>b.onclick=e=>{e.stopPropagation();const id=b.dataset.m;
   if(id==='mgmap'){const m=document.getElementById('mm');m.style.display=m.style.display==='none'?'':'none';b.classList.toggle('on',m.style.display!=='none');}
   else if(id==='mgchat'){const c=document.getElementById('chat');if(matchMedia('(max-width:640px)').matches)c.classList.toggle('mob');else c.style.display=c.style.display==='none'?'':'none';}
   else if(id==='mgslow'){timeScale=timeScale===1?.25:1;b.classList.toggle('on',timeScale!==1);}
+  else if(id==='mgfx'){window.FXED&&FXED.toggle();}
   else if(id==='mggear'){document.getElementById('panel').classList.toggle('open');}
   else document.getElementById(id).click();});
 mgEl.addEventListener('pointerdown',e=>e.stopPropagation());
-addEventListener('keydown',e=>{if(e.altKey||e.ctrlKey||e.target.tagName==='INPUT')return;const k=e.key.toLowerCase();const map={m:'mgmap',c:'mgchat',l:'mgslow',o:'mggear'};if(map[k]){const b=mgEl.querySelector(`[data-m="${map[k]}"]`);b&&b.click();}});
+addEventListener('keydown',e=>{if(e.altKey||e.ctrlKey||e.target.tagName==='INPUT')return;const k=e.key.toLowerCase();const map={m:'mgmap',c:'mgchat',l:'mgslow',o:'mggear',f:'mgfx'};if(map[k]){const b=mgEl.querySelector(`[data-m="${map[k]}"]`);b&&b.click();}});
 ['hbw','autow','mm','chat','top','buffs'].forEach(id=>{const el=document.getElementById(id);el&&el.addEventListener('pointerdown',e=>e.stopPropagation());});
 /* ---------- RO-style draggable windows ---------- */
 function roWin(id,title,body,foot){const w=document.getElementById(id);w.innerHTML=`<div class="tb">${title}<button class="x" title="close">x</button></div><div class="bd">${body}</div>${foot?`<div class="ft">${foot}</div>`:''}`;
@@ -5835,7 +5837,8 @@ function frame(now){const raw=(now-last)/1000;let rdt=Math.min(.05,raw);last=now
   if(dt>0){gameTime+=dt;updatePlayer(dt);updEnemies(dt);updPrisons(dt);updParticles(dt);for(let i=fx.length-1;i>=0;i--){window.SKCTX=fx[i]._sk||null;if(!fx[i].update(dt))fx.splice(i,1);}window.SKCTX=null;}
   if(curMap||mapFadeDir)mapTick(rdt);
   skyDark=lerp(skyDark,skyDarkT,Math.min(1,rdt*3));camZoom=lerp(camZoom,camZoomT,Math.min(1,rdt*4));
-  cam.x=lerp(cam.x,player.x,Math.min(1,rdt*5));cam.y=lerp(cam.y,player.y,Math.min(1,rdt*5));
+  const camOX=window.CAM_OXP?(toWorld(window.CAM_OXP,0)[0]-toWorld(0,0)[0]):0;  /* effect editor open: hero shown left of the panel */
+  cam.x=lerp(cam.x,player.x+camOX,Math.min(1,rdt*5));cam.y=lerp(cam.y,player.y,Math.min(1,rdt*5));
   const w=toWorld(mouse.sx,mouse.sy);mouse.wx=w[0];mouse.wy=w[1];mouse.over=enemyAt(mouse.sx,mouse.sy);cvs.style.cursor=mouse.over?'pointer':(targeting?'cell':'crosshair');
   insTick(rdt);render();updUI();requestAnimationFrame(frame);}
 updatePlayer(0);requestAnimationFrame(frame);
@@ -5903,8 +5906,12 @@ window.AF={levelUp:()=>{if(PS.lv<99){PS.lv++;applyStats();player.hp=player.maxHp
 <script src="char_create.js"></script>
 <script src="skill_shapes.js?v=1"></script>
 <script src="mobile.js?v=3"></script>
+<script src="totem_gems.js?v=10"></script>
 <script src="ui_skin.js?v=1"></script>
 <script src="ui_v2.js?v=1"></script>
+<script src="fx_manifest.js?v=1"></script>
+<script src="fx_cfg.js?v=1"></script>
+<script src="fx_editor.js?v=1"></script>
 <script>/* fashion system: wolf sprite only for now */if(CHAR==='wolf')document.write('<script src="assets_fashion.js"><\/script><script src="assets_fur.js"><\/script><script src="assets_skin.js"><\/script><script src="fashion.js?v=1"><\/script>');</script>
 </body>
 </html>

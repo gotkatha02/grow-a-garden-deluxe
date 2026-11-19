@@ -1,5 +1,7 @@
 # หมาป่า — Prompt ภาพเจมโทเท็ม (12 เม็ด) + ของกลางระบบเจม
 
+> **ใช้ข้อ 6 (เจมทรงกลมใส่ช่อง) เป็นชุดล่าสุด** — ข้อ 1 และ 5 เป็นแบบเก่า (มีกรอบโลหะ) เก็บไว้อ้างอิง · แผงกลุ่มดาว (กรอบ / ท้องฟ้า / ช่อง 3 ขนาด / วงแหวนหมุน) ได้ภาพครบแล้วใน assets/gems/board/
+
 ระบบเจมโทเท็ม: สกิล C แต่ละท่า = เจม 1 เม็ด · สีตัวเจมบอกขั้น (ขั้น 1 อำพัน · ขั้น 2 หยก · ขั้น 3 ไพลิน · ขั้น 4 ทับทิม)
 · แสงสัญลักษณ์ข้างในบอกสาย (Basic ทองอุ่น · A แดงถ่านไฟ · B ฟ้าน้ำแข็ง/สายฟ้า)
 
@@ -181,3 +183,75 @@ Row 3: 9) ice-cyan gem, symbol: a snowflake (frost)  10) silver-white gem, symbo
 | 10 | `pierce.webp` | ทะลวง |
 | 11 | `leech.webp` | ดูดชีวิต |
 | 12 | `impact.webp` | กระแทก |
+
+---
+
+## 6) เจมทรงกลมใส่ช่อง (ชุดล่าสุด) — ตัวหินอย่างเดียว ไม่มีกรอบ
+
+ช่องในแผงมีกรอบทองอยู่แล้ว → เจมต้องเป็น **หินกลมเต็มวง ไม่มีกรอบโลหะ** · คอนเซปต์อยู่ในลายเจียระไน + สิ่งที่เรืองอยู่ในเนื้อหิน · ขั้น/เลเวลแสดงด้วยโค้ด
+แนบ: `totem_style_reference.png` + ภาพช่องเจม 3 ขนาด
+
+**ข้อความแรก**
+```
+I am making gem stones that drop into round gold sockets (attached sheet) in my 2D RPG "Totem Legend". Art style: friendly hand-painted chibi cartoon like the attached totem icon, thick clean dark-brown outlines, cel shading with 2-3 flat tones, glossy jewel highlights, soft cartoon glow. Not realistic, not 3D render.
+
+Rules for every gem:
+- ONLY the stone: a perfectly ROUND gem seen straight from the front, filling a circle edge to edge. NO metal setting, NO frame, NO chain, NO base — the socket is the setting.
+- The skill idea lives in the cut pattern of the facets and in what glows trapped INSIDE the stone. Never paint an icon or symbol on the surface.
+- One gem per image, 1024x1024, centered, transparent background outside the circle. No text, no letters, no logo, no watermark.
+Reply OK and wait.
+```
+
+**เจมหลักหมาป่า (ทีละกล่อง)**
+```
+Gem "Endless Chain": round golden topaz; inside, a ribbon of golden light loops endlessly in a figure-eight, with three small claw-slash streaks of light across it.
+```
+```
+Gem "War Banner": round green jade; inside, a glowing banner of light ripples in the wind above a small ring of tiny guard crystals.
+```
+```
+Gem "Echo Step": round sapphire; inside, a bright blue spark dashes sideways leaving three fading ghost copies of itself.
+```
+```
+Gem "Fenrir's Spirit": round white moonstone with silver shimmer; inside, a misty white wolf spirit howls, and broken chain links of light float around it.
+```
+```
+Gem "Savage Echo": round blood-red garnet; inside, two crossing axe-shaped slashes of light, one bright and one dark like a shadow echo.
+```
+```
+Gem "Ravenous Leap": round deep red crystal; inside, a glowing arc leaps up and crashes down into a burst of cracked shards at the bottom.
+```
+```
+Gem "Valhalla Assault": round ruby; inside, a golden streak pierces straight through the centre and curves back, with two tiny feathered wings of light.
+```
+```
+Gem "Einherjar's Call": round black-red garnet; inside, five small shadow wolves of red light run together in one direction like a charging pack.
+```
+```
+Gem "Hoarfrost Edge": round pale ice-blue crystal; inside, a jagged frost blade of light with frost crystals spreading across the inner surface.
+```
+```
+Gem "Glacial Path": round aquamarine; inside, three ice pillars of light rise in a straight row, getting taller one after another.
+```
+```
+Gem "Storm Chain": round electric-blue crystal; inside, a lightning bolt jumps between three tiny bright points.
+```
+```
+Gem "Worldstorm": round dark indigo crystal; inside, a whole swirling storm with clouds, lightning and glowing runes spinning around the centre.
+```
+
+**เจมแปรสภาพ 12 เม็ด (ของกลาง · แผ่นเดียว)** → `assets/gems/mut/<id>.webp` (focus spread heavy rapid · stack fire ice volt · guard rage siphon totem)
+```
+Make a 4x3 sheet of 12 ROUND gem stones, 1536x1024, same rules as before (stone only, no setting, each a perfect circle centered in its own square cell, transparent background, clear gaps, no text). These are "mutation" gems: each stone has a ring of glowing rune-like facets around its edge and one idea glowing inside.
+Row 1: 1) gold gem, a single bright focused point of light 2) orange gem, light bursting outward in rings 3) heavy dark-red gem, one big glowing weight pressing down 4) green gem, three fast streaks of light
+Row 2: 5) pale blue gem, two stacked glowing layers 6) fire-orange gem, flames 7) ice-cyan gem, frost crystals 8) sky-blue gem, lightning
+Row 3: 9) silver gem, a glowing shield shape of light 10) crimson gem, red rage flames swirling 11) deep blue gem, glowing spirit droplets flowing inward 12) amber gem, a tiny glowing totem pole of light
+```
+
+**เจมเสริม 12 เม็ด (ของกลาง · แผ่นเดียว)** → `assets/gems/support/<id>.webp` (echo third force splash · chain quick thrift burn · frost pierce leech impact)
+```
+Make a 4x3 sheet of 12 small ROUND polished cabochon stones, 1536x1024, same rules as before (stone only, no setting, each a perfect circle centered in its own square cell, transparent background, clear gaps, no text). Smooth domed stones, simpler than the main gems, one soft glow inside each.
+Row 1: 1) purple, a faint double afterimage glow (echo) 2) orange-gold, three stacked glowing dots (every third) 3) red, a strong bright core (force) 4) amber, a burst splitting into small sparks (splash)
+Row 2: 5) sky-blue, a light bouncing between two points (chain) 6) green, a swirling quick spiral (quick) 7) deep blue, a calm glowing droplet (thrift) 8) orange-red, an ember (burn)
+Row 3: 9) ice-cyan, a snowflake glow (frost) 10) silver-white, a sharp piercing point of light (pierce) 11) crimson, a glowing heart-shaped core (leech) 12) brown-gold, shock rings (impact)
+```
