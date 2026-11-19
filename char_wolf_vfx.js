@@ -34,7 +34,7 @@ function install(){const X=window.V25;if(!X||typeof CHAR==='undefined'||CHAR!=='
      Same arc as the old code slash: centred on the shoulder, from the wind-up axe-head position through the contact-frame
      axe-head position. The picture is bent onto that arc in thin slices and revealed only as far as the live axe head has gone. */
   const DEG=Math.PI/180;
-  const ART={axe:{n:N('w01_axe'),c:[200,80],a0:164*DEG,a1:-94*DEG,rp:118},frost:{n:N('w11_frost'),c:[240,130],a0:49*DEG,a1:335*DEG,rp:135}};
+  const ART={axe:{n:N('w01_axe'),T:[6,136],E:[196,6],G:[250,120],k:1},frost:{n:N('w11_frost'),T:[330,238],E:[382,62],G:[150,140],k:1}};
   const hue=h=>{const r=parseInt(h.slice(1,3),16)/255,g=parseInt(h.slice(3,5),16)/255,b=parseInt(h.slice(5,7),16)/255,M=Math.max(r,g,b),m=Math.min(r,g,b);if(M===m)return 0;let H=M===r?(g-b)/(M-m):M===g?2+(b-r)/(M-m):4+(r-g)/(M-m);return (H*60+360)%360;};
   const angD=(a,b)=>{let d=(a-b)%(2*Math.PI);if(d>Math.PI)d-=2*Math.PI;if(d<-Math.PI)d+=2*Math.PI;return d;};
   class PSlash{constructor(o){Object.assign(this,{t:0,layer:'top',prog:0,er:0,hold:.05,fade:.16},o);this.done=-1;}
@@ -46,15 +46,18 @@ function install(){const X=window.V25;if(!X||typeof CHAR==='undefined'||CHAR!=='
       this.prog=Math.max(this.prog,pr);if(this.prog>=1&&this.done<0)this.done=this.t;
       if(this.done>=0){const q=(this.t-this.done-this.hold)/this.fade;this.er=c01(q);if(q>=1)return false;}
       return this.t<3;}
-    draw(){const A=ART[this.art],i=im(A.n);if(!i||this.prog<=0)return;const [cx,cy]=this.C(),ta=this.ta,sp=this.span,th0=A.a0,th1=A.a1,ts=th1-th0;
-      const k=Math.abs(sp/ts),m=Math.sign(sp/ts),s=this.sc,f0=eo(this.er),f1=this.prog,al=this.al*(1-.6*this.er);
-      const N2=22;ctx.save();
-      for(let j=0;j<N2;j++){let u0=j/N2,u1=(j+1)/N2;if(u1<=f0||u0>=f1)continue;u0=Math.max(u0,f0);u1=Math.min(u1,f1);
-        const pa=ta+sp*u0,pb=ta+sp*u1,pm=(pa+pb)/2,tm=th0+ts*(u0+u1)/2,lo=Math.min(pa,pb)-.012,hi=Math.max(pa,pb)+.012;
-        ctx.save();ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,s*420,lo,hi);ctx.closePath();ctx.clip();
-        ctx.globalAlpha=al;ctx.translate(cx,cy);ctx.rotate(pm);ctx.scale(s,s*k*m);ctx.rotate(-tm);ctx.translate(-A.c[0],-A.c[1]);ctx.drawImage(i,0,0);
-        if(this.t<.06){ctx.globalCompositeOperation='lighter';ctx.globalAlpha=al*.6*(1-this.t/.06);ctx.drawImage(i,0,0);}
-        ctx.restore();}
+    /* rigid picture (the art is never bent): its tail→tip chord is laid on the swing chord, its bulge away from the shoulder;
+       revealed by an angular wipe round the shoulder that follows the live axe head, then erased tail-first */
+    draw(){const A=ART[this.art],i=im(A.n);if(!i||this.prog<=0)return;const [cx,cy]=this.C(),ta=this.ta,sp=this.span,R=this.R2,te=ta+sp;
+      const ax=cx+Math.cos(ta)*R,ay=cy+Math.sin(ta)*R,bx=cx+Math.cos(te)*R,by=cy+Math.sin(te)*R,mx=cx+Math.cos(ta+sp/2)*R,my=cy+Math.sin(ta+sp/2)*R;
+      const T=A.T,E=A.E,G=A.G,lp=Math.hypot(E[0]-T[0],E[1]-T[1]),ld=Math.hypot(bx-ax,by-ay),k=ld/lp*(A.k||1);
+      const sp1=Math.sign((E[0]-T[0])*(G[1]-T[1])-(E[1]-T[1])*(G[0]-T[0])),sd=Math.sign((bx-ax)*(my-ay)-(by-ay)*(mx-ax)),m=sp1===sd?1:-1;
+      const f0=eo(this.er),f1=this.prog,al=this.al*(1-.5*this.er);if(f1<=f0)return;
+      ctx.save();
+      if(f1<1||f0>0){const M=.35,lo=ta+sp*f0-(f0>0?0:M*Math.sign(sp)),hi=ta+sp*f1+(f1>=1?M*Math.sign(sp):0);ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,R*6,Math.min(lo,hi),Math.max(lo,hi));ctx.closePath();ctx.clip();}
+      ctx.translate(ax,ay);ctx.rotate(Math.atan2(by-ay,bx-ax));ctx.scale(k,k*m);ctx.rotate(-Math.atan2(E[1]-T[1],E[0]-T[0]));ctx.translate(-T[0],-T[1]);
+      ctx.globalAlpha=al;ctx.drawImage(i,0,0);
+      if(this.t<.07){ctx.globalCompositeOperation='lighter';ctx.globalAlpha=al*.7*(1-this.t/.07);ctx.drawImage(i,0,0);}
       ctx.restore();ctx.globalAlpha=1;}}
   const pslash=(s,k1,o={})=>{const B=headR(s,k1);if(!B)return null;const [px,py]=P(player.x,player.y,player.z||0),C=[px,py-44];
     let A=null,best=0;for(let k=Math.max(0,k1-3);k<k1;k++){const h=headR(s,k);if(h){const dd=Math.hypot(h[0]-B[0],h[1]-B[1]);if(dd>best){best=dd;A=h;}}}
@@ -64,8 +67,8 @@ function install(){const X=window.V25;if(!X||typeof CHAR==='undefined'||CHAR!=='
     if(Math.abs(Math.abs(d1)-Math.abs(d2))<1)sw=Math.sin(ta+d1/2)<Math.sin(ta+d2/2)?d1:d2;
     const mp=o.maxPre??1.9;if(Math.abs(sw)>mp)sw=Math.sign(sw)*mp;if(Math.abs(sw)<.8)sw=Math.sign(sw||1)*.8;ta=tb-sw+(o.rot||0);sw=tb-ta;const sg=Math.sign(sw),over=o.over??.45;
     const W=o.W||20,cl=o.colors||{},art=o.art||((hue(cl.glow||'#ff0000')>150&&hue(cl.glow||'#ff0000')<260)?'frost':'axe');
-    const R=r*(o.rs??1.08)+W*.3,sc=R*.6/ART[art].rp*(.85+W/70)*(o.szMul||1);
-    return add(new PSlash({art,cx:C[0]-px,cy:C[1]-py,ta,span:sw+sg*over,sg,sc,al:o.alpha??1,grow:o.grow||.12,fade:o.editor?Math.max(.05,o.fade||.2):Math.max(.12,(o.fade||.15)+.04),hold:o.hold??.05,act:player.action,a0:ta,a1:tb+sg*over,R}));};
+    const R=(r*(o.rs??1.08)+W*.3)*(.8+W/90)*.55*(o.szMul||1);
+    return add(new PSlash({art,cx:C[0]-px,cy:C[1]-py,ta,span:sw+sg*over,sg,R2:R,al:o.alpha??1,grow:o.grow||.12,fade:o.editor?Math.max(.05,o.fade||.2):Math.max(.12,(o.fade||.15)+.04),hold:o.hold??.05,act:player.action,a0:ta,a1:tb+sg*over,R}));};
   window._wPSlash=pslash;
   const AT={
     wolfFinale:()=>{W.crater(player.x+Math.cos(player.phi)*40,player.y+Math.sin(player.phi)*40,170);},
