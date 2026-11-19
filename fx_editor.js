@@ -15,7 +15,7 @@ let LOCAL={};try{LOCAL=JSON.parse(localStorage.getItem(LS)||'{}')||{};}catch(e){
 const save=()=>{try{localStorage.setItem(LS,JSON.stringify(LOCAL));}catch(e){}};
 const H=()=>(typeof CHAR!=='undefined'?CHAR:'wolf');
 function sk(k,h=H()){if(!k)return null;const L=LOCAL[h]&&LOCAL[h][k];if(L)return L;const B=window.FXCFG_BAKED&&FXCFG_BAKED[h]&&FXCFG_BAKED[h][k];return B||null;}
-function edit(k,h=H()){LOCAL[h]=LOCAL[h]||{};if(!LOCAL[h][k]){const B=sk(k,h);LOCAL[h][k]=B?JSON.parse(JSON.stringify(B)):{off:false,trail:true,pieces:[]};}return LOCAL[h][k];}
+function edit(k,h=H()){LOCAL[h]=LOCAL[h]||{};if(!LOCAL[h][k]){const B=sk(k,h);LOCAL[h][k]=B?JSON.parse(JSON.stringify(B)):{off:h==='wolf',trail:true,pieces:[]};}return LOCAL[h][k];}
 
 /* ---------- picture cache ---------- */
 const IM={};function im(n){let o=IM[n];if(!o){o=IM[n]={i:new Image(),ok:0};o.i.onload=()=>{o.ok=o.i.naturalWidth>0;};o.i.src='assets/fx/'+n+'.webp';}return o.ok?o.i:null;}
@@ -63,19 +63,31 @@ function spawn(p,C){if(p.hide)return;const V=window.V25,s=spot(p,C);
   }catch(e){console.error('fx editor',e);}}
 const later=(sec,fn)=>{if(sec<=.001)fn();else if(typeof setFxTimer==='function')setFxTimer(sec,fn);else setTimeout(fn,sec*1000);};
 
+/* ---------- attack timing: real seconds from the cast to each hit (merged within .06 s) ---------- */
+let REC=null;const TIMES={};
+function recStart(k){REC={k,t0:gameTime,hits:[],act:null};}
+function recHit(){if(!REC||gameTime-REC.t0>4)return;const t=+(gameTime-REC.t0).toFixed(3),L=REC.hits;if(!L.length||t-L[L.length-1]>.06)L.push(t);}
+function recFinish(){if(!REC)return;const k=REC.k,a=REC.act,T=(typeof ACTION_TEMPO!=='undefined'?ACTION_TEMPO:1);
+  TIMES[k]={hits:REC.hits.slice(0,12),contact:a?+((a.windup||0)/T).toFixed(3):null,end:a?+((a.dur||0)/T).toFixed(3):null};
+  const S=LOCAL[H()]&&LOCAL[H()][k];if(S){S.hits=TIMES[k].hits;save();}REC=null;render();}
+function timing(k){return TIMES[k]||(sk(k)&&sk(k).hits?{hits:sk(k).hits}:null)||(window.FX_HITS&&FX_HITS[H()]&&FX_HITS[H()][k])||null;}
 /* ---------- hooks: skill actions + hits ---------- */
 function ctxOf(c){c=c||{};const t=(c.target&&!c.target.dead)?c.target:null;return {target:t,gx:c.gx,gy:c.gy};}
-function attach(a,k,c){const S=sk(k);if(!a||!a.events||!S)return a;
+function attach(a,k,c){if(REC&&REC.k===k&&a)REC.act=a;const S=sk(k);if(!a||!a.events||!S)return a;
   if(S.trail===false){a.trailWin=null;a.trail=null;}
   const T=()=>(typeof ACTION_TEMPO!=='undefined'?ACTION_TEMPO:1),base={start:0,contact:a.windup||0,end:a.dur||a.windup||0};
-  for(const p of S.pieces||[]){if(p.type==='swing'||p.when==='hit'||p.hide)continue;const tt=(base[p.when||'contact']||0)+(p.dt||0),C=ctxOf(c);
+  if(REC&&REC.k===k)REC.act=a;
+  const TM=timing(k);
+  for(const p of S.pieces||[]){if(p.type==='swing'||p.when==='hit'||p.hide)continue;
+    if(/^hit\d+$/.test(p.when||'')){const n=+p.when.slice(3)-1,ht=TM&&TM.hits&&TM.hits[n];if(ht==null)continue;const C=ctxOf(c);
+      a.events.push({t:0,f:()=>later(Math.max(0,ht+(p.dt||0)),()=>{C.phi=player.phi;if(C.target&&!C.target.dead&&p.at!=='hero')C.phi=Math.atan2(C.target.y-player.y,C.target.x-player.x);spawn(p,C);})});continue;}const tt=(base[p.when||'contact']||0)+(p.dt||0),C=ctxOf(c);
     const go=()=>{C.phi=player.phi;if(C.target&&p.at==='target')C.phi=Math.atan2(C.target.y-player.y,C.target.x-player.x);spawn(p,C);};
     const lim=Math.max(0,(a.dur||0)-.01);if(tt<=lim)a.events.push({t:Math.max(0,tt),f:go});else a.events.push({t:lim,f:()=>later((tt-lim)/T(),go)});}
   return a;}
 function wrapAll(){if(typeof SKILLS==='undefined')return;
   for(const k in SKILLS){const s=SKILLS[k];if(!s||!s.make||s._fxe)continue;const mk=s.make;s._fxe=1;s.make=function(c){return attach(mk.apply(this,arguments),k,c);};}
   if(H()==='wolf'&&typeof mkBasic==='function'&&!mkBasic._fxe){const mb=mkBasic;mkBasic=function(t){return attach(mb.apply(this,arguments),'basic',{target:t});};mkBasic._fxe=1;}
-  if(typeof hurt==='function'&&!hurt._fxe){const h0=hurt,last={};hurt=function(e,mult,o){const dead=e&&e.dead,r=h0.apply(this,arguments);
+  if(typeof hurt==='function'&&!hurt._fxe){const h0=hurt,last={};hurt=function(e,mult,o){const dead=e&&e.dead,r=h0.apply(this,arguments);if(r&&e&&!dead&&!(o&&o.dot))recHit();
       try{if(e&&!dead&&r&&!(o&&o.dot)){const k=(o&&o.skill)||(o&&o.auto?'basic':null)||window.SKCTX||(player.action&&player.action.key)||null,S=sk(k);
         if(S)for(const p of S.pieces||[]){if(p.when!=='hit'||p.hide||p.type==='swing')continue;const id=k+(S.pieces.indexOf(p));if(gameTime-(last[id]||-9)<.03)continue;last[id]=gameTime;
           const C={target:e,phi:Math.atan2(e.y-player.y,e.x-player.x)},q=Object.assign({},p,{at:p.at==='hero'?'hero':'target'});later((p.dt||0)/((typeof ACTION_TEMPO!=='undefined')?ACTION_TEMPO:1),()=>spawn(q,C));}}}catch(_){}
@@ -119,16 +131,18 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 function opt(list,v){return list.map(([k,n])=>`<option value="${k}"${k===v?' selected':''}>${esc(n)}</option>`).join('');}
 function render(){if(!el)return;const L=skills();if(!cur||!L.some(s=>s[0]===cur))cur=L[0]&&L[0][0];const S=sk(cur)||{off:false,trail:true,pieces:[]},P=S.pieces||[];if(sel>=P.length)sel=P.length-1;
   const p=P[sel],hasSwing=!!window._wPSlash,offOK=H()==='wolf';
-  let h=`<button class="x" data-a="close">✕ ปิด</button><h3>✨ ปรับเอฟเฟคสกิล · ${esc(H())}</h3>
+  let h=(STUDIO?`<div class="row"><b style="color:#ffd36a;font-size:14px">✨ ห้องทำเอฟเฟคสกิล · หมาป่า</b></div>`:`<button class="x" data-a="close">✕ ปิด</button><h3>✨ ปรับเอฟเฟคสกิล · ${esc(H())}</h3>`)+`
   <div class="row"><select data-a="skill" style="flex:1">${opt(L,cur)}</select></div>
   <div class="row"><button data-a="play">▶ เล่น</button><button data-a="auto" class="${auto?'on':''}">🔁 เล่นวน</button><button data-a="slow" class="${(typeof timeScale!=='undefined'&&timeScale!==1)?'on':''}">🐢 ช้า ×0.25</button></div>
+  ${tline()}
   <div class="row"><label><input type="checkbox" data-a="off" ${S.off?'checked':''}> ปิดเอฟเฟคเดิม</label><label><input type="checkbox" data-a="trail" ${S.trail!==false?'checked':''}> เส้นตามอาวุธ</label></div>
   ${offOK?'':'<div class="note">ปิดเอฟเฟคเดิมได้เฉพาะหมาป่าตอนนี้ ตัวอื่นจะเพิ่มชิ้นทับของเดิม</div>'}
   <div class="chips">${P.map((q,i)=>`<button data-a="pick" data-i="${i}" class="${i===sel?'on':''}">${i+1}. ${esc(TN[q.type]||q.type)}${q.hide?' (ซ่อน)':''}</button>`).join('')}</div>
   <div class="row"><select data-a="newtype">${opt(TYPES.filter(t=>t[0]!=='swing'||hasSwing),'ground')}</select><button data-a="add">＋ เพิ่มชิ้น</button></div>`;
   if(p){h+=`<div class="box"><div class="row"><b style="flex:1">ชิ้นที่ ${sel+1}: ${esc(TN[p.type])}</b><button data-a="hide">${p.hide?'👁 แสดง':'🙈 ซ่อน'}</button><button data-a="dup">⧉ ทำซ้ำ</button><button data-a="del">🗑 ลบ</button></div>`;
     if(p.type==='swing')h+=`<div class="row"><label>รูปฟัน</label><select data-f="art">${opt([['axe','ขวานแดง'],['frost','น้ำแข็ง']],p.art)}</select></div><div class="note">ฟันตามมือ = รูปฟันโค้งตามหัวขวานจริงทุกครั้งที่ท่านี้เหวี่ยง</div>`;
-    else{h+=`<div class="row"><label>เกิดตอน</label><select data-f="when">${opt(WHEN,p.when)}</select></div>`;
+    else{const TM=timing(cur),W2=WHEN.slice();(TM&&TM.hits||[]).forEach((t,i)=>W2.splice(2+i,0,['hit'+(i+1),'โจมตีครั้งที่ '+(i+1)+' ('+t.toFixed(2)+' วิ)']));
+      h+=`<div class="row"><label>เกิดตอน</label><select data-f="when">${opt(W2,p.when)}</select></div>`;
       if(p.type!=='shake')h+=`<div class="row"><label>เกิดที่</label><select data-f="at">${opt(AT,p.at)}</select></div>`;}
     if(PICT.includes(p.type)){const F=window.FX_PICS||{},fd=folder||(p.pic||'').split('/')[0]||H();
       h+=`<div class="row"><label>รูปจากโฟลเดอร์</label><select data-a="folder">${opt(Object.keys(F).map(k=>[k,k]),fd)}</select></div><div class="pics">${(F[fd]||[]).map(n=>`<img src="assets/fx/${fd}/${n}.webp" title="${n}" data-a="pic" data-n="${fd}/${n}" class="${p.pic===fd+'/'+n?'on':''}">`).join('')}</div>
@@ -141,10 +155,22 @@ function render(){if(!el)return;const L=skills();if(!cur||!L.some(s=>s[0]===cur)
   else h+='<div class="note">ยังไม่มีชิ้น — เลือกชนิดแล้วกด ＋ เพิ่มชิ้น</div>';
   h+=`<div class="box"><div class="row"><button data-a="export">📋 คัดลอกค่าส่งให้ Claude</button><button data-a="import">📥 วางค่า</button><button data-a="reset">↺ ล้างสกิลนี้</button></div><textarea data-a="io" rows="3" style="width:100%;display:none" placeholder="วางค่าที่นี่ แล้วกด 📥 วางค่า อีกครั้ง"></textarea><div class="note">ค่าที่ปรับเก็บในเครื่องนี้ทันที กด 📋 แล้วส่งให้ Claude เพื่อให้ทุกคนเห็นเหมือนกัน</div></div>`;
   el.innerHTML=h;}
+function tline(){const TM=timing(cur);if(!TM||(!(TM.hits||[]).length&&TM.contact==null))return '<div class="note">⏱ กด ▶ เล่น 1 ครั้ง เพื่อวัดจังหวะโจมตีของสกิลนี้</div>';
+  const S=sk(cur)||{pieces:[]},hs=TM.hits||[],mx=Math.max(.6,(TM.end||0),(hs[hs.length-1]||0)+.2),X=t=>(Math.max(0,t)/mx*100).toFixed(1)+'%';
+  let m=hs.map((t,i)=>`<span title="ครั้งที่ ${i+1}" style="position:absolute;left:${X(t)};top:0;transform:translateX(-50%);color:#ff6a6a;font-weight:700">${i+1}</span>`).join('');
+  if(TM.contact!=null)m+=`<span style="position:absolute;left:${X(TM.contact)};top:14px;transform:translateX(-50%);color:#ffd36a">▲</span>`;
+  if(TM.end)m+=`<span style="position:absolute;left:${X(TM.end)};top:14px;transform:translateX(-50%);color:#9fd8ff">■</span>`;
+  return `<div class="box"><div class="note">⏱ จังหวะโจมตี: ${hs.length?'':'(ยังไม่โดนเป้า) '}${hs.map((t,i)=>'ครั้งที่ '+(i+1)+' = '+t.toFixed(2)+' วิ').join(' · ')}${TM.contact!=null?' · ▲ ฟันโดน '+TM.contact.toFixed(2):''}${TM.end?' · ■ จบท่า '+TM.end.toFixed(2):''}</div>
+    <div style="position:relative;height:30px;background:#1a1328;border-radius:6px;margin-top:3px">${m}<div style="position:absolute;left:0;right:0;top:12px;height:2px;background:#4a3a78"></div></div></div>`;}
 function changed(replay=true){save();if(replay&&auto){clearTimeout(replayT);replayT=setTimeout(play,350);}}
-function play(){try{if(typeof endAction==='function'&&player.action)endAction();player.cd={};player.mp=player.maxMp;
-  const t=(typeof nearestEnemy==='function'&&nearestEnemy(player.x,player.y,420))||null,phi=t?Math.atan2(t.y-player.y,t.x-player.x):player.phi,gx=t?t.x:player.x+Math.cos(phi)*160,gy=t?t.y:player.y+Math.sin(phi)*160;
+function play(){try{if(typeof endAction==='function'&&player.action)endAction();recStart(cur);setTimeout(recFinish,2600/((typeof timeScale!=='undefined'&&timeScale)||1));player.cd={};player.mp=player.maxMp;
+  const t=(STUDIO&&dummy(true))||(typeof nearestEnemy==='function'&&nearestEnemy(player.x,player.y,420))||null,phi=t?Math.atan2(t.y-player.y,t.x-player.x):player.phi,gx=t?t.x:player.x+Math.cos(phi)*160,gy=t?t.y:player.y+Math.sin(phi)*160;
   if(cur==='basic'){if(!t){msg&&msg('ไม่มีศัตรูใกล้ๆ');return;}player.basicIdx=0;player.basicLast=gameTime;startAction(mkBasic(t));}
+  else if(SKILLS[cur]&&SKILLS[cur].parent&&SKILLS[SKILLS[cur].parent]){const k=cur,par=SKILLS[cur].parent;REC=null;   /* combo follow-up: do the parent first, then the follow-up in its combo window */
+    castSkillNow(par,{target:t,phi,gx,gy,x:gx,y:gy});let n=0;const T=setInterval(()=>{n++;const cb=player.combo;
+      if(cb&&cb.action&&(typeof followReady!=='function'||!followReady(cb))){clearInterval(T);endAction();player.combo=null;player.pending=null;recStart(k);setTimeout(recFinish,2600/((typeof timeScale!=='undefined'&&timeScale)||1));
+        (typeof castSkill==='function'?castSkill:castSkillNow)(k,{action:cb.action,target:cb.action.hitList&&cb.action.hitList[0]||t,phi,gx,gy});}
+      else if(n>120){clearInterval(T);msg&&msg('ท่าต่อนี้ต้องทำเงื่อนไขก่อน (เช่น ป้องกันสำเร็จ)');}},25);}
   else if(typeof castSkillNow==='function')castSkillNow(cur,{target:t,phi,gx,gy,x:gx,y:gy});}catch(e){console.error('fx editor play',e);}}
 function setAuto(on){auto=on;clearInterval(autoT);if(on){play();autoT=setInterval(play,2200);}}
 function onClick(e){const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a;const S=()=>edit(cur);
@@ -161,7 +187,8 @@ function onClick(e){const b=e.target.closest('[data-a]');if(!b)return;const a=b.
   if(a==='import'){const ta=el.querySelector('[data-a=io]');if(ta.style.display==='none'||!ta.value.trim()){ta.style.display='';ta.focus();return;}
     try{const j=JSON.parse(ta.value);const h=j.hero||H(),c=j.cfg||j;LOCAL[h]=Object.assign(LOCAL[h]||{},c);changed(false);render();msg&&msg('ใส่ค่าแล้ว');}catch(err){msg&&msg('ค่าที่วางอ่านไม่ได้');}return;}}
 function onInput(e){const t=e.target,s=cur&&edit(cur),p=s&&s.pieces[sel];
-  if(t.dataset.a==='skill'){cur=t.value;sel=0;folder=null;return render();}
+  if(t.dataset.a==='hero'){location.href='index.html?char='+t.value+'&map=vikF2&fxstudio=1';return;}
+  if(t.dataset.a==='skill'){cur=t.value;sel=0;folder=null;if(STUDIO&&H()==='wolf'){edit(cur);save();}return render();}
   if(t.dataset.a==='folder'){folder=t.value;return render();}
   if(t.dataset.a==='off'){s.off=t.checked;return changed();}if(t.dataset.a==='trail'){s.trail=t.checked;return changed();}
   if(!p)return;
@@ -175,8 +202,20 @@ function toggle(on){if(on===undefined)on=!el;if(on&&!el){wrapAll();if(!document.
     if(!cur&&player&&player.action&&player.action.key)cur=player.action.key;render();window.CAM_OXP=el.offsetWidth/2;}
   else if(!on&&el){el.remove();el=null;setAuto(false);window.CAM_OXP=0;}
   const b=document.querySelector('[data-m=mgfx]');if(b)b.classList.toggle('on',!!el);}
-window.FXED={toggle,sk,off:k=>{const S=sk(k);return !!(S&&S.off);},swing:k=>{const S=sk(k);return S&&S.off?(S.pieces||[]).find(p=>p.type==='swing'&&!p.hide)||null:null;},wrapAll,get local(){return LOCAL;}};
-const boot=()=>{try{wrapAll();}catch(e){console.error(e);}};
+
+/* ---------- studio page (owner 2026-11-19: "a page just for making skills"): fxedit.html → index.html?char=<hero>&map=vikF2&fxstudio=1 ---------- */
+const STUDIO=/[?&]fxstudio=1/.test(location.search);
+const HEROES=['wolf','dragon','kitsune','anubis','lion','cat','hippo','croc','jaguar','owl','rhino','bastet','axolotl','sheep'];
+function dummy(place){if(typeof enemies==='undefined')return null;let e=window.__fxDummy;if(!e||e.dead||!enemies.includes(e)){e=enemies.filter(e=>!e.dead&&!e.boss).sort((a,b)=>Math.hypot(a.x-player.x,a.y-player.y)-Math.hypot(b.x-player.x,b.y-player.y))[0];window.__fxDummy=e;}if(!e)return null;
+  if(place||Math.hypot(e.x-player.x,e.y-player.y)>260){e.x=player.x+95;e.y=player.y;e.vx=e.vy=0;if(typeof faceTo==='function')faceTo(0);}e.maxHp=e.hp=1e9;return e;}
+function studioBoot(){let n=0;const T=setInterval(()=>{n++;const t=document.getElementById('cctest');if(t&&t.offsetParent){t.click();return;}
+  if(typeof player==='undefined'||typeof SKILLS==='undefined'||n<4)return;clearInterval(T);
+  try{for(const k in SKILLS)if(SKILLS[k].max)LV[k]=SKILLS[k].max;}catch(_){}
+  document.body.classList.add('fxstudio');const st=document.createElement('style');st.textContent='body.fxstudio>*:not(#c):not(#fxed){visibility:hidden!important;pointer-events:none!important}';document.head.appendChild(st);
+  toggle(true);if(H()==='wolf'&&cur){edit(cur);save();render();}dummy();setInterval(()=>{try{player.hp=player.maxHp;player.mp=player.maxMp;player.iframes=Math.max(player.iframes||0,.3);const e=dummy();if(e&&e.hp<1e8)e.hp=e.maxHp;}catch(_){}},250);},700);}
+if(STUDIO)addEventListener('load',()=>setTimeout(studioBoot,800));
+window.FXED={times:TIMES,play:k=>{cur=k;render();play();},toggle,sk,off:k=>{const S=sk(k);return !!(S&&S.off);},swing:k=>{const S=sk(k);return S&&S.off?(S.pieces||[]).find(p=>p.type==='swing'&&!p.hide)||null:null;},wrapAll,get local(){return LOCAL;}};
+const boot=()=>{try{wrapAll();}catch(e){console.error(e);}setInterval(()=>{try{wrapAll();}catch(_){}},1000);};  /* other modules re-wrap hurt later: wrap again on top (hit pieces + timing dedupe) */
 if(document.readyState==='complete')setTimeout(boot,300);else addEventListener('load',()=>setTimeout(boot,300));
 try{if(/[?&]fxedit=1/.test(location.search))addEventListener('load',()=>setTimeout(()=>toggle(true),1200));}catch(_){}
 })();
