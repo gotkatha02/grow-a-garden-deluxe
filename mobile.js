@@ -31,7 +31,7 @@ body.mob #hotbar .hrow.shiftrow{display:none!important}
 body.mob:has(#skw.open) #mobUI,body.mob:has(#wmw.open) #mobUI,body.mob:has(#kfw.open) #mobUI,body.mob:has(#smw.open) #mobUI,body.mob:has(#shw.open) #mobUI,body.mob:has(#mkw.open) #mobUI{display:none}
 
 /* joystick */
-#mobJoy{position:fixed;left:calc(18px + env(safe-area-inset-left));bottom:calc(18px + env(safe-area-inset-bottom));width:132px;height:132px;z-index:25;touch-action:none}
+#mobJoy{position:fixed;left:calc(18px + env(safe-area-inset-left));bottom:calc(18px + env(safe-area-inset-bottom));width:112px;height:112px;z-index:25;touch-action:none}
 #mobJoy .base{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 50% 45%,rgba(90,52,40,.55),rgba(40,22,18,.55));border:4px solid #e9b44c;box-shadow:0 0 0 3px #3a1f14,inset 0 0 18px rgba(0,0,0,.45),0 4px 10px rgba(0,0,0,.35)}
 #mobJoy .base:before{content:'';position:absolute;inset:16px;border-radius:50%;border:2px dashed rgba(255,215,130,.35)}
 #mobJoy .knob{position:absolute;left:50%;top:50%;width:58px;height:58px;margin:-29px 0 0 -29px;border-radius:50%;
@@ -230,7 +230,7 @@ const W=document.getElementById('mobSkW'),setB=document.getElementById('mobSkSet
 let L={},sig='',btns=[];
 const G=n=>{try{return eval(n);}catch(e){return undefined;}};   // game globals (TABS, tab, LV …) are script-level lets/consts
 const SZ={s:.88,m:1,l:1.1};function uiPref(k,d){try{return localStorage.getItem(k)||d;}catch(e){return d;}}
-function layout(){const vh=innerHeight,vw=innerWidth;let sc=Math.max(.72,Math.min(1.15,Math.min(vh,vw)/400))*(SZ[uiPref('af_mob_sz','m')]||1);
+function layout(){const vh=innerHeight,vw=innerWidth;let sc=Math.max(.62,Math.min(1.05,Math.min(vh,vw)/480))*(SZ[uiPref('af_mob_sz','m')]||1);
   /* keep the top button (🎯) below the minimap: top = cy − r2 − 23 must stay ≥ 112 px */
   for(let n=0;n<20;n++){const atk=88*sc,cy=vh-22*sc-atk/2-6,top=cy-(atk/2+144*sc)*Math.sin(84*Math.PI/180)-23-5;if(top>=112||sc<.62)break;sc*=.97;}
   const ar=22*sc,atk=88*sc;
