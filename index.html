@@ -646,7 +646,7 @@ document.write('<script src="vfx_layer.js"><\/script>');if(c==='jaguar')document
 const CHAR=(()=>{const OK=['wolf','jaguar','rhino','axolotl','croc','owl','cat','hippo','sheep','dragon','lion','kitsune','bastet','anubis'];let h='';try{const q=new URLSearchParams(location.search).get('char');if(q)return q;h=(location.hash||'').slice(1);}catch(e){}if(OK.includes(h))return h;try{return localStorage.getItem('af_char')||'wolf';}catch(e){return 'wolf';}})();
 const BASIC_KEY=CHAR==='jaguar'?'jgTwinFang':CHAR==='rhino'?'rhFist':CHAR==='axolotl'?'axFlick':CHAR==='croc'?'crThrust':CHAR==='owl'?'owAuto':CHAR==='cat'?'knCombo':CHAR==='hippo'?'hnCombo':CHAR==='sheep'?'snCombo':CHAR==='dragon'?'dnCombo':CHAR==='lion'?'lnCombo':CHAR==='kitsune'?'knStaff':CHAR==='bastet'?'bnTome':CHAR==='anubis'?'anFlail':'wolfCombo';
 const BASIC_RANGE=CHAR==='axolotl'?220:CHAR==='croc'?104:CHAR==='owl'?230:CHAR==='cat'?64:CHAR==='hippo'?66:CHAR==='sheep'?64:CHAR==='dragon'?60:CHAR==='lion'?60:CHAR==='kitsune'?200:CHAR==='bastet'?200:CHAR==='anubis'?90:52;
-const CHAR_SCALE={jaguar:.9,rhino:1.15,axolotl:.84,croc:1.08,owl:.92,cat:1.4,hippo:1.25,sheep:1.1,dragon:1.1,lion:1.15,kitsune:1,bastet:1,anubis:1.1}[CHAR]||1;
+const CHAR_SCALE={jaguar:.94,rhino:.96,axolotl:1,croc:1,owl:.97,cat:1.59,hippo:1.39,sheep:1.54,dragon:1.64,lion:1,kitsune:1,bastet:1,anubis:1}[CHAR]||1; // every hero drawn as tall as the wolf (owner 2026-11-19)
 /* Jaguar: swap in its own sprite sheets (same schema as the Wolf set). If the file is missing the tinted Wolf sprite is used as before. */
 const JAG_ART=CHAR==='jaguar'&&typeof JAG_SPR_META!=='undefined'&&typeof JAG_SPR_ATLAS!=='undefined';
 if(JAG_ART){Object.assign(SPR_META,JAG_SPR_META,{atkRemap:{}});Object.assign(SPR_ATLAS,JAG_SPR_ATLAS);}
