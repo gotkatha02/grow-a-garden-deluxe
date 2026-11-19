@@ -77,6 +77,12 @@ def clip(path, d='S'):
 
 # one global scale from the front idle pose
 ref = clip(plan['clips']['idle']['S'], 'S')[0]; b = bbox(ref); S0 = HT / (b[3] - b[1])
+# perDir: every direction is scaled so its own idle pose is HT tall (clips filmed at slightly different zoom per direction)
+SD = {}
+for _d in DIRS:
+    if plan.get('perDir'):
+        _b = bbox(clip(plan['clips']['idle'][_d], _d)[0]); SD[_d] = HT / (_b[3] - _b[1])
+    else: SD[_d] = S0
 
 def frames_for(st, d):
     path = plan['clips'][st][d]; F = clip(path, d); norm = f'{st}/{d}' in plan.get('normalize', [])
@@ -85,7 +91,7 @@ def frames_for(st, d):
         img = F[i]
         if norm:
             bb = bbox(img); s = HT / (bb[3] - bb[1]); return place(img, s, feet(img))
-        return place(img, S0, anchor0)
+        return place(img, SD[d], anchor0)
     if st in ('idle', 'walk'):
         P = period([mask_small(f) for f in F], 20 if st == 'walk' else 16, 40 if st == 'walk' else 70) or len(F) // 2
         n = 8 if st == 'walk' else 12; n = min(n, P); s0 = 12
