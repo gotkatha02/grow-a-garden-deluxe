@@ -87,7 +87,7 @@ const AT={   // key: (a,c) => visuals ; a = the action, c = cast context
   reversalSlash:(a,c)=>W.slash(player.phi,130,'axe',1),
   bloodCleave:(a,c)=>W.slash(player.phi,150,'axe'),
   savageRend:(a,c)=>{W.slash(player.phi,140,'axe',1);},
-  axeDance:(a,c)=>{for(let i=0;i<3;i++)setFxT(i*.12,()=>W.slash(player.phi+rnd(-.4,.4),130,'axe',i%2));},
+  axeDance:(a,c)=>{wDanceN=0;wDanceT=-1;},
   wolfFinale:(a,c)=>{W.slash(player.phi,170,'axe');W.crater(player.x+Math.cos(player.phi)*40,player.y+Math.sin(player.phi)*40,170);},
   revengeBreaker:(a,c)=>{W.slash(player.phi,160,'axe');const t=W.tgt(c);if(t)fxI({n:'22_pow',x:t.x,y:t.y,z:30,w:120,life:.25,s0:.4,s1:1.1,fadeIn:.001,fadeOut:.6,glow:.6});},
   vampiricAxe:(a,c)=>{W.slash(player.phi,140,'axe');fxI({n:'w06_vamp',x:player.x,y:player.y,z:10,w:90,ay:.85,life:.9,s0:.6,s1:1,rise:20,fadeOut:.4,glow:.4});},
@@ -131,8 +131,15 @@ function setFxT(t,f){addFx(new WDelay(t,f));}
 let BAN=null;
 /* owner 2026-11-20: Blood Cleave / Savage Rend / Axe Dance without sparkle bursts or dot particles */
 const W_QUIET=new Set(['bloodCleave','savageRend','axeDance']);
+/* Axe Dance: each landed hit shows the next painted dance move (up, down, spin, backhand, thrust) */
+let wDanceN=0,wDanceT=-1;const W_DANCE=['w28_dance_up','w32_dance_down','w34_dance_spin','w33_dance_back','w28_dance_up','w32_dance_down','w35_dance_thrust'];
+function wDance(e,fin0){if(gameTime-wDanceT<.04)return;wDanceT=gameTime;const n=fin0?'w35_dance_thrust':W_DANCE[wDanceN%(W_DANCE.length-1)];wDanceN++;
+  const phi=e?Math.atan2(e.y-player.y,e.x-player.x):player.phi,d=e?Math.min(90,Math.hypot(e.x-player.x,e.y-player.y)):75,L=Math.cos(phi)<0;
+  if(n==='w34_dance_spin'){fxI({_tvc:1,n,x:player.x,y:player.y,z:22,w:175,life:.3,s0:.75,s1:1.08,fadeIn:.001,fadeOut:.5,glow:.5,fx:L});return;}
+  const tall=n==='w28_dance_up'||n==='w32_dance_down',fin=n==='w35_dance_thrust';
+  fxI({_tvc:1,n,x:player.x+Math.cos(phi)*d*.5,y:player.y+Math.sin(phi)*d*.5,z:tall?34:30,w:tall?100:(fin?190:150),rot:scr(phi),fy:L,life:fin?.34:.26,s0:.8,s1:1.06,fadeIn:.001,fadeOut:.5,wipe:.3,glow:.6});}
 function wQuiet(){return CHAR==='wolf'&&player.action&&W_QUIET.has(player.action.key);}
-if(!window._wQE&&typeof emit==='function'){window._wQE=1;const E0=emit;window.emit=emit=function(o){if(wQuiet())return;return E0.apply(this,arguments);};}
+
 /* War Fury: the wolf's own sprite glazed red (no flames) + a thin red rim */
 function wRedCoat(a){if(typeof playerFrame!=='function'||typeof tinted!=='function')return;const e=playerFrame();if(!e)return;const [x,y]=P(player.x,player.y,player.z||0);
   ctx.save();if(typeof CHAR_SCALE!=='undefined'&&CHAR_SCALE!==1){ctx.translate(x,y);ctx.scale(CHAR_SCALE,CHAR_SCALE);ctx.translate(-x,-y);}
@@ -166,12 +173,14 @@ const A_SET=new Set(['warFury','bloodCleave','savageRend','axeDance','wolfFinale
 const B_SET=new Set(['frostFang','iceBreak','runeGuard','runeBurst','thunderFang','lightningPursuit','icePrison','shatterPulse','stormStep','runeStorm','blizzard','frozenDescent','thunderSpear','tempestField','ragnaroksJudgment','runicDetonation']);
 function install(){
   if(typeof CHAR==='undefined'||CHAR!=='wolf')return;
+  if(!window._wSA&&typeof slashAt==='function'){window._wSA=1;const S0=slashAt;window.slashAt=slashAt=function(a,kC,o){if(CHAR==='wolf'&&a&&a.key==='axeDance'){wDance(null,o&&o.W>=28);return;}return S0.apply(this,arguments);};}
+  if(!window._wQE&&typeof emit==='function'){window._wQE=1;const E0=emit;window.emit=emit=function(o){if(wQuiet())return;return E0.apply(this,arguments);};}
   if(!window._wDrop){window._wDrop=1;const D=['RuneCircle','RuneShield','LightPillar'].map(n=>{try{return eval(n);}catch(e){return null;}}).filter(Boolean);
     const A0=window.addFx;window.addFx=addFx=function(f){if(CHAR==='wolf'&&f&&D.some(c=>f instanceof c))return f;
-      if(wQuiet()&&f&&(/^(Bit|WBit|Burst|Impact)$/.test(f.constructor.name)||(f.n&&/^(w03|x03|x04)/.test(f.n))))return f;
+      if(wQuiet()&&f&&(/^(Bit|WBit|Burst|Impact)$/.test(f.constructor.name)||(player.action.key==='axeDance'&&/^(Slash|TexArc)$/.test(f.constructor.name))||(f.n&&/^(w03|x03|x04)/.test(f.n))))return f;
       if(CHAR==='wolf'&&f&&typeof FallObj!=='undefined'&&f instanceof FallObj&&f.kind==='axe'&&player.action&&player.action.key==='ragnaroksJudgment')wMjolnir(f);return A0.apply(this,arguments);};
     if(typeof BannerObj!=='undefined'){const d0=BannerObj.prototype.draw;BannerObj.prototype.draw=function(){if(CHAR==='wolf')return;return d0.apply(this,arguments);};}}
-  for(const n of ['w25_thunder_burst','w24_rune_shield','w01_axe','w02_blood','w03_hitred','w04_cyclone','w05_howl','w06_vamp','w07_rage','w08_exec','w09_parry','w10_armor','w11_frost','w12_ice','w13_prison','w14_rune','w15_bolt','w16_spear','w17_blizzard','w18_shatter','w19_spirit','w20_banner','w23_mjolnir','w21_glacial','w22_worldstorm','09_crater','22_pow','23_dust','25_shock'])wImg(n);
+  for(const n of ['w28_dance_up','w32_dance_down','w33_dance_back','w34_dance_spin','w35_dance_thrust','w25_thunder_burst','w24_rune_shield','w01_axe','w02_blood','w03_hitred','w04_cyclone','w05_howl','w06_vamp','w07_rage','w08_exec','w09_parry','w10_armor','w11_frost','w12_ice','w13_prison','w14_rune','w15_bolt','w16_spear','w17_blizzard','w18_shatter','w19_spirit','w20_banner','w23_mjolnir','w21_glacial','w22_worldstorm','09_crater','22_pow','23_dust','25_shock'])wImg(n);
   for(const k in AT){const sk=SKILLS[k]||(typeof CSK!=='undefined'&&CSK[k]);if(!sk||!sk.make||sk._wfx)continue;const mk=sk.make;sk._wfx=1;
     sk.make=function(c){const a=mk.apply(this,arguments);if(a&&a.events){const t=Math.max(.02,Math.min(a.windup||.02,(a.dur||1)-.02));a.events.push({t,f:()=>{try{AT[k](a,c||{});}catch(e){console.error('wolf_fx '+k+': '+e);}}});}return a;};}
   /* normal attack: painted axe swing */
