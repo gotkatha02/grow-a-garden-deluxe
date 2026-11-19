@@ -43,6 +43,7 @@ The owner (Thai speaker) builds this game across many chats. Reply in Thai. Comm
 - Check every visual change with Playwright screenshots before saying it is done, and send the picture to the owner.
 - Changed balance numbers → re-run the bench.
 - Several chats push to this repo: `git pull --rebase` before every push.
+- Play link (owner 2026-11-19): the game is mirrored to the PUBLIC repo gotkatha02/grow-a-garden-deluxe (old garden game replaced, still in its git history) so GitHub Pages serves it: https://gotkatha02.github.io/grow-a-garden-deluxe/index.html?char=dragon . After pushing finished work here, copy the tracked files there too (`git ls-files -z | tar --null -T - -cf - | (cd ../grow-a-garden-deluxe && tar -xf -)`, keep .nojekyll, commit, `git -c push.negotiate=true push`).
 - Gear slots (owner 2026-11-19): 8 — top, mid, armor, rhand, garment, shoes, acc1, acc2. Lower Headgear and Left Hand were removed; old saves put gear from those slots back in the bag. Fashion costume slots (FEQ) are separate and unchanged.
 - Items: EQ holds instance ids ('i123'), base id = ITEMS[id].base. Old stat keys (str/dex/luk…) map through OLD_KEY.
 - Low on quota for a big job → write what is left here instead of stopping halfway.
