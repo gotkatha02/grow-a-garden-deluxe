@@ -205,23 +205,14 @@ const PCOL=new WeakMap();function picCol(i){let c=PCOL.get(i);if(c)return c;c='#
 const FLASH=.45;
 function flashify(p,kind){if(p.obj||p.life<=.8)return;const full=p.life;p.life=FLASH+p.fadeIn;p.fadeOut=Math.max(p.fadeOut,.5);const u=p.until;p.until=null;
   add(new Afterglow({kind,n:p.n,x:p.x,y:p.y,z:p.z||0,w:p.w,follow:p.follow,ox:p.ox,oy:p.oy,until:u,life:Math.max(.3,full-.15),delay:Math.max(0,(p.delay||0)+.12),pulse:p.pulse||0}));}
-class Afterglow{constructor(o){Object.assign(this,{t:0,life:1,layer:'sorted'},o);this.t=-(this.delay||0);this.ph=rnd(0,6);this.st=Array.from({length:6},()=>({a:rnd(0,6.283),o:rnd(0,1),s:rnd(.7,1.3)}));this.g=new AGround(this);add(this.g);}
-  get sy(){return this.y+(this.kind==='g'?this.w*.25:2);}
-  update(dt){this.t+=dt;if(this.follow){this.x=this.follow.x+(this.ox||0);this.y=this.follow.y+(this.oy||0);}if(this.until&&this.until()&&this.t<this.life-.35)this.t=this.life-.35;
-    if(this.t>0&&this.kind==='s'&&(this.em=(this.em||0)-dt)<=0){this.em=.22;const an=rnd(0,6.283),r=this.w*.3;add(new Debris({x:this.x+Math.cos(an)*r,y:this.y+Math.sin(an)*r*.5,n:1,kind:'shard',col:this.col||'#fff',col2:'#ffffff',v0:5,v1:20,up:90,g:-60,life:.7,z:10}));}
-    return this.t<this.life;}
-  get a(){const k=this.t/this.life;return c01(this.t/.25)*(k>.8?c01((1-k)/.2):1);}
-  draw(){if(this.t<0)return;const i=im(this.n);if(i)this.col=picCol(i);const col=this.col||'#ffffff',a=this.a;if(a<.01)return;
-    if(this.kind==='g'){/* rune band turning on the floor */const R=this.w*.42;ribbon(this.x,this.y,1,R,this.ph+this.t*1.2,2.4,11,col,'#ffffff',a*.9,false);ribbon(this.x,this.y,1,R,this.ph+this.t*1.2+3.14,2.4,11,col,'#ffffff',a*.9,false);
-      ribbon(this.x,this.y,2,R*.7,this.ph-this.t*1.8,1.6,5,col,'#ffffff',a*.55,false);ribbon(this.x,this.y,2,R*.7,this.ph-this.t*1.8+3.14,1.6,5,col,'#ffffff',a*.55,false);return;}
-    /* aura: two energy rings turning around the body + strands rising off it */
-    const R=this.w*.36,z0=(this.z||0);ribbon(this.x,this.y,z0+12,R,this.ph+this.t*3,2.4,13,col,'#ffffff',a*.95,false);ribbon(this.x,this.y,z0+44,R*.82,this.ph-this.t*3.6+1,2,10,col,'#ffffff',a*.8,false);ribbon(this.x,this.y,z0+76,R*.6,this.ph+this.t*4.2+2,1.6,7,col,'#ffffff',a*.6,false);
-    ctx.save();ctx.lineCap='round';ctx.globalCompositeOperation='lighter';for(const st of this.st){const u=(st.o+this.t*.7*st.s)%1,[px,py]=scr(this.x+Math.cos(st.a)*R*.8,this.y+Math.sin(st.a)*R*.4,z0+8+u*80);
-      ctx.strokeStyle=hexA(col,.8*a*(1-u));ctx.lineWidth=2.4;ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(px,py-16);ctx.stroke();}ctx.restore();}}
+class Afterglow{constructor(o){Object.assign(this,{t:0,life:1,layer:'none'},o);this.t=-(this.delay||0);this.g=new AGround(this);add(this.g);}
+  update(dt){this.t+=dt;if(this.follow){this.x=this.follow.x+(this.ox||0);this.y=this.follow.y+(this.oy||0);}if(this.until&&this.until()&&this.t<this.life-.35)this.t=this.life-.35;return this.t<this.life;}
+  get a(){const k=this.t/this.life;return c01(this.t/.35)*(k>.8?c01((1-k)/.2):1);}
+  draw(){}}
+/* calm afterglow (owner 2026-11-19: the first version was dizzying): only a soft light on the floor and one thin ring that breathes slowly */
 class AGround{constructor(h){this.h=h;this.layer='ground';this.t=0;}update(dt){return this.h.t<this.h.life;}
-  draw(){const h=this.h;if(h.t<0)return;const a=h.a;if(a<.01)return;const col=h.col||'#ffffff',[x,y]=scr(h.x,h.y,0),R=h.kind==='g'?h.w*.5:h.w*.45;ctx.save();ctx.translate(x,y);ctx.scale(1,K);ctx.globalCompositeOperation='lighter';
-    const g=ctx.createRadialGradient(0,0,0,0,0,R);g.addColorStop(0,hexA(col,.62*a*(h.pulse?.8+.2*Math.sin(h.t*6):1)));g.addColorStop(1,hexA(col,0));ctx.fillStyle=g;ctx.fillRect(-R,-R,R*2,R*2);
-    if(h.kind==='g'){ctx.globalCompositeOperation='source-over';ctx.globalAlpha=a*.8;ctx.strokeStyle=hexA(col,.9);ctx.lineWidth=3;ctx.setLineDash([14,9]);ctx.lineDashOffset=-h.t*40;ctx.beginPath();ctx.arc(0,0,R*.92,0,6.283);ctx.stroke();ctx.setLineDash([]);ctx.strokeStyle='rgba(28,19,48,.5)';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(0,0,R*.98,0,6.283);ctx.stroke();}
-    ctx.restore();ctx.globalAlpha=1;}}
+  draw(){const h=this.h;if(h.t<0)return;const a=h.a;if(a<.01)return;const i=im(h.n);if(i)h.col=picCol(i);const col=h.col||'#ffffff',[x,y]=scr(h.x,h.y,0),R=(h.kind==='g'?h.w*.48:h.w*.42)*(1+.03*Math.sin(h.t*2));
+    ctx.save();ctx.translate(x,y);ctx.scale(1,K);ctx.globalCompositeOperation='lighter';const g=ctx.createRadialGradient(0,0,0,0,0,R);g.addColorStop(0,hexA(col,.32*a));g.addColorStop(1,hexA(col,0));ctx.fillStyle=g;ctx.fillRect(-R,-R,R*2,R*2);
+    ctx.globalCompositeOperation='source-over';ctx.globalAlpha=a*(.45+.15*Math.sin(h.t*2));ctx.strokeStyle=hexA(col,.9);ctx.lineWidth=2;ctx.beginPath();ctx.arc(0,0,R*.9,0,6.283);ctx.stroke();ctx.restore();ctx.globalAlpha=1;}}
 window.V25={im,add,punch,scr,aim,fwd,ribbon,GPic,SPic,XPic,HPic,Shock,Crack,Puffs,Debris,Whirl,Sweep,Pillar,Pool,Speed,Charge,Stain,Bolt,V,C,OUT,c01,eo,back};
 })();
