@@ -27,9 +27,13 @@ class GPic{constructor(o){Object.assign(this,{t:0,life:.8,layer:'ground',w:200,a
   draw(){if(this.t<0)return;const i=im(this.n);if(!i)return;const k=this.t/this.life,pk=c01(this.t/.22),fo=this.fadeOut;
     const a=this.a0*c01(this.t/this.fadeIn)*(k>1-fo?c01((1-k)/fo):1);if(a<.01)return;
     const s=(this.s0+(1-this.s0)*back(pk))*(1+(this.grow-1)*eo(k))*(1+this.breathe*Math.sin(this.t*4)),w=this.w*s,h=w*i.naturalHeight/i.naturalWidth,[x,y]=scr(this.x,this.y,0);
-    ctx.save();ctx.translate(x,y);ctx.scale(1,pk<1?.7+.3*pk:1);drawHalo(i,-w/2,-h/2,w,h,a*.4);ctx.globalAlpha=a;ctx.drawImage(i,-w/2,-h/2,w,h);
+    ctx.save();ctx.translate(x,y);ctx.scale(1,pk<1?.7+.3*pk:1);
+    /* reveal: the picture opens out from the centre instead of popping in whole */
+    const rv=eo(c01(this.t/(this.reveal??.2)));if(rv<1){ctx.beginPath();ctx.ellipse(0,0,w*.62*rv+2,h*.62*rv+2,0,0,Math.PI*2);ctx.clip();}
+    drawHalo(i,-w/2,-h/2,w,h,a*.4);ctx.globalAlpha=a;ctx.drawImage(i,-w/2,-h/2,w,h);
     if(this.add){ctx.globalCompositeOperation='lighter';ctx.globalAlpha=a*this.add*(.6+.4*Math.sin(this.t*7));ctx.drawImage(i,-w/2,-h/2,w,h);}
-    if(this.t<.08){ctx.globalCompositeOperation='lighter';ctx.globalAlpha=a*(1-this.t/.08)*.8;ctx.drawImage(i,-w/2,-h/2,w,h);}ctx.restore();ctx.globalAlpha=1;}}
+    if(this.t<.08){ctx.globalCompositeOperation='lighter';ctx.globalAlpha=a*(1-this.t/.08)*.8;ctx.drawImage(i,-w/2,-h/2,w,h);}ctx.restore();ctx.globalAlpha=1;
+    if(!this._rp&&this.t>.02){this._rp=1;if(this.w>=100)add(new Shock({x:this.x,y:this.y,R:this.w*.5,r0:this.w*.15,col:'#ffffff',w:5,life:.35}));}}}
 /* upright picture: stands on its bottom edge, rises in with squash & stretch, contact shadow + coloured light pool on the floor */
 class SPic{constructor(o){Object.assign(this,{t:0,life:.8,layer:'sorted',w:140,a0:1,ay:.95,z:0,fadeIn:.06,fadeOut:.35,delay:0,follow:null,until:null,pool:null,shadow:.35,pulse:0,sink:0,flip:false,sortOff:6},o);this.t=-this.delay;}
   get sy(){return this.y+this.sortOff;}
@@ -42,7 +46,10 @@ class SPic{constructor(o){Object.assign(this,{t:0,life:.8,layer:'sorted',w:140,a
     if(this.pool){ctx.globalCompositeOperation='lighter';ctx.globalAlpha=a*.55;const g=ctx.createRadialGradient(0,0,0,0,0,w*.6);g.addColorStop(0,hexA(this.pool,.7));g.addColorStop(1,hexA(this.pool,0));ctx.fillStyle=g;ctx.fillRect(-w*.6,-w*.6,w*1.2,w*1.2);}ctx.restore();
     /* rise: tall-thin → overshoot → settle; sink at the end (falls back into the floor) */
     const sy=pk<1?.25+.75*back(pk):1,sx=pk<1?1.3-.3*pk:1,sk=this.sink&&k>1-fo?1-(1-c01((1-k)/fo))*this.sink:1;
-    ctx.save();ctx.translate(x,y-z);if(this.flip)ctx.scale(-1,1);ctx.scale(sx,sy*sk);drawHalo(i,-w/2,-h*this.ay,w,h,a*.35);ctx.globalAlpha=a;ctx.drawImage(i,-w/2,-h*this.ay,w,h);
+    const up=!this.sink&&k>1-fo?(1-c01((1-k)/fo))*14:0,sw=Math.sin(this.t*3.2+this.x*.01)*.035;
+    ctx.save();ctx.translate(x,y-z-up);if(this.flip)ctx.scale(-1,1);ctx.transform(1,0,sw,1,0,0);ctx.scale(sx,sy*sk);
+    const em=eo(c01(this.t/(this.reveal??.2)));if(em<1){ctx.beginPath();ctx.rect(-w,-h*this.ay+h*(1-em)-2,w*2,h*em+h+4);ctx.clip();}
+    drawHalo(i,-w/2,-h*this.ay,w,h,a*.35);ctx.globalAlpha=a;ctx.drawImage(i,-w/2,-h*this.ay,w,h);
     if(this.t<.09){ctx.globalCompositeOperation='lighter';ctx.globalAlpha=a*(1-this.t/.09)*.85;ctx.drawImage(i,-w/2,-h*this.ay,w,h);}ctx.restore();ctx.globalAlpha=1;}}
 /* side-view streak picture aimed along the attack (never spun), with afterimages; optional travel */
 class XPic{constructor(o){Object.assign(this,{t:0,life:.4,layer:'top',w:150,z:30,a0:1,speed:0,fadeIn:.03,fadeOut:.45,delay:0,follow:null,trail:4,ax:.5},o);this.t=-this.delay;this.r=aim(this.phi);this.fy=Math.cos(this.r)<0;this.hist=[];}
@@ -51,7 +58,8 @@ class XPic{constructor(o){Object.assign(this,{t:0,life:.4,layer:'top',w:150,z:30
     this.hist.unshift([this.x,this.y]);if(this.hist.length>this.trail)this.hist.pop();if(this.onMove)this.onMove(this,dt);return this.t<this.life;}
   draw(){if(this.t<0)return;const i=im(this.n);if(!i)return;const k=this.t/this.life,fo=this.fadeOut,a=this.a0*c01(this.t/this.fadeIn)*(k>1-fo?c01((1-k)/fo):1);if(a<.01)return;
     const pk=c01(this.t/.12),w=this.w*(.75+.25*back(pk)),h=w*i.naturalHeight/i.naturalWidth;
-    const one=(px,py,al,sc)=>{const [x,y]=scr(px,py,this.z);ctx.save();ctx.globalAlpha=al;ctx.translate(x,y);ctx.rotate(this.r);if(this.fy)ctx.scale(1,-1);ctx.scale(sc,1);ctx.drawImage(i,-w*this.ax,-h/2,w,h);ctx.restore();};
+    const wp=eo(c01(this.t/(this.wipe??(this.speed?.06:.13))));
+    const one=(px,py,al,sc)=>{const [x,y]=scr(px,py,this.z);ctx.save();ctx.globalAlpha=al;ctx.translate(x,y);ctx.rotate(this.r);if(this.fy)ctx.scale(1,-1);ctx.scale(sc,1);if(wp<1){ctx.beginPath();ctx.rect(-w*this.ax-4,-h,w*wp+8,h*2);ctx.clip();}ctx.drawImage(i,-w*this.ax,-h/2,w,h);ctx.restore();};
     for(let j=this.hist.length-1;j>=1;j--)one(this.hist[j][0],this.hist[j][1],a*.22*(1-j/this.hist.length),1+j*.04);
     one(this.x,this.y,a,pk<1?1.25-.25*pk:1);
     if(this.t<.07){ctx.save();ctx.globalCompositeOperation='lighter';one(this.x,this.y,a*(1-this.t/.07)*.7,1);ctx.restore();}ctx.globalAlpha=1;}}

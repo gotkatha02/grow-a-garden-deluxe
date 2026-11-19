@@ -70,7 +70,7 @@ function install(){const X=window.V25;if(!X||typeof CHAR==='undefined'||CHAR!=='
     frostbloodPact:()=>{add(new SPic({n:N('w06_vamp'),x:player.x,y:player.y,w:90,follow:player,sortOff:-4,life:.9,shadow:0,pool:WC.red}));W.shatter(player.x,player.y,120);},
     warBanner:()=>{window._wBAN={x:player.x+18,y:player.y-6};V.slam(player.x+18,player.y-6,70,WC.gold,{debris:false,crack:false,puffs:4,shake:1.5,punch:.02});},
     fenrirsSpirit:()=>{add(new SPic({n:N('w19_spirit'),x:player.x,y:player.y,w:180,ay:.7,life:.8,shadow:0,pool:WC.ice}));V.release(player.x,player.y,WC.ice,{R:140,h:300});},
-    axeCyclone:a=>{const dur=Math.max(.6,(a.dur||1)*.95);add(new GPic({n:N('w04_cyclone'),x:player.x,y:player.y,w:200,follow:player,life:dur,s0:.5,a0:.9,fadeOut:.2,add:.2}));
+    axeCyclone:(c,a)=>{const dur=Math.max(.6,(a.dur||1)*.95);add(new GPic({n:N('w04_cyclone'),x:player.x,y:player.y,w:200,follow:player,life:dur,s0:.5,a0:.9,fadeOut:.2,add:.2}));
       add(new Whirl({x:player.x,y:player.y,follow:player,R:90,n:4,w:22,col:'#ff8a90',col2:'#ffe8e8',life:dur,spd:-12,dir:-1}));
       let k=0;const T=()=>{if(k++>dur*8)return;blood(player.x+rnd(-70,70),player.y+rnd(-40,40),1,{up:120});setFxTimer(.12,T);};T();},
     battleStep:()=>add(new Puffs({x:player.x,y:player.y,R:30,n:3,size:9,life:.5})),
@@ -107,7 +107,7 @@ function install(){const X=window.V25;if(!X||typeof CHAR==='undefined'||CHAR!=='
   }
   /* 5. per-skill moments at the contact time (+ a charge-up for longer wind-ups) */
   for(const k in AT){const sk=SKILLS[k]||(typeof CSK!=='undefined'&&CSK[k]);if(!sk||!sk.make||sk._wv2)continue;const mk=sk.make;sk._wv2=1;
-    sk.make=function(c){const a=mk.apply(this,arguments);if(a&&a.events){const t=Math.max(.02,Math.min(a.windup||.02,(a.dur||1)-.02));if(t>=.12)V.charge(A_SET.has(k)?WC.red:WC.ice,t);a.events.push({t,f:()=>{try{AT[k](a,c||{});}catch(e){console.error('wolf v2 '+k+': '+e);}}});}return a;};}
+    sk.make=function(c){const a=mk.apply(this,arguments);if(a&&a.events){const t=Math.max(.02,Math.min(a.windup||.02,(a.dur||1)-.02));if(t>=.12&&!(c&&c.gx!=null&&(SKILLS[k]||{}).type==='ground'))V.charge(A_SET.has(k)?WC.red:WC.ice,t);a.events.push({t,f:()=>{try{AT[k](c||{},a);}catch(e){console.error('wolf v2 '+k+': '+e);}}});}return a;};}
   /* painted skill icons (assets/icons/wolf/<key>.webp); a missing file keeps the old icon */
   if(typeof SKILL_ICON_ART!=='undefined'&&!window._wv2i){window._wv2i=1;const all=Object.assign({},SKILLS,typeof CSK!=='undefined'?CSK:{});
     for(const k in all){const sk=all[k];if(!sk||!sk.name)continue;const src='assets/icons/wolf/'+k+'.webp',ic=new Image();
