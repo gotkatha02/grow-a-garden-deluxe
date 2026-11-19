@@ -173,7 +173,30 @@ function life(g,t,dt,night){if(!lifeL)lifeLists();const v=viewRect(g),vw=v.x1-v.
   /* soft vignette: the eye settles on the middle of the screen */
   if(OUTDOOR){const cw=g.canvas.width,ch=g.canvas.height;g.save();g.setTransform(1,0,0,1,0,0);const vg=g.createRadialGradient(cw/2,ch/2,Math.min(cw,ch)*.42,cw/2,ch/2,Math.hypot(cw,ch)*.6);vg.addColorStop(0,'rgba(24,18,40,0)');vg.addColorStop(1,'rgba(24,18,40,.3)');g.fillStyle=vg;g.fillRect(0,0,cw,ch);g.restore();}}
 return {waterFx,life};};
-window.createFieldHost=function(base,cfg){
+/* owner 2026-11-19: "maps are small for a Ragnarok-style game and it's mostly trees" —
+   outdoor fields are laid out 1.5x larger (all hand-placed coordinates scaled), with fewer grove masses,
+   more props in the open and a few extra landmarks in their own clearings. Towns and walled caves keep their size. */
+function scaleField(c0){if(c0._scaled||c0.walls||c0.mons===false||c0.maze||c0.mood==='town'||c0.townish||c0.city)return c0;const S=c0.fieldScale??1.5;if(S===1)return c0;
+  const c=JSON.parse(JSON.stringify(c0));c._scaled=1;const pt=p=>Array.isArray(p)?p.map((v,i)=>typeof v==='number'&&i<2?v*S:v):p;
+  c.W=Math.round(c.W*S);c.H=Math.round(c.H*S);if(c.bridge)c.bridge=pt(c.bridge);if(c.stream)c.stream=c.stream.map(pt);
+  if(c.trails)c.trails=c.trails.map(T=>T.map(pt));for(const r of c.roads||[])if(r.pts)r.pts=r.pts.map(pt);
+  for(const o of [...(c.land||[]),...(c.warps||[]),...(c.squares||[]),...(c.clusters||[]),...(c.lakes||[])]){if(o.x!=null)o.x*=S;if(o.y!=null)o.y*=S;if(o.rx)o.rx*=S;if(o.ry)o.ry*=S;if(o.r&&c.clusters&&c.clusters.includes(o))o.r*=S;}
+  if(c.clearings)c.clearings=c.clearings.map(q=>[q[0]*S,q[1]*S,q[2]*S]);
+  if(c.rows)for(const k of ['x0','x1','y0','y1'])c.rows[k]*=S;
+  if(c.paddies){const P=c.paddies;P.x*=S;P.y*=S;P.cols=Math.round(P.cols*S);P.ny=Math.round(P.ny*S);if(P.skip)P.skip=P.skip.map(q=>[q[0]*S,q[1]*S,q[2]*S]);}
+  if(c.sea){if(c.sea.d)c.sea.d*=S;if(c.sea.x!=null)c.sea.x*=S;if(c.sea.y!=null)c.sea.y*=S;}
+  if(c.start)c.start=Array.isArray(c.start)?pt(c.start):Object.assign(c.start,{x:c.start.x*S,y:c.start.y*S});
+  /* fewer solid groves, more things to look at between them */
+  if(c.groves)c.groves.thr=(c.groves.thr??.52)+.05;c.propDens=(c.propDens??1)*1.5;c.openTrees=(c.openTrees??.06)*.6;
+  c.spawnN=Math.round((c.spawnN||32)*S*S/1.5);
+  /* extra landmarks: copies of this map's own set pieces, each in a clearing well away from trails and warps */
+  let seed=(c.seed||1)*9301+49297;const rnd=()=>((seed=(seed*9301+49297)%233280)/233280);
+  const LM=(c.land||[]).map(o=>o.n).filter(n=>n&&!/entrance|sign|gate|door|stair|bridge|dock|well|house|hall|cottage|stall|cart/i.test(n));
+  const trailPts=(c.trails||[]).flat().filter(p=>Array.isArray(p)),near=(x,y,d)=>trailPts.some(p=>Math.hypot(p[0]-x,p[1]-y)<d)||(c.warps||[]).some(w=>Math.hypot(w.x-x,w.y-y)<d+200)||(c.land||[]).some(o=>Math.hypot(o.x-x,o.y-y)<d);
+  if(LM.length)for(let i=0,n=0;i<80&&n<5;i++){const x=c.W*(.12+.76*rnd()),y=c.H*(.12+.76*rnd());if(near(x,y,420))continue;
+    c.land.push({n:LM[Math.floor(rnd()*LM.length)],x,y,flip:rnd()<.5?1:0});c.clearings.push([x,y,300]);n++;}
+  return c;}
+window.createFieldHost=function(base,cfg){cfg=scaleField(cfg);
 const W=cfg.W,H=cfg.H,CH=512,CELL=12,COLS=Math.ceil(W/CELL),ROWS=Math.ceil(H/CELL),CAT=window.VK_CAT;
 const MOOD=cfg.mood||'sun',CAVE=MOOD==='cave'||MOOD==='mine'||MOOD==='rift';
 /* region theme: water textures, trail tint, shadow colour, floating particles */
