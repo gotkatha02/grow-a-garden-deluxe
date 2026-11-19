@@ -6,6 +6,7 @@
    ===================================================================== */
 (function(){
 if(!/[?&]testroom=1/.test(location.search))return;
+window.__GEMS_ALL=1;   /* every Class C skill on (normally they need a socketed Totem Gem) */
 const HEROES=[['wolf','หมาป่า'],['dragon','มังกร'],['kitsune','คิตสึเนะ'],['anubis','อานูบิส'],['lion','สิงโต'],['cat','แมว'],['hippo','ฮิปโป'],['croc','จระเข้'],['jaguar','จากัวร์'],['owl','นกฮูก'],['rhino','แรด'],['bastet','บาสเตท'],['axolotl','แอกโซลอเติล'],['sheep','แกะ']];
 let mode='one',noCd=true,dummies=[],dmg=[],el=null;
 function layout(m){mode=m;try{enemies.length=0;}catch(e){return;}dummies=[];
@@ -25,7 +26,7 @@ function render(){if(!el)return;const b=(id,t,on)=>`<button data-tr="${id}" clas
 function boot(){let n=0;const T=setInterval(()=>{n++;const t=document.getElementById('cctest');if(t&&t.offsetParent){t.click();return;}const t2=[...document.querySelectorAll('button')].find(b=>b.offsetParent&&/โหมดทดสอบ/.test(b.textContent)&&b.id!=='cctest');if(t2){t2.click();return;}
   if(typeof player==='undefined'||typeof spawnEnemy!=='function'||n<5)return;clearInterval(T);
   
-  setTimeout(()=>{try{for(const k in SKILLS)if(SKILLS[k].max&&!SKILLS[k].passive)LV[k]=SKILLS[k].max;}catch(_){}
+  setTimeout(()=>{try{for(const k in SKILLS)if(SKILLS[k].max)LV[k]=SKILLS[k].max;if(typeof CSK!=='undefined')for(const k in CSK)LV[k]=Math.max(LV[k]||0,CSK[k].max||1);}catch(_){}
     const st=document.createElement('style');st.textContent='#trbar{position:fixed;top:6px;left:50%;transform:translateX(-50%);z-index:99998;background:rgba(22,16,34,.9);color:#fff;font:12px system-ui,sans-serif;padding:5px 8px;border-radius:10px;border:2px solid #6a52a8;display:flex;gap:5px;align-items:center;flex-wrap:wrap;max-width:96vw}#trbar button{background:#4a3a78;color:#fff;border:1px solid #8a72d8;border-radius:7px;padding:3px 7px;font-size:12px}#trbar button.on{background:#c98a1a;border-color:#ffd36a}#trbar select{background:#2d2344;color:#fff;border:1px solid #6a52a8;border-radius:6px;font-size:12px}#trDps{color:#ffd36a;margin-left:4px}';document.head.appendChild(st);
     el=document.createElement('div');el.id='trbar';document.body.appendChild(el);['pointerdown','pointerup','touchstart','touchend','mousedown','mouseup','click'].forEach(ev=>el.addEventListener(ev,e=>e.stopPropagation()));
     el.addEventListener('click',e=>{const t=e.target.closest('[data-tr]');if(!t||t.tagName==='SELECT')return;const a=t.dataset.tr;
