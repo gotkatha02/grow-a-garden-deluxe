@@ -25,7 +25,7 @@ function install(){const X=window.V25;if(!X||CHAR!=='anubis')return;const {im,ad
     window.uBurst=uBurst=function(x,y,R,col){R=R||60;if(col==='#6a3aa8'){add(new GPic({n:N('shadow_gate'),x,y,w:Math.max(110,R*2.4),life:.8,s0:.4,add:.25}));souls(x,y,6);return;}
       add(new Shock({x,y,R,col:col===AC.sun?AC.sun:AC.gold,w:Math.max(8,R*.1),life:.42}));dust(x,y,R*.9,8);sand(x,y,Math.min(10,4+R/20));if(R>=100)punch(.03);};
     window.uPow=uPow=function(e,big,col){const soul=cIs(col,AC.blue,'#3a6ad8','#6a4aa8');add(new HPic({n:N(soul?'soul_hit':'sand_hit'),x:e.x,y:e.y,e,w:big?74:54,z:(e.boss?40:24)+(e.z||0)}));soul?souls(e.x,e.y,big?4:2):sand(e.x,e.y,big?4:2,{v0:40,v1:120,up:160});};
-    const R0=window.uRoot;window.uRoot=uRoot=function(e,T){const r=R0.apply(this,arguments);try{if(e&&!e.dead)add(new SPic({n:N('binding_chains'),x:e.x,y:e.y,w:(e.boss?120:80),ay:.8,follow:e,sortOff:6,life:Math.max(.6,T),a0:.9,shadow:.2,pool:AC.gold,sink:.5}));}catch(_){}return r;};
+    const R0=window.uRoot;window.uRoot=uRoot=function(e,T){const r=R0.apply(this,arguments);try{if(e&&!e.dead)add(new SPic({n:N('binding_chains'),obj:1,x:e.x,y:e.y,w:(e.boss?120:80),ay:.8,follow:e,sortOff:6,life:Math.max(.6,T),a0:.9,shadow:.2,pool:AC.gold,sink:.5}));}catch(_){}return r;};
     /* 2. primitives repainted */
     USwing.prototype.draw=function(){const k=eo(Math.min(1,this.t/this.life)),a=this.a0+(this.a1-this.a0)*k,sw=this.a1-this.a0,dir=sw>=0?1:-1,trail=Math.min(Math.abs(sw)*k,2.2);
       ribbon(player.x,player.y,22,this.R,a-dir*trail,dir*trail,Math.max(16,this.R*.22),this.col===AC.sand?'#f0d090':'#ffd36a','#ffffff',.85*(1-this.t/this.life*.6),true);
@@ -58,10 +58,10 @@ function install(){const X=window.V25;if(!X||CHAR!=='anubis')return;const {im,ad
     watch(()=>ANU.guard>0&&ANU.guardUntil>gameTime,()=>add(new GPic({n:N('chain_guard'),x:player.x,y:player.y,w:150,follow:player,life:99,a0:.9,breathe:.03,until:()=>!(ANU.guard>0&&ANU.guardUntil>gameTime)})));
     watch(()=>uAvatar(),()=>add(new SPic({n:N('avatar_aura'),x:player.x,y:player.y,w:150,ay:.9,follow:player,oy:-1,sortOff:-4,life:99,a0:.55,pulse:.2,shadow:0,until:()=>!uAvatar()})));
     watch(()=>ANU.spin,()=>{const S=ANU.spin;return add(new Whirl({x:player.x,y:player.y,follow:player,R:S.R*.75,n:4,w:16,col:S.wheel?'#ffb040':'#f0d090',col2:'#fff8e0',life:99,spd:9,until:()=>ANU.spin!==S}));});
-    watch(()=>ANU.cond&&!ANU.cond.dead&&ANU.sin>0,()=>{const c=ANU.cond;return add(new SPic({n:N('sin_mark'),x:c.x,y:c.y,w:44,z:(c.boss?100:76),ay:.5,follow:c,sortOff:30,life:99,a0:.85,shadow:0,pulse:.2,until:()=>ANU.cond!==c||c.dead||ANU.sin<=0}));});
+    watch(()=>ANU.cond&&!ANU.cond.dead&&ANU.sin>0,()=>{const c=ANU.cond;return add(new SPic({n:N('sin_mark'),obj:1,x:c.x,y:c.y,w:44,z:(c.boss?100:76),ay:.5,follow:c,sortOff:30,life:99,a0:.85,shadow:0,pulse:.2,until:()=>ANU.cond!==c||c.dead||ANU.sin<=0}));});
     const seen=new WeakSet();
-    A({layer:'none',_v2:1,draw(){},update(){if(CHAR!=='anubis')return false;for(const w of live){const on=!!w.test();if(on&&(!w.on||!fx.includes(w.on)))w.on=w.mk();if(!on)w.on=null;}
-      for(const D of ANU.devils)if(!seen.has(D)){seen.add(D);add(new SPic({n:N('dust_devil'),x:D.x,y:D.y,w:UK.acDevil.R*1.6,follow:D,life:99,a0:.9,shadow:.3,pool:AC.sand,sink:.5,until:()=>!ANU.devils.includes(D)}));
+    A({layer:'none',_v2:1,draw(){},update(){if(CHAR!=='anubis')return false;for(const w of live){const on=!!w.test();if(on&&!w.was)w.on=w.mk();w.was=on;}
+      for(const D of ANU.devils)if(!seen.has(D)){seen.add(D);add(new SPic({n:N('dust_devil'),obj:1,x:D.x,y:D.y,w:UK.acDevil.R*1.6,follow:D,life:99,a0:.9,shadow:.3,pool:AC.sand,sink:.5,until:()=>!ANU.devils.includes(D)}));
         add(new Whirl({x:D.x,y:D.y,follow:D,R:UK.acDevil.R*.6,n:3,w:10,col:'#f0d090',col2:'#fff',life:99,spd:10,until:()=>!ANU.devils.includes(D)}));}
       return true;}});
     /* 3. per-skill pictures at the release moment */
@@ -76,7 +76,7 @@ function install(){const X=window.V25;if(!X||CHAR!=='anubis')return;const {im,ad
       aaMeteor:()=>{},
       abBind:()=>{},
       abGate:()=>{},
-      abHall:o=>{const t=ANU.cond;if(!t||t.dead)return;add(new SPic({n:N('scales_hall'),x:t.x,y:t.y-30,w:220,life:UK.abHall.n*.5+.8,a0:.95,pool:AC.gold,sink:.5,sortOff:-40}));V.release(t.x,t.y,AC.gold,{R:120,h:360,w:90});},
+      abHall:o=>{const t=ANU.cond;if(!t||t.dead)return;add(new SPic({n:N('scales_hall'),obj:1,x:t.x,y:t.y-30,w:220,life:UK.abHall.n*.5+.8,a0:.95,pool:AC.gold,sink:.5,sortOff:-40}));V.release(t.x,t.y,AC.gold,{R:120,h:360,w:90});},
       acBreaker:o=>{const p=player.phi,[x,y]=[player.x+Math.cos(p)*UK.acBreaker.len*.5,player.y+Math.sin(p)*UK.acBreaker.len*.5];add(new XPic({n:N('scale_breaker'),x,y,phi:p,w:UK.acBreaker.len*1.05,z:4,layer:'ground',life:.9,fadeOut:.5,trail:1}));
         for(let i=1;i<=4;i++)add(new Crack({x:player.x+Math.cos(p)*UK.acBreaker.len*i/5,y:player.y+Math.sin(p)*UK.acBreaker.len*i/5,R:40,n:5,col:AC.soul,life:1.2}));shake(2);},
       acRebirth:()=>{add(new Pillar({x:player.x,y:player.y,col:'#bfffa0',w:70,h:260,life:.8}));add(new Shock({x:player.x,y:player.y,R:90,col:'#bfffa0',w:10}));},

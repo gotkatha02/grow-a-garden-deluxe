@@ -52,9 +52,9 @@ function install(){const X=window.V25;if(!X||CHAR!=='lion')return;const {im,add,
   aura('overcharge_aura',130,()=>lOver()&&!lAsc(),{a0:.55});
   aura('ascend_aura',160,()=>lAsc(),{a0:.6});
   watch(()=>hasBuff('lcCrown'),()=>add(new GPic({n:N('laurel_circle'),x:player.x,y:player.y,w:150,follow:player,life:99,a0:.85,breathe:.02,until:()=>!hasBuff('lcCrown')})));
-  watch(()=>hasBuff('lcCrown'),()=>add(new SPic({n:N('laurel_crown'),x:player.x,y:player.y,w:54,z:100,ay:.5,follow:player,sortOff:40,life:99,shadow:0,until:()=>!hasBuff('lcCrown')})));
+  watch(()=>hasBuff('lcCrown'),()=>add(new SPic({n:N('laurel_crown'),obj:1,x:player.x,y:player.y,w:54,z:100,ay:.5,follow:player,sortOff:40,life:99,shadow:0,until:()=>!hasBuff('lcCrown')})));
   watch(()=>lHeld(),()=>{const h=lHeld();return add(new HPic({n:N('grab_flash'),x:h.x,y:h.y,e:h,w:64,z:(h.boss?80:56),life:.4}));});
-  A({layer:'none',_v2:1,draw(){},update(){if(CHAR!=='lion')return false;for(const w of live){const on=!!w.test();if(on&&(!w.on||!fx.includes(w.on)))w.on=w.mk();if(!on)w.on=null;}return true;}});
+  A({layer:'none',_v2:1,draw(){},update(){if(CHAR!=='lion')return false;for(const w of live){const on=!!w.test();if(on&&!w.was)w.on=w.mk();w.was=on;}return true;}});
   /* 4. per-skill pictures at the release moment */
   const CAST={
     lnHide:()=>add(new Shock({x:player.x,y:player.y,R:64,col:LC.marble,w:9,life:.35})),

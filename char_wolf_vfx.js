@@ -59,7 +59,7 @@ function install(){const X=window.V25;if(!X||typeof CHAR==='undefined'||CHAR!=='
     frozenDescent:()=>{W.crater(player.x,player.y,170);W.shatter(player.x,player.y,170);},
     thunderSpear:c=>{const t=tgt(c,320),phi=t?angTo(t):player.phi,L=t?Math.hypot(t.x-player.x,t.y-player.y):200;
       add(new XPic({n:N('w16_spear'),x:player.x+Math.cos(phi)*L*.5,y:player.y+Math.sin(phi)*L*.5,phi,w:Math.max(150,L),z:34,life:.35,trail:2}));if(t)setFxTimer(.1,()=>W.bolt(t.x,t.y,160));},
-    icePrison:c=>{const x=c.gx??player.x,y=c.gy??player.y,r=(typeof prisonR==='function'?prisonR():70);add(new SPic({n:N('w13_prison'),x,y,w:r*1.8,ay:.9,life:2.6,a0:.95,pool:WC.ice,sink:.6}));W.shatter(x,y,r*2);},
+    icePrison:c=>{const x=c.gx??player.x,y=c.gy??player.y,r=(typeof prisonR==='function'?prisonR():70);add(new SPic({n:N('w13_prison'),obj:1,x,y,w:r*1.8,ay:.9,life:2.6,a0:.95,pool:WC.ice,sink:.6}));W.shatter(x,y,r*2);},
     runeStorm:c=>{const x=c.gx??player.x,y=c.gy??player.y,r=70+10*(LV.runeStorm||1);add(new GPic({n:N('w14_rune'),x,y,w:r*2.4,life:1.6,s0:.4,fadeOut:.3,add:.3,breathe:.02}));for(let i=0;i<4;i++)setFxTimer(.2+i*.25,()=>W.bolt(x+rnd(-r,r)*.6,y+rnd(-r,r)*.4,140));},
     blizzard:c=>{const x=c.gx??player.x,y=c.gy??player.y,lv=LV.blizzard||1,r=100+15*lv,dur=2.4+.4*lv;W.storm('w17_blizzard',x,y,r,dur,{funnel:130});
       let k=0;const T=()=>{if(k++>dur*6)return;ice(x+rnd(-r,r)*.7,y+rnd(-r,r)*.5,2,{up:80,v0:30,v1:90,z:60});setFxTimer(.16,T);};T();skyDarkT=Math.max(skyDarkT,.45);setFxTimer(dur,()=>{skyDarkT=0;});},
@@ -92,9 +92,9 @@ function install(){const X=window.V25;if(!X||typeof CHAR==='undefined'||CHAR!=='
     const live=[];const watch=(test,mk)=>live.push({test,mk,on:null});
     watch(()=>hasBuff('warFury'),()=>add(new SPic({n:N('w07_rage'),x:player.x,y:player.y,w:110,ay:.9,follow:player,oy:2,sortOff:-4,life:99,a0:.75,pulse:.2,shadow:0,until:()=>!hasBuff('warFury')})));
     watch(()=>hasBuff('runeGuard'),()=>add(new GPic({n:N('w14_rune'),x:player.x,y:player.y,w:130,follow:player,life:99,a0:.85,breathe:.03,add:.2,until:()=>!hasBuff('runeGuard')})));
-    watch(()=>hasBuff('banner')&&window._wBAN,()=>{const B=window._wBAN;return add(new SPic({n:N('w20_banner'),x:B.x,y:B.y,w:56,ay:.96,life:99,shadow:.3,pool:WC.gold,until:()=>!hasBuff('banner')||window._wBAN!==B}));});
+    watch(()=>hasBuff('banner')&&window._wBAN,()=>{const B=window._wBAN;return add(new SPic({n:N('w20_banner'),obj:1,x:B.x,y:B.y,w:56,ay:.96,life:99,shadow:.3,pool:WC.gold,until:()=>!hasBuff('banner')||window._wBAN!==B}));});
     watch(()=>hasBuff('fenrir'),()=>add(new SPic({n:N('w19_spirit'),x:player.x,y:player.y,w:100,ay:.6,z:24,follow:player,ox:-30,sortOff:-10,life:99,a0:.45,pulse:.2,shadow:0,until:()=>!hasBuff('fenrir')})));
-    A({layer:'none',_v2:1,draw(){},update(){if(CHAR!=='wolf')return false;for(const w of live){const on=!!w.test();if(on&&(!w.on||!fx.includes(w.on)))w.on=w.mk();if(!on)w.on=null;}return true;}});
+    A({layer:'none',_v2:1,draw(){},update(){if(CHAR!=='wolf')return false;for(const w of live){const on=!!w.test();if(on&&!w.was)w.on=w.mk();w.was=on;}return true;}});
     /* 3. hits */
     const h0=hurt;let last=0;
     hurt=function(e,mult,o={}){const wasDead=e&&e.dead;const r=h0.apply(this,arguments);if(CHAR!=='wolf'||!e||wasDead||!r||(o&&o.dot))return r;

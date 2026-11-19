@@ -74,10 +74,10 @@ function install(){const X=VV();if(!X||CHAR!=='kitsune')return;const {im,add,pun
     watch('veil',()=>hasBuff('kaVeil'),()=>add(new SPic({n:N('fire_veil'),x:player.x,y:player.y,w:KB.kaVeil.R*2.1,ay:.85,follow:player,oy:4,sortOff:20,life:99,a0:.7,pulse:.15,shadow:0,pool:KC.fire,until:()=>!hasBuff('kaVeil')})));
     watch('moon',()=>hasBuff('kbMoonlight'),()=>add(new SPic({n:N('moonlight_form'),x:player.x,y:player.y,w:110,follow:player,sortOff:6,life:99,a0:.55,pulse:.2,shadow:0,pool:KC.moon,until:()=>!hasBuff('kbMoonlight')})));
     watch('awake',()=>kAwake(),()=>add(new SPic({n:N('nine_tail_aura'),x:player.x,y:player.y,w:150,ay:.82,follow:player,oy:-1,sortOff:-4,life:99,a0:.6,pulse:.2,shadow:0,until:()=>!kAwake()})));
-    watch('mirror',()=>KI.mirror,()=>{const M=KI.mirror;return add(new SPic({n:N('yata_mirror'),x:M.x,y:M.y,w:70,life:99,pool:KC.moon,until:()=>KI.mirror!==M}));});
+    watch('mirror',()=>KI.mirror,()=>{const M=KI.mirror;return add(new SPic({n:N('yata_mirror'),obj:1,x:M.x,y:M.y,w:70,life:99,pool:KC.moon,until:()=>KI.mirror!==M}));});
     const seen=new WeakSet();
-    A({layer:'none',_v2:1,draw(){},update(){if(CHAR!=='kitsune')return false;for(const w of live){const on=!!w.test();if(on&&(!w.on||!fx.includes(w.on)))w.on=w.mk();if(!on)w.on=null;}
-      for(const l of KI.lanterns)if(!seen.has(l)){seen.add(l);add(new SPic({n:N('fox_lantern'),x:l.x,y:l.y,w:44,life:99,pool:KC.fire,sink:.5,until:()=>!KI.lanterns.includes(l)}));}
+    A({layer:'none',_v2:1,draw(){},update(){if(CHAR!=='kitsune')return false;for(const w of live){const on=!!w.test();if(on&&!w.was)w.on=w.mk();w.was=on;}
+      for(const l of KI.lanterns)if(!seen.has(l)){seen.add(l);add(new SPic({n:N('fox_lantern'),obj:1,x:l.x,y:l.y,w:44,life:99,pool:KC.fire,sink:.5,until:()=>!KI.lanterns.includes(l)}));}
       return true;}});
   }
   /* 3. per-skill pictures at the release moment (kCast calls o.f there) */
