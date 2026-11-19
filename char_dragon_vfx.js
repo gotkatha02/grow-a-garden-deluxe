@@ -194,7 +194,7 @@ const DELAYED=new Set(['dnRoar','dnGuard','dnBreath','daEbb','daTorrent','dkPush
 const tgtOf=c=>c&&c.target&&!c.target.dead?c.target:null;
 const CAST={
   dnGuard:c=>{add(new SPic({n:'guard_shield',x:player.x,y:player.y,w:112,ay:.62,z:6,follow:player,oy:2,sortOff:8,life:DB.dnGuard.T+.25,a0:.85,pool:C.gold,shadow:0}));add(new Shock({x:player.x,y:player.y,R:70,col:C.gold,w:10,life:.3}));},
-  dnRush:c=>{const p=player.phi;add(new XPic({n:'horn_rush',x:player.x,y:player.y,phi:p,w:170,z:28,follow:player,life:.42,trail:5}));add(new Speed({x:player.x,y:player.y,phi:p,follow:player,life:.35,col:C.gold}));
+  dnRush:c=>{const p=player.phi;add(new XPic({n:'horn_rush',x:player.x,y:player.y,phi:p,w:175,z:28,follow:player,life:.6,fadeOut:.35,trail:6}));add(new Speed({x:player.x,y:player.y,phi:p,follow:player,life:.35,col:C.gold}));
     let k=0;const T=setInterval(()=>{if(++k>4)return clearInterval(T);add(new Puffs({x:player.x,y:player.y,R:30,n:2,dir:p+Math.PI,spread:.6,size:12,life:.6,col:'#f2ecff',edge:'#c8bce0'}));},60);},
   dnBreath:c=>{const T=DB.dnBreath.T;add(new SPic({n:'calm_breath',x:player.x,y:player.y,w:104,follow:player,oy:-2,sortOff:-6,life:T+.2,a0:.8,pulse:.2,pool:C.jade,shadow:0}));add(new Pillar({x:player.x,y:player.y,follow:player,col:C.jade,w:50,h:170,life:T}));},
   dnRoar:c=>{const x=player.x,y=player.y;add(new GPic({n:'roar_ring',x,y,w:300,life:.8,s0:.3,grow:1.15,add:.4}));V.release(x,y,C.gold,{R:170,h:220,w:70});},
@@ -220,7 +220,7 @@ const CAST={
   dcMaelstrom:c=>{const x=player.x,y=player.y,R=DB.dcMaelstrom.R,T=DB.dcMaelstrom.T;{add(new GPic({n:'maelstrom',x,y,w:R*2.2,life:T+.3,s0:.4,fadeOut:.2,breathe:.03,add:.15}));
       add(new Whirl({x,y,R:R*.8,n:5,w:22,life:T+.2,spd:6,inward:1}));add(new Whirl({x,y,R:R*.45,n:3,w:12,life:T+.2,spd:9,h:70,a0:.55}));}},
   dcBreath:c=>{const p=player.phi,R=DB.dcBreath.R,[x,y]=fwd(R*.45,p);add(new XPic({n:'dragon_breath',x,y,phi:p,w:R*1.1,z:34,delay:.12,life:.6,trail:3}));V.splash(x,y,10,p,.6);},
-  dcAwaken:c=>{const x=player.x,y=player.y;add(new SPic({n:'torrent_flash',x,y,w:150,life:.6,pool:C.azure}));V.release(x,y,C.azure,{R:150,h:340});
+  dcAwaken:c=>{const x=player.x,y=player.y;add(new SPic({n:'torrent_flash',x,y,w:120,life:.6,pool:C.azure,sortOff:-12,a0:.85}));V.release(x,y,C.azure,{R:150,h:340});
     add(new SPic({n:'awaken_aura',x,y,w:128,follow:player,oy:-1,sortOff:-3,life:DB.dcAwaken.T,a0:.55,pulse:.2,fadeOut:.04,shadow:0,until:()=>!hasBuff('dcAwaken')}));},
   dcAbyss:c=>{const p=player.phi,[x0,y0]=fwd(20,p);{V.slam(player.x,player.y,110,C.sea,{kind:'rock'});
       const W=add(new SPic({n:'abyss_wave',x:x0,y:y0,w:210,life:DB.dcAbyss.len/520+.15,flip:Math.cos(aim(p))<0,pool:C.sea,sink:.7,shadow:.3}));
