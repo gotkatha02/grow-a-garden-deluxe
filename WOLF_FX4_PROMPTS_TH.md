@@ -16,3 +16,15 @@ STYLE = Friendly hand-painted chibi cartoon game effect matching the attached ke
 | w29_blood_pool | คราบเลือดบนพื้น (เลือดไหล) |
 | w30_bleed_drip | เลือดหยดบนตัวศัตรู (เลือดไหล) |
 | w31_rupture | Savage Rend ระเบิดแผล RUPTURE |
+
+## ชุด 2 (Wolf Finale / Vampiric Axe / Blood Rush)
+| ไฟล์ | ใช้กับ |
+|---|---|
+| w36_finale_chop | Wolf Finale ขวานสับลงแนวดิ่ง |
+| w37_finale_crater | Wolf Finale หลุมพื้นแตก (พื้น 3/4) |
+| w38_finale_quake | Wolf Finale คลื่นหินระเบิดขึ้น (ตั้งตรง) |
+| w39_vamp_slash | Vampiric Axe รอยฟันแดงเข้ม |
+| w40_blood_drain | Vampiric Axe สายเลือดไหลเข้าตัว |
+| w41_vamp_heal | Vampiric Axe ออร่าได้ HP (ตั้งตรง) |
+| w42_rush_streak | Blood Rush เส้นพุ่งแดงยาว |
+| w43_rush_cut | Blood Rush รอยตัดตอนทะลุ |

@@ -85,8 +85,8 @@ const near=(x,y,R)=>enemies.filter(e=>!e.dead&&Math.hypot(e.x-x,e.y-y)<=R+e.r*.5
 /* ---------- per-skill moments (run at the skill's contact time) ---------- */
 const AT={   // key: (a,c) => visuals ; a = the action, c = cast context
   reversalSlash:(a,c)=>W.slash(player.phi,130,'axe',1),
-  bloodCleave:(a,c)=>W.slash(player.phi,150,'axe'),
-  savageRend:(a,c)=>{W.slash(player.phi,140,'axe',1);},
+  bloodCleave:(a,c)=>{},
+  savageRend:(a,c)=>{},
   axeDance:(a,c)=>{wDanceN=0;wDanceT=-1;},
   wolfFinale:(a,c)=>{W.slash(player.phi,170,'axe');W.crater(player.x+Math.cos(player.phi)*40,player.y+Math.sin(player.phi)*40,170);},
   revengeBreaker:(a,c)=>{W.slash(player.phi,160,'axe');const t=W.tgt(c);if(t)fxI({n:'22_pow',x:t.x,y:t.y,z:30,w:120,life:.25,s0:.4,s1:1.1,fadeIn:.001,fadeOut:.6,glow:.6});},
@@ -138,6 +138,14 @@ function wDance(e,fin0){if(gameTime-wDanceT<.04)return;wDanceT=gameTime;const n=
   if(n==='w34_dance_spin'){fxI({_tvc:1,n,x:player.x,y:player.y,z:22,w:175,life:.3,s0:.75,s1:1.08,fadeIn:.001,fadeOut:.5,glow:.5,fx:L});return;}
   const tall=n==='w28_dance_up'||n==='w32_dance_down',fin=n==='w35_dance_thrust';
   fxI({_tvc:1,n,x:player.x+Math.cos(phi)*d*.5,y:player.y+Math.sin(phi)*d*.5,z:tall?34:30,w:tall?100:(fin?190:150),rot:scr(phi),fy:L,life:fin?.34:.26,s0:.8,s1:1.06,fadeIn:.001,fadeOut:.5,wipe:.3,glow:.6});}
+/* Blood Cleave = one wide horizontal cleave (w26) · Savage Rend = crossing claw rip (w27) · bleed = pool (w29) + drip (w30) · RUPTURE = w31 */
+let wBlN=0;
+function wBlood(k,o){const phi=player.phi,L=Math.cos(phi)<0;
+  if(k==='bloodCleave'){const echo=o&&o.echo===false;fxI({_tvc:1,n:'w26_cleave_wide',x:player.x+Math.cos(phi)*60,y:player.y+Math.sin(phi)*60,z:echo?40:28,w:echo?170:210,rot:scr(phi),fy:L!==echo,life:.32,s0:.75,s1:1.08,fadeIn:.001,fadeOut:.5,wipe:.25,glow:.6,a0:echo?.7:1});}
+  else{const t=W.tgt({},140);const x=t?t.x:player.x+Math.cos(phi)*70,y=t?t.y:player.y+Math.sin(phi)*70;wBlN++;
+    fxI({_tvc:1,n:'w27_rend_claw',x,y,z:34,w:120,rot:(wBlN%2?.25:-.25),fx:L,life:.34,s0:.6,s1:1.08,fadeIn:.001,fadeOut:.5,glow:.6});}}
+function wBleedFx(e,big){fxI({_tvc:1,n:'w29_blood_pool',x:e.x,y:e.y+4,w:big?90:70,layer:'ground',life:1.6,s0:.5,s1:1,fadeIn:.001,fadeOut:.4});
+  fxI({_tvc:1,n:'w30_bleed_drip',x:e.x+rnd(-4,4),y:e.y+2,z:0,ay:.97,w:big?44:34,life:.45,s0:.5,s1:1.05,fadeIn:.001,fadeOut:.5});}
 function wQuiet(){return CHAR==='wolf'&&player.action&&W_QUIET.has(player.action.key);}
 
 /* War Fury: the wolf's own sprite glazed red (no flames) + a thin red rim */
@@ -160,7 +168,7 @@ function wShields(t,a,front){for(let i=0;i<3;i++){const ang=t*2.6+i*2.094,sn=Mat
 
 /* ---------- auras that follow buffs ---------- */
 class WAura{constructor(){this.t=0;this.layer='ground';this.r=0;this.g=0;this.b=0;}
-  update(dt){this.t+=dt;const f=(v,on)=>Math.max(0,Math.min(1,v+(on?dt*4:-dt*3)));this.r=f(this.r,hasBuff('warFury'));this.g=f(this.g,hasBuff('runeGuard'));const WB=(typeof warBanner!=='undefined'&&warBanner&&fx.includes(warBanner)&&warBanner.t>=(warBanner.land||0))?warBanner:null;this.B=WB;this.b=f(this.b,!!WB);return CHAR==='wolf';}
+  update(dt){this.t+=dt;const f=(v,on)=>Math.max(0,Math.min(1,v+(on?dt*4:-dt*3)));this.r=f(this.r,hasBuff('warFury'));this.g=f(this.g,hasBuff('runeGuard'));this.bd=(this.bd||0)-dt;if(this.bd<=0&&typeof enemies!=='undefined'){this.bd=.25;for(const e of enemies)if(!e.dead&&e.st&&e.st.bleed>0&&gameTime-(e._wdr||0)>1.3){e._wdr=gameTime;fxI({_tvc:1,n:'w30_bleed_drip',x:e.x+rnd(-5,5),y:e.y+2,z:0,ay:.97,w:24,life:.4,s0:.5,s1:1,fadeIn:.001,fadeOut:.5});}}const WB=(typeof warBanner!=='undefined'&&warBanner&&fx.includes(warBanner)&&warBanner.t>=(warBanner.land||0))?warBanner:null;this.B=WB;this.b=f(this.b,!!WB);return CHAR==='wolf';}
   draw(){const [x,y]=P(player.x,player.y,0);
     if(this.g>0)wShields(this.t,this.g,false);
     if(this.b>0&&this.B){const [bx,by]=P(this.B.x,this.B.y,0);wDraw('w20_banner',bx,by,54,{a:this.b,ay:.96,rot:.04*Math.sin(this.t*3)});}}}
@@ -173,14 +181,14 @@ const A_SET=new Set(['warFury','bloodCleave','savageRend','axeDance','wolfFinale
 const B_SET=new Set(['frostFang','iceBreak','runeGuard','runeBurst','thunderFang','lightningPursuit','icePrison','shatterPulse','stormStep','runeStorm','blizzard','frozenDescent','thunderSpear','tempestField','ragnaroksJudgment','runicDetonation']);
 function install(){
   if(typeof CHAR==='undefined'||CHAR!=='wolf')return;
-  if(!window._wSA&&typeof slashAt==='function'){window._wSA=1;const S0=slashAt;window.slashAt=slashAt=function(a,kC,o){if(CHAR==='wolf'&&a&&a.key==='axeDance'){wDance(null,o&&o.W>=28);return;}return S0.apply(this,arguments);};}
+  if(!window._wSA&&typeof slashAt==='function'){window._wSA=1;const S0=slashAt;window.slashAt=slashAt=function(a,kC,o){if(CHAR==='wolf'&&a&&a.key==='axeDance'){wDance(null,o&&o.W>=28);return;}if(CHAR==='wolf'&&a&&(a.key==='bloodCleave'||a.key==='savageRend')){wBlood(a.key,o);return;}return S0.apply(this,arguments);};}
   if(!window._wQE&&typeof emit==='function'){window._wQE=1;const E0=emit;window.emit=emit=function(o){if(wQuiet())return;return E0.apply(this,arguments);};}
   if(!window._wDrop){window._wDrop=1;const D=['RuneCircle','RuneShield','LightPillar'].map(n=>{try{return eval(n);}catch(e){return null;}}).filter(Boolean);
     const A0=window.addFx;window.addFx=addFx=function(f){if(CHAR==='wolf'&&f&&D.some(c=>f instanceof c))return f;
-      if(wQuiet()&&f&&(/^(Bit|WBit|Burst|Impact)$/.test(f.constructor.name)||(player.action.key==='axeDance'&&/^(Slash|TexArc)$/.test(f.constructor.name))||(f.n&&/^(w03|x03|x04)/.test(f.n))))return f;
+      if(wQuiet()&&f&&(/^(Bit|WBit|Burst|Impact)$/.test(f.constructor.name)||(/^(axeDance|bloodCleave|savageRend)$/.test(player.action.key)&&/^(Slash|TexArc|SpectralAxe)$/.test(f.constructor.name))||(f.n&&/^(w03|x03|x04)/.test(f.n))))return f;
       if(CHAR==='wolf'&&f&&typeof FallObj!=='undefined'&&f instanceof FallObj&&f.kind==='axe'&&player.action&&player.action.key==='ragnaroksJudgment')wMjolnir(f);return A0.apply(this,arguments);};
     if(typeof BannerObj!=='undefined'){const d0=BannerObj.prototype.draw;BannerObj.prototype.draw=function(){if(CHAR==='wolf')return;return d0.apply(this,arguments);};}}
-  for(const n of ['w28_dance_up','w32_dance_down','w33_dance_back','w34_dance_spin','w35_dance_thrust','w25_thunder_burst','w24_rune_shield','w01_axe','w02_blood','w03_hitred','w04_cyclone','w05_howl','w06_vamp','w07_rage','w08_exec','w09_parry','w10_armor','w11_frost','w12_ice','w13_prison','w14_rune','w15_bolt','w16_spear','w17_blizzard','w18_shatter','w19_spirit','w20_banner','w23_mjolnir','w21_glacial','w22_worldstorm','09_crater','22_pow','23_dust','25_shock'])wImg(n);
+  for(const n of ['w26_cleave_wide','w27_rend_claw','w29_blood_pool','w30_bleed_drip','w31_rupture','w28_dance_up','w32_dance_down','w33_dance_back','w34_dance_spin','w35_dance_thrust','w25_thunder_burst','w24_rune_shield','w01_axe','w02_blood','w03_hitred','w04_cyclone','w05_howl','w06_vamp','w07_rage','w08_exec','w09_parry','w10_armor','w11_frost','w12_ice','w13_prison','w14_rune','w15_bolt','w16_spear','w17_blizzard','w18_shatter','w19_spirit','w20_banner','w23_mjolnir','w21_glacial','w22_worldstorm','09_crater','22_pow','23_dust','25_shock'])wImg(n);
   for(const k in AT){const sk=SKILLS[k]||(typeof CSK!=='undefined'&&CSK[k]);if(!sk||!sk.make||sk._wfx)continue;const mk=sk.make;sk._wfx=1;
     sk.make=function(c){const a=mk.apply(this,arguments);if(a&&a.events){const t=Math.max(.02,Math.min(a.windup||.02,(a.dur||1)-.02));a.events.push({t,f:()=>{try{AT[k](a,c||{});}catch(e){console.error('wolf_fx '+k+': '+e);}}});}return a;};}
   /* normal attack: painted axe swing */
@@ -188,7 +196,7 @@ function install(){
   /* every hit: spark (A/basic red + blood, B ice) */
   if(typeof hurt==='function'&&!hurt._wfx){const h0=hurt;let last=0;
     hurt=function(e,mult,o={}){const wasDead=e&&e.dead;const r=h0.apply(this,arguments);if(!e||wasDead||!r)return r;if(o&&o.dot)return r;
-      const k=(o&&o.skill)||(o&&o.auto?'basic':null)||window.SKCTX||'basic';if(gameTime-last<.035&&!(o&&o.big))return r;last=gameTime;
+      const k=(o&&o.skill)||(o&&o.auto?'basic':null)||window.SKCTX||'basic';if(CHAR==='wolf'&&player.action){const ak=player.action.key;if(ak==='bloodCleave'&&!e._wbl){e._wbl=1;setFxT(.6,()=>{e._wbl=0;});wBleedFx(e);}else if(ak==='savageRend'&&o&&o.label==='RUPTURE'){fxI({_tvc:1,n:'w31_rupture',x:e.x,y:e.y+2,z:0,ay:.95,w:e.boss?150:120,life:.5,s0:.45,s1:1.1,fadeIn:.001,fadeOut:.45,glow:.5});wBleedFx(e,1);}}if(gameTime-last<.035&&!(o&&o.big))return r;last=gameTime;
       const z=(e.boss?40:26)+rnd(-6,8);
       if(k==='basic'){fxI({n:'x04_ice_hit',x:e.x+rnd(-6,6),y:e.y,z,w:e.boss?56:42,rot:rnd(0,TAU),life:.16,s0:.5,s1:1.1,fadeIn:.001,fadeOut:.6,glow:.4});}
       else if(B_SET.has(k)){fxI({n:'w18_shatter',x:e.x+rnd(-6,6),y:e.y,z,w:e.boss?70:50,rot:rnd(0,TAU),life:.18,s0:.5,s1:1.1,fadeIn:.001,fadeOut:.6,glow:.6});bits('w12_ice',e.x,e.y,z,2,100);}
