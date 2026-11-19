@@ -1,0 +1,203 @@
+{
+  "app": "night-forge-vfx-lab",
+  "version": 2,
+  "frames": 25,
+  "fps": 15,
+  "frame_width": 256,
+  "frame_height": 256,
+  "columns": 8,
+  "rows": 4,
+  "duration": 1.6,
+  "background": "transparent",
+  "style": "glow",
+  "sheets": [
+    "all.png"
+  ],
+  "note": "frames read left to right, top to bottom",
+  "export_id": "CZXxGAeae2dWusvxO-3aVfW4C-f85OsxGJTXWySb-Cp54NxDG35qdszdn1SiQoVM47iY3r1dMgdToeR5",
+  "comp": {
+    "name": "ฟันจันทร์เสี้ยว (Crescent Slash)",
+    "theme": "ขาวเงิน",
+    "style": "glow",
+    "order": "layer",
+    "layers": [
+      {
+        "part": "arcslash",
+        "name": "รอยฟันจันทร์เสี้ยว",
+        "params": {
+          "radius": 2.3,
+          "width": 0.85,
+          "sweep": 2.7,
+          "a0": -0.25,
+          "swing": 0.2,
+          "linger": 0.45,
+          "runes": 0,
+          "sparks": 12,
+          "clean": true,
+          "center": false,
+          "star": 0.7,
+          "tail": "deep",
+          "pal": [
+            "#0c0e16",
+            "#3a4258",
+            "#dfe6ff",
+            "#f2f5ff",
+            "#ffffff"
+          ],
+          "acc": "#8fd0ff"
+        },
+        "tf": {
+          "x": 0,
+          "y": 1.5,
+          "z": 0,
+          "rx": 17,
+          "ry": 11,
+          "rz": -9,
+          "s": 1,
+          "mirror": false,
+          "face": "off"
+        },
+        "start": 0,
+        "speed": 1,
+        "on": true
+      },
+      {
+        "part": "spikeburst",
+        "name": "หนามแสงที่ปลาย",
+        "params": {
+          "mode": "fan",
+          "count": 7,
+          "L": 1.2,
+          "w": 0.12,
+          "r0": 0.15,
+          "grow": 0.12,
+          "linger": 0.22,
+          "color": "light",
+          "core": "hot",
+          "mul": 2,
+          "spreadDeg": 92,
+          "dirDeg": -23,
+          "seed": 5,
+          "pal": [
+            "#0c0e16",
+            "#3a4258",
+            "#dfe6ff",
+            "#f2f5ff",
+            "#ffffff"
+          ],
+          "acc": "#8fd0ff",
+          "glow": 0.85
+        },
+        "tf": {
+          "x": -1.95,
+          "y": 2.05,
+          "z": 0.3,
+          "rx": 0,
+          "ry": 0,
+          "rz": 0,
+          "s": 1,
+          "mirror": false,
+          "face": "off"
+        },
+        "start": 0.14,
+        "speed": 1,
+        "on": false
+      },
+      {
+        "part": "starflash",
+        "name": "แสงวาบที่ปลาย",
+        "params": {
+          "life": 0.2,
+          "fade": 0.3,
+          "y": 0,
+          "size": 1.4,
+          "dur": 0.35,
+          "soft": 0,
+          "star": true,
+          "intro": 0,
+          "pal": [
+            "#0c0e16",
+            "#3a4258",
+            "#dfe6ff",
+            "#f2f5ff",
+            "#ffffff"
+          ],
+          "acc": "#8fd0ff",
+          "glow": 0.85
+        },
+        "tf": {
+          "x": -1.95,
+          "y": 2.05,
+          "z": 0.3,
+          "rx": 0,
+          "ry": 0,
+          "rz": 0,
+          "s": 1,
+          "mirror": false,
+          "face": "off"
+        },
+        "start": 0.14,
+        "speed": 1,
+        "on": false
+      },
+      {
+        "part": "fxlight",
+        "name": "แสงส่องฉาก",
+        "params": {
+          "mul": 4,
+          "pool": 0.35,
+          "flicker": 0.12,
+          "life": 0.6,
+          "fade": 0.6,
+          "pal": [
+            "#0c0e16",
+            "#3a4258",
+            "#dfe6ff",
+            "#f2f5ff",
+            "#ffffff"
+          ]
+        },
+        "tf": {
+          "x": 0,
+          "y": 1.4,
+          "z": 0,
+          "rx": 0,
+          "ry": 0,
+          "rz": 0,
+          "s": 1,
+          "mirror": false,
+          "face": "off"
+        },
+        "start": 0,
+        "speed": 1,
+        "on": false
+      },
+      {
+        "part": "warp",
+        "name": "บิดภาพ",
+        "params": {
+          "rippleAt": 0.2,
+          "ripple": true,
+          "endRipple": true,
+          "heat": 0,
+          "heatR": 0.25,
+          "life": 1.6
+        },
+        "tf": {
+          "x": 0,
+          "y": 1,
+          "z": 0,
+          "rx": 0,
+          "ry": 0,
+          "rz": 0,
+          "s": 1,
+          "mirror": false,
+          "face": "off"
+        },
+        "start": 0,
+        "speed": 1,
+        "on": false
+      }
+    ]
+  }
+}

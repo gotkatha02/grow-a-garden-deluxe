@@ -1,0 +1,153 @@
+{
+  "app": "night-forge-vfx-lab",
+  "version": 2,
+  "frames": 9,
+  "fps": 15,
+  "frame_width": 256,
+  "frame_height": 256,
+  "columns": 8,
+  "rows": 2,
+  "duration": 0.5,
+  "background": "transparent",
+  "style": "glow",
+  "sheets": [
+    "all.png"
+  ],
+  "note": "frames read left to right, top to bottom",
+  "export_id": "B9XlXSDI3L1VM242vuOf0J1KGLQ2yoLI53UOyyY4-UP4Gk5Kl9LZi4lu8Uu5yeuTmxMi87o8aHGvsMpf",
+  "comp": {
+    "name": "owl_pierce",
+    "theme": null,
+    "style": "glow",
+    "order": "layer",
+    "layers": [
+      {
+        "part": "rlflash",
+        "name": "แสงปะทะ",
+        "params": {
+          "size": 0.6,
+          "halo": 0.9,
+          "dur": 0.16,
+          "col": "main",
+          "core": "hot",
+          "rot": 0.2,
+          "rxd": 0,
+          "ryd": 0,
+          "rzd": 0,
+          "pal": [
+            "#0a0c18",
+            "#3a4470",
+            "#a8b8f0",
+            "#e6eeff",
+            "#ffffff"
+          ],
+          "acc": "#ffffff",
+          "glow": 0.5
+        },
+        "tf": {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "rx": 0,
+          "ry": 0,
+          "rz": 0,
+          "s": 1.3,
+          "mirror": false,
+          "face": "off"
+        },
+        "start": 0,
+        "speed": 1,
+        "on": true
+      },
+      {
+        "part": "spikeburst",
+        "name": "เส้นทะลุ",
+        "params": {
+          "mode": "fan",
+          "count": 7,
+          "L": 1.7,
+          "w": 0.06,
+          "r0": 0.1,
+          "grow": 0.12,
+          "linger": 0.18,
+          "color": "light",
+          "core": "hot",
+          "mul": 1.2,
+          "spreadDeg": 40,
+          "dirDeg": 0,
+          "seed": 1,
+          "pal": [
+            "#0a0c18",
+            "#3a4470",
+            "#a8b8f0",
+            "#e6eeff",
+            "#ffffff"
+          ],
+          "acc": "#ffffff",
+          "glow": 0.5
+        },
+        "tf": {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "rx": 0,
+          "ry": 0,
+          "rz": 0,
+          "s": 1.3,
+          "mirror": false,
+          "face": "off"
+        },
+        "start": 0,
+        "speed": 1,
+        "on": true
+      },
+      {
+        "part": "rlsparks",
+        "name": "สะเก็ดเงิน",
+        "params": {
+          "count": 10,
+          "speed": 5,
+          "up": 1,
+          "g": 6,
+          "dur": 0.45,
+          "len": 0.18,
+          "w": 0.03,
+          "col": "main",
+          "core": "hot",
+          "mul": 1.2,
+          "useCone": true,
+          "cx": 1,
+          "cy": 0.1,
+          "cz": 0,
+          "seed": 1,
+          "rxd": 0,
+          "ryd": 0,
+          "rzd": 0,
+          "pal": [
+            "#0a0c18",
+            "#3a4470",
+            "#a8b8f0",
+            "#e6eeff",
+            "#ffffff"
+          ],
+          "acc": "#ffffff",
+          "glow": 0.5
+        },
+        "tf": {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "rx": 0,
+          "ry": 0,
+          "rz": 0,
+          "s": 1.3,
+          "mirror": false,
+          "face": "off"
+        },
+        "start": 0,
+        "speed": 1,
+        "on": true
+      }
+    ]
+  }
+}

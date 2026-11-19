@@ -1,0 +1,100 @@
+{
+  "app": "night-forge-vfx-lab",
+  "version": 2,
+  "frames": 34,
+  "fps": 15,
+  "frame_width": 256,
+  "frame_height": 256,
+  "columns": 8,
+  "rows": 5,
+  "duration": 2.15,
+  "background": "transparent",
+  "style": "glow",
+  "sheets": [
+    "all.png"
+  ],
+  "note": "frames read left to right, top to bottom",
+  "export_id": "rEsX4nTJWBIyAbZZJwoxkslZPUFYxe4jwIzGGJ8CEkYnN4E-AUyebeseZ4s_1kzFR8rhAlFlSjXkQH8-",
+  "comp": {
+    "name": "owl_snare",
+    "theme": null,
+    "style": "glow",
+    "order": "layer",
+    "layers": [
+      {
+        "part": "icecrystals",
+        "name": "หนามน้ำแข็ง",
+        "params": {
+          "count": 7,
+          "radius": 0.95,
+          "height": 0.7,
+          "life": 1.6,
+          "pal": [
+            "#06121e",
+            "#1d4a6e",
+            "#7fc4ea",
+            "#cfeeff",
+            "#f4fcff"
+          ],
+          "acc": "#ffffff",
+          "glow": 0.3
+        },
+        "tf": {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "rx": 0,
+          "ry": 0,
+          "rz": 0,
+          "s": 1.2,
+          "mirror": false,
+          "face": "off"
+        },
+        "start": 0.05,
+        "speed": 1,
+        "on": true
+      },
+      {
+        "part": "rldust",
+        "name": "ผงหิมะ",
+        "params": {
+          "count": 22,
+          "R": 1,
+          "h": 1.2,
+          "dur": 1.2,
+          "mode": "swirl",
+          "size": 0.04,
+          "col": "main",
+          "mul": 1,
+          "seed": 3,
+          "rxd": 0,
+          "ryd": 0,
+          "rzd": 0,
+          "pal": [
+            "#06121e",
+            "#1d4a6e",
+            "#7fc4ea",
+            "#cfeeff",
+            "#f4fcff"
+          ],
+          "acc": "#ffffff",
+          "glow": 0.3
+        },
+        "tf": {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "rx": 0,
+          "ry": 0,
+          "rz": 0,
+          "s": 1.2,
+          "mirror": false,
+          "face": "off"
+        },
+        "start": 0,
+        "speed": 1,
+        "on": true
+      }
+    ]
+  }
+}

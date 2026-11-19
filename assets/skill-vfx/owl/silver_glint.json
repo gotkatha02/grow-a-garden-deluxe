@@ -1,0 +1,109 @@
+{
+  "app": "night-forge-vfx-lab",
+  "version": 2,
+  "frames": 19,
+  "fps": 15,
+  "frame_width": 256,
+  "frame_height": 256,
+  "columns": 8,
+  "rows": 3,
+  "duration": 1.15,
+  "background": "transparent",
+  "style": "glow",
+  "sheets": [
+    "all.png"
+  ],
+  "note": "frames read left to right, top to bottom",
+  "export_id": "goRHxVgjY1HJwm7sWtfx_J7NUy_ZwopTVKumrL0FFMxTECKwfjjm0cEOHbh_q-rk84OXlu65rLGQSSxW",
+  "comp": {
+    "name": "owl_glint",
+    "theme": null,
+    "style": "glow",
+    "order": "layer",
+    "layers": [
+      {
+        "part": "rldust",
+        "name": "ละอองเงินวน",
+        "params": {
+          "count": 20,
+          "R": 1,
+          "h": 1,
+          "dur": 0.9,
+          "mode": "swirl",
+          "size": 0.05,
+          "col": "main",
+          "mul": 1.4,
+          "seed": 4,
+          "rxd": 0,
+          "ryd": 0,
+          "rzd": 0,
+          "pal": [
+            "#0a0c18",
+            "#3a4470",
+            "#a8b8f0",
+            "#e6eeff",
+            "#ffffff"
+          ],
+          "acc": "#ffffff",
+          "glow": 0.5
+        },
+        "tf": {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "rx": 0,
+          "ry": 0,
+          "rz": 0,
+          "s": 1.4,
+          "mirror": false,
+          "face": "off"
+        },
+        "start": 0,
+        "speed": 1,
+        "on": true
+      },
+      {
+        "part": "glitterorbit",
+        "name": "ประกายเงิน",
+        "params": {
+          "intro": 0.25,
+          "life": 1,
+          "ending": "swell",
+          "bob": true,
+          "rings": 1,
+          "count": 10,
+          "radius": 1,
+          "size": 1.3,
+          "speed": 1,
+          "rays": 0,
+          "rayLen": 1,
+          "star": true,
+          "seed": 1,
+          "pal": [
+            "#0a0c18",
+            "#3a4470",
+            "#a8b8f0",
+            "#e6eeff",
+            "#ffffff"
+          ],
+          "acc": "#ffd86a",
+          "glow": 0.55
+        },
+        "tf": {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "rx": 0,
+          "ry": 0,
+          "rz": 0,
+          "s": 1.4,
+          "mirror": false,
+          "face": "off"
+        },
+        "start": 0,
+        "speed": 1,
+        "on": true
+      }
+    ]
+  }
+}

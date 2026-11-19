@@ -1,0 +1,111 @@
+{
+  "app": "night-forge-vfx-lab",
+  "version": 2,
+  "frames": 62,
+  "fps": 15,
+  "frame_width": 256,
+  "frame_height": 256,
+  "columns": 8,
+  "rows": 8,
+  "duration": 4.05,
+  "background": "transparent",
+  "style": "glow",
+  "sheets": [
+    "all.png"
+  ],
+  "note": "frames read left to right, top to bottom",
+  "export_id": "CZXxGAeae2dWusvxO-3aVfW4C-f85OsxGJTXWySb-Cp54NxDG35qdszdn1SiQoVM47iY3r1dMgdToeR5",
+  "comp": {
+    "name": "ปีกเทวดา (Seraph Wings)",
+    "theme": "ขาวเงิน",
+    "style": "glow",
+    "order": "layer",
+    "layers": [
+      {
+        "part": "angelwing",
+        "name": "ปีกเทวดา",
+        "params": {
+          "life": 3,
+          "fade": 0.7,
+          "span": 1.15,
+          "gap": 0.08,
+          "side": "both",
+          "rate": 1.05,
+          "amp": 1,
+          "sweepAmp": 1,
+          "loose": 1,
+          "breeze": 1,
+          "bob": true,
+          "fill": 0.6,
+          "edge": 1.7,
+          "flash": true,
+          "seed": 1,
+          "intro": 0.7,
+          "pal": [
+            "#0c0e16",
+            "#3a4258",
+            "#dfe6ff",
+            "#f2f5ff",
+            "#ffffff"
+          ],
+          "acc": "#8fd0ff",
+          "glow": 1
+        },
+        "tf": {
+          "x": 0,
+          "y": 1.15,
+          "z": 0,
+          "rx": 0,
+          "ry": 0,
+          "rz": 0,
+          "s": 1,
+          "mirror": false,
+          "face": "off"
+        },
+        "start": 0.35,
+        "speed": 1,
+        "on": true
+      },
+      {
+        "part": "featherfall",
+        "name": "ขนนกปลิวร่วง",
+        "params": {
+          "count": 20,
+          "spread": 1,
+          "height": 1.3,
+          "burst": 1.2,
+          "fall": 1,
+          "size": 1,
+          "accShare": 0.83,
+          "sway": 1,
+          "glints": true,
+          "life": 2.9,
+          "seed": 1,
+          "pal": [
+            "#0c0e16",
+            "#3a4258",
+            "#dfe6ff",
+            "#f2f5ff",
+            "#ffffff"
+          ],
+          "acc": "#8fd0ff",
+          "glow": 1
+        },
+        "tf": {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "rx": 0,
+          "ry": 0,
+          "rz": 0,
+          "s": 1,
+          "mirror": false,
+          "face": "off"
+        },
+        "start": 1.05,
+        "speed": 1,
+        "on": true
+      }
+    ]
+  }
+}

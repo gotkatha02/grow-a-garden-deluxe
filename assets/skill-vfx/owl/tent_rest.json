@@ -1,0 +1,67 @@
+{
+  "app": "night-forge-vfx-lab",
+  "version": 2,
+  "frames": 37,
+  "fps": 15,
+  "frame_width": 256,
+  "frame_height": 256,
+  "columns": 8,
+  "rows": 5,
+  "duration": 2.4,
+  "background": "transparent",
+  "style": "glow",
+  "sheets": [
+    "all.png"
+  ],
+  "note": "frames read left to right, top to bottom",
+  "export_id": "vBvJNvyhdKEbiHspRHD9uk-pIR1m1pxhCksQLdL3cO3l990qGTeZSfIdCkJ59PFICHzrcm4LWPy_sDwB",
+  "comp": {
+    "name": "owl_tent",
+    "theme": null,
+    "style": "glow",
+    "order": "layer",
+    "layers": [
+      {
+        "part": "rldust",
+        "name": "ละอองอุ่น",
+        "params": {
+          "count": 30,
+          "R": 1,
+          "h": 1.8,
+          "dur": 2.4,
+          "mode": "twinkle",
+          "size": 0.085,
+          "col": "main",
+          "mul": 1.6,
+          "seed": 1,
+          "rxd": 0,
+          "ryd": 0,
+          "rzd": 0,
+          "pal": [
+            "#1a140c",
+            "#6a5034",
+            "#e8d0a8",
+            "#fbefd8",
+            "#fffaf2"
+          ],
+          "acc": "#ffd8a0",
+          "glow": 0.5
+        },
+        "tf": {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "rx": 0,
+          "ry": 0,
+          "rz": 0,
+          "s": 1.6,
+          "mirror": false,
+          "face": "off"
+        },
+        "start": 0,
+        "speed": 1,
+        "on": true
+      }
+    ]
+  }
+}

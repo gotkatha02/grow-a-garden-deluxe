@@ -1,0 +1,119 @@
+{
+  "app": "night-forge-vfx-lab",
+  "version": 2,
+  "frames": 29,
+  "fps": 15,
+  "frame_width": 256,
+  "frame_height": 256,
+  "columns": 8,
+  "rows": 4,
+  "duration": 1.85,
+  "background": "transparent",
+  "style": "glow",
+  "sheets": [
+    "all.png"
+  ],
+  "note": "frames read left to right, top to bottom",
+  "export_id": "CZXxGAeae2dWusvxO-3aVfW4C-f85OsxGJTXWySb-Cp54NxDG35qdszdn1SiQoVM47iY3r1dMgdToeR5",
+  "comp": {
+    "name": "ปรากฏตัวควันการ์ตูน (Toon Puff Entrance)",
+    "theme": "ขาวเงิน",
+    "style": "glow",
+    "order": "depth",
+    "layers": [
+      {
+        "part": "toonfx",
+        "name": "ควันป๊อป",
+        "params": {
+          "style": "pop",
+          "count": 12,
+          "radius": 0.9,
+          "size": 0.55,
+          "life": 0.8,
+          "pal": [
+            "#0c0e16",
+            "#3a4258",
+            "#dfe6ff",
+            "#f2f5ff",
+            "#ffffff"
+          ],
+          "seed": 1
+        },
+        "tf": {
+          "x": 0,
+          "y": 0.6,
+          "z": 0,
+          "rx": 0,
+          "ry": 0,
+          "rz": 0,
+          "s": 1,
+          "mirror": false,
+          "face": "off"
+        },
+        "start": 0,
+        "speed": 1,
+        "on": true
+      },
+      {
+        "part": "character",
+        "name": "ตัวละคร",
+        "params": {
+          "height": 0.9,
+          "react": false,
+          "hitAt": 0.5,
+          "knock": 0.5,
+          "out": "appear",
+          "outAt": 0.2,
+          "outDur": 0.3
+        },
+        "tf": {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "rx": 0,
+          "ry": 0,
+          "rz": 0,
+          "s": 1,
+          "mirror": false,
+          "face": "off"
+        },
+        "start": 0,
+        "speed": 1,
+        "on": false
+      },
+      {
+        "part": "toonfx",
+        "name": "ควันลอยหลังโผล่",
+        "params": {
+          "style": "rise",
+          "count": 8,
+          "radius": 0.8,
+          "size": 0.25,
+          "life": 1.2,
+          "pal": [
+            "#0c0e16",
+            "#3a4258",
+            "#dfe6ff",
+            "#f2f5ff",
+            "#ffffff"
+          ],
+          "seed": 9
+        },
+        "tf": {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "rx": 0,
+          "ry": 0,
+          "rz": 0,
+          "s": 1,
+          "mirror": false,
+          "face": "off"
+        },
+        "start": 0.3,
+        "speed": 1,
+        "on": true
+      }
+    ]
+  }
+}

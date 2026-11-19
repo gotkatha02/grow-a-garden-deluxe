@@ -1,0 +1,176 @@
+{
+  "app": "night-forge-vfx-lab",
+  "version": 2,
+  "frames": 39,
+  "fps": 15,
+  "frame_width": 256,
+  "frame_height": 256,
+  "columns": 8,
+  "rows": 5,
+  "duration": 2.49,
+  "background": "transparent",
+  "style": "toon",
+  "sheets": [
+    "all.png"
+  ],
+  "note": "frames read left to right, top to bottom",
+  "export_id": "CZXxGAeae2dWusvxO-3aVfW4C-f85OsxGJTXWySb-Cp54NxDG35qdszdn1SiQoVM47iY3r1dMgdToeR5",
+  "comp": {
+    "name": "ป่าหนามน้ำแข็ง",
+    "theme": "น้ำแข็ง",
+    "style": "toon",
+    "order": "layer",
+    "layers": [
+      {
+        "part": "groundcrack",
+        "name": "พื้นแตก",
+        "params": {
+          "look": "glow",
+          "radius": 3,
+          "branches": 12,
+          "width": 4,
+          "spread": 0.4,
+          "life": 2.3,
+          "debris": true,
+          "pal": [
+            "#061a33",
+            "#1d5ea8",
+            "#5fb8ff",
+            "#d4f1ff",
+            "#ffffff"
+          ],
+          "glow": 1.6,
+          "seed": 1
+        },
+        "tf": {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "rx": 0,
+          "ry": 0,
+          "rz": 0,
+          "s": 1,
+          "mirror": false,
+          "face": "off"
+        },
+        "start": 0,
+        "speed": 1,
+        "on": true
+      },
+      {
+        "part": "icespike",
+        "name": "หนามคริสตัล",
+        "params": {
+          "count": 4,
+          "height": 1.6,
+          "radius": 0.5,
+          "lean": 10,
+          "grow": 0.25,
+          "hold": 1.2,
+          "ending": "shatter",
+          "endT": 0.5,
+          "sparkles": 24,
+          "pal": [
+            "#061a33",
+            "#1d5ea8",
+            "#5fb8ff",
+            "#d4f1ff",
+            "#ffffff"
+          ],
+          "glow": 2,
+          "seed": 2
+        },
+        "tf": {
+          "x": -1.4,
+          "y": 0,
+          "z": 0,
+          "rx": 0,
+          "ry": 0,
+          "rz": 0,
+          "s": 1,
+          "mirror": false,
+          "face": "off"
+        },
+        "start": 0,
+        "speed": 1,
+        "on": true
+      },
+      {
+        "part": "icespike",
+        "name": "หนามคริสตัล",
+        "params": {
+          "count": 5,
+          "height": 2.4,
+          "radius": 0.6,
+          "lean": 20,
+          "grow": 0.25,
+          "hold": 1.2,
+          "ending": "shatter",
+          "endT": 0.5,
+          "sparkles": 24,
+          "pal": [
+            "#061a33",
+            "#1d5ea8",
+            "#5fb8ff",
+            "#d4f1ff",
+            "#ffffff"
+          ],
+          "glow": 2,
+          "seed": 5
+        },
+        "tf": {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "rx": 0,
+          "ry": 0,
+          "rz": 0,
+          "s": 1,
+          "mirror": false,
+          "face": "off"
+        },
+        "start": 0.12,
+        "speed": 1,
+        "on": true
+      },
+      {
+        "part": "icespike",
+        "name": "หนามคริสตัล",
+        "params": {
+          "count": 4,
+          "height": 1.8,
+          "radius": 0.5,
+          "lean": 12,
+          "grow": 0.25,
+          "hold": 1.2,
+          "ending": "shatter",
+          "endT": 0.5,
+          "sparkles": 24,
+          "pal": [
+            "#061a33",
+            "#1d5ea8",
+            "#5fb8ff",
+            "#d4f1ff",
+            "#ffffff"
+          ],
+          "glow": 2,
+          "seed": 9
+        },
+        "tf": {
+          "x": 1.4,
+          "y": 0,
+          "z": 0,
+          "rx": 0,
+          "ry": 0,
+          "rz": 0,
+          "s": 1,
+          "mirror": false,
+          "face": "off"
+        },
+        "start": 0.24,
+        "speed": 1,
+        "on": true
+      }
+    ]
+  }
+}

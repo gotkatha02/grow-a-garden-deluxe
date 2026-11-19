@@ -1,0 +1,110 @@
+{
+  "app": "night-forge-vfx-lab",
+  "version": 2,
+  "frames": 49,
+  "fps": 15,
+  "frame_width": 256,
+  "frame_height": 256,
+  "columns": 8,
+  "rows": 7,
+  "duration": 3.2,
+  "background": "transparent",
+  "style": "glow",
+  "sheets": [
+    "all.png"
+  ],
+  "note": "frames read left to right, top to bottom",
+  "export_id": "W9pcW5SP9Bg44NAu7hYKHRTHYg_SvzZS4IArsMwa3NC6x9nNqc_8FHzixJereZeBlEKxFXbT2mFE5I9s",
+  "comp": {
+    "name": "owl_blizzard",
+    "theme": null,
+    "style": "glow",
+    "order": "layer",
+    "layers": [
+      {
+        "part": "rlvortex",
+        "name": "ลมหิมะหมุน",
+        "params": {
+          "R": 1.7,
+          "h": 1.1,
+          "count": 4,
+          "dur": 2.6,
+          "turns": 1.1,
+          "w": 0.3,
+          "col": "main",
+          "core": "light",
+          "mul": 0.8,
+          "seed": 2,
+          "rxd": 0,
+          "ryd": 0,
+          "rzd": 0,
+          "pal": [
+            "#0c0e16",
+            "#3a4258",
+            "#c8d2e6",
+            "#eef2fa",
+            "#ffffff"
+          ],
+          "acc": "#ffffff",
+          "glow": 0.4
+        },
+        "tf": {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "rx": 0,
+          "ry": 0,
+          "rz": 0,
+          "s": 1,
+          "mirror": false,
+          "face": "off"
+        },
+        "start": 0.1,
+        "speed": 1,
+        "on": true
+      },
+      {
+        "part": "weather",
+        "name": "หิมะพัด",
+        "params": {
+          "life": 2.4,
+          "fade": 0.8,
+          "kind": "snow",
+          "count": 110,
+          "W": 4,
+          "D": 4,
+          "h": 4,
+          "speed": 1.4,
+          "wind": 1.4,
+          "sway": 1,
+          "size": 0.06,
+          "seed": 1,
+          "intro": 0.3,
+          "pal": [
+            "#0c0e16",
+            "#3a4258",
+            "#c8d2e6",
+            "#eef2fa",
+            "#ffffff"
+          ],
+          "acc": "#bfe8ff",
+          "glow": 0.55
+        },
+        "tf": {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "rx": 0,
+          "ry": 0,
+          "rz": 0,
+          "s": 1,
+          "mirror": false,
+          "face": "off"
+        },
+        "start": 0,
+        "speed": 1,
+        "on": true
+      }
+    ]
+  }
+}

@@ -1,0 +1,213 @@
+﻿character,skill_key,skill_name,branch,description_th,icon_path,review_status
+jaguar,jgTwinFang,Twin Fang Combo,basic,คอมโบมีดคู่ 2→4 จังหวะ,assets/skill-icons/jaguar/jgTwinFang.webp,candidate_review_required
+jaguar,jgStep,Jaguar Step,basic,พุ่งหลบ + ไม่โดนโจมตีช่วงต้น,assets/skill-icons/jaguar/jgStep.webp,candidate_review_required
+jaguar,jgCountercut,Countercut,basic,ตั้งท่ารับ แล้วหลบเฉียงฟันสวน,assets/skill-icons/jaguar/jgCountercut.webp,candidate_review_required
+jaguar,jgCry,Predator's Cry,basic,คำราม ASPD ขึ้น,assets/skill-icons/jaguar/jgCry.webp,candidate_review_required
+jaguar,jgFocus,Hunter's Focus,basic,CRIT +10 นาน 8 วิ,assets/skill-icons/jaguar/jgFocus.webp,candidate_review_required
+jaguar,jgNightSight,Night Sight,basic,HIT/CRIT ขึ้นต่อเป้าที่มี Prey Mark,assets/skill-icons/jaguar/jgNightSight.webp,candidate_review_required
+jaguar,jgExpose,Expose Armor,basic,เจาะเกราะ ลด DEF,assets/skill-icons/jaguar/jgExpose.webp,candidate_review_required
+jaguar,jgTempo,Savage Tempo,A,ASPD ขึ้น ฟื้นตัวไวขึ้น,assets/skill-icons/jaguar/jgTempo.webp,candidate_review_required
+jaguar,jgCrimson,Crimson Edge,A,โอกาสเลือดไหล + ดาเมจเลือดไหล,assets/skill-icons/jaguar/jgCrimson.webp,candidate_review_required
+jaguar,jgRending,Rending Fang,A,ฟัน 2 + แทง สร้าง Prey Mark,assets/skill-icons/jaguar/jgRending.webp,candidate_review_required
+jaguar,jgOpenWound,Open Wound,A,ฉีกแผล ยืดเลือดไหล,assets/skill-icons/jaguar/jgOpenWound.webp,candidate_review_required
+jaguar,jgTalon,Twin Talon Dance,A,ฟันรัว 4→8 ครั้ง,assets/skill-icons/jaguar/jgTalon.webp,candidate_review_required
+jaguar,jgFinalTalon,Final Talon,A,ฟัน X ใช้ Prey Mark,assets/skill-icons/jaguar/jgFinalTalon.webp,candidate_review_required
+jaguar,jgParry,Obsidian Parry,A,ปัดการโจมตีประชิด,assets/skill-icons/jaguar/jgParry.webp,candidate_review_required
+jaguar,jgReprisal,Backstab Reprisal,A,อ้อมหลังแทงสวน,assets/skill-icons/jaguar/jgReprisal.webp,candidate_review_required
+jaguar,jgSiphon,Life Siphon,A,แทงดูดเลือด,assets/skill-icons/jaguar/jgSiphon.webp,candidate_review_required
+jaguar,jgBloodChase,Blood Chase,A,พุ่งตัดผ่าน (เป้าต้องเลือดไหล),assets/skill-icons/jaguar/jgBloodChase.webp,candidate_review_required
+jaguar,jgCyclone,Jaguar Cyclone,A,หมุนฟันรอบตัว,assets/skill-icons/jaguar/jgCyclone.webp,candidate_review_required
+jaguar,jgSpiral,Spiral Ambush,A,พุ่งออกจากวงหมุนฟัน 2 ครั้ง,assets/skill-icons/jaguar/jgSpiral.webp,candidate_review_required
+jaguar,jgExecInst,Execution Instinct,A,คริแรงขึ้นเมื่อ HP ศัตรู <35%,assets/skill-icons/jaguar/jgExecInst.webp,candidate_review_required
+jaguar,jgDrop,Predator Drop,A,กระโดดแทงลง ใช้ Prey Mark,assets/skill-icons/jaguar/jgDrop.webp,candidate_review_required
+jaguar,jgThrone,Throne of Claws,A,ULTIMATE A,assets/skill-icons/jaguar/jgThrone.webp,candidate_review_required
+jaguar,jgTwilight,Twilight Fang,B,ฟันเงา สร้าง Eclipse Brand,assets/skill-icons/jaguar/jgTwilight.webp,candidate_review_required
+jaguar,jgVeil,Shadow Veil,B,พรางตัว การโจมตีเปิดแรงขึ้น,assets/skill-icons/jaguar/jgVeil.webp,candidate_review_required
+jaguar,jgVenom,Venom Sigil,B,ฝังตราพิษ,assets/skill-icons/jaguar/jgVenom.webp,candidate_review_required
+jaguar,jgBloom,Venom Bloom,B,ระเบิดพิษรอบเป้า,assets/skill-icons/jaguar/jgBloom.webp,candidate_review_required
+jaguar,jgSlip,Shadow Slip,B,ย้ายผ่านเงาไปข้าง/หลังเป้า,assets/skill-icons/jaguar/jgSlip.webp,candidate_review_required
+jaguar,jgEBackstab,Eclipse Backstab,B,แทงหลัง กระตุ้น Shadow Burst,assets/skill-icons/jaguar/jgEBackstab.webp,candidate_review_required
+jaguar,jgMirror,Obsidian Mirror,B,กระจกลดดาเมจครั้งแรก,assets/skill-icons/jaguar/jgMirror.webp,candidate_review_required
+jaguar,jgShatter,Mirror Shatter,B,ยิงเศษกระจกสวน,assets/skill-icons/jaguar/jgShatter.webp,candidate_review_required
+jaguar,jgMoonTrap,Moon Trap,B,กับดักสุริยุปราคา Slow,assets/skill-icons/jaguar/jgMoonTrap.webp,candidate_review_required
+jaguar,jgSnare,Dark Snare,B,Moon Trap ตรึง 1.2 วิ,assets/skill-icons/jaguar/jgSnare.webp,candidate_review_required
+jaguar,jgNightfall,Nightfall Dance,B,ร่างเงา 2 ร่างฟัน,assets/skill-icons/jaguar/jgNightfall.webp,candidate_review_required
+jaguar,jgPhantom,Phantom Riposte,B,ร่างเงาไขว้ X,assets/skill-icons/jaguar/jgPhantom.webp,candidate_review_required
+jaguar,jgSunEater,Sun Eater,B,ตีเป้าติด Brand ฟื้น SP + Burst แรงขึ้น,assets/skill-icons/jaguar/jgSunEater.webp,candidate_review_required
+jaguar,jgHorizon,Black Horizon,B,คลื่นเงารูปพัด,assets/skill-icons/jaguar/jgHorizon.webp,candidate_review_required
+jaguar,jgFifthSun,Eclipse of the Fifth Sun,B,ULTIMATE B,assets/skill-icons/jaguar/jgFifthSun.webp,candidate_review_required
+jaguar,jcEndlessHunt,Endless Hunt,C,ฮิตสุดท้ายฟันซ้ำเป้าที่มี Prey,assets/skill-icons/jaguar/jcEndlessHunt.webp,candidate_review_required
+jaguar,jcEcho,Predator's Echo,C,Rending Fang มีเงามีดฟันซ้ำ,assets/skill-icons/jaguar/jcEcho.webp,candidate_review_required
+jaguar,jcResidue,Eclipse Residue,C,Twilight Fang ทิ้งรอยเงาบนพื้น,assets/skill-icons/jaguar/jcResidue.webp,candidate_review_required
+jaguar,jcSeal,Obsidian Seal,C,แผ่นออบซิเดียนระเบิด ลด DEF,assets/skill-icons/jaguar/jcSeal.webp,candidate_review_required
+jaguar,jcTotem,Blood Moon Hunt,C,จันทร์เลือด ASPD +10% · Crit Dmg +12%,assets/skill-icons/jaguar/jcTotem.webp,candidate_review_required
+jaguar,jcSkyPounce,Sky-Pounce,C,กระโจนตะปบด้วยกรงเล็บยักษ์,assets/skill-icons/jaguar/jcSkyPounce.webp,candidate_review_required
+jaguar,jcCorridor,Shadow Corridor,C,Shadow Slip พุ่งเป็นแนวยาว,assets/skill-icons/jaguar/jcCorridor.webp,candidate_review_required
+jaguar,jcMirage,Mirage Shed,C,Jaguar Step ทิ้งร่างล่อ,assets/skill-icons/jaguar/jcMirage.webp,candidate_review_required
+jaguar,jcRhythm,Unseen Rhythm,C,คริแล้วท่าถัดไปไวขึ้น,assets/skill-icons/jaguar/jcRhythm.webp,candidate_review_required
+jaguar,jcThousand,Thousand Cuts,C,Final Talon มีเงามีด 4 เล่ม,assets/skill-icons/jaguar/jcThousand.webp,candidate_review_required
+jaguar,jcChain,Dark Sun Chain,C,Shadow Burst ส่งต่อ 3 ตัว,assets/skill-icons/jaguar/jcChain.webp,candidate_review_required
+jaguar,jcPact,Twin Eclipse Pact,C,สกิล A สร้าง Brand · สกิล B สร้าง Prey,assets/skill-icons/jaguar/jcPact.webp,candidate_review_required
+jaguar,jcDefiance,Death Defiance,C,HP<25% ลดดาเมจ 20% + หลบ,assets/skill-icons/jaguar/jcDefiance.webp,candidate_review_required
+jaguar,jcGodfall,Godfall of the Jaguar,C,จบ Ultimate A วิญญาณกระโจนซ้ำ,assets/skill-icons/jaguar/jcGodfall.webp,candidate_review_required
+jaguar,jcEternal,Eternal Eclipse,C,จบ Ultimate B เหลือพื้นที่ 4 วิ,assets/skill-icons/jaguar/jcEternal.webp,candidate_review_required
+jaguar,jcSpirit,Ancestral Jaguar Spirit,C,วิญญาณจากัวร์โจมตีเสริม 15 วิ,assets/skill-icons/jaguar/jcSpirit.webp,candidate_review_required
+rhino,rhFist,Iron Fist Combo,basic,หมัดซ้าย-ขวา 2→4 จังหวะ,assets/skill-icons/rhino/rhFist.webp,candidate_review_required
+rhino,rhCharge,Rhino Charge,basic,พุ่งชน + Stagger,assets/skill-icons/rhino/rhCharge.webp,candidate_review_required
+rhino,rhGuard,Iron Guard,basic,ยกหมัดป้องกัน (Perfect Guard ช่วงต้น),assets/skill-icons/rhino/rhGuard.webp,candidate_review_required
+rhino,rhCounter,Counter Punch,basic,ต่อยสวนหลัง Guard สำเร็จ,assets/skill-icons/rhino/rhCounter.webp,candidate_review_required
+rhino,rhRoar,Battle Roar,basic,ATK/DEF ขึ้น,assets/skill-icons/rhino/rhRoar.webp,candidate_review_required
+rhino,rhThickHide,Thick Hide,basic,Max HP +8% · รับดาเมจ -5%,assets/skill-icons/rhino/rhThickHide.webp,candidate_review_required
+rhino,rhCrusher,Armor Crusher,basic,หมัดทำลายเกราะ ลด DEF,assets/skill-icons/rhino/rhCrusher.webp,candidate_review_required
+rhino,rhSkin,Iron Skin,A,ลดดาเมจที่รับ,assets/skill-icons/rhino/rhSkin.webp,candidate_review_required
+rhino,rhFortified,Fortified Body,A,Max HP + ต้านการชะงัก,assets/skill-icons/rhino/rhFortified.webp,candidate_review_required
+rhino,rhStance,Guardian Stance,A,ท่าป้องกัน ลดดาเมจ ช้าลง,assets/skill-icons/rhino/rhStance.webp,candidate_review_required
+rhino,rhCrushCounter,Crushing Counter,A,สวนหนักหลังป้องกันสำเร็จ,assets/skill-icons/rhino/rhCrushCounter.webp,candidate_review_required
+rhino,rhWall,Steel Wall,A,กำแพงเกราะด้านหน้า,assets/skill-icons/rhino/rhWall.webp,candidate_review_required
+rhino,rhPulse,Shielding Pulse,A,ปล่อยพลังกำแพงเป็นเกราะ,assets/skill-icons/rhino/rhPulse.webp,candidate_review_required
+rhino,rhUnbreakable,Unbreakable Guard,A,ต้านการชะงัก/ขัดจังหวะ,assets/skill-icons/rhino/rhUnbreakable.webp,candidate_review_required
+rhino,rhRevenge,Revenge Fist,A,สะสมดาเมจที่รับแล้วต่อยสวน,assets/skill-icons/rhino/rhRevenge.webp,candidate_review_required
+rhino,rhFortress,Rhino Fortress,A,ป้องกันสูง + ยั่วศัตรู,assets/skill-icons/rhino/rhFortress.webp,candidate_review_required
+rhino,rhRetribution,Iron Retribution,A,ต่อยพื้นปล่อยพลังป้องกัน,assets/skill-icons/rhino/rhRetribution.webp,candidate_review_required
+rhino,rhAnchor,Ground Anchor,A,ปักเท้า ไม่ชะงัก,assets/skill-icons/rhino/rhAnchor.webp,candidate_review_required
+rhino,rhQuake,Fortress Quake,A,Shockwave ลด ATK ศัตรู,assets/skill-icons/rhino/rhQuake.webp,candidate_review_required
+rhino,rhBastion,Last Bastion,A,HP ต่ำได้เกราะฉุกเฉิน,assets/skill-icons/rhino/rhBastion.webp,candidate_review_required
+rhino,rhColossus,Immovable Colossus,A,Super Armor + ลดดาเมจ,assets/skill-icons/rhino/rhColossus.webp,candidate_review_required
+rhino,rhAbsolute,Absolute Fortress,A,ULTIMATE A,assets/skill-icons/rhino/rhAbsolute.webp,candidate_review_required
+rhino,rhKnuckle,Heavy Knuckle,B,หมัดหนัก + Momentum,assets/skill-icons/rhino/rhKnuckle.webp,candidate_review_required
+rhino,rhBrutal,Brutal Momentum,B,หมัดหนักแรงขึ้นตาม Momentum,assets/skill-icons/rhino/rhBrutal.webp,candidate_review_required
+rhino,rhHammer,Double Hammer Fist,B,หมัดคู่ ทำให้ชะงัก,assets/skill-icons/rhino/rhHammer.webp,candidate_review_required
+rhino,rhUppercut,Rising Uppercut,B,เสยลอย (บอสได้ Stagger),assets/skill-icons/rhino/rhUppercut.webp,candidate_review_required
+rhino,rhTitan,Titan Combo,B,ซ้าย-ขวา-ทุบ,assets/skill-icons/rhino/rhTitan.webp,candidate_review_required
+rhino,rhMeteor,Meteor Knuckle,B,หมัดชาร์จ ใช้ Momentum,assets/skill-icons/rhino/rhMeteor.webp,candidate_review_required
+rhino,rhBone,Bone Crusher,B,ลด DEF + Stagger,assets/skill-icons/rhino/rhBone.webp,candidate_review_required
+rhino,rhRush,Breaker Rush,B,พุ่งต่อยรัว,assets/skill-icons/rhino/rhRush.webp,candidate_review_required
+rhino,rhShaker,Earthshaker,B,ต่อยพื้น AoE,assets/skill-icons/rhino/rhShaker.webp,candidate_review_required
+rhino,rhSeismic,Seismic Follow-up,B,ระเบิดรอยแตกซ้ำ,assets/skill-icons/rhino/rhSeismic.webp,candidate_review_required
+rhino,rhAvalanche,Avalanche Punch,B,ชกรัวหลายฮิต,assets/skill-icons/rhino/rhAvalanche.webp,candidate_review_required
+rhino,rhFinale,Crushing Finale,B,ทุบคู่ หมัดยักษ์,assets/skill-icons/rhino/rhFinale.webp,candidate_review_required
+rhino,rhFury,Titan's Fury,B,ATK + Stagger ขึ้น,assets/skill-icons/rhino/rhFury.webp,candidate_review_required
+rhino,rhSkybreaker,Skybreaker Fist,B,กระโดดต่อยลงพื้น,assets/skill-icons/rhino/rhSkybreaker.webp,candidate_review_required
+rhino,rhWorldbreaker,Worldbreaker Impact,B,ULTIMATE B,assets/skill-icons/rhino/rhWorldbreaker.webp,candidate_review_required
+rhino,rcEndless,Endless Impact,C,หมัดปิดตีซ้ำด้วยเงาหมัด,assets/skill-icons/rhino/rcEndless.webp,candidate_review_required
+rhino,rcReflection,Steel Reflection,C,Crushing Counter มี Shockwave,assets/skill-icons/rhino/rcReflection.webp,candidate_review_required
+rhino,rcFracture,Earth Fracture,C,หมัดหนักทิ้งรอยแตก,assets/skill-icons/rhino/rcFracture.webp,candidate_review_required
+rhino,rcGrip,Colossus Grip,C,จับเหวี่ยงกระแทกพื้น,assets/skill-icons/rhino/rcGrip.webp,candidate_review_required
+rhino,rcTotem,Glacier Bulwark,C,กำแพงเสาน้ำแข็ง ผลักและชะลอศัตรู,assets/skill-icons/rhino/rcTotem.webp,candidate_review_required
+rhino,rcGlacier,Glacier Charge,C,พุ่งชนเกราะน้ำแข็ง,assets/skill-icons/rhino/rcGlacier.webp,candidate_review_required
+rhino,rcFrozenBastion,Frozen Bastion,C,Stance ให้เกราะน้ำแข็ง,assets/skill-icons/rhino/rcFrozenBastion.webp,candidate_review_required
+rhino,rcRebound,Iron Rebound,C,ป้องกันสำเร็จ Counter ถัดไป +30%,assets/skill-icons/rhino/rcRebound.webp,candidate_review_required
+rhino,rcRelentless,Relentless Momentum,C,Stagger เพิ่มตาม Momentum,assets/skill-icons/rhino/rcRelentless.webp,candidate_review_required
+rhino,rcTitanEcho,Titan Echo,C,หมัดวิญญาณตีซ้ำ,assets/skill-icons/rhino/rcTitanEcho.webp,candidate_review_required
+rhino,rcAvalancheChain,Avalanche Chain,C,Earthshaker คลื่นที่สอง,assets/skill-icons/rhino/rcAvalancheChain.webp,candidate_review_required
+rhino,rcPact,Ironblood Pact,C,ATK จาก DEF (ไม่วนซ้ำ),assets/skill-icons/rhino/rcPact.webp,candidate_review_required
+rhino,rcSoul,Unyielding Soul,C,HP<25% เกราะ + Super Armor,assets/skill-icons/rhino/rcSoul.webp,candidate_review_required
+rhino,rcEternal,Eternal Fortress,C,จบ Ultimate A เหลือวงป้องกัน,assets/skill-icons/rhino/rcEternal.webp,candidate_review_required
+rhino,rcCataclysm,Cataclysm Fist,C,หมัดยักษ์ทุบซ้ำ,assets/skill-icons/rhino/rcCataclysm.webp,candidate_review_required
+rhino,rcSpirit,Colossus Spirit,C,วิญญาณแรดโบราณ 15 วิ,assets/skill-icons/rhino/rcSpirit.webp,candidate_review_required
+axolotl,axFlick,Water Flick,basic,ตีปกติระยะไกล ดีดหยดน้ำ,assets/skill-icons/axolotl/axFlick.webp,candidate_review_required
+axolotl,axSlip,Slipstream,basic,ไถลบนน้ำหลบ,assets/skill-icons/axolotl/axSlip.webp,candidate_review_required
+axolotl,axPop,Splash Pop,basic,ฟองน้ำพองแล้วแตก,assets/skill-icons/axolotl/axPop.webp,candidate_review_required
+axolotl,axRinse,Gentle Rinse,basic,ฟื้น HP (ใช้ Living Water),assets/skill-icons/axolotl/axRinse.webp,candidate_review_required
+axolotl,axGill,Gill Breathing,basic,ฟื้น SP,assets/skill-icons/axolotl/axGill.webp,candidate_review_required
+axolotl,axLanding,Soft Landing,basic,ลดการชะงัก,assets/skill-icons/axolotl/axLanding.webp,candidate_review_required
+axolotl,axDroplets,Living Droplets,basic,Living Water สูงสุด 1→3 หยด,assets/skill-icons/axolotl/axDroplets.webp,candidate_review_required
+axolotl,axNeedle,Needle Jet,A,ลำน้ำแรงดันทะลุ,assets/skill-icons/axolotl/axNeedle.webp,candidate_review_required
+axolotl,axMastery,Pressure Mastery,A,เวทน้ำแรงขึ้น,assets/skill-icons/axolotl/axMastery.webp,candidate_review_required
+axolotl,axDrill,Water Drill,A,เกลียวน้ำเจาะหลายฮิต,assets/skill-icons/axolotl/axDrill.webp,candidate_review_required
+axolotl,axDrillBurst,Drill Burst,A,จบ Drill ระเบิดแรงดัน,assets/skill-icons/axolotl/axDrillBurst.webp,candidate_review_required
+axolotl,axSlap,Hydro Slap,A,ฝ่ามือน้ำตบ,assets/skill-icons/axolotl/axSlap.webp,candidate_review_required
+axolotl,axRebound,Rebound Splash,A,Flick/Compression สะท้อนไปอีกตัว,assets/skill-icons/axolotl/axRebound.webp,candidate_review_required
+axolotl,axSaw,Water Saw,A,วงน้ำหมุนตัดแนวตรง,assets/skill-icons/axolotl/axSaw.webp,candidate_review_required
+axolotl,axCollapse,Pressure Collapse,A,วงน้ำยุบตัว,assets/skill-icons/axolotl/axCollapse.webp,candidate_review_required
+axolotl,axGyro,Gyro Current,A,น้ำวนรอบเป้า DoT,assets/skill-icons/axolotl/axGyro.webp,candidate_review_required
+axolotl,axReverse,Reverse Flow,A,Gyro หมุนกลับระเบิดปิด,assets/skill-icons/axolotl/axReverse.webp,candidate_review_required
+axolotl,axCompress,Compression Shot,A,ลูกน้ำอัดแรงดันสูง,assets/skill-icons/axolotl/axCompress.webp,candidate_review_required
+axolotl,axRicochet,Ricochet Jet,A,โอกาสแฉลบ 50%,assets/skill-icons/axolotl/axRicochet.webp,candidate_review_required
+axolotl,axDeep,Deep Pressure,A,แรงขึ้นต่อเป้าช้า/เสียหลัก,assets/skill-icons/axolotl/axDeep.webp,candidate_review_required
+axolotl,axCannon,Hydro Cannon,A,ลำน้ำใหญ่,assets/skill-icons/axolotl/axCannon.webp,candidate_review_required
+axolotl,axHeart,Ocean's Heartbeat,A,ULTIMATE A,assets/skill-icons/axolotl/axHeart.webp,candidate_review_required
+axolotl,asDrop,Healing Drop,B,หยดน้ำรักษา,assets/skill-icons/axolotl/asDrop.webp,candidate_review_required
+axolotl,asBlessing,Moisture Blessing,B,Heal +8%/lv · ฟื้น SP,assets/skill-icons/axolotl/asBlessing.webp,candidate_review_required
+axolotl,asMist,Regen Mist,B,หมอกฟื้น HP ต่อเนื่อง,assets/skill-icons/axolotl/asMist.webp,candidate_review_required
+axolotl,asPurify,Purifying Rinse,B,ล้างสถานะ + ฮีลเล็กน้อย,assets/skill-icons/axolotl/asPurify.webp,candidate_review_required
+axolotl,asCushion,Liquid Cushion,B,กันการโจมตีครั้งถัดไป,assets/skill-icons/axolotl/asCushion.webp,candidate_review_required
+axolotl,asLift,Bubble Lift,B,ฟองยกศัตรู (บอส Slow),assets/skill-icons/axolotl/asLift.webp,candidate_review_required
+axolotl,asMending,Mending Stream,B,Channel รักษาต่อเนื่อง,assets/skill-icons/axolotl/asMending.webp,candidate_review_required
+axolotl,asSoothing,Soothing Touch,B,จบ Mending ทิ้ง HoT,assets/skill-icons/axolotl/asSoothing.webp,candidate_review_required
+axolotl,asShared,Shared Breath,B,ฮีลเกินเป็นเกราะน้ำ,assets/skill-icons/axolotl/asShared.webp,candidate_review_required
+axolotl,asFloat,Emergency Float,B,ลดดาเมจ 30% + ฮีลเมื่อ HP ต่ำ,assets/skill-icons/axolotl/asFloat.webp,candidate_review_required
+axolotl,asBloom,Regeneration Bloom,B,HoT แรงขึ้นเมื่อ HP ต่ำ,assets/skill-icons/axolotl/asBloom.webp,candidate_review_required
+axolotl,asCascade,Gentle Cascade,B,ฮีลทิ้ง HoT เล็ก,assets/skill-icons/axolotl/asCascade.webp,candidate_review_required
+axolotl,asLastDrop,Last Drop,B,HP ต่ำใช้ Living Water ฮีลอัตโนมัติ,assets/skill-icons/axolotl/asLastDrop.webp,candidate_review_required
+axolotl,asRenewal,Spring Renewal,B,ฮีล + ต่อเวลา HoT,assets/skill-icons/axolotl/asRenewal.webp,candidate_review_required
+axolotl,asMiracle,Miracle of Life,B,ULTIMATE B,assets/skill-icons/axolotl/asMiracle.webp,candidate_review_required
+axolotl,acOverflow,Overflow,C,น้ำเต็ม → Splash AoE,assets/skill-icons/axolotl/acOverflow.webp,candidate_review_required
+axolotl,acPierce,Piercing Current,C,Needle ทะลุเพิ่ม,assets/skill-icons/axolotl/acPierce.webp,candidate_review_required
+axolotl,acRipple,Healing Ripple,C,Healing Drop มีคลื่นรักษา,assets/skill-icons/axolotl/acRipple.webp,candidate_review_required
+axolotl,acBlink,Aqua Blink,C,กลายเป็นน้ำเคลื่อนย้าย,assets/skill-icons/axolotl/acBlink.webp,candidate_review_required
+axolotl,acMembrane,Living Membrane,C,เยื่อน้ำลดดาเมจครั้งแรก 60%,assets/skill-icons/axolotl/acMembrane.webp,candidate_review_required
+axolotl,acSplit,Jetstream Split,C,Cannon แยกสองสาย,assets/skill-icons/axolotl/acSplit.webp,candidate_review_required
+axolotl,acRestore,Restorative Current,C,เดินขณะ Mending ได้,assets/skill-icons/axolotl/acRestore.webp,candidate_review_required
+axolotl,acFluid,Fluid Body,C,75% ไม่ถูกขัดการร่าย,assets/skill-icons/axolotl/acFluid.webp,candidate_review_required
+axolotl,acRecycle,Water Recycling,C,ฮีลตอน HP เต็ม คืน SP,assets/skill-icons/axolotl/acRecycle.webp,candidate_review_required
+axolotl,acResonant,Resonant Pressure,C,Pulse 3 กว้างขึ้น,assets/skill-icons/axolotl/acResonant.webp,candidate_review_required
+axolotl,acRapid,Rapid Regrowth,C,Regen +20% เมื่อ HP ต่ำ,assets/skill-icons/axolotl/acRapid.webp,candidate_review_required
+axolotl,acConvert,Healing Conversion,C,เวทโจมตีฮีลกลับ,assets/skill-icons/axolotl/acConvert.webp,candidate_review_required
+axolotl,acAdapt,Perfect Adaptation,C,โดนซ้ำจากตัวเดิม ดาเมจ -15%,assets/skill-icons/axolotl/acAdapt.webp,candidate_review_required
+axolotl,acHarmony,Pressure Harmony,C,ละอองเพิ่มความเร็ว,assets/skill-icons/axolotl/acHarmony.webp,candidate_review_required
+axolotl,acInfinite,Infinite Renewal,C,Miracle HoT แรงและนานขึ้น,assets/skill-icons/axolotl/acInfinite.webp,candidate_review_required
+axolotl,acSpring,Second Spring,C,ดักแด้น้ำรอดตาย 1 ครั้ง,assets/skill-icons/axolotl/acSpring.webp,candidate_review_required
+crocodile,crThrust,Spear Thrust,basic,แทงหอกระยะหอก (ตีปกติใช้แทง/งับตามระยะ),assets/skill-icons/crocodile/crThrust.webp,candidate_review_required
+crocodile,crTail,Tail Sweep,basic,ฟาดหางด้านข้าง-หลัง Off-Balance,assets/skill-icons/crocodile/crTail.webp,candidate_review_required
+crocodile,crHide,Scaled Hide,basic,รับดาเมจลดลง,assets/skill-icons/crocodile/crHide.webp,candidate_review_required
+crocodile,crBite,Crushing Bite,basic,กัดระยะประชิด,assets/skill-icons/crocodile/crBite.webp,candidate_review_required
+crocodile,crStride,River Stride,basic,เดินเร็วขึ้น ล้าง Slow,assets/skill-icons/crocodile/crStride.webp,candidate_review_required
+crocodile,crSenses,Predatory Senses,basic,HIT/ดาเมจต่อเป้า Off-Balance,assets/skill-icons/crocodile/crSenses.webp,candidate_review_required
+crocodile,crScales,Defensive Scales,basic,ลดดาเมจครั้งถัดไป,assets/skill-icons/crocodile/crScales.webp,candidate_review_required
+crocodile,caPierce,Piercing Thrust,A,แทงแรง เจาะเกราะ,assets/skill-icons/crocodile/caPierce.webp,candidate_review_required
+crocodile,caDiscipline,Spear Discipline,A,ดาเมจหอก +4%/lv,assets/skill-icons/crocodile/caDiscipline.webp,candidate_review_required
+crocodile,caLongFang,Long Fang,A,แทงทะลุแนว,assets/skill-icons/crocodile/caLongFang.webp,candidate_review_required
+crocodile,caImpale,Impaling Drive,A,แทงดันถอย (บอส Off-Balance),assets/skill-icons/crocodile/caImpale.webp,candidate_review_required
+crocodile,caCrescent,Crescent Sweep,A,กวาดหอกครึ่งวง,assets/skill-icons/crocodile/caCrescent.webp,candidate_review_required
+crocodile,caHook,Spear Hook,A,เกี่ยวให้เสียตำแหน่ง,assets/skill-icons/crocodile/caHook.webp,candidate_review_required
+crocodile,caEdge,Obsidian Edge,A,เจาะเกราะหอกเพิ่ม,assets/skill-icons/crocodile/caEdge.webp,candidate_review_required
+crocodile,caFracture,Fracture Point,A,แทงจุดอ่อน ลดเกราะ,assets/skill-icons/crocodile/caFracture.webp,candidate_review_required
+crocodile,caSerpent,Serpent Thrust,A,แทง 3 ครั้ง,assets/skill-icons/crocodile/caSerpent.webp,candidate_review_required
+crocodile,caFinish,Piercing Finish,A,แทงปิด (แรงขึ้นต่อ Off-Balance),assets/skill-icons/crocodile/caFinish.webp,candidate_review_required
+crocodile,caBoundary,Spear Boundary,A,กวาดผลักออกจากประชิด,assets/skill-icons/crocodile/caBoundary.webp,candidate_review_required
+crocodile,caRain,Obsidian Rain,A,กระโดดแทงพื้น เศษ Obsidian,assets/skill-icons/crocodile/caRain.webp,candidate_review_required
+crocodile,caDistance,Perfect Distance,A,แรงขึ้นที่ระยะปลายหอก,assets/skill-icons/crocodile/caDistance.webp,candidate_review_required
+crocodile,caExecution,Temple Execution,A,แทงจุดตาย เหมาะกับบอส,assets/skill-icons/crocodile/caExecution.webp,candidate_review_required
+crocodile,caSunpiercer,Sunpiercer,A,ULTIMATE A,assets/skill-icons/crocodile/caSunpiercer.webp,candidate_review_required
+crocodile,cbJaw,Savage Jaw,B,กัดแรง,assets/skill-icons/crocodile/cbJaw.webp,candidate_review_required
+crocodile,cbHide,Predator's Hide,B,ประชิดศัตรูแล้วรับดาเมจลดลง,assets/skill-icons/crocodile/cbHide.webp,candidate_review_required
+crocodile,cbLock,Jaw Lock,B,กัดล็อก (บอส Off-Balance),assets/skill-icons/crocodile/cbLock.webp,candidate_review_required
+crocodile,cbShake,Violent Shake,B,สะบัดเหยื่อ,assets/skill-icons/crocodile/cbShake.webp,candidate_review_required
+crocodile,cbTailBreaker,Tail Breaker,B,ฟาดหางแรง Off-Balance,assets/skill-icons/crocodile/cbTailBreaker.webp,candidate_review_required
+crocodile,cbBodyCrush,Body Crush,B,ใช้ลำตัวกระแทก,assets/skill-icons/crocodile/cbBodyCrush.webp,candidate_review_required
+crocodile,cbAmbush,Low Ambush,B,ย่อพุ่งต่ำแล้วงับ,assets/skill-icons/crocodile/cbAmbush.webp,candidate_review_required
+crocodile,cbRip,Ripping Bite,B,กัดฉีก เลือดไหล,assets/skill-icons/crocodile/cbRip.webp,candidate_review_required
+crocodile,cbRoll,Death Roll,B,กัดล็อกแล้วหมุนตัว,assets/skill-icons/crocodile/cbRoll.webp,candidate_review_required
+crocodile,cbDrag,Drag Under,B,ดึงเข้าประชิด Off-Balance,assets/skill-icons/crocodile/cbDrag.webp,candidate_review_required
+crocodile,cbIronJaws,Iron Jaws,B,ดาเมจกัดขึ้น,assets/skill-icons/crocodile/cbIronJaws.webp,candidate_review_required
+crocodile,cbSnap,Crushing Snap,B,งับปิดหนัก,assets/skill-icons/crocodile/cbSnap.webp,candidate_review_required
+crocodile,cbScent,Blood Scent,B,แรงขึ้นต่อเป้า HP <40%,assets/skill-icons/crocodile/cbScent.webp,candidate_review_required
+crocodile,cbLunge,Apex Lunge,B,กระโจนต่ำงับ,assets/skill-icons/crocodile/cbLunge.webp,candidate_review_required
+crocodile,cbFrenzy,Death Roll Frenzy,B,ULTIMATE B,assets/skill-icons/crocodile/cbFrenzy.webp,candidate_review_required
+crocodile,ccReach,Hunter's Reach,C,ตีปกติเลือกงับเมื่อศัตรูประชิด,assets/skill-icons/crocodile/ccReach.webp,candidate_review_required
+crocodile,ccInstinct,Piercing Instinct,C,Long Fang 50% Off-Balance + เจาะต่อ,assets/skill-icons/crocodile/ccInstinct.webp,candidate_review_required
+crocodile,ccMaw,Crushing Maw,C,กัดเป้า Off-Balance +25%,assets/skill-icons/crocodile/ccMaw.webp,candidate_review_required
+crocodile,ccReversal,Tail Reversal,C,ฟาดหางหลังแล้วแทงหน้า,assets/skill-icons/crocodile/ccReversal.webp,candidate_review_required
+crocodile,ccFootwork,Hunter's Footwork,C,หลัง Boundary เดินเร็ว,assets/skill-icons/crocodile/ccFootwork.webp,candidate_review_required
+crocodile,ccDragFang,Dragging Fang,C,Jaw Lock ลากเหยื่อ,assets/skill-icons/crocodile/ccDragFang.webp,candidate_review_required
+crocodile,ccObsFracture,Obsidian Fracture,C,แทงถัดไป +30% ต่อเกราะแตก,assets/skill-icons/crocodile/ccObsFracture.webp,candidate_review_required
+crocodile,ccTailMom,Tail Momentum,C,หางโดน → หอกถัดไป +20%,assets/skill-icons/crocodile/ccTailMom.webp,candidate_review_required
+crocodile,ccPerfect,Perfect Hunter,C,ศัตรูเข้าประชิด → กัดถัดไป +30% (ICD 8 วิ),assets/skill-icons/crocodile/ccPerfect.webp,candidate_review_required
+crocodile,ccTempleMastery,Temple Spear Mastery,C,Serpent/Finish +20% ต่อ DEF ลด,assets/skill-icons/crocodile/ccTempleMastery.webp,candidate_review_required
+crocodile,ccApex,Apex Predator,C,Roll/Lunge +25% ต่อเป้า HP <40%,assets/skill-icons/crocodile/ccApex.webp,candidate_review_required
+crocodile,ccSpearMaw,Spear and Maw,C,หอก→กัดแรงขึ้น · กัด→หอกเจาะเกราะ,assets/skill-icons/crocodile/ccSpearMaw.webp,candidate_review_required
+crocodile,ccScales,Ancient Scales,C,HP <30% ลดดาเมจ 25% 5 วิ (ICD 45),assets/skill-icons/crocodile/ccScales.webp,candidate_review_required
+crocodile,ccSunMastery,Sunpiercer Mastery,C,Sunpiercer แรงขึ้น + Impact เป้าหลัก,assets/skill-icons/crocodile/ccSunMastery.webp,candidate_review_required
+crocodile,ccRollMastery,Death Roll Mastery,C,Frenzy มี Finishing Bite,assets/skill-icons/crocodile/ccRollMastery.webp,candidate_review_required
+crocodile,ccAwaken,Ancient Maw Awakening,C,สถานะนักล่าโบราณ 18 วิ,assets/skill-icons/crocodile/ccAwaken.webp,candidate_review_required

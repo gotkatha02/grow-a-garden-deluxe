@@ -1,0 +1,134 @@
+{
+  "app": "night-forge-vfx-lab",
+  "version": 2,
+  "frames": 52,
+  "fps": 15,
+  "frame_width": 256,
+  "frame_height": 256,
+  "columns": 8,
+  "rows": 7,
+  "duration": 3.4,
+  "background": "transparent",
+  "style": "glow",
+  "sheets": [
+    "all.png"
+  ],
+  "note": "frames read left to right, top to bottom",
+  "export_id": "CZXxGAeae2dWusvxO-3aVfW4C-f85OsxGJTXWySb-Cp54NxDG35qdszdn1SiQoVM47iY3r1dMgdToeR5",
+  "comp": {
+    "name": "รังผลึกห่อตัว (Crystal Cocoon)",
+    "theme": "น้ำแข็ง",
+    "style": "glow",
+    "order": "layer",
+    "layers": [
+      {
+        "part": "crystals",
+        "name": "ผลึกห่อรอบตัว",
+        "params": {
+          "layout": "cluster",
+          "count": 16,
+          "radius": 1.1,
+          "height": 2.4,
+          "lean": 0.15,
+          "accent": 0,
+          "stagger": 0.5,
+          "width": 1.2,
+          "seed": 8,
+          "life": 2.6,
+          "fade": 0.6,
+          "pal": [
+            "#061a33",
+            "#1d5ea8",
+            "#5fb8ff",
+            "#d4f1ff",
+            "#ffffff"
+          ],
+          "acc": "#ffffff"
+        },
+        "tf": {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "rx": 0,
+          "ry": 0,
+          "rz": 0,
+          "s": 1,
+          "mirror": false,
+          "face": "off"
+        },
+        "start": 0,
+        "speed": 1,
+        "on": true
+      },
+      {
+        "part": "barrier",
+        "name": "ทรงกลมใส",
+        "params": {
+          "shape": "sphere",
+          "pattern": "plain",
+          "radius": 1.6,
+          "fill": 0.25,
+          "intro": 0.6,
+          "life": 2.4,
+          "fade": 0.6,
+          "pal": [
+            "#061a33",
+            "#1d5ea8",
+            "#5fb8ff",
+            "#d4f1ff",
+            "#ffffff"
+          ]
+        },
+        "tf": {
+          "x": 0,
+          "y": 1,
+          "z": 0,
+          "rx": 0,
+          "ry": 0,
+          "rz": 0,
+          "s": 1,
+          "mirror": false,
+          "face": "off"
+        },
+        "start": 0.4,
+        "speed": 1,
+        "on": false
+      },
+      {
+        "part": "rise",
+        "name": "เกล็ดลอย",
+        "params": {
+          "style": "snow",
+          "count": 20,
+          "radius": 1.8,
+          "height": 3,
+          "life": 2.4,
+          "pal": [
+            "#061a33",
+            "#1d5ea8",
+            "#5fb8ff",
+            "#d4f1ff",
+            "#ffffff"
+          ],
+          "acc": "#ffffff",
+          "glow": 2.2,
+          "seed": 1
+        },
+        "tf": {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "rx": 0,
+          "ry": 0,
+          "rz": 0,
+          "s": 1,
+          "mirror": false,
+          "face": "off"
+        },
+        "start": 0.3,
+        "speed": 1,
+        "on": true
+      }
+    ]
+  }
+}

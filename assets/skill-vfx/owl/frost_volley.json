@@ -1,0 +1,118 @@
+{
+  "app": "night-forge-vfx-lab",
+  "version": 2,
+  "frames": 11,
+  "fps": 15,
+  "frame_width": 256,
+  "frame_height": 256,
+  "columns": 8,
+  "rows": 2,
+  "duration": 0.63,
+  "background": "transparent",
+  "style": "glow",
+  "sheets": [
+    "all.png"
+  ],
+  "note": "frames read left to right, top to bottom",
+  "export_id": "2YgXKYGEXBEtf69jwd4F07Bz3tzQeJpcuWE3E1LA3GhLCQcATriEjYR2Qb7VrSYj12tYLgMQ7ezopf6H",
+  "comp": {
+    "name": "owl_volley",
+    "theme": null,
+    "style": "glow",
+    "order": "layer",
+    "layers": [
+      {
+        "part": "rlstreaks",
+        "name": "ลมเย็นพุ่ง",
+        "params": {
+          "count": 12,
+          "len": 1.2,
+          "len2": 0.6,
+          "w": 0.07,
+          "R0": 0.3,
+          "reach": 2.6,
+          "dur": 0.4,
+          "col": "main",
+          "core": "hot",
+          "mul": 1.1,
+          "flat": false,
+          "up": 0,
+          "seed": 1,
+          "rxd": 0,
+          "ryd": 0,
+          "rzd": 0,
+          "pal": [
+            "#06121e",
+            "#1d4a6e",
+            "#7fc4ea",
+            "#cfeeff",
+            "#f4fcff"
+          ],
+          "acc": "#ffffff",
+          "glow": 0.5
+        },
+        "tf": {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "rx": 0,
+          "ry": 0,
+          "rz": 0,
+          "s": 1.3,
+          "mirror": false,
+          "face": "off"
+        },
+        "start": 0,
+        "speed": 1,
+        "on": true
+      },
+      {
+        "part": "rlsparks",
+        "name": "เกล็ดน้ำแข็ง",
+        "params": {
+          "count": 20,
+          "speed": 4,
+          "up": 1.5,
+          "g": 6,
+          "dur": 0.6,
+          "len": 0.1,
+          "w": 0.04,
+          "col": "main",
+          "core": "hot",
+          "mul": 1.2,
+          "useCone": false,
+          "cx": 1,
+          "cy": 0.3,
+          "cz": 0,
+          "seed": 1,
+          "rxd": 0,
+          "ryd": 0,
+          "rzd": 0,
+          "pal": [
+            "#06121e",
+            "#1d4a6e",
+            "#7fc4ea",
+            "#cfeeff",
+            "#f4fcff"
+          ],
+          "acc": "#ffffff",
+          "glow": 0.5
+        },
+        "tf": {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "rx": 0,
+          "ry": 0,
+          "rz": 0,
+          "s": 1.3,
+          "mirror": false,
+          "face": "off"
+        },
+        "start": 0.03,
+        "speed": 1,
+        "on": true
+      }
+    ]
+  }
+}

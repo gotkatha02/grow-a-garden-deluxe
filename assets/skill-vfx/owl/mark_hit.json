@@ -1,0 +1,104 @@
+{
+  "app": "night-forge-vfx-lab",
+  "version": 2,
+  "frames": 17,
+  "fps": 15,
+  "frame_width": 256,
+  "frame_height": 256,
+  "columns": 8,
+  "rows": 3,
+  "duration": 1.05,
+  "background": "transparent",
+  "style": "glow",
+  "sheets": [
+    "all.png"
+  ],
+  "note": "frames read left to right, top to bottom",
+  "export_id": "aIu22IkkTaqOO0U5ppK6Sm7Q4eqK-Xy0JldQRIT5I44hKFejatGqCw1LSQVvXU1Cqh6zaNGgC6fGll5z",
+  "comp": {
+    "name": "owl_mark",
+    "theme": null,
+    "style": "glow",
+    "order": "layer",
+    "layers": [
+      {
+        "part": "starflash",
+        "name": "ดาวทอง",
+        "params": {
+          "life": 0.2,
+          "fade": 0.35,
+          "y": 0.5,
+          "size": 1.1,
+          "dur": 0.3,
+          "soft": 0,
+          "star": true,
+          "intro": 0,
+          "pal": [
+            "#1a1408",
+            "#6a5020",
+            "#d8b860",
+            "#f4e4b0",
+            "#fffaf0"
+          ],
+          "acc": "#ffffff",
+          "glow": 0.5
+        },
+        "tf": {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "rx": 0,
+          "ry": 0,
+          "rz": 0,
+          "s": 1.3,
+          "mirror": false,
+          "face": "off"
+        },
+        "start": 0,
+        "speed": 1,
+        "on": true
+      },
+      {
+        "part": "rldust",
+        "name": "ผงทองร่วง",
+        "params": {
+          "count": 12,
+          "R": 0.5,
+          "h": 1.2,
+          "dur": 1,
+          "mode": "swirl",
+          "size": 0.04,
+          "col": "main",
+          "mul": 1.2,
+          "seed": 1,
+          "rxd": 0,
+          "ryd": 0,
+          "rzd": 0,
+          "pal": [
+            "#1a1408",
+            "#6a5020",
+            "#d8b860",
+            "#f4e4b0",
+            "#fffaf0"
+          ],
+          "acc": "#ffffff",
+          "glow": 0.5
+        },
+        "tf": {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "rx": 0,
+          "ry": 0,
+          "rz": 0,
+          "s": 1.3,
+          "mirror": false,
+          "face": "off"
+        },
+        "start": 0.05,
+        "speed": 1,
+        "on": true
+      }
+    ]
+  }
+}

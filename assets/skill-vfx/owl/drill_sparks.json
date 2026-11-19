@@ -1,0 +1,111 @@
+{
+  "app": "night-forge-vfx-lab",
+  "version": 2,
+  "frames": 12,
+  "fps": 15,
+  "frame_width": 256,
+  "frame_height": 256,
+  "columns": 8,
+  "rows": 2,
+  "duration": 0.7,
+  "background": "transparent",
+  "style": "glow",
+  "sheets": [
+    "all.png"
+  ],
+  "note": "frames read left to right, top to bottom",
+  "export_id": "CNwBKtPnKysaD1bf_gV4DAWG3DFRRa6cfodafsF9QduiytgKpFUIUW4-Q2kzrhqZvdym-cmijJ10hgj4",
+  "comp": {
+    "name": "owl_drill",
+    "theme": null,
+    "style": "glow",
+    "order": "layer",
+    "layers": [
+      {
+        "part": "rlflash",
+        "name": "แสงเจาะ",
+        "params": {
+          "size": 0.7,
+          "halo": 0.8,
+          "dur": 0.12,
+          "col": "main",
+          "core": "hot",
+          "rot": 0.2,
+          "rxd": 0,
+          "ryd": 0,
+          "rzd": 0,
+          "pal": [
+            "#1a1408",
+            "#6a5020",
+            "#d8b860",
+            "#f4e4b0",
+            "#fffaf0"
+          ],
+          "acc": "#ffffff",
+          "glow": 0.5
+        },
+        "tf": {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "rx": 0,
+          "ry": 0,
+          "rz": 0,
+          "s": 1.8,
+          "mirror": false,
+          "face": "off"
+        },
+        "start": 0,
+        "speed": 1,
+        "on": true
+      },
+      {
+        "part": "rlsparks",
+        "name": "สะเก็ดเจาะ",
+        "params": {
+          "count": 34,
+          "speed": 8,
+          "up": 1.5,
+          "g": 8,
+          "dur": 0.7,
+          "len": 0.32,
+          "w": 0.055,
+          "col": "main",
+          "core": "hot",
+          "mul": 2,
+          "useCone": true,
+          "cx": -1,
+          "cy": 0.3,
+          "cz": 0,
+          "seed": 1,
+          "rxd": 0,
+          "ryd": 0,
+          "rzd": 0,
+          "pal": [
+            "#1a1408",
+            "#6a5020",
+            "#d8b860",
+            "#f4e4b0",
+            "#fffaf0"
+          ],
+          "acc": "#ffffff",
+          "glow": 0.5
+        },
+        "tf": {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "rx": 0,
+          "ry": 0,
+          "rz": 0,
+          "s": 1.8,
+          "mirror": false,
+          "face": "off"
+        },
+        "start": 0,
+        "speed": 1,
+        "on": true
+      }
+    ]
+  }
+}

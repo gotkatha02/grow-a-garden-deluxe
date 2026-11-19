@@ -1,0 +1,65 @@
+{
+  "app": "night-forge-vfx-lab",
+  "version": 2,
+  "frames": 33,
+  "fps": 15,
+  "frame_width": 256,
+  "frame_height": 256,
+  "columns": 8,
+  "rows": 5,
+  "duration": 2.1,
+  "background": "transparent",
+  "style": "glow",
+  "sheets": [
+    "all.png"
+  ],
+  "note": "frames read left to right, top to bottom",
+  "export_id": "iKssCD3r126ZGspytN61DM1AjHPCN88O69ooGnVUB1ouXvPQEFAa3kxzL4UW1HTS0BUqmzI5mxsqp656",
+  "comp": {
+    "name": "owl_moonrain",
+    "theme": null,
+    "style": "glow",
+    "order": "layer",
+    "layers": [
+      {
+        "part": "rain3d",
+        "name": "เข็มแสงจันทร์",
+        "params": {
+          "life": 1.6,
+          "fade": 0.5,
+          "count": 18,
+          "R": 3,
+          "top": 6,
+          "spread": 1.8,
+          "fall": 0.22,
+          "len": 0.9,
+          "stick": true,
+          "seed": 1,
+          "pal": [
+            "#0a0c18",
+            "#3a4470",
+            "#a8b8f0",
+            "#e6eeff",
+            "#ffffff"
+          ],
+          "acc": "#ffd86a",
+          "glow": 0.55
+        },
+        "tf": {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "rx": 0,
+          "ry": 0,
+          "rz": 0,
+          "s": 1,
+          "mirror": false,
+          "face": "off"
+        },
+        "start": 0,
+        "speed": 1,
+        "on": true
+      }
+    ]
+  }
+}
