@@ -176,6 +176,14 @@ return {waterFx,life};};
 /* owner 2026-11-19: "maps are small for a Ragnarok-style game and it's mostly trees" —
    outdoor fields are laid out 1.5x larger (all hand-placed coordinates scaled), with fewer grove masses,
    more props in the open and a few extra landmarks in their own clearings. Towns and walled caves keep their size. */
+const WAYKIT={
+  vik:{way:['signpostOld','fence1','fence2','lanternPole','runestoneW','runestoneS','torch1','stoneLantern','barrel','hayBale','woodpile','totem','brokenCart','berryS'],center:['bonfire'],around:['woodpile','barrels','barrel','shieldRack','axeRack','cargoCart','hayBale','chest','fishRack']},
+  azt:{way:['azTorch','azStele','azTotem','azSign','azBrazier','azPots','azClayPots','azShrine','azMaizeBasket','azBanner','azHibRed','azFlowWhite'],center:['azBrazier'],around:['azStallFruit','azClayPots','azCacaoSack','azMaizeBasket','azDrum','azCart','azBench','azPots']},
+  egy:{way:['egTorch','egStele','egSign','egObeliskBroken','egColBroken','egJars','egPots','egBrazier','egCatStatue','egJackalStatue','egPalmSprout'],center:['egBrazier'],around:['egSacks','egJars','egCart','egStallSpice','egStallPot','egBench','egPots']},
+  grk:{way:['grHerm','grSign','grColBroken','grBrazier','grAmphorae','grAltar','grBench','grOwlStatue','grVineStake','grLemonPot','grLavender','grPoppy'],center:['grBrazier'],around:['grAmphoraStack','grCart','grStallOil','grBench','grNetRack','grAmphorae']},
+  jpn:{way:['jpLantern','jpLanternPole','jpJizo','jpMarker','jpSign','jpToriiS','jpFoxL','jpBasin','jpNobori','jpRailing','jpAzalea','jpHydrangea'],center:['jpBenchUmb'],around:['jpStallDango','jpRiceBales','jpSake','jpRickshaw','jpLantern','jpNotice']},
+  cNE:null};
+const CAPKIT={way:['cpMilestone','cpLampWood','cpWayShrine','cpSignWood','cpFence','cpScarecrow','cpCratesRoad','cpHayBale','cpKnightS','cpRose','cpSunflower'],center:['cpCampfire'],around:['cpTent','cpCrates','cpCartBroken','cpRack','cpBarricade','cpStumpAxe']};
 function scaleField(c0){if(c0._scaled||c0.walls||c0.mons===false||c0.maze||c0.mood==='town'||c0.townish||c0.city)return c0;const S=c0.fieldScale??1.5;if(S===1)return c0;
   const c=JSON.parse(JSON.stringify(c0));c._scaled=1;const pt=p=>Array.isArray(p)?p.map((v,i)=>typeof v==='number'&&i<2?v*S:v):p;
   c.W=Math.round(c.W*S);c.H=Math.round(c.H*S);if(c.bridge)c.bridge=pt(c.bridge);if(c.stream)c.stream=c.stream.map(pt);
@@ -189,6 +197,8 @@ function scaleField(c0){if(c0._scaled||c0.walls||c0.mons===false||c0.maze||c0.mo
   /* fewer solid groves, more things to look at between them */
   if(c.groves)c.groves.thr=(c.groves.thr??.52)+.05;c.propDens=(c.propDens??1)*1.5;c.openTrees=(c.openTrees??.06)*.6;
   c.spawnN=Math.round((c.spawnN||32)*S*S/1.5);
+  /* life along the roads: wayside markers every few hundred px, small camps by the main road (region kit from the map id prefix) */
+  c.wayKit=WAYKIT[String(c._id||'').slice(0,3)]||(/^c[NSEW]/.test(c._id||'')?CAPKIT:null);
   /* extra landmarks: copies of this map's own set pieces, each in a clearing well away from trails and warps */
   let seed=(c.seed||1)*9301+49297;const rnd=()=>((seed=(seed*9301+49297)%233280)/233280);
   const LM=(c.land||[]).map(o=>o.n).filter(n=>n&&!/entrance|sign|gate|door|stair|bridge|dock|well|house|hall|cottage|stall|cart/i.test(n));
@@ -196,7 +206,7 @@ function scaleField(c0){if(c0._scaled||c0.walls||c0.mons===false||c0.maze||c0.mo
   if(LM.length)for(let i=0,n=0;i<80&&n<5;i++){const x=c.W*(.12+.76*rnd()),y=c.H*(.12+.76*rnd());if(near(x,y,420))continue;
     c.land.push({n:LM[Math.floor(rnd()*LM.length)],x,y,flip:rnd()<.5?1:0});c.clearings.push([x,y,300]);n++;}
   return c;}
-window.createFieldHost=function(base,cfg){cfg=scaleField(cfg);
+window.createFieldHost=function(base,cfg){if(!cfg._id&&window.VK_MAPS)for(const k in VK_MAPS)if(VK_MAPS[k]===cfg){cfg._id=k;break;}cfg=scaleField(cfg);
 const W=cfg.W,H=cfg.H,CH=512,CELL=12,COLS=Math.ceil(W/CELL),ROWS=Math.ceil(H/CELL),CAT=window.VK_CAT;
 const MOOD=cfg.mood||'sun',CAVE=MOOD==='cave'||MOOD==='mine'||MOOD==='rift';
 /* region theme: water textures, trail tint, shadow colour, floating particles */
@@ -216,7 +226,7 @@ const TH={snow:{tr:['rgba(118,108,178,.17)','rgba(255,250,245,.22)'],lakeRim:'#5
 const need=new Set([cfg.ground||'snow',DIRTTEX,cfg.trailKind==='cobble'?COBTEX:DIRTTEX]);
 const addAll=a=>{if(a)for(const n of a)need.add(n);};
 addAll(cfg.border&&cfg.border.set);addAll(cfg.groves&&cfg.groves.set);addAll(cfg.open);addAll(cfg.edge);addAll(cfg.decals);addAll(cfg.grass);addAll(cfg.seaSet);addAll(cfg.bankSet);
-if(cfg.patches)for(const p of cfg.patches)need.add(p.tex);if(cfg.land)for(const l of cfg.land)need.add(l.n);if(cfg.clusters)for(const c of cfg.clusters)addAll(c.set);
+if(cfg.patches)for(const p of cfg.patches)need.add(p.tex);if(cfg.land)for(const l of cfg.land)need.add(l.n);if(cfg.wayKit)for(const k in cfg.wayKit)for(const n of cfg.wayKit[k])if(CAT[n])need.add(n);if(cfg.clusters)for(const c of cfg.clusters)addAll(c.set);
 if(cfg.walls){need.add(cfg.walls.face);need.add(cfg.walls.top);}
 /* small ground details that every outdoor map of a region gets (flowers, cones, pebbles...) */
 const seq=(p,a,b)=>{const o=[];for(let i=a;i<=b;i++)o.push(p+String(i).padStart(2,'0'));return o;};
@@ -451,6 +461,17 @@ function build(){try{
   for(const c of cfg.clusters||[])for(let i=0;i<(c.n||6)*4&&i<200;i++){const a=rnd()*6.283,r=Math.sqrt(rnd())*c.r,x=c.x+Math.cos(a)*r,y=c.y+Math.sin(a)*r*.8;
     if(water(x,y,30)||nearTrail(x,y,12)||inLand(x,y,20)||inPave(x,y,c.onPave?-30:20)||!far(x,y,c.sp||70))continue;put(mk(pickCap(c.set,x,y),x,y,{v:R(.9,1.08)}));if(objs.filter(o=>Math.hypot(o.x-c.x,o.y-c.y)<c.r+5).length>=(c.n||6))break;}
   for(const n of cfg.onTrail||[]){const P=trails[Math.floor(rnd()*trails.length)];if(!P||P.length<40)continue;const p=P[Math.floor(R(.2,.8)*P.length)];const o=mk(n,p[0],p[1]+4,{v:R(.9,1.05)});if(o){o.solid=[];o.ell=null;put(o);}}
+  /* wayside life: something every 230–340 px on alternating sides of every road, and a little camp beside the main road every ~1600 px */
+  if(cfg.wayKit){const WK=cfg.wayKit,ok=n=>CAT[n]&&IMG[n]&&IMG[n].naturalWidth,WAY=WK.way.filter(ok),CEN=WK.center.filter(ok),ARO=WK.around.filter(ok),nearW=(x,y,d)=>warps.some(w=>Math.hypot(w.x-x,w.y-y)<d);
+    const spot=(x,y,d)=>x>140&&y>140&&x<W-140&&y<H-140&&!water(x,y,40)&&!inLand(x,y,40)&&!nearW(x,y,260)&&far(x,y,d)&&edgeDist(x,y)>edgeBand(x,y)+40;
+    trails.forEach((P,ti)=>{let acc=0,next=R(120,260),side=rnd()<.5?1:-1,campNext=ti?1e9:R(700,1100);
+      for(let i=2;i<P.length-2;i++){const a=P[i-1],b=P[i+1],p=P[i];acc+=Math.hypot(P[i][0]-P[i-1][0],P[i][1]-P[i-1][1]);const tx=b[0]-a[0],ty=b[1]-a[1],tl=Math.hypot(tx,ty)||1,nx=-ty/tl,ny=tx/tl,hw=(p[4]||90)/2;
+        if(WAY.length&&acc>=next){next=acc+R(230,340);side=-side;const o=hw+R(38,70),x=p[0]+nx*o*side,y=p[1]+ny*o*side;
+          if(spot(x,y,70)&&!nearTrail(x,y,18)){PX=x;PY=y;put(mk(pickCap(WAY,x,y),x,y,{v:R(.85,1.05)}));}}
+        if(CEN.length&&acc>=campNext){campNext=acc+R(1400,1900);const sd=rnd()<.5?1:-1,o=hw+R(170,220),cx=p[0]+nx*o*sd,cy=p[1]+ny*o*sd;
+          if(spot(cx,cy,170)&&!nearTrail(cx,cy,110)){PX=cx;PY=cy;put(mk(CEN[0],cx,cy,{v:1}));clearings.push([cx,cy,190]);
+            const n=3+(rnd()<.5?1:0);for(let k=0;k<n&&ARO.length;k++){const an=k/n*6.283+R(-.3,.3),r=R(80,120),x=cx+Math.cos(an)*r,y=cy+Math.sin(an)*r*.6;
+              if(!water(x,y,20)&&far(x,y,46)&&!nearTrail(x,y,12)){PX=x;PY=y;put(mk(ARO[Math.floor(rnd()*ARO.length)],x,y,{v:R(.85,1)}));}}}}}});}
   /* border + groves */
   const BS=cfg.border&&cfg.border.set,GS=cfg.groves&&cfg.groves.set,gthr=cfg.groves?cfg.groves.thr??.52:9,gd=cfg.groves?cfg.groves.dens??.85:0,openD=cfg.openTrees??.06;
   const BSP=cfg.border&&cfg.border.sp||58;
@@ -949,7 +970,7 @@ let lastP=0;function foreground(g,t,night){if(!ready)return;const dt=Math.min(.0
 let LIFE=true,lastW=0;
 return {W,H,get ready(){return ready},get failed(){return failed},nav:{nearest,blocked},cfg,
   setPlayer(x,y){ply.x=x;ply.y=y},update(){},drawBase,drawSorted,foreground,clear,route,blocked,set debug(v){debug=v},
-  get spawn(){return {start:spawnPt}},isReachable:(x,y)=>!!reach&&reach[((y/CELL)|0)*COLS+((x/CELL)|0)]===1,get spawns(){return spawns},get warps(){return warps},_bake:(i,j)=>bake(i,j),CH,set life(v){LIFE=!!v},
+  get spawn(){return {start:spawnPt}},isReachable:(x,y)=>!!reach&&reach[((y/CELL)|0)*COLS+((x/CELL)|0)]===1,get spawns(){return spawns},get warps(){return warps},get _objs(){return objs},get _trails(){return trails},_bake:(i,j)=>bake(i,j),CH,set life(v){LIFE=!!v},
   _audit(){const out=[],T=o=>CAT[o.n]||{},isW=o=>T(o).t==='water',town=/stall|Stall|bench|Bench|^azCart|cargoCart|notice|Notice|sign|Sign|lamp|lantern|Lantern|banner|Banner|planter|Planter|well$|fountain|Fountain|loom|Loom|dummy|target/;
     const land=new Set();for(const o of objs)if(o.land)land.add(o);
     for(const o of objs){const nm=o.n,inW=water(o.x,o.y,0)||inCanal(o.x,o.y);
