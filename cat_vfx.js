@@ -433,11 +433,12 @@ KTV.skyLand=function(){addFx(new KLine({x:player.x,y:player.y,z:78,ang:Math.PI/2
 /* Oni Roar: the oni's face looms behind the cat, the roar rolls out in rings */
 /* owner 2026-11-20: Oni Roar = his video of the blue oni (assets/fx/cat/oni_roar.webp, 46 frames 320×208, 8 cols, black keyed):
    it puffs out of purple smoke behind the cat, roars with its own shock arcs, then breaks into smoke. No code rings. */
-const ONIR=new Image();ONIR.src='assets/fx/cat/oni_roar.webp?v=2';
-class KRoarClip{constructor(){Object.assign(this,{t:0,layer:'ground',w:185});}
-  update(dt){this.t+=dt;return this.t<46/24;}
-  draw(){const im=ONIR;if(!im.complete||!im.naturalWidth)return;const i=Math.min(45,Math.floor(this.t*24)),fw=im.naturalWidth/8,fh=im.naturalHeight/6,sx=(i%8)*fw,sy=Math.floor(i/8)*fh;
-    const [x,y]=P(player.x,player.y-4,0),W=this.w,H=W*fh/fw;ctx.drawImage(im,sx,sy,fw,fh,x-W/2,y-H*1.2,W,H);}}
+const ONIR=new Image();ONIR.src='assets/fx/cat/oni_roar2.webp?v=1';
+/* owner 2026-11-21 v2: front-facing blue spirit oni roaring (oni_roar2.webp: frames 1–67 + 78–111 every 2nd = 52 frames 288², 8 cols; white flash 69–77 cut) */
+class KRoarClip{constructor(){Object.assign(this,{t:0,layer:'ground',w:150});}
+  update(dt){this.t+=dt;return this.t<52/24;}
+  draw(){const im=ONIR;if(!im.complete||!im.naturalWidth)return;const i=Math.min(51,Math.floor(this.t*24)),fw=im.naturalWidth/8,fh=im.naturalHeight/7,sx=(i%8)*fw,sy=Math.floor(i/8)*fh;
+    const [x,y]=P(player.x,player.y-4,0),W=this.w,H=W*fh/fw,a=Math.min(1,this.t/.15);ctx.save();ctx.globalAlpha*=a;ctx.drawImage(im,sx,sy,fw,fh,x-W/2,y-H*.97,W,H);ctx.restore();}}
 function roar(){const x=player.x,y=player.y;addFx(new KRoarClip());dust(x,y,6,{ring:20,size:42,spd:80});}
 /* Grinding Wheel: three real turns; the blade drags a band of fire and throws sparks off its edge like a grindstone */
 const wheelR=()=>((typeof KB!=='undefined'&&KB.kbWheel&&KB.kbWheel.R)||80)*.9;
