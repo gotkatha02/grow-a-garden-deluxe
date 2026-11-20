@@ -18,6 +18,10 @@
 (()=>{
 if(typeof CHAR==='undefined'||!['cat','kitsune'].includes(CHAR)||!window.VK||!window.KTA||/[?&]vfx3=0/.test(location.search))return;   /* sections 1-3 are a kit shared as window.K3 (kitsune_vfx.js); the rest is the cat's */
 const V=window.VK,{G,sys,tx}=V,A=window.KTA;
+/* owner 2026-11-20 painted masks: white fox mask (Ashura Mask) + its cracked twin, red samurai oni mask (Oni Roar) — they replace the SVG 'mask' */
+const KMASK={mask:'mask_white',maskCrack:'mask_white_crack',oniMask:'mask_oni_red'},KMIM={};for(const k in KMASK){const im=new Image();im.src='assets/fx/cat/'+KMASK[k]+'.webp';KMIM[k]=im;}
+if(A&&!A._kmask){A._kmask=1;const g0=A.get,s0=A.size;A.get=k=>{const im=KMIM[k];return im&&im.complete&&im.naturalWidth?im:(k==='maskCrack'||k==='oniMask'?null:g0(k));};
+  A.size=k=>{const im=KMIM[k];if(im&&im.naturalWidth){const w=(s0('mask')[0]||60);return [w,w*im.naturalHeight/im.naturalWidth];}return s0(k);};}
 const TAU=Math.PI*2,cl=(v,a,b)=>v<a?a:v>b?b:v,eO=t=>1-(1-t)*(1-t)*(1-t),eI=t=>t*t,eIO=t=>t<.5?2*t*t:1-2*(1-t)*(1-t),R_=(a,b)=>a+Math.random()*(b-a),lerp=(a,b,t)=>a+(b-a)*t;
 const back=t=>{const c=1.70158;return 1+(c+1)*Math.pow(t-1,3)+c*Math.pow(t-1,2);};
 const TEMPO=()=>(typeof ACTION_TEMPO==='number'&&ACTION_TEMPO>0)?ACTION_TEMPO:.75,rt=a=>a/TEMPO();
@@ -434,7 +438,7 @@ class KRoarClip{constructor(){Object.assign(this,{t:0,layer:'ground',w:185});}
   update(dt){this.t+=dt;return this.t<46/24;}
   draw(){const im=ONIR;if(!im.complete||!im.naturalWidth)return;const i=Math.min(45,Math.floor(this.t*24)),fw=im.naturalWidth/8,fh=im.naturalHeight/6,sx=(i%8)*fw,sy=Math.floor(i/8)*fh;
     const [x,y]=P(player.x,player.y-4,0),W=this.w,H=W*fh/fw;ctx.drawImage(im,sx,sy,fw,fh,x-W/2,y-H*1.2,W,H);}}
-function roar(){const x=player.x,y=player.y;addFx(new KRoarClip());dust(x,y,6,{ring:20,size:42,spd:80});}
+function roar(){const x=player.x,y=player.y;sprite({n:'oniMask',follow:player,z:96,w:66,life:.55,fi:.05,fo:.25,s0:.4,s1:1,pop:.2,layer:'top'});addFx(new KRoarClip());dust(x,y,6,{ring:20,size:42,spd:80});}
 /* Grinding Wheel: three real turns; the blade drags a band of fire and throws sparks off its edge like a grindstone */
 const wheelR=()=>((typeof KB!=='undefined'&&KB.kbWheel&&KB.kbWheel.R)||80)*.9;
 KTV.wheelSpin=function(i,SP){const T=rt(SP);addFx(new KArc({x:player.x,y:player.y,follow:1,fz:26+i*5,phi:player.phi,tilt:.12*(i%2?-1:1),a0:-Math.PI,a1:Math.PI,hit:0,lead:T*.5,sweep:T,hold:0,fade:.15,trail:3.6,R:wheelR(),W:26,pal:PAL.oni,ink:.5,N:44,emb:1,glint:0,edge:.16}));};
@@ -466,7 +470,7 @@ KTV.oniImpact=function(e,R){if(SPIRIT){SPIRIT.life=Math.min(SPIRIT.life,SPIRIT.t
 KTV.ashuraStart=function(tW){const T=rt(tW);sprite({follow:player,layer:'top',z:0,life:T+.52,fi:.01,fo:.01,paint:f=>{const t=f.t;let z,s,a;if(t<T){const u=t/T;z=104-6*u+2*Math.sin(t*40)*u;s=.55+.45*eO(u);a=.25+.75*u;}else{const u=cl((t-T)/.1,0,1);z=98-50*eI(u);s=1-.42*u;a=1-cl((t-T-.12)/.4,0,1);}
     const [mx,my]=P(player.x,player.y,z+(player.z||0));ctx.globalAlpha=a;art('mask',mx,my,58*s,{under:'#2a0606',ua:.5});if(t>=T+.08&&t<T+.3)star(mx,my,34*(1-(t-T-.08)/.22),'#ff4a1e',t*6);}});};
 KTV.ashuraOn=function(){const x=player.x,y=player.y;for(let i=0;i<2;i++)ring({x,y,r0:14,r1:120+40*i,w:8-2*i,pal:PAL.oni,life:.45+.1*i,segs:6,gap:.25,delay:i*.08});embers(x,y,30,16,{spd:220,up:260});dust(x,y,7,{ring:22,size:50,spd:100});};
-KTV.ashuraEnd=function(R){const x=player.x,y=player.y;sprite({n:'mask',follow:player,z:50,w:38,life:.22,fi:.01,fo:.12,s0:1,s1:1.6,layer:'top',under:'#2a0606',ua:.4});
+KTV.ashuraEnd=function(R){const x=player.x,y=player.y;sprite({n:'maskCrack',follow:player,z:50,w:44,life:.42,fi:.01,fo:.2,s0:1,s1:1.22,layer:'top',tick:(o)=>{o.ox=o.t<.18?Math.sin(o.t*90)*1.5:0;}});
   stones(x,y,8,{z:46,spd:200,up:220,col:'#f4ede2',s:.8});stones(x,y,4,{z:46,spd:180,up:240,col:'#d2202c',s:.7});
   addFx(new KArc({x,y,follow:1,fz:30,phi:player.phi,tilt:.1,a0:-Math.PI,a1:Math.PI,hit:0,lead:.03,sweep:.2,hold:.03,fade:.24,R:R*.92,W:40,pal:PAL.oni,ink:.5,N:48,emb:1,glint:0}));
   for(let i=0;i<2;i++)ring({x,y,r0:20,r1:R*(1.05+.25*i),w:9-3*i,pal:PAL.oni,life:.5,segs:6,gap:.22,delay:i*.07});embers(x,y,30,18,{spd:280,up:240});};
