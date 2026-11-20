@@ -218,7 +218,7 @@ function wValhalla(a,c){wVhN=0;const cx=c.gx,cy=c.gy,ev=a.events,tA=a.windup,ts=
   ev.push({t:tLand,f:()=>{fxI({_tvc:1,n:'w54_valhalla_burst',x:cx,y:cy+6,z:0,ay:.95,w:260,life:.7,s0:.5,s1:1.1,fadeIn:.001,fadeOut:.45,glow:.4});fxI({_tvc:1,n:'w37_finale_crater',x:cx,y:cy,w:260,layer:'ground',life:1.4,s0:.6,s1:1,fadeIn:.001,fadeOut:.35});if(typeof shake==='function')shake(8);
     for(let i=0;i<6;i++){const an=rnd(0,TAU),v=rnd(120,220);addFx(new WRock({n:'wr'+(1+i%4)+'_rock',x:cx,y:cy,vx:Math.cos(an)*v,vy:Math.sin(an)*v*.6,vz:rnd(300,460),w:rnd(16,26)}));}}});}
 /* War Howl buff wave: one warm golden wave rolls out to the buff radius (W_HOWL_R = party buff range once parties exist) */
-const W_HOWL_R=220;
+const W_HOWL_R=330;
 class WHowlWave{constructor(x,y,R){Object.assign(this,{x,y,R,t:0,life:.55,layer:'ground'});}update(dt){this.t+=dt;return this.t<this.life;}
   draw(){const k=this.t/this.life,e=1-(1-k)*(1-k),r=this.R*e,[x,y]=P(this.x,this.y,0);ctx.save();ctx.translate(x,y);ctx.scale(1,K);
     const a=(1-k)*.9;for(const [w,c,al] of [[16,'#ffb23a',.35],[7,'#ffe08a',.8],[3,'#fff6d8',.9]]){ctx.globalAlpha=a*al;ctx.strokeStyle=c;ctx.lineWidth=w*(1-k*.5);ctx.beginPath();ctx.arc(0,0,Math.max(1,r),0,TAU);ctx.stroke();}
