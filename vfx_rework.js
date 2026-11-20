@@ -8,7 +8,7 @@
    ========================================================================= */
 /* first-frame crash fix: build the FX-layer transform without DOMMatrix (it could throw and stop the loop) */
 beginLayer=function(T){const sx=layerCv.width/cvs.width,sy=layerCv.height/cvs.height;lctx.setTransform(1,0,0,1,0,0);lctx.globalAlpha=1;lctx.globalCompositeOperation='source-over';
-  lctx.clearRect(0,0,layerCv.width,layerCv.height);lctx.setTransform(T.a*sx,T.b*sy,T.c*sx,T.d*sy,T.e*sx,T.f*sy);ctx=lctx;};
+  lctx.clearRect(0,0,layerCv.width,layerCv.height);lctx.setTransform(T.a*sx,T.b*sy,T.c*sx,T.d*sy,T.e*sx,T.f*sy);ctx=lctx;layerDirty=false;};
 
 (function(){
 if(!['rhino','owl','axolotl','croc'].includes(CHAR))return;

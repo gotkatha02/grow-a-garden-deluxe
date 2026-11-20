@@ -628,7 +628,7 @@ document.write('<script src="vfx_layer.js"><\/script>');if(c==='jaguar')document
 <script src="maps/snowpine.js?v=2"></script>
 <script src="maps/viking-catalog.js"></script>
 <script src="maps/craft-halls.js?v=8"></script>
-<script src="maps/fieldmap.js?v=11"></script>
+<script src="maps/fieldmap.js?v=12"></script>
 <script src="maps/viking-maps.js"></script>
 <script src="maps/aztec-maps.js"></script>
 <script src="maps/egypt-maps.js"></script>
@@ -792,14 +792,17 @@ const layerCv=document.createElement('canvas'),lctx=layerCv.getContext('2d');
 const scratch=document.createElement('canvas'),sctx=scratch.getContext('2d');
 const bl=[2,4,8].map(()=>{const c=document.createElement('canvas');return {c,g:c.getContext('2d')};});
 const LS=()=>DPR>=1.5?.5:.75; // FX layers render below full resolution: softer edges, far cheaper
+/* 2026-11-21: the layer is blended (and bloomed) only in frames where something was really drawn into it. Effects that are alive but
+   draw nothing that frame (buff watchers, hidden pieces) used to cost a full-screen blend + bloom every frame, even standing still. */
+let layerDirty=false;for(const m of ['drawImage','fill','stroke','fillRect','strokeRect','fillText','strokeText','putImageData']){const f=lctx[m];lctx[m]=function(){layerDirty=true;return f.apply(this,arguments);};}
 function sizeLayers(){for(const c of [layerCv,scratch]){c.width=Math.ceil(cvs.width*LS());c.height=Math.ceil(cvs.height*LS());}bl.forEach((b,i)=>{b.c.width=Math.max(1,layerCv.width>>(i+1));b.c.height=Math.max(1,layerCv.height>>(i+1));});NOISE_PAT=mctx.createPattern(NOISE,'repeat');}
-function beginLayer(T){lctx.setTransform(1,0,0,1,0,0);lctx.globalAlpha=1;lctx.globalCompositeOperation='source-over';lctx.clearRect(0,0,layerCv.width,layerCv.height);lctx.setTransform(new DOMMatrix().scale(layerCv.width/cvs.width,layerCv.height/cvs.height).multiply(T));ctx=lctx;}
-function endLayer(str){ctx=mctx;const T=mctx.getTransform();mctx.setTransform(1,0,0,1,0,0);mctx.globalAlpha=1;mctx.globalCompositeOperation='source-over';mctx.imageSmoothingQuality='high';mctx.globalAlpha=FXB.layer;mctx.drawImage(layerCv,0,0,cvs.width,cvs.height);mctx.globalAlpha=1;str*=FXB.bloom;
+function beginLayer(T){lctx.setTransform(1,0,0,1,0,0);lctx.globalAlpha=1;lctx.globalCompositeOperation='source-over';lctx.clearRect(0,0,layerCv.width,layerCv.height);lctx.setTransform(new DOMMatrix().scale(layerCv.width/cvs.width,layerCv.height/cvs.height).multiply(T));ctx=lctx;layerDirty=false;}
+function endLayer(str){ctx=mctx;if(!layerDirty)return;const T=mctx.getTransform();mctx.setTransform(1,0,0,1,0,0);mctx.globalAlpha=1;mctx.globalCompositeOperation='source-over';mctx.imageSmoothingQuality='low';mctx.globalAlpha=FXB.layer;mctx.drawImage(layerCv,0,0,cvs.width,cvs.height);mctx.globalAlpha=1;str*=FXB.bloom;   /* soft layer scaled up: plain bilinear is enough */
   if(Q.bloom&&str>0&&!window.NOBLOOM){let src=layerCv;for(const b of bl){b.g.globalCompositeOperation='copy';b.g.imageSmoothingQuality='high';b.g.drawImage(src,0,0,b.c.width,b.c.height);src=b.c;}
-    mctx.globalCompositeOperation='lighter';mctx.imageSmoothingQuality='high';mctx.globalAlpha=str*.55;mctx.drawImage(bl[1].c,0,0,cvs.width,cvs.height);
-    mctx.globalAlpha=str*.6;mctx.drawImage(bl[2].c,0,0,cvs.width,cvs.height);
+    bl[1].g.globalCompositeOperation='lighter';bl[1].g.drawImage(bl[2].c,0,0,bl[1].c.width,bl[1].c.height);   /* the two blurred levels added together while small… */
+    mctx.globalCompositeOperation='lighter';mctx.imageSmoothingQuality='low';mctx.globalAlpha=Math.min(1,str*.575);mctx.drawImage(bl[1].c,0,0,cvs.width,cvs.height);   /* …then laid over the picture once (was two full-screen blends: .55 + .6) */
     mctx.globalAlpha=1;mctx.globalCompositeOperation='source-over';}
-  mctx.setTransform(T);}
+  mctx.imageSmoothingQuality='high';mctx.setTransform(T);}
 
 /* -- Slash: soft feathered crescent, rendered in a scratch buffer, masked along the arc,
       eroded with noise as it fades, then bloomed by the layer pass -- */
@@ -5644,7 +5647,7 @@ function render(){
   const topBusy=fx.some(f=>f.layer==='top'&&!(f instanceof DText))||(player.glow&&player.glow.k>.05)||hasBuff('flow')||pool.some(p=>p.on&&!UNDER[p.type]);
   if(skyDark>.01){ctx.save();ctx.setTransform(1,0,0,1,0,0);ctx.fillStyle=`rgba(6,12,28,${.5*skyDark})`;ctx.fillRect(0,0,cvs.width,cvs.height);ctx.restore();}
   if(topBusy)beginLayer(TW);drawPlayerAura();if(hasBuff('flow'))flowAccent();for(const f of fx)if(f.layer==='top'&&!(f instanceof DText))f.draw();
-  drawParticles(false);if(topBusy){if(FXB.cut>0)fxCutPlayer(FXB.cut);endLayer(.85);}
+  drawParticles(false);if(topBusy){if(layerDirty&&FXB.cut>0)fxCutPlayer(FXB.cut);endLayer(.85);}
   for(const f of fx)if(f instanceof DText)f.draw();
   if(debug)drawDebug();
   ctx.setTransform(DPR,0,0,DPR,0,0);ctx.drawImage(vignette,0,0,VW,VH);mapOverlay();
@@ -5691,7 +5694,7 @@ function spawnFieldMons(id){enemies.length=0;const h=mapHosts[id],L=(window.VK_M
 function fieldRespawn(e){const h=mapHost();if(!h||!h.ready||!h.randomSpawn)return false;const m=W2M(player.x,player.y),p=h.randomSpawn(m.x,m.y,650);if(!p)return false;const [x,y]=M2W(p);
   const n=vkMake(e.vdef,x,y);Object.assign(e,n,{id:e.id});enemies.pop();return true;}
 const FIELD_BOUNDS={...BOUNDS};
-let mapArrive=null,mapWarpLock=true;const mapHosts={};let mapZoom=1,mapNight=false,mapLastValid=null,mapFade=0,mapFadeDir=0,mapNext=null,mapThumb={};
+let mapArrive=null,mapWarpLock=true;const mapHosts={};let mapSeen=[];const MAP_KEEP=(navigator.deviceMemory&&navigator.deviceMemory<=4)||/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)?1:2;   /* laid-out maps kept in memory: this one + the one before (phones: this one only) */let mapZoom=1,mapNight=false,mapLastValid=null,mapFade=0,mapFadeDir=0,mapNext=null,mapThumb={};
 function mapHost(){return curMap?mapHosts[curMap]:null}
 function mapMS(){return MAPDEF[curMap].MS}
 function W2M(x,y){const s=mapMS();return {x:x/s,y:y*K/s}}
@@ -5704,6 +5707,11 @@ function enterMap(id,spawn){
   if(!id){curMap=null;TF.length=0;Object.assign(BOUNDS,FIELD_BOUNDS);player.x=0;player.y=0;resetEnemies();}
   else{
     if(!mapHosts[id])mapHosts[id]=MAPDEF[id].mk();
+    /* 2026-11-21 memory: only the map you are on keeps its painted ground. The map you came from keeps its layout (quick return through the same warp; phones keep none);
+       older ones are dropped and laid out again when entered (same layout — it is seeded). Before this every visited map stayed in memory
+       for the whole session (≈ 60–120 MB each) until the tab slowed down or crashed. */
+    mapSeen=mapSeen.filter(k=>k!==id);mapSeen.push(id);if(mapSeen.length>MAP_KEEP)mapSeen.splice(0,mapSeen.length-MAP_KEEP);
+    for(const k in mapHosts){if(k===id)continue;const o=mapHosts[k];if(o&&o.release){o.release();if(!mapSeen.includes(k))delete mapHosts[k];}}
     const h=mapHosts[id];curMap=id;enemies.length=0;if(id==='forest')spawnForestWolves();else if(window.VK_MONS&&VK_MONS[id])spawnFieldMons(id);spawnTownsfolk(id);
     Object.assign(BOUNDS,{x0:0,x1:h.W*MAPDEF[id].MS,y0:0,y1:h.H*MAPDEF[id].MS/K});
     if(spawn&&spawn.warp){mapArrive={id,warp:spawn.warp};spawn=null;}else mapArrive=(!spawn&&!h.ready)?{id,start:1}:null;
@@ -5840,10 +5848,12 @@ addEventListener('wheel',e=>{if(!curMap||e.target!==cvs)return;mapZoom=clamp(map
 window.mapTest={enterMap,mapTravel,mapRouteTo,W2M,M2W,get cur(){return curMap},get host(){return mapHost()},set night(v){mapNight=v},set zoom(v){mapZoom=v}};
 
 let last=performance.now();
-let perfAcc=0,perfN=0,perfT=0;
+let perfAcc=0,perfN=0,perfT=0,perfMap=null,perfHold=0,perfBad=0;
 function frame(now){const raw=(now-last)/1000;let rdt=Math.min(.05,raw);last=now;
-  /* automatic step-down when the machine can't keep up: High → Medium at ~33 fps, Medium → Low at ~22 fps (also lowers render resolution) */
-  if(Q!==QUALITY.low&&gameTime>3){perfAcc+=raw;perfN++;perfT+=raw;if(perfT>2.5){const avg=perfAcc/perfN,hi=Q===QUALITY.high;if(hi?avg>.03:avg>.045){const nq=hi?'med':'low';Q=QUALITY[nq];document.querySelectorAll('#qual button').forEach(x=>x.classList.toggle('on',x.dataset.q===nq));resize();msg(hi?'ลดคุณภาพ VFX เป็น Medium อัตโนมัติ (เครื่องช้า)':'ลดคุณภาพเป็น Low อัตโนมัติ (เครื่องช้า)');}perfAcc=perfN=perfT=0;}}let dt=rdt*timeScale;
+  /* automatic step-down when the machine can't keep up: High → Medium under ~42 fps, Medium → Low under ~28 fps (also lowers render resolution; 2026-11-21: was 33 / 22 fps) */
+  if(Q!==QUALITY.low&&gameTime>3){if(curMap!==perfMap){perfMap=curMap;perfHold=gameTime+2.5;perfAcc=perfN=perfT=0;}   /* a new map paints its ground first: not counted */
+  if(gameTime>perfHold){if(raw<.1){perfAcc+=raw;perfN++;}perfT+=raw;   /* single long frames (loading, tab switch) are not counted either */
+    if(perfT>2.5){const avg=perfN>20?perfAcc/perfN:0,hi=Q===QUALITY.high;if(hi?avg>.024:avg>.036){if(++perfBad>=2){perfBad=0;const nq=hi?'med':'low';Q=QUALITY[nq];document.querySelectorAll('#qual button').forEach(x=>x.classList.toggle('on',x.dataset.q===nq));resize();msg(hi?'ลดคุณภาพ VFX เป็น Medium อัตโนมัติ (เครื่องช้า)':'ลดคุณภาพเป็น Low อัตโนมัติ (เครื่องช้า)');}}else perfBad=0;perfAcc=perfN=perfT=0;}}}let dt=rdt*timeScale;
   trauma=Math.max(0,trauma-rdt*1.9);const tr=trauma*trauma*16;shx=(Math.random()*2-1)*tr;shy=(Math.random()*2-1)*tr;flash.a=Math.max(0,flash.a-rdt*3);
   for(let i=dbgShapes.length-1;i>=0;i--){dbgShapes[i].t+=rdt;if(dbgShapes[i].t>.35)dbgShapes.splice(i,1);}
   if(hitStop>0){hitStop-=dt;dt=0;}
@@ -5906,14 +5916,14 @@ Object.assign(PS,PRESETS[CHAR_PRESET[CHAR]||'ตีแรง']);applyStats();pla
 window.AF={levelUp:()=>{if(PS.lv<99){PS.lv++;applyStats();player.hp=player.maxHp;player.mp=player.maxMp;levelUpFx(PS.lv-1,PS.lv);}},player,enemies,useSlot,useSkill,command,SKILLS,get tab(){return tab;},setTab:i=>{tab=i;buildHotbar();},ground:(x,y,key='icePrison')=>{targeting={key};groundClick(x,y);},setSlow:v=>timeScale=v,LV,fx,get state(){return player.state;}};
 </script>
 <script src="svg_vfx.js"></script>
-<script src="vfx_rework.js"></script>
+<script src="vfx_rework.js?v=2"></script>
 <script src="croc_vfx.js"></script>
 <script src="worldmap.js"></script>
 <script src="items.js?v=15"></script>
 <script src="market.js?v=1"></script>
 <script src="npcs.js?v=8"></script>
 <script src="monsters.js"></script>
-<script src="monster-sprites.js?v=2"></script>
+<script src="monster-sprites.js?v=3"></script>
 <script src="monster-catalog.js"></script>
 <script src="boss_fenrir.js?v=2"></script>
 <script src="progress.js"></script>
@@ -5937,6 +5947,6 @@ window.AF={levelUp:()=>{if(PS.lv<99){PS.lv++;applyStats();player.hp=player.maxHp
 <script src="testroom.js?v=2"></script>
 <script>/* offline cache (sw.js): pictures are kept on the device, so later visits barely download anything; ?nosw=1 removes it */
 if('serviceWorker' in navigator&&location.protocol==='https:'){if(/[?&]nosw=1/.test(location.search))navigator.serviceWorker.getRegistrations().then(a=>a.forEach(r=>r.unregister()));else window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));}</script>
-<script>/* fashion system: wolf sprite only for now */if(CHAR==='wolf')document.write('<script src="assets_fashion.js"><\/script><script src="assets_fur.js"><\/script><script src="assets_skin.js"><\/script><script src="pwing_data.js?v=1"><\/script><script src="fashion.js?v=6"><\/script>');</script>
+<script>/* fashion system: wolf sprite only for now */if(CHAR==='wolf')document.write('<script src="assets_fashion.js"><\/script><script src="assets_fur.js"><\/script><script src="assets_skin.js"><\/script><script src="pwing_data.js?v=1"><\/script><script src="fashion.js?v=7"><\/script>');</script>
 </body>
 </html>

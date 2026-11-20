@@ -398,26 +398,33 @@ function costumeParts(e,x,y,t){const H=headFrame(e,x,y);if(!H)return [];const ou
   for(const sl of ['top','mid','low','shoulder','armor']){const id=FEQ[sl];if(id&&COSTUME[id])for(const p of COSTUME[id](H,t))out.push(p);}
   return out;}
 
-const _hc=[document.createElement('canvas'),document.createElement('canvas')];
+const _hc=[document.createElement('canvas'),document.createElement('canvas')],_hc3=document.createElement('canvas');
 function sceneFilter(){return (typeof mapNight!=='undefined'&&curMap&&mapNight)?'brightness(.72) saturate(.78) hue-rotate(-6deg)':'';}
 /* harmonizer: gear solids -> offscreen, warm-graded + sprite-style dark outline + slight softening; glows drawn after, lighter */
 function harmonized(x,y,fn,opt){opt=opt||{};
   const m=ctx.getTransform(),k=Math.hypot(m.a,m.b)||1,u=SPR*k;
-  const W=Math.min(2048,Math.ceil(720*u)),H=Math.min(2048,Math.ceil(680*u));
-  const py=y-230*SPR,cx=m.a*x+m.c*py+m.e,cy=m.b*x+m.d*py+m.f,ox=Math.floor(cx-W/2),oy=Math.floor(cy-H/2);
+  const W0=Math.min(2048,Math.ceil(720*u)),H0=Math.min(2048,Math.ceil(680*u));
+  /* 2026-11-21: when the hero is big on screen (rooms, close zoom, sharp phone screens) the costume is put together at a lower resolution and
+     scaled up — the soft filter below hides it and the cost falls with the area (a room cost 37 ms a frame for the costume alone). Normal field size: unchanged. */
+  const sc=Math.min(1,Math.sqrt(180000/(W0*H0))),W=Math.ceil(W0*sc),H=Math.ceil(H0*sc);
+  const py=y-230*SPR,cx=m.a*x+m.c*py+m.e,cy=m.b*x+m.d*py+m.f,ox=Math.floor(cx-W0/2),oy=Math.floor(cy-H0/2);
   const [c1,c2]=_hc;for(const c of _hc)if(c.width<W||c.height<H){c.width=Math.max(c.width,W);c.height=Math.max(c.height,H);}
   const g1=c1.getContext('2d'),g2=c2.getContext('2d');g1.setTransform(1,0,0,1,0,0);g1.globalAlpha=1;g1.filter='none';g1.globalCompositeOperation='source-over';g1.clearRect(0,0,W,H);
-  g1.setTransform(m.a,m.b,m.c,m.d,m.e-ox,m.f-oy);
+  g1.setTransform(m.a*sc,m.b*sc,m.c*sc,m.d*sc,(m.e-ox)*sc,(m.f-oy)*sc);
   const old=ctx,ga=ctx.globalAlpha;ctx=g1;GP='body';try{fn();}finally{ctx=old;}
   g1.setTransform(1,0,0,1,0,0);g1.globalAlpha=1;
   if(opt.grade!==false){g1.globalCompositeOperation='source-atop';g1.fillStyle='rgba(128,62,44,.13)';g1.fillRect(0,0,W,H);}
   g1.globalCompositeOperation='source-over';
-  const r=Math.max(1,(opt.crisp?2.2:3.4)*u);g2.setTransform(1,0,0,1,0,0);g2.globalAlpha=1;g2.globalCompositeOperation='source-over';g2.clearRect(0,0,W,H);
+  const r=Math.max(1,(opt.crisp?2.2:3.4)*u*sc);g2.setTransform(1,0,0,1,0,0);g2.globalAlpha=1;g2.globalCompositeOperation='source-over';g2.clearRect(0,0,W,H);
   for(let i=0;i<8;i++){const a=i*Math.PI/4;g2.drawImage(c1,0,0,W,H,Math.cos(a)*r,Math.sin(a)*r,W,H);}
   g2.globalCompositeOperation='source-in';g2.fillStyle=opt.oc||'rgba(40,22,14,.96)';g2.fillRect(0,0,W,H);g2.globalCompositeOperation='source-over';
-  ctx.save();ctx.setTransform(1,0,0,1,0,0);ctx.globalAlpha=ga;const sf=sceneFilter();
-  ctx.filter=sf||'none';ctx.drawImage(c2,0,0,W,H,ox,oy,W,H);
-  ctx.filter=((sf?sf+' ':'')+(opt.grade===false?'':'saturate(.86) contrast(1.04) ')+(opt.crisp?'':'blur('+Math.max(.3,.45*u/0.4).toFixed(2)+'px)'));if(ctx.filter==='')ctx.filter='none';ctx.drawImage(c1,0,0,W,H,ox,oy,W,H);
+  /* 2026-11-21: outline + filtered body are put together on a small off-screen canvas and drawn to the game once.
+     (A filter on the game canvas itself was the most expensive single draw of every frame.) */
+  const sf=sceneFilter(),c3=_hc3;if(c3.width<W||c3.height<H){c3.width=Math.max(c3.width,W);c3.height=Math.max(c3.height,H);}
+  const g3=c3.getContext('2d');g3.setTransform(1,0,0,1,0,0);g3.globalAlpha=1;g3.globalCompositeOperation='source-over';g3.filter='none';g3.clearRect(0,0,W,H);
+  g3.filter=sf||'none';g3.drawImage(c2,0,0,W,H,0,0,W,H);
+  {const F=((sf?sf+' ':'')+(opt.grade===false?'':'saturate(.86) contrast(1.04) ')+(opt.crisp?'':'blur('+Math.max(.3,.45*u/0.4*sc).toFixed(2)+'px)')).trim();g3.filter=F||'none';g3.drawImage(c1,0,0,W,H,0,0,W,H);g3.filter='none';}
+  ctx.save();ctx.setTransform(1,0,0,1,0,0);ctx.globalAlpha=ga;ctx.filter='none';ctx.drawImage(c3,0,0,W,H,ox,oy,W/sc,H/sc);
   ctx.restore();
   GP='fx';ctx.save();if(sceneFilter())ctx.globalAlpha*=.6;try{fn();}finally{ctx.restore();GP='all';}}
 /* ---------- Wing pack 2: flashy MMO-style wings (butterfly, phoenix, mecha, leaf, energy, void, demon, dragon, shadow, six-wing) ---------- */

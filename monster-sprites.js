@@ -43,8 +43,10 @@ const ROW={idle:0,walk:1,attack:2,hurt:3,death:4};
 /* walk:N = a separate smooth walk strip assets/monsters/<file>_walk.webp (N frames, same cell size), made from a walk video by tools/vidwalk.py */
 /* 2026-11-20 load time: a sheet is downloaded the first time its monster is looked at (was: all 30 sheets, 11 MB, at every start) */
 const MSLD={};
-function msLoad(m,walk){let s=MSLD[m.file];if(!s){s=MSLD[m.file]={ok:0,wok:0,img:new Image(),wimg:null};s.img.onload=()=>{s.ok=1;};s.img.src='assets/monsters/'+m.file+'.webp';}
-  if(walk&&m.walk&&!s.wimg){s.wimg=new Image();s.wimg.onload=()=>{s.wok=1;};s.wimg.src='assets/monsters/'+m.file+'_walk.webp';}return s;}
+/* a sheet counts as loaded only once it is decoded (done off the main thread), so the first monster of a kind that walks into view does not freeze a frame */
+function msReady(im,f){if(im.decode)im.decode().then(f,f);else f();}
+function msLoad(m,walk){let s=MSLD[m.file];if(!s){s=MSLD[m.file]={ok:0,wok:0,img:new Image(),wimg:null};s.img.onload=()=>msReady(s.img,()=>{s.ok=1;});s.img.src='assets/monsters/'+m.file+'.webp';}
+  if(walk&&m.walk&&!s.wimg){s.wimg=new Image();s.wimg.onload=()=>msReady(s.wimg,()=>{s.wok=1;});s.wimg.src='assets/monsters/'+m.file+'_walk.webp';}return s;}
 for(const k in MS){const m=MS[k];Object.defineProperties(m,{ok:{get:()=>msLoad(m,1).ok},wok:{get:()=>msLoad(m,1).wok},img:{get:()=>msLoad(m).img},wimg:{get:()=>msLoad(m,1).wimg}});}
 const def=e=>e&&(e.vdef&&MS[e.vdef.name]||e.spr&&MS[e.spr]);   /* e.spr: sprite name for monsters made outside the map tables (world boss) */
 window.MSPR_HAS=e=>{const m=def(e);return !!(m&&m.ok);};
@@ -81,7 +83,12 @@ function cframe(e,m){const C=m.clip,t=gameTime,ok=k=>C[k]&&C[k].ok;
   if(e._mv>0&&ok('walk')){const a=C.walk;return ['walk',Math.floor((e._wp||0)*a.n)%a.n];}
   const a=C.idle;return ['idle',Math.floor((t+(e.bob||0))*a.fps)%a.n];}
 /* map colour grade (map charFilter) baked once per sheet instead of ctx.filter on every draw (ctx.filter per monster was the biggest frame cost on fields) */
-const FSH=new Map();function fsrc(img){const f=window.MSPR_FILTER;if(!f||!img||!img.naturalWidth)return img;let m=FSH.get(img);if(!m){m={};FSH.set(img,m);}let c=m[f];if(c)return c;
+/* 2026-11-21 memory: graded copies belong to ONE colour grade. When the grade changes (another map, day ↔ night) the old copies are given back —
+   before, every sheet kept one full copy per map visited (≈ 5 MB each) for the whole session. */
+let FSHF=null;
+const FSH=new Map();function fsrc(img){const f=window.MSPR_FILTER;if(!f||!img||!img.naturalWidth)return img;
+  if(f!==FSHF){for(const o of FSH.values())for(const k in o){try{o[k].width=o[k].height=0;}catch(e){}}FSH.clear();FSHF=f;}
+  let m=FSH.get(img);if(!m){m={};FSH.set(img,m);}let c=m[f];if(c)return c;
   c=document.createElement('canvas');c.width=img.naturalWidth;c.height=img.naturalHeight;const g=c.getContext('2d');g.filter=f;g.drawImage(img,0,0);m[f]=c;return c;}
 function drawClip(e,m,x,y,al,cold,fl){const H=MSPR_H(e),k=H/m.ref;
   if(e._lx!==undefined&&!e.dead){const d=Math.hypot(e.x-e._lx,e.y-e._ly);if(d<60)e._wp=((e._wp||0)+d/(H*1.1))%1000;}e._lx=e.x;e._ly=e.y;
