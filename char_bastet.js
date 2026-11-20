@@ -75,7 +75,7 @@ const BA_BAL={
 };
 const BB=BA_BAL.sk;
 /* branch tuning from the bench: damage numbers of each branch are scaled here so the shown TAL×n stays true */
-const BA_SCALE={A:2.37,B:.475};
+const BA_SCALE={A:1.38,B:.70};   /* re-benched 2026-11-21 after the core ticker fix (hex now really ticks): A 2,468 · B 2,470 (8 runs) — before the fix she sat at A 2,088 · B 1,690 */
 (()=>{const r2=v=>Math.round(v*100)/100,sc=(o,f,m)=>{if(o[f]==null)return;o[f]=Array.isArray(o[f])?o[f].map(v=>r2(v*m)):r2(o[f]*m);};
   const colOf=k=>k.startsWith('ba')||['bcTriple','bcStorm','bcApep','bcSekhmet'].includes(k)?'A':k.startsWith('bb')||['bcTether','bcLord','bcPack','bcOsiris'].includes(k)?'B':null;
   for(const k in BB){const c=colOf(k);if(!c)continue;for(const f of ['dmg','per','dot'])sc(BB[k],f,BA_SCALE[c]);}
@@ -259,7 +259,8 @@ class BaCore{constructor(){this.t=0;this.layer='none';this.tk=0;this.h=0;}draw()
     if(BA.link&&BA.link.until<gameTime)BA.link=null;
     /* army end → Ammit */
     if(BA.armyEnd&&gameTime>=BA.armyEnd){BA.armyEnd=0;if(BA.armyAmmit){const c=BA.armyAt;addFx(new BaPillar({x:c.x,y:c.y,w:90,col:'#3aa860',life:.6}));for(const e of bNear(c.x,c.y,BB.bbAmmit.R))bHit(e,BB.bbAmmit.dmg,'bbAmmit',{big:true});bBurst(c.x,c.y,BB.bbAmmit.R,'#3aa860');shake(3.6);bSoul(BB.bbAmmit.souls);}}
-    if(BA.shieldUntil<gameTime)BA.shield=0;}}
+    if(BA.shieldUntil<gameTime)BA.shield=0;
+    return CHAR==='bastet';}}   /* 2026-11-21: the ticker returned nothing, so the engine dropped it after ONE frame — hex damage, locust swarms, obelisk SP, blessing heal, the army's end and the shield's expiry only ran on the frame of a cast, and every cast left one more BaGround + BaTop behind (the game got slower the longer she was played) */
 
 /* =====================================================================
    5. SKILL ACTIONS
