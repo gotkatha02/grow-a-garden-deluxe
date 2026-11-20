@@ -467,10 +467,10 @@ KTV.HIT.kbExec=function(e){const z=zOf(e);addFx(new KLine({e,x:e.x,y:e.y,z:z+14,
 KTV.oniImpact=function(e,R){if(SPIRIT){SPIRIT.life=Math.min(SPIRIT.life,SPIRIT.t+.08);SPIRIT=null;}
   ring({x:e.x,y:e.y,r0:16,r1:R,w:10,pal:PAL.oni,life:.5,segs:6,gap:.22});embers(e.x,e.y,36,14,{spd:260,up:240});V.groundBreak(e.x,e.y,.75,0);dust(e.x,e.y,6,{ring:24,size:50,spd:90});};
 /* Ashura Mask: the mask takes shape above the cat during the wind-up and snaps onto its face at the peak; flames stand round it while it lasts */
-KTV.ashuraStart=function(tW){const T=rt(tW);sprite({follow:player,layer:'top',z:0,life:T+.52,fi:.01,fo:.01,paint:f=>{const t=f.t;let z,s,a;if(t<T){const u=t/T;z=104-6*u+2*Math.sin(t*40)*u;s=.55+.45*eO(u);a=.25+.75*u;}else{const u=cl((t-T)/.1,0,1);z=98-50*eI(u);s=1-.42*u;a=1-cl((t-T-.12)/.4,0,1);}
+KTV.ashuraStart=function(tW){const T=rt(tW);sprite({follow:player,layer:'top',z:0,life:T+.52,fi:.01,fo:.01,paint:f=>{const t=f.t;let z,s,a;if(t<T){const u=t/T;z=104-6*u+2*Math.sin(t*40)*u;s=.55+.45*eO(u);a=.25+.75*u;}else{const u=cl((t-T)/.1,0,1);z=98-50*eI(u);s=1-.42*u;a=window.KMW?(u<1?1:0):1-cl((t-T-.12)/.4,0,1);if(u>=1&&window.KMW&&!f._w){f._w=1;KMW.wear();}}
     const [mx,my]=P(player.x,player.y,z+(player.z||0));ctx.globalAlpha=a;art('mask',mx,my,58*s,{under:'#2a0606',ua:.5});if(t>=T+.08&&t<T+.3)star(mx,my,34*(1-(t-T-.08)/.22),'#ff4a1e',t*6);}});};
 KTV.ashuraOn=function(){const x=player.x,y=player.y;for(let i=0;i<2;i++)ring({x,y,r0:14,r1:120+40*i,w:8-2*i,pal:PAL.oni,life:.45+.1*i,segs:6,gap:.25,delay:i*.08});embers(x,y,30,16,{spd:220,up:260});dust(x,y,7,{ring:22,size:50,spd:100});};
-KTV.ashuraEnd=function(R){const x=player.x,y=player.y;sprite({n:'maskCrack',follow:player,z:50,w:44,life:.42,fi:.01,fo:.2,s0:1,s1:1.22,layer:'top',tick:(o)=>{o.ox=o.t<.18?Math.sin(o.t*90)*1.5:0;}});
+KTV.ashuraEnd=function(R){const x=player.x,y=player.y;if(window.KMW)KMW.off();else sprite({n:'maskCrack',follow:player,z:50,w:44,life:.42,fi:.01,fo:.2,s0:1,s1:1.22,layer:'top',tick:(o)=>{o.ox=o.t<.18?Math.sin(o.t*90)*1.5:0;}});
   stones(x,y,8,{z:46,spd:200,up:220,col:'#f4ede2',s:.8});stones(x,y,4,{z:46,spd:180,up:240,col:'#d2202c',s:.7});
   addFx(new KArc({x,y,follow:1,fz:30,phi:player.phi,tilt:.1,a0:-Math.PI,a1:Math.PI,hit:0,lead:.03,sweep:.2,hold:.03,fade:.24,R:R*.92,W:40,pal:PAL.oni,ink:.5,N:48,emb:1,glint:0}));
   for(let i=0;i<2;i++)ring({x,y,r0:20,r1:R*(1.05+.25*i),w:9-3*i,pal:PAL.oni,life:.5,segs:6,gap:.22,delay:i*.07});embers(x,y,30,18,{spd:280,up:240});};
