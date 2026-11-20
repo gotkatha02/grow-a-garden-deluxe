@@ -406,11 +406,11 @@ class KSpike{constructor(o){Object.assign(this,{t:0,layer:'sorted',h:30,w:16,lif
 
 /* charging (KtCharge): ki is drawn into the blade from all round, rings close in faster and faster, the blade catches fire */
 const CH=[];
-KTV.chargeTick=function(ch,dt){const k=cl(ch.t/ch.T,0,1);if(ch.t<=dt*1.5)CH.length=0;ch._a=(ch._a||0)+dt;const iv=.075-.04*k;while(ch._a>iv){ch._a-=iv;CH.push({t:0,L:R_(.24,.34)-.08*k,an:R_(0,TAU),r:R_(50,78),z:R_(0,50)});}
+KTV.chargeTick=function(ch,dt){const k=cl(ch.t/ch.T,0,1);if(ch.t<=dt*1.5)CH.length=0;if(ch.a&&ch.a.key==='kbExec'&&!ch.a._oniClip){ch.a._oniClip=1;addFx(new KOniClip(ch));}ch._a=(ch._a||0)+dt;const iv=.075-.04*k;while(ch._a>iv){ch._a-=iv;CH.push({t:0,L:R_(.24,.34)-.08*k,an:R_(0,TAU),r:R_(50,78),z:R_(0,50)});}
   for(let i=CH.length-1;i>=0;i--){CH[i].t+=dt;if(CH[i].t>CH[i].L)CH.splice(i,1);}
   ch._r=(ch._r||0)+dt;if(ch._r>.44-.22*k){ch._r=0;ring({x:player.x,y:player.y,follow:1,r0:74,r1:14,w:4+2*k,pal:PAL.oni,life:.3,segs:4,gap:.35,ease:eI});}};
 KTV.chargeStage=function(ch,st){const h=hand(),x=player.x,y=player.y;addFx(new KGlint({x:h[0],y:h[1],z:h[2]+10,s:st===2?24:16,col:'#ffb347',life:.22}));ring({x,y,r0:12,r1:st===2?84:56,w:5,pal:PAL.oni,life:.3});
-  if(st===2)embers(x,y,30,8,{spd:120,up:220});if(st===1&&ch.a&&ch.a.key==='kbExec'&&ktL('kcOni'))SPIRIT=spirit({life:9,fi:.45,fo:.15,s0:.72,s1:1,pop:.5,a:.55,until:()=>player.action===ch.a});};
+  if(st===2)embers(x,y,30,8,{spd:120,up:220});if(st===1&&ch.a&&ch.a.key==='kbExec'&&ktL('kcOni')&&!ch.a._oniClip)SPIRIT=spirit({life:9,fi:.45,fo:.15,s0:.72,s1:1,pop:.5,a:.55,until:()=>player.action===ch.a});};
 KTV.chargeDraw=function(ch){const k=cl(ch.t/ch.T,0,1),h=hand();ctx.save();ctx.lineCap='round';for(const m of CH){const u=eI(m.t/m.L),u0=Math.max(0,u-.16),pt=q=>P(lerp(player.x+Math.cos(m.an)*m.r,h[0],q),lerp(player.y+Math.sin(m.an)*m.r*.8,h[1],q),lerp(m.z,h[2],q)),[x0,y0]=pt(u0),[x1,y1]=pt(u);
     ctx.globalAlpha=Math.sin(Math.PI*Math.min(1,m.t/m.L))*.95;ctx.strokeStyle='#a8140c';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x1,y1);ctx.stroke();ctx.strokeStyle=k>.95?'#fff3c8':'#ffb347';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x1,y1);ctx.stroke();}ctx.restore();
   const [fx_,fy]=P(h[0],h[1],h[2]);art('flame'+(((ch.t*14)|0)%3),fx_,fy+2,8+13*k,{ay:.92,a:.92,sy:1+.12*Math.sin(ch.t*30)});return true;};
@@ -441,11 +441,20 @@ KTV.quakeFront=function(q,d1){if(q._d==null){q._d=12;q._n=0;addFx(new KFissure({
   while(q._d<=d1){const l=q._d,side=(q._n%2?1:-1)*R_(5,13),x=q.x+c*l-s*side,y=q.y+s*l+c*side,big=q._n%3===0;addFx(new KSpike({x,y,h:big?R_(36,48):R_(20,30),w:big?21:14,hot:0,life:R_(.9,1.3)}));
     if(q._n%2===0){dust(x,y,1,{size:34,spd:30,life:.6});stones(x,y,2,{spd:150,up:240,s:.8});}q._n++;q._d+=24;}};
 KTV.quakeDraw=function(){return true;};
+/* owner 2026-11-20: Oni Executioner — his video of the fire oni plays behind the cat (assets/fx/cat/oni_exec.webp, 75 frames, 10 cols):
+   frames 0–42 = charge, spread over the real charge time; 43–74 = the slash + break-up at 24 fps from the end of the charge */
+const ONIX=new Image();ONIX.src='assets/fx/cat/oni_exec.webp';
+class KOniClip{constructor(ch){Object.assign(this,{ch,a:ch.a,t:0,rt:-1,layer:'ground',w:150,gone:0});this.phi=player.phi;}
+  update(dt){this.t+=dt;const ch=this.ch,live=player.action===this.a;if(this.rt<0&&ch.t<ch.T){if(!live){this.gone+=dt;return this.gone<.25;}return true;}if(this.rt<0)this.rt=0;this.rt+=dt;return this.rt<32/24;}
+  idx(){return this.rt<0?Math.min(42,Math.floor(this.ch.t/this.ch.T*43)):Math.min(74,43+Math.floor(this.rt*24));}
+  draw(){const im=ONIX;if(!im.complete||!im.naturalWidth)return;const i=this.idx(),fw=im.naturalWidth/10,fh=im.naturalHeight/8,sx=(i%10)*fw,sy=Math.floor(i/10)*fh;
+    const bx=player.x-Math.cos(this.phi)*14,by=player.y-6,[x,y]=P(bx,by,0),W=this.w,H=W,fi=Math.min(1,this.t/.3),a=fi*(this.gone?Math.max(0,1-this.gone/.25):1);
+    ctx.save();ctx.globalAlpha=a;ctx.drawImage(im,sx,sy,fw,fh,x-W/2,y-H*.93,W,H);ctx.restore();}}
 /* Oni Executioner: the cut splits the target from top to bottom. With Oni Impact the oni itself rises behind the cat while it charges */
 let SPIRIT=null;
 function spirit(o){return sprite(Object.assign({n:'oniSpirit',layer:'ground',follow:player,ox:-Math.cos(player.phi)*16,oy:-8,z:0,ay:.96,w:190,sx:Math.cos(player.phi)<0?-1:1,under:'#2a0606',ua:.35},o));}
 KTV.HIT.kbExec=function(e){const z=zOf(e);addFx(new KLine({e,x:e.x,y:e.y,z:z+14,ang:Math.PI/2,L:e.boss?220:172,w:8,grow:.03,hold:.12,fade:.26,pal:PAL.oni}));stones(e.x,e.y,5,{spd:220,up:280});};
-KTV.oniImpact=function(e,R){if(SPIRIT){SPIRIT.life=Math.min(SPIRIT.life,SPIRIT.t+.08);SPIRIT=null;}spirit({life:.6,fi:.01,fo:.4,s0:1.02,s1:1.12});
+KTV.oniImpact=function(e,R){if(SPIRIT){SPIRIT.life=Math.min(SPIRIT.life,SPIRIT.t+.08);SPIRIT=null;}
   ring({x:e.x,y:e.y,r0:16,r1:R,w:10,pal:PAL.oni,life:.5,segs:6,gap:.22});embers(e.x,e.y,36,14,{spd:260,up:240});V.groundBreak(e.x,e.y,.75,0);dust(e.x,e.y,6,{ring:24,size:50,spd:90});};
 /* Ashura Mask: the mask takes shape above the cat during the wind-up and snaps onto its face at the peak; flames stand round it while it lasts */
 KTV.ashuraStart=function(tW){const T=rt(tW);sprite({follow:player,layer:'top',z:0,life:T+.52,fi:.01,fo:.01,paint:f=>{const t=f.t;let z,s,a;if(t<T){const u=t/T;z=104-6*u+2*Math.sin(t*40)*u;s=.55+.45*eO(u);a=.25+.75*u;}else{const u=cl((t-T)/.1,0,1);z=98-50*eI(u);s=1-.42*u;a=1-cl((t-T-.12)/.4,0,1);}
