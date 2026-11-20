@@ -100,8 +100,7 @@ const AT={   // key: (a,c) => visuals ; a = the action, c = cast context
   warFury:(a,c)=>{flashS(.15,'#ff3a2a');},
   bloodRush:(a,c)=>{},
   predatorsLeap:(a,c)=>{const ph=player.phi,x=player.x+Math.cos(ph)*20,y=player.y+Math.sin(ph)*20;fxI({_tvc:1,n:'w52_claw_ground',x,y,w:190,layer:'ground',rot:0,fx:Math.cos(ph)<0,life:1.3,s0:.6,s1:1,fadeIn:.001,fadeOut:.35});if(typeof shake==='function')shake(4);},
-  valhallasWrath:(a,c)=>{const t=W.tgt(c,260)||player;fxI({n:'w07_rage',x:player.x,y:player.y,w:130,ay:.88,life:1,s0:.6,s1:1.05,fadeOut:.4,layer:'ground',follow:1});
-    setFxT(.15,()=>{W.crater(t.x,t.y,220);flashS(.3,'#ff4a3a');});},
+  valhallasWrath:(a,c)=>{},
   frostFang:(a,c)=>W.slash(player.phi,140,'frost'),
   iceBreak:(a,c)=>{const t=W.tgt(c);W.slash(player.phi,130,'frost',1);if(t){W.icecrack(t.x,t.y,150);W.shatter(t.x,t.y,t.boss?150:110);}},
   runeBurst:(a,c)=>{W.shatter(player.x,player.y,150);},
@@ -131,7 +130,7 @@ class WDelay{constructor(t,f){this.t=t;this.f=f;this.layer='none';}update(dt){th
 function setFxT(t,f){addFx(new WDelay(t,f));}
 let BAN=null;
 /* owner 2026-11-20: Blood Cleave / Savage Rend / Axe Dance without sparkle bursts or dot particles */
-const W_QUIET=new Set(['bloodCleave','savageRend','axeDance','wolfFinale','vampiricAxe','axeCyclone','bloodRush','cycloneLeap','executioner','armorBreak','predatorsLeap']);
+const W_QUIET=new Set(['bloodCleave','savageRend','axeDance','wolfFinale','vampiricAxe','axeCyclone','bloodRush','cycloneLeap','executioner','armorBreak','predatorsLeap','valhallasWrath']);
 /* Axe Dance: each landed hit shows the next painted dance move (up, down, spin, backhand, thrust) */
 let wDanceN=0,wDanceT=-1;const W_DANCE=['w28_dance_up','w32_dance_down','w34_dance_spin','w33_dance_back','w28_dance_up','w32_dance_down','w35_dance_thrust'];
 function wDance(e,fin0){if(gameTime-wDanceT<.04)return;wDanceT=gameTime;const n=fin0?'w35_dance_thrust':W_DANCE[wDanceN%(W_DANCE.length-1)];wDanceN++;
@@ -191,6 +190,30 @@ class WLeapArc{constructor(sx,sy,dx,dy,life){Object.assign(this,{sx,sy,dx,dy,lif
   draw(){const [ax,ay]=P(this.sx,this.sy,0),[bx,by]=P(this.dx,this.dy,0),ddx=bx-ax,ddy=by-ay,L=Math.hypot(ddx,ddy);if(L<20)return;const L2=ddx<0,
       a=this.t<.06?this.t/.06:(this.t>this.life?Math.max(0,1-(this.t-this.life)/.35):1),W=L/.86,rot=Math.atan2(ddy,ddx);
     ctx.save();ctx.translate(ax+ddx*.47,ay+ddy*.47);ctx.rotate(rot);if(L2)ctx.scale(1,-1);wDraw('w51_leap_arc',0,L2?6:-6,W,{a:a*.95,ay:L2?.22:.78});ctx.restore();}}
+/* Valhalla's Wrath: gate of light (w53) over the wolf while charging, every dash hit = w43 cut, 3 golden spirit clones fly in from 3 corners,
+   the giant golden axe (w55) falls on the centre and the landing = w54 red-gold burst */
+class WClone{constructor(o){Object.assign(this,o,{t:0,layer:'sorted'});}get sy(){return this.y+1;}
+  update(dt){this.t+=dt;const k=Math.min(1,this.t/this.dur),e=k*k;this.x=this.sx+(this.cx-this.sx)*e;this.y=this.sy0+(this.cy-this.sy0)*e;this.z=70*Math.sin(Math.PI*Math.min(1,k*.9+.1))*(1-k*.6);return this.t<this.dur+.18;}
+  draw(){if(typeof playerFrame!=='function')return;const fr=playerFrame();if(!fr)return;const a=this.t>this.dur?Math.max(0,1-(this.t-this.dur)/.18):Math.min(1,this.t/.08);
+    for(let g=2;g>=0;g--){const back=g*.035,k=Math.max(0,Math.min(1,(this.t-back)/this.dur)),e=k*k,x=this.sx+(this.cx-this.sx)*e,y=this.sy0+(this.cy-this.sy0)*e,[px,py]=P(x,y,this.z);
+      ctx.save();if(typeof CHAR_SCALE!=='undefined'&&CHAR_SCALE!==1){ctx.translate(px,py);ctx.scale(CHAR_SCALE,CHAR_SCALE);ctx.translate(-px,-py);}
+      if(this.fl){ctx.translate(px,0);ctx.scale(-1,1);ctx.translate(-px,0);}
+      ctx.globalCompositeOperation=g?'lighter':'source-over';drawFrame(fr,px,py,a*(g?.25:.7),null,tinted(fr,g?'#ff8a2a':'#ffd36a'));ctx.restore();}}}
+class WGodAxe{constructor(x,y,fall){Object.assign(this,{x,y,fall,t:0,layer:'top',life:fall+.55});}update(dt){this.t+=dt;return this.t<this.life;}
+  draw(){const k=Math.min(1,this.t/this.fall),z=420*(1-k*k),h=this.t-this.fall,a=h>0?Math.max(0,1-Math.max(0,h-.25)/.3):Math.min(1,this.t/.08),[x,y]=P(this.x,this.y,z);wDraw('w55_valhalla_axe',x,y+8,190*(h>0&&h<.08?1.08:1),{a,ay:.97});}}
+/* Valhalla dash hits: the giant golden axe (w55) swings through the target, alternating sides, like a huge chasing chop */
+let wVhN=0;
+class WBigSwing{constructor(e,side){Object.assign(this,{x:e.x,y:e.y,side,t:0,life:.26,layer:'top'});}update(dt){this.t+=dt;return this.t<this.life;}
+  draw(){const k=Math.min(1,this.t/.14),e=1-(1-k)*(1-k),a=this.t<.03?this.t/.03:(this.t>.16?Math.max(0,1-(this.t-.16)/.1):1),[x,y]=P(this.x,this.y,30),sd=this.side,
+      ang=sd*(-1.25+2.3*e),R=34;ctx.save();ctx.translate(x-sd*R*.3,y-R*.6);ctx.rotate(ang+Math.PI);
+    for(let g=2;g>=1;g--){ctx.save();ctx.rotate(-sd*.22*g);ctx.globalAlpha=a*.22/g;wDraw('w55_valhalla_axe',0,0,95,{ay:.06,a:a*.25/g});ctx.restore();}
+    wDraw('w55_valhalla_axe',0,0,95,{ay:.06,a});ctx.restore();}}
+function wValhalla(a,c){wVhN=0;const cx=c.gx,cy=c.gy,ev=a.events,tA=a.windup,ts=ev.map(e=>e.t).sort((x,y)=>y-x),tLand=ts[0],tF=ts[1];
+  ev.push({t:.04,f:()=>fxI({_tvc:1,n:'w53_valhalla_gate',x:player.x,y:player.y+4,z:0,ay:.98,w:140,life:tA+.2,s0:.85,s1:1,fadeIn:.25,fadeOut:.2,follow:1})});
+  ev.push({t:tF,f:()=>{const R=150;[[-2.5,1],[-.6,0],[1.5,1]].forEach(([an,fl],i)=>addFx(new WClone({sx:cx+Math.cos(an)*R,sy0:cy+Math.sin(an)*R*.7,cx,cy,dur:Math.max(.2,tLand-tF)-i*.03,fl:Math.cos(an)>0})));}});
+  ev.push({t:tLand-.28,f:()=>addFx(new WGodAxe(cx,cy,.28))});
+  ev.push({t:tLand,f:()=>{fxI({_tvc:1,n:'w54_valhalla_burst',x:cx,y:cy+6,z:0,ay:.95,w:260,life:.7,s0:.5,s1:1.1,fadeIn:.001,fadeOut:.45,glow:.4});fxI({_tvc:1,n:'w37_finale_crater',x:cx,y:cy,w:260,layer:'ground',life:1.4,s0:.6,s1:1,fadeIn:.001,fadeOut:.35});if(typeof shake==='function')shake(8);
+    for(let i=0;i<6;i++){const an=rnd(0,TAU),v=rnd(120,220);addFx(new WRock({n:'wr'+(1+i%4)+'_rock',x:cx,y:cy,vx:Math.cos(an)*v,vy:Math.sin(an)*v*.6,vz:rnd(300,460),w:rnd(16,26)}));}}});}
 function wQuiet(){return CHAR==='wolf'&&player.action&&W_QUIET.has(player.action.key);}
 
 /* War Fury: the wolf's own sprite glazed red (no flames) + a thin red rim */
@@ -228,6 +251,7 @@ function install(){
   if(typeof CHAR==='undefined'||CHAR!=='wolf')return;
   if(!window._wSA&&typeof slashAt==='function'){window._wSA=1;const S0=slashAt;window.slashAt=slashAt=function(a,kC,o){if(CHAR==='wolf'&&a&&a.key==='axeDance'){wDance(null,o&&o.W>=28);return;}if(CHAR==='wolf'&&a&&(a.key==='bloodCleave'||a.key==='savageRend')){wBlood(a.key,o);return;}if(CHAR==='wolf'&&a&&a.key==='vampiricAxe'){wVampSlash();return;}return S0.apply(this,arguments);};}
   if(!window._wQE&&typeof emit==='function'){window._wQE=1;const E0=emit;window.emit=emit=function(o){if(wQuiet())return;return E0.apply(this,arguments);};}
+  if(SKILLS.valhallasWrath&&!SKILLS.valhallasWrath._wvw){const sk=SKILLS.valhallasWrath,mk=sk.make;sk._wvw=1;sk.make=function(c){const a=mk.apply(this,arguments);if(CHAR==='wolf'&&a&&a.events&&c&&c.gx!=null)wValhalla(a,c);return a;};}
   if(SKILLS.predatorsLeap&&!SKILLS.predatorsLeap._wpl){const sk=SKILLS.predatorsLeap,mk=sk.make;sk._wpl=1;sk.make=function(c){const sx=player.x,sy=player.y,a=mk.apply(this,arguments);if(CHAR==='wolf'&&a&&a.events){const t0=c&&c.target&&!c.target.dead?c.target:nearestEnemy(sx,sy,300,player.phi);
     const dx=t0?t0.x:sx+Math.cos(player.phi)*160,dy=t0?t0.y:sy+Math.sin(player.phi)*160;a.events.push({t:.02,f:()=>addFx(new WLeapArc(sx,sy,dx,dy,Math.max(.25,(a.windup||.4)-.02)))});}return a;};}
   if(SKILLS.executioner&&!SKILLS.executioner._wea){const sk=SKILLS.executioner,mk=sk.make;sk._wea=1;sk.make=function(c){const a=mk.apply(this,arguments);if(CHAR==='wolf'&&a&&a.events){const t0=c&&c.target&&!c.target.dead?c.target:null;
@@ -237,10 +261,10 @@ function install(){
       if(wQuiet()&&f&&player.action.key==='executioner'&&f.constructor.name==='Guillotine'){if(window._wEA)window._wEA.drop();return f;}
       if(wQuiet()&&f&&player.action.key==='cycloneLeap'&&f.constructor.name==='CycloneRing'){fxI({_tvc:1,n:'w45_leap_spiral',x:player.x,y:player.y+2,z:0,ay:.96,w:120,life:.45,s0:.6,s1:1.1,fadeIn:.001,fadeOut:.5,follow:1});return f;}
       if(wQuiet()&&f&&player.action.key==='bloodRush'&&f.constructor.name==='Streak'&&f.a&&f.b){A0.call(this,new WStreak(f.a,f.b));return f;}
-      if(wQuiet()&&f&&(/^(Bit|WBit|Burst|Impact|ScorchLine)$/.test(f.constructor.name)||(/^(axeDance|bloodCleave|savageRend|wolfFinale|vampiricAxe|axeCyclone|cycloneLeap|executioner|armorBreak|predatorsLeap)$/.test(player.action.key)&&/^(Slash|TexArc|SpectralAxe|GRing|Crack|Drain|SpiralWave|CrackStar|ClawMarks)$/.test(f.constructor.name))||(f.n&&/^(w03|x03|x04)/.test(f.n))))return f;
+      if(wQuiet()&&f&&(/^(Bit|WBit|Burst|Impact|ScorchLine)$/.test(f.constructor.name)||(/^(axeDance|bloodCleave|savageRend|wolfFinale|vampiricAxe|axeCyclone|cycloneLeap|executioner|armorBreak|predatorsLeap|valhallasWrath)$/.test(player.action.key)&&/^(Slash|TexArc|SpectralAxe|GRing|Crack|Drain|SpiralWave|CrackStar|ClawMarks)$/.test(f.constructor.name))||(f.n&&/^(w03|x03|x04)/.test(f.n))))return f;
       if(CHAR==='wolf'&&f&&typeof FallObj!=='undefined'&&f instanceof FallObj&&f.kind==='axe'&&player.action&&player.action.key==='ragnaroksJudgment')wMjolnir(f);return A0.apply(this,arguments);};
     if(typeof BannerObj!=='undefined'){const d0=BannerObj.prototype.draw;BannerObj.prototype.draw=function(){if(CHAR==='wolf')return;return d0.apply(this,arguments);};}}
-  for(const n of ['w51_leap_arc','w52_claw_ground','w49_armor_shatter','w50_armor_icon','w46_exec_axe','w47_exec_cut','w48_exec_mark','w45_leap_spiral','w44_cyclone_ground','w42_rush_streak','w43_rush_cut','w39_vamp_slash','w40_blood_drain','w41_vamp_heal','w36_finale_chop','w37_finale_crater','w38_finale_quake','wr1_rock','wr2_rock','wr3_rock','wr4_rock','w26_cleave_wide','w27_rend_claw','w29_blood_pool','w30_bleed_drip','w31_rupture','w28_dance_up','w32_dance_down','w33_dance_back','w34_dance_spin','w35_dance_thrust','w25_thunder_burst','w24_rune_shield','w01_axe','w02_blood','w03_hitred','w04_cyclone','w05_howl','w06_vamp','w07_rage','w08_exec','w09_parry','w10_armor','w11_frost','w12_ice','w13_prison','w14_rune','w15_bolt','w16_spear','w17_blizzard','w18_shatter','w19_spirit','w20_banner','w23_mjolnir','w21_glacial','w22_worldstorm','09_crater','22_pow','23_dust','25_shock'])wImg(n);
+  for(const n of ['w53_valhalla_gate','w54_valhalla_burst','w55_valhalla_axe','w51_leap_arc','w52_claw_ground','w49_armor_shatter','w50_armor_icon','w46_exec_axe','w47_exec_cut','w48_exec_mark','w45_leap_spiral','w44_cyclone_ground','w42_rush_streak','w43_rush_cut','w39_vamp_slash','w40_blood_drain','w41_vamp_heal','w36_finale_chop','w37_finale_crater','w38_finale_quake','wr1_rock','wr2_rock','wr3_rock','wr4_rock','w26_cleave_wide','w27_rend_claw','w29_blood_pool','w30_bleed_drip','w31_rupture','w28_dance_up','w32_dance_down','w33_dance_back','w34_dance_spin','w35_dance_thrust','w25_thunder_burst','w24_rune_shield','w01_axe','w02_blood','w03_hitred','w04_cyclone','w05_howl','w06_vamp','w07_rage','w08_exec','w09_parry','w10_armor','w11_frost','w12_ice','w13_prison','w14_rune','w15_bolt','w16_spear','w17_blizzard','w18_shatter','w19_spirit','w20_banner','w23_mjolnir','w21_glacial','w22_worldstorm','09_crater','22_pow','23_dust','25_shock'])wImg(n);
   for(const k in AT){const sk=SKILLS[k]||(typeof CSK!=='undefined'&&CSK[k]);if(!sk||!sk.make||sk._wfx)continue;const mk=sk.make;sk._wfx=1;
     sk.make=function(c){const a=mk.apply(this,arguments);if(a&&a.events){const t=Math.max(.02,Math.min(a.windup||.02,(a.dur||1)-.02));a.events.push({t,f:()=>{try{AT[k](a,c||{});}catch(e){console.error('wolf_fx '+k+': '+e);}}});}return a;};}
   /* normal attack: painted axe swing */
@@ -248,7 +272,7 @@ function install(){
   /* every hit: spark (A/basic red + blood, B ice) */
   if(typeof hurt==='function'&&!hurt._wfx){const h0=hurt;let last=0;
     hurt=function(e,mult,o={}){const wasDead=e&&e.dead,wMk=!!(e&&e.st&&(e.st.bleed>0||e.st.armor>0));const r=h0.apply(this,arguments);if(!e||wasDead||!r)return r;if(o&&o.dot)return r;
-      const k=(o&&o.skill)||(o&&o.auto?'basic':null)||window.SKCTX||'basic';if(CHAR==='wolf'&&player.action){const ak=player.action.key;if(ak==='bloodCleave'&&!e._wbl){e._wbl=1;setFxT(.6,()=>{e._wbl=0;});wBleedFx(e);}else if(ak==='vampiricAxe')wVampHit(e);else if(ak==='bloodRush')wRushCut(e);else if(ak==='executioner')wExecHit(e,wMk);else if(ak==='armorBreak')wArmorHit(e);else if(ak==='axeCyclone'&&gameTime-(e._wcy||0)>.12){e._wcy=gameTime;const an=Math.atan2(e.y-player.y,e.x-player.x)+Math.PI/2;fxI({_tvc:1,n:Math.random()<.5?'w33_dance_back':'w35_dance_thrust',x:e.x,y:e.y,z:28,w:70,rot:scr(an)+rnd(-.3,.3),fy:Math.random()<.5,life:.2,s0:.7,s1:1.05,fadeIn:.001,fadeOut:.6,glow:.4});}else if(ak==='savageRend'&&o&&o.label==='RUPTURE'){fxI({_tvc:1,n:'w31_rupture',x:e.x,y:e.y+2,z:0,ay:.95,w:e.boss?150:120,life:.5,s0:.45,s1:1.1,fadeIn:.001,fadeOut:.45,glow:.5});wBleedFx(e,1);}}if(gameTime-last<.035&&!(o&&o.big))return r;last=gameTime;
+      const k=(o&&o.skill)||(o&&o.auto?'basic':null)||window.SKCTX||'basic';if(CHAR==='wolf'&&player.action){const ak=player.action.key;if(ak==='bloodCleave'&&!e._wbl){e._wbl=1;setFxT(.6,()=>{e._wbl=0;});wBleedFx(e);}else if(ak==='vampiricAxe')wVampHit(e);else if(ak==='bloodRush')wRushCut(e);else if(ak==='valhallasWrath'&&!(o&&o.big)){wVhN++;addFx(new WBigSwing(e,wVhN%2?1:-1));wRushCut(e);}else if(ak==='executioner')wExecHit(e,wMk);else if(ak==='armorBreak')wArmorHit(e);else if(ak==='axeCyclone'&&gameTime-(e._wcy||0)>.12){e._wcy=gameTime;const an=Math.atan2(e.y-player.y,e.x-player.x)+Math.PI/2;fxI({_tvc:1,n:Math.random()<.5?'w33_dance_back':'w35_dance_thrust',x:e.x,y:e.y,z:28,w:70,rot:scr(an)+rnd(-.3,.3),fy:Math.random()<.5,life:.2,s0:.7,s1:1.05,fadeIn:.001,fadeOut:.6,glow:.4});}else if(ak==='savageRend'&&o&&o.label==='RUPTURE'){fxI({_tvc:1,n:'w31_rupture',x:e.x,y:e.y+2,z:0,ay:.95,w:e.boss?150:120,life:.5,s0:.45,s1:1.1,fadeIn:.001,fadeOut:.45,glow:.5});wBleedFx(e,1);}}if(gameTime-last<.035&&!(o&&o.big))return r;last=gameTime;
       const z=(e.boss?40:26)+rnd(-6,8);
       if(k==='basic'){fxI({n:'x04_ice_hit',x:e.x+rnd(-6,6),y:e.y,z,w:e.boss?56:42,rot:rnd(0,TAU),life:.16,s0:.5,s1:1.1,fadeIn:.001,fadeOut:.6,glow:.4});}
       else if(B_SET.has(k)){fxI({n:'w18_shatter',x:e.x+rnd(-6,6),y:e.y,z,w:e.boss?70:50,rot:rnd(0,TAU),life:.18,s0:.5,s1:1.1,fadeIn:.001,fadeOut:.6,glow:.6});bits('w12_ice',e.x,e.y,z,2,100);}
