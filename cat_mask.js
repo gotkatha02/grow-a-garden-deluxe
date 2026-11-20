@@ -21,8 +21,20 @@ function hatCut(st,d,f,r){const k=st+'|'+d+'|'+f;if(HC[k]!==undefined)return HC[
     if(on&&p[(y*aw+x)*4+3]>40){q[(y*aw+x)*4+3]=255;}}
   g.clearRect(0,0,aw,ah);g.putImageData(o,0,0);return HC[k]=c;}
 const T=document.createElement('canvas'),TG=T.getContext('2d');
-const KMW=window.KMW={on:0,a:0,crack:-1};
-function draw(){if(!KMW.on&&KMW.crack<0)return;const fr=playerFrame(),r=frameRect(fr.st,fr.d,fr.f);if(!r)return;
+const KMW=window.KMW={on:0,a:0,crack:-1,oniT:-1};
+function face(){const fr=playerFrame(),r=frameRect(fr.st,fr.d,fr.f);if(!r)return null;const mir=isMir(fr.d),sd=(SPR_META.mirror&&SPR_META.mirror[fr.d])||fr.d,o=OFF[sd],L=HAT[fr.st]&&HAT[fr.st][sd];if(!o||!L)return null;
+  const h=L[Math.min(fr.f,L.length-1)],hw=HW[sd],cx=h[0]+o[0]*hw,cy=h[1]+o[1]*hw,[x,y]=P(player.x,player.y,player.z||0),k=SPR*CHAR_SCALE;
+  return {x:x+((mir?SPR_META.cell.w-cx:cx)-SPR_META.pivot.x)*k,y:y+(cy-SPR_META.pivot.y)*k,w:OFF.S[2]*HW.S*k};}
+/* Ashura oni (owner's video 2026-11-21): a fire-spirit oni rises behind the cat and lowers the fox mask onto its face.
+   ashura_oni.webp = the oni (luminance-keyed, frames 1-105 every 2nd, 53 frames 233x288, 8 cols, 24 fps), drawn on the ground layer;
+   ashura_oni_mask.webp = the same frames with only the mask, drawn in front of the cat. CEN[i] = mask centre / width in a frame.
+   The clip is anchored so the mask of the last frame lands on the cat's face; then the worn mask takes over. */
+const CEN=[[164.2,104.3,38.4],[164.5,104.4,38.4],[162.4,99.8,38.4],[162.4,100.0,38.4],[162.6,100.2,38.4],[162.6,100.5,39.0],[162.8,101.1,39.0],[163.3,101.8,37.8],[163.7,102.9,38.4],[164.5,104.2,37.8],[165.5,105.9,38.4],[166.7,108.2,38.4],[167.9,110.7,37.8],[172.2,120.0,37.2],[170.9,117.4,39.0],[172.3,121.4,39.0],[173.8,125.5,39.6],[170.0,129.2,55.2],[178.7,141.1,37.8],[173.0,137.9,54.6],[174.3,141.8,54.6],[178.1,147.4,39.0],[178.8,152.3,40.2],[179.3,156.9,40.2],[178.4,160.8,45.0],[180.0,166.3,40.2],[179.7,170.5,40.2],[180.0,175.0,40.2],[179.9,179.1,40.2],[179.7,182.2,40.8],[179.6,186.1,40.8],[179.5,189.6,40.2],[182.5,203.8,37.8],[182.3,207.0,37.8],[178.9,198.8,40.8],[181.8,212.7,37.8],[178.2,203.9,40.8],[178.0,206.3,40.2],[177.8,207.9,40.2],[180.7,220.9,38.4],[180.6,222.7,39.0],[177.4,212.4,40.8],[177.2,213.4,40.8],[177.2,214.6,40.2],[177.1,215.5,40.2],[180.0,227.6,37.8],[180.0,228.0,38.4],[179.7,228.2,37.8],[179.6,228.4,37.8],[179.7,228.5,37.8],[179.5,228.6,38.4],[176.7,217.1,40.8],[179.8,229.0,38.4]],NF=CEN.length,FPS=24,ONI=new Image(),ONM=new Image();ONI.src='assets/fx/cat/ashura_oni.webp?v=1';ONM.src='assets/fx/cat/ashura_oni_mask.webp?v=1';
+function oniDraw(im){const t=KMW.oniT;if(t<0||!im.complete||!im.naturalWidth)return;const f=face();if(!f)return;const i=Math.min(NF-1,Math.floor(t*FPS)),fw=im.naturalWidth/8,fh=Math.round(im.naturalHeight/Math.ceil(NF/8)),
+    c=CEN[NF-1],s=f.w/c[2],mir=KMW.oniMir,al=Math.min(1,t/.25)*(t>NF/FPS?Math.max(0,1-(t-NF/FPS)/.3):1);if(al<=0)return;
+  ctx.save();ctx.globalAlpha*=al;ctx.translate(f.x,f.y);if(mir)ctx.scale(-1,1);ctx.drawImage(im,(i%8)*fw,Math.floor(i/8)*fh,fw,fh,-c[0]*s,-c[1]*s,fw*s,fh*s);ctx.restore();}
+class KAshuraOni{constructor(){this.layer='ground';}update(dt){return KMW.oniT>=0;}draw(){oniDraw(ONI);}}
+function draw(){if(KMW.oniT>=0&&KMW.oniT<NF/FPS)oniDraw(ONM);if(!KMW.on&&KMW.crack<0)return;const fr=playerFrame(),r=frameRect(fr.st,fr.d,fr.f);if(!r)return;
   const mir=isMir(fr.d),sd=(SPR_META.mirror&&SPR_META.mirror[fr.d])||fr.d,o=OFF[sd],L=HAT[fr.st]&&HAT[fr.st][sd];if(!o||!L)return;
   const h=L[Math.min(fr.f,L.length-1)],hw=HW[sd],[ax,ay,aw,ah,bx,by]=r;
   let im=IM[sd],w=o[2]*hw,cx=h[0]+o[0]*hw,cy=h[1]+o[1]*hw,al=KMW.a,sh=0,s=1;
@@ -37,9 +49,13 @@ function draw(){if(!KMW.on&&KMW.crack<0)return;const fr=playerFrame(),r=frameRec
   else ctx.drawImage(T,x+(bx-PAD-SPR_META.pivot.x)*k,dy,W*k,H*k);ctx.restore();}
 const D0=window.drawPlayer;window.drawPlayer=function(){D0.apply(this,arguments);try{draw();}catch(e){}};
 let last=0;function tick(){const now=performance.now(),dt=Math.min(.1,(now-last)/1000);last=now;
+  if(KMW.oniT>=0){const was=KMW.oniT<NF/FPS;KMW.oniT+=dt;if(was&&KMW.oniT>=NF/FPS){KMW.wear();if(KMW.pendOn&&window.KTV&&KTV._ashuraOn0){KMW.pendOn=0;KTV._ashuraOn0();}}if(KMW.oniT>NF/FPS+.35)KMW.oniT=-1;}
   if(KMW.crack>=0){KMW.crack+=dt;if(KMW.crack>.45)KMW.crack=-1;}
   else if(KMW.on){KMW.a=Math.min(1,KMW.a+dt*12);if(!hasBuff('kbAshura')&&(KMW.t=(KMW.t||0)+dt)>1.5){KMW.on=0;}}
   requestAnimationFrame(tick);}requestAnimationFrame(t=>{last=t;tick();});
 window.KMW.wear=function(){KMW.on=1;KMW.a=1;KMW.t=0;KMW.crack=-1;};
-window.KMW.off=function(){KMW.on=0;KMW.crack=0;};
+window.KMW.off=function(){KMW.on=0;KMW.crack=0;KMW.oniT=-1;};
+if(window.KTV){const S0=KTV.ashuraStart,O0=KTV.ashuraOn;KTV._ashuraOn0=O0;
+  KTV.ashuraStart=function(tW){if(!ONI.complete||!ONI.naturalWidth)return S0&&S0.apply(this,arguments);KMW.on=0;KMW.crack=-1;KMW.oniT=0;KMW.oniMir=Math.cos(player.phi||0)<0;KMW.pendOn=0;addFx(new KAshuraOni());};
+  KTV.ashuraOn=function(){if(KMW.oniT>=0&&KMW.oniT<NF/FPS){KMW.pendOn=1;return;}return O0&&O0.apply(this,arguments);};}
 })();
