@@ -99,7 +99,7 @@ const AT={   // key: (a,c) => visuals ; a = the action, c = cast context
   warHowl:(a,c)=>{fxI({n:'w05_howl',x:player.x,y:player.y,z:70,w:120,life:.9,s0:.5,s1:1.1,fadeOut:.45,glow:.6});fxI({n:'25_shock',x:player.x,y:player.y,w:220,life:.45,s0:.3,s1:1.15,fadeIn:.001,fadeOut:.7,layer:'ground'});flashS(.12,'#ffcf6a');},
   warFury:(a,c)=>{flashS(.15,'#ff3a2a');},
   bloodRush:(a,c)=>{},
-  predatorsLeap:(a,c)=>{setFxT(.3,()=>W.crater(player.x,player.y,160));},
+  predatorsLeap:(a,c)=>{const ph=player.phi,x=player.x+Math.cos(ph)*20,y=player.y+Math.sin(ph)*20;fxI({_tvc:1,n:'w52_claw_ground',x,y,w:190,layer:'ground',rot:0,fx:Math.cos(ph)<0,life:1.3,s0:.6,s1:1,fadeIn:.001,fadeOut:.35});if(typeof shake==='function')shake(4);},
   valhallasWrath:(a,c)=>{const t=W.tgt(c,260)||player;fxI({n:'w07_rage',x:player.x,y:player.y,w:130,ay:.88,life:1,s0:.6,s1:1.05,fadeOut:.4,layer:'ground',follow:1});
     setFxT(.15,()=>{W.crater(t.x,t.y,220);flashS(.3,'#ff4a3a');});},
   frostFang:(a,c)=>W.slash(player.phi,140,'frost'),
@@ -131,7 +131,7 @@ class WDelay{constructor(t,f){this.t=t;this.f=f;this.layer='none';}update(dt){th
 function setFxT(t,f){addFx(new WDelay(t,f));}
 let BAN=null;
 /* owner 2026-11-20: Blood Cleave / Savage Rend / Axe Dance without sparkle bursts or dot particles */
-const W_QUIET=new Set(['bloodCleave','savageRend','axeDance','wolfFinale','vampiricAxe','axeCyclone','bloodRush','cycloneLeap','executioner','armorBreak']);
+const W_QUIET=new Set(['bloodCleave','savageRend','axeDance','wolfFinale','vampiricAxe','axeCyclone','bloodRush','cycloneLeap','executioner','armorBreak','predatorsLeap']);
 /* Axe Dance: each landed hit shows the next painted dance move (up, down, spin, backhand, thrust) */
 let wDanceN=0,wDanceT=-1;const W_DANCE=['w28_dance_up','w32_dance_down','w34_dance_spin','w33_dance_back','w28_dance_up','w32_dance_down','w35_dance_thrust'];
 function wDance(e,fin0){if(gameTime-wDanceT<.04)return;wDanceT=gameTime;const n=fin0?'w35_dance_thrust':W_DANCE[wDanceN%(W_DANCE.length-1)];wDanceN++;
@@ -185,6 +185,12 @@ function wExecHit(e,marked){const big=marked;fxI({_tvc:1,n:'w47_exec_cut',x:e.x,
 function wArmorHit(e){if(gameTime-(e._wab||0)<.25)return;e._wab=gameTime;fxI({_tvc:1,n:'w49_armor_shatter',x:e.x,y:e.y+3,z:0,ay:.93,w:e.boss?150:120,life:.5,s0:.5,s1:1.08,fadeIn:.001,fadeOut:.45,glow:.4});if(typeof shake==='function')shake(4);}
 class WArmorIcons{constructor(){this.layer='top';this.t=0;}update(dt){this.t+=dt;return CHAR==='wolf';}
   draw(){if(typeof enemies==='undefined')return;for(const e of enemies){if(e.dead||!e.st||!(e.st.armor>0))continue;const a=Math.min(1,e.st.armor/.4),[x,y]=P(e.x,e.y,(e.boss?100:78)+2*Math.sin(this.t*3+e.x));wDraw('w50_armor_icon',x,y,e.boss?44:36,{a:a*.95});}}}
+/* Predator's Leap: the painted pounce arc (w51) spans from the take-off point to the landing point while the wolf flies */
+class WLeapArc{constructor(sx,sy,dx,dy,life){Object.assign(this,{sx,sy,dx,dy,life,t:0,layer:'ground'});}
+  update(dt){this.t+=dt;return this.t<this.life+.35;}
+  draw(){const [ax,ay]=P(this.sx,this.sy,0),[bx,by]=P(this.dx,this.dy,0),ddx=bx-ax,ddy=by-ay,L=Math.hypot(ddx,ddy);if(L<20)return;const L2=ddx<0,
+      a=this.t<.06?this.t/.06:(this.t>this.life?Math.max(0,1-(this.t-this.life)/.35):1),W=L/.86,rot=Math.atan2(ddy,ddx);
+    ctx.save();ctx.translate(ax+ddx*.47,ay+ddy*.47);ctx.rotate(rot);if(L2)ctx.scale(1,-1);wDraw('w51_leap_arc',0,L2?6:-6,W,{a:a*.95,ay:L2?.22:.78});ctx.restore();}}
 function wQuiet(){return CHAR==='wolf'&&player.action&&W_QUIET.has(player.action.key);}
 
 /* War Fury: the wolf's own sprite glazed red (no flames) + a thin red rim */
@@ -222,6 +228,8 @@ function install(){
   if(typeof CHAR==='undefined'||CHAR!=='wolf')return;
   if(!window._wSA&&typeof slashAt==='function'){window._wSA=1;const S0=slashAt;window.slashAt=slashAt=function(a,kC,o){if(CHAR==='wolf'&&a&&a.key==='axeDance'){wDance(null,o&&o.W>=28);return;}if(CHAR==='wolf'&&a&&(a.key==='bloodCleave'||a.key==='savageRend')){wBlood(a.key,o);return;}if(CHAR==='wolf'&&a&&a.key==='vampiricAxe'){wVampSlash();return;}return S0.apply(this,arguments);};}
   if(!window._wQE&&typeof emit==='function'){window._wQE=1;const E0=emit;window.emit=emit=function(o){if(wQuiet())return;return E0.apply(this,arguments);};}
+  if(SKILLS.predatorsLeap&&!SKILLS.predatorsLeap._wpl){const sk=SKILLS.predatorsLeap,mk=sk.make;sk._wpl=1;sk.make=function(c){const sx=player.x,sy=player.y,a=mk.apply(this,arguments);if(CHAR==='wolf'&&a&&a.events){const t0=c&&c.target&&!c.target.dead?c.target:nearestEnemy(sx,sy,300,player.phi);
+    const dx=t0?t0.x:sx+Math.cos(player.phi)*160,dy=t0?t0.y:sy+Math.sin(player.phi)*160;a.events.push({t:.02,f:()=>addFx(new WLeapArc(sx,sy,dx,dy,Math.max(.25,(a.windup||.4)-.02)))});}return a;};}
   if(SKILLS.executioner&&!SKILLS.executioner._wea){const sk=SKILLS.executioner,mk=sk.make;sk._wea=1;sk.make=function(c){const a=mk.apply(this,arguments);if(CHAR==='wolf'&&a&&a.events){const t0=c&&c.target&&!c.target.dead?c.target:null;
     a.events.push({t:.1,f:()=>{const e=t0&&!t0.dead?t0:nearestEnemy(player.x,player.y,140,player.phi);if(e)window._wEA=addFx(new WExecAxe(e,e.boss?110:90));}});}return a;};}
   if(!window._wDrop){window._wDrop=1;const D=['RuneCircle','RuneShield','LightPillar'].map(n=>{try{return eval(n);}catch(e){return null;}}).filter(Boolean);
@@ -229,10 +237,10 @@ function install(){
       if(wQuiet()&&f&&player.action.key==='executioner'&&f.constructor.name==='Guillotine'){if(window._wEA)window._wEA.drop();return f;}
       if(wQuiet()&&f&&player.action.key==='cycloneLeap'&&f.constructor.name==='CycloneRing'){fxI({_tvc:1,n:'w45_leap_spiral',x:player.x,y:player.y+2,z:0,ay:.96,w:120,life:.45,s0:.6,s1:1.1,fadeIn:.001,fadeOut:.5,follow:1});return f;}
       if(wQuiet()&&f&&player.action.key==='bloodRush'&&f.constructor.name==='Streak'&&f.a&&f.b){A0.call(this,new WStreak(f.a,f.b));return f;}
-      if(wQuiet()&&f&&(/^(Bit|WBit|Burst|Impact|ScorchLine)$/.test(f.constructor.name)||(/^(axeDance|bloodCleave|savageRend|wolfFinale|vampiricAxe|axeCyclone|cycloneLeap|executioner|armorBreak)$/.test(player.action.key)&&/^(Slash|TexArc|SpectralAxe|GRing|Crack|Drain|SpiralWave|CrackStar)$/.test(f.constructor.name))||(f.n&&/^(w03|x03|x04)/.test(f.n))))return f;
+      if(wQuiet()&&f&&(/^(Bit|WBit|Burst|Impact|ScorchLine)$/.test(f.constructor.name)||(/^(axeDance|bloodCleave|savageRend|wolfFinale|vampiricAxe|axeCyclone|cycloneLeap|executioner|armorBreak|predatorsLeap)$/.test(player.action.key)&&/^(Slash|TexArc|SpectralAxe|GRing|Crack|Drain|SpiralWave|CrackStar|ClawMarks)$/.test(f.constructor.name))||(f.n&&/^(w03|x03|x04)/.test(f.n))))return f;
       if(CHAR==='wolf'&&f&&typeof FallObj!=='undefined'&&f instanceof FallObj&&f.kind==='axe'&&player.action&&player.action.key==='ragnaroksJudgment')wMjolnir(f);return A0.apply(this,arguments);};
     if(typeof BannerObj!=='undefined'){const d0=BannerObj.prototype.draw;BannerObj.prototype.draw=function(){if(CHAR==='wolf')return;return d0.apply(this,arguments);};}}
-  for(const n of ['w49_armor_shatter','w50_armor_icon','w46_exec_axe','w47_exec_cut','w48_exec_mark','w45_leap_spiral','w44_cyclone_ground','w42_rush_streak','w43_rush_cut','w39_vamp_slash','w40_blood_drain','w41_vamp_heal','w36_finale_chop','w37_finale_crater','w38_finale_quake','wr1_rock','wr2_rock','wr3_rock','wr4_rock','w26_cleave_wide','w27_rend_claw','w29_blood_pool','w30_bleed_drip','w31_rupture','w28_dance_up','w32_dance_down','w33_dance_back','w34_dance_spin','w35_dance_thrust','w25_thunder_burst','w24_rune_shield','w01_axe','w02_blood','w03_hitred','w04_cyclone','w05_howl','w06_vamp','w07_rage','w08_exec','w09_parry','w10_armor','w11_frost','w12_ice','w13_prison','w14_rune','w15_bolt','w16_spear','w17_blizzard','w18_shatter','w19_spirit','w20_banner','w23_mjolnir','w21_glacial','w22_worldstorm','09_crater','22_pow','23_dust','25_shock'])wImg(n);
+  for(const n of ['w51_leap_arc','w52_claw_ground','w49_armor_shatter','w50_armor_icon','w46_exec_axe','w47_exec_cut','w48_exec_mark','w45_leap_spiral','w44_cyclone_ground','w42_rush_streak','w43_rush_cut','w39_vamp_slash','w40_blood_drain','w41_vamp_heal','w36_finale_chop','w37_finale_crater','w38_finale_quake','wr1_rock','wr2_rock','wr3_rock','wr4_rock','w26_cleave_wide','w27_rend_claw','w29_blood_pool','w30_bleed_drip','w31_rupture','w28_dance_up','w32_dance_down','w33_dance_back','w34_dance_spin','w35_dance_thrust','w25_thunder_burst','w24_rune_shield','w01_axe','w02_blood','w03_hitred','w04_cyclone','w05_howl','w06_vamp','w07_rage','w08_exec','w09_parry','w10_armor','w11_frost','w12_ice','w13_prison','w14_rune','w15_bolt','w16_spear','w17_blizzard','w18_shatter','w19_spirit','w20_banner','w23_mjolnir','w21_glacial','w22_worldstorm','09_crater','22_pow','23_dust','25_shock'])wImg(n);
   for(const k in AT){const sk=SKILLS[k]||(typeof CSK!=='undefined'&&CSK[k]);if(!sk||!sk.make||sk._wfx)continue;const mk=sk.make;sk._wfx=1;
     sk.make=function(c){const a=mk.apply(this,arguments);if(a&&a.events){const t=Math.max(.02,Math.min(a.windup||.02,(a.dur||1)-.02));a.events.push({t,f:()=>{try{AT[k](a,c||{});}catch(e){console.error('wolf_fx '+k+': '+e);}}});}return a;};}
   /* normal attack: painted axe swing */
