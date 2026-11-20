@@ -105,7 +105,7 @@ const AT={   // key: (a,c) => visuals ; a = the action, c = cast context
   iceBreak:(a,c)=>{const t=W.tgt(c);if(t){W.icecrack(t.x,t.y,150);fxI({_tvc:1,n:'w62_ice_burst',x:t.x,y:t.y+3,z:0,ay:.95,w:t.boss?150:120,life:.55,s0:.5,s1:1.08,fadeIn:.001,fadeOut:.45,glow:.4});}},
   runeBurst:(a,c)=>{W.shatter(player.x,player.y,150);},
   runeGuard:(a,c)=>{},
-  thunderFang:(a,c)=>{const t=W.tgt(c,240),ph=player.phi;fxI({_tvc:1,n:'w63_thunder_slash',x:player.x+Math.cos(ph)*60,y:player.y+Math.sin(ph)*60,z:30,w:140,rot:scr(ph),fy:Math.cos(ph)<0,life:.3,s0:.8,s1:1.06,fadeIn:.001,fadeOut:.5,wipe:.2,glow:.5});if(t){W.bolt(t.x,t.y,150);setFxT(.05,()=>fxI({_tvc:1,n:'w64_shock',x:t.x,y:t.y+3,z:0,ay:.96,w:t.boss?80:64,life:.5,s0:.8,s1:1.05,fadeIn:.001,fadeOut:.4,follow:0}));}},
+  thunderFang:(a,c)=>{const t=W.tgt(c,240),ph=player.phi;fxI({_tvc:1,n:'w63_thunder_slash',x:player.x+Math.cos(ph)*60,y:player.y+Math.sin(ph)*60,z:30,w:140,rot:scr(ph),fy:Math.cos(ph)<0,life:.3,s0:.8,s1:1.06,fadeIn:.001,fadeOut:.5,wipe:.2,glow:.5});if(t){W.bolt(t.x,t.y,150);setFxT(.05,()=>addFx(new WZap(t)));}},
   lightningPursuit:(a,c)=>{const t=W.tgt(c,300);if(t)W.bolt(t.x,t.y,170);},
   stormStep:(a,c)=>{W.bolt(player.x,player.y,140);},
   shatterPulse:(a,c)=>{W.icecrack(player.x,player.y,200);W.shatter(player.x,player.y,180);fxI({n:'25_shock',x:player.x,y:player.y,w:240,life:.45,s0:.3,s1:1.15,fadeIn:.001,fadeOut:.7,layer:'ground'});},
@@ -183,6 +183,14 @@ function wExecHit(e,marked){const big=marked;fxI({_tvc:1,n:'w47_exec_cut',x:e.x,
 /* Armor Break (steel, not red): hit = w49 armour shatter on the target; while armour is broken a small w50 cracked-shield badge floats over the enemy */
 function wArmorHit(e){if(gameTime-(e._wab||0)<.25)return;e._wab=gameTime;fxI({_tvc:1,n:'w49_armor_shatter',x:e.x,y:e.y+3,z:0,ay:.93,w:e.boss?150:120,life:.5,s0:.5,s1:1.08,fadeIn:.001,fadeOut:.45,glow:.4});if(typeof shake==='function')shake(4);}
 /* slowed enemies: code-drawn ice cuffs at the feet (owner: VFX, not a picture) — frosty floor patch + 5 small outlined ice spikes + slow sparkle */
+/* electric shock on an enemy: code VFX — 3 short jagged arcs flicker round the body for ~0.5 s */
+class WZap{constructor(e){Object.assign(this,{e,t:0,life:.5,layer:'top',k:0});}update(dt){this.t+=dt;return this.t<this.life;}
+  draw(){const e=this.e,H=e.boss?60:44,R=e.boss?20:15,[x,y]=P(e.x,e.y,0),a=1-this.t/this.life;if(((this.t*30)|0)%3===2)return;
+    ctx.save();ctx.lineCap='round';ctx.lineJoin='round';const sd=((this.t*20)|0);
+    for(let j=0;j<3;j++){const r=(n=>{const v=Math.sin(n*12.9898+sd*78.233)*43758.5;return v-Math.floor(v);}),an=r(j)*TAU,x0=x+Math.cos(an)*R,y0=y-8-r(j+3)*H*.5,pts=[[x0,y0]];
+      for(let i=1;i<5;i++)pts.push([x0+(r(j*7+i)-.5)*R*1.6,y0-i*H*.17+(r(j*5+i)-.5)*6]);
+      for(const [w,c] of [[5,'rgba(70,140,255,.5)'],[2.6,'#ffe45a'],[1,'#ffffff']]){ctx.globalAlpha=a;ctx.strokeStyle=c;ctx.lineWidth=w;ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.stroke();}}
+    ctx.restore();}}
 class WIceFeet{constructor(){this.layer='ground';this.t=0;}update(dt){this.t+=dt;return CHAR==='wolf';}
   draw(){if(typeof enemies==='undefined')return;for(const e of enemies){if(e.dead||!e.st||!(e.st.slow>0)||e.st.frozen)continue;const a=Math.min(1,e.st.slow/.4)*.9,R=(e.boss?30:22),[x,y]=P(e.x,e.y,0);
     ctx.save();ctx.globalAlpha=a;ctx.translate(x,y+2);ctx.save();ctx.scale(1,K);const g=ctx.createRadialGradient(0,0,2,0,0,R*1.25);g.addColorStop(0,'rgba(200,240,255,.75)');g.addColorStop(1,'rgba(150,215,255,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,R*1.25,0,TAU);ctx.fill();ctx.restore();
