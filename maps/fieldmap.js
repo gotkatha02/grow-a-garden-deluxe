@@ -184,7 +184,10 @@ const WAYKIT={
   jpn:{way:['jpLantern','jpLanternPole','jpJizo','jpMarker','jpSign','jpToriiS','jpFoxL','jpBasin','jpNobori','jpRailing','jpAzalea','jpHydrangea'],center:['jpBenchUmb'],around:['jpStallDango','jpRiceBales','jpSake','jpRickshaw','jpLantern','jpNotice']},
   cNE:null};
 const CAPKIT={way:['cpMilestone','cpLampWood','cpWayShrine','cpSignWood','cpFence','cpScarecrow','cpCratesRoad','cpHayBale','cpKnightS','cpRose','cpSunflower'],center:['cpCampfire'],around:['cpTent','cpCrates','cpCartBroken','cpRack','cpBarricade','cpStumpAxe']};
-function scaleField(c0){if(c0._scaled||c0.walls||c0.mons===false||c0.maze||c0.mood==='town'||c0.townish||c0.city)return c0;const S=c0.fieldScale??1.5;if(S===1)return c0;
+/* owner 2026-11-20: levelling maps were cramped, cluttered and nearly empty of monsters -> every field is laid out x2 (dungeons x1.4, mazes x1.25),
+   ground clutter is gone (rocks, logs, stumps, bushes, flowers, crates, statues, wayside markers, camps, flat ground details, loose grass tufts);
+   only trees + small trees stay, and far more monsters spawn (see spawnN / spawnGroup). */
+function scaleField(c0){if(c0._scaled||c0.mons===false||c0.mood==='town'||c0.townish||c0.city)return c0;const DG=!!(c0.walls||c0.maze),S=c0.fieldScale??(DG?(c0.maze?1.25:1.4):2);
   const c=JSON.parse(JSON.stringify(c0));c._scaled=1;const pt=p=>Array.isArray(p)?p.map((v,i)=>typeof v==='number'&&i<2?v*S:v):p;
   c.W=Math.round(c.W*S);c.H=Math.round(c.H*S);if(c.bridge)c.bridge=pt(c.bridge);if(c.stream)c.stream=c.stream.map(pt);
   if(c.trails)c.trails=c.trails.map(T=>T.map(pt));for(const r of c.roads||[])if(r.pts)r.pts=r.pts.map(pt);
@@ -195,16 +198,12 @@ function scaleField(c0){if(c0._scaled||c0.walls||c0.mons===false||c0.maze||c0.mo
   if(c.sea){if(c.sea.d)c.sea.d*=S;if(c.sea.x!=null)c.sea.x*=S;if(c.sea.y!=null)c.sea.y*=S;}
   if(c.start)c.start=Array.isArray(c.start)?pt(c.start):Object.assign(c.start,{x:c.start.x*S,y:c.start.y*S});
   /* fewer solid groves, more things to look at between them */
-  if(c.groves)c.groves.thr=(c.groves.thr??.52)+.05;c.propDens=(c.propDens??1)*1.5;c.openTrees=(c.openTrees??.06)*.6;
-  c.spawnN=Math.round((c.spawnN||32)*S*S/1.5);
-  /* life along the roads: wayside markers every few hundred px, small camps by the main road (region kit from the map id prefix) */
-  c.wayKit=WAYKIT[String(c._id||'').slice(0,3)]||(/^c[NSEW]/.test(c._id||'')?CAPKIT:null);
-  /* extra landmarks: copies of this map's own set pieces, each in a clearing well away from trails and warps */
-  let seed=(c.seed||1)*9301+49297;const rnd=()=>((seed=(seed*9301+49297)%233280)/233280);
-  const LM=(c.land||[]).map(o=>o.n).filter(n=>n&&!/entrance|sign|gate|door|stair|bridge|dock|well|house|hall|cottage|stall|cart/i.test(n));
-  const trailPts=(c.trails||[]).flat().filter(p=>Array.isArray(p)),near=(x,y,d)=>trailPts.some(p=>Math.hypot(p[0]-x,p[1]-y)<d)||(c.warps||[]).some(w=>Math.hypot(w.x-x,w.y-y)<d+200)||(c.land||[]).some(o=>Math.hypot(o.x-x,o.y-y)<d);
-  if(LM.length)for(let i=0,n=0;i<80&&n<5;i++){const x=c.W*(.12+.76*rnd()),y=c.H*(.12+.76*rnd());if(near(x,y,420))continue;
-    c.land.push({n:LM[Math.floor(rnd()*LM.length)],x,y,flip:rnd()<.5?1:0});c.clearings.push([x,y,300]);n++;}
+  c.clean=1;c.decals=[];c.spawnGroup=[3,5];
+  if(DG){/* caves and tombs have no trees: a few props stay so the rooms are not bare */c.propDens=(c.propDens??1)*.3;c.spawnN=Math.round((c.spawnN||24)*S*S);c.spawnGroup=[2,4];return c;}
+  const CT=window.VK_CAT||{},tree=n=>CT[n]&&CT[n].t==='tree';for(const k of ['open','edge','under','bankSet'])if(c[k]){c[k]=c[k].filter(tree);if(!c[k].length&&k!=='open'&&k!=='edge')delete c[k];}
+  /* fewer solid groves = more room to walk */
+  if(c.groves)c.groves.thr=(c.groves.thr??.52)+.085;c.openTrees=(c.openTrees??.06)*.6;
+  c.spawnN=Math.round((c.spawnN||32)*S*S*.9);c.spawnGap=(c.spawnGap||320)*.85;
   return c;}
 window.createFieldHost=function(base,cfg){if(!cfg._id&&window.VK_MAPS)for(const k in VK_MAPS)if(VK_MAPS[k]===cfg){cfg._id=k;break;}cfg=scaleField(cfg);
 const W=cfg.W,H=cfg.H,CH=512,CELL=12,COLS=Math.ceil(W/CELL),ROWS=Math.ceil(H/CELL),CAT=window.VK_CAT;
@@ -235,10 +234,10 @@ const AUTO_G=CAVE||cfg.noDetails?[]:SNOWTH?seq('snD',0,11):THEME==='jungle'?[...
 /* lawns (raised garden beds with a stone kerb) get their own grass tufts and flowers */
 if(cfg.stepTex)need.add(cfg.stepTex);if(cfg.pathTex)need.add(cfg.pathTex);
 const LAWN_G=CAPT?seq('cpD',0,11):[],LAWN_F=CAPT?['cpD12','cpD13','cpD14','cpD15','cpD16','cpD17','cpD20']:[];if(cfg.lawns){addAll(LAWN_G);addAll(LAWN_F);for(const l of cfg.lawns)need.add(l.tex||cfg.ground||'cpGrass');}
-const AUTO_D=CAVE||cfg.noDetails?[]:SNOWTH?seq('snD',12,23):THEME==='jungle'?seq('jgD',12,20):DESERT?seq('egD',12,23):CAPT&&!cfg.city?seq('cpD',12,23).filter(n=>(cfg.farm||!/cpD(18|19)/.test(n))&&(cfg.ruinBits||!/cpD(21|22|23)/.test(n))):JAPAN&&!cfg.dark?seq('jpD',12,23).filter(n=>(cfg.ruinBits||!/jpD(22|23)/.test(n))&&(cfg.sakura||n!=='jpD13')&&(cfg.maple||n!=='jpD14')):GREEK&&!cfg.dark?seq('grD',12,23).filter(n=>((cfg.sea&&!cfg.noShells)||!/grD1[45]/.test(n))&&(cfg.ruinBits||!/grD(17|18|21|22)/.test(n))):[];
+const AUTO_D=CAVE||cfg.noDetails||cfg.clean?[]:SNOWTH?seq('snD',12,23):THEME==='jungle'?seq('jgD',12,20):DESERT?seq('egD',12,23):CAPT&&!cfg.city?seq('cpD',12,23).filter(n=>(cfg.farm||!/cpD(18|19)/.test(n))&&(cfg.ruinBits||!/cpD(21|22|23)/.test(n))):JAPAN&&!cfg.dark?seq('jpD',12,23).filter(n=>(cfg.ruinBits||!/jpD(22|23)/.test(n))&&(cfg.sakura||n!=='jpD13')&&(cfg.maple||n!=='jpD14')):GREEK&&!cfg.dark?seq('grD',12,23).filter(n=>((cfg.sea&&!cfg.noShells)||!/grD1[45]/.test(n))&&(cfg.ruinBits||!/grD(17|18|21|22)/.test(n))):[];
 addAll(AUTO_G);addAll(AUTO_D);
 const BANKS=SNOWTH?'bkS':DESERT?'egBank':GREEK?'grBank':JAPAN?'jpBank':CAPT?'cpBank':'bkJ',STREAMTEX=cfg.streamTex||(SNOWTH?'texStream':LAKETEX);if(cfg.stream){need.add(STREAMTEX);for(let i=0;i<8;i++)need.add(BANKS+i);}
-for(const p of [...(cfg.paves||[]),...(cfg.roads||[]),...(cfg.squares||[])])need.add(p.tex||COBTEX);if(cfg.groundImg)need.add(cfg.groundImg.n);if(cfg.canals||cfg.paddies){need.add(LAKETEX);need.add(COBTEX);need.add(DIRTTEX);if(cfg.paddies)need.add(cfg.paddies.tex||'jpRice');}
+for(const p of [...(cfg.paves||[]),...(cfg.roads||[]),...(cfg.squares||[])])need.add(p.tex||COBTEX);for(const G of [cfg.groundImg,...(cfg.groundImgs||[])])if(G)need.add(G.n);if(cfg.canals||cfg.paddies){need.add(LAKETEX);need.add(COBTEX);need.add(DIRTTEX);if(cfg.paddies)need.add(cfg.paddies.tex||'jpRice');}
 if(cfg.sea&&GREEK)for(const n of ['grBoulder1','grBoulder2','grBoulders1','grBoulders5'])need.add(n);
 if(cfg.sea&&JAPAN)for(const n of ['jpBoulder1','jpBoulder2','jpBoulders1','jpBoulders3'])need.add(n);
 if(cfg.sea){need.add(SEATEX);need.add('texStream');for(let i=0;i<8;i++)need.add((GREEK?'grBank':JAPAN?'jpBank':'bkS')+i);for(const n of ['shoreRock1','shoreRock2','sealRock1','icicleRock1','rock4'])need.add(n);}if(cfg.lakes)need.add(LAKETEX);addAll(cfg.lakeSet);if(cfg.bridge)need.add(cfg.bridgeImg||'bridgeSP');
@@ -370,7 +369,7 @@ const VARC=new Map();function variant(n,k){const im=IMG[n];if(!k||!im)return im;
 /* the foot of every object darkens and picks up the ground colour (occlusion + bounce light), made once per image */
 const AOC=new Map();function baseAO(im,c){if(!im||cfg.baseAO===0)return im;let r=AOC.get(im);if(r)return r;const w=im.naturalWidth||im.width,h=im.naturalHeight||im.height;r=document.createElement('canvas');r.width=w;r.height=h;const g=r.getContext('2d');g.drawImage(im,0,0);
   g.globalCompositeOperation='source-atop';const tall=c.t==='tree'?.3:.2,y0=h*(1-tall),gr=g.createLinearGradient(0,y0,0,h);gr.addColorStop(0,'rgba(30,26,22,0)');gr.addColorStop(.7,`rgba(30,26,22,${CAVE?.3:.26})`);gr.addColorStop(1,`rgba(26,22,18,${CAVE?.5:.46})`);g.fillStyle=gr;g.fillRect(0,y0,w,h-y0);
-  const gb=g.createLinearGradient(0,h*.9,0,h);gb.addColorStop(0,'rgba(0,0,0,0)');gb.addColorStop(1,SNOWTH?'rgba(200,210,240,.18)':'rgba(70,95,40,.16)');g.fillStyle=gb;g.fillRect(0,h*.9,w,h*.1);AOC.set(im,r);return bm(r);}
+  const gb=g.createLinearGradient(0,h*.9,0,h);gb.addColorStop(0,'rgba(0,0,0,0)');gb.addColorStop(1,cfg.bounce||(SNOWTH?'rgba(200,210,240,.18)':'rgba(70,95,40,.16)'));g.fillStyle=gb;g.fillRect(0,h*.9,w,h*.1);AOC.set(im,r);return bm(r);}
 function mk(n,x,y,o={}){if(!n)return null;const c=CAT[n],im0=IMG[n];if(!c||!im0||!im0.naturalWidth)return null;const v=o.v||1,str=o.land?1:R(.9,1.1),w=c.w*v*str,h=c.h*v/Math.sqrt(str);
   const vk=o.land||c.t==='water'?0:Math.floor(rnd()*4),im=c.t==='flat'||c.t==='water'||o.cast===0?variant(n,vk===3?0:vk):baseAO(variant(n,vk===3?0:vk),c);
   const ob=Object.assign({n,x,y,w,h,img:im,base:im0,ax:c.ax??.5,ay:c.ay,cast:c.t!=='flat'&&c.t!=='water'?1:0,flip:(fc=>o.noflip?false:(LR[n]>1.06?false:LR[n]<.94?true:fc))(rnd()<.5),tree:c.t==='tree',big:c.t==='big'},o);
@@ -391,7 +390,8 @@ function mk(n,x,y,o={}){if(!n)return null;const c=CAT[n],im0=IMG[n];if(!c||!im0|
    3 light side: which half of the sprite is lit (most art is lit from the left) — used so random flips never put the light on the wrong side */
 const LR={};let CHARF='';
 function artPass(){if(cfg.colorMatch===0)return;const gi=IMG[GROUND];let gr=128,gg=128,gb=128;
-  if(gi&&gi.naturalWidth){const c=document.createElement('canvas');c.width=c.height=32;const q=c.getContext('2d');q.drawImage(gi,0,0,32,32);const d=q.getImageData(0,0,32,32).data;let r=0,g=0,b=0;for(let i=0;i<d.length;i+=4){r+=d[i];g+=d[i+1];b+=d[i+2];}const n=d.length/4;gr=r/n;gg=g/n;gb=b/n;}
+  /* cfg.artRef: the colour the pieces really stand on (a stone city on a grass map) */
+  if(cfg.artRef)[gr,gg,gb]=cfg.artRef;else if(gi&&gi.naturalWidth){const c=document.createElement('canvas');c.width=c.height=32;const q=c.getContext('2d');q.drawImage(gi,0,0,32,32);const d=q.getImageData(0,0,32,32).data;let r=0,g=0,b=0;for(let i=0;i<d.length;i+=4){r+=d[i];g+=d[i+1];b+=d[i+2];}const n=d.length/4;gr=r/n;gg=g/n;gb=b/n;}
   const gL=gr*.3+gg*.59+gb*.11,KS=cfg.artSat??.92,KT=cfg.artTint??.07,KB=cfg.artPull??.18;
   /* the same calming applied live to characters (hero, townsfolk, monsters) so they stand in this map's light too */
   {const kc=Math.max(.86,Math.min(1.07,1+KB*.8*(gL/140-1))),warm=(gr-gb)/255;CHARF=`saturate(${(KS*.96).toFixed(2)}) brightness(${kc.toFixed(2)})`+(warm>.12?` sepia(${Math.min(.12,warm*.25).toFixed(2)})`:'');}
@@ -510,6 +510,7 @@ function build(){try{
   for(let gy=30;gy<H;gy+=60)for(let gx=30;gx<W;gx+=60){const x=gx+R(-26,26),y=gy+R(-26,26),de=edgeDist(x,y);if(de<edgeBand(x,y)-140)continue;
     if(water(x,y,10)||nearStream(x,y,18)||inLand(x,y,20)||nearTrail(x,y,-10))continue;if(WALLS&&wallFoot(x,y,30))continue;if(inPave(x,y,8))continue;const n=fbm(x/760,y/760);
     const gcl=cfg.clump===0?1:.3+1.4*Math.max(0,Math.min(1,(vnoise(x/300+13.7,y/300+29.1)-.35)/.32));
+    if(cfg.clean)continue;
     if(rnd()>(n>.5?.13:.075)*(cfg.decalDens??1)*(AUTO_G.length?1.7:DESERT?.35:1)*gcl)continue;const useG=GR.length&&(!DC.length||rnd()<.55);const t=useG?pick(GR):DC.length?pickCap(DC,x,y):null;if(!t)continue;
     const dd=mk(t,x,y,{v:R(.75,1.1),cast:0});if(!dd)continue;if(useG||dd.sway>.8){dd.sway=1.6;const k=((x/CH)|0)+','+((y/CH)|0);(grassB.get(k)||grassB.set(k,[]).get(k)).push(dd);}else decals.push(dd);}
   /* buildings that really stand on the ground: a stone doorstep in front of the door, a short walk to the street below it,
@@ -518,16 +519,17 @@ function build(){try{
       const by=o.y+o.h*(1-o.ay)-6;let to=null;for(const p of KP){const r=p.r;if(o.x+dx>r[0]&&o.x+dx<r[2]&&r[1]>=by-14&&r[1]-by<230&&(!to||r[1]<to))to=r[1];}
       /* no paved block below: walk down to the nearest organic street and lay a short worn path to it */
       if(to==null&&!inPave(o.x+dx,by+4,0)){for(let y=by+8;y<by+260;y+=6)if(inPave(o.x+dx,y,0)){if(y-by>20)ROADS.push(Object.assign(roadPoly([[o.x+dx,by+2],[o.x+dx+R(-6,6),(by+y)/2],[o.x+dx,y+18]],Math.max(48,dw*.85),o.x*.01+3.1),{tex:cfg.pathTex||cfg.stepTex||COBTEX}));break;}}
-      if(!(to!=null&&to-by<18))aprons.push({x:o.x+dx,y:by+6,w:dw,to});
+      if(!cfg.noApron&&!(to!=null&&to-by<18))aprons.push({x:o.x+dx,y:by+6,w:dw,to});
       const WG=LAWN_G.length?LAWN_G:AUTO_G;if(WG.length)for(let k=0;k<7;k++){const u=R(-.44,.44);if(Math.abs(u*o.w-dx)<dw*.75)continue;const px=o.x+u*o.w,py=by+R(2,8);if(inRP(px,py))continue;const dd=mk(pick(WG),px,py,{v:R(.45,.7),cast:0});if(!dd)continue;dd.sway=1.2;const kk=((px/CH)|0)+','+((py/CH)|0);(grassB.get(kk)||grassB.set(kk,[]).get(kk)).push(dd);}}}
   /* grass creeping over the edges of organic streets and squares: the line between stone and ground is never clean */
   if(AUTO_G.length&&!CAVE){const edgeTuft=(x,y)=>{if(water(x,y,4)||inLand(x,y,6)||inRP(x,y))return;const dd=mk(pick(AUTO_G),x,y,{v:R(.5,.85),cast:0});if(!dd)return;dd.sway=1.4;const k=((x/CH)|0)+','+((y/CH)|0);(grassB.get(k)||grassB.set(k,[]).get(k)).push(dd);};
     for(const r of ROADS){if(/Maize/.test(r.tex||''))continue;for(let i=2;i<r.s.length-2;i+=2){const p=r.s[i];for(const sd of [-1,1]){if(rnd()>.42)continue;const o=r.w*.5*R(.78,1.02)*sd;edgeTuft(p[0]+p[2]*o+R(-6,6),p[1]+p[3]*o+R(-4,4));}}}
     for(const s of SQUARES){if(/Maize|Wheat/.test(s.tex||''))continue;for(let i=0;i<s.poly.length;i++){if(rnd()>.55)continue;const p=s.poly[i],c=[(s.bb[0]+s.bb[2])/2,(s.bb[1]+s.bb[3])/2],dx=p[0]-c[0],dy=p[1]-c[1],l=Math.hypot(dx,dy)||1,o=R(-14,6);edgeTuft(p[0]+dx/l*o,p[1]+dy/l*o);}}}
   /* lawns: grass tufts that sway, a sprinkle of flowers, kept off the kerb and away from trunks */
-  for(const L of cfg.lawns||[]){const r=L.r,m=26;for(let y=r[1]+m;y<r[3]-m*.6;y+=40)for(let x=r[0]+m;x<r[2]-m;x+=40){const px=x+R(-15,15),py=y+R(-12,12);
-      if(objs.some(o=>!o.tree?false:Math.abs(o.x-px)<o.w*.16&&Math.abs(o.y-py)<16))continue;const fl=LAWN_F.length&&rnd()<(L.flowers??.16);if(!fl&&rnd()>.42)continue;
-      const t=fl?pick(LAWN_F):pick(LAWN_G);const dd=mk(t,px,py,{v:R(.7,1),cast:0});if(!dd)continue;if(!fl){dd.sway=1.6;const k=((px/CH)|0)+','+((py/CH)|0);(grassB.get(k)||grassB.set(k,[]).get(k)).push(dd);}else decals.push(dd);}}
+  /* per lawn: m = margin from the kerb, step = spacing, keep = share of spots planted, g = which tufts / flowers (flower beds use only flowers) */
+  for(const L of cfg.lawns||[]){const r=L.r,m=L.m??26,st=L.step??40,LG=L.g||LAWN_G,jk=st/40;for(let y=r[1]+m;y<r[3]-m*.6;y+=st)for(let x=r[0]+m;x<r[2]-m;x+=st){const px=x+R(-15,15)*jk,py=y+R(-12,12)*jk;
+      if(objs.some(o=>!o.tree?false:Math.abs(o.x-px)<o.w*.16&&Math.abs(o.y-py)<16))continue;const LF=L.f||LAWN_F,fl=LF.length&&rnd()<(L.flowers??.16);if(!fl&&rnd()>(L.keep??.42))continue;
+      const t=fl?pick(LF):pick(LG);const dd=mk(t,px,py,{v:R(.7,1),cast:0});if(!dd)continue;if(!fl){dd.sway=1.6;const k=((px/CH)|0)+','+((py/CH)|0);(grassB.get(k)||grassB.set(k,[]).get(k)).push(dd);}else decals.push(dd);}}
   /* ground cover IN FRONT of every object's foot: tufts depth-sorted just below the painted base, so they overlap the bottom edge
      and the object looks rooted in the ground instead of standing on it */
   if(AUTO_G.length&&!CAVE&&cfg.footGrass!==0){const re=cfg.doorRe?new RegExp(cfg.doorRe):null,town=!!cfg.doorRe||!!cfg.city,add=[];
@@ -684,10 +686,10 @@ function bakeRaw(ci,cj){if(!bakeOut){bakeOut=document.createElement('canvas');ba
     const t=tmpC(2);t.g.globalCompositeOperation='copy';t.g.drawImage(m,0,0,CH,CH);t.g.globalCompositeOperation='source-in';t.g.save();t.g.translate(-x0,-y0);t.g.fillStyle=pat(t.g,P.tex);t.g.fillRect(x0,y0,CH,CH);t.g.restore();q.globalAlpha=P.a??1;q.drawImage(t.c,x0,y0);q.globalAlpha=1;}
   for(const t of tints){if(!inR(t[0],t[1],t[2]))continue;const g=q.createRadialGradient(t[0],t[1],0,t[0],t[1],t[2]);g.addColorStop(0,`rgba(${t[3]},${t[4]})`);g.addColorStop(1,`rgba(${t[3]},0)`);q.fillStyle=g;q.fillRect(x0,y0,CH,CH);}
   /* planned cities: the plain stone floor (kerb-less paved blocks) goes down first, so organic streets and plazas lie on top of it */
-  if(cfg.paveMerge)for(const p of PAVES){if(p.kerb??8)continue;const r=p.r;if(r[2]<x0-24||r[0]>x1+24||r[3]<y0-24||r[1]>y1+24)continue;q.fillStyle=pat(q,p.tex||COBTEX);q.fillRect(r[0],r[1],r[2]-r[0],r[3]-r[1]);
+  if(cfg.paveMerge)for(const p of PAVES){if(p.kerb??8)continue;const r=p.r;if(r[2]<x0-24||r[0]>x1+24||r[3]<y0-24||r[1]>y1+24)continue;q.fillStyle=pat(q,p.tex||COBTEX);q.fillRect(r[0],r[1],r[2]-r[0],r[3]-r[1]);if(p.mul){q.globalCompositeOperation='multiply';q.fillStyle=p.mul;q.fillRect(r[0],r[1],r[2]-r[0],r[3]-r[1]);q.globalCompositeOperation='source-over';}
     q.save();q.beginPath();q.rect(r[0],r[1],r[2]-r[0],r[3]-r[1]);q.clip();grime(q,x0,y0,p.grime??.13);q.restore();}
   /* a hand-painted floor picture laid over a rect (planned cities): the whole layout in one image, relief baked in */
-  if(cfg.groundImg&&IMG[cfg.groundImg.n]&&IMG[cfg.groundImg.n].naturalWidth){const G=cfg.groundImg,r=G.r,im=IMG[G.n];if(!(r[2]<x0||r[0]>x1||r[3]<y0||r[1]>y1)){q.drawImage(im,r[0],r[1],r[2]-r[0],r[3]-r[1]);
+  for(const G of [cfg.groundImg,...(cfg.groundImgs||[])])if(G&&IMG[G.n]&&IMG[G.n].naturalWidth){const r=G.r,im=IMG[G.n];if(!(r[2]<x0-BP||r[0]>x1+BP||r[3]<y0-BP||r[1]>y1+BP)){q.drawImage(im,r[0],r[1],r[2]-r[0],r[3]-r[1]);
     const tp=G.detail&&pat(q,G.detail);if(tp){q.save();q.beginPath();q.rect(r[0],r[1],r[2]-r[0],r[3]-r[1]);q.clip();q.globalCompositeOperation='soft-light';q.globalAlpha=G.detailA??.35;q.fillStyle=tp;q.fillRect(x0,y0,CH,CH);q.restore();}}}
   /* organic streets, blended in: a soft worn-earth fringe, then the stones through a feathered mask with worn holes, no hard outline */
   {const vis=[...SQUARES,...ROADS].filter(o=>{const b=o.bb;return !(b[2]<x0-60||b[0]>x1+60||b[3]<y0-60||b[1]>y1+60);});
@@ -735,7 +737,7 @@ function bakeRaw(ci,cj){if(!bakeOut){bakeOut=document.createElement('canvas');ba
     q.fillStyle=pat(q,p.tex||COBTEX);q.fillRect(r[0],r[1],r[2]-r[0],r[3]-r[1]);if(p.shade){q.fillStyle=p.shade;q.fillRect(r[0],r[1],r[2]-r[0],r[3]-r[1]);}
     if(p.grime!==0){q.save();q.beginPath();q.rect(r[0],r[1],r[2]-r[0],r[3]-r[1]);q.clip();grime(q,x0,y0,p.grime??.13);q.restore();}
     if(k){q.fillStyle='rgba(40,26,12,.22)';q.fillRect(r[0],r[1],r[2]-r[0],6);}}
-  for(const L of cfg.lawns||[]){const r=L.r;if(r[2]<x0-60||r[0]>x1+60||r[3]<y0-60||r[1]>y1+60)continue;lawn(q,L,x0,y0);}
+  for(const L of cfg.lawns||[]){const r=L.r;if(L.pre||r[2]<x0-60||r[0]>x1+60||r[3]<y0-60||r[1]>y1+60)continue;lawn(q,L,x0,y0);}
   /* doorsteps: a worn path from the door down to the street kerb, then a raised stone step with a lit edge and a shadowed riser */
   for(const a of aprons){if(!inR(a.x,a.y,a.w+260))continue;const w=a.w,x=a.x-w/2,st=pat(q,cfg.stepTex||COBTEX);
     /* trodden earth spreading out from the step, darker and patchy, as where people really walk */
@@ -789,10 +791,41 @@ function bakeRaw(ci,cj){if(!bakeOut){bakeOut=document.createElement('canvas');ba
   if(SNOWY&&KIND!=='snow')for(const l of lips)if(inR(l[0],l[1],20))lump(q,l[0],l[1],l[2],l[3],LIP[0],LIP[1]);
   for(const g of ground)if(inR(g.x,g.y,Math.max(g.w,g.h)))q.drawImage(g.img,g.x0,g.y0,g.w,g.h);
   for(const d of decals)if(inR(d.x,d.y,120)&&!wallAt(d.x,d.y))drawObj(q,d,0);
-  /* cast shadows: silhouettes sheared to the bottom-right (light from the top-left) */
-  q.globalAlpha=CAVE?.3:.42;const sh=[];for(let j=cj-1;j<=cj+2;j++)for(let i=ci-1;i<=ci+1;i++){const b=buckets.get(i+','+j);if(b)sh.push(...b);}sh.sort((a,b)=>a.y-b.y);
+  const sh=[];for(let j=cj-1;j<=cj+2;j++)for(let i=ci-1;i<=ci+1;i++){const b=buckets.get(i+','+j);if(b)sh.push(...b);}sh.sort((a,b)=>a.y-b.y);
+  /* ---- light and shadow on maps with cfg.lit (owner 2026-11-20: objects must sit IN the map and read as 3D, never as stickers) ----
+     the sun stands in the upper left, so everything throws its shadow onto the ground to its lower right. A shadow is the
+     object's silhouette LAID DOWN on the ground: its height runs along the sun direction, its width becomes ground depth —
+       · buildings and stalls (pieces with a footprint): as deep as the footprint, starting at the east wall
+       · trees, posts, statues: as deep as the piece is round, starting at the foot
+       · walls: the footprint swept along the sun direction by the wall's height
+     Everything goes into one layer that is laid down in a single multiply pass: overlapping shadows merge (no black stacks)
+     and the paving stays visible inside the shadow. */
+  if(LIT){const L=padC(8),g=L.g;g.setTransform(1,0,0,1,0,0);g.globalAlpha=1;g.globalCompositeOperation='source-over';g.filter='none';g.clearRect(0,0,CH+120,CH+120);g.translate(-x0+60,-y0+60);let any=false;const r=SUN.sy/SUN.sx;
+    for(const o of sh){if(!o.cast)continue;const fp=o.ell,
+        /* a building's sprite height is wall height + roof depth: what throws the shadow is the height above its footprint */
+        ext=fp?Math.max(18,Math.min(o.w>700?SUN.max*1.6:SUN.max,(o.h-2*fp[3])*SUN.sx*SUN.big)):Math.max(18,Math.min(SUN.max,o.h*SUN.sx*(o.tree?.9:1)));if(!inR(o.x+ext*.5,o.y,o.w+ext+90))continue;
+      const foot=o.h*(1-o.ay),D=fp?2*fp[3]:Math.min(o.w*SUN.kd,o.tree?90:60),yc=fp?fp[1]:o.y-(o.tree?0:D*.25),xs=fp?o.x+fp[2]*.92:o.x,k=ext/o.h;
+      g.save();g.transform(0,D/o.w,-k,-r*k,xs+k*foot,yc+r*k*foot);if(o.flip)g.scale(-1,1);g.drawImage(shSil(o.base||o.img),-o.ax*o.w,-o.ay*o.h,o.w,o.h);g.restore();any=true;}
+    if(WALLS){const Lw=(WALLS.fh||150)*SUN.sx,dy=Lw*r,i0=Math.max(0,((x0-BP-Lw)/CELL|0)-1),i1=Math.min(COLS-1,((x1+BP)/CELL|0)+1),j0=Math.max(0,((y0-BP-dy)/CELL|0)-1),j1=Math.min(ROWS-1,((y1+BP)/CELL|0)+1),P=new Path2D();let n=0;
+      for(let j=j0;j<=j1;j++)for(let i=i0;i<=i1;i++){const kk=j*COLS+i;if(!WF[kk])continue;const xa=i*CELL,xb=xa+CELL,ya=j*CELL,yb=ya+CELL;
+        if(i+1<COLS&&!WF[kk+1]){P.moveTo(xb-1,ya-.5);P.lineTo(xb+Lw,ya+dy-.5);P.lineTo(xb+Lw,yb+dy+.5);P.lineTo(xb-1,yb+.5);P.closePath();n++;}
+        if(j+1<ROWS&&!WF[kk+COLS]){P.moveTo(xa-.5,yb-1);P.lineTo(xb+.5,yb-1);P.lineTo(xb+Lw+.5,yb+dy);P.lineTo(xa+Lw-.5,yb+dy);P.closePath();n++;}}
+      if(n){g.fillStyle=`rgba(${SHRGB.join(',')},.85)`;g.fill(P,'nonzero');any=true;}}
+    g.setTransform(1,0,0,1,0,0);
+    if(any){q.save();q.globalCompositeOperation='multiply';q.globalAlpha=CAVE?SUN.a*.7:SUN.a;q.filter='blur(3.5px)';q.drawImage(L.c,x0-60,y0-60);q.restore();}}
+  /* every other map: the earlier, lighter shadow pass (unchanged) */
+  else{  q.globalAlpha=CAVE?.3:.42;
   q.filter='blur(3px)';for(const o of sh){if(!o.cast||!inR(o.x,o.y,o.h*1.1))continue;q.save();q.translate(o.x,o.y+o.h*(1-o.ay)-2);q.transform(1,0,-.5,.34,0,0);if(o.flip)q.scale(-1,1);q.drawImage(sil(o.base||o.img),-o.ax*o.w,-o.h,o.w,o.h);q.restore();}q.filter='none';
-  q.globalAlpha=1;
+  q.globalAlpha=1;}
+  /* contact shadow that follows the real outline of each object's foot: the lowest slice of its silhouette, pushed a few pixels
+     toward the shadow side and blurred. The sprite itself hides most of it; what sticks out is a dark seam exactly where the
+     painted base meets the ground — the thing that makes a sprite read as standing there. (Trees keep the round pool below.) */
+  if(LIT&&cfg.contact!==0){const L=padC(8),g=L.g;g.setTransform(1,0,0,1,0,0);g.globalAlpha=1;g.globalCompositeOperation='source-over';g.clearRect(0,0,CH+120,CH+120);g.translate(-x0+60,-y0+60);let any=false;
+    for(const o of sh){if(!o.cast||o.tree||!inR(o.x,o.y,o.w))continue;const im=sil(o.base||o.img),iw=im.width,ih=im.height,band=Math.max(12,Math.min(60,o.h*.22)),f=band/o.h;
+      g.save();g.translate(o.x+3,o.y+o.h*(1-o.ay)+4);if(o.flip)g.scale(-1,1);g.drawImage(im,0,ih*(1-f),iw,ih*f,-o.ax*o.w,-band,o.w,band);g.restore();any=true;}
+    g.setTransform(1,0,0,1,0,0);
+    if(any){g.globalCompositeOperation='source-in';g.fillStyle=SHD;g.fillRect(0,0,CH+120,CH+120);g.globalCompositeOperation='source-over';
+      q.save();q.globalCompositeOperation='multiply';q.globalAlpha=(cfg.contact??1)*.8;q.filter='blur(4px)';q.drawImage(L.c,x0-60,y0-60);q.restore();}}
   /* contact shadow: a soft dark pool right where each object meets the ground (ambient occlusion), so nothing looks pasted on */
   /* it sits where the PAINTED bottom of the sprite is (the anchor is ~7% of the height above it), and it reaches a little past that
      edge so a dark seam shows under the object — that seam is what makes a sprite read as standing on the ground */
@@ -807,21 +840,32 @@ function drawWalls(q,ci,cj){const x0=ci*CH,y0=cj*CH,i0=Math.max(0,(x0/CELL|0)-2)
   for(let j=j0;j<=j1;j++)for(let i=i0;i<=i1;i++){const k=j*COLS+i;if(!WV[k])continue;cell(top,i,j,0);cell(rim,i,j,blk?2:3);const d=WD[k];if(d>=2)cell(deep[0],i,j,blk?0:2);if(d>=3)cell(deep[1],i,j,blk?0:3);if(d>=4)cell(deep[2],i,j,blk?0:4);}
   q.fillStyle=WALLS.rim||'#2a1a0e';q.fill(rim);q.fillStyle=pat(q,WALLS.top)||'#5a4430';q.fill(top);q.fillStyle=WALLS.tint||'rgba(30,18,10,.45)';q.fill(top);
   const dk=WALLS.dark||'14,9,6',dm=WALLS.deep??1;q.fillStyle=`rgba(${dk},${.35*dm})`;q.fill(deep[0]);q.fillStyle=`rgba(${dk},${.45*dm})`;q.fill(deep[1]);q.fillStyle=`rgba(${dk},${.7*dm})`;q.fill(deep[2]);
-  /* rampart walk (city walls): a lit parapet line on the outer edges of the wall top */
-  if(WALLS.parapet){const ed=new Path2D(),sh=new Path2D();let any=false;for(let j=j0;j<=j1;j++)for(let i=i0;i<=i1;i++){const k=j*COLS+i;if(!WV[k])continue;
-      const out=(a,b)=>a<0||b<0||a>=COLS||b>=ROWS||!WV[b*COLS+a];if(out(i-1,j)||out(i+1,j)||out(i,j-1)||out(i,j+1)){ed.rect(i*CELL+1,j*CELL+1,CELL-2,CELL-2);any=true;}
-      else if(out(i-2,j)||out(i+2,j)||out(i,j-2)||out(i,j+2))sh.rect(i*CELL,j*CELL,CELL,CELL);}
-    if(any){q.fillStyle='rgba(60,45,30,.22)';q.fill(sh);q.fillStyle=WALLS.parapet;q.fill(ed);}}
+  /* rampart walk (city walls): a crenellated parapet along the outer edges of the wall top — merlons two cells long with a gap between,
+     each with a lit top and a darker front face so the wall reads as a wall and not as a brick road */
+  if(WALLS.parapet){const top2=new Path2D(),front=new Path2D(),gap=new Path2D(),line=new Path2D(),sh=new Path2D();let any=false;for(let j=j0;j<=j1;j++)for(let i=i0;i<=i1;i++){const k=j*COLS+i;if(!WV[k])continue;
+      const out=(a,b)=>a<0||b<0||a>=COLS||b>=ROWS||!WV[b*COLS+a],x=i*CELL,y=j*CELL;
+      if(out(i-1,j)||out(i+1,j)||out(i,j-1)||out(i,j+1)){any=true;if(out(i,j+1)&&!out(i,j-1))continue;   /* the front edge: the painted face below brings its own merlons */
+        const along=out(i,j-1)&&!out(i-1,j)&&!out(i+1,j)?i:j;
+        if(along%3===2)gap.rect(x,y+3,CELL,CELL-3);else{top2.rect(x,y-4,CELL,CELL-1);front.rect(x,y+CELL-5,CELL,5);line.rect(x,y+CELL,CELL,1.5);}}
+      else if(out(i-2,j)||out(i+2,j)||out(i,j-2)||out(i,j+2))sh.rect(x,y,CELL,CELL);}
+    if(any){q.fillStyle='rgba(60,45,30,.22)';q.fill(sh);q.fillStyle='rgba(186,170,140,.95)';q.fill(gap);q.fillStyle='rgba(60,45,30,.45)';q.fill(line);q.fillStyle='rgb(158,140,112)';q.fill(front);q.fillStyle=WALLS.parapet;q.fill(top2);}}
   /* faces: one slice per column, hung from the top edge down to the footprint's bottom */
   const im=IMG[WALLS.face];if(!im||!im.naturalWidth)return;const FH=FHC*CELL,sw=im.naturalWidth*FH/im.naturalHeight,ky=im.naturalHeight/FH,kx=im.naturalWidth/sw;
   for(let i=i0;i<=i1;i++)for(let j=j0;j<=j1;j++){const k=j*COLS+i;if(!WF[k]||j>=ROWS-3||(j+1<ROWS&&WF[k+COLS]))continue;
     let yb=(j+1)*CELL;if(!blk){/* caves: average the edge over neighbouring columns so it slopes instead of stepping */let sum=0,n=0;for(let d=-2;d<=2;d++){const c=i+d;if(c<0||c>=COLS)continue;for(let e=-3;e<=3;e++){const r=j+e;if(r<0||r+1>=ROWS)continue;const kk=r*COLS+c;if(WF[kk]&&!WF[kk+COLS]){sum+=(r+1)*CELL;n++;break;}}}if(n)yb=sum/n+(hash(i,7)-.5)*3;}
     const yt=yb-FH,x=i*CELL;if(yb<y0-4||yt>y0+CH+4||x>x0+CH+4||x+CELL<x0-4)continue;
+    if(WALLS.parapet){/* between the face's own merlons you look onto the rampart walk, not the ground behind the wall */q.fillStyle=pat(q,WALLS.top)||'#5a4430';q.fillRect(x,yt-1,CELL+.6,FH*.11);q.fillStyle='rgba(70,56,40,.38)';q.fillRect(x,yt-1,CELL+.6,FH*.11);}
     const u=((x%sw)+sw)%sw,sx=u*kx,sW=CELL*kx;q.drawImage(im,sx,0,Math.min(sW,im.naturalWidth-sx),im.naturalHeight,x,yt,Math.min(CELL,(im.naturalWidth-sx)/kx)+.6,FH);
     if(sx+sW>im.naturalWidth){const rest=(sx+sW-im.naturalWidth)/kx;q.drawImage(im,0,0,rest*kx,im.naturalHeight,x+CELL-rest,yt,rest+.6,FH);}
     /* contact shadow on the floor */
     const g=q.createLinearGradient(0,yb,0,yb+22);g.addColorStop(0,'rgba(20,12,6,.45)');g.addColorStop(1,'rgba(20,12,6,0)');q.fillStyle=g;q.fillRect(x,yb,CELL,22);}}
 const silCache=new Map();const SHC=cfg.shadowCol||(CAVE?'#1c1828':GROUND==='texMud'?'#2a2030':TH.sh);
+/* light model of maps with cfg.lit (the capital so far; index.html castShadow reads host.sun so characters match):
+   sx, sy = how far right / down a point's shadow lands per unit of height; kd = ground depth per unit of width; big = shorter for buildings */
+const LIT=!!cfg.lit,SUN={sx:.5,sy:.2,kd:.42,max:150,big:.85,a:.72};
+const SHRGB=(c=>{const m=/^#([0-9a-f]{6})$/i.exec(c);if(m){const n=parseInt(m[1],16);return [n>>16,(n>>8)&255,n&255];}const r=/(\d+)\D+(\d+)\D+(\d+)/.exec(c);return r?[+r[1],+r[2],+r[3]]:[40,40,60];})(SHC),SHD=`rgb(${SHRGB.map(v=>Math.round(v*.5)).join(',')})`;
+const shCache=new Map();function shSil(img){let s=shCache.get(img);if(s)return s;const w=img.naturalWidth||img.width,h=img.naturalHeight||img.height;s=document.createElement('canvas');s.width=w;s.height=h;const q=s.getContext('2d');q.drawImage(img,0,0);q.globalCompositeOperation='source-in';
+  const g=q.createLinearGradient(0,0,0,h),c=SHRGB.join(',');g.addColorStop(0,`rgba(${c},.55)`);g.addColorStop(.6,`rgba(${c},.9)`);g.addColorStop(1,`rgba(${c},1)`);q.fillStyle=g;q.fillRect(0,0,w,h);shCache.set(img,s);return s;}
 function sil(img){let s=silCache.get(img);if(s)return s;s=document.createElement('canvas');s.width=img.naturalWidth;s.height=img.naturalHeight;const q=s.getContext('2d');q.drawImage(img,0,0);q.globalCompositeOperation='source-in';q.fillStyle=SHC;q.fillRect(0,0,s.width,s.height);silCache.set(img,s);return s;}
 /* baking budget: at most ~6 ms of baking per frame (always one chunk if one on screen is missing), so walking never freezes the game */
 let bakeT0=0;function chunk(ci,cj,pre){const k=ci+','+cj;let c=chunks.get(k);if(c){chunks.delete(k);chunks.set(k,c);return c;}
@@ -843,7 +887,8 @@ function makeMinimap(){const s=384/W,c=document.createElement('canvas');c.width=
   q.fillStyle=MMC[GROUND]||'#d6d9ee';q.fillRect(0,0,W,H);
   if(SEA&&seaPath){q.fillStyle='#3d6c98';q.fill(seaPath);}
   q.fillStyle='#b8a084';for(const A of [SQUARES,ROADS])for(const o of A){q.fillStyle=MMC[o.tex]||'#b8a084';q.beginPath();o.poly.forEach((p,i)=>i?q.lineTo(p[0],p[1]):q.moveTo(p[0],p[1]));q.fill();}for(const p of PAVES){const r=p.r;q.fillStyle=MMC[p.tex]||'#b8a084';if(p.e){q.beginPath();q.ellipse(p.e[0],p.e[1],p.e[2],p.e[3],0,0,7);q.fill();}else q.fillRect(r[0],r[1],r[2]-r[0],r[3]-r[1]);}
-  q.fillStyle='#6fa848';for(const L of cfg.lawns||[]){const r=L.r;q.beginPath();q.roundRect(r[0],r[1],r[2]-r[0],r[3]-r[1],L.rad??28);q.fill();}q.fillStyle='#4aa8a0';for(const r of CANALS)if(!r[5])q.fillRect(r[0],r[1],r[2]-r[0],r[3]-r[1]);
+  for(const G of [cfg.groundImg,...(cfg.groundImgs||[])])if(G&&IMG[G.n]&&IMG[G.n].naturalWidth){const r=G.r;q.imageSmoothingQuality='high';q.drawImage(IMG[G.n],r[0],r[1],r[2]-r[0],r[3]-r[1]);}
+  q.fillStyle='#6fa848';for(const L of cfg.lawns||[]){if(L.pre)continue;const r=L.r;q.beginPath();q.roundRect(r[0],r[1],r[2]-r[0],r[3]-r[1],L.rad??28);q.fill();}q.fillStyle='#4aa8a0';for(const r of CANALS)if(!r[5])q.fillRect(r[0],r[1],r[2]-r[0],r[3]-r[1]);
   if(WALLS){q.fillStyle=CAVE?'#16121c':'#1e160e';for(let j=0;j<ROWS;j++)for(let i=0;i<COLS;i++)if(WV[j*COLS+i])q.fillRect(i*CELL,j*CELL,CELL+1,CELL+1);}
   q.fillStyle=KIND==='cobble'?'#9c8288':'#c6a083';for(const P of trails)for(const p of P){if(p[5]>.7&&TRAMP)continue;q.beginPath();q.arc(p[0],p[1],p[4]*.8,0,7);q.fill();}
   q.fillStyle='#78b2df';for(const p of stream){q.beginPath();q.arc(p[0],p[1],p[4]*.7,0,7);q.fill();}
@@ -970,7 +1015,7 @@ let lastP=0;function foreground(g,t,night){if(!ready)return;const dt=Math.min(.0
 let LIFE=true,lastW=0;
 return {W,H,get ready(){return ready},get failed(){return failed},nav:{nearest,blocked},cfg,
   setPlayer(x,y){ply.x=x;ply.y=y},update(){},drawBase,drawSorted,foreground,clear,route,blocked,set debug(v){debug=v},
-  get spawn(){return {start:spawnPt}},isReachable:(x,y)=>!!reach&&reach[((y/CELL)|0)*COLS+((x/CELL)|0)]===1,get spawns(){return spawns},get warps(){return warps},get _objs(){return objs},get _trails(){return trails},_bake:(i,j)=>bake(i,j),CH,set life(v){LIFE=!!v},
+  get spawn(){return {start:spawnPt}},isReachable:(x,y)=>!!reach&&reach[((y/CELL)|0)*COLS+((x/CELL)|0)]===1,get spawns(){return spawns},get spawnGroup(){return cfg.spawnGroup||null},get sun(){return LIT?SUN:null},get warps(){return warps},get _objs(){return objs},get _trails(){return trails},_bake:(i,j)=>bake(i,j),CH,set life(v){LIFE=!!v},
   _audit(){const out=[],T=o=>CAT[o.n]||{},isW=o=>T(o).t==='water',town=/stall|Stall|bench|Bench|^azCart|cargoCart|notice|Notice|sign|Sign|lamp|lantern|Lantern|banner|Banner|planter|Planter|well$|fountain|Fountain|loom|Loom|dummy|target/;
     const land=new Set();for(const o of objs)if(o.land)land.add(o);
     for(const o of objs){const nm=o.n,inW=water(o.x,o.y,0)||inCanal(o.x,o.y);
@@ -991,7 +1036,8 @@ return {W,H,get ready(){return ready},get failed(){return failed},nav:{nearest,b
   occluded(x,y,hgt){hgt=hgt||60;const ci=Math.floor(x/CH),cj=Math.floor(y/CH);for(let j=cj;j<=cj+2;j++)for(let i=ci-1;i<=ci+1;i++){const b=buckets.get(i+','+j);if(!b)continue;
       for(const o of b){if(!o.cast||o.h<70||o.y<=y+4)continue;const top=o.y-o.h*o.ay;if(Math.abs(x-o.x)<o.w*.42&&y-hgt*.5>top)return true;}}return false;},
   /* what the ground is at a point, for footstep dust: a colour stem, or null where nothing should puff up (grass, water) */
-  surface(x,y){if(water(x,y,0)||inCanal(x,y))return null;if(inRP(x,y)||inPave(x,y,0))return SNOWY?'240,244,255':'200,190,170';
+  surface(x,y){if(water(x,y,0)||inCanal(x,y))return null;for(const L of cfg.lawns||[])if(x>L.r[0]&&x<L.r[2]&&y>L.r[1]&&y<L.r[3])return null;   /* no stone dust on a lawn */
+    if(inRP(x,y)||inPave(x,y,0))return SNOWY?'240,244,255':'200,190,170';
     if(/snow|Tundra|Glacier|SeaIce/.test(GROUND))return '242,246,255';if(/Sand|egCity|Beach|Dirt|Soil|Mud|Volcanic|Cave|Floor|Rift|Cracked|Necro|Tomb/.test(GROUND))return CAVE?'150,140,150':'200,175,140';return null;},
   warpAt(p){for(const w of warps)if(Math.hypot(p.x-w.x,(p.y-w.y)*1.4)<46)return w;return null;},
   warpById(id){return warps.find(w=>w.id===id)||null;},

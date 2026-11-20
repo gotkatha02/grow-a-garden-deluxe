@@ -284,9 +284,9 @@ rift3:M({name:'รอยแยกเอเธอร์ ชั้น 3 · รั�
     if(TAKEN.has(k)){R();continue;}
     if(GREEN.has(k)){R();continue;}
     if(TAKEN.has(k))continue;
-    if(sp){const i2=i+(sp.dx||0),bx=sp.dx?(mx(CX[Math.min(i,i2)][0])+mx(CX[Math.max(i,i2)][1]))/2:cx;L.push({n:sp.n,v:sp.v,x:Math.round(bx),y:Math.round(y1-22)});continue;}
-    const n=HOUSES[(R()*HOUSES.length)|0];L.push({n,x:Math.round(cx+(R()-.5)*24),y:Math.round(y1-18),flip:R()<.5?1:0,smolder:.86,smx:.2});
-    if(R()<.35)L.push({n:R()<.5?'cpCrates2':'cpCartR',x:Math.round(x1-38),y:Math.round(y1-8),flip:R()<.5?1:0});}
+    if(sp){const i2=i+(sp.dx||0),bx=sp.dx?(mx(CX[Math.min(i,i2)][0])+mx(CX[Math.max(i,i2)][1]))/2:cx;L.push({n:sp.n,v:sp.v,x:Math.round(bx),y:Math.round(y1-(sp.n==='cpMarket'?22:46))});continue;}   /* buildings stand ON their terrace, a step back from its kerb (the market's carpet steps run down to the stall square) */
+    const n=HOUSES[(R()*HOUSES.length)|0];L.push({n,x:Math.round(cx+(R()-.5)*24),y:Math.round(y1-44),flip:R()<.5?1:0,smolder:.86,smx:.2});
+    if(R()<.35)L.push({n:R()<.5?'cpCrates2':'cpCartR',x:Math.round(x1-46),y:Math.round(y1-30),flip:R()<.5?1:0});}
   /* castle on the forecourt at the head of the north avenue, the knight fountain in the plaza */
   L.push({n:'cpCastle2',x:2400,y:1230,walk:[[0,-120,95,140]]},{n:'cpFountain2',x:2400,y:2110});
   /* plaza: four lamps, two pines · avenues: banners and lamps along both kerbs */
@@ -306,7 +306,34 @@ rift3:M({name:'รอยแยกเอเธอร์ ชั้น 3 · รั�
   c.groundImg={n:'cpCityFloor',r:[576,672,4224,3488]};
   c.paves=[{r:[576,672,4224,3488],tex:'jpPave',kerb:0,grime:0}];c.squares=[];
   c.roads=c.roads.filter(r=>r.pts.some(([x,y])=>x<560||x>4240||y<660||y>3500)&&!r.pts.every(([x,y])=>x>=560&&x<=4240&&y>=660&&y<=3500));
-  c.start=[2400,2620];c.noPath=1;c.charK=1.35;}
+  c.start=[2400,2620];c.noPath=1;c.charK=1.35;
+  /* ---- 2026-11-20 (owner: the capital was the least pretty map — blurry floor, buildings pasted on, flat) ----
+     floor: cpCityFloor5 (tools/city_floor.py) — crisp streets, cobbled terraces with a kerb and a south riser, kerbed lawns and
+     flower beds, the royal plaza, the castle forecourt, a small court inside the north gate; lawns and beds are planted at
+     runtime (swaying grass and flowers). The old floor (cpCityFloor4) is still in maps/capital if he wants it back.
+     light: cfg.lit turns on the map's sun (maps/fieldmap.js): shadows laid on the ground beside every house, post and tree and
+     along the walls; pieces are colour-matched to the stone they stand on (artRef / bounce), not to the grass outside. */
+  c.lit=1;c.shadowCol='#5a587c';c.noApron=1;c.artRef=[198,182,154];c.bounce='rgba(176,146,104,.16)';
+  {const bx=i=>[mx(CX[i][0]),mx(CX[i][1])],by=j=>[my(RY[j][0]),my(RY[j][1])],FL=['cpD00','cpD01','cpD02','cpD03','cpD04','cpD06','cpD07','cpD08'],GR=['cpD09','cpD10','cpD11','cpD09','cpD10','cpD05'];
+    c.lawns=[[2,1],[5,1],[5,6]].map(([i,j])=>{const [x0,x1]=bx(i),[y0,y1]=by(j);return {r:[x0+10,y0+10,x1-10,y1-10],pre:1,flowers:.14,keep:.5,m:22,g:GR,f:FL};});
+    for(const [i,j] of [[0,2],[7,2],[2,2],[5,2],[0,3],[0,5],[7,5],[5,5],[0,6],[7,6]]){const [x0,x1]=bx(i),[y0,y1]=by(j),cx=(x0+x1)/2,cy=(y0+y1)/2,bw=Math.min(190,(x1-x0)*.52),bh=Math.min(104,(y1-y0)*.44);
+      c.lawns.push({r:[Math.round(cx-bw/2)+8,Math.round(cy-bh/2)+8,Math.round(cx+bw/2)-8,Math.round(cy+bh/2)-8],pre:1,flowers:0,keep:.92,m:10,step:21,g:FL});}
+    /* the plaza is centred on the crossing of the two avenues: the fountain stands in its middle, four lamps round it, the two
+       ringed pines on the terraces at its north side; the lawns get real trees instead of a ringed pine on their kerb */
+    c.land=c.land.filter(o=>!(inside(o)&&(o.n==='cpLamp2'&&Math.abs(o.x-1960)<4||o.n==='cpPineR')));
+    for(const o of c.land)if(o.n==='cpFountain2')o.y=2180;
+    c.land.push(...[[-1,-1],[1,-1],[-1,1],[1,1]].map(([a,b])=>({n:'cpLamp2',x:2397+a*372,y:2090+b*212,flip:a>0?1:0})),
+      {n:'cpPineR',x:2058,y:1626},{n:'cpPineR',x:2736,y:1626,flip:1},
+      {n:'cpOak3',x:1535,y:1168},{n:'cpBlossom',x:1722,y:1196,flip:1},{n:'cpChestnut',x:3262,y:1168,flip:1},{n:'cpBirch1',x:3078,y:1196},{n:'cpOak5',x:3098,y:3102},{n:'cpBirch2',x:3282,y:3128,flip:1});
+    /* gates: the street stone runs through each gate as a clean paved floor (same texture and tint as the floor picture, map-anchored,
+       so there is no seam where they meet), spreads into a worn apron outside the wall, and gives way to the earth road */
+    const ST='rgb(249,245,210)',AV='rgb(255,255,228)',SH='rgba(238,223,151,.4)';
+    c.paves.push({r:[1309,566,1501,676],tex:'grMarble',kerb:0,grime:0,mul:ST},{r:[2304,3484,2496,3756],tex:'grMarble',kerb:0,grime:0,mul:AV},
+      {r:[472,1872,580,2304],tex:'grMarble',kerb:0,grime:0,mul:AV},{r:[4220,1872,4328,2304],tex:'grMarble',kerb:0,grime:0,mul:AV});
+    c.roads=c.roads.filter(r=>r.tex!=='cpPave');
+    for(const r of c.roads){const p=r.pts[0];if(p[0]===1405)p[1]=575;else if(p[0]===560){p[0]=470;p[1]=2060;}else if(p[0]===4240){p[0]=4330;p[1]=2060;}}
+    c.roads.push({pts:[[1405,590],[1405,540],[1405,486]],w:240,tex:'grMarble',shade:SH},{pts:[[2400,3740],[2400,3790],[2400,3846]],w:240,tex:'grMarble',shade:SH},
+      {pts:[[508,2088],[450,2088],[388,2088]],w:400,tex:'grMarble',shade:SH},{pts:[[4292,2088],[4350,2088],[4412,2088]],w:400,tex:'grMarble',shade:SH});}}
 /* every door gets a short worn path down to the street (or the back lane) it faces */
 if(!CP.capT.noPath){const re=new RegExp(CP.capT.doorRe),C=window.VK_CAT||{};for(const o of CP.capT.land){if(!re.test(o.n))continue;const c=C[o.n];const by=o.y+(c?c.h*(o.v||1)*(1-c.ay):18);
   const to=by<1900?1885:by<2850?2850:by>3200&&by<3380?3350:null;if(to==null||to-by<22)continue;

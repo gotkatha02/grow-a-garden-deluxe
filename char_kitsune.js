@@ -75,7 +75,7 @@ const KI_BAL={
 };
 const KB=KI_BAL.sk;
 /* branch tuning from the bench: damage numbers of each branch are scaled here so the shown TAL×n stays true */
-const KI_SCALE={A:1.84,B:1.07};
+const KI_SCALE={A:1.60,B:1.06};   /* 2026-11-20: was {A:1.84,B:1.07} while the core ticker was dead (Wisp Dance, Veil, lanterns, circle, night did no damage) */
 (()=>{const r2=v=>Math.round(v*100)/100,sc=(o,f,m)=>{if(o[f]==null)return;o[f]=Array.isArray(o[f])?o[f].map(v=>r2(v*m)):r2(o[f]*m);};
   const colOf=k=>k.startsWith('ka')||['kcSwarm','kcWheel','kcMeteor','kcTamamo'].includes(k)?'A':k.startsWith('kb')||['kcPrism','kcDisc','kcShower','kcTsukuyomi'].includes(k)?'B':null;
   for(const k in KB){const c=colOf(k);if(!c)continue;for(const f of ['dmg','per','split'])sc(KB[k],f,KI_SCALE[c]);}})();
@@ -146,7 +146,7 @@ const kL=k=>LV[k]||0;
 const kLv=(arr,k)=>arr[Math.max(1,Math.min(arr.length,kL(k)))-1];
 const KIC={fire:'#ff7ab8',fire2:'#7ad8ff',moon:'#d8e4ff',moon2:'#b8a8ff',gold:'#ffd36a',red:'#ff5a5a',white:'#ffffff'};
 const kCol=k=>{if(!k||k==='basic')return 'basic';const d=KI_DEFS.find(x=>x.key===k);if(!d)return 'basic';return d.br==='C'?d.col:d.br;};
-function kHit(e,mult,key,o={}){if(!e||e.dead)return 0;const br=kCol(key);const r=hurt(e,mult,Object.assign({skill:key,br},o));
+function kHit(e,mult,key,o={}){if(!e||e.dead)return 0;const br=kCol(key);const r=hurt(e,mult,Object.assign({skill:key,br},o));kiV('hit',e,key,br,o);
   if(br==='B'&&!e.dead&&kL('kbCalm')){const T=kLv(KB.kbCalm.slow,'kbCalm');applyCC(e,{slow:T});e.kSlowT=Math.max(e.kSlowT||0,gameTime+T);}return r;}
 const kNear=(x,y,R)=>enemies.filter(e=>!e.dead&&Math.hypot(e.x-x,e.y-y)<=R+e.r*.5);
 const kSeg=(px,py,ax,ay,bx,by)=>{const dx=bx-ax,dy=by-ay,L=dx*dx+dy*dy||1,t=clamp(((px-ax)*dx+(py-ay)*dy)/L,0,1);return Math.hypot(px-(ax+dx*t),py-(ay+dy*t));};
@@ -166,41 +166,43 @@ const kOnce=(a,n)=>{if(a&&!a._kt){a._kt=1;kTail(n);}};
 /* ---------------------------------------------------------------------
    4. FX (code placeholders — painted pieces come later)
    --------------------------------------------------------------------- */
+/* effects v3 (kitsune_vfx.js): every visual asks window.KIV first; without it the code below draws as before */
+const kiV=(n,...a)=>{const v=window.KIV;return !!(v&&v.on&&v[n])&&v[n](...a)!==false;};
 function kGlow(x,y,r,col,a){if(a<=0)return;ctx.save();ctx.globalCompositeOperation='lighter';const g=ctx.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,hexA(col,a));g.addColorStop(1,hexA(col,0));ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,r,0,TAU);ctx.fill();ctx.restore();}
-function kPow(e,big,col){addFx(new Impact({pos:[e.x,e.y,(e.boss?36:24)],size:big?48:26,color:col||KIC.fire,core:'#ffffff',rays:big?10:6,life:big?.24:.15}));}
-function kFireBurst(x,y,R,col){addFx(new GRing({x,y,r0:8,r1:R,w:10,color:col||KIC.fire,life:.35}));for(let i=0;i<qn(12);i++){const a=rnd(0,TAU),s=rnd(60,160);emit({type:'round',x,y,z:rnd(6,30),vx:Math.cos(a)*s,vy:Math.sin(a)*s*.6,vz:rnd(40,140),drag:1.2,life:rnd(.35,.6),size:rnd(2,4),size1:.5,color:Math.random()<.5?col||KIC.fire:'#ffffff'});}}
+function kPow(e,big,col){if(kiV('pow',e,big,col))return;addFx(new Impact({pos:[e.x,e.y,(e.boss?36:24)],size:big?48:26,color:col||KIC.fire,core:'#ffffff',rays:big?10:6,life:big?.24:.15}));}
+function kFireBurst(x,y,R,col){if(kiV('burst',x,y,R,col))return;addFx(new GRing({x,y,r0:8,r1:R,w:10,color:col||KIC.fire,life:.35}));for(let i=0;i<qn(12);i++){const a=rnd(0,TAU),s=rnd(60,160);emit({type:'round',x,y,z:rnd(6,30),vx:Math.cos(a)*s,vy:Math.sin(a)*s*.6,vz:rnd(40,140),drag:1.2,life:rnd(.35,.6),size:rnd(2,4),size1:.5,color:Math.random()<.5?col||KIC.fire:'#ffffff'});}}
 /* homing fox fire */
 class KiHome{constructor(o){Object.assign(this,{t:0,layer:'top',speed:420,z:40,col:KIC.fire2,turn:7,life:2.2,r:7},o);this.vx=Math.cos(this.phi)*this.speed;this.vy=Math.sin(this.phi)*this.speed;}
   update(dt){this.t+=dt;let e=this.tg&&!this.tg.dead?this.tg:nearestEnemy(this.x,this.y,360);if(e){const a=Math.atan2(e.y-this.y,e.x-this.x),c=Math.atan2(this.vy,this.vx);let d=a-c;while(d>Math.PI)d-=TAU;while(d<-Math.PI)d+=TAU;const n=c+clamp(d,-this.turn*dt,this.turn*dt);this.vx=Math.cos(n)*this.speed;this.vy=Math.sin(n)*this.speed;
       if(Math.hypot(e.x-this.x,e.y-this.y)<e.r+12){this.hit&&this.hit(e);kPow(e,false,this.col);return false;}}
     this.x+=this.vx*dt;this.y+=this.vy*dt;return this.t<this.life;}
-  draw(){const [x,y]=P(this.x,this.y,this.z);kGlow(x,y,18,this.col,.6);ctx.fillStyle='#ffffff';ctx.beginPath();ctx.arc(x,y,this.r*.5,0,TAU);ctx.fill();}}
+  draw(){if(kiV('home',this))return;const [x,y]=P(this.x,this.y,this.z);kGlow(x,y,18,this.col,.6);ctx.fillStyle='#ffffff';ctx.beginPath();ctx.arc(x,y,this.r*.5,0,TAU);ctx.fill();}}
 /* projectile that flies out and (optionally) back */
 class KiShot{constructor(o){Object.assign(this,{t:0,layer:'top',speed:620,len:240,w:20,z:36,col:KIC.moon,back:false,pierce:99,d:0,dir:1,hits:new Set(),kind:'crescent'},o);this.x0=this.x;this.y0=this.y;}
   update(dt){this.t+=dt;this.d+=this.speed*dt*this.dir;if(this.back&&this.dir>0&&this.d>=this.len){this.dir=-1;this.hits.clear();}
     const ox=this.back&&this.dir<0?player.x:this.x0,oy=this.back&&this.dir<0?player.y:this.y0;this.x=ox+Math.cos(this.phi)*this.d;this.y=oy+Math.sin(this.phi)*this.d;
     for(const e of enemies){if(e.dead||this.hits.has(e))continue;if(Math.hypot(e.x-this.x,e.y-this.y)<e.r+this.w){this.hits.add(e);this.hit&&this.hit(e);if(this.hits.size>=this.pierce)return false;}}
     if(this.back)return this.dir>0||this.d>0;if(!kFree(this.x,this.y))return false;return this.d<this.len;}
-  draw(){const [x,y]=P(this.x,this.y,this.z);kGlow(x,y,this.w*1.6,this.col,.5);ctx.save();ctx.translate(x,y);ctx.rotate(this.t*14);ctx.strokeStyle='#ffffff';ctx.lineWidth=3;
+  draw(){if(kiV('shot',this))return;const [x,y]=P(this.x,this.y,this.z);kGlow(x,y,this.w*1.6,this.col,.5);ctx.save();ctx.translate(x,y);ctx.rotate(this.t*14);ctx.strokeStyle='#ffffff';ctx.lineWidth=3;
     if(this.kind==='wheel'){ctx.strokeStyle=KIC.fire;ctx.lineWidth=4;ctx.beginPath();ctx.arc(0,0,this.w,0,TAU);ctx.stroke();for(let i=0;i<6;i++){ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(Math.cos(i)*this.w,Math.sin(i)*this.w);ctx.stroke();}}
     else if(this.kind==='disc'){ctx.fillStyle=hexA(KIC.moon,.8);ctx.beginPath();ctx.arc(0,0,this.w,0,TAU);ctx.fill();}
     else{ctx.beginPath();ctx.arc(0,0,this.w,.3,Math.PI*1.4);ctx.stroke();}ctx.restore();}}
 /* straight beam (instant line, drawn for a moment) */
-class KiBeam{constructor(o){Object.assign(this,{t:0,life:.28,layer:'top',w:10,col:KIC.moon},o);}update(dt){this.t+=dt;return this.t<this.life;}
+class KiBeam{constructor(o){Object.assign(this,{t:0,life:.28,layer:'top',w:10,col:KIC.moon},o);if(kiV('beam',this)){this.layer='none';this.life=0;}}update(dt){this.t+=dt;return this.t<this.life;}
   draw(){const a=1-this.t/this.life,[x0,y0]=P(this.x,this.y,34),[x1,y1]=P(this.x+Math.cos(this.phi)*this.L,this.y+Math.sin(this.phi)*this.L,34);ctx.save();ctx.globalCompositeOperation='lighter';ctx.lineCap='round';
     ctx.strokeStyle=hexA(this.col,.55*a);ctx.lineWidth=this.w*2;ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x1,y1);ctx.stroke();ctx.strokeStyle=hexA('#ffffff',a);ctx.lineWidth=this.w*.5;ctx.stroke();ctx.restore();}}
 /* light pillar from the sky (moon beams, stars) */
-class KiPillar{constructor(o){Object.assign(this,{t:0,life:.35,layer:'top',w:14,col:KIC.moon},o);}update(dt){this.t+=dt;return this.t<this.life;}
+class KiPillar{constructor(o){Object.assign(this,{t:0,life:.35,layer:'top',w:14,col:KIC.moon},o);if(kiV('pillar',this)){this.layer='none';this.life=0;}}update(dt){this.t+=dt;return this.t<this.life;}
   draw(){const a=1-this.t/this.life,[x,y]=P(this.x,this.y,0);ctx.save();ctx.globalCompositeOperation='lighter';const g=ctx.createLinearGradient(x,y-260,x,y);g.addColorStop(0,hexA(this.col,0));g.addColorStop(1,hexA(this.col,.8*a));ctx.fillStyle=g;ctx.fillRect(x-this.w/2,y-260,this.w,260);ctx.restore();kGlow(x,y,this.w*2.2,this.col,.5*a);}}
 /* ground layer */
 class KiGround{constructor(){this.t=0;this.layer='ground';}update(dt){this.t+=dt;return CHAR==='kitsune';}
   ring(x,y,R,col,a,dash){const [px,py]=P(x,y);ctx.save();ctx.translate(px,py);ctx.scale(1,K);ctx.globalAlpha=a;ctx.strokeStyle=col;ctx.lineWidth=3;if(dash){ctx.setLineDash([8,6]);ctx.lineDashOffset=-this.t*30;}ctx.beginPath();ctx.arc(0,0,R,0,TAU);ctx.stroke();ctx.globalAlpha=a*.25;ctx.fillStyle=col;ctx.fill();ctx.restore();}
-  draw(){const T=KI.torii;if(T)this.ring(T.x,T.y,KB.knTorii.R,KIC.red,.6,true);const C=KI.circle;if(C)this.ring(C.x,C.y,KB.kbCircle.R,KIC.moon2,.6,true);
+  draw(){if(kiV('ground',this))return;const T=KI.torii;if(T)this.ring(T.x,T.y,KB.knTorii.R,KIC.red,.6,true);const C=KI.circle;if(C)this.ring(C.x,C.y,KB.kbCircle.R,KIC.moon2,.6,true);
     for(const p of KI.petals)this.ring(p.x,p.y,p.R,KIC.fire,.35,false);
     for(const l of KI.lanterns){const [x,y]=P(l.x,l.y,14);kGlow(x,y,14,KIC.fire,.7);ctx.fillStyle='#ffe0f0';ctx.fillRect(x-4,y-6,8,10);}}}
 /* top layer: tails fan, shield, mirror, wisps, awakening */
 class KiTop{constructor(){this.t=0;this.layer='top';}update(dt){this.t+=dt;KI.tailPop=Math.max(0,(KI.tailPop||0)-dt*4);return CHAR==='kitsune';}
-  draw(){const pz=(player.z||0)+92*CHAR_SCALE,[x,y]=P(player.x,player.y,pz);
+  draw(){if(kiV('top',this))return;const pz=(player.z||0)+92*CHAR_SCALE,[x,y]=P(player.x,player.y,pz);
     if(kL('kaOrb')){for(let i=0;i<KI_BAL.tails.cap;i++){const an=-Math.PI*.9+i*(Math.PI*.8/8)+Math.PI*.05,px=x+Math.cos(an)*22,py=y+8+Math.sin(an)*12,on=i<KI.tails;ctx.fillStyle=on?(KI.tails>=9?KIC.fire2:KIC.fire):'rgba(40,20,30,.45)';ctx.beginPath();ctx.arc(px,py-(on?KI.tailPop*2:0),on?3.2:2.2,0,TAU);ctx.fill();if(on)kGlow(px,py,7,KIC.fire,.35);}}
     if(KI.shield>0&&KI.shieldUntil>gameTime){const [sx,sy]=P(player.x,player.y,36);ctx.save();ctx.strokeStyle=hexA(KIC.gold,.7);ctx.lineWidth=2;ctx.beginPath();ctx.arc(sx,sy-6,38,0,TAU);ctx.stroke();ctx.restore();}
     if(kL('kaWisp'))for(let i=0;i<2;i++){const an=this.t*2.6+i*Math.PI,[wx,wy]=P(player.x+Math.cos(an)*34,player.y+Math.sin(an)*20,44);kGlow(wx,wy,10,KIC.fire2,.7);}
@@ -239,16 +241,21 @@ class KiCore{constructor(){this.t=0;this.layer='none';this.tk=0;this.h=0;}draw()
     const N=KI.night;if(N){if(N.until<gameTime){KI.night=null;if(N.rise){addFx(new KiPillar({x:player.x,y:player.y,w:60,life:.6}));for(const e of kNear(player.x,player.y,KB.kbMoonrise.R))kHit(e,KB.kbMoonrise.dmg,'kbMoonrise',{big:true});kFireBurst(player.x,player.y,KB.kbMoonrise.R,KIC.moon);shake(3);}}
       else if((N.tk+=dt)>=1){N.tk=0;skyDarkT=Math.max(skyDarkT||0,.4);for(const e of kNear(player.x,player.y,KB.kbNight.R)){addFx(new KiPillar({x:e.x,y:e.y}));kHit(e,N.dmg,'kbNight');applyCC(e,{slow:1.2});}}}
     /* shield expiry */
-    if(KI.shieldUntil<gameTime)KI.shield=0;}}
+    if(KI.shieldUntil<gameTime)KI.shield=0;
+    return CHAR==='kitsune';}}   /* 2026-11-20: update() returned nothing, so the engine dropped the ticker after one frame — Wisp Dance, Veil, lanterns, Lunar Circle, Tsukuyomi's Night, Torii SP, Grace heal never ticked, and every cast left one more KiGround + KiTop behind */
 
 /* =====================================================================
    5. SKILL ACTIONS
    ===================================================================== */
 let KI_CORE=null;function kEnsure(){if(CHAR!=='kitsune')return;if(!KI_CORE||!fx.includes(KI_CORE))KI_CORE=addFx(new KiCore());}
-function kCast(o){kEnsure();return buffAct({key:o.key,name:o.name,phi:o.phi,speed:o.speed||2.2,glow:o.glow||KIC.fire,events:tP=>[{t:tP,f:a=>o.f(a)}]});}
-function kStaff(o){faceTo(o.phi);const d=atkDir(player.dir),ct=CT(d),s=seq('attack',d,Math.max(0,ct-3),null,(o.speed||1.3)*aspd());
-  return act({key:o.key,name:o.name,seq:s,windup:seqTimeAt(s,seqIndex(s,'attack',ct,0)),dur:seqTimeAt(s,seqIndex(s,'attack',ct,0)+2),hitList:[],update:()=>{player.glow={color:o.glow||KIC.fire,k:.6};},
-    events:[{t:seqTimeAt(s,seqIndex(s,'attack',ct,0)),f:a=>o.f(a)}]});}
+function kCast(o){kEnsure();return buffAct({key:o.key,name:o.name,phi:o.phi,speed:o.speed||2.2,glow:o.glow||KIC.fire,events:tP=>[{t:0,f:a=>kiV('cast',o,tP,a)},{t:tP,f:a=>{kiV('release',o,a);o.f(a);}}]});}
+function kStaff(o){faceTo(o.phi);const d=atkDir(player.dir),ct=CT(d);let s=seq('attack',d,Math.max(0,ct-3),null,(o.speed||1.3)*aspd());
+  const iC=seqIndex(s,'attack',ct,0),tC=seqTimeAt(s,iC),dur=seqTimeAt(s,iC+2);
+  /* owner 2026-11-20: she is a ranged caster — with the new effects the normal attack is a quick CAST (the 'buff' clip), not a melee swing.
+     Same release time and same total length as the swing it replaces, so her attack rate is unchanged. */
+  if(window.KIV&&KIV.on){const tot=seqTotal(s),d2=player.dir,b=seq('buff',d2,0,null,1),pk=bPeak(d2),t1=Math.max(.001,seqTimeAt(b,pk)),t2=Math.max(.001,seqTotal(b)-t1);s=b.map((q,i)=>({st:q.st,d:q.d,f:q.f,ms:q.ms*(i<pk?tC/t1:(tot-tC)/t2)}));}
+  return act({key:o.key,name:o.name,seq:s,windup:tC,dur,hitList:[],update:()=>{player.glow={color:o.glow||KIC.fire,k:.6};},
+    events:[{t:0,f:a=>kiV('staffStart',o,tC)},{t:Math.max(0,tC-.03),f:a=>kiV('staff',o,a)},{t:tC,f:a=>o.f(a)}]});}
 
 /* ---------- normal attack ---------- */
 function mkKiBasic(tgt){kEnsure();const lv=Math.max(1,kL('knStaff')),chain=KB.knStaff.chain[lv-1]+(kL('kcChime')?1:0);if(gameTime-player.basicLast>1.2||player.basicIdx>=chain)player.basicIdx=0;
@@ -256,36 +263,37 @@ function mkKiBasic(tgt){kEnsure();const lv=Math.max(1,kL('knStaff')),chain=KB.kn
   return kStaff({key:'basic',name:big?'Sacred Chime':'Shrine Staff '+(idx+1),phi,speed:last?1.15:2,f:a=>{player.basicIdx=idx+1;player.basicLast=gameTime;
     if(big){for(const e of kNear(player.x,player.y,KB.kcChime.R))kHit(e,KB.kcChime.dmg,'kcChime',{auto:true});kFireBurst(player.x,player.y,KB.kcChime.R,KIC.gold);a.hitConfirmed=true;shake(1.6);return;}
     if(tgt.dead||dist(player,tgt)>BASIC_RANGE+60+tgt.r)return;
-    addFx(new KiHome({x:player.x+Math.cos(phi)*20,y:player.y+Math.sin(phi)*20,phi,tg:tgt,speed:560,r:5,col:KIC.fire,hit:e=>{kHit(e,KB.knStaff.hit,'basic',{auto:true});
-      if(kL('knBell')){KI.bellN++;if(KI.bellN>=KB.knBell.every){KI.bellN=0;for(const q of kNear(e.x,e.y,KB.knBell.R))kHit(q,kLv(KB.knBell.dmg,'knBell'),'knBell');kFireBurst(e.x,e.y,KB.knBell.R,KIC.gold);}}}}));a.hitConfirmed=true;}});}
+    addFx(new KiHome(Object.assign({x:player.x+Math.cos(phi)*20,y:player.y+Math.sin(phi)*20},window.KIV&&KIV.on&&KIV.from?KIV.from():null,{phi,tg:tgt,speed:560,r:5,col:KIC.fire,hit:e=>{kHit(e,KB.knStaff.hit,'basic',{auto:true});
+      if(kL('knBell')){KI.bellN++;if(KI.bellN>=KB.knBell.every){KI.bellN=0;for(const q of kNear(e.x,e.y,KB.knBell.R))kHit(q,kLv(KB.knBell.dmg,'knBell'),'knBell');kFireBurst(e.x,e.y,KB.knBell.R,KIC.gold);}}}})));a.hitConfirmed=true;}});}
 
 /* ---------- BASIC ---------- */
 function mkKnStep(c){const near=nearestEnemy(player.x,player.y,260),phi=near?Math.atan2(player.y-near.y,player.x-near.x):player.phi+Math.PI;
   return kCast({key:'knStep',name:'Fox Step',speed:3,glow:KIC.white,f:()=>{const sx=player.x,sy=player.y;if(typeof Decoy==='function'){if(decoy)decoy.dead=true;decoy=addFx(new Decoy({life:1.5}));
       if(kL('kcPhantom')){const dd=decoy;setFxTimer(1.5,()=>{for(const e of kNear(sx,sy,KB.kcPhantom.R))kHit(e,KB.kcPhantom.dmg,'kcPhantom');kFireBurst(sx,sy,KB.kcPhantom.R);});}}
-    const [x,y]=kPathEnd(sx,sy,phi,kLv(KB.knStep.dist,'knStep'));player.x=x;player.y=y;kFireBurst(sx,sy,30,KIC.white);if(near)faceTo(angTo(near));}});}
-function mkKnWard(c){return kCast({key:'knWard',name:'Ofuda Ward',glow:KIC.gold,f:()=>{KI.shield=Math.round(PS.lv*kLv(KB.knWard.shield,'knWard'));KI.shieldUntil=gameTime+KB.knWard.T;addFx(new GRing({x:player.x,y:player.y,r0:10,r1:50,w:5,color:KIC.gold,life:.4}));}});}
-function mkKnBless(c){return kCast({key:'knBless',name:"Inari's Blessing",glow:'#9aff9a',f:()=>{const h=Math.round(PS.lv*kLv(KB.knBless.hp,'knBless'));player.hp=Math.min(player.maxHp,player.hp+h);player.mp=Math.min(player.maxMp,player.mp+kLv(KB.knBless.sp,'knBless'));dmgNum(player.x,player.y,80,'+'+h,'heal');}});}
-function mkKnTorii(c){return kCast({key:'knTorii',name:'Torii Gate',glow:KIC.red,f:()=>{KI.torii={x:player.x,y:player.y,until:gameTime+KB.knTorii.T};addFx(new GRing({x:player.x,y:player.y,r0:10,r1:KB.knTorii.R,w:8,color:KIC.red,life:.45}));}});}
+    const [x,y]=kPathEnd(sx,sy,phi,kLv(KB.knStep.dist,'knStep'));player.x=x;player.y=y;kiV('step',sx,sy,x,y);kFireBurst(sx,sy,30,KIC.white);if(near)faceTo(angTo(near));}});}
+function mkKnWard(c){return kCast({key:'knWard',name:'Ofuda Ward',glow:KIC.gold,f:()=>{KI.shield=Math.round(PS.lv*kLv(KB.knWard.shield,'knWard'));KI.shieldUntil=gameTime+KB.knWard.T;if(!kiV('wardOn'))addFx(new GRing({x:player.x,y:player.y,r0:10,r1:50,w:5,color:KIC.gold,life:.4}));}});}
+function mkKnBless(c){return kCast({key:'knBless',name:"Inari's Blessing",glow:'#9aff9a',f:()=>{const h=Math.round(PS.lv*kLv(KB.knBless.hp,'knBless'));player.hp=Math.min(player.maxHp,player.hp+h);player.mp=Math.min(player.maxMp,player.mp+kLv(KB.knBless.sp,'knBless'));dmgNum(player.x,player.y,80,'+'+h,'heal');kiV('bless');}});}
+function mkKnTorii(c){return kCast({key:'knTorii',name:'Torii Gate',glow:KIC.red,f:()=>{KI.torii={x:player.x,y:player.y,until:gameTime+KB.knTorii.T,t0:gameTime};if(!kiV('toriiOn',player.x,player.y))addFx(new GRing({x:player.x,y:player.y,r0:10,r1:KB.knTorii.R,w:8,color:KIC.red,life:.45}));}});}
 
 /* ---------- A · Kitsune-bi ---------- */
 function mkKaOrb(c){const t=kTgt(c,KB.kaOrb.range),phi=kPhi(c,t),n=kL('kcSwarm')?KB.kcSwarm.n:KB.kaOrb.n,m=kLv(KB.kaOrb.dmg,'kaOrb');
   return kCast({key:'kaOrb',name:'Foxfire Orb',phi,f:a=>{for(let i=0;i<n;i++)addFx(new KiHome({x:player.x,y:player.y,phi:phi+(i-(n-1)/2)*.5,tg:t,col:KIC.fire2,hit:e=>{kHit(e,m,'kaOrb');kOnce(a,1);a.hitConfirmed=true;}}));}});}
-function kPillarAt(x,y,m,key,a){setFxTimer(.2,()=>{addFx(new KiPillar({x,y,w:36,col:KIC.fire,life:.4}));for(const e of kNear(x,y,KB.kaPillar.R)){kHit(e,m,key,{big:true});if(a)kOnce(a,1);}kFireBurst(x,y,KB.kaPillar.R);shake(1.6);});}
+function kPillarAt(x,y,m,key,a){kiV('pillarTele',x,y,.2);setFxTimer(.2,()=>{addFx(new KiPillar({x,y,w:36,col:KIC.fire,life:.4}));for(const e of kNear(x,y,KB.kaPillar.R)){kHit(e,m,key,{big:true});if(a)kOnce(a,1);}kFireBurst(x,y,KB.kaPillar.R);shake(1.6);});}
 function mkKaPillar(c){const [x,y]=kPt(c,KB.kaPillar.range);return kCast({key:'kaPillar',name:'Spirit Flame Pillar',phi:Math.atan2(y-player.y,x-player.x),f:a=>{kPillarAt(x,y,kLv(KB.kaPillar.dmg,'kaPillar'),'kaPillar',a);
   if(kL('kaTwin'))setFxTimer(.4,()=>{const an=rnd(0,TAU);kPillarAt(x+Math.cos(an)*60,y+Math.sin(an)*40,kLv(KB.kaTwin.dmg,'kaTwin'),'kaTwin');});}});}
 function mkKaLantern(c){const near=nearestEnemy(player.x,player.y,260),phi=near?Math.atan2(player.y-near.y,player.x-near.x):player.phi+Math.PI;
-  return kCast({key:'kaLantern',name:'Fox Lantern Trail',speed:2.6,f:()=>{const sx=player.x,sy=player.y,[ex,ey]=kPathEnd(sx,sy,phi,KB.kaLantern.back);for(let i=0;i<KB.kaLantern.n;i++){const k=i/(KB.kaLantern.n-1);KI.lanterns.push({x:lerp(sx,ex,k)+rnd(-10,10),y:lerp(sy,ey,k)+rnd(-10,10),until:gameTime+KB.kaLantern.T});}
-    player.x=ex;player.y=ey;if(near)faceTo(angTo(near));}});}
+  return kCast({key:'kaLantern',name:'Fox Lantern Trail',speed:2.6,f:()=>{const sx=player.x,sy=player.y,[ex,ey]=kPathEnd(sx,sy,phi,KB.kaLantern.back);for(let i=0;i<KB.kaLantern.n;i++){const k=i/(KB.kaLantern.n-1);KI.lanterns.push({x:lerp(sx,ex,k)+rnd(-10,10),y:lerp(sy,ey,k)+rnd(-10,10),until:gameTime+KB.kaLantern.T,t0:gameTime+i*.05});}
+    kiV('step',sx,sy,ex,ey);player.x=ex;player.y=ey;if(near)faceTo(angTo(near));}});}
 function mkKaRain(c){const [x,y]=kPt(c,KB.kaRain.range);return kCast({key:'kaRain',name:"Will-o'-Wisp Rain",phi:Math.atan2(y-player.y,x-player.x),f:a=>{const n=KB.kaRain.n,m=kLv(KB.kaRain.dmg,'kaRain');kOnce(a,2);
+  for(let i=0;i<n;i++){const an=i*2.4,r=KB.kaRain.R*Math.sqrt((i+.5)/n);kiV('rainDrop',x+Math.cos(an)*r,y+Math.sin(an)*r*.7,.08*i);}if(kL('kcMeteor'))kiV('meteorDrop',x,y,.08*n+.1);
   for(let i=0;i<n;i++)setFxTimer(.08*i,()=>{const an=i*2.4,r=KB.kaRain.R*Math.sqrt((i+.5)/n),px=x+Math.cos(an)*r,py=y+Math.sin(an)*r*.7;addFx(new KiPillar({x:px,y:py,w:12,col:KIC.fire2,life:.25}));for(const e of kNear(px,py,40))kHit(e,m,'kaRain');
     if(kL('kaPetals'))KI.petals.push({x:px,y:py,R:30,until:gameTime+KB.kaPetals.T});});
   if(kL('kcMeteor'))setFxTimer(.08*n+.1,()=>{addFx(new KiPillar({x,y,w:60,col:KIC.fire,life:.5}));for(const e of kNear(x,y,90))kHit(e,KB.kcMeteor.dmg,'kcMeteor',{big:true});kFireBurst(x,y,90);shake(2.4);});}});}
 function mkKaBurst(c){return kCast({key:'kaBurst',name:'Tail Burst',speed:1.6,f:()=>{const n=kSpendTails(),m=kLv(KB.kaBurst.dmg,'kaBurst')+KB.kaBurst.per*n;
-  for(const e of kNear(player.x,player.y,KB.kaBurst.R))kHit(e,m,'kaBurst',{big:true,knock:[angTo(e),140]});kFireBurst(player.x,player.y,KB.kaBurst.R);shake(2.6);stop(60);
+  for(const e of kNear(player.x,player.y,KB.kaBurst.R))kHit(e,m,'kaBurst',{big:true,knock:[angTo(e),140]});if(!kiV('tailBurst',KB.kaBurst.R,n))kFireBurst(player.x,player.y,KB.kaBurst.R);shake(2.6);stop(60);
   if(n)addFx(new DText({x:player.x,y:player.y,z:100,text:'TAILS ×'+n,color:KIC.fire,size:13,life:.8}));if(kL('kaAfterglow'))setFxTimer(.1,()=>kTail(kLv(KB.kaAfterglow.back,'kaAfterglow')));}});}
 function mkKaVeil(c){return kCast({key:'kaVeil',name:'Foxfire Veil',f:()=>{addBuff('kaVeil',KB.kaVeil.T);kFireBurst(player.x,player.y,KB.kaVeil.R);}});}
-function mkKaInferno(c){return buffAct({key:'kaInferno',name:'Nine-Tailed Inferno',speed:1.4,glow:KIC.fire,events:tP=>{const ev=[];for(let i=0;i<9;i++)ev.push({t:tP+i*.08,f:()=>{const L=kNear(player.x,player.y,KB.kaInferno.R).sort((a,b)=>dist(a,player)-dist(b,player));if(!L.length)return;const e=L[i%L.length];
+function mkKaInferno(c){return buffAct({key:'kaInferno',name:'Nine-Tailed Inferno',speed:1.4,glow:KIC.fire,events:tP=>{const ev=[{t:0,f:()=>kiV('infernoStart',tP)}];for(let i=0;i<9;i++)ev.push({t:tP+i*.08,f:()=>{const L=kNear(player.x,player.y,KB.kaInferno.R).sort((a,b)=>dist(a,player)-dist(b,player));if(!L.length)return;const e=L[i%L.length];
     addFx(new KiBeam({x:player.x,y:player.y,phi:angTo(e),L:dist(player,e),col:KIC.fire,w:8}));kHit(e,kLv(KB.kaInferno.dmg,'kaInferno'),'kaInferno',{big:true});kPow(e,true);}});
     ev.push({t:tP+.8,f:()=>{if(kL('kaCelestial')){KI.tails=KI_BAL.tails.cap;addBuff('kaCelestial',KB.kaCelestial.T);}}});return ev;}});}
 
@@ -298,20 +306,20 @@ function mkKbBeam(c){const t=kTgt(c,KB.kbBeam.range),phi=kPhi(c,t),n=kL('kcPrism
 function mkKbCrescent(c){const t=kTgt(c,KB.kbCrescent.range),phi=kPhi(c,t);
   return kCast({key:'kbCrescent',name:'Crescent Blade',phi,glow:KIC.moon,f:a=>{addFx(new KiShot({x:player.x,y:player.y,phi,len:KB.kbCrescent.len,back:true,hit:e=>{kHit(e,kLv(KB.kbCrescent.dmg,'kbCrescent'),'kbCrescent');kPow(e,false,KIC.moon);}}));
     if(kL('kbHalf'))addFx(new KiShot({x:player.x,y:player.y,phi:phi+Math.PI,len:KB.kbCrescent.len*.8,back:true,hit:e=>kHit(e,kLv(KB.kbHalf.dmg,'kbHalf'),'kbHalf')}));}});}
-function mkKbMirror(c){const [x,y]=kPt(c,KB.kbMirror.range);return kCast({key:'kbMirror',name:'Yata Mirror',phi:Math.atan2(y-player.y,x-player.x),glow:KIC.moon,f:()=>{KI.mirror={x,y,until:gameTime+KB.kbMirror.T};kFireBurst(x,y,30,KIC.moon);}});}
-function mkKbCircle(c){const [x,y]=kPt(c,KB.kbCircle.range);return kCast({key:'kbCircle',name:'Lunar Circle',phi:Math.atan2(y-player.y,x-player.x),glow:KIC.moon2,f:()=>{KI.circle={x,y,until:gameTime+KB.kbCircle.T,dmg:kLv(KB.kbCircle.dmg,'kbCircle')};}});}
+function mkKbMirror(c){const [x,y]=kPt(c,KB.kbMirror.range);return kCast({key:'kbMirror',name:'Yata Mirror',phi:Math.atan2(y-player.y,x-player.x),glow:KIC.moon,f:()=>{KI.mirror={x,y,until:gameTime+KB.kbMirror.T,t0:gameTime};kFireBurst(x,y,30,KIC.moon);}});}
+function mkKbCircle(c){const [x,y]=kPt(c,KB.kbCircle.range);return kCast({key:'kbCircle',name:'Lunar Circle',phi:Math.atan2(y-player.y,x-player.x),glow:KIC.moon2,f:()=>{KI.circle={x,y,until:gameTime+KB.kbCircle.T,dmg:kLv(KB.kbCircle.dmg,'kbCircle'),t0:gameTime};kiV('circleOn',x,y);}});}
 function mkKbStar(c){const t=kTgt(c,KB.kbStar.range);if(!t){msg('ไม่มีเป้าหมาย');return null;}const n=kL('kcShower')?KB.kcShower.n:KB.kbStar.n,m=kLv(KB.kbStar.dmg,'kbStar');
-  return kCast({key:'kbStar',name:'Starfall',phi:angTo(t),glow:KIC.moon,f:()=>{for(let i=0;i<n;i++)setFxTimer(.15*i,()=>{const e=!t.dead?t:nearestEnemy(t.x,t.y,200);if(!e)return;addFx(new KiPillar({x:e.x,y:e.y,w:12,col:'#fff2b0',life:.25}));kHit(e,m,'kbStar');
+  return kCast({key:'kbStar',name:'Starfall',phi:angTo(t),glow:KIC.moon,f:()=>{for(let i=0;i<n;i++)kiV('starDrop',t,.15*i);for(let i=0;i<n;i++)setFxTimer(.15*i,()=>{const e=!t.dead?t:nearestEnemy(t.x,t.y,200);if(!e)return;addFx(new KiPillar({x:e.x,y:e.y,w:12,col:'#fff2b0',life:.25}));kHit(e,m,'kbStar');
     if(kL('kbShooting')){const q=enemies.filter(z=>!z.dead&&z!==e&&dist(z,e)<180).sort((a,b)=>dist(a,e)-dist(b,e))[0];if(q){addFx(new KiBeam({x:e.x,y:e.y,phi:angTo.call?Math.atan2(q.y-e.y,q.x-e.x):0,L:dist(e,q),col:'#fff2b0',w:4,life:.18}));kHit(q,KB.kbShooting.dmg,'kbShooting');}}});}});}
-function mkKbMoonlight(c){return kCast({key:'kbMoonlight',name:'Moonlight Form',speed:3,glow:KIC.moon,f:()=>{addBuff('kbMoonlight',KB.kbMoonlight.T);}});}
-function mkKbNight(c){return kCast({key:'kbNight',name:"Tsukuyomi's Night",speed:1.4,glow:KIC.moon,f:()=>{KI.night={until:gameTime+KB.kbNight.T,tk:.8,dmg:kLv(KB.kbNight.dmg,'kbNight'),rise:kL('kbMoonrise')>0};skyDarkT=.8;addFx(new DText({x:player.x,y:player.y,z:110,text:"TSUKUYOMI'S NIGHT",color:KIC.moon,size:15,life:1.1}));}});}
+function mkKbMoonlight(c){return kCast({key:'kbMoonlight',name:'Moonlight Form',speed:3,glow:KIC.moon,f:()=>{addBuff('kbMoonlight',KB.kbMoonlight.T);kiV('moonlightOn');}});}
+function mkKbNight(c){return kCast({key:'kbNight',name:"Tsukuyomi's Night",speed:1.4,glow:KIC.moon,f:()=>{KI.night={until:gameTime+KB.kbNight.T,tk:.8,dmg:kLv(KB.kbNight.dmg,'kbNight'),rise:kL('kbMoonrise')>0,t0:gameTime};kiV('nightOn');skyDarkT=.8;addFx(new DText({x:player.x,y:player.y,z:110,text:"TSUKUYOMI'S NIGHT",color:KIC.moon,size:15,life:1.1}));}});}
 
 /* ---------- C ---------- */
 function mkKcWheel(c){const t=kTgt(c,KB.kcWheel.range),phi=kPhi(c,t);return kCast({key:'kcWheel',name:'Fox Fire Wheel',phi,f:a=>{addFx(new KiShot({x:player.x,y:player.y,phi,len:KB.kcWheel.len,speed:460,w:26,kind:'wheel',col:KIC.fire,hit:e=>{kHit(e,KB.kcWheel.dmg,'kcWheel',{big:true});kOnce(a,2);kPow(e,true);}}));}});}
 function mkKcDisc(c){const t=kTgt(c,KB.kcDisc.range),phi=kPhi(c,t);return kCast({key:'kcDisc',name:'Full Moon Disc',phi,glow:KIC.moon,f:()=>{addFx(new KiShot({x:player.x,y:player.y,phi,len:KB.kcDisc.len,speed:520,w:30,kind:'disc',col:KIC.moon,hit:e=>{kHit(e,KB.kcDisc.dmg,'kcDisc',{big:true});applyCC(e,{slow:KB.kcDisc.slow});e.kSlowT=gameTime+KB.kcDisc.slow;kPow(e,true,KIC.moon);}}));}});}
-function mkKcGrace(c){return kCast({key:'kcGrace',name:"Inari's Grace",glow:KIC.gold,f:()=>{addBuff('kcGrace',KB.kcGrace.T);addFx(new GRing({x:player.x,y:player.y,r0:10,r1:70,w:6,color:KIC.gold,life:.45}));}});}
-function mkKcAwaken(c){return kCast({key:'kcAwaken',name:'Nine-Tail Awakening',speed:1.4,f:()=>{addBuff('kcAwaken',KB.kcAwaken.T);kTail(1);kFireBurst(player.x,player.y,130);addFx(new DText({x:player.x,y:player.y,z:116,text:'NINE-TAIL AWAKENING',color:KIC.fire,size:15,life:1.1}));shake(3);}});}
-function mkKcTamamo(c){const [x,y]=kPt(c,KB.kcTamamo.range);return kCast({key:'kcTamamo',name:"Tamamo's Sun",speed:1.4,phi:Math.atan2(y-player.y,x-player.x),f:()=>{const n=kSpendTails(),m=KB.kcTamamo.dmg+KB.kcTamamo.per*n;skyDarkT=.5;
+function mkKcGrace(c){return kCast({key:'kcGrace',name:"Inari's Grace",glow:KIC.gold,f:()=>{addBuff('kcGrace',KB.kcGrace.T);if(!kiV('graceOn'))addFx(new GRing({x:player.x,y:player.y,r0:10,r1:70,w:6,color:KIC.gold,life:.45}));}});}
+function mkKcAwaken(c){return kCast({key:'kcAwaken',name:'Nine-Tail Awakening',speed:1.4,f:()=>{addBuff('kcAwaken',KB.kcAwaken.T);kTail(1);if(!kiV('awakenOn'))kFireBurst(player.x,player.y,130);addFx(new DText({x:player.x,y:player.y,z:116,text:'NINE-TAIL AWAKENING',color:KIC.fire,size:15,life:1.1}));shake(3);}});}
+function mkKcTamamo(c){const [x,y]=kPt(c,KB.kcTamamo.range);return kCast({key:'kcTamamo',name:"Tamamo's Sun",speed:1.4,phi:Math.atan2(y-player.y,x-player.x),f:()=>{const n=kSpendTails(),m=KB.kcTamamo.dmg+KB.kcTamamo.per*n;skyDarkT=.5;kiV('sunDrop',x,y,.35);
   setFxTimer(.35,()=>{addFx(new KiPillar({x,y,w:110,col:KIC.fire,life:.6}));for(const e of kNear(x,y,KB.kcTamamo.R))kHit(e,m,'kcTamamo',{big:true});kFireBurst(x,y,KB.kcTamamo.R);shake(4);stop(80);});}});}
 function mkKcTsukuyomi(c){const t=kTgt(c,KB.kcTsukuyomi.range),phi=kPhi(c,t);return kCast({key:'kcTsukuyomi',name:'Tsukuyomi Descends',speed:1.4,phi,glow:KIC.moon,f:()=>{kBeamLine(player.x,player.y,phi,KB.kcTsukuyomi.len,KB.kcTsukuyomi.w,KB.kcTsukuyomi.dmg,'kcTsukuyomi',{big:true});shake(3);stop(60);}});}
 

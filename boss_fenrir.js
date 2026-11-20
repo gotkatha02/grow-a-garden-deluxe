@@ -168,7 +168,8 @@ function onBossDead(e){if(e.cast&&e.cast.k==='howl')skyDarkT=0;e._paid=1;e.cast=
   const A=window.AFItems;if(A&&A.dropSetItem){const z=25000+Math.round(Math.random()*15000);A.zeny=A.zeny+z;
     const sl=['rhand','armor','top','garment','shoes','acc'][Math.floor(Math.random()*6)],id=A.dropSetItem(8,sl);A.buyGear(id,0);
     chatLog&&chatLog('sys',`ได้รับ ${z.toLocaleString()}z + <b>${A.ITEMS[id].n}</b>`);}}
-function spawnBoss(){const h=mapHosts[MAP];let [x,y]=M2W(HOME);
+function spawnBoss(){const h=mapHosts[MAP];if(h&&h.W){const k=h.W/3600;HOME.x=1800*k;HOME.y=1530*k;}   /* the den is laid out larger since 2026-11-20 */
+  let [x,y]=M2W(HOME);
   if(mapBlockedW(x,y)&&h.randomSpawn){const p=h.randomSpawn(HOME.x,HOME.y,300);if(p)[x,y]=M2W(p);}
   const e=spawnEnemy(x,y,true,null);if(!enemies.includes(e))enemies.push(e);
   const st=monStats(LV,'boss');e.m=Object.assign({},MON.elder,st,{name:NAME,th:'เฟนเรียร์',el:'Dark 4',race:'Brute',size:'large',boss:1,atk:[st.atk[0]*BAL.atkMul,st.atk[1]*BAL.atkMul]});

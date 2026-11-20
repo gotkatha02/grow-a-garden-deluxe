@@ -157,7 +157,7 @@ function build(){try{
       if(!carved)break;for(const o of objs)if(o.solid)for(const s2 of o.solid)stamp(s2[0],s2[1],s2[2]);}
     buckets.clear();for(const o of objs){const k=((o.x/CH)|0)+','+((o.y/CH)|0);(buckets.get(k)||buckets.set(k,[]).get(k)).push(o);}}
   /* monster spawn points: open snow away from the entrance, not on the path */
-  for(let i=0;i<6000&&spawns.length<32;i++){const x=R(350,W-350),y=R(300,H-300);if(blocked(x,y)||nearPath(x,y,20)||Math.hypot(x-LAYOUT.spawn[0],y-LAYOUT.spawn[1])<600)continue;if(spawns.some(s=>Math.hypot(s.x-x,s.y-y)<340))continue;spawns.push({x,y});}
+  for(let i=0;i<6000&&spawns.length<60;i++){const x=R(350,W-350),y=R(300,H-300);if(blocked(x,y)||nearPath(x,y,20)||Math.hypot(x-LAYOUT.spawn[0],y-LAYOUT.spawn[1])<600)continue;if(spawns.some(s=>Math.hypot(s.x-x,s.y-y)<240))continue;spawns.push({x,y});}
   for(const w of warps){const n=nearest({x:w.x,y:w.y});if(n){w.x=n.x;w.y=n.y;}w.ph=rnd()*6.28;}
   makeMinimap();ready=true;}catch(e){console.error(e);failed=true;}}
 

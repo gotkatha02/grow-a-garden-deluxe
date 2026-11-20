@@ -58,7 +58,8 @@ class KxWatch{constructor(){this.t=0;this.layer='none';this.seen=new WeakSet();}
     return true;}}
 function kxEnsure(){if(!fx.some(f=>f instanceof KxWatch))addFx(new KxWatch());}
 
-function installKitsuneFx(){if(CHAR!=='kitsune')return;if(window.TV)TV.toonify();KXF.forEach(kxImg);kxEnsure();
+function installKitsuneFx(){if(CHAR!=='kitsune')return;if(!/[?&]vfx3=0/.test(location.search))return;   /* 2026-11-20: kitsune_vfx.js (SVG + code VFX) is the default; ?vfx3=0 = these painted pictures */
+  if(window.TV)TV.toonify();KXF.forEach(kxImg);kxEnsure();
   for(const k in KX_CAST){const f=KX_CAST[k],s=SKILLS[k];if(!f||!s||!s.make||s._kx)continue;const mk=s.make;
     s.make=function(c){const a=mk.apply(this,arguments);if(a){try{kxEnsure();setFxTimer(.12,()=>f(c||{}));}catch(e){}}return a;};s._kx=1;}
   if(window._kxHook)return;window._kxHook=1;
