@@ -1103,15 +1103,7 @@ const FITEMS={
  clipLuck:{n:'Clover Clip',slot:'acc',kind:'Accessory',cards:1,w:10,b:{luk:3,crit:3},d:'กิ๊บใบโคลเวอร์ LUK +3 · CRIT +3'}};
 for(const k of ['cleaver','hatchet','buckler','boots','ringFury','ringSwift','ringPrec','clipLuck'])delete FITEMS[k];   /* plain gear, not costumes */
 /* ---------- painted wings (one picture per view: S, SE, E, NE, N; W side = mirror) ---------- */
-const PWING={goldwings:{dir:'assets/fashion/wings/gold_',span:340,root:{S:[.5,.7],SE:[.54,.69],E:[.8,.68],NE:[.49,.68],N:[.51,.66]},
-  it:{n:'Golden Angel Wings',d:'ปีกเทวดาสีทองกางเต็ม กระพือช้าๆ FLEE +10 · LUK +2',b:{flee:10,luk:2}}}};
-PWING.abysswings={dir:'assets/fashion/wings/abyss_',span:330,root:{"S": [0.514, 0.6], "SE": [0.582, 0.6], "NE": [0.527, 0.6], "N": [0.499, 0.6], "E": [0.78, 0.55]},it:{n:'Abyss Lava Wings',d:'ปีกปีศาจลาวาสีม่วงแดง มีรอยร้าวลาวาเรืองแสง FLEE +10 · STR +2',b:{"flee": 10, "str": 2}}};
-PWING.flamewings={dir:'assets/fashion/wings/flame_',span:330,root:{"S": [0.5, 0.6], "SE": [0.577, 0.6], "NE": [0.539, 0.6], "N": [0.491, 0.6], "E": [0.78, 0.55]},it:{n:'Inferno Drake Wings',d:'ปีกมังกรไฟสีส้มทอง ลุกโชนอยู่ตลอด FLEE +10 · STR +1 · AGI +1',b:{"flee": 10, "str": 1, "agi": 1}}};
-PWING.astralwings={dir:'assets/fashion/wings/astral_',span:330,root:{"S": [0.48, 0.6], "SE": [0.583, 0.6], "NE": [0.509, 0.6], "N": [0.483, 0.6], "E": [0.78, 0.55]},it:{n:'Astral Mecha Wings',d:'ปีกจักรกลขนนกทองแกนคริสตัลม่วง FLEE +10 · INT +2',b:{"flee": 10, "int": 2}}};
-PWING.crystalwings={dir:'assets/fashion/wings/crystal_',span:330,root:{"S": [0.483, 0.6], "SE": [0.553, 0.6], "NE": [0.5, 0.6], "N": [0.491, 0.6], "E": [0.78, 0.55]},it:{n:'Frost Crystal Wings',d:'ปีกผลึกน้ำแข็งเหลี่ยมคม สะท้อนแสงฟ้า FLEE +12',b:{"flee": 12}}};
-PWING.sunwings={dir:'assets/fashion/wings/sun_',span:330,root:{"S": [0.502, 0.6], "SE": [0.561, 0.6], "NE": [0.524, 0.6], "N": [0.499, 0.6], "E": [0.78, 0.55]},it:{n:'Sunflare Wings',d:'ปีกขนนกเปลวทองม้วนวนแบบลายสลัก FLEE +10 · LUK +2',b:{"flee": 10, "luk": 2}}};
-PWING.rosewings={dir:'assets/fashion/wings/rose_',span:330,root:{"S": [0.492, 0.6], "SE": [0.548, 0.6], "NE": [0.502, 0.6], "N": [0.484, 0.6], "E": [0.78, 0.55]},it:{n:'Rosewine Wings',d:'ปีกขนนกสีชมพูแดงไวน์ อ่อนช้อย FLEE +10 · DEX +2',b:{"flee": 10, "dex": 2}}};
-PWING.skywings={dir:'assets/fashion/wings/sky_',span:330,root:{"S": [0.487, 0.6], "SE": [0.563, 0.6], "NE": [0.503, 0.6], "N": [0.499, 0.6], "E": [0.78, 0.55]},it:{n:'Skyfeather Wings',d:'ปีกเทวดาขนนกสีฟ้าขาว FLEE +10 · VIT +2',b:{"flee": 10, "vit": 2}}};
+const PWING=window.PWING;
 const PWIMG={};function pwImg(k,v){const key=k+v;let im=PWIMG[key];if(!im){im=new Image();im.src=PWING[k].dir+v+'.webp';PWIMG[key]=im;}return im.complete&&im.naturalWidth?im:null;}
 function pwingGeom(k,e,x,y,t,moving){const C=PWING[k],sd=srcDir(e.d),mir=isMir(e.d),tr=FASHION.head[e.st]&&FASHION.head[e.st][sd];if(!tr)return null;
   const im=pwImg(k,sd);if(!im)return null;const hp=tr[Math.min(e.f,tr.length-1)],bo=BACK_OFF[sd]||[0,62];let ax=hp[0]+bo[0];if(mir)ax=SPR_META.cell.w-ax;const bk=sd==='N'||sd==='NE',ay=hp[1]+bo[1]+(bk?12:-10);
