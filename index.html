@@ -5144,7 +5144,7 @@ function moveToward(tx,ty,dt,stopD=4){const dx=tx-player.x,dy=ty-player.y,L=Math
   if(Math.random()<dt*6*Q.p)dustPuff(player.x,player.y,1,'#cfc8b6',15,4);return L-st<=stopD+.5;}
 
 function updatePlayer(dt){
-  {const rm=fastRegen?6:1,stand=!player.moving&&!player.action;player.hrt=(player.hrt||0)+dt*rm*(stand?1:.5);player.srt=(player.srt||0)+dt*rm*(stand?1:.5);
+  {const rm=fastRegen?6:1,stand=!player.moving&&!player.action,sk=player.sitting?2:stand?1:.5;player.hrt=(player.hrt||0)+dt*rm*sk;player.srt=(player.srt||0)+dt*rm*sk;
    if(player.hrt>=6){player.hrt-=6;player.hp=Math.min(player.maxHp,player.hp+D.hpReg);}if(player.srt>=8){player.srt-=8;player.mp=Math.min(player.maxMp,player.mp+D.spReg);}}
   if(player.casting){const c=player.casting;c.t+=dt;if(c.t>=c.T){player.casting=null;if(c.fx)c.fx.life=0;castSkillNow(c.key,c.c);}}player.iframes=Math.max(0,player.iframes-dt);if(player.ccT>0)player.ccT=Math.max(0,player.ccT-dt);unbrokenICD=Math.max(0,unbrokenICD-dt);
   for(const k in player.buffs)player.buffs[k].t-=dt;
@@ -5927,7 +5927,7 @@ window.AF={levelUp:()=>{if(PS.lv<99){PS.lv++;applyStats();player.hp=player.maxHp
 <script src="kitsune_art.js?v=1"></script>
 <script src="cat_vfx.js?v=18"></script>
 <script src="cat_mask.js?v=5"></script>
-<script>if(CHAR==='cat')document.write('<script src="pwing_data.js?v=1"><\/script><script src="cat_wings.js?v=2"><\/script>');</script>
+<script>if(CHAR==='cat')document.write('<script src="pwing_data.js?v=1"><\/script><script src="cat_wings.js?v=2"><\/script><script src="hero_sit.js?v=1"><\/script>');</script>
 <script src="kitsune_vfx.js?v=1"></script>
 <script src="croc_vfx3.js?v=1"></script>
 <script src="ui_skin.js?v=1"></script>
