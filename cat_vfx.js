@@ -282,7 +282,14 @@ KTV.arc=function(o){const c=o.col,pal=(c===KTC.oni||c===KTC.oni2)?PAL.oni:c===KT
 /* painted pictures: all swallowed; three of them stand for a whole effect */
 KTV.img=function(o){const n=o&&o.n;if(n==='09_crater')crater(o.x,o.y,o.w||170);else if(n==='12_roar')roar();else if(n==='14_hana')hana(o);return true;};
 /* the ground breaks under a heavy landing (Earthfall, Sky Drop, Avalanche, Oni Cleave) */
-function crater(x,y,w){const sc=cl(w/170,.8,1.6);V.groundBreak(x,y,sc*.8,0);dust(x,y,7,{ring:24*sc,size:54*sc,spd:95,life:.9});stones(x,y,Math.round(7*sc),{spd:240,up:300});ring({x,y,r0:16,r1:112*sc,w:8,pal:PAL.oni,life:.42,segs:5,gap:.25});}
+/* owner 2026-11-20: painted ground crack, no fire — it cracks open from the impact point, the slabs jolt, then it fades */
+const KCRATER=new Image();KCRATER.src='assets/fx/cat/k_crater.webp';
+class KCraterPic{constructor(o){Object.assign(this,{t:0,layer:'ground',w:200,life:1.7},o);}
+  update(dt){this.t+=dt;return this.t<this.life;}
+  draw(){const im=KCRATER;if(!im.complete||!im.naturalWidth)return;const [x,y]=P(this.x,this.y,0),W=this.w,H=W*im.naturalHeight/im.naturalWidth,t=this.t;
+    const open=eO(cl(t/.13,0,1)),jolt=t<.13?1:1+.07*Math.sin(cl((t-.13)/.16,0,1)*Math.PI),a=cl((this.life-t)/.55,0,1);if(a<=0)return;
+    ctx.save();ctx.globalAlpha=a;ctx.translate(x,y);ctx.beginPath();ctx.ellipse(0,0,W*.56*open+2,H*.6*open+2,0,0,TAU);ctx.clip();ctx.scale(jolt,2-jolt);ctx.drawImage(im,-W/2,-H*.5,W,H);ctx.restore();}}
+function crater(x,y,w){const sc=cl(w/170,.8,1.6);addFx(new KCraterPic({x,y,w:190*sc}));dust(x,y,7,{ring:24*sc,size:54*sc,spd:95,life:.9});stones(x,y,Math.round(7*sc),{spd:240,up:300});}
 KTV.crater=crater;
 /* a blink from one place to another */
 KTV.blink=function(ox,oy,bx,by,kind){GALE_N=0;addFx(new KStreak({a:[ox,oy],b:[bx,by],pal:kind==='wind'?PAL.wind:PAL.sakura,w:9,life:.22}));};
@@ -374,7 +381,7 @@ KTV.hanaEnd=function(sx,sy,R){petals(sx,sy,30,22,{spd:260,up:120});ring({x:sx,y:
    9. B · ONI RONIN — fire and stone: slow, heavy, the ground pays for every blow.
    --------------------------------------------------------------------- */
 /* a crack torn in the ground: opens from its start to its tip, glows hot, then cools and closes */
-class KFissure{constructor(o){Object.assign(this,{t:0,layer:'ground',len:120,grow:.12,life:1.5,w:6,hot:1,jag:7,lin:0,delay:0},o);this.t=-this.delay;const n=Math.max(4,Math.round(this.len/14));this.pts=[];
+class KFissure{constructor(o){Object.assign(this,{t:0,layer:'ground',len:120,grow:.12,life:1.5,w:6,hot:0,jag:7,lin:0,delay:0},o);this.t=-this.delay;const n=Math.max(4,Math.round(this.len/14));this.pts=[];
     for(let i=0;i<=n;i++)this.pts.push([i/n*this.len,i&&i<n?R_(-1,1)*this.jag:0,R_(.6,1.15)]);this.br=[];for(let i=2;i<n-1;i+=2)if(Math.random()<.65)this.br.push([i,(Math.random()<.5?-1:1)*R_(.5,1.1),R_(12,26)]);}
   update(dt){this.t+=dt;return this.t<this.life;}
   draw(){if(this.t<0)return;const k=cl(this.t/this.grow,0,1),d=this.len*(this.lin?k:eO(k)),a=cl((this.life-this.t)/.6,0,1),heat=cl(1-(this.t-this.grow)/.8,0,1),c=Math.cos(this.phi),s=Math.sin(this.phi);if(a<=0||d<6)return;
@@ -431,7 +438,7 @@ KTV.finalAfter=function(phi,len){const x=player.x,y=player.y;addFx(new KFissure(
   for(let i=1;i<=3;i++){const l=len*i/3.3;ktLater(l/900,()=>{stones(x+Math.cos(phi)*l,y+Math.sin(phi)*l,3,{spd:170,up:260});dust(x+Math.cos(phi)*l,y+Math.sin(phi)*l,2,{size:40,spd:40,life:.7});});}};
 /* Quake Slash: the crack runs along the ground and stone spikes come up exactly where its front (the damage) is */
 KTV.quakeFront=function(q,d1){if(q._d==null){q._d=12;q._n=0;addFx(new KFissure({x:q.x,y:q.y,phi:q.phi,len:q.len,grow:q.len/q.speed,lin:1,life:q.life+.5,w:7.5}));}const c=Math.cos(q.phi),s=Math.sin(q.phi);
-  while(q._d<=d1){const l=q._d,side=(q._n%2?1:-1)*R_(5,13),x=q.x+c*l-s*side,y=q.y+s*l+c*side,big=q._n%3===0;addFx(new KSpike({x,y,h:big?R_(36,48):R_(20,30),w:big?21:14,hot:1,life:R_(.9,1.3)}));
+  while(q._d<=d1){const l=q._d,side=(q._n%2?1:-1)*R_(5,13),x=q.x+c*l-s*side,y=q.y+s*l+c*side,big=q._n%3===0;addFx(new KSpike({x,y,h:big?R_(36,48):R_(20,30),w:big?21:14,hot:0,life:R_(.9,1.3)}));
     if(q._n%2===0){dust(x,y,1,{size:34,spd:30,life:.6});stones(x,y,2,{spd:150,up:240,s:.8});}q._n++;q._d+=24;}};
 KTV.quakeDraw=function(){return true;};
 /* Oni Executioner: the cut splits the target from top to bottom. With Oni Impact the oni itself rises behind the cat while it charges */
