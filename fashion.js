@@ -1102,6 +1102,19 @@ const FITEMS={
  ringPrec:{n:'Ring of Precision',slot:'acc',kind:'Accessory',w:10,b:{dex:3},d:'แหวนแม่นยำ DEX +3'},
  clipLuck:{n:'Clover Clip',slot:'acc',kind:'Accessory',cards:1,w:10,b:{luk:3,crit:3},d:'กิ๊บใบโคลเวอร์ LUK +3 · CRIT +3'}};
 for(const k of ['cleaver','hatchet','buckler','boots','ringFury','ringSwift','ringPrec','clipLuck'])delete FITEMS[k];   /* plain gear, not costumes */
+/* ---------- painted wings (one picture per view: S, SE, E, NE, N; W side = mirror) ---------- */
+const PWING={goldwings:{dir:'assets/fashion/wings/gold_',span:340,root:{S:[.5,.7],SE:[.54,.69],E:[.8,.68],NE:[.49,.68],N:[.51,.66]},
+  it:{n:'Golden Angel Wings',d:'ปีกเทวดาสีทองกางเต็ม กระพือช้าๆ FLEE +10 · LUK +2',b:{flee:10,luk:2}}}};
+const PWIMG={};function pwImg(k,v){const key=k+v;let im=PWIMG[key];if(!im){im=new Image();im.src=PWING[k].dir+v+'.webp';PWIMG[key]=im;}return im.complete&&im.naturalWidth?im:null;}
+function pwingGeom(k,e,x,y,t,moving){const C=PWING[k],sd=srcDir(e.d),mir=isMir(e.d),tr=FASHION.head[e.st]&&FASHION.head[e.st][sd];if(!tr)return null;
+  const im=pwImg(k,sd);if(!im)return null;const hp=tr[Math.min(e.f,tr.length-1)],bo=BACK_OFF[sd]||[0,62];let ax=hp[0]+bo[0];if(mir)ax=SPR_META.cell.w-ax;const bk=sd==='N'||sd==='NE',ay=hp[1]+bo[1]+(bk?12:-10);
+  const [sx,sy]=c2s(ax,ay,x,y),r=C.root[sd],side=sd==='E',w=(side?C.span*.42:sd==='S'?C.span:sd==='N'?C.span*.88:sd==='NE'?C.span*.78:C.span*.85)*SPR,h=w*im.naturalHeight/im.naturalWidth;
+  const sp=moving?7:2.6,amp=moving?.16:.07,ph=Math.sin(t*sp),front=sd==='N'||sd==='NE';
+  return [{front,draw:()=>{if(GP==='fx')return;ctx.save();ctx.translate(sx,sy);if(mir)ctx.scale(-1,1);const W=im.naturalWidth,H=im.naturalHeight,rx=r[0]*W,ry=r[1]*H,k=w/W;
+    if(side){ctx.rotate(-ph*amp*1.4);ctx.drawImage(im,-rx*k,-ry*k,w,h);}
+    else for(const sg of [-1,1]){ctx.save();ctx.rotate(sg*ph*amp);ctx.scale(1-.06*(ph*.5+.5)*(moving?1:.5),1);ctx.beginPath();if(sg<0)ctx.rect(-rx*k-2,-ry*k-2,rx*k+2.5,h+4);else ctx.rect(-.5,-ry*k-2,(W-rx)*k+2,h+4);ctx.clip();ctx.drawImage(im,-rx*k,-ry*k,w,h);ctx.restore();}
+    ctx.restore();}}];}
+for(const k in PWING)WING2[k]={g:(e,x,y,t,m)=>pwingGeom(k,e,x,y,t,m),it:PWING[k].it};
 for(const k in CAPES)FITEMS[k]={slot:'garment',kind:'Garment',n:CAPES[k].n,d:CAPES[k].d,b:CAPES[k].b};
 for(const k in BACKS)FITEMS[k]={slot:'back',kind:'Back Accessory',n:BACKS[k].n,d:BACKS[k].d,b:BACKS[k].b};
 for(const k in WING2)FITEMS[k]={slot:'garment',kind:'Garment',...WING2[k].it};
