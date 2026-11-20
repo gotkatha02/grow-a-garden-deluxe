@@ -96,7 +96,7 @@ const AT={   // key: (a,c) => visuals ; a = the action, c = cast context
   cycloneLeap:(a,c)=>{const x=player.x,y=player.y;fxI({_tvc:1,n:'w44_cyclone_ground',x,y,w:270,layer:'ground',life:1.1,s0:.45,s1:1,fadeIn:.001,fadeOut:.35});
     for(let i=0;i<5;i++){const an=rnd(0,TAU),v=rnd(90,180);addFx(new WRock({n:'wr'+(1+i%4)+'_rock',x,y,vx:Math.cos(an)*v,vy:Math.sin(an)*v*.6,vz:rnd(240,380),w:rnd(14,22)}));}if(typeof shake==='function')shake(5);},
   ironCounter:(a,c)=>{fxI({fx:Math.cos(player.phi)>0,n:'w09_parry',x:player.x+Math.cos(player.phi)*24,y:player.y+Math.sin(player.phi)*24,z:36,w:80,life:.5,s0:.6,s1:1.05,fadeIn:.001,fadeOut:.5,glow:.8});},
-  warHowl:(a,c)=>{},
+  warHowl:(a,c)=>{fxI({_tvc:1,n:'w05_howl',x:player.x,y:player.y,z:70,w:120,life:.9,s0:.5,s1:1.1,fadeOut:.45,glow:.6});},
   warFury:(a,c)=>{flashS(.15,'#ff3a2a');},
   bloodRush:(a,c)=>{},
   predatorsLeap:(a,c)=>{const ph=player.phi,x=player.x+Math.cos(ph)*20,y=player.y+Math.sin(ph)*20;fxI({_tvc:1,n:'w52_claw_ground',x,y,w:190,layer:'ground',rot:0,fx:Math.cos(ph)<0,life:1.3,s0:.6,s1:1,fadeIn:.001,fadeOut:.35});if(typeof shake==='function')shake(4);},
