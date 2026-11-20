@@ -16,7 +16,7 @@
    Families: Basic = steel + straw + gold · A (Kaze) = sakura + wind · B (Oni) = fire + stone · C = the tree it belongs to.
    ===================================================================== */
 (()=>{
-if(typeof CHAR==='undefined'||!['cat','kitsune','wolf'].includes(CHAR)||!window.VK||!window.KTA||/[?&]vfx3=0/.test(location.search))return;   /* sections 1-3 are a kit shared as window.K3 (kitsune_vfx.js); the rest is the cat's */
+if(typeof CHAR==='undefined'||!['cat','kitsune'].includes(CHAR)||!window.VK||!window.KTA||/[?&]vfx3=0/.test(location.search))return;   /* sections 1-3 are a kit shared as window.K3 (kitsune_vfx.js); the rest is the cat's */
 const V=window.VK,{G,sys,tx}=V,A=window.KTA;
 const TAU=Math.PI*2,cl=(v,a,b)=>v<a?a:v>b?b:v,eO=t=>1-(1-t)*(1-t)*(1-t),eI=t=>t*t,eIO=t=>t<.5?2*t*t:1-2*(1-t)*(1-t),R_=(a,b)=>a+Math.random()*(b-a),lerp=(a,b,t)=>a+(b-a)*t;
 const back=t=>{const c=1.70158;return 1+(c+1)*Math.pow(t-1,3)+c*Math.pow(t-1,2);};
