@@ -96,7 +96,7 @@ const AT={   // key: (a,c) => visuals ; a = the action, c = cast context
   cycloneLeap:(a,c)=>{const x=player.x,y=player.y;fxI({_tvc:1,n:'w44_cyclone_ground',x,y,w:270,layer:'ground',life:1.1,s0:.45,s1:1,fadeIn:.001,fadeOut:.35});
     for(let i=0;i<5;i++){const an=rnd(0,TAU),v=rnd(90,180);addFx(new WRock({n:'wr'+(1+i%4)+'_rock',x,y,vx:Math.cos(an)*v,vy:Math.sin(an)*v*.6,vz:rnd(240,380),w:rnd(14,22)}));}if(typeof shake==='function')shake(5);},
   ironCounter:(a,c)=>{fxI({fx:Math.cos(player.phi)>0,n:'w09_parry',x:player.x+Math.cos(player.phi)*24,y:player.y+Math.sin(player.phi)*24,z:36,w:80,life:.5,s0:.6,s1:1.05,fadeIn:.001,fadeOut:.5,glow:.8});},
-  warHowl:(a,c)=>{fxI({_tvc:1,n:'w05_howl',x:player.x,y:player.y,z:70,w:120,life:.9,s0:.5,s1:1.1,fadeOut:.45,glow:.6});},
+  warHowl:(a,c)=>{fxI({_tvc:1,n:'w05_howl',x:player.x,y:player.y,z:70,w:120,life:.6,s0:.5,s1:1.1,fadeOut:.4,glow:.6});addFx(new WHowlWave(player.x,player.y,W_HOWL_R));},
   warFury:(a,c)=>{flashS(.15,'#ff3a2a');},
   bloodRush:(a,c)=>{},
   predatorsLeap:(a,c)=>{const ph=player.phi,x=player.x+Math.cos(ph)*20,y=player.y+Math.sin(ph)*20;fxI({_tvc:1,n:'w52_claw_ground',x,y,w:190,layer:'ground',rot:0,fx:Math.cos(ph)<0,life:1.3,s0:.6,s1:1,fadeIn:.001,fadeOut:.35});if(typeof shake==='function')shake(4);},
@@ -217,6 +217,12 @@ function wValhalla(a,c){wVhN=0;const cx=c.gx,cy=c.gy,ev=a.events,tA=a.windup,ts=
   ev.push({t:tLand-.28,f:()=>addFx(new WGodAxe(cx,cy,.28))});
   ev.push({t:tLand,f:()=>{fxI({_tvc:1,n:'w54_valhalla_burst',x:cx,y:cy+6,z:0,ay:.95,w:260,life:.7,s0:.5,s1:1.1,fadeIn:.001,fadeOut:.45,glow:.4});fxI({_tvc:1,n:'w37_finale_crater',x:cx,y:cy,w:260,layer:'ground',life:1.4,s0:.6,s1:1,fadeIn:.001,fadeOut:.35});if(typeof shake==='function')shake(8);
     for(let i=0;i<6;i++){const an=rnd(0,TAU),v=rnd(120,220);addFx(new WRock({n:'wr'+(1+i%4)+'_rock',x:cx,y:cy,vx:Math.cos(an)*v,vy:Math.sin(an)*v*.6,vz:rnd(300,460),w:rnd(16,26)}));}}});}
+/* War Howl buff wave: one warm golden wave rolls out to the buff radius (W_HOWL_R = party buff range once parties exist) */
+const W_HOWL_R=220;
+class WHowlWave{constructor(x,y,R){Object.assign(this,{x,y,R,t:0,life:.55,layer:'ground'});}update(dt){this.t+=dt;return this.t<this.life;}
+  draw(){const k=this.t/this.life,e=1-(1-k)*(1-k),r=this.R*e,[x,y]=P(this.x,this.y,0);ctx.save();ctx.translate(x,y);ctx.scale(1,K);
+    const a=(1-k)*.9;for(const [w,c,al] of [[16,'#ffb23a',.35],[7,'#ffe08a',.8],[3,'#fff6d8',.9]]){ctx.globalAlpha=a*al;ctx.strokeStyle=c;ctx.lineWidth=w*(1-k*.5);ctx.beginPath();ctx.arc(0,0,Math.max(1,r),0,TAU);ctx.stroke();}
+    ctx.globalAlpha=a*.25;const g=ctx.createRadialGradient(0,0,r*.6,0,0,r);g.addColorStop(0,'rgba(255,200,90,0)');g.addColorStop(1,'rgba(255,200,90,.6)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,Math.max(1,r),0,TAU);ctx.fill();ctx.restore();}}
 function wQuiet(){return CHAR==='wolf'&&player.action&&W_QUIET.has(player.action.key);}
 
 /* War Fury: the wolf's own sprite glazed red (no flames) + a thin red rim */
