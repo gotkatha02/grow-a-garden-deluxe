@@ -28,3 +28,9 @@ STYLE = Friendly hand-painted chibi cartoon game effect matching the attached ke
 | w41_vamp_heal | Vampiric Axe ออร่าได้ HP (ตั้งตรง) |
 | w42_rush_streak | Blood Rush เส้นพุ่งแดงยาว |
 | w43_rush_cut | Blood Rush รอยตัดตอนทะลุ |
+
+## Storm Step
+| ไฟล์ | ใช้กับ |
+|---|---|
+| w67_storm_trail | Storm Step รอยสายฟ้าไหม้บนพื้นตามทางพุ่ง (พื้น 3/4) |
+| w68_storm_afterimage | Storm Step เงาร่างสายฟ้าของหมาป่าที่ทิ้งไว้ระหว่างทาง (ด้านข้าง หันขวา) |
