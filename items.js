@@ -149,6 +149,7 @@ const isInst=id=>/^i\d+$/.test(id);
 function newInst(base,data){const id='i'+(++SEQ);ITEMS[id]=Object.assign({},ITEMS[base]||{},data||{},{base:data&&data.base!==undefined?data.base:base});return id;}
 function ownedIds(){return [...Object.values(EQ).filter(Boolean),...INV];}
 function save(){try{const inst={};for(const id of ownedIds())inst[id]=ITEMS[id];localStorage.setItem(SKEY,JSON.stringify({v:1,zeny:ZENY,seq:SEQ,bag:BAG,buff:BUFF,inst,inv:INV.slice(),eq:{...EQ}}));}catch(e){}}
+let FRESH=false;                                                                // no item save yet = a brand-new hero (market.js clears that hero's market record)
 function load(){let s=null;try{s=JSON.parse(localStorage.getItem(SKEY)||'null');}catch(e){}
   if(s&&s.v===1){ZENY=s.zeny||0;SEQ=s.seq||0;Object.assign(BUFF,s.buff||{});
     for(const k in s.bag||{}){const m=/^m_(\w+)_(\d)_([ab])$/.exec(k);if(m&&!ETC[k])continue;BAG[k]=s.bag[k];}   // drop materials from the old 4-tier table
@@ -156,6 +157,7 @@ function load(){let s=null;try{s=JSON.parse(localStorage.getItem(SKEY)||'null');
       if(it.crafted&&![3,5,7,9].includes(it.grade)){it.grade=[3,3,3,3,3,5,5,7,7,9][it.grade]??3;restat(id);}
       if(it.crafted&&!it.renamed)it.n=craftName(it.town,it.cslot,it.grade);}   /* crafting now has 4 tiers (Lv30/50/70/90): older pieces move to the nearest */
     INV.length=0;for(const id of s.inv||[])if(ITEMS[id])INV.push(id);for(const sl in EQ)EQ[sl]=s.eq&&ITEMS[s.eq[sl]]?s.eq[sl]:null;for(const sl of ['low','lhand'])if(s.eq&&ITEMS[s.eq[sl]]&&!INV.includes(s.eq[sl]))INV.push(s.eq[sl]);return;}   /* removed slots: old gear goes back to the bag */
+  FRESH=true;
   if(MODE==='play'){newGame();return;}                                            // real game: start with the Lv1 kit only
   /* first run (test mode): turn the starting gear into instances (own refine/holes/orbs), give money, tools and a Lv1 starter kit */
   ZENY=50000;for(const sl in EQ)if(EQ[sl]&&!isInst(EQ[sl]))EQ[sl]=mkFromBase(EQ[sl]);
@@ -325,7 +327,7 @@ const buffLine=()=>{const L=[];if(BUFF.food&&BUFF.food.until>Date.now())L.push(`
    Put PNGs in assets/items/<icon key>.png and list the keys in assets/items/icons.json (["hp1","m_vik_0_a",…]).
    Keys: Etc/consumables = their id · crafted gear = eq_<town>_<slot> (weapons: wp_<town>_<hero>) · starting gear = eq_<base id>. */
 const ICONS=new Set();
-fetch('assets/items/icons.json').then(r=>r.ok?r.json():[]).then(a=>{for(const k of a)ICONS.add(k);buildItems();buildEquip();}).catch(()=>{});
+fetch('assets/items/icons.json').then(r=>r.ok?r.json():[]).then(a=>{for(const k of a)ICONS.add(k);buildItems();buildEquip();if(window.MKT)MKT.build();}).catch(()=>{});
 const img=(k,sz)=>`<img class="ico" src="assets/items/${k}.png" width="${sz}" height="${sz}" style="object-fit:contain;image-rendering:auto" alt="">`;
 /* picture icons sit in the middle of their slot (the drawn SVG icons were positioned by hand) */
 {const st=document.createElement('style');st.textContent='img.ico{display:block;pointer-events:none}.ro-grid .c>img.ico,.ro-grid .c>span>img.ico{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}.ro-grid .c>span:has(>img.ico){position:absolute!important;left:50%;top:50%;transform:translate(-50%,-50%)}';document.head.appendChild(st);}
@@ -659,40 +661,40 @@ function refineAnim(b){if(rfBusy)return;const id=rfSel,it=ITEMS[id];if(!it)retur
     else{big.classList.add('shatter');R.className='res broke on';R.textContent='ของแตก!';destroyItem(id);rfSel=null;done(`ตีบวกพลาด… ${name} แตกหายไป`);addFx(new DText({x:player.x,y:player.y,z:90,text:'BROKEN',color:'#e2574c',size:15,life:1.2}));}
     setTimeout(()=>{rfBusy=false;buildRefine();buildSmith();},1300);},1120);}
 
-/* ---------------- CENTRAL MARKET ----------------
+/* ---------------- GEAR MARKET (the old central market, gear only since 2026-11-21) ----------------
+   Stackable goods moved to the central-price market in market.js (MARKET_SYSTEM_TH.md); AFItems.openMarket() opens that one and its
+   "⚔ อุปกรณ์" button opens this window. Gear stays seller-priced until phase 2 of that design.
    Offline game: the other "players" are simulated traders. Their stalls change every 15 minutes (real time, keeps going while the
    game is closed). Your own listings sell over time — the cheaper versus the market price, the faster. Fee 3% on each sale. */
 const MKEY='af_market_v1_'+CHAR+(MODE==='play'?'_play':''),MK_FEE=.03,MK_MAX=10,MK_REFRESH=15*60000;
 const MK={list:[],mine:[],cash:0,log:[],next:0,uid:1};try{Object.assign(MK,JSON.parse(localStorage.getItem(MKEY)||'{}'));}catch(e){}
 const mkSave=()=>{try{localStorage.setItem(MKEY,JSON.stringify(MK));}catch(e){}};
 const MK_NAMES=['หมีขั้วโลก99','ลูกแมวนักรบ','KafraLover','ป้าขายยา','จิ้งจอกเงิน','NightOwl_TH','ช่างตีเหล็กมือใหม่','ราชาแร่','สายฟาร์มOrb','MoonRabbit','แมวส้มรวยมาก','IceQueen','เต่าซิ่ง','ตลาดนัดเฟนเรียร์','พ่อค้าทะเลทราย','SamuraiMeow','ร้านลุงหนวด','HoneyBadger','BlueSlime','คุณนายเหมืองทอง'];
-const MK_CATS=[['all','ทั้งหมด','🗂'],['eq','อุปกรณ์','⚔'],['mat','วัตถุดิบ','🌿'],['ore','แร่ตีบวก','⛏'],['orb','หินออฟ','💎'],['use','ยา/อาหาร','🧪'],['tool','ของใช้','🧰']];
+const MK_CATS=[['eq','อุปกรณ์','⚔']];
 const catOf=l=>l.eq?'eq':(ETC[l.k]||{}).kind==='crystal'?'tool':(ETC[l.k]||{}).kind;
 const eqFair=(g,ref)=>Math.round(1500*Math.pow(g+1,1.6)*(1+(ref||0)*.35));
 const fairOf=l=>l.eq?Math.round(eqFair(l.eq.g??l.eq.grade??0,l.eq.ref)*(l.eq.copy&&l.eq.copy.dset!==undefined?.35:1)):Math.max(1,(ETC[l.k]||{}).price||1);
 const rnd2=(a,b)=>a+Math.random()*(b-a),pick=a=>a[Math.floor(Math.random()*a.length)];
-function mkGen(n){const G=gradeOfLv(PS.lv),out=[];const keys=Object.keys(ETC).filter(k=>{const E=ETC[k];if(!E||E.kind==='orb'&&E.tier>Math.min(4,1+Math.floor(G/2)))return false;
-    if(E.kind==='mat')return E.grade<=Math.min(9,G+1);return ['ore','orb','use','tool','crystal'].includes(E.kind)&&!(E.kind==='ore'&&E.tier>Math.min(4,1+Math.floor(G/2.5)));});
-  for(let i=0;i<n;i++){if(Math.random()<.22){const g=Math.max(0,Math.min(9,G-Math.floor(Math.random()*2))),ref=Math.random()<.5?0:Math.floor(rnd2(1,7)),town=pick(Object.keys(TOWNS)),slot=pick(Object.keys(SLOTS));
+function mkGen(n){const G=gradeOfLv(PS.lv),out=[];                                 // gear only (stackable goods: market.js)
+  for(let i=0;i<n;i++){const g=Math.max(0,Math.min(9,G-Math.floor(Math.random()*2))),ref=Math.random()<.5?0:Math.floor(rnd2(1,7)),town=pick(Object.keys(TOWNS)),slot=pick(Object.keys(SLOTS));
       if(Math.random()<.45){const id=dropSetItem(g,slot),c=JSON.parse(JSON.stringify(ITEMS[id]));delete ITEMS[id];c.ref=ref;out.push({u:MK.uid++,eq:{n:c.n,slot,grade:g,ref,copy:c},n:1,p:Math.round(eqFair(g,ref)*.35*rnd2(.8,1.5)/10)*10,s:pick(MK_NAMES),t:Date.now()-Math.random()*36e5});continue;}
-      {const cg=CRAFT_G.filter(x=>x<=Math.max(3,g)).pop();out.push({u:MK.uid++,eq:{town,slot,g:cg,ref},n:1,p:Math.round(eqFair(cg,ref)*rnd2(.8,1.55)/10)*10,s:pick(MK_NAMES),t:Date.now()-Math.random()*36e5});}continue;}
-    const k=pick(keys),E=ETC[k],st=E.kind==='tool'||E.kind==='crystal'?Math.ceil(rnd2(1,4)):Math.ceil(rnd2(1,E.kind==='mat'?60:25));
-    out.push({u:MK.uid++,k,n:st,p:Math.max(1,Math.round(E.price*rnd2(.72,1.45))),s:pick(MK_NAMES),t:Date.now()-Math.random()*36e5});}
+      const cg=CRAFT_G.filter(x=>x<=Math.max(3,g)).pop();out.push({u:MK.uid++,eq:{town,slot,g:cg,ref},n:1,p:Math.round(eqFair(cg,ref)*rnd2(.8,1.55)/10)*10,s:pick(MK_NAMES),t:Date.now()-Math.random()*36e5});}
   return out;}
-function mkRefresh(){const now=Date.now();if(!MK.list.length){MK.list=mkGen(42);MK.next=now+MK_REFRESH;}
-  while(now>=MK.next){MK.list=MK.list.filter(()=>Math.random()<.5).concat(mkGen(21)).slice(-48);MK.next+=MK_REFRESH;if(now-MK.next>MK_REFRESH*8)MK.next=now+MK_REFRESH;}}
+function mkRefresh(){const now=Date.now();if(!MK.list.length){MK.list=mkGen(12);MK.next=now+MK_REFRESH;}
+  while(now>=MK.next){MK.list=MK.list.filter(()=>Math.random()<.5).concat(mkGen(6)).slice(-14);MK.next+=MK_REFRESH;if(now-MK.next>MK_REFRESH*8)MK.next=now+MK_REFRESH;}}
 /* your listings sell over time: per minute, chance ~ (market price / your price)^3 */
 function mkSim(){const now=Date.now();let got=[];
   for(const l of MK.mine){if(!l.n)continue;let mins=Math.min(720,(now-(l.last||now))/60000);l.last=now;const r=l.p/fairOf(l),pm=Math.max(.004,Math.min(.7,.3*Math.pow(1/r,3)));
     while(mins>=1&&l.n>0){mins--;if(Math.random()<pm){const q=Math.min(l.n,Math.max(1,Math.ceil(l.n0*rnd2(.05,.25))));l.n-=q;l.sold=(l.sold||0)+q;const gain=Math.floor(q*l.p*(1-MK_FEE));MK.cash+=gain;
         const nm=l.eq?l.eq.n:etcName(l.k);MK.log.unshift(`${new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'})} · ${pick(MK_NAMES)} ซื้อ ${nm} ×${q} (+${fmt(gain)}z)`);got.push(`${nm} ×${q}`);}}}
-  MK.log=MK.log.slice(0,30);if(got.length){chatLog('sys',`⚖ ตลาดกลาง: ขายได้แล้ว — ${got.join(', ')} (ไปรับเงินที่ร้านของฉัน)`);mkSave();}}
+  MK.log=MK.log.slice(0,30);if(got.length){chatLog('sys',`⚔ ตลาดอุปกรณ์: ขายได้แล้ว — ${got.join(', ')} (ไปรับเงินที่ร้านของฉัน)`);mkSave();}}
 setInterval(()=>{mkSim();const w=document.getElementById('mkw');if(w&&w.classList.contains('open')&&mkTab!=='sell')buildMarket();},30000);
-let mkTab='buy',mkCat='all',mkQ='',mkSort='cheap',mkPick=null,mkQty=1,mkPrice=0;
+let mkTab='buy',mkCat='eq',mkQ='',mkSort='cheap',mkPick=null,mkQty=1,mkPrice=0;
 function mkIcon(l,sz){if(l.eq&&l.eq.copy)return itemIcon(l.eq.copy,sz);return l.eq?itemIcon({crafted:1,slot:l.eq.slot,cslot:l.eq.slot,town:l.eq.town,grade:l.eq.g,n:'',b:{}},sz):etcIcon(l.k,sz);}
 function mkName(l){if(l.eq){const e=l.eq;return `${e.ref?'+'+e.ref+' ':''}${e.n||craftName(e.town,e.slot,e.g??e.grade??0)}`;}return etcName(l.k);}
 function mkSub(l){if(l.eq){const e=l.eq,ds=e.copy&&e.copy.dset!==undefined;return `${SLOTS[e.slot].nm} · Lv${gradeLv(e.g??e.grade??0)} · ${ds?'ชุด'+DSET[e.copy.dset][1]+' (ของดรอป)':'ช่าง'+(TOWNS[e.town]||{name:'?'}).name}`;}const E=ETC[l.k]||{};return E.d?E.d.slice(0,46):E.n||'';}
-function openMarket(){if(curMap!=='capT'&&!(window.AFProgress&&AFProgress.mode==='test')){msg('ตลาดกลางมีแค่ในเมืองหลวง');return;}ttWin('mkw','⚖ ตลาดกลาง · เมืองหลวง');document.getElementById('mkw').classList.add('open');mkRefresh();mkSim();buildMarket();}
+function openGearMarket(){if(curMap!=='capT'&&!(window.AFProgress&&AFProgress.mode==='test')){msg('ตลาดกลางมีแค่ในเมืองหลวง');return;}ttWin('mkw','⚔ ตลาดอุปกรณ์ · เมืองหลวง');const w=document.getElementById('mkw');w.classList.add('open');w.style.zIndex=60;mkRefresh();mkSim();buildMarket();}
+function openMarket(){if(window.MKT)return MKT.open();openGearMarket();}       // market.js = central-price market for stackable goods
 function buildMarket(){const w=document.getElementById('mkw');if(!w||!w.classList.contains('open'))return;mkRefresh();const b=w.querySelector('.ttbd');const pend=MK.cash;
   const tabs=`<div class="tttab"><button data-mt="buy" class="${mkTab==='buy'?'on':''}">🛒 ซื้อสินค้า</button><button data-mt="sell" class="${mkTab==='sell'?'on':''}">📦 ลงขาย</button><button data-mt="mine" class="${mkTab==='mine'?'on':''}">🏪 ร้านของฉัน${pend?'<sup>z</sup>':''}</button></div>`;
   let body='';
@@ -706,7 +708,7 @@ function buildMarket(){const w=document.getElementById('mkw');if(!w||!w.classLis
       ${L.length?L.map(l=>{const f=fairOf(l),r=l.p/f,pc=Math.round((r-1)*100),c=r<.92?'ttgood':r>1.12?'ttwarn':'';
         return `<div class="row"><div class="tts" style="cursor:default">${mkIcon(l,28)}</div><div class="nm"><b>${mkName(l)}</b><small>${mkSub(l)}</small></div><div class="sel">🐾 ${l.s}</div><div style="font:800 12px Mali">×${l.n}</div>
           <div class="pr">${fmt(l.p)}z<small class="${c}">${pc>0?'+':''}${pc}% ราคากลาง</small></div><button class="ttb sm" data-buy="${l.u}" ${ZENY>=l.p?'':'disabled'}>ซื้อ</button></div>`;}).join(''):'<div class="ttnote" style="padding:14px;text-align:center">ไม่พบสินค้า</div>'}</div></div></div>`;}
-  else if(mkTab==='sell'){const etc=Object.keys(BAG).filter(k=>ETC[k]&&BAG[k]>0&&['mat','ore','orb','use','tool','crystal'].includes(ETC[k].kind)).map(k=>({k}));
+  else if(mkTab==='sell'){const etc=[];                                                // stackable goods are sold in the central-price market (market.js)
     const eqs=INV.filter(id=>ITEMS[id]&&(ITEMS[id].crafted||ITEMS[id].dset!==undefined)).map(id=>({id}));const all=[...eqs,...etc];
     if(mkPick&&!all.some(o=>o.k===mkPick.k&&o.id===mkPick.id))mkPick=null;
     let frm='<div class="ttnote" style="padding:20px 6px;text-align:center">เลือกของจากกระเป๋าทางซ้าย<br>เพื่อตั้งราคาลงขาย</div>';
@@ -729,7 +731,7 @@ function buildMarket(){const w=document.getElementById('mkw');if(!w||!w.classLis
       ${MK.mine.length?MK.mine.map(l=>`<div class="row" style="grid-template-columns:52px 1fr 90px 104px 70px"><div class="tts" style="cursor:default">${mkIcon(l,28)}</div><div class="nm"><b>${mkName(l)}</b><small>${l.n?'กำลังขาย…':'<span class="ttgood">ขายหมดแล้ว ✔</span>'}</small></div>
         <div style="font:800 12px Mali">${l.n} / <span class="ttgood">${l.sold||0}</span></div><div class="pr">${fmt(l.p)}z</div>${l.n?`<button class="ttb blue sm" data-cancel="${l.u}">ยกเลิก</button>`:`<button class="ttb blue sm" data-clear="${l.u}">ลบ</button>`}</div>`).join(''):'<div class="ttnote" style="padding:14px;text-align:center">ยังไม่ได้วางขายอะไร — ไปที่แท็บ "ลงขาย"</div>'}</div>
       <div class="ttp" style="margin-top:8px"><h4>📜 ประวัติการขาย</h4><div class="log">${MK.log.length?MK.log.map(s=>`<div>${s}</div>`).join(''):'ยังไม่มีคนซื้อ'}</div></div>`;}
-  b.innerHTML=tabs+body+`<div class="ttnote" style="color:#a9bde6;margin-top:6px;text-align:center">ผู้ขายในตลาดเป็นพ่อค้าจำลอง (เกมออฟไลน์) · ของที่คุณวางขายจะค่อยๆ ขายได้แม้ปิดเกม · ค่าธรรมเนียม 3%</div>`;
+  b.innerHTML=tabs+body+`<div class="ttnote" style="color:#a9bde6;margin-top:6px;text-align:center">อุปกรณ์ยังขายแบบตั้งราคาเอง · ผู้ขายเป็นพ่อค้าจำลอง (เกมออฟไลน์) · ของที่คุณวางขายจะค่อยๆ ขายได้แม้ปิดเกม · ค่าธรรมเนียม 3%</div>`;
   const q=(s,f)=>b.querySelectorAll(s).forEach(f);
   q('[data-mt]',e=>e.onclick=()=>{mkTab=e.dataset.mt;buildMarket();});q('[data-cat]',e=>e.onclick=()=>{mkCat=e.dataset.cat;buildMarket();});
   const qi=b.querySelector('#mkq');if(qi){qi.oninput=()=>{mkQ=qi.value;const pos=qi.selectionStart;buildMarket();const n=b.querySelector('#mkq');n.focus();n.setSelectionRange(pos,pos);};qi.onkeydown=e=>e.stopPropagation();}
@@ -741,7 +743,7 @@ function buildMarket(){const w=document.getElementById('mkw');if(!w||!w.classLis
   const pr=b.querySelector('#mkpr');if(pr){pr.onkeydown=e=>e.stopPropagation();pr.onchange=()=>{mkPrice=Math.max(1,parseInt(pr.value)||1);buildMarket();};}
   q('[data-pf]',e=>e.onclick=()=>{const it=mkPick.id&&ITEMS[mkPick.id],fair=mkPick.id?Math.round(eqFair(it.grade||0,it.ref)*(it.dset!==undefined?.35:1)):ETC[mkPick.k].price;mkPrice=Math.max(1,Math.round(fair*(+e.dataset.pf)));buildMarket();});
   const ls=b.querySelector('#mklist');if(ls)ls.onclick=mkList;
-  const cs=b.querySelector('#mkcash');if(cs)cs.onclick=()=>{ZENY+=MK.cash;done(`รับเงินจากตลาดกลาง ${fmt(MK.cash)}z`);MK.cash=0;mkSave();buildMarket();};
+  const cs=b.querySelector('#mkcash');if(cs)cs.onclick=()=>{ZENY+=MK.cash;done(`รับเงินจากตลาดอุปกรณ์ ${fmt(MK.cash)}z`);MK.cash=0;mkSave();buildMarket();};
   q('[data-cancel]',e=>e.onclick=()=>mkCancel(+e.dataset.cancel));q('[data-clear]',e=>e.onclick=()=>{MK.mine=MK.mine.filter(l=>l.u!==+e.dataset.clear);mkSave();buildMarket();});}
 function mkPop(html){const w=document.getElementById('mkw');let p=w.querySelector('#mkpop');if(!p){p=document.createElement('div');p.id='mkpop';w.appendChild(p);}p.innerHTML=`<div class="ttp">${html}</div>`;p.style.display='flex';return p;}
 function mkBuyAsk(u){const l=MK.list.find(o=>o.u===u);if(!l)return;let n=1;const max=()=>Math.max(1,Math.min(l.n,Math.floor(ZENY/l.p)));
@@ -760,7 +762,7 @@ function mkList(){if(!mkPick)return;if(MK.mine.filter(l=>l.n).length>=MK_MAX){ms
   if(mkPick.id){const it=ITEMS[mkPick.id];if(!it||Object.values(EQ).includes(mkPick.id))return;const copy=JSON.parse(JSON.stringify(it));
     l={u:MK.uid++,eq:Object.assign({n:it.n,town:it.town,slot:it.cslot||it.slot,grade:it.grade||0,ref:it.ref||0},{copy}),n:1,n0:1,p,last:Date.now()};destroyItem(mkPick.id);}
   else{const q=Math.min(mkQty,BAG[mkPick.k]||0);if(!q)return;add(mkPick.k,-q);l={u:MK.uid++,k:mkPick.k,n:q,n0:q,p,last:Date.now()};}
-  MK.mine.unshift(l);mkPick=null;mkPrice=0;mkSave();done(`วางขาย ${mkName(l)} ×${l.n} ชิ้นละ ${fmt(p)}z ที่ตลาดกลาง`);mkTab='mine';buildMarket();}
+  MK.mine.unshift(l);mkPick=null;mkPrice=0;mkSave();done(`วางขาย ${mkName(l)} ×${l.n} ชิ้นละ ${fmt(p)}z ที่ตลาดอุปกรณ์`);mkTab='mine';buildMarket();}
 function mkCancel(u){const l=MK.mine.find(o=>o.u===u);if(!l||!l.n)return;
   if(l.eq){if(eqFull()){msg(`กระเป๋าอุปกรณ์เต็ม (${BAG_EQ_MAX})`);return;}const id=newInst(null,l.eq.copy);INV.push(id);}else{const got=add(l.k,l.n);if(got<l.n){if(got)add(l.k,-got);msg('กระเป๋าเต็ม');return;}}
   done(`ยกเลิกการขาย ${mkName(l)} ×${l.n} — ของกลับเข้ากระเป๋า`);l.n=0;MK.mine=MK.mine.filter(o=>o!==l||o.sold);mkSave();buildMarket();}
@@ -933,5 +935,6 @@ setInterval(()=>{try{if(typeof player==='undefined'||player.hp<=0||player.dead)r
     g.querySelectorAll('button').forEach(b=>b.onclick=e=>{e.stopPropagation();try{localStorage.setItem('af_autopot_'+k,b.dataset.v);}catch(_){}sy();});sy();
     p.insertBefore(g,p.firstChild);p.insertBefore(h,g);}})();
 window.AFItems={buyGear(id,price){if(ZENY<price)return false;ZENY-=price;INV.push(id);save();try{buildItems();buildEquip();}catch(e){}return true;},dropItem(id){delete ITEMS[id];},get ITEMS(){return ITEMS;},eqFair:(g,r)=>Math.round(1500*Math.pow(g+1,1.6)*(1+(r||0)*.35)),dropSetItem,DSET,DROP,openRefine,openMarket,BAG,ETC,CONS,TRAITS,TOWNS,AFF,MATS,SLOTS,W_NOUN,useItem,BUFF,newGame,openStorage,STO,townHere,HOME,get zeny(){return ZENY;},set zeny(v){ZENY=v;save();},add:(id,n)=>{add(id,n);save();},craftItem,rollAffixes,openSmith,openShop,save,
+  ui:{ttWin,etcIcon,etcName,fmt,done},bagAdd:add,MODE,SHOP_FULL,oldMarket:{MK,mkSave},openGearMarket,get fresh(){return FRESH;},          // for market.js
   reset(){localStorage.removeItem(SKEY);location.reload();}};
 })();
