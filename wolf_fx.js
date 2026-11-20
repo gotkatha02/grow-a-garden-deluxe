@@ -93,7 +93,8 @@ const AT={   // key: (a,c) => visuals ; a = the action, c = cast context
   vampiricAxe:(a,c)=>{wVampN=0;},
   armorBreak:(a,c)=>{const t=W.tgt(c);W.slash(player.phi,130,'axe');if(t)fxI({n:'w10_armor',x:t.x,y:t.y,z:30,w:t.boss?140:100,life:.55,s0:.6,s1:1.1,fadeOut:.5,glow:.5});},
   executioner:(a,c)=>{const t=W.tgt(c)||player;fxI({n:'w08_exec',x:t.x,y:t.y,z:0,w:t.boss?115:90,ay:.95,life:.5,s0:1.1,s1:.95,fadeIn:.001,fadeOut:.5,glow:.8});W.crater(t.x,t.y,150);flashS(.2,'#ff5a4a');},
-  cycloneLeap:(a,c)=>{W.crater(player.x,player.y,170);},
+  cycloneLeap:(a,c)=>{const x=player.x,y=player.y;fxI({_tvc:1,n:'w44_cyclone_ground',x,y,w:270,layer:'ground',life:1.1,s0:.45,s1:1,fadeIn:.001,fadeOut:.35});
+    for(let i=0;i<5;i++){const an=rnd(0,TAU),v=rnd(90,180);addFx(new WRock({n:'wr'+(1+i%4)+'_rock',x,y,vx:Math.cos(an)*v,vy:Math.sin(an)*v*.6,vz:rnd(240,380),w:rnd(14,22)}));}if(typeof shake==='function')shake(5);},
   ironCounter:(a,c)=>{fxI({n:'w09_parry',x:player.x+Math.cos(player.phi)*24,y:player.y+Math.sin(player.phi)*24,z:36,w:80,life:.5,s0:.6,s1:1.05,fadeIn:.001,fadeOut:.5,glow:.8});},
   warHowl:(a,c)=>{fxI({n:'w05_howl',x:player.x,y:player.y,z:70,w:120,life:.9,s0:.5,s1:1.1,fadeOut:.45,glow:.6});fxI({n:'25_shock',x:player.x,y:player.y,w:220,life:.45,s0:.3,s1:1.15,fadeIn:.001,fadeOut:.7,layer:'ground'});flashS(.12,'#ffcf6a');},
   warFury:(a,c)=>{flashS(.15,'#ff3a2a');},
@@ -130,7 +131,7 @@ class WDelay{constructor(t,f){this.t=t;this.f=f;this.layer='none';}update(dt){th
 function setFxT(t,f){addFx(new WDelay(t,f));}
 let BAN=null;
 /* owner 2026-11-20: Blood Cleave / Savage Rend / Axe Dance without sparkle bursts or dot particles */
-const W_QUIET=new Set(['bloodCleave','savageRend','axeDance','wolfFinale','vampiricAxe','axeCyclone','bloodRush']);
+const W_QUIET=new Set(['bloodCleave','savageRend','axeDance','wolfFinale','vampiricAxe','axeCyclone','bloodRush','cycloneLeap']);
 /* Axe Dance: each landed hit shows the next painted dance move (up, down, spin, backhand, thrust) */
 let wDanceN=0,wDanceT=-1;const W_DANCE=['w28_dance_up','w32_dance_down','w34_dance_spin','w33_dance_back','w28_dance_up','w32_dance_down','w35_dance_thrust'];
 function wDance(e,fin0){if(gameTime-wDanceT<.04)return;wDanceT=gameTime;const n=fin0?'w35_dance_thrust':W_DANCE[wDanceN%(W_DANCE.length-1)];wDanceN++;
@@ -210,11 +211,12 @@ function install(){
   if(!window._wQE&&typeof emit==='function'){window._wQE=1;const E0=emit;window.emit=emit=function(o){if(wQuiet())return;return E0.apply(this,arguments);};}
   if(!window._wDrop){window._wDrop=1;const D=['RuneCircle','RuneShield','LightPillar'].map(n=>{try{return eval(n);}catch(e){return null;}}).filter(Boolean);
     const A0=window.addFx;window.addFx=addFx=function(f){if(CHAR==='wolf'&&f&&D.some(c=>f instanceof c))return f;
+      if(wQuiet()&&f&&player.action.key==='cycloneLeap'&&f.constructor.name==='CycloneRing'){fxI({_tvc:1,n:'w45_leap_spiral',x:player.x,y:player.y+2,z:0,ay:.96,w:120,life:.45,s0:.6,s1:1.1,fadeIn:.001,fadeOut:.5,follow:1});return f;}
       if(wQuiet()&&f&&player.action.key==='bloodRush'&&f.constructor.name==='Streak'&&f.a&&f.b){A0.call(this,new WStreak(f.a,f.b));return f;}
-      if(wQuiet()&&f&&(/^(Bit|WBit|Burst|Impact|ScorchLine)$/.test(f.constructor.name)||(/^(axeDance|bloodCleave|savageRend|wolfFinale|vampiricAxe|axeCyclone)$/.test(player.action.key)&&/^(Slash|TexArc|SpectralAxe|GRing|Crack|Drain)$/.test(f.constructor.name))||(f.n&&/^(w03|x03|x04)/.test(f.n))))return f;
+      if(wQuiet()&&f&&(/^(Bit|WBit|Burst|Impact|ScorchLine)$/.test(f.constructor.name)||(/^(axeDance|bloodCleave|savageRend|wolfFinale|vampiricAxe|axeCyclone|cycloneLeap)$/.test(player.action.key)&&/^(Slash|TexArc|SpectralAxe|GRing|Crack|Drain|SpiralWave)$/.test(f.constructor.name))||(f.n&&/^(w03|x03|x04)/.test(f.n))))return f;
       if(CHAR==='wolf'&&f&&typeof FallObj!=='undefined'&&f instanceof FallObj&&f.kind==='axe'&&player.action&&player.action.key==='ragnaroksJudgment')wMjolnir(f);return A0.apply(this,arguments);};
     if(typeof BannerObj!=='undefined'){const d0=BannerObj.prototype.draw;BannerObj.prototype.draw=function(){if(CHAR==='wolf')return;return d0.apply(this,arguments);};}}
-  for(const n of ['w42_rush_streak','w43_rush_cut','w39_vamp_slash','w40_blood_drain','w41_vamp_heal','w36_finale_chop','w37_finale_crater','w38_finale_quake','wr1_rock','wr2_rock','wr3_rock','wr4_rock','w26_cleave_wide','w27_rend_claw','w29_blood_pool','w30_bleed_drip','w31_rupture','w28_dance_up','w32_dance_down','w33_dance_back','w34_dance_spin','w35_dance_thrust','w25_thunder_burst','w24_rune_shield','w01_axe','w02_blood','w03_hitred','w04_cyclone','w05_howl','w06_vamp','w07_rage','w08_exec','w09_parry','w10_armor','w11_frost','w12_ice','w13_prison','w14_rune','w15_bolt','w16_spear','w17_blizzard','w18_shatter','w19_spirit','w20_banner','w23_mjolnir','w21_glacial','w22_worldstorm','09_crater','22_pow','23_dust','25_shock'])wImg(n);
+  for(const n of ['w45_leap_spiral','w44_cyclone_ground','w42_rush_streak','w43_rush_cut','w39_vamp_slash','w40_blood_drain','w41_vamp_heal','w36_finale_chop','w37_finale_crater','w38_finale_quake','wr1_rock','wr2_rock','wr3_rock','wr4_rock','w26_cleave_wide','w27_rend_claw','w29_blood_pool','w30_bleed_drip','w31_rupture','w28_dance_up','w32_dance_down','w33_dance_back','w34_dance_spin','w35_dance_thrust','w25_thunder_burst','w24_rune_shield','w01_axe','w02_blood','w03_hitred','w04_cyclone','w05_howl','w06_vamp','w07_rage','w08_exec','w09_parry','w10_armor','w11_frost','w12_ice','w13_prison','w14_rune','w15_bolt','w16_spear','w17_blizzard','w18_shatter','w19_spirit','w20_banner','w23_mjolnir','w21_glacial','w22_worldstorm','09_crater','22_pow','23_dust','25_shock'])wImg(n);
   for(const k in AT){const sk=SKILLS[k]||(typeof CSK!=='undefined'&&CSK[k]);if(!sk||!sk.make||sk._wfx)continue;const mk=sk.make;sk._wfx=1;
     sk.make=function(c){const a=mk.apply(this,arguments);if(a&&a.events){const t=Math.max(.02,Math.min(a.windup||.02,(a.dur||1)-.02));a.events.push({t,f:()=>{try{AT[k](a,c||{});}catch(e){console.error('wolf_fx '+k+': '+e);}}});}return a;};}
   /* normal attack: painted axe swing */
