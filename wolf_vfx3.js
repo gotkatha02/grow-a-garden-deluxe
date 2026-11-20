@@ -429,7 +429,7 @@ class CTSpin{constructor(o){Object.assign(this,{t:0,life:3,R:130,layer:'sorted'}
    draws behind the hero (ground layer) and the near half in front (top layer). */
 const STRIPS={};const SDEF={cyc_loop:[12,12],cyc_io:[12,12],tempest_loop:[62,8],finale_clip:[12,6],finale2:[44,8],ragna_loop:[62,8],mjolnir_hit:[46,8],prison_loop:[62,8],shatter_hit:[50,8]};   /* name: [frames, columns] */
 const strip=n=>{let o=STRIPS[n];if(!o){const d=SDEF[n]||[12,12];o=STRIPS[n]={im:new Image(),nf:d[0],cols:d[1]};o.im.src='assets/fx/wolf/'+n+'.webp?v=4';}return o.im.complete&&o.im.naturalWidth?o:null;};
-Object.keys(SDEF).forEach(strip);
+if(CHAR==='wolf')Object.keys(SDEF).forEach((n,i)=>setTimeout(()=>strip(n),1500+i*250));   /* 2026-11-20 load time: the wolf's clips are fetched after the game is up, one at a time, and not at all for other heroes */
 /* soft dark contact shadow + cold light pool under a standing clip, so it sits on the floor */
 class CClipShadow{constructor(c){this.c=c;this.layer='ground';}update(){return this.c.t<this.c.life;}
   draw(){const c=this.c,[x,y]=P(c.x,c.y,0),r=c.w*.4,a=Math.min(1,c.t/.25)*(c.ending?Math.max(0,(c.life-c.t)/.35):1);ctx.save();ctx.globalAlpha=a;ctx.translate(x,y);ctx.scale(1,K);

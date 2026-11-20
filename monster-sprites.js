@@ -41,8 +41,11 @@ const MS={
   'Fenrir Spawn':     S('fenrirSpawn',274,203,138,201,182,44,{walk:12,sw:32})};
 const ROW={idle:0,walk:1,attack:2,hurt:3,death:4};
 /* walk:N = a separate smooth walk strip assets/monsters/<file>_walk.webp (N frames, same cell size), made from a walk video by tools/vidwalk.py */
-for(const k in MS){const m=MS[k];if(m.walk&&!m.wimg){m.wimg=new Image();m.wimg.onload=()=>{m.wok=1;};m.wimg.src='assets/monsters/'+m.file+'_walk.webp';}if(m.img)continue;const im=new Image();im.onload=()=>{m.ok=1;};im.src='assets/monsters/'+m.file+'.webp';m.img=im;
-  for(const k2 in MS)if(MS[k2].file===m.file&&k2!==k){MS[k2].img=im;Object.defineProperty(MS[k2],'ok',{get:()=>m.ok});}}
+/* 2026-11-20 load time: a sheet is downloaded the first time its monster is looked at (was: all 30 sheets, 11 MB, at every start) */
+const MSLD={};
+function msLoad(m,walk){let s=MSLD[m.file];if(!s){s=MSLD[m.file]={ok:0,wok:0,img:new Image(),wimg:null};s.img.onload=()=>{s.ok=1;};s.img.src='assets/monsters/'+m.file+'.webp';}
+  if(walk&&m.walk&&!s.wimg){s.wimg=new Image();s.wimg.onload=()=>{s.wok=1;};s.wimg.src='assets/monsters/'+m.file+'_walk.webp';}return s;}
+for(const k in MS){const m=MS[k];Object.defineProperties(m,{ok:{get:()=>msLoad(m,1).ok},wok:{get:()=>msLoad(m,1).wok},img:{get:()=>msLoad(m).img},wimg:{get:()=>msLoad(m,1).wimg}});}
 const def=e=>e&&(e.vdef&&MS[e.vdef.name]||e.spr&&MS[e.spr]);   /* e.spr: sprite name for monsters made outside the map tables (world boss) */
 window.MSPR_HAS=e=>{const m=def(e);return !!(m&&m.ok);};
 window.MSPR_H=e=>{const m=def(e);return m?m.h*(e.boss?1.5:1):54;};

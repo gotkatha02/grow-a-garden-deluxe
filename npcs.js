@@ -103,8 +103,10 @@ for(const k in CRAFT){const C=CRAFT[k];C.key=k;C.art=ART[k]||null;C.L=Object.ass
   C.img={front:loadImg('assets/npc/craft_'+k+'_front'),side:loadImg('assets/npc/craft_'+k+'_side'),room:loadImg('assets/rooms/craft_'+k)};C.face={pose:'front',flip:false,t:-9,prev:null};
   const tn=(AFItems.TOWNS[k]||{}).name||k;C.townName=tn;
   MAPDEF[RID(k)]={name:'โรงคราฟ · '+tn,lv:'เมือง',MS:C.art&&C.art.ms||1.0,mk:()=>createRoomHost(C)};NAV_MAPS[RID(k)]=1;ROOMS[RID(k)]=C;AF_ROOM_TOWN[RID(k)]=C.map;}
-function loadImg(base){const o={ok:false,img:new Image()},ext=['.webp','.png'];let i=0;
-  o.img.onload=()=>{o.ok=true;};o.img.onerror=()=>{if(++i<ext.length)o.img.src=base+ext[i];else o.failed=true;};o.img.src=base+ext[0];return o;}
+/* 2026-11-20 load time: the picture is downloaded the first time something asks for it (was: every room and NPC of every town at start) */
+function loadImg(base){const o={ok:false,failed:false,img:null},ext=['.webp','.png'];let i=0,on=0;
+  const go=()=>{if(on)return;on=1;o.img=new Image();o.img.onload=()=>{o.ok=true;};o.img.onerror=()=>{if(++i<ext.length)o.img.src=base+ext[i];else o.failed=true;};o.img.src=base+ext[0];};
+  return {get ok(){go();return o.ok;},get failed(){go();return o.failed;},get img(){go();return o.img;}};}
 
 /* =====================================================================
    CAPITAL HALLS (2026-11): the Adventurers' Guild (guild master → world boss) and the Weapon & Armour shop (2 merchants).
