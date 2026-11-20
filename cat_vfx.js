@@ -453,13 +453,14 @@ KTV.quakeFront=function(q,d1){if(q._d==null){q._d=12;q._n=0;addFx(new KFissure({
 KTV.quakeDraw=function(){return true;};
 /* owner 2026-11-20: Oni Executioner — his video of the fire oni plays behind the cat (assets/fx/cat/oni_exec.webp, 75 frames, 10 cols):
    frames 0–42 = charge, spread over the real charge time; 43–74 = the slash + break-up at 24 fps from the end of the charge */
-const ONIX=new Image();ONIX.src='assets/fx/cat/oni_exec.webp';
-class KOniClip{constructor(ch){Object.assign(this,{ch,a:ch.a,t:0,rt:-1,layer:'ground',w:150,gone:0});this.phi=player.phi;}
-  update(dt){this.t+=dt;const ch=this.ch,live=player.action===this.a;if(this.rt<0&&ch.t<ch.T){if(!live){this.gone+=dt;return this.gone<.25;}return true;}if(this.rt<0)this.rt=0;this.rt+=dt;return this.rt<32/24;}
-  idx(){return this.rt<0?Math.min(42,Math.floor(this.ch.t/this.ch.T*43)):Math.min(74,43+Math.floor(this.rt*24));}
-  draw(){const im=ONIX;if(!im.complete||!im.naturalWidth)return;const i=this.idx(),fw=im.naturalWidth/10,fh=im.naturalHeight/8,sx=(i%10)*fw,sy=Math.floor(i/10)*fh;
-    const bx=player.x-Math.cos(this.phi)*14,by=player.y-6,[x,y]=P(bx,by,0),W=this.w,H=W,fi=Math.min(1,this.t/.3),a=fi*(this.gone?Math.max(0,1-this.gone/.25):1);
-    ctx.save();ctx.globalAlpha=a;ctx.drawImage(im,sx,sy,fw,fh,x-W/2,y-H*.93,W,H);ctx.restore();}}
+const ONIX=new Image();ONIX.src='assets/fx/cat/oni_exec2.webp?v=1';
+class KOniClip{constructor(ch){Object.assign(this,{ch,a:ch.a,t:0,rt:-1,layer:'ground',w:175,gone:0});this.phi=player.phi;}
+  update(dt){this.t+=dt;const ch=this.ch,live=player.action===this.a;if(this.rt<0&&ch.t<ch.T){if(!live){this.gone+=dt;return this.gone<.25;}return true;}if(this.rt<0)this.rt=0;this.rt+=dt;return this.rt<30/24;}
+  idx(){return this.rt<0?Math.min(31,Math.floor(this.ch.t/this.ch.T*32)):Math.min(61,32+Math.floor(this.rt*24));}
+  draw(){const im=ONIX;if(!im.complete||!im.naturalWidth)return;const i=this.idx(),fw=im.naturalWidth/8,fh=im.naturalHeight/8,sx=(i%8)*fw,sy=Math.floor(i/8)*fh;
+    /* owner 2026-11-21 v2: hannya-masked fire-spirit swordsman; video cuts toward the left, so it is mirrored when the cat faces right; body base (225,425 of 480) sits just behind the cat */
+    const c=Math.cos(this.phi),bx=player.x-c*14,by=player.y-6,[x,y]=P(bx,by,0),W=this.w,H=W,fi=Math.min(1,this.t/.3),fo=this.rt>0?Math.max(0,1-Math.max(0,this.rt-(30/24-.35))/.35):1,a=fi*fo*(this.gone?Math.max(0,1-this.gone/.25):1);
+    ctx.save();ctx.globalAlpha=a;ctx.translate(x,y);if(c>0)ctx.scale(-1,1);ctx.drawImage(im,sx,sy,fw,fh,-W*225/480,-H*425/480,W,H);ctx.restore();}}
 /* Oni Executioner: the cut splits the target from top to bottom. With Oni Impact the oni itself rises behind the cat while it charges */
 let SPIRIT=null;
 function spirit(o){return sprite(Object.assign({n:'oniSpirit',layer:'ground',follow:player,ox:-Math.cos(player.phi)*16,oy:-8,z:0,ay:.96,w:190,sx:Math.cos(player.phi)<0?-1:1,under:'#2a0606',ua:.35},o));}
