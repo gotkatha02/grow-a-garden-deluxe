@@ -438,7 +438,7 @@ class KRoarClip{constructor(){Object.assign(this,{t:0,layer:'ground',w:185});}
   update(dt){this.t+=dt;return this.t<46/24;}
   draw(){const im=ONIR;if(!im.complete||!im.naturalWidth)return;const i=Math.min(45,Math.floor(this.t*24)),fw=im.naturalWidth/8,fh=im.naturalHeight/6,sx=(i%8)*fw,sy=Math.floor(i/8)*fh;
     const [x,y]=P(player.x,player.y-4,0),W=this.w,H=W*fh/fw;ctx.drawImage(im,sx,sy,fw,fh,x-W/2,y-H*1.2,W,H);}}
-function roar(){const x=player.x,y=player.y;sprite({n:'oniMask',follow:player,z:96,w:66,life:.55,fi:.05,fo:.25,s0:.4,s1:1,pop:.2,layer:'top'});addFx(new KRoarClip());dust(x,y,6,{ring:20,size:42,spd:80});}
+function roar(){const x=player.x,y=player.y;addFx(new KRoarClip());dust(x,y,6,{ring:20,size:42,spd:80});}
 /* Grinding Wheel: three real turns; the blade drags a band of fire and throws sparks off its edge like a grindstone */
 const wheelR=()=>((typeof KB!=='undefined'&&KB.kbWheel&&KB.kbWheel.R)||80)*.9;
 KTV.wheelSpin=function(i,SP){const T=rt(SP);addFx(new KArc({x:player.x,y:player.y,follow:1,fz:26+i*5,phi:player.phi,tilt:.12*(i%2?-1:1),a0:-Math.PI,a1:Math.PI,hit:0,lead:T*.5,sweep:T,hold:0,fade:.15,trail:3.6,R:wheelR(),W:26,pal:PAL.oni,ink:.5,N:44,emb:1,glint:0,edge:.16}));};
