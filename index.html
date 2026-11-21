@@ -1226,7 +1226,7 @@ const ITEM12={
   obsidianSpear:{lv:75,st:{atk:160,agi:5,def:3},sockets:2},
   templeSpear:{lv:90,st:{atk:185,vit:6,cha:3},sockets:1}};
 const ST8=['atk','def','agi','vit','int','cha','tal','lck'];                    // display order (as in 12 Tails)
-const ITEM_STAT_SCALE=.1,ORB_MAX=[1,1,1,2],ORB_CAP=it=>it.slot==='acc'?0:it.dset!==undefined?1:(it.slot==='rhand'||it.slot==='armor')?4:2;
+const ITEM_STAT_SCALE=.1,ORB_MAX=[1,1,1,2],ORB_CAP=it=>{const c=it.slot==='acc'?0:it.dset!==undefined?1:(it.slot==='rhand'||it.slot==='armor')?4:2;return c&&(it.ref||0)>=12?c+1:c;};   /* refine +12 = one extra hole (owner 2026-11-21) */
 function itemSt(id){const it=ITEMS[id];if(!it)return null;const T=ITEM12[it.base||id];
   let st,x={};if(it.st){st={...it.st};x={...(it.x||{})};}else if(T){st={...T.st};x={...(T.x||{})};}
   else{st={};if(it.atk&&!it.matk)st.atk=it.atk;if(it.matk){st.tal=it.matk;if(it.atk)st.atk=it.atk;}if(it.def)st.def=it.def;
@@ -1236,7 +1236,8 @@ function itemSt(id){const it=ITEMS[id];if(!it)return null;const T=ITEM12[it.base
   const orbs=(it.orbs!==undefined?it.orbs:(T&&T.orbs)||[]).slice(0,ORB_CAP(it)).map(o=>o.n2?o:Object.assign({},o,{v:Math.min(ORB_MAX[Math.max(1,Math.min(4,o.t||Math.ceil(o.v/5)))-1],Math.max(1,Math.round((o.n?o.v*3:o.v)*.6))),n2:1})),orb={};for(const o of orbs){const t=Math.max(1,Math.min(4,o.t||Math.ceil(o.v/5)));orb[o.s]=(orb[o.s]||0)+Math.min(ORB_MAX[t-1],o.n2?o.v:Math.max(1,Math.round((o.n?o.v*3:o.v)*.6)));}   // orbs from older versions are converted to the current scale; only the holes this slot can have count
   /* REPLICA: the item keeps its own abilities (special stats, trait, set, refine, orbs) but its base stats are copied from another item */
   let st0=null;if(it.rep&&it.rep.st){st0=st;st={};for(const k of ST8){const v=it.rep.st[k]||0;if(v)st[k]=v;}}
-  return {st,st0,orb,x,orbs,sockets:Math.min(ORB_CAP(it),it.sockets??((T&&T.sockets)||0)),lv:Math.max(it.lvReq||(T&&T.lv)||1,(it.rep&&it.rep.lv)||0),rank:it.rank||(it.slot==='rhand'?JOB.name:'All')};}
+  if((it.ref||0)>=15)for(const k in x)x[k]=Math.round(x[k]*1.2*10)/10;   /* refine +15: the piece's special stats ×1.2 */
+  return {st,st0,orb,x,orbs,sockets:Math.min(ORB_CAP(it),(it.sockets??((T&&T.sockets)||0))+((it.ref||0)>=12&&ORB_CAP(it)>0?1:0)),lv:Math.max(it.lvReq||(T&&T.lv)||1,(it.rep&&it.rep.lv)||0),rank:it.rank||(it.slot==='rhand'?JOB.name:'All')};}
 /* hooks for item traits (overridden by items.js) */
 window.itemFx={dmgMul:()=>1,afterHit(){},dodge:()=>false,takenMul:()=>1,moveMul:()=>1};
 /* armour refine: +DEF ≈ refine × tier / 6 per piece (full T4 +10 set ≈ +40 DEF ≈ +23% survivability, like weapon +10 ≈ +13% damage) */
@@ -1244,9 +1245,10 @@ const armorRefDef=it=>Math.round((it.ref||0)*(it.tier||1)/6);
 const WEAPON={},ARMOR={def:0,mdef:0},BON={};
 function gearCalc(){for(const k in BON)delete BON[k];ARMOR.def=0;ARMOR.mdef=0;let pen=0;
   for(const sl in EQ){const id=EQ[sl],it=ITEMS[id];if(!it)continue;const S=itemSt(id);if(S.lv>PS.lv)continue;   // gear above your level gives nothing
+    if(it.broken)continue;   /* a broken piece (failed refine, owner 2026-11-21) gives nothing until it is repaired */
     for(const src of [S.st,S.orb,S.x])for(const k in src)BON[k]=(BON[k]||0)+src[k];
     if(it.slot!=='rhand'){const r=armorRefDef(it);BON.def=(BON.def||0)+r;ARMOR.def+=(S.st.def||0)+r;}/* armour refine: +DEF per refine × item tier */if(it.aspdPen)pen+=it.aspdPen;}
-  const wOk=EQ.rhand&&ITEMS[EQ.rhand]&&itemSt(EQ.rhand).lv<=PS.lv;
+  const wOk=EQ.rhand&&ITEMS[EQ.rhand]&&!ITEMS[EQ.rhand].broken&&itemSt(EQ.rhand).lv<=PS.lv;
   const w=wOk?ITEMS[EQ.rhand]:{n:'Fist',kind:'Bare Hand',atk:0,wlv:1,aspd:160,ref:0},ws=wOk?itemSt(EQ.rhand).st:{};
   Object.assign(WEAPON,{name:w.n,type:w.kind,atk:(ws.atk||0)+(ws.tal||0),wlv:w.wlv,refine:w.ref||0,refAtk:(w.ref||0)*REF_ATK[w.wlv],baseAspd:w.aspd-pen,size:w.size||null});}
 const statCost=x=>1;                                                            // 12 Tails style: every point costs 1
@@ -5562,12 +5564,12 @@ function unequip(sl){if(!EQ[sl])return;INV.push(EQ[sl]);EQ[sl]=null;applyStats()
 function itemInfo(id){const it=ITEMS[id];if(!it)return;const w=document.getElementById('idw'),S=itemSt(id);
   const cell=k=>{const b=S.st[k]||0,o=S.orb[k]||0;if(S.st0){const b0=S.st0[k]||0,d=b-b0;return `<div class="c"><span>${k.toUpperCase()}</span><i>${b0||d||o?`${b0}${d?` <b style="color:${d>0?'#2a9a28':'#d23a2a'}">${d>0?'+':''}${d}</b>`:''}${o?` <em>+${o}</em>`:''}`:'-'}</i></div>`;}
     return `<div class="c"><span>${k.toUpperCase()}</span><i>${b||o?`${b}${o?` <em>+${o}</em>`:''}`:'-'}</i></div>`;};
-  const dots=Array.from({length:4},(_,i)=>`<b class="${i<S.orbs.length?'on':i<S.sockets?'hole':'none'}" title="${i<S.orbs.length?S.orbs[i].s.toUpperCase()+' +'+S.orbs[i].v:i<S.sockets?'รูว่าง':'ไม่มีรู'}"></b>`).join('');
+  const dots=Array.from({length:Math.max(4,S.sockets)},(_,i)=>`<b class="${i<S.orbs.length?'on':i<S.sockets?'hole':'none'}" title="${i<S.orbs.length?S.orbs[i].s.toUpperCase()+' +'+S.orbs[i].v:i<S.sockets?'รูว่าง':'ไม่มีรู'}"></b>`).join('');
   const ex=it.aff?'':Object.entries(S.x).map(([k,v])=>`${{hpPct:'MaxHP',crit:'คริ'}[k]||k} +${v}%`).join(' · ');   // crafted items list their special stats in itemExtraInfo
   const ref=it.ref?(it.slot==='rhand'?`ตีบวก +${it.ref}: พลังโจมตี/เวท +${it.ref*REF_ATK[it.wlv]}`:`ตีบวก +${it.ref}: DEF +${armorRefDef(it)}`):'';
   roWin('idw',`${itName(it)} <small>Lv${S.lv}</small>`,`<div class="t12"><div class="t12h"><div class="bigic">${itemIcon(it,52)}</div><div class="kv">
     <div><span>Type</span>${it.kind}</div><div><span>Rank</span>${S.rank}</div><div><span>Slot</span><span class="dots">${dots}</span></div></div></div>
-    <div class="t12g">${ST8.map(cell).join('')}</div>${it.rep?`<div class="t12x" style="color:#7a3ab8">◈ Replica: สเตตัสจำลองจาก <b>${it.rep.n}</b></div>`:''}${window.itemExtraInfo?itemExtraInfo(id):''}${ex||ref?`<div class="t12x">${[ex,ref].filter(Boolean).join('<br>')}</div>`:''}
+    <div class="t12g">${ST8.map(cell).join('')}</div>${it.broken?`<div class="t12x" style="color:#c0202a">💔 แตก — ไม่ให้ค่าพลังจนกว่าจะซ่อม (ช่างตีบวก: ใช้ของช่องเดียวกัน ระดับเดียวกัน 1 ชิ้น หรือจ่ายเงิน)</div>`:''}${it.rep?`<div class="t12x" style="color:#7a3ab8">◈ Replica: สเตตัสจำลองจาก <b>${it.rep.n}</b></div>`:''}${window.itemExtraInfo?itemExtraInfo(id):''}${ex||ref?`<div class="t12x">${[ex,ref].filter(Boolean).join('<br>')}</div>`:''}
     <p>${(it.d||'').replace(/\s*(·\s*)?(STR|AGI|VIT|INT|DEX|LUK|HIT|FLEE|CRIT|MATK|MaxHP)\s*[+\-]?\d+%?/g,'')}</p><div class="t12w">Weight ${it.w/10}</div></div>`);w.classList.add('open');w.style.zIndex=40;}
 function buildEquip(){const w=document.getElementById('eqw');if(!w||!w.classList.contains('open'))return;
   const slot=([sl,lab])=>{const id=EQ[sl],it=ITEMS[id];const two=false;
@@ -5921,8 +5923,9 @@ window.AF={levelUp:()=>{if(PS.lv<99){PS.lv++;applyStats();player.hp=player.maxHp
 <script src="vfx_rework.js?v=2"></script>
 <script src="croc_vfx.js"></script>
 <script src="worldmap.js"></script>
-<script src="items.js?v=15"></script>
-<script src="market.js?v=1"></script>
+<script src="gem_data.js?v=1"></script>
+<script src="items.js?v=16"></script>
+<script src="market.js?v=2"></script>
 <script src="npcs.js?v=8"></script>
 <script src="monsters.js"></script>
 <script src="monster-sprites.js?v=3"></script>
@@ -5932,7 +5935,7 @@ window.AF={levelUp:()=>{if(PS.lv<99){PS.lv++;applyStats();player.hp=player.maxHp
 <script src="char_create.js"></script>
 <script src="skill_shapes.js?v=1"></script>
 <script src="mobile.js?v=3"></script>
-<script src="totem_gems.js?v=10"></script>
+<script src="totem_gems.js?v=11"></script>
 <script src="feel_hits.js?v=1"></script>
 <script src="wolf_vfx3.js?v=66"></script>
 <script src="cat_art.js?v=1"></script>

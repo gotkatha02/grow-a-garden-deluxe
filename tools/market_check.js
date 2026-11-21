@@ -87,6 +87,12 @@ for(let s=1;s<=3;s++){const {h}=run(Object.assign({V:100,P0:100,shock:[120,2]},C
   const U={hp1:[25,'hp'],hp2:[120,'hp'],hp3:[450,'hp'],hp4:[1100,'hp'],sp1:[60,'sp'],sp2:[300,'sp'],sp3:[900,'sp'],elixir:[15000,'full'],manual:[20000,'exp'],ret:[300,'warp'],capscroll:[800,'warp'],wing:[60,'warp']};
   for(const k in U)ETC[k]={price:U[k][0],kind:'use',[U[k][1]]:1};for(const f of ['atk','def','vit','agi','tal','cha'])ETC['food_'+f]={price:1500,kind:'use',buff:f};
   for(const st of ['atk','def','agi','vit','int','cha','tal','lck'])for(let t=1;t<=4;t++)ETC[`orb_${st}_${t}`]={price:300*t*t,kind:'orb',tier:t};
+  /* 2026-11-21: Star Ore + totem goods (same as items.js; ids of the 12 + 12 mutation / support gems from gem_data.js) */
+  ETC.sore={price:50000,kind:'ore',tier:5};
+  [2000,6000,15000,40000].forEach((p,i)=>ETC['tstone'+(i+1)]={price:p,kind:'tstone',tier:i+1});[800,2400,6000,16000].forEach((p,i)=>ETC['tfrag'+(i+1)]={price:p,kind:'tfrag',tier:i+1});
+  ETC.tess={price:2500,kind:'tess'};
+  for(const g of ['focus','spread','heavy','rapid','stack','fire','ice','volt','guard','rage','siphon','totem'])ETC['gmut_'+g]={price:25000,kind:'gmut'};
+  for(const g of ['echo','third','force','splash','chain','quick','thrift','burn','frost','pierce','leech','impact'])ETC['gsup_'+g]={price:12000,kind:'gsup'};
   const NPC=new Set(['hp1','hp2','hp3','hp4','sp1','sp2','sp3','food_atk','food_def','food_vit','food_agi','food_tal','food_cha','manual','ret','capscroll','wing','ore1','ore2','ore3','ore4','drill','pliers','guard']);
   const defs={};for(const id in ETC){const d=crowdDef(id,ETC[id],NPC.has(id));if(d)defs[id]=d;}
   const W={},M=makeMarket(defs,W,{rand:rng(4242),news:NEWS,K:KA});let t0=Date.now();M.advance(T0);const warm=Date.now()-t0;

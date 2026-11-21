@@ -1,82 +1,91 @@
-"""First-pass numbers for the long-term plan (refine v2 + gem farming). Pure Monte Carlo, no game code."""
-import random,statistics as st
-R=random.Random(7)
-BASE=[1,1,1,1,1,.9,.8,.65,.5,.4,.35,.30,.25,.20,.15]     # chance to go r -> r+1
-def refine(start,goal,pity=.05,drop=True):
-    r=start;best=start;p=0;tries=0;rep=0
-    while r<goal:
-        tries+=1;ch=min(1,BASE[r]+pity*p)
-        if R.random()<ch:
-            r+=1
-            if r>best: best=r;p=0
-        else:
-            p+=1;rep+=1
-            if drop and r>5: r-=1
-    return tries,rep
-def q(v,k): v=sorted(v);return v[min(len(v)-1,int(len(v)*k))]
-print('REFINE (fail = -1 and cracked, +5% per fail until a new record)')
-for a,b in [(5,10),(10,12),(10,15),(5,15)]:
-    T=[refine(a,b) for _ in range(20000)];t=[x[0] for x in T];r=[x[1] for x in T]
-    print(f'  +{a} -> +{b}: tries mean {st.mean(t):6.1f} median {q(t,.5):4d} P90 {q(t,.9):4d} · repairs mean {st.mean(r):5.1f} P90 {q(r,.9):3d}')
-print('  no pity, same rule:')
-for a,b in [(5,10),(10,15)]:
-    T=[refine(a,b,pity=0) for _ in range(4000)];t=[x[0] for x in T]
-    print(f'  +{a} -> +{b}: tries mean {st.mean(t):8.1f} median {q(t,.5):6d} P90 {q(t,.9):6d}')
-# ---------------- gems
-RATE={1:8,2:5,3:2,4:.7}                 # raw stones a day (1.5 h of play at Lv 90+)
-BOARD=[1,2,3,3,4]                       # tiers of the five main gems on the board
-CORE={1:1,2:2,3:4,4:8}                  # cores from grinding one raw stone
-LV5=[5,10,20,40];STAR_D=[1,1,2,2,3];STAR_C=[100,150,220,300,400];LINE_UP=[6,12,24,48]
-def gem_run():
-    stones={t:0. for t in RATE};cores=0;day=0
-    g=[dict(t=t,have=False,q=0,pity=0,dupe=0,lv=1,lines=[]) for t in BOARD];done={}
-    def carve(x):
-        x['pity']+=1;r=R.random();ql=3 if (r<.05 or x['pity']>=20) else 2 if r<.30 else 1
-        if ql==3: x['pity']=0
-        return ql
-    while len(done)<6 and day<1500:
-        day+=1
-        for t in RATE:
-            n=RATE[t];k=int(n)+(1 if R.random()<n-int(n) else 0);stones[t]+=k
-        def one(x):
-            stones[x['t']]-=3;ql=carve(x)
-            if not x['have']: x['have']=True;x['q']=ql;x['lines']=[1]*ql
-            elif ql>x['q']: x['dupe']+=1;x['q']=ql;x['lines']=[1]*ql      # old one becomes a duplicate
-            else: x['dupe']+=1
-        for x in g:                                   # 1) a gem for every socket first
-            if not x['have'] and stones[x['t']]>=3: one(x)
-        go=True
-        while go:                                     # 2) then chase legend / duplicates, taking turns
-            go=False
-            for x in sorted(g,key=lambda x:(x['q'],x['dupe'])):
-                if x['have'] and stones[x['t']]>=3 and (x['q']<3 or x['dupe']<sum(STAR_D)) and all(y['have'] or y['t']!=x['t'] for y in g): one(x);go=True
-        # tiers with nothing left to carve: grind the stones
-        for t in RATE:
-            if all(x['q']==3 and x['dupe']>=sum(STAR_D) for x in g if x['t']==t) or t not in BOARD:
-                cores+=stones[t]*CORE[t];stones[t]=0
-        # spend cores: levels 1-5, then line ranks, then stars
-        ch=True
-        while ch:
-            ch=False
-            for x in g:
-                if x['have'] and x['lv']<5 and cores>=LV5[x['lv']-1]: cores-=LV5[x['lv']-1];x['lv']+=1;ch=True
-            if all(x['lv']>=5 for x in g):
-                for x in g:
-                    for i,l in enumerate(x['lines']):
-                        if l<5 and cores>=LINE_UP[l-1]: cores-=LINE_UP[l-1];x['lines'][i]+=1;ch=True
-                if all(all(l==5 for l in x['lines']) for x in g if x['q']==3) and all(x['q']==3 for x in g):
-                    for x in g:
-                        if 5<=x['lv']<10:
-                            s=x['lv']-5
-                            if x['dupe']>=STAR_D[s] and cores>=STAR_C[s]: x['dupe']-=STAR_D[s];cores-=STAR_C[s];x['lv']+=1;ch=True
-        def mark(k,c):
-            if c and k not in done: done[k]=day
-        mark('board',all(x['have'] for x in g));mark('lv5',all(x['lv']>=5 for x in g));mark('legend',all(x['q']==3 for x in g))
-        mark('lines',all(x['q']==3 and all(l==5 for l in x['lines']) for x in g));mark('lv10',all(x['lv']>=10 for x in g))
-        mark('one10',any(x['lv']>=10 for x in g))
-    return done
-runs=[gem_run() for _ in range(600)]
-print('GEMS (days of play, 1.5 h a day, stones a day',RATE,')')
-for k,nm in [('board','5 main gems carved'),('lv5','all five at Lv 5'),('legend','all five legend (3 lines)'),('lines','all 15 lines at rank V'),('one10','first gem at Lv 10'),('lv10','all five at Lv 10')]:
-    v=[r.get(k,1500) for r in runs];print(f'  {nm:28s} median {q(v,.5):4d} · unlucky (P90) {q(v,.9):4d}')
-c=[0]*4
+"""Long-term systems as built 2026-11-21 (GEAR_GEM_LONGTERM_TH.md · numbers in items.js REFINE_CHANCE / gem_data.js).
+python3 tools/longterm_sim.py [refine|gems]   — pure Monte Carlo, no game code. Re-run after changing those tables."""
+import sys
+def refine_part():
+    import random,statistics as st
+    R=random.Random(5)
+    def q(v,k): v=sorted(v);return v[min(len(v)-1,int(len(v)*k))]
+    LO=[1,1,1,1,1,.9,.8,.65,.5,.4]
+    def run(hi,start,goal,pity=.01,cap=.10):
+        r=start;p=0;tries=0;brk=0;ore=0
+        while r<goal:
+            tries+=1
+            if r>=10: ore+=r-9
+            ch=LO[r] if r<10 else min(1,hi[r-10]+min(cap,pity*p))
+            if R.random()<ch: r+=1;p=0
+            else:
+                p+=1
+                if r>=5: brk+=1
+                if 5<=r<10: r-=1          # +6..+10: fail = -1 and broken; +11..+15: fail = broken only
+        return tries,brk,ore
+    for hi in [[.20,.12,.08,.05,.03],[.20,.15,.10,.06,.04],[.25,.15,.10,.07,.05]]:
+        T=[run(hi,10,15) for _ in range(20000)];t=[x[0] for x in T];b=[x[1] for x in T];o=[x[2] for x in T]
+        print(hi,f"+10→+15: tries mean {st.mean(t):.0f} med {q(t,.5)} P90 {q(t,.9)} · breaks {st.mean(b):.0f} · star ore mean {st.mean(o):.0f} med {q(o,.5)} P90 {q(o,.9)}")
+    T=[run([.2,.12,.08,.05,.03],0,10) for _ in range(20000)];t=[x[0] for x in T];b=[x[1] for x in T]
+    print(f"+0→+10: tries mean {st.mean(t):.1f} med {q(t,.5)} P90 {q(t,.9)} · breaks mean {st.mean(b):.1f} P90 {q(b,.9)}")
+    
+def gems_part():
+    import random,statistics as st
+    R=random.Random(3)
+    QP=[.70,.25,.05];LINES={0:1,1:2,2:3};PITY=20
+    lvEss=lambda l:round(6+2.4*l);BRK={10:1,20:1,30:2,40:2};CAP=50
+    RANK=[6,12,24,48]
+    def q(v,k): v=sorted(v);return v[min(len(v)-1,int(len(v)*k))]
+    def run():
+        want=[(1,0),(2,0),(3,0),(4,0),(4,1)]          # (tier, which of its 3 gems)
+        own={};pity=0;stones={1:0,2:0,3:0,4:0};frag={1:0,2:0,3:0,4:0};ess=0;day=0;done={}
+        def roll():
+            nonlocal pity
+            pity+=1;x=R.random();qq=2 if x<.05 else 1 if x<.30 else 0
+            if pity>=PITY: qq=2
+            if qq==2: pity=0
+            return qq
+        def gain(key,qq):
+            o=own.get(key)
+            if not o: own[key]={'lv':1,'q':qq,'dup':0,'ranks':[R.choice([1,1,1,2,2,3]) for _ in range(LINES[qq])]};return
+            if qq>o['q']: o['q']=qq;o['ranks']=[R.choice([1,1,1,2,2,3]) for _ in range(LINES[qq])];o['dup']+=1
+            else: o['dup']+=1
+        while len(done)<5 and day<720:
+            day+=1
+            stones[4]+=7+(1 if R.random()<.0 else 0)
+            for t in (1,2,3): stones[t]+=3
+            ess+=60+100
+            for t in (1,2,3,4):
+                while stones[t]>=3:
+                    stones[t]-=3;g=R.randrange(3);gain((t,g),roll())
+            # dismantle spares of gems we do not want, and spares beyond what breakthroughs need
+            for key,o in own.items():
+                need=0 if key not in want else sum(v for l,v in BRK.items() if l>=o['lv'])
+                while o['dup']>need: o['dup']-=1;frag[key[0]]+=5;ess+=3
+            # craft a wanted gem we still miss from shards
+            for key in want:
+                if key not in own and frag[key[0]]>=40: frag[key[0]]-=40;gain(key,roll())
+            # spend essence: levels first (lowest first), then line ranks
+            ch=True
+            while ch:
+                ch=False
+                for key in sorted(want,key=lambda k:own.get(k,{'lv':99})['lv']):
+                    o=own.get(key)
+                    if not o or o['lv']>=CAP: continue
+                    c=lvEss(o['lv']);b=BRK.get(o['lv'],0)
+                    if ess>=c and o['dup']>=b: ess-=c;o['dup']-=b;o['lv']+=1;ch=True
+                if all(own.get(k,{'lv':0})['lv']>=CAP for k in want):
+                    for key in want:
+                        o=own[key]
+                        for i,r in enumerate(o['ranks']):
+                            if r<5 and ess>=RANK[r-1]: ess-=RANK[r-1];o['ranks'][i]+=1;ch=True
+            def mark(k,c):
+                if c and k not in done: done[k]=day
+            mark('board',all(k in own for k in want))
+            mark('lv20',all(own.get(k,{'lv':0})['lv']>=20 for k in want))
+            mark('lv50',all(own.get(k,{'lv':0})['lv']>=CAP for k in want))
+            mark('legend',all(own.get(k,{'q':0})['q']==2 for k in want))
+            mark('ranks',all(k in own and own[k]['q']==2 and all(r==5 for r in own[k]['ranks']) for k in want))
+        return done
+    runs=[run() for _ in range(400)]
+    for k,nm in [('board','5 chosen gems owned'),('lv20','all five Lv 20'),('lv50','all five Lv 50 (cap)'),('legend','all five legend (3 lines)'),('ranks','legend + all 15 lines rank V')]:
+        v=[r.get(k,720) for r in runs];print(f'  {nm:30s} median {q(v,.5):4d} days · unlucky (1 in 10) {q(v,.9):4d}')
+    
+a=sys.argv[1:] or ['refine','gems']
+if 'refine' in a: print('REFINE v2 (−1 + break below +10 · break only above · pity +1 %/fail cap 10 % above +10 · Star Ore 1…5 per try)');refine_part()
+if 'gems' in a: print('GEMS v2 (one hero, board of 5 chosen gems, 1.5 h a day at Lv 90+)');gems_part()

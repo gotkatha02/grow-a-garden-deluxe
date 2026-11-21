@@ -63,7 +63,16 @@ for(const r in MATS)MATS[r].forEach((m,g)=>{const lv=`Lv${g*10}–${g*10+9}`;
 [100,400,1500,5000].forEach((p,i)=>ETC['ore'+(i+1)]={n:`Refine Ore T${i+1}`,th:`แร่ตีบวก ขั้น ${i+1}`,price:p,kind:'ore',tier:i+1,col:['#b0b8c8','#7fd0ff','#c08aff','#ffd36a'][i],d:`ตีบวกของ Lv${[1,30,60,90][i]}–${[29,59,89,99][i]}`});
 ETC.drill={n:'Drill',th:'สว่านเจาะรู',price:3000,kind:'tool',col:'#c9a46a',d:'เจาะรูอุปกรณ์ สุ่ม 1–4 รู (เจาะใหม่ หินเดิมหายหมด)'};
 ETC.pliers={n:'Orb Pliers',th:'คีมถอดหิน',price:2000,kind:'tool',col:'#8a96a8',d:'ถอดหินออฟออกมาโดยหินไม่หาย'};
-ETC.guard={n:'Guard Stone',th:'หินกันแตก',price:50000,kind:'tool',col:'#5fd0ff',d:'ตีบวกพลาด: ลดบวก 1 แทนการแตก'};
+ETC.guard={n:'Guard Stone',th:'หินกันแตก',price:50000,kind:'tool',col:'#5fd0ff',d:'ตีบวกพลาด ของไม่แตก (ที่ +6–+10 ยังลดบวก 1) · +11 ขึ้นไปใช้ครั้งละ (บวก − 9) ก้อน'};
+/* owner 2026-11-21: refine up to +15 — very hard. +11…+15 also need Star Ore (bosses / Lv 70+ monsters, tradable) */
+ETC.sore={n:'Star Ore',th:'แร่ดาวตก',price:50000,kind:'ore',tier:5,col:'#ff7ad8',d:'ตีบวก +11 ถึง +15 · ใช้ครั้งละ 1/2/3/4/5 ก้อน (ไป +11/+12/+13/+14/+15) · ดรอปจากมอน Lv 70+ (ดันเจี้ยนบ่อยกว่า) และบอส'};
+/* totem gem goods (owner 2026-11-21): all tradable in the central market — the way to the gem you want */
+{const GD=window.GEMDATA||{MUT:[],SUP:[]},SC=['#c9b48a','#8fd0c8','#c08aff','#ffcf5a'],LB=['Lv 1–29','Lv 30–59','Lv 60–89','Lv 90+'];
+  [2000,6000,15000,40000].forEach((p,i)=>ETC['tstone'+(i+1)]={n:`Totem Stone T${i+1}`,th:`หินโทเท็มดิบ ขั้น ${i+1}`,price:p,kind:'tstone',tier:i+1,col:SC[i],d:`แกะ 3 ก้อน = เจมหลักขั้น ${i+1} 1 เม็ด (สุ่มชนิด สุ่มคุณภาพ) ที่แผงกลุ่มดาว (G) · ดรอปจากมอน ${LB[i]} (ดันเจี้ยนบ่อยกว่า) และบอส`});
+  [800,2400,6000,16000].forEach((p,i)=>ETC['tfrag'+(i+1)]={n:`Gem Shard T${i+1}`,th:`ชิ้นส่วนเจม ขั้น ${i+1}`,price:p,kind:'tfrag',tier:i+1,col:SC[i],d:`40 ชิ้น = คราฟต์เจมหลักขั้น ${i+1} ชนิดที่เลือกเองได้ (สุ่มคุณภาพ) · ได้จากการย่อยเจมซ้ำ`});
+  ETC.tess={n:'Totem Essence',th:'แก่นโทเท็ม',price:2500,kind:'tess',col:'#ffb84a',d:'อัปเลเวลเจม · อัปขั้น/ล้างบรรทัดเจม · ดรอปจากมอนทั่วไป และได้จากการย่อยเจมซ้ำ'};
+  for(const m of GD.MUT)ETC['gmut_'+m[0]]={n:`${m[6]} Mutation Gem`,th:`เจมแปรสภาพ ${m[1]}`,price:25000,kind:'gmut',gem:m[0],col:m[3],d:`ได้: ${m[4]} · เสีย: ${m[5]} · ใส่ที่ดาวกลางข้างเจมหลัก (G) · ใช้ได้ทุกฮีโร่`};
+  for(const m of GD.SUP)ETC['gsup_'+m[0]]={n:`${m[5]} Support Gem`,th:`เจมเสริม ${m[1]}`,price:12000,kind:'gsup',gem:m[0],col:m[3],d:`${m[4]} · ใส่ที่ดาวเล็กข้างเจมหลัก (G) · ใช้ได้ทุกฮีโร่`};}
 for(const r in TOWNS)ETC['trait_'+r]={n:`Trait Crystal (${TOWNS[r].name})`,th:`ผลึกนิสัย ${TOWNS[r].name}`,price:20000,kind:'crystal',reg:r,col:TOWNS[r].col,d:'ใช้ที่ช่างของเมืองนี้ ใส่/สุ่มนิสัยพิเศษให้ไอเทมของเมืองนี้'};
 /* ---------------- consumables (Item tab · double-click to use · F = best HP potion · V = best SP potion) ---------------- */
 const CONS={
@@ -94,7 +103,17 @@ for(const s in STN)for(let t=1;t<=4;t++)ETC[`orb_${s}_${t}`]={n:`${STN[s]} Orb T
 /* economy (tuned 2026-11-16): one grade (10 levels, ~240–960 kills) drops enough for 4–16 crafts → early you choose which
    pieces to remake, later you craft extra copies to chase better special stats. */
 const DROP={matA:.20,matB:.05,ore:.03,orb:.012,crystalDun:.004,crystalField:.001,zenyBase:10,zenyLv:3,hpPot:.03,spPot:.015,food:.005,elixir:.002};
-const REFINE_CHANCE=[1,1,1,1,1,.9,.8,.65,.5,.4];                                // to reach +1 … +10 (index = current refine)
+/* refine v2 (owner 2026-11-21: 'it may break, but it must be repaired' · '+15 yes, but very very hard'):
+   +1…+5 always · +6…+10 fail = −1 and the piece BREAKS · +11…+15 fail = the piece breaks (refine stays) · a broken piece gives
+   nothing until it is repaired (a same slot + same grade piece, or zeny) · Guard Stone = no break · +11…+15 need Star Ore
+   and get +1 % per failed try on that piece (at most +10 %) until it goes up. Expected +10 → +15 ≈ 39 tries · 136 Star Ore
+   (tools/longterm_sim.py refine). */
+const REFINE_CHANCE=[1,1,1,1,1,.9,.8,.65,.5,.4,.20,.12,.08,.05,.03];               // to reach +1 … +15 (index = current refine)
+const REF_MAX=15,REF_PITY=.01,REF_PITY_CAP=.10;
+const refStar=r=>r>=10?r-9:0;                                                     // Star Ore per try at +11 … +15
+const refGuardN=r=>r>=10?r-9:1;                                                   // Guard Stones that keep it from breaking
+const refChance=(it,r)=>r<10?REFINE_CHANCE[r]:Math.min(1,REFINE_CHANCE[r]+Math.min(REF_PITY_CAP,REF_PITY*((it&&it.rp)||0)));
+const refCost=(it,r)=>{const t=Math.max(1,Math.min(4,it.tier||it.wlv||1)),c=[['ore'+t,1]];if(refStar(r))c.push(['sore',refStar(r)]);return c;};
 const COST={craftA:8,craftB:2,craftZ:g=>300*(g+1),traitZ:5000,refineZ:(t,r)=>100*t*t*(r+1),moveZ:(g,r)=>500*(g+1)*r,mergeZ:t=>1000*t};
 const DRILL_W=[[1,45],[2,30],[3,18],[4,7]];
 /* max holes by slot: weapon & body armour 4, everything else 2 */
@@ -203,7 +222,7 @@ const CSET={
   egy:k=>[[2,{spPct:8+2*k}],[4,{skillDmg:6+2*k}],[6,{cdr:5+k,spCost:5+k}]],
   jpn:k=>[[2,{crit:3+k}],[4,{critDmg:10+3*k}],[6,{autoDmg:8+2*k,move:5}]]};
 const csTier=g=>Math.max(0,CRAFT_G.indexOf(g));
-const csCount=()=>{const c={};for(const sl in EQ){const it=ITEMS[EQ[sl]];if(it&&it.crafted&&(it.lvReq||1)<=PS.lv){const k=it.town+'_'+it.grade;c[k]=(c[k]||0)+1;}}return c;};
+const csCount=()=>{const c={};for(const sl in EQ){const it=ITEMS[EQ[sl]];if(it&&!it.broken&&it.crafted&&(it.lvReq||1)<=PS.lv){const k=it.town+'_'+it.grade;c[k]=(c[k]||0)+1;}}return c;};
 const csBonusText=(t,g,n=-1)=>CSET[t](csTier(g)).map(([p,o])=>`<span style="${n<0?'':n>=p?'color:#2a9a28;font-weight:700':'color:#8a94a8'}">${p} ชิ้น: ${Object.entries(o).map(([k,v])=>affLabel(k,v)).join(', ')}</span>`).join(' · ');
 {const _gc=gearCalc;gearCalc=function(){_gc();const c=csCount();
   for(const key in c){const [t,g]=key.split('_');for(const [p,o] of CSET[t](csTier(+g)))if(c[key]>=p)for(const k in o)BON[k]=(BON[k]||0)+o[k];}};}
@@ -221,7 +240,7 @@ function dropSetItem(g,slot){const S=SLOTS[slot],D=DSET[g],cw=slot==='rhand'?cla
   return newInst(null,{base:null,n:`${D[0]}'s ${slot==='rhand'?(W_NOUN[CHAR]||'Weapon'):S.noun}`,slot,kind:slot==='rhand'?cw.kind:S.kind,two:cw.two,aspd:cw.aspd,size:cw.size,magic:!!cw.magic,
     st,x:{},aff:[],b:{},grade:g,tier:gradeTier(g),wlv:gradeTier(g),lvReq:gradeLv(g),dset:g,sockets:0,orbs:[],ref:0,w:S.w,cslot:slot,
     rank:slot==='rhand'?JOB.name:'All',d:`ชุด${D[1]} (ของดรอป Lv${gradeLv(g)}) · อ่อนกว่าของคราฟ แต่สวมครบเซ็ทได้โบนัส`});}
-const dsCount=()=>{const c={};for(const sl in EQ){const it=ITEMS[EQ[sl]];if(it&&it.dset!==undefined&&(it.lvReq||1)<=PS.lv)c[it.dset]=(c[it.dset]||0)+1;}return c;};
+const dsCount=()=>{const c={};for(const sl in EQ){const it=ITEMS[EQ[sl]];if(it&&!it.broken&&it.dset!==undefined&&(it.lvReq||1)<=PS.lv)c[it.dset]=(c[it.dset]||0)+1;}return c;};
 {const _gc=gearCalc;gearCalc=function(){_gc();const c=dsCount();
   for(const g in c){const n=c[g],b=dsBonus(+g);if(n>=2)BON.hpPct=(BON.hpPct||0)+b.hp;if(n>=4){BON.autoDmg=(BON.autoDmg||0)+b.dmg;BON.skillDmg=(BON.skillDmg||0)+b.dmg;}if(n>=6){BON.crit=(BON.crit||0)+b.crit;BON.move=(BON.move||0)+b.move;}}};}
 DROP.dset=.008;
@@ -229,7 +248,7 @@ DROP.dset=.008;
 const ON={};let aegisT=-99,rushT=-99;
 const _gearCalc=gearCalc;
 gearCalc=function(){_gearCalc();for(const k in ON)delete ON[k];
-  for(const sl in EQ){const it=ITEMS[EQ[sl]];if(it&&it.trait&&(it.lvReq||1)<=PS.lv)ON[it.trait]=(ON[it.trait]||0)+gradePow(it.grade??((it.tier||1)-1)*3);}
+  for(const sl in EQ){const it=ITEMS[EQ[sl]];if(it&&!it.broken&&it.trait&&(it.lvReq||1)<=PS.lv)ON[it.trait]=(ON[it.trait]||0)+gradePow(it.grade??((it.tier||1)-1)*3);}
   if(BUFF.food&&BUFF.food.until>Date.now())BON[BUFF.food.stat]=(BON[BUFF.food.stat]||0)+BUFF.food.v;};   // food buff
 const B=k=>(BON[k]||0)/100;
 Object.assign(window.itemFx,{
@@ -276,6 +295,15 @@ function dropFor(e){const m=e.m||{},L=m.lv||1,t=tierOfLv(L),g=gradeOfLv(L),R=Loo
   const dun=/D\d|H\d|E\d|cata|rift/.test(curMap||'');
   if(ch(dun?DROP.crystalDun:DROP.crystalField))got.push('trait_'+r);
   if(dun&&ch(DROP.elixir))got.push('elixir');
+  /* totem goods (owner 2026-11-21): raw stones by the ore tier of the monster's level band, essence, Star Ore (Lv 70+), mutation / support gems */
+  {const GD=window.GEMDATA,D2=GD&&GD.DROPS;if(D2){const tough=m.role==='brute'?2:1,boss=m.boss||(e.vdef&&e.vdef.role==='boss');
+    if(ch((dun?D2.stoneDun:D2.stoneField)*tough))got.push('tstone'+t);
+    if(ch(D2.ess))for(let i=0,k=D2.essN[0]+Math.floor(Math.random()*(D2.essN[1]-D2.essN[0]+1));i<k;i++)got.push('tess');
+    if(L>=D2.soreLv&&ch(dun?D2.soreDun:D2.soreField))got.push('sore');
+    if(dun&&ch(D2.mutDun))got.push('gmut_'+GD.MUT[Math.floor(Math.random()*GD.MUT.length)][0]);
+    if(ch(dun?D2.supDun:D2.supField))got.push('gsup_'+GD.SUP[Math.floor(Math.random()*GD.SUP.length)][0]);
+    if(boss){const B2=D2.boss;for(let i=0;i<B2.stones;i++)got.push('tstone'+t);for(let i=0;i<B2.ess;i++)got.push('tess');for(let i=0;i<B2.sore;i++)got.push('sore');
+      for(let i=0;i<B2.sup;i++)got.push('gsup_'+GD.SUP[Math.floor(Math.random()*GD.SUP.length)][0]);if(Math.random()<B2.mutChance)got.push('gmut_'+GD.MUT[Math.floor(Math.random()*GD.MUT.length)][0]);}}}
   /* drop-set gear for this level band (boss: 10×) */
   if(Math.random()<Math.min(1,DROP.dset*R*dm*(m.boss?10:1))){if(eqFull())chatLog('sys','<span style="color:#e2574c">กระเป๋าอุปกรณ์เต็ม</span> — อุปกรณ์ดรอปหายไป');
     else{const sl=Object.keys(SLOTS)[Math.floor(Math.random()*6)],id=dropSetItem(g,sl);INV.push(id);const it=ITEMS[id];
@@ -333,7 +361,8 @@ const img=(k,sz)=>`<img class="ico" src="assets/items/${k}.png" width="${sz}" he
 {const st=document.createElement('style');st.textContent='img.ico{display:block;pointer-events:none}.ro-grid .c>img.ico,.ro-grid .c>span>img.ico{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}.ro-grid .c>span:has(>img.ico){position:absolute!important;left:50%;top:50%;transform:translate(-50%,-50%)}';document.head.appendChild(st);}
 const gearKey=it=>it.crafted?((k=>it.grade!=null&&ICONS.has(k+'_'+it.grade)?k+'_'+it.grade:k)(it.slot==='rhand'?`wp_${it.town}_${CHAR}`:`eq_${it.town}_${it.cslot}`)):it.dset!==undefined?(it.slot==='rhand'?`ds_${it.dset}_${CHAR}`:`ds_${it.dset}_${it.cslot}`):it.base?`eq_${it.base}`:null;
 const _itemIcon=itemIcon;
-itemIcon=function(it,sz=24){const k=it&&gearKey(it);return k&&ICONS.has(k)?img(k,sz):_itemIcon(it,sz);};
+itemIcon=function(it,sz=24){const k=it&&gearKey(it),h=k&&ICONS.has(k)?img(k,sz):_itemIcon(it,sz);
+  return it&&it.broken?`<span class="itbrk" style="position:relative;display:inline-block;width:${sz}px;height:${sz}px;line-height:0;vertical-align:middle">${h}<svg width="${sz}" height="${sz}" viewBox="0 0 24 24" style="position:absolute;left:0;top:0;pointer-events:none"><rect x="0" y="0" width="24" height="24" rx="4" fill="#c0202a" opacity=".22"/><path d="M13 1 L10 8 L14 11 L9 17 L12 23" fill="none" stroke="#2a0a0a" stroke-width="2.4" stroke-linejoin="round"/><path d="M13 1 L10 8 L14 11 L9 17 L12 23" fill="none" stroke="#ff6a5a" stroke-width="1" stroke-linejoin="round"/></svg></span>`:h;};
 
 /* ---------------- Items window: Item + Etc tabs + real Zeny ---------------- */
 function etcIcon(id,sz=26){const E=ETC[id]||{},c=E.col||'#c9a46a';
@@ -345,6 +374,11 @@ function etcIcon(id,sz=26){const E=ETC[id]||{},c=E.col||'#c9a46a';
     :`<path d="M10 3 H14 V7 L18 12 V19 Q18 21 16 21 H8 Q6 21 6 19 V12 L10 7 Z" fill="${c}" stroke="#3a2a1f" stroke-width="1.6"/><rect x="9.5" y="2" width="5" height="2.5" rx="1" fill="#a8662d"/><circle cx="10" cy="15" r="1.6" fill="#fff" opacity=".7"/>`;
   else if(E.kind==='orb')g=`<circle cx="12" cy="12" r="8" fill="${c}" stroke="#3a2a1f" stroke-width="1.6"/><circle cx="9" cy="9" r="2.5" fill="#fff" opacity=".7"/><text x="12" y="15.5" text-anchor="middle" font-size="8" font-weight="900" fill="#3a2a1f">${E.tier}</text>`;
   else if(E.kind==='ore')g=`<path d="M5 15 L9 6 L17 5 L20 13 L14 20 Z" fill="${c}" stroke="#3a2a1f" stroke-width="1.6"/><path d="M9 6 L12 13 L20 13 M12 13 L14 20" stroke="#fff" opacity=".5"/>`;
+  else if(E.kind==='gmut'||E.kind==='gsup')return `<img src="assets/gems/${E.kind==='gmut'?'mut':'support'}/${E.gem}.webp" width="${sz}" height="${sz}" alt="" style="object-fit:contain;display:block" onerror="this.outerHTML='<svg width=&quot;${sz}&quot; height=&quot;${sz}&quot; viewBox=&quot;0 0 24 24&quot;><circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;8&quot; fill=&quot;${c}&quot; stroke=&quot;#3a2a1f&quot; stroke-width=&quot;1.6&quot;/></svg>'">`;
+  else if(E.kind==='tstone')g=`<path d="M4 16 L7 7 L13 4 L19 7 L21 14 L15 21 L8 20 Z" fill="#7a6a58" stroke="#3a2a1f" stroke-width="1.5"/><path d="M9 9 L13 6 L17 9 L15 15 L10 15 Z" fill="${c}" stroke="#3a2a1f" stroke-width="1"/><path d="M10 10 L13 8" stroke="#fff" opacity=".7"/><text x="18.5" y="20.5" text-anchor="middle" font-size="7" font-weight="900" fill="#fff" stroke="#3a2a1f" stroke-width=".6">${E.tier}</text>`;
+  else if(E.kind==='tfrag')g=`<path d="M5 13 L9 5 L12 12 Z M11 20 L14 9 L18 15 Z M15 7 L20 4 L19 10 Z" fill="${c}" stroke="#3a2a1f" stroke-width="1.3"/><path d="M8 8 L9.5 11 M14.5 11 L15 15" stroke="#fff" opacity=".7"/><text x="6.5" y="21" text-anchor="middle" font-size="7" font-weight="900" fill="#fff" stroke="#3a2a1f" stroke-width=".6">${E.tier}</text>`;
+  else if(E.kind==='tess')g=`<circle cx="12" cy="13" r="8" fill="#ffd77a" opacity=".35"/><path d="M12 3 C15 8 18 11 18 15 A6 6 0 0 1 6 15 C6 11 9 8 12 3 Z" fill="${c}" stroke="#3a2a1f" stroke-width="1.5"/><path d="M10 13 Q12 10 13 8" stroke="#fff" opacity=".8" fill="none"/>`;
+  else if(id==='sore')g=`<path d="M5 15 L9 6 L17 5 L20 13 L14 20 Z" fill="#4a3a6a" stroke="#3a2a1f" stroke-width="1.6"/><path d="M12.5 7 L14 11 L18 11 L15 13.5 L16 17.5 L12.5 15 L9 17.5 L10 13.5 L7 11 L11 11 Z" fill="${c}" stroke="#fff" stroke-width=".6"/>`;
   else if(E.kind==='crystal')g=`<path d="M12 2 L18 9 L12 22 L6 9 Z" fill="${c}" stroke="#3a2a1f" stroke-width="1.6"/><path d="M6 9 H18 M12 2 V22" stroke="#fff" opacity=".55"/>`;
   else if(id==='drill')g=`<path d="M4 20 L13 11" stroke="#7a4a21" stroke-width="3"/><path d="M12 12 L20 4 L21 7 L15 13 Z" fill="#b0b8c8" stroke="#3a2a1f" stroke-width="1.4"/>`;
   else if(id==='pliers')g=`<path d="M6 21 L12 12 L18 21 M12 12 L8 3 M12 12 L16 3" stroke="#3a2a1f" stroke-width="2.4" fill="none" stroke-linecap="round"/>`;
@@ -423,7 +457,7 @@ function buildSmithOld(){const w=$('#smw');if(!w.classList.contains('open'))retu
       owned.map(id=>{const it=ITEMS[id],r=it.ref||0,t=Math.max(1,Math.min(4,it.tier||it.wlv||1));if(r>=10)return itemRow(id,'<small>ตีบวกสูงสุดแล้ว (+10)</small>');
         const cost=[['ore'+t,1]],z=COST.refineZ(t,r),gain=it.slot==='rhand'?`พลังโจมตี/เวท +${REF_ATK[Math.min(4,it.wlv||t)]}`:`DEF รวม +${armorRefDef({ref:r+1,tier:it.tier||1})}`;
         return itemRow(id,`<small>+${r} → +${r+1} · โอกาส <b>${Math.round(REFINE_CHANCE[r]*100)}%</b> · ${gain}</small><div class="ix-cost">${costHtml(cost,z)}</div><button class="rob" data-ref="${id}" ${canPay(cost,z)?'':'disabled'}>ตีบวก</button>`);}).join('');}
-  else if(smTab==='move'){const src=owned.filter(id=>(ITEMS[id].ref||0)>0);if(!src.includes(smFrom))smFrom=src[0]||null;const f=ITEMS[smFrom];
+  else if(smTab==='move'){const src=owned.filter(id=>(ITEMS[id].ref||0)>0&&!ITEMS[id].broken);if(!src.includes(smFrom))smFrom=src[0]||null;const f=ITEMS[smFrom];
     body=`<div class="ix-note">ย้ายระดับบวกจากของเก่าไปของใหม่ช่องเดียวกัน · ของใหม่ได้บวก <b>−1</b> จากของเดิม · ของเก่าเหลือ +0 · ใช้ Zeny เท่านั้น</div>`+
       (src.length?`<div style="display:flex;gap:8px"><div class="ix-list" style="flex:1"><b>ย้ายจาก</b>${src.map(id=>itemRow(id,'',id===smFrom).replace('data-pick','data-from')).join('')}</div>
         <div class="ix-list" style="flex:1"><b>ไปที่</b>${f?owned.filter(id=>id!==smFrom&&ITEMS[id].slot===f.slot&&(ITEMS[id].ref||0)<f.ref-1).map(id=>{const z=COST.moveZ(ITEMS[id].grade??((ITEMS[id].tier||1)-1)*3,f.ref);
@@ -613,13 +647,26 @@ function ttWin(id,title){let w=document.getElementById(id);if(!w){w=document.cre
     addEventListener('pointermove',mv);addEventListener('pointerup',up);};
   return w.querySelector('.ttbd');}
 addEventListener('keydown',e=>{if(e.key!=='Escape')return;for(const id of ['rfw','mkw']){const w=document.getElementById(id);if(w&&w.classList.contains('open')){w.classList.remove('open');}}});
-const refCol=r=>r>=9?'#ff6ad5':r>=7?'#ffb02e':r>=5?'#7fd0ff':'#ffffff';
+const refCol=r=>r>=15?'#ff2bd6':r>=13?'#ff4a5a':r>=11?'#b86aff':r>=9?'#ff6ad5':r>=7?'#ffb02e':r>=5?'#7fd0ff':'#ffffff';
 const tierOf=it=>Math.max(1,Math.min(4,it.tier||it.wlv||1));
 function refGain(it,r){const t=tierOf(it);return it.slot==='rhand'?{lab:'พลังโจมตี/เวท จากบวก',v:r*REF_ATK[Math.min(4,it.wlv||t)]}:{lab:'DEF จากบวก',v:armorRefDef({ref:r,tier:it.tier||1})};}
-/* one refine attempt (same rules as doRefine) → 'ok' | 'fail' | 'broke' */
-function rollRefine(id,guard){const it=ITEMS[id];const r=it.ref||0,t=tierOf(it),cost=[['ore'+t,1]],z=COST.refineZ(t,r);if(r>=10||!canPay(cost,z))return null;
-  const g=guard&&r>=5&&has('guard');pay(cost,z);if(g)add('guard',-1);
-  if(Math.random()<REFINE_CHANCE[r]){it.ref=r+1;return 'ok';}if(g){it.ref=Math.max(0,r-1);return 'fail';}return 'broke';}
+/* one refine attempt → 'ok' | 'down' (guarded, −1) | 'held' (guarded at +11…, nothing lost) | 'broke' (broken: −1 below +11) */
+function rollRefine(id,guard){const it=ITEMS[id];if(!it||it.broken)return null;const r=it.ref||0,t=tierOf(it),cost=refCost(it,r),z=COST.refineZ(t,r);if(r>=REF_MAX||!canPay(cost,z))return null;
+  const gn=refGuardN(r),g=guard&&r>=5&&has('guard',gn);pay(cost,z);if(g)add('guard',-gn);
+  if(Math.random()<refChance(it,r)){it.ref=r+1;it.rp=0;return 'ok';}
+  if(r>=10)it.rp=(it.rp||0)+1;
+  if(r<10)it.ref=Math.max(0,r-1);
+  if(g)return r<10?'down':'held';
+  it.broken=1;try{applyStats();}catch(e){}return 'broke';}
+/* repair (a broken piece gives nothing until repaired): another piece of the same kind — same slot + same grade (crafted or drop set),
+   or the same base item — is used up, or zeny is paid. The used piece's refine and orbs are lost. */
+const sameKind=(a,b)=>!!a&&!!b&&a!==b&&(a.cslot||a.slot)===(b.cslot||b.slot)&&(a.grade!==undefined&&b.grade!==undefined?a.grade===b.grade:!!a.base&&a.base===b.base);
+function repairMates(id){const it=ITEMS[id],eq=Object.values(EQ);return ownedIds().filter(o=>o!==id&&!eq.includes(o)&&ITEMS[o]&&!ITEMS[o].broken&&sameKind(ITEMS[o],it));}
+const repairZ=it=>3000*tierOf(it)*tierOf(it)*((it.ref||0)+1);
+function repairItem(id,by){const it=ITEMS[id];if(!it||!it.broken)return false;
+  if(by==='z'){const z=repairZ(it);if(ZENY<z)return false;ZENY-=z;}
+  else{if(!repairMates(id).includes(by))return false;destroyItem(by);}
+  delete it.broken;try{applyStats();}catch(e){}save();return true;}
 
 /* ---------------- REFINE window ---------------- */
 let rfSel=null,rfGuard=true,rfBusy=false;
@@ -627,27 +674,37 @@ const HAMMER=`<svg class="hammer" viewBox="0 0 64 64"><rect x="30" y="18" width=
 const ANVIL=`<svg class="anvil" width="190" height="70" viewBox="0 0 190 70"><path d="M20 10 H160 Q182 12 186 22 Q160 24 146 30 L136 34 V44 H54 V34 L44 30 Q30 24 20 22 Z" fill="#5c6270" stroke="#1f1626" stroke-width="3"/><path d="M24 12 H158 Q172 13 178 18 H26Z" fill="#8a92a2"/><path d="M60 44 H130 L140 66 H50 Z" fill="#4a4f5a" stroke="#1f1626" stroke-width="3"/></svg>`;
 function openRefine(){const b=ttWin('rfw','⚒ ตีบวกอุปกรณ์');document.getElementById('rfw').classList.add('open');buildRefine();}
 function buildRefine(){const w=document.getElementById('rfw');if(!w||!w.classList.contains('open')||rfBusy)return;const b=w.querySelector('.ttbd'),owned=ownedIds();if(rfSel&&!ITEMS[rfSel])rfSel=null;
-  const inv=owned.map(id=>{const it=ITEMS[id],eq=Object.values(EQ).includes(id);return `<div class="tts ${id===rfSel?'sel':''}" data-rf="${id}" title="${it.n}">${itemIcon(it,30)}${it.ref?`<em style="color:${refCol(it.ref)}">+${it.ref}</em>`:''}${eq?'<b class="eq">E</b>':''}</div>`;}).join('')
+  const inv=owned.map(id=>{const it=ITEMS[id],eq=Object.values(EQ).includes(id);return `<div class="tts ${id===rfSel?'sel':''}" data-rf="${id}" title="${it.n}${it.broken?' (แตก — ต้องซ่อม)':''}">${itemIcon(it,30)}${it.ref?`<em style="color:${refCol(it.ref)}">+${it.ref}</em>`:''}${eq?'<b class="eq">E</b>':''}</div>`;}).join('')
     +Array.from({length:Math.max(0,20-owned.length)},()=>'<div class="tts empty"></div>').join('');
   const it=rfSel&&ITEMS[rfSel];let right;
-  if(!it)right=`<div class="stage">${HAMMER}<div class="big none">เลือกอุปกรณ์<br>ทางซ้าย</div>${ANVIL}<div class="res"></div></div><div class="prog"><div></div></div>
-      <div class="ttnote" style="margin-top:8px">+1 ถึง +5 สำเร็จเสมอ · ตั้งแต่ +6 พลาดแล้ว<b class="ttwarn">ของแตก</b> ถ้าไม่ใช้หินกันแตก</div>`;
-  else{const r=it.ref||0,t=tierOf(it),max=r>=10,ore='ore'+t,z=COST.refineZ(t,r),ch=max?0:REFINE_CHANCE[r],risky=r>=5,g=rfGuard&&has('guard'),ok=!max&&canPay([[ore,1]],z);
-    const a=refGain(it,r),bb=refGain(it,r+1),col=ch>=.8?'#2a9a28':ch>=.6?'#e0a020':'#d23a2a';
+  const rule=`<div class="ttnote" style="margin-top:8px">+1 ถึง +5 สำเร็จเสมอ · +6–+10 พลาด = ลดบวก 1 และ<b class="ttwarn">ของแตก</b> · +11–+15 พลาด = <b class="ttwarn">ของแตก</b> (บวกไม่ลด) ใช้แร่ดาวตก · ของแตกไม่ให้ค่าพลังจนกว่าจะซ่อม · หินกันแตก = ไม่แตก</div>`;
+  if(!it)right=`<div class="stage">${HAMMER}<div class="big none">เลือกอุปกรณ์<br>ทางซ้าย</div>${ANVIL}<div class="res"></div></div><div class="prog"><div></div></div>${rule}`;
+  else if(it.broken){const mates=repairMates(rfSel),z=repairZ(it);
+    right=`<div class="stage"><div class="lv">${it.n} <span style="color:${refCol(it.ref||0)}">+${it.ref||0}</span></div><div class="big">${itemIcon(it,58)}</div>${ANVIL}<div class="res"></div></div>
+      <div style="margin-top:6px;padding:5px 8px;border-radius:10px;background:#c0202a;color:#fff;font:700 14px Mali,Mitr,sans-serif;text-align:center;box-shadow:0 2px 0 #5a0a0a">💔 แตก — ต้องซ่อมก่อนใช้ / ตีบวกต่อ</div>
+      <div class="ttnote" style="margin-top:6px">ของแตกไม่ให้ค่าพลังและตีบวกต่อไม่ได้ · ซ่อมด้วย<b>ของชนิดเดียวกัน 1 ชิ้น</b> (ช่องเดียวกัน ระดับเดียวกัน — บวกและหินของชิ้นนั้นหายไป) หรือจ่ายเงิน</div>
+      ${mates.length?`<div class="inv" style="margin-top:6px;grid-template-columns:repeat(auto-fill,minmax(40px,1fr))">${mates.map(o=>{const m=ITEMS[o];return `<div class="tts" data-rpby="${o}" title="ใช้ ${m.n}${m.ref?' +'+m.ref:''} ซ่อม">${itemIcon(m,30)}${m.ref?`<em style="color:${refCol(m.ref)}">+${m.ref}</em>`:''}</div>`;}).join('')}</div><div class="ttnote">แตะชิ้นที่จะใช้ซ่อม</div>`:'<div class="ttnote" style="margin-top:6px">ไม่มีของชนิดเดียวกันในกระเป๋า — คราฟต์ชิ้นช่องเดียวกัน ระดับเดียวกัน หรือซื้อที่ตลาดอุปกรณ์</div>'}
+      <div style="display:flex;align-items:center;gap:8px;margin-top:8px"><div class="ttnote" style="flex:1">ซ่อมด้วยเงิน <b style="color:${ZENY>=z?'#b8740c':'#d23a2a'}">${fmt(z)}z</b> · มี ${fmt(ZENY)}z</div><button class="ttb" id="rfz" ${ZENY>=z?'':'disabled'}>🔧 ซ่อมด้วยเงิน</button></div>`;}
+  else{const r=it.ref||0,t=tierOf(it),max=r>=REF_MAX,ore='ore'+t,z=COST.refineZ(t,r),ch=max?0:refChance(it,r),base=max?0:REFINE_CHANCE[r],risky=r>=5,gn=refGuardN(r),gHave=(BAG.guard||0)>=gn,g=rfGuard&&gHave,st=refStar(r),ok=!max&&canPay(refCost(it,r),z);
+    const a=refGain(it,r),bb=refGain(it,r+1),col=ch>=.8?'#2a9a28':ch>=.4?'#e0a020':'#d23a2a',ms=r+1===12?' · ได้รูหินเพิ่ม 1':r+1===15?' · สถานะพิเศษของชิ้นนี้ ×1.2':'';
     right=`<div class="stage">${HAMMER}<div class="lv">${it.n} <span style="color:${refCol(r)}">+${r}</span>${max?'':` ➜ <span style="color:${refCol(r+1)}">+${r+1}</span>`}</div>
         <div class="big">${itemIcon(it,58)}</div>${ANVIL}<div class="res"></div></div><div class="prog"><div></div></div>
-      <div class="stat"><span>${a.lab}</span><span>+${a.v}${max?'':` ➜ <b class="ttgood">+${bb.v}</b>`}</span></div>
-      ${max?'<div class="ttnote" style="margin-top:8px;text-align:center">ตีบวกสูงสุดแล้ว (+10)</div>':`
+      <div class="stat"><span>${a.lab}</span><span>+${a.v}${max?'':` ➜ <b class="ttgood">+${bb.v}</b>${ms}`}</span></div>
+      ${max?`<div class="ttnote" style="margin-top:8px;text-align:center">ตีบวกสูงสุดแล้ว (+${REF_MAX})</div>`:`
       <div class="mats"><div><div class="tts" style="cursor:default" title="${etcName(ore)}">${etcIcon(ore,28)}<em class="${has(ore)?'':'ttwarn'}">${BAG[ore]||0}/1</em></div><div class="lab">แร่ขั้น ${t}</div></div>
-        <div><div class="tts ${g&&risky?'sel':''}" data-guard title="หินกันแตก — พลาดแล้วลดบวก 1 แทนการแตก" style="${has('guard')?'':'opacity:.5'}">${etcIcon('guard',28)}<em>${BAG.guard||0}</em></div><div class="lab">กันแตก${risky?(g?' ✔':''):' (ไม่ต้อง)'}</div></div>
-        <div style="flex:1;padding-left:4px"><div class="ttnote">โอกาสสำเร็จ</div><div class="rate" style="color:${col}">${Math.round(ch*100)}%</div><div class="bar"><div style="width:${ch*100}%;background:${col}"></div></div>
-          <div class="ttnote">${!risky?'ปลอดภัย ไม่มีแตก':g?'พลาด = ลดบวก 1 (ใช้หินกันแตก 1)':'<b class="ttwarn">พลาด = ของแตกหาย!</b>'}</div></div></div>
+        ${st?`<div><div class="tts" style="cursor:default" title="${etcName('sore')}">${etcIcon('sore',28)}<em class="${has('sore',st)?'':'ttwarn'}">${BAG.sore||0}/${st}</em></div><div class="lab">แร่ดาวตก</div></div>`:''}
+        <div><div class="tts ${g&&risky?'sel':''}" data-guard title="หินกันแตก — พลาดแล้วของไม่แตก${r>=10?' (ใช้ '+gn+' ก้อน)':''}" style="${gHave?'':'opacity:.5'}">${etcIcon('guard',28)}<em>${BAG.guard||0}${risky&&gn>1?'/'+gn:''}</em></div><div class="lab">กันแตก${risky?(g?' ✔':''):' (ไม่ต้อง)'}</div></div>
+        <div style="flex:1;padding-left:4px"><div class="ttnote">โอกาสสำเร็จ${ch>base?` <span style="color:#2a9a28">(+${Math.round((ch-base)*100)}% แต้มช่าง)</span>`:''}</div><div class="rate" style="color:${col}">${Math.round(ch*100)}%</div><div class="bar"><div style="width:${ch*100}%;background:${col}"></div></div>
+          <div class="ttnote">${!risky?'ปลอดภัย ไม่มีแตก':g?(r<10?`พลาด = ลดบวก 1 (ใช้หินกันแตก ${gn})`:`พลาด = ไม่แตก บวกไม่ลด (ใช้หินกันแตก ${gn})`):(r<10?'<b class="ttwarn">พลาด = ลดบวก 1 + ของแตก ต้องซ่อม</b>':'<b class="ttwarn">พลาด = ของแตก ต้องซ่อม</b> (บวกไม่ลด)')}</div></div></div>
       <div style="display:flex;align-items:center;gap:8px;margin-top:8px"><div class="ttnote" style="flex:1">ค่าตีบวก <b style="color:${ZENY>=z?'#b8740c':'#d23a2a'}">${fmt(z)}z</b> · มี ${fmt(ZENY)}z</div>
         <button class="ttb" id="rfgo" ${ok?'':'disabled'}>⚒ ตีบวก</button></div>`}`;}
-  b.innerHTML=`<div class="rfgrid"><div class="ttp"><h4>🎒 อุปกรณ์ของฉัน</h4><div class="inv">${inv}</div><div class="ttnote" style="margin-top:6px">E = สวมอยู่ · คลิกเพื่อวางบนทั่ง</div></div><div class="ttp">${right}</div></div>
-    <div style="display:flex;justify-content:space-between;margin-top:8px"><button class="ttb blue sm" id="rfback">← หน้าช่าง (คราฟ/เจาะรู)</button><span class="ttnote" style="color:#cfe0ff;align-self:center">หินกันแตก & แร่ ซื้อได้ที่ร้านเมืองหลวง</span></div>`;
+  b.innerHTML=`<div class="rfgrid"><div class="ttp"><h4>🎒 อุปกรณ์ของฉัน</h4><div class="inv">${inv}</div><div class="ttnote" style="margin-top:6px">E = สวมอยู่ · 💔 = แตก ต้องซ่อม · คลิกเพื่อวางบนทั่ง</div></div><div class="ttp">${right}</div></div>
+    <div style="display:flex;justify-content:space-between;margin-top:8px"><button class="ttb blue sm" id="rfback">← หน้าช่าง (คราฟ/เจาะรู)</button><span class="ttnote" style="color:#cfe0ff;align-self:center">หินกันแตก & แร่ ซื้อได้ที่ร้านเมืองหลวง · แร่ดาวตก ดรอปจากมอน Lv 70+ / ตลาดกลาง</span></div>`;
   b.querySelectorAll('[data-rf]').forEach(e=>e.onclick=()=>{rfSel=e.dataset.rf;buildRefine();});
   const gd=b.querySelector('[data-guard]');if(gd)gd.onclick=()=>{rfGuard=!rfGuard;buildRefine();};
+  b.querySelectorAll('[data-rpby]').forEach(e=>e.onclick=()=>{const m=ITEMS[e.dataset.rpby],nm=ITEMS[rfSel]&&ITEMS[rfSel].n;if(m&&((m.ref||0)>0||(m.orbs||[]).length)&&!confirm(`ใช้ ${m.n}${m.ref?' +'+m.ref:''} ซ่อม? บวกและหินของชิ้นนั้นจะหายไป`))return;
+    if(repairItem(rfSel,e.dataset.rpby)){done(`ซ่อม ${nm} แล้ว`);buildRefine();}});
+  const rz=b.querySelector('#rfz');if(rz)rz.onclick=()=>{const nm=ITEMS[rfSel]&&ITEMS[rfSel].n;if(repairItem(rfSel,'z')){done(`ซ่อม ${nm} แล้ว`);buildRefine();}};
   b.querySelector('#rfback').onclick=()=>{w.classList.remove('open');smTab='craft';openSmith();};
   const go=b.querySelector('#rfgo');if(go)go.onclick=()=>refineAnim(b);}
 function refineAnim(b){if(rfBusy)return;const id=rfSel,it=ITEMS[id];if(!it)return;const r0=it.ref||0,name=it.n;
@@ -656,9 +713,11 @@ function refineAnim(b){if(rfBusy)return;const id=rfSel,it=ITEMS[id];if(!it)retur
   for(const tm of [300,660,1020])setTimeout(()=>{for(let i=0;i<9;i++){const s=document.createElement('div');s.className='spk';const a=Math.random()*Math.PI*2,d=30+Math.random()*50;s.style.left='50%';s.style.top='64px';st.appendChild(s);
       s.animate([{transform:'translate(0,0)',opacity:1},{transform:`translate(${Math.cos(a)*d}px,${Math.sin(a)*d*.7-10}px)`,opacity:0}],{duration:420+Math.random()*200,easing:'ease-out'}).onfinish=()=>s.remove();}},tm);
   setTimeout(()=>{st.classList.remove('strike');const R=st.querySelector('.res'),big=st.querySelector('.big');
-    if(res==='ok'){st.classList.add('flash');R.className='res ok on';R.textContent=`+${r0+1} สำเร็จ!`;done(`ตีบวกสำเร็จ! ${name} +${r0+1}`);addFx(new DText({x:player.x,y:player.y,z:90,text:'+'+(r0+1)+' SUCCESS',color:'#ffd36a',size:15,life:1.2}));}
-    else if(res==='fail'){R.className='res fail on';R.textContent=`ล้มเหลว… +${Math.max(0,r0-1)}`;done(`ตีบวกพลาด — หินกันแตกช่วยไว้ ${name} เหลือ +${Math.max(0,r0-1)}`);}
-    else{big.classList.add('shatter');R.className='res broke on';R.textContent='ของแตก!';destroyItem(id);rfSel=null;done(`ตีบวกพลาด… ${name} แตกหายไป`);addFx(new DText({x:player.x,y:player.y,z:90,text:'BROKEN',color:'#e2574c',size:15,life:1.2}));}
+    if(res==='ok'){st.classList.add('flash');R.className='res ok on';R.textContent=`+${r0+1} สำเร็จ!`;done(`ตีบวกสำเร็จ! ${name} +${r0+1}`);addFx(new DText({x:player.x,y:player.y,z:90,text:'+'+(r0+1)+' SUCCESS',color:'#ffd36a',size:15,life:1.2}));
+      if(r0+1>=11)chatLog('sys',`<span style="color:${refCol(r0+1)}">✦ ${name} ตีบวกสำเร็จเป็น +${r0+1}!</span>`);}
+    else if(res==='down'){R.className='res fail on';R.textContent=`ล้มเหลว… +${Math.max(0,r0-1)}`;done(`ตีบวกพลาด — หินกันแตกช่วยไว้ ${name} เหลือ +${Math.max(0,r0-1)}`);}
+    else if(res==='held'){R.className='res fail on';R.textContent=`ล้มเหลว… +${r0}`;done(`ตีบวกพลาด — หินกันแตกช่วยไว้ ${name} ยัง +${r0} (แต้มช่าง +1%)`);}
+    else{big.classList.add('shatter');R.className='res broke on';R.textContent='ของแตก!';done(`ตีบวกพลาด… ${name} แตก${r0<10?` เหลือ +${Math.max(0,r0-1)}`:''} — ต้องซ่อมก่อนใช้`);addFx(new DText({x:player.x,y:player.y,z:90,text:'BROKEN',color:'#e2574c',size:15,life:1.2}));}
     setTimeout(()=>{rfBusy=false;buildRefine();buildSmith();},1300);},1120);}
 
 /* ---------------- GEAR MARKET (the old central market, gear only since 2026-11-21) ----------------
@@ -709,7 +768,7 @@ function buildMarket(){const w=document.getElementById('mkw');if(!w||!w.classLis
         return `<div class="row"><div class="tts" style="cursor:default">${mkIcon(l,28)}</div><div class="nm"><b>${mkName(l)}</b><small>${mkSub(l)}</small></div><div class="sel">🐾 ${l.s}</div><div style="font:800 12px Mali">×${l.n}</div>
           <div class="pr">${fmt(l.p)}z<small class="${c}">${pc>0?'+':''}${pc}% ราคากลาง</small></div><button class="ttb sm" data-buy="${l.u}" ${ZENY>=l.p?'':'disabled'}>ซื้อ</button></div>`;}).join(''):'<div class="ttnote" style="padding:14px;text-align:center">ไม่พบสินค้า</div>'}</div></div></div>`;}
   else if(mkTab==='sell'){const etc=[];                                                // stackable goods are sold in the central-price market (market.js)
-    const eqs=INV.filter(id=>ITEMS[id]&&(ITEMS[id].crafted||ITEMS[id].dset!==undefined)).map(id=>({id}));const all=[...eqs,...etc];
+    const eqs=INV.filter(id=>ITEMS[id]&&!ITEMS[id].broken&&(ITEMS[id].crafted||ITEMS[id].dset!==undefined)).map(id=>({id}));   /* broken pieces must be repaired before they can be sold */const all=[...eqs,...etc];
     if(mkPick&&!all.some(o=>o.k===mkPick.k&&o.id===mkPick.id))mkPick=null;
     let frm='<div class="ttnote" style="padding:20px 6px;text-align:center">เลือกของจากกระเป๋าทางซ้าย<br>เพื่อตั้งราคาลงขาย</div>';
     if(mkPick){const isEq=!!mkPick.id,it=isEq&&ITEMS[mkPick.id],have=isEq?1:BAG[mkPick.k]||0,fair=isEq?Math.round(eqFair(it.grade||0,it.ref)*(it.dset!==undefined?.35:1)):(ETC[mkPick.k].price||1);
@@ -862,8 +921,8 @@ function buildSmith(){const w=$('#smw');if(!w||!w.classList.contains('open'))ret
       <div class="tlist">${TL.map(([k,v])=>`<div class="${it&&it.trait===k?'cur':''}">✦ <b>${v.n}</b> — ${v.d(1)}</div>`).join('')}</div>
       <div class="mats">${matCell('trait_'+smTown,1,'ผลึกนิสัย')}</div>
       <div class="act"><span class="ttnote">สุ่ม 1 แบบ · แรงขึ้นตามระดับไอเทม · ค่าใช้ <b>${fmt(COST.traitZ)}z</b></span><button class="ttb" ${it?`data-trait="${smTraitSel}"`:''} ${ok?'':'disabled'}>✦ ${it&&it.trait?'สุ่มนิสัยใหม่':'ใส่นิสัย'}</button></div></div></div>`;}
-  else if(smTab==='move'){const src=owned.filter(id=>(ITEMS[id].ref||0)>0);if(!src.includes(smFrom))smFrom=src[0]||null;const f=ITEMS[smFrom];
-    const dst=f?owned.filter(id=>id!==smFrom&&ITEMS[id].slot===f.slot&&(ITEMS[id].ref||0)<f.ref-1):[];if(!dst.includes(smTo))smTo=dst[0]||null;const to=smTo&&ITEMS[smTo];
+  else if(smTab==='move'){const src=owned.filter(id=>(ITEMS[id].ref||0)>0&&!ITEMS[id].broken);if(!src.includes(smFrom))smFrom=src[0]||null;const f=ITEMS[smFrom];
+    const dst=f?owned.filter(id=>id!==smFrom&&!ITEMS[id].broken&&ITEMS[id].slot===f.slot&&(ITEMS[id].ref||0)<f.ref-1):[];if(!dst.includes(smTo))smTo=dst[0]||null;const to=smTo&&ITEMS[smTo];
     const z=to?COST.moveZ(to.grade??((to.tier||1)-1)*3,f.ref):0;
     body=`<div class="sgrid"><div class="ttp"><h4>⬅ ย้ายจาก (ของที่ตีบวกแล้ว)</h4><div class="inv" style="max-height:140px">${invGrid(src,smFrom,'from',10)}</div>
       <h4 style="margin-top:8px">➡ ไปที่ (ช่องเดียวกัน)</h4><div class="inv" style="max-height:140px">${invGrid(dst,smTo,'mto',10)}</div></div>
@@ -886,10 +945,10 @@ function buildSmith(){const w=$('#smw');if(!w||!w.classList.contains('open'))ret
       ${S1&&S2&&S1.lv>S2.lv?`<div class="ttnote ttwarn">เลเวลที่ต้องใช้ของตัวรับจะเป็น Lv${S1.lv} ตามต้นแบบ</div>`:''}<div class="ttnote">ตัวรับ<b>เก็บ</b> สถานะพิเศษ · นิสัย · โบนัสเซ็ท · ตีบวก · หิน ไว้ทั้งหมด เปลี่ยนแค่สเตตัสหลักเป็นของต้นแบบ · ต้นแบบ<b class="ttwarn">จะหายไป</b>${eqSrc?' · <b class="ttwarn">ถอดต้นแบบก่อน</b>':''}</div>
       <div class="act"><span class="ttnote">ค่าจำลอง <b style="color:${ZENY>=z?'#b8740c':'#d23a2a'}">${fmt(z)}z</b></span>
         ${!s&&d&&d.rep?`<button class="ttb blue" data-rpclear="${rpDst}">ล้างสเตตัสจำลอง</button>`:''}<button class="ttb" ${ok&&!eqSrc?'data-rpgo="1"':''} ${ok&&!eqSrc?'':'disabled'}>◈ จำลองสเตตัส</button></div></div></div>`;}
-  else if(smTab==='socket'){if(!smPick||!ITEMS[smPick]||!owned.includes(smPick))smPick=owned[0];const it=smPick&&ITEMS[smPick],S=it&&itemSt(smPick),cap=it?holeCap(it):0,orbs=Object.keys(BAG).filter(k=>ETC[k]&&ETC[k].kind==='orb');
+  else if(smTab==='socket'){if(!smPick||!ITEMS[smPick]||!owned.includes(smPick))smPick=owned[0];const it=smPick&&ITEMS[smPick],S=it&&itemSt(smPick),cap=it?Math.max(holeCap(it),S.sockets):0,orbs=Object.keys(BAG).filter(k=>ETC[k]&&ETC[k].kind==='orb');
     body=`<div class="sgrid"><div class="ttp"><h4>🎒 อุปกรณ์ของฉัน</h4><div class="inv">${invGrid(owned,smPick,'pick')}</div></div>
       <div class="ttp"><div class="stage2" style="height:170px"><div class="lv2">${it?it.n:'เลือกอุปกรณ์'}</div><div class="bigc" style="top:26px;width:72px;height:72px">${it?itemIcon(it,48):''}</div>
-        <div class="holes">${[0,1,2,3].map(i=>!it||i>=cap?'<div class="hole none"></div>':i<S.orbs.length?`<div class="hole full" data-unsock="${i}" title="${STN[S.orbs[i].s]} +${S.orbs[i].v} — คลิกเพื่อถอดหิน">${etcIcon(`orb_${S.orbs[i].s}_${S.orbs[i].t||1}`,30)}<b class="hv">+${S.orbs[i].v}</b></div>`:i<S.sockets?'<div class="hole" title="รูว่าง — คลิกหินด้านล่าง"></div>':'<div class="hole" style="border-color:#7a6a4a;opacity:.55" title="ยังไม่ได้เจาะ"></div>').join('')}</div></div>
+        <div class="holes">${Array.from({length:Math.max(4,cap)},(_,i)=>i).map(i=>!it||i>=cap?'<div class="hole none"></div>':i<S.orbs.length?`<div class="hole full" data-unsock="${i}" title="${STN[S.orbs[i].s]} +${S.orbs[i].v} — คลิกเพื่อถอดหิน">${etcIcon(`orb_${S.orbs[i].s}_${S.orbs[i].t||1}`,30)}<b class="hv">+${S.orbs[i].v}</b></div>`:i<S.sockets?'<div class="hole" title="รูว่าง — คลิกหินด้านล่าง"></div>':'<div class="hole" style="border-color:#7a6a4a;opacity:.55" title="ยังไม่ได้เจาะ"></div>').join('')}</div></div>
       <div class="mats">${matCell('drill',1,'สว่าน (เจาะใหม่)')}${matCell('pliers',1,'คีม (ถอดแล้วหินคืน)')}<div style="flex:1"><div class="ttnote">ชิ้นนี้เจาะได้สูงสุด <b>${cap} รู</b>${it&&it.dset!==undefined?' (ของเซ็ทดรอป)':''} · สุ่ม 1 รู 45% · 2 รู 30% · 3 รู 18% · 4 รู 7%</div>
         <div class="act" style="margin-top:4px"><button class="ttb" data-drill="1" ${it&&has('drill')?'':'disabled'}>◎ เจาะรู</button></div></div></div>
       <h4 style="margin-top:6px">💎 หินออฟในกระเป๋า <span class="ttnote">— คลิกเพื่อยัดลงรูว่าง</span></h4><div class="orbs">${orbs.length?orbs.map(k=>`<div class="tts" data-sock="${k}" title="${ETC[k].th} — ${ETC[k].d}">${etcIcon(k,30)}<em>${BAG[k]}</em></div>`).join(''):'<span class="ttnote">ยังไม่มีหิน (ดรอปจากมอนทุกตัว)</span>'}</div></div></div>`;}
