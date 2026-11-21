@@ -478,15 +478,27 @@ ${TL?`#totemWin.tot #tgSky,#totemWin.tot #tgFrame{display:none}
 .sgem img.sgf{position:absolute!important;inset:0;width:100%!important;height:100%!important;display:block;border-radius:0!important;transform:none!important}
 .sgem img.sgs,.sgem img.sgh{position:absolute!important;left:13.77%;top:13.77%;width:72.46%!important;height:72.46%!important;display:block;border-radius:0!important}   /* shine rim (r 236 of 512) on the window */
 .sgem img.sgs{transform:rotate(var(--fa,0deg)) var(--fmx,scale(1))!important}.sgem img.sgh{transform:none!important}
-/* C gem = a glass orb: icon over most of the box, the shine's rim on its edge, a thin dark outline (cartoon) */
-.sgem.cg .sgi{left:18.75%;top:18.75%;width:62.5%;height:62.5%;border-radius:0;clip-path:polygon(29.29% 0,70.71% 0,100% 29.29%,100% 70.71%,70.71% 100%,29.29% 100%,0 70.71%,0 29.29%)}   /* the table (apothem 155 of 512), icon tucked under its gold edge */
+/* C gem with the owner's diamond crown (?gframe=1): icon in the table hole, his table shine, the crown on top */
+.sgem.cg .sgi{left:20.1%;top:20.1%;width:59.8%;height:59.8%;border-radius:0;clip-path:polygon(29.29% 0,70.71% 0,100% 29.29%,100% 70.71%,70.71% 100%,29.29% 100%,0 70.71%,0 29.29%)}   /* the table hole (apothem 149.6 of 512), icon tucked under its gold edge */
 .sgem.cg .sgi::after{border-radius:0;background:linear-gradient(135deg,rgba(255,255,255,.14),transparent 42%,transparent 60%,rgba(10,6,30,.42))}
-.sgem.cg img.sgt{position:absolute!important;left:19.73%;top:19.73%;width:60.55%!important;height:60.55%!important;display:block;border-radius:0!important;transform:var(--fmx,scale(1))!important}
-.sgem.cg img.sgf{transform:var(--fmx,scale(1))!important}
+.sgem.cg img.sgt{position:absolute!important;left:18.3%;top:18.3%;width:63.39%!important;height:63.39%!important;display:block;border-radius:0!important;transform:var(--fmx,scale(1))!important}
+.sgem.cg img.sgf{transform:var(--ftr,scale(1))!important}
 .sgem .rgo{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;filter:drop-shadow(0 0 2.5px rgba(var(--rg),.95))}
 .sgem .rgo polygon{fill:none;stroke:rgba(var(--rg),.9);stroke-width:1.6;stroke-linejoin:round}.sgem.rq0 .rgo polygon{stroke:rgba(var(--rg),.35)}.sgem.rq0 .rgo{filter:none}
-.tgN .in.sg.cgi{transform:none}
-.tgN .in.sg{overflow:visible;transform:scale(1.16)}   /* the frame ring sits over the hole's painted rim */
+.tgN .in.sg{overflow:visible}.gfr .tgN .in.sg{transform:scale(1.16)}.gfr .tgN .in.sg.cgi{transform:none}   /* framed: the moonstone ring sits over the hole's painted rim */
+/* frameless gems = the default (owner 2026-11-21 14:06 'take the frames off, just the gem — the faceted one and the round one'):
+   the icon fills the gem, the glass light is added on top (plus-lighter, so it reads over bright icons), a thin dark cartoon outline.
+   Skill gem = round glass orb (his shine, facets turned per gem) · C gem = octagonal cut gem (his table shine, mirrored per gem). */
+.sgem.nf{isolation:isolate}
+.sgem.nf .sgi,.sgem.nf .rgl{left:2%;top:2%;width:96%;height:96%}.sgem.nf .sgi{box-shadow:0 0 0 1.6px rgba(30,15,6,.92)}
+.sgem.nf img.sgs,.sgem.nf img.sgh{left:-2.07%;top:-2.07%;width:104.14%!important;height:104.14%!important;mix-blend-mode:plus-lighter}
+.sgem.nf .sgi::after{background:radial-gradient(circle at 34% 28%,rgba(255,255,255,.16) 0 22%,transparent 46%),radial-gradient(circle at 50% 46%,transparent 50%,rgba(10,6,30,.58) 100%)}   /* dome shading */
+.sgem.nf .rsw{-webkit-mask:radial-gradient(circle closest-side,transparent 0 84%,#000 88% 95%,transparent 98%);mask:radial-gradient(circle closest-side,transparent 0 84%,#000 88% 95%,transparent 98%)}
+.sgem.nf.cg .sgi{left:1.76%;top:1.76%;width:96.48%;height:96.48%;box-shadow:none}   /* octagon, apothem 247 of 512 */
+.sgem.nf.cg .sgi::after{background:linear-gradient(135deg,rgba(255,255,255,.2),transparent 38%,transparent 58%,rgba(10,6,30,.5)),radial-gradient(circle at 50% 50%,transparent 55%,rgba(10,6,30,.35) 100%)}   /* flat table: light from the upper left */
+.sgem.nf.cg img.sgt{left:-2.33%;top:-2.33%;width:104.66%!important;height:104.66%!important;mix-blend-mode:plus-lighter}   /* the shine's rim on the gem's edge */
+.sgem.nf .rgo polygon.ol{stroke:rgba(30,15,6,.92);stroke-width:1.1}.sgem.nf .rgo polygon.rl{stroke-width:1.2}
+.sgem.nf.cg.rq3 .rsw,.sgem.nf.cg.rq4 .rsw{transform:none;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath fill-rule='evenodd' d='M98.30 29.99 70.01 1.70 29.99 1.70 1.70 29.99 1.70 70.01 29.99 98.30 70.01 98.30 98.30 70.01Z M91.00 33.02 66.98 9.00 33.02 9.00 9.00 33.02 9.00 66.98 33.02 91.00 66.98 91.00 91.00 66.98Z'/%3E%3C/svg%3E") center/100% 100% no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath fill-rule='evenodd' d='M98.30 29.99 70.01 1.70 29.99 1.70 1.70 29.99 1.70 70.01 29.99 98.30 70.01 98.30 98.30 70.01Z M91.00 33.02 66.98 9.00 33.02 9.00 9.00 33.02 9.00 66.98 33.02 91.00 66.98 91.00 91.00 66.98Z'/%3E%3C/svg%3E") center/100% 100% no-repeat}
 /* rarity light (owner 2026-11-21): glow round the frame + a light ring inside the window in the rarity colour; มหากาพย์ / ตำนาน pulse + a light runs round the ring */
 .sgem .rgl{background:none;position:absolute;left:15.8%;top:15.8%;width:68.4%;height:68.4%;border-radius:50%;pointer-events:none;box-shadow:inset 0 0 0 1.5px rgba(var(--rg),.6),inset 0 0 10px 2px rgba(var(--rg),.5)}
 .sgem.rq0 .rgl{box-shadow:inset 0 0 7px 1px rgba(var(--rg),.22)}
@@ -502,7 +514,7 @@ ${TL?`#totemWin.tot #tgSky,#totemWin.tot #tgFrame{display:none}
 .sgem.rq3 .rsw{animation-duration:4.6s;opacity:.75}
 @property --sw{syntax:'<angle>';inherits:false;initial-value:0deg}
 .sgem.cg.rq3 .rsw,.sgem.cg.rq4 .rsw{border-radius:0;background:conic-gradient(from var(--sw),transparent 0 70%,rgba(var(--rg),.35) 78%,rgba(255,255,255,.95) 83%,rgba(var(--rg),.35) 88%,transparent 95%);
-  -webkit-mask:var(--om) center/100% 100% no-repeat;mask:var(--om) center/100% 100% no-repeat;transform:var(--fmx,scale(1));animation:rqSw 3s linear infinite}   /* the light runs over the crown only */
+  -webkit-mask:var(--om) center/100% 100% no-repeat;mask:var(--om) center/100% 100% no-repeat;transform:var(--ftr,scale(1));animation:rqSw 3s linear infinite}   /* the light runs over the crown only */
 .sgem.cg.rq3 .rsw{animation-duration:4.6s}
 @keyframes rqSw{to{--sw:360deg}}
 @keyframes rqS{to{transform:rotate(360deg)}}
@@ -542,7 +554,8 @@ ${TL?`#totemWin.tot #tgSky,#totemWin.tot #tgFrame{display:none}
 .tgCrk.wd>s{background:#7a4e2c}
 @keyframes tgCrkS{0%{transform:rotate(var(--a)) translateX(0)}100%{transform:rotate(var(--a)) translateX(var(--d)) rotate(160deg);opacity:0}}
 `;document.head.appendChild(css);
-const win=document.createElement('div');win.id='totemWin';if(HERO!=='wolf')win.classList.add('nw');
+const GFRAME=/[?&]gframe=1/.test(location.search);   /* owner 2026-11-21 14:06: no frames by default; ?gframe=1 = the framed look (moonstone ring / his diamond crown) */
+const win=document.createElement('div');win.id='totemWin';if(HERO!=='wolf')win.classList.add('nw');if(GFRAME)win.classList.add('gfr');
 win.innerHTML=`<div id="tgBox"><h2>ศาลวิญญาณโทเท็ม</h2><button id="tgX">✕</button>
 <div id="tgLeft"><h3>รายละเอียด</h3><div id="tgSel"></div><div id="tgInfo"></div><div id="tgBtns"><button id="tgOut">ถอดออก</button><button id="tgUp">อัปเลเวล</button></div></div>
 <div id="tgMid"><div id="tgScr"><div id="tgZoom"><div id="tgBoard"><img id="tgSky" src="${PG}sky.webp" alt="">${TL?`<img id="tgBaseI" src="${PG}${TOT.base.src}.webp" alt=""><div id="tgPole">${[0,1,2,3,4].map(i=>`<img class="tgT" data-t="${i}" src="${PG}${TOT.pole.src}.webp" alt="" style="clip-path:inset(${i<4?TL.ct[i]-.5:0}px 0 ${i?TL.ph-TL.ct[i-1]-.5:0}px 0)">`).join('')}</div>`:''}<canvas id="tgLines" width="${BS*2}" height="${BS*2}"></canvas><canvas id="tgRing" width="${BS*2}" height="${BS*2}"></canvas><img id="tgFrame" src="${PG}ring.webp" alt=""></div></div></div><div id="tgWs"></div></div>
@@ -686,20 +699,30 @@ const sg=(id,kind)=>{const d=kind==='mut'?MUTD[id]:SUPD[id];return `<span class=
    tools/gems/shine_split.py makes both 512² pictures (rim circle r 236 at the centre). Skill gems keep the moonstone frame on top; C gems are
    octagonal diamonds (below). The rarity light (rq0–4) works on both.
    C gem = octagonal cut diamond (owner 2026-11-21: 'make it like a diamond, the orb is too round' + asked for the prompt: GEM_PAGE_ART_PROMPTS_TH.md
-   13–14): the C skill's icon in the octagonal table (apothem 155 of 512, flat top) under a table shine, the crown (cgem_oct<n>.webp, table hole
-   see-through) on top. Until the owner's painted diamond arrives the crown is drawn by tools/gems/oct_interim.py in 4 cuts; each gem takes
-   one cut (by its key) and may be mirrored across the light's diagonal (the light stays upper left) → 8 different cuts. His picture replaces
-   cgem_oct0 (keep OCT_N in step). Rarity: glow round the silhouette + a coloured light along the table edge (.rgo) + the sweep masked to the crown. */
-const SGEM={f:PG+'sgem_frame.webp',h:PG+'cshine_hl.webp',fc:PG+'cshine_fc.webp',ts:PG+'cgem_tshine.webp'},OCT_N=4;
+   13–14 → his two pictures the same day): the C skill's icon in the octagonal table hole (apothem 149.6 of 512, flat top) under his table
+   shine (cgem_tshine.webp, light upper left), his crown on top (cgem_oct0.webp, outer apothem 252, the hole see-through). Both pictures are
+   made by tools/gems/oct_frame.py (measures both octagons, prints the numbers used in .sgem.cg and OCT_PTS). One crown for every C gem;
+   each gem turns it by 0/90/180/270° and may mirror it (octOf: from the skill key) → 8 different-looking cuts, the rainbow glints and
+   sparkles move round; the table shine only mirrors across the light's diagonal (light stays upper left). Rarity: glow round the
+   silhouette + a coloured light just inside the gold rim of the table (.rgo) + the sweep masked to the crown. */
+const SGEM={f:PG+'sgem_frame.webp',h:PG+'cshine_hl.webp',fc:PG+'cshine_fc.webp',ts:PG+'cgem_tshine.webp',oc:PG+'cgem_oct0.webp'};
 const fcv=k=>{let h=7;for(const ch of String(k||''))h=(h*31+ch.charCodeAt(0))|0;h=Math.abs(h);
   return `--fa:${((h%13)-6)*7}deg;--fmx:${(h>>5)&1?'rotate(45deg) scaleY(-1) rotate(-45deg)':'scale(1)'}`;};
-const octOf=k=>{let h=3;for(const ch of String(k||''))h=(h*37+ch.charCodeAt(0))|0;h=Math.abs(h);return {src:`${PG}cgem_oct${h%OCT_N}.webp`,mx:(h>>4)&1};};
-const OCT_PTS='80.27,37.46 62.54,19.73 37.46,19.73 19.73,37.46 19.73,62.54 37.46,80.27 62.54,80.27 80.27,62.54';
+const OCT_ED='98.24,30.02 69.98,1.76 30.02,1.76 1.76,30.02 1.76,69.98 30.02,98.24 69.98,98.24 98.24,69.98',OCT_RL='97.36,30.38 69.62,2.64 30.38,2.64 2.64,30.38 2.64,69.62 30.38,97.36 69.62,97.36 97.36,69.62';   /* frameless C gem: edge (apothem 247) + rarity line just inside */
+const MXD='rotate(45deg) scaleY(-1) rotate(-45deg)';   /* mirror across the light's diagonal (upper left stays upper left) */
+const octOf=k=>{let h=3;for(const ch of String(k||''))h=(h*37+ch.charCodeAt(0))|0;h=Math.abs(h);const r=h%4,m=(h>>3)&1,t=(h>>5)&1;
+  return {tr:`rotate(${r*90}deg)${m?' '+MXD:''}`,mx:t?MXD:'scale(1)'};};
+const OCT_PTS='78.83,38.06 61.94,21.17 38.06,21.17 21.17,38.06 21.17,61.94 38.06,78.83 61.94,78.83 78.83,61.94';   /* apothem 147.6 of 512 */
 const gemBox=(art,q,c,k)=>{q=q||0;const Q=QUAL[q]||QUAL[0];
-  if(c){const v=octOf(k),mx=v.mx?'rotate(45deg) scaleY(-1) rotate(-45deg)':'scale(1)';
-    return `<span class="sgem rq${q} cg" style="--rc:${Q.c};--rg:${Q.g};--fmx:${mx};--om:url(${v.src})"><span class="sgi">${art}</span>`
+  if(c&&!GFRAME){const v=octOf(k);
+    return `<span class="sgem rq${q} cg nf" style="--rc:${Q.c};--rg:${Q.g};--fmx:${v.mx}"><span class="sgi">${art}</span><img class="sgt" src="${SGEM.ts}" alt="" draggable="false">`
+      +`<svg class="rgo" viewBox="0 0 100 100"><polygon class="rl" points="${OCT_RL}"/><polygon class="ol" points="${OCT_ED}"/></svg><span class="rsw"></span></span>`;}
+  if(!c&&!GFRAME)return `<span class="sgem rq${q} nf" style="--rc:${Q.c};--rg:${Q.g};${fcv(k)}"><span class="sgi">${art}</span><span class="rgl"></span>`
+    +`<img class="sgs" src="${SGEM.fc}" alt="" draggable="false"><img class="sgh" src="${SGEM.h}" alt="" draggable="false"><span class="rsw"></span></span>`;
+  if(c){const v=octOf(k);
+    return `<span class="sgem rq${q} cg" style="--rc:${Q.c};--rg:${Q.g};--fmx:${v.mx};--ftr:${v.tr};--om:url(${SGEM.oc})"><span class="sgi">${art}</span>`
       +`<img class="sgt" src="${SGEM.ts}" alt="" draggable="false"><svg class="rgo" viewBox="0 0 100 100"><polygon points="${OCT_PTS}"/></svg>`
-      +`<img class="sgf" src="${v.src}" alt="" draggable="false"><span class="rsw"></span></span>`;}
+      +`<img class="sgf" src="${SGEM.oc}" alt="" draggable="false"><span class="rsw"></span></span>`;}
   return `<span class="sgem rq${q}" style="--rc:${Q.c};--rg:${Q.g};${fcv(k)}"><span class="sgi">${art}</span><span class="rgl"></span>`
   +`<img class="sgs" src="${SGEM.fc}" alt="" draggable="false"><img class="sgh" src="${SGEM.h}" alt="" draggable="false"><img class="sgf" src="${SGEM.f}" alt="" draggable="false"><span class="rsw"></span></span>`;};
 const sgemHtml=(k,q)=>{const o=q==null?sgo(k):null;return gemBox(skArt(k),q!=null?q:o?o.q:0,0,k);};
