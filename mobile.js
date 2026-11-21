@@ -277,7 +277,7 @@ function icon(k){const sk=G('SKILLS')[k];try{return (typeof artFor==='function'&
 function build(){const SK=G('SKILLS');if(!SK)return;W.innerHTML='';btns=[];W.classList.toggle('edit',editing);tabB.textContent=editing?'✓ เสร็จ':'✎ จัดสกิล';setB.innerHTML=`${'①②③④⑤'[cur]}<small>ชุดสกิล</small>`;
   const ks=slots();
   for(let i=0;i<NSLOT;i++){const k=ks[i],sk=k&&SK[k];const el=document.createElement('button');el.className='mobSk'+(sk?(sk.ult?' ult':''):' empty');
-    el.innerHTML=sk?`<span class="ic">${icon(k)}</span><span class="sw"></span><span class="t"></span><span class="lb">${sk.follow&&SK[sk.follow]?SK[sk.follow].name:''}</span>`:'<span class="t">+</span>';
+    el.innerHTML=sk?`<span class="ic">${icon(k)}</span>${window.gemMark?gemMark(k):''}<span class="sw"></span><span class="t"></span><span class="lb">${sk.follow&&SK[sk.follow]?SK[sk.follow].name:''}</span>`:'<span class="t">+</span>';
     if(editing&&edSel&&edSel.slot===i)el.classList.add('sel');const o={i,k,el,sw:el.querySelector('.sw'),t:el.querySelector('.t')};W.appendChild(el);btns.push(o);placeBtn(o);bindBtn(o);}
   layout();}
 /* ---------- RoV-style skill placement (edit mode) ---------- */
@@ -312,7 +312,7 @@ function edEnd(e){if(!ED||e.pointerId!==ED.id)return;clearTimeout(ED.t);const d=
   else edSel={slot:src.slot};
   refresh();}
 addEventListener('pointerup',edEnd,true);addEventListener('pointercancel',edEnd,true);
-function signature(){const LV=G('LV');return (editing?'e':'')+cur+'|'+(localStorage.getItem(LKEY())||'')+'|'+learned().map(k=>k+(LV[k]||0)).join(',');}
+function signature(){const LV=G('LV');return (editing?'e':'')+cur+'|'+(window.GEM_V||0)+'|'+(localStorage.getItem(LKEY())||'')+'|'+learned().map(k=>k+(LV[k]||0)).join(',');}
 tabB.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();editing=!editing;edSel=null;document.body.classList.toggle('mobEdit',editing);build();tray();sig=signature();});
 setB.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();if(A)return;setB.classList.add('pr');setTimeout(()=>setB.classList.remove('pr'),120);cur=(cur+1)%NSET;try{localStorage.setItem(CKEY(),cur);}catch(_){}edSel=null;build();tray();sig=signature();});
 

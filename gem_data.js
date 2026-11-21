@@ -64,7 +64,7 @@ const COST={
 /* power of the target skill from gem level: +3 % per level up to Lv 5 (unchanged), then +0.4 % per level → Lv 50 = +30 % */
 const gemPow=lv=>.03*(Math.min(lv,5)-1)+.004*Math.max(0,lv-5);
 /* drops (items.js dropFor): stone tier = ore tier of the monster's level band */
-const DROPS={stoneField:.002,stoneDun:.005,ess:.015,essN:[1,3],soreLv:70,soreField:.0005,soreDun:.0015,mutDun:.0003,supDun:.0006,supField:.00015,
+const DROPS={stoneField:.002,stoneDun:.005,ess:.015,essN:[1,3],soreLv:70,soreField:.0005,soreDun:.0015,mutDun:.0003,mutField:.0001,supDun:.0006,supField:.00015,
   boss:{stones:3,ess:10,sore:2,sup:1,mutChance:.3}};
 window.GEMDATA={MUT,SUP,LINES,QUAL,RANK_P,GEM_CAP,BREAK,COST,gemPow,DROPS,R,
   MUTD:Object.fromEntries(MUT.map(s=>[s[0],s])),SUPD:Object.fromEntries(SUP.map(s=>[s[0],s])),LND:Object.fromEntries(LINES.map(s=>[s[0],s]))};

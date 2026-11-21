@@ -300,7 +300,7 @@ function dropFor(e){const m=e.m||{},L=m.lv||1,t=tierOfLv(L),g=gradeOfLv(L),R=Loo
     if(ch((dun?D2.stoneDun:D2.stoneField)*tough))got.push('tstone'+t);
     if(ch(D2.ess))for(let i=0,k=D2.essN[0]+Math.floor(Math.random()*(D2.essN[1]-D2.essN[0]+1));i<k;i++)got.push('tess');
     if(L>=D2.soreLv&&ch(dun?D2.soreDun:D2.soreField))got.push('sore');
-    if(dun&&ch(D2.mutDun))got.push('gmut_'+GD.MUT[Math.floor(Math.random()*GD.MUT.length)][0]);
+    if(ch(dun?D2.mutDun:(D2.mutField||0)))got.push('gmut_'+GD.MUT[Math.floor(Math.random()*GD.MUT.length)][0]);   /* field: rare, since skill stars open at Lv 10 */
     if(ch(dun?D2.supDun:D2.supField))got.push('gsup_'+GD.SUP[Math.floor(Math.random()*GD.SUP.length)][0]);
     if(boss){const B2=D2.boss;for(let i=0;i<B2.stones;i++)got.push('tstone'+t);for(let i=0;i<B2.ess;i++)got.push('tess');for(let i=0;i<B2.sore;i++)got.push('sore');
       for(let i=0;i<B2.sup;i++)got.push('gsup_'+GD.SUP[Math.floor(Math.random()*GD.SUP.length)][0]);if(Math.random()<B2.mutChance)got.push('gmut_'+GD.MUT[Math.floor(Math.random()*GD.MUT.length)][0]);}}}
