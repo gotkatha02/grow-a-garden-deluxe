@@ -254,5 +254,7 @@ if(typeof _hurt==='function')window.hurt=hurt=function(e,m,o){const oo=o||{},f0=
 function withT(k,fn){const el=elemOf(k);if(!el)return fn();const p=TINT,ps=SES;TINT=el;if(!p)SES=++SEQ;try{return fn();}finally{TINT=p;SES=ps;}}
 function withV(k,fn){const el=elemOf(k);if(!el)return fn();const p=VC;VC=el;try{return fn();}finally{VC=p;}}
 window.GEMFX={tint:withT,spawn:withV,art:ART,mark(e,kind,d){const t=T();ensureOv();if(kind==='freeze'){e._gfF=t;e._gfFe=t+(d||1);}else if(kind==='ice')e._gfI=t+(d||2);else if(kind==='volt')e._gfV=t+(d||1);},elemOf,mapCol,force(m){FORCE=m||null;},ramp:RAMP,stats:()=>({pix:PIX,clear:CLEAR,map:Object.assign({},MAP)}),
-  tintNow:(el,fn)=>{const p=TINT,ps=SES;TINT=el;SES=++SEQ;try{return fn();}finally{TINT=p;SES=ps;}}};
+  tintNow:(el,fn)=>{const p=TINT,ps=SES;TINT=el;SES=++SEQ;try{return fn();}finally{TINT=p;SES=ps;}},
+  /* the drawing kit, shared with gem_mut_fx.js (the other nine mutation gems) */
+  k:{art,put,glow,star4,diamond,zig,bolt,PJ,T,CX,ENS,FX,body,onScr,rnd,eOut,TAU,add:_add}};
 })();

@@ -1325,7 +1325,8 @@ const _cell=G('skIconCell');if(_cell)window.skIconCell=skIconCell=function(k,l,o
 
 /* ---- one fx for everything that runs per frame: burns, chains, echoes, totem pillars, charges ---- */
 const TIM=[],PIL=[];
-function ring(x,y,c,r){try{G('addFx')(new (G('GRing'))({x,y,r0:8,r1:r,w:8,color:c,life:.4}));}catch(e){}}
+function ring(x,y,c,r){if(window.GEMFX&&GEMFX.mutOn)return;   /* gem_mut_fx.js draws guard / rage / pillar pulses itself */
+  try{G('addFx')(new (G('GRing'))({x,y,r0:8,r1:r,w:8,color:c,life:.4}));}catch(e){}}
 class GemZap{constructor(a,b,c){this.a={x:a.x,y:a.y};this.b={x:b.x,y:b.y};this.c=c;this.t=0;this.layer='top';}
   update(dt){this.t+=dt;return this.t<.25;}
   draw(){const P=G('P'),ctx=G('ctx');const [x1,y1]=P(this.a.x,this.a.y,30),[x2,y2]=P(this.b.x,this.b.y,30);ctx.save();ctx.globalAlpha=1-this.t/.25;ctx.strokeStyle=this.c;ctx.lineWidth=3;ctx.shadowColor=this.c;ctx.shadowBlur=10;
@@ -1347,7 +1348,7 @@ const CORE={layer:'sorted',sy:0,_gemCore:1,
     const cdm=(G('D')||{}).cdMul||1;
     for(const k in STK){const st=STK[k],mx=st.mx||2;if(st.ch<mx){st.rT-=dt/cdm;if(st.rT<=0){st.ch++;st.rT=st.ch<mx?(S[k].cd||1)*rv('stackR',BAL()):0;}}pl.cd[k]=st.ch>0?0:Math.max(.01,st.rT);}
     this.sy=PIL.length?PIL[0].y:-1e9;return true;},
-  draw(){if(!PIL.length)return;const P=G('P'),ctx=G('ctx'),t=now();
+  draw(){if(!PIL.length||(window.GEMFX&&GEMFX.pole))return;const P=G('P'),ctx=G('ctx'),t=now();
     for(const p of PIL){const [x,y]=P(p.x,p.y,0),h=58,a=Math.min(1,(t-p.born)*4);ctx.save();ctx.globalAlpha=a;
       ctx.fillStyle='rgba(0,0,0,.3)';ctx.beginPath();ctx.ellipse(x,y,14,5,0,0,7);ctx.fill();
       const cols=['#8a4b2a','#c94a3a','#e9b44c','#3a8a7a'];for(let i=0;i<4;i++){ctx.fillStyle=cols[i];ctx.fillRect(x-7,y-h+i*h/4,14,h/4);}
@@ -1364,7 +1365,8 @@ setInterval(()=>{if(!localStorage.getItem(SKEY))D=load();apply();if(Object.keys(
   /* the menu button gets a red dot while a free mutation gem waits or a hole can be carved right now */
   seenLv=L;const mb=document.querySelector('#mgrid [data-m="tgem"]');if(mb)mb.classList.toggle('tgDot',giftN()>0||anyRdy());},400);
 setTimeout(apply,50);
-window.totemGems={open,close,data:()=>D,apply,act:()=>ACT,targetOf,key:SKEY,ssPos:()=>({star:SSP,mut:SMP}),gift:openGift,
+window.totemGems={open,close,data:()=>D,apply,act:()=>ACT,fxs:()=>({REC,STK,GU,PIL}),   /* live state for gem_mut_fx.js (read only) */
+  targetOf,key:SKEY,ssPos:()=>({star:SSP,mut:SMP}),gift:openGift,
   refill:f=>{let n=0;for(const t in STK){if(f&&!f(t))continue;const st=STK[t],mx=st.mx||2;if(st.ch<mx)n++;st.ch=mx;st.rT=0;}return n;},   /* relics.js: Fenrir's Fang refills 'stack' charges too */
   res:()=>({n:Object.assign({},RES.n),on:[...RES.on],tot:RES.tot,kinds:RES.kinds,bal:RES.bal}),stk:()=>JSON.parse(JSON.stringify(STK)),page:p=>p==null?{c:D.pg.c,n:D.pg.n.slice()}:switchPage(p,true),canSwitch:()=>pgBlock()};
 })();

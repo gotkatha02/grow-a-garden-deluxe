@@ -1037,7 +1037,7 @@ function drawSorted(g,t,night,items,cam){if(!ready)return false;const v=viewRect
   return true;}
 let lastP=0;function foreground(g,t,night){if(!ready)return;const dt=Math.min(.05,Math.max(0,(t-lastP)/1000));lastP=t;warpFx(g,t);treePuffs(g,t,dt);if(LIFE)lifeKit().life(g,t,dt,night);atmosphere(g,t,night);}
 let LIFE=true,lastW=0;
-return {W,H,get ready(){return ready},get failed(){return failed},nav:{nearest,blocked},cfg,
+return {W,H,get ready(){return ready},get failed(){return failed},get loadP(){return NAMES.length?loaded/NAMES.length:1},nav:{nearest,blocked},cfg,
   setPlayer(x,y){ply.x=x;ply.y=y},update(){},drawBase,drawSorted,foreground,clear,route,blocked,set debug(v){debug=v},
   /* 2026-11-21 memory: called when the player leaves this map — the painted ground (up to 90 MB a map) and the scratch canvases are given back;
      the layout stays, so coming back only repaints the ground around the player */

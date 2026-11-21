@@ -527,9 +527,66 @@ body.th-c .ro-st .r span[style]{text-shadow:none}
 #skw .tt-tip .tb.cur{opacity:.8}
 #skw .tt-tip .tl{line-height:1.45}
 #skw .tc.ult{border-color:#e8a317;box-shadow:inset 0 0 0 1px #ffe08a,0 0 8px rgba(255,190,60,.8)}
+/* ---- loading screen (owner 2026-11-21 'show these pictures full screen while it loads, then straight into the game'):
+   one of the key arts in assets/loading/ (never the same one twice in a row) + a progress bar + a tip; it fades out the moment the
+   game is ready (all scripts run, the first map laid out) — no 'tap to start'. Code: the inline script right after <body>. ---- */
+#boot{position:fixed;inset:0;z-index:100000;background:#0a0f16;overflow:hidden;transition:opacity .45s ease;font-family:Mali,Sarabun,system-ui,sans-serif}
+#boot.out{opacity:0;pointer-events:none}
+#boot img{position:absolute;display:block;pointer-events:none;-webkit-user-drag:none}
+#boot .bt-bg{left:-6%;top:-6%;width:112%;height:112%;object-fit:cover;filter:blur(18px) brightness(.5) saturate(1.2);opacity:0;transition:opacity .4s}
+#boot .bt-art{left:0;top:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.05);transition:opacity .5s ease,transform 7s cubic-bezier(.2,.6,.3,1)}
+#boot.art .bt-art{opacity:1;transform:scale(1)}#boot.art .bt-bg{opacity:1}
+@media (max-aspect-ratio:5/4){#boot .bt-art{object-fit:contain}}   /* portrait phone: the whole picture, a blurred copy behind it */
+#boot .bt-shade{position:absolute;left:0;right:0;bottom:0;height:32%;background:linear-gradient(rgba(8,6,14,0),rgba(8,6,14,.82));pointer-events:none}
+#boot .bt-ui{position:absolute;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);width:min(640px,86vw);display:flex;flex-direction:column;gap:7px}
+#boot .bt-tip{text-align:center;font:700 clamp(12px,1.7vw,17px)/1.35 Mali,Sarabun,sans-serif;color:#fff6dc;text-shadow:0 2px 0 #3a1f14,0 0 10px rgba(0,0,0,.7);min-height:1.35em}
+#boot .bt-row{display:flex;align-items:center;gap:10px}
+#boot .bt-ic{position:static;width:clamp(36px,4.6vw,52px);height:clamp(36px,4.6vw,52px);border-radius:12px;box-shadow:0 0 0 2.5px #e9b44c,0 3px 0 2px #3a1f14;animation:btBob .9s ease-in-out infinite alternate}
+@keyframes btBob{from{transform:translateY(1px) rotate(2deg)}to{transform:translateY(-4px) rotate(-3deg)}}
+#boot .bt-bar{position:relative;flex:1;height:clamp(16px,2.1vw,22px);border-radius:999px;background:linear-gradient(#2a1a10,#140b06);border:3px solid #e9b44c;box-shadow:0 3px 0 #3a1f14,inset 0 2px 5px rgba(0,0,0,.7);overflow:hidden}
+#boot .bt-bar i{position:absolute;left:0;top:0;bottom:0;width:100%;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(#fff0a8,#f5b53a 50%,#e0761c);box-shadow:inset 0 2px 0 rgba(255,255,255,.6)}
+#boot .bt-bar i::after{content:'';position:absolute;inset:0;background:linear-gradient(100deg,rgba(255,255,255,0) 35%,rgba(255,255,255,.6) 48%,rgba(255,255,255,0) 60%);background-size:250% 100%;animation:btShine 1.5s linear infinite}
+@keyframes btShine{from{background-position:130% 0}to{background-position:-110% 0}}
+#boot .bt-bar b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:800 clamp(10px,1.3vw,13px)/1 Mali,sans-serif;color:#fff;text-shadow:0 0 3px #3a1f14,0 1px 0 #3a1f14}
 </style>
 </head>
 <body>
+<div id="boot" aria-hidden="true"><img class="bt-bg" id="bootBg" alt=""><img class="bt-art" id="bootArt" alt="" fetchpriority="high"><div class="bt-shade"></div>
+<div class="bt-ui"><div class="bt-tip" id="bootTip"></div><div class="bt-row"><img class="bt-ic" src="assets/brand/icon-192.png" alt=""><div class="bt-bar"><i id="bootFill"></i><b id="bootPct">0%</b></div></div></div></div>
+<script>/* loading screen — plain ES5 on purpose (it runs before everything else). Progress = scripts done, weighted by size (the sprite atlases
+   are most of the bytes), plus a slow creep while a big file downloads so the bar never looks stuck; the last part waits for the first
+   map. Ready = every script run + map laid out (+ a short moment so the first ground chunks get painted), or 12 s without any progress. */
+(function(){var el=document.getElementById('boot');if(!el)return;
+  var N=8,last=-1,k;try{last=parseInt(localStorage.getItem('af_boot_last'),10);}catch(e){}
+  k=Math.floor(Math.random()*N);if(k===last)k=(k+1+Math.floor(Math.random()*(N-1)))%N;try{localStorage.setItem('af_boot_last',String(k));}catch(e){}
+  var b='assets/loading/ld'+(k+1),art=document.getElementById('bootArt'),bg=document.getElementById('bootBg');
+  art.onload=function(){el.className+=' art';};art.sizes='100vw';art.srcset=b+'_s.webp 960w, '+b+'.webp 1672w';art.src=b+'.webp';bg.src=b+'_s.webp';
+  var TIPS=['กด G เปิดเสาโทเท็ม — ใส่เจมแต่งสกิลให้เป็นแบบของคุณ','เจมแปรสภาพแบบเดียวกัน 2 เม็ด = เรโซแนนซ์ · ไม่ซ้ำกันครบ 5 แบบ = สมดุล',
+    'จัดเสาโทเท็มไว้ได้ 3 หน้า — สลับให้เข้ากับบอสแต่ละตัว','แต้มสกิลไม่พอเก็บครบทุกท่า — เลือกสาย A หรือ B ให้ตรงสไตล์ (กด K)',
+    'ตลาดกลางอยู่ที่เมืองหลวง — ของที่คนแย่งกันซื้อ ราคาจะขึ้น','ตีบวกเกิน +5 อาจพัง — ของพังซ่อมได้ที่หน้าต่างตีบวก',
+    'ล้มบอสเก็บเศษ ครบแล้วสร้างวัตถุโบราณของบอสได้ — กด R ใช้พลัง','ใส่ของตราแดนเดียวกัน 2 ชิ้นได้สเตตัสเพิ่ม · 4 ชิ้นปลดพลังตรา'];
+  var tip=document.getElementById('bootTip');tip.textContent=TIPS[Math.floor(Math.random()*TIPS.length)];
+  var hero='wolf';try{var q=new URLSearchParams(location.search).get('char'),h=(location.hash||'').slice(1);hero=q||(/^[a-z]+$/.test(h)&&h.length>2?h:'')||localStorage.getItem('af_char')||'wolf';}catch(e){}
+  var MB={'assets.js':3.68,'assets_snowwolf.js':.41,'assets_jaguar.js':4.38,'assets_dragon.js':4.67,'assets_owl.js':3.94,'assets_cat.js':4.52,'assets_hippo.js':5.76,'assets_sheep.js':3.38,'assets_axolotl.js':5.68,'assets_rhino.js':3.15},SMALL=.033;
+  var total=MB['assets.js']+MB['assets_snowwolf.js']+(MB['assets_'+hero+'.js']||0)+SMALL*76,got=0,lastT=Date.now();
+  function done(e){var t=e.target;if(!t||t.tagName!=='SCRIPT'||!t.src)return;var f=t.src.split('?')[0].split('/').pop();got+=MB[f]||SMALL;lastT=Date.now();}
+  document.addEventListener('load',done,true);document.addEventListener('error',done,true);
+  var fill=document.getElementById('bootFill'),pct=document.getElementById('bootPct'),shown=0,prev=Date.now(),okT=0,fin=false;
+  /* the map still loading its pictures keeps the screen up; no progress at all for 12 s (a stuck download) lets the game show anyway */
+  function ready(){if(document.readyState==='loading')return false;   /* every script has run ('complete' would also wait for the pictures of hidden windows) */
+    try{if(typeof mapHost==='function'){var mh=mapHost();if(mh&&mh.failed)return true;if(mh&&!mh.ready)return Date.now()-lastT>12000;}}catch(e){}return true;}
+  function finish(){fin=true;window.__bootDone=1;el.className+=' out';setTimeout(function(){if(el.parentNode)el.parentNode.removeChild(el);},520);}
+  var lastReal=0;
+  function step(){if(fin)return;var now=Date.now(),dt=Math.min(.1,(now-prev)/1000),mp=0;prev=now;
+    try{if(typeof mapHost==='function'){var mh=mapHost();if(mh)mp=mh.ready?1:(typeof mh.loadP==='number'?mh.loadP:0);}}catch(e){}   /* the first map's pictures = the last part */
+    var real=.8*Math.min(1,got/total)+.17*mp;if(real>lastReal+.001){lastReal=real;lastT=now;}
+    var target=Math.min(.97,real+Math.min(.09,(now-lastT)/1000*.018));
+    if(ready()){if(!okT)okT=now;target=now-okT>350?1:Math.max(target,.96);}else okT=0;
+    shown+=(target-shown)*Math.min(1,dt*(target>=1?9:3));fill.style.transform='scaleX('+shown.toFixed(4)+')';pct.textContent=Math.round(shown*100)+'%';
+    if(target>=1&&shown>.995){fill.style.transform='scaleX(1)';pct.textContent='100%';finish();}}
+  function loop(){step();if(!fin)requestAnimationFrame(loop);}loop();
+  var iv=setInterval(function(){if(fin)clearInterval(iv);else step();},250);   /* a hidden tab gets no animation frames: it still finishes */
+})();</script>
 <canvas id="c"></canvas>
 
 <div id="top" class="cz">
@@ -628,7 +685,7 @@ document.write('<script src="vfx_layer.js"><\/script>');if(c==='jaguar')document
 <script src="maps/snowpine.js?v=2"></script>
 <script src="maps/viking-catalog.js"></script>
 <script src="maps/craft-halls.js?v=8"></script>
-<script src="maps/fieldmap.js?v=12"></script>
+<script src="maps/fieldmap.js?v=13"></script>
 <script src="maps/viking-maps.js"></script>
 <script src="maps/aztec-maps.js"></script>
 <script src="maps/egypt-maps.js"></script>
@@ -5946,10 +6003,11 @@ window.AF={levelUp:()=>{if(PS.lv<99){PS.lv++;applyStats();player.hp=player.maxHp
 <script src="char_create.js"></script>
 <script src="skill_shapes.js?v=1"></script>
 <script src="mobile.js?v=4"></script>
-<script src="totem_gems.js?v=32"></script>
+<script src="totem_gems.js?v=33"></script>
 <script src="seals.js?v=1"></script>
 <script src="relics.js?v=1"></script>
-<script src="gem_fx.js?v=1"></script>
+<script src="gem_fx.js?v=2"></script>
+<script src="gem_mut_fx.js?v=1"></script>
 <script src="feel_hits.js?v=1"></script>
 <script src="wolf_vfx3.js?v=70"></script>
 <script src="cat_art.js?v=1"></script>

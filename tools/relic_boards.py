@@ -1,5 +1,6 @@
 """Boss reference boards for the relic icon prompts (BOSS_RELIC_ICON_PROMPTS_TH.md): one picture per land, bosses numbered 1-6 in the prompt's order.
 usage: python3 tools/relic_boards.py [outdir=/tmp]  -> boss_ref_<land>.jpg (the owner attaches one per sheet in ChatGPT; not kept in the repo).
+       python3 tools/relic_boards.py outdir set   -> boss_set_<land>_1.jpg / _2.jpg = bosses 1-3 / 4-6 numbered 1-3 (boss-set icon sheets, BOSS_SET_ICON_PROMPTS_TH.md).
 Viking design sheets -> front view + head / weapon close-ups. Green / grey backgrounds keyed to white."""
 import numpy as np, sys
 from PIL import Image, ImageDraw, ImageFont
@@ -47,12 +48,18 @@ LANDS={
  'japan':[(n,('p',B+'japan/'+f)) for n,f in [('JONIN SHADOW (TANUKI)','jonin_shadow.png'),('JOROGUMO','jorogumo.png'),('GASHADOKURO','gashadokuro.png'),('GHOST SHOGUN','ghost_shogun.png'),('SHUTEN-DOJI','shuten_doji.png'),('YAMATA NO OROCHI','yamata_no_orochi.png')]],
  'aztec':[(n,('p',B+'aztec/'+f)) for n,f in [('CAMAZOTZ','camazotz.png'),('AHUIZOTL','ahuizotl.png'),('EAGLE WARLORD','eagle_warlord.png'),('TZITZIMITL','tzitzimitl.png'),('MICTLANTECUHTLI','mictlantecuhtli.png'),('QUETZALCOATL','quetzalcoatl.png')]]}
 CW,CH,TOP,GAP=520,520,46,10
-out=sys.argv[1] if len(sys.argv)>1 else '/tmp';os.makedirs(out,exist_ok=True)
-for land,L in LANDS.items():
-    sh=Image.new('RGB',(CW*3+GAP*2,(CH+TOP)*2+GAP),(255,255,255));d=ImageDraw.Draw(sh)
-    for i,(name,(kind,src)) in enumerate(L):
-        x0=(i%3)*(CW+GAP);y0=(i//3)*(CH+TOP+GAP)
+def board(L,idx,cols,path):
+    rows=(len(idx)+cols-1)//cols
+    sh=Image.new('RGB',(CW*cols+GAP*(cols-1),(CH+TOP)*rows+GAP*(rows-1)),(255,255,255));d=ImageDraw.Draw(sh)
+    for j,i in enumerate(idx):
+        name,(kind,src)=L[i];x0=(j%cols)*(CW+GAP);y0=(j//cols)*(CH+TOP+GAP)
         cell=sheetcell(src,CW,CH,int(kind[1:] or 0)) if kind[0]=='s' else picell(src,CW,CH)
         sh.paste(cell,(x0,y0+TOP),cell)
-        d.rectangle([x0,y0,x0+CW-1,y0+TOP-4],fill=(40,28,20));d.text((x0+12,y0+5),f'{i+1}) {name}',fill=(255,226,150),font=F)
-    sh.save(f'{out}/boss_ref_{land}.jpg',quality=88);print(land,sh.size)
+        d.rectangle([x0,y0,x0+CW-1,y0+TOP-4],fill=(40,28,20));d.text((x0+12,y0+5),f'{j+1}) {name}',fill=(255,226,150),font=F)
+    sh.save(path,quality=88);print(os.path.basename(path),sh.size)
+out=sys.argv[1] if len(sys.argv)>1 else '/tmp';os.makedirs(out,exist_ok=True)
+SETS=len(sys.argv)>2 and sys.argv[2]=='set'   # boss-set sheets (BOSS_SET_ICON_PROMPTS_TH.md): 2 boards per land, 3 bosses each, numbered 1-3 = the sheet's rows
+for land,L in LANDS.items():
+    if SETS:
+        board(L,[0,1,2],3,f'{out}/boss_set_{land}_1.jpg');board(L,[3,4,5],3,f'{out}/boss_set_{land}_2.jpg')
+    else:board(L,range(6),3,f'{out}/boss_ref_{land}.jpg')
