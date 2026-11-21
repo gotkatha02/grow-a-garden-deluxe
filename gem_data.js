@@ -66,6 +66,37 @@ const gemPow=lv=>.03*(Math.min(lv,5)-1)+.004*Math.max(0,lv-5);
 /* drops (items.js dropFor): stone tier = ore tier of the monster's level band */
 const DROPS={stoneField:.002,stoneDun:.005,ess:.015,essN:[1,3],soreLv:70,soreField:.0005,soreDun:.0015,mutDun:.0003,mutField:.0001,supDun:.0006,supField:.00015,
   boss:{stones:3,ess:10,sore:2,sup:1,mutChance:.3}};
-window.GEMDATA={MUT,SUP,LINES,QUAL,RANK_P,GEM_CAP,BREAK,COST,gemPow,DROPS,R,
+/* carving the totem's holes open (owner 2026-11-21: 'turn in goods to unlock each hole, not very easy; only the first skill hole is free
+   so players can try it'). Every hole of the totem starts sealed by a plug; tap it on the board → the goods below → ⛏ สลักเปิด.
+   ids: s<i> skill hole i on the stone base (opens with its gold mutation hole) · u<i><j> its 2 teal support holes ·
+        p<i> pole tier i (opens with its inner mutation hole) · q<i><j> the tier's 2 outer support holes (j 1 / 2).
+        The tier's 2nd mutation hole is not carved: it still opens when that tier's C gem reaches the level cap.
+   Level = the hole's own level (skill holes SS_LV, tiers 60/70/80/90/99); a small hole needs its big hole carved first.
+   Goods: 'ma' / 'mb' = common / rare monster material of the hole's level band (grade = Lv ÷ 10): the base takes any land's,
+   a pole tier and its support holes take that tier's land (bottom → top: Norse · Greek · Egypt · Japan · Aztec).
+   Totals (all 29 carvings): 1,018 essence · 4.0 M zeny · ~49 h of farming — `python3 tools/longterm_sim.py carve` prints each hole
+   (keep its table in step with this one). */
+const CARVE={land:['vik','grk','egy','jpn','azt'],
+  s:[null,                                                                          // skill hole 1: free
+     {z:8000,  it:[['ma',30],['mb',6],['tstone1',2],['tess',8]]},
+     {z:25000, it:[['ma',45],['mb',10],['tstone2',2],['tess',15]]},
+     {z:50000, it:[['ma',60],['mb',14],['tstone2',3],['tess',24]]},
+     {z:90000, it:[['ma',80],['mb',18],['tstone2',4],['tess',35]]}],
+  u:[{z:2000,  it:[['ma',15],['mb',3],['tess',3]]},                              // each teal hole of skill hole 1 … 5
+     {z:5000,  it:[['ma',20],['mb',5],['tess',5]]},
+     {z:12000, it:[['ma',30],['mb',7],['tstone2',1],['tess',8]]},
+     {z:25000, it:[['ma',40],['mb',9],['tstone2',1],['tess',12]]},
+     {z:45000, it:[['ma',50],['mb',12],['tstone2',2],['tess',16]]}],
+  p:[{z:150000,it:[['ma',100],['mb',25],['tstone3',3],['tess',50]]},              // pole tier 1 … 5 (bear · owl · wolf · eagle · thunderbird)
+     {z:250000,it:[['ma',120],['mb',30],['tstone3',4],['tess',70],['sore',1]]},
+     {z:400000,it:[['ma',140],['mb',35],['tstone3',5],['tess',90],['sore',2]]},
+     {z:600000,it:[['ma',160],['mb',40],['tstone4',3],['tess',120],['sore',3]]},
+     {z:900000,it:[['ma',180],['mb',45],['tstone4',5],['tess',150],['sore',4]]}],
+  q:[{z:50000, it:[['ma',40],['mb',10],['tfrag3',8],['tess',20]]},               // each outer support hole of tier 1 … 5
+     {z:80000, it:[['ma',50],['mb',12],['tfrag3',12],['tess',28]]},
+     {z:120000,it:[['ma',60],['mb',15],['tfrag3',16],['tess',36],['sore',1]]},
+     {z:180000,it:[['ma',70],['mb',18],['tfrag4',10],['tess',45],['sore',1]]},
+     {z:250000,it:[['ma',80],['mb',20],['tfrag4',14],['tess',55],['sore',2]]}]};
+window.GEMDATA={MUT,SUP,LINES,QUAL,RANK_P,GEM_CAP,BREAK,COST,gemPow,DROPS,R,CARVE,
   MUTD:Object.fromEntries(MUT.map(s=>[s[0],s])),SUPD:Object.fromEntries(SUP.map(s=>[s[0],s])),LND:Object.fromEntries(LINES.map(s=>[s[0],s]))};
 })();

@@ -1,5 +1,5 @@
 """Long-term systems as built 2026-11-21 (GEAR_GEM_LONGTERM_TH.md · numbers in items.js REFINE_CHANCE / gem_data.js).
-python3 tools/longterm_sim.py [refine|gems]   — pure Monte Carlo, no game code. Re-run after changing those tables."""
+python3 tools/longterm_sim.py [refine|gems|carve]   — pure Monte Carlo, no game code. Re-run after changing those tables."""
 import sys
 def refine_part():
     import random,statistics as st
@@ -86,6 +86,40 @@ def gems_part():
     for k,nm in [('board','5 chosen gems owned'),('lv20','all five Lv 20'),('lv50','all five Lv 50 (cap)'),('legend','all five legend (3 lines)'),('ranks','legend + all 15 lines rank V')]:
         v=[r.get(k,720) for r in runs];print(f'  {nm:30s} median {q(v,.5):4d} days · unlucky (1 in 10) {q(v,.9):4d}')
     
+def carve_part():
+    """Carving the totem holes (gem_data.js CARVE, owner 2026-11-21). Keep this table in step with gem_data.js.
+    Time per hole = max(materials hours, zeny hours): drops come in while farming the hole's level band
+    (KPH kills an hour, matA .20 · matB .05 · essence .015 × 2 · zeny 10 + 3·Lv a kill) and the stones / shards /
+    star ore are bought at the market price with that zeny (they also drop, which only makes it faster)."""
+    KPH=700
+    PRICE={'tstone1':2000,'tstone2':6000,'tstone3':15000,'tstone4':40000,'tfrag3':6000,'tfrag4':16000,'sore':50000}
+    S=[None,(8000,[('ma',30),('mb',6),('tstone1',2),('tess',8)]),(25000,[('ma',45),('mb',10),('tstone2',2),('tess',15)]),
+       (50000,[('ma',60),('mb',14),('tstone2',3),('tess',24)]),(90000,[('ma',80),('mb',18),('tstone2',4),('tess',35)])]
+    U=[(2000,[('ma',15),('mb',3),('tess',3)]),(5000,[('ma',20),('mb',5),('tess',5)]),(12000,[('ma',30),('mb',7),('tstone2',1),('tess',8)]),
+       (25000,[('ma',40),('mb',9),('tstone2',1),('tess',12)]),(45000,[('ma',50),('mb',12),('tstone2',2),('tess',16)])]
+    P=[(150000,[('ma',100),('mb',25),('tstone3',3),('tess',50)]),(250000,[('ma',120),('mb',30),('tstone3',4),('tess',70),('sore',1)]),
+       (400000,[('ma',140),('mb',35),('tstone3',5),('tess',90),('sore',2)]),(600000,[('ma',160),('mb',40),('tstone4',3),('tess',120),('sore',3)]),
+       (900000,[('ma',180),('mb',45),('tstone4',5),('tess',150),('sore',4)])]
+    Q=[(50000,[('ma',40),('mb',10),('tfrag3',8),('tess',20)]),(80000,[('ma',50),('mb',12),('tfrag3',12),('tess',28)]),
+       (120000,[('ma',60),('mb',15),('tfrag3',16),('tess',36),('sore',1)]),(180000,[('ma',70),('mb',18),('tfrag4',10),('tess',45),('sore',1)]),
+       (250000,[('ma',80),('mb',20),('tfrag4',14),('tess',55),('sore',2)])]
+    SSLV=[10,20,30,40,50];PLV=[60,70,80,90,99]
+    tot={'tess':0,'z':0,'h':0}
+    def row(name,lv,c,n=1):
+        if not c: print(f'  {name:34s} Lv {lv:2d}  free');return
+        z,it=c;d=dict(it);buy=sum(PRICE.get(k,0)*v for k,v in it)
+        mat_h=max(d.get('ma',0)/(.20*KPH),d.get('mb',0)/(.05*KPH),d.get('tess',0)/(.03*KPH))
+        z_h=(z+buy)/((10+3*lv)*KPH);h=max(mat_h,z_h)
+        tot['tess']+=d.get('tess',0)*n;tot['z']+=z*n;tot['h']+=h*n
+        print(f'  {name:34s} Lv {lv:2d}  essence {d.get("tess",0):3d} · {z:7,d}z + market {buy:7,d}z  → ~{h*60:4.0f} min{" (×2 holes)" if n>1 else ""}')
+    print(f'CARVING THE TOTEM HOLES (farming {KPH} kills an hour in the hole\'s level band; stones / shards / star ore bought with the zeny)')
+    for i in range(5):
+        row(f'skill hole {i+1} (+ gold hole)',SSLV[i],S[i]);row(f'  its teal support hole',SSLV[i],U[i],2)
+    for i,nm in enumerate(['bear','owl','wolf','eagle','thunderbird']):
+        row(f'pole tier {i+1} {nm} (+ inner mutation)',PLV[i],P[i]);row('  its outer support hole',PLV[i],Q[i],2)
+    print(f'  all 29 carvings: essence {tot["tess"]:,} · zeny {tot["z"]:,} (without market buys) · ~{tot["h"]:.0f} h of farming in total')
+
 a=sys.argv[1:] or ['refine','gems']
+if 'carve' in a: carve_part()
 if 'refine' in a: print('REFINE v2 (−1 + break below +10 · break only above · pity +1 %/fail cap 10 % above +10 · Star Ore 1…5 per try)');refine_part()
 if 'gems' in a: print('GEMS v2 (one hero, board of 5 chosen gems, 1.5 h a day at Lv 90+)');gems_part()
