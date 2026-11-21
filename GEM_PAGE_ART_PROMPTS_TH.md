@@ -104,6 +104,17 @@ Style: friendly hand-painted chibi cartoon matching the attached game art, thick
 ```
 วิธีเจนรอบสอง: แนบรูปกองไฟ + รูปพื้นหลังศาล (bg) เป็นแบบสไตล์ · ถ้าจำนวนหลุมผิด ใช้แปรงเลือกเฉพาะชั้นนั้นแล้วสั่งแก้
 
+## 9. แท่นหิน 7 หลุม (เจ้าของเลือก 2026-11-21: "แท่นหิน 7 หลุม") — รอรูป
+ดาวสกิล 7 ดวง (เท่าช่องวงล้อสกิลบนมือถือ) เปิดที่ Lv 10 · 15 · 20 · 25 · 30 · 40 · 50 · แนบรูปแท่นหินเดิม (base.webp) + รูปกองไฟ แล้วสั่ง:
+```
+Game UI art for a gem-socket screen of a cartoon fantasy RPG. Redraw the attached stone platform in exactly the same style, colours, shape and camera angle (a wide round carved stone platform seen from a 3/4 top-down view, a flat wide ellipse with its thick front side visible, the gold ring with the plain grey circle on the top surface, teal and cream spirals and zigzags, gold trims, a little snow on the top edge), centred, on a fully transparent background, with empty space on every side. Landscape image 1536×1024.
+
+The only change: the front side now has SEVEN large empty round gem sockets instead of five, in a gentle curve along the front, evenly spaced, all the same size, not touching each other: deep, dark, hollow round holes with a thin pale moonstone-silver rim, completely empty inside, facing the viewer. Next to each large socket, just below its right edge, there is one small empty round socket with a thin gold rim (seven small sockets in total). Keep the top surface empty — no totem pole on it.
+
+Style: friendly hand-painted chibi cartoon matching the attached game art, thick clean dark-brown outlines, cel shading with 2–3 flat tones, soft cartoon glow, bright and warm. Not realistic, not painterly, not 3D. No text, no logo, no watermark.
+```
+หลังได้รูป (สำหรับ Claude): โค้ดพร้อมแล้ว — จำนวนดาวสกิล = จำนวนหลุมใหญ่บนรูปแท่น (NSS) · บันทึกเป็น assets/gems/page/base.webp แทนอันเดิม → หา stand (กลางวงทอง) ใหม่ → `python3 tools/gems/totlay.py assets/gems/page/totem.webp assets/gems/page/base.webp <standX> <standY> 1500 1140 885 625 362` → วางแทนตาราง `const TOT=` → เช็กภาพ (ป้ายล็อก 7 อันไม่ชนกัน) → อัปเดตเอกสาร (TOTEM_GEM_SYSTEM_TH.md §1/§1b, CLAUDE.md: 5 → 7 ดาว)
+
 ## หลังได้รูปเสา (สำหรับ Claude) — ทำแล้ว 2026-11-21
 - ได้รูปแล้ว: assets/gems/page/totem.webp (1024×1536, 25 หลุม ครบ) + base.webp (1536×1024, หลุมใหญ่ 5 + เล็ก 5) · ตารางวัดด้วย `python3 tools/gems/totlay.py assets/gems/page/totem.webp assets/gems/page/base.webp 766 339 1500 1140 885 625 362` (จุดยืน = กลางวงทองบนแท่น · ตีนเสา 1500 · เส้นแบ่งชั้นที่แถบแกะสลัก) แล้ววางใน `const TOT=` ของ totem_gems.js
 - จัดวาง: เสาย่อ/ขยาย 1.25 เท่าของแท่น (ตีนเสาพอดีวงทอง) เต็มความสูงกระดาน · จอเตี้ย (มือถือแนวนอน) = เสาเต็มความกว้างคอลัมน์ เลื่อนขึ้นลง เปิดมาอยู่ล่างสุด
