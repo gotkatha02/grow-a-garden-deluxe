@@ -16,10 +16,10 @@
    Families: Basic = steel + straw + gold · A (Kaze) = sakura + wind · B (Oni) = fire + stone · C = the tree it belongs to.
    ===================================================================== */
 (()=>{
-if(typeof CHAR==='undefined'||!['cat','kitsune'].includes(CHAR)||!window.VK||!window.KTA||/[?&]vfx3=0/.test(location.search))return;   /* sections 1-3 are a kit shared as window.K3 (kitsune_vfx.js); the rest is the cat's */
+if(typeof CHAR==='undefined'||!['cat','kitsune','axolotl'].includes(CHAR)||!window.VK||!window.KTA||/[?&]vfx3=0/.test(location.search))return;   /* sections 1-3 are a kit shared as window.K3 (kitsune_vfx.js, axolotl_vfx.js); the rest is the cat's */
 const V=window.VK,{G,sys,tx}=V,A=window.KTA;
 /* owner 2026-11-20 painted masks: white fox mask (Ashura Mask) + its cracked twin, red samurai oni mask (Oni Roar) — they replace the SVG 'mask' */
-const KMASK={mask:'mask_white',maskCrack:'mask_white_crack'},KMIM={};for(const k in KMASK){const im=new Image();im.src='assets/fx/cat/'+KMASK[k]+'.webp';KMIM[k]=im;}
+const KMASK=CHAR==='cat'?{mask:'mask_white',maskCrack:'mask_white_crack'}:{},KMIM={};for(const k in KMASK){const im=new Image();im.src='assets/fx/cat/'+KMASK[k]+'.webp';KMIM[k]=im;}
 if(A&&!A._kmask){A._kmask=1;const g0=A.get,s0=A.size;A.get=k=>{const im=KMIM[k];return im&&im.complete&&im.naturalWidth?im:(k==='maskCrack'?null:g0(k));};
   A.size=k=>{const im=KMIM[k];if(im&&im.naturalWidth){const w=(s0('mask')[0]||60);return [w,w*im.naturalHeight/im.naturalWidth];}return s0(k);};}
 const TAU=Math.PI*2,cl=(v,a,b)=>v<a?a:v>b?b:v,eO=t=>1-(1-t)*(1-t)*(1-t),eI=t=>t*t,eIO=t=>t<.5?2*t*t:1-2*(1-t)*(1-t),R_=(a,b)=>a+Math.random()*(b-a),lerp=(a,b,t)=>a+(b-a)*t;

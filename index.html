@@ -1298,7 +1298,7 @@ const talAdjust=(p,tal=(typeof D!=='undefined'?D.tal:1))=>p<=0?0:Math.floor(p*(1
 function defAdjust(d,def){const N=clamp(def,1,512),light=Math.max(Math.trunc(d-.5*N),1),heavy=Math.max(Math.trunc(d*(1-N/(N+64))),1);return Math.ceil(.35*light+.65*heavy);}
 const lckRoll=lck=>Math.floor(Math.random()*Math.max(1,Math.ceil(.2*lck)));
 /* visible coefficient scale per hero / branch: every "ATK×n" / "TAL×n" in a skill text is already multiplied by this */
-const CHAR_COEF={wolf:{A:1.73,B:2.95,basic:1.0,all:1.0},jaguar:{A:.53,B:2.29,basic:.95,all:.95},owl:{A:.45,B:.682,basic:1.4,all:1.4},hippo:{A:1.62,B:1.25,basic:1.67,all:1.67},dragon:{A:1.50,B:1.57,basic:1.4,all:1.4},lion:{A:1.61,B:0.814,basic:1.4,all:1.4},rhino:6.81,croc:3.25,cat:.40,sheep:3.35,axolotl:3.02,kitsune:.45,bastet:.45,anubis:1.5};
+const CHAR_COEF={wolf:{A:1.73,B:2.95,basic:1.0,all:1.0},jaguar:{A:.53,B:2.29,basic:.95,all:.95},owl:{A:.45,B:.682,basic:1.4,all:1.4},hippo:{A:1.62,B:1.25,basic:1.67,all:1.67},dragon:{A:1.50,B:1.57,basic:1.4,all:1.4},lion:{A:1.61,B:0.814,basic:1.4,all:1.4},rhino:6.81,croc:3.25,cat:.40,sheep:3.35,axolotl:2.71,kitsune:.45,bastet:.45,anubis:1.5};
 const coefOf=br=>{const c=CHAR_COEF[CHAR];if(c==null)return 1;return typeof c==='number'?c:(c[br]??c.all??1);};
 function derive(){gearCalc();const s={};const lv=PS.lv;for(const k of STATK)s[k]=effStat(k)+growStat(k,lv);   // total = points + level growth + items/buffs
   const maxHp=Math.floor((SYS.hpBase+lv*10+s.vit*SYS.hpVit)*(1+(BON.hpPct||0)/100)*(typeof window.jgHpMul==='function'?window.jgHpMul():1));
@@ -4216,7 +4216,15 @@ class Rain{constructor(o){Object.assign(this,{t:0,life:1.6,layer:'none',R:120,ra
 class AxFlowBack{constructor(){this.t=0;this.layer='none';for(let i=0;i<4;i++)setFxTimer(i*.05,()=>addFx(new AxDropFly({sx:player.x+rnd(-40,40),sy:player.y+rnd(-20,20),sz:10,tx:player.x,ty:player.y,tz:40,r:2.5,life:.3})));}update(){return false;}draw(){}}
 
 /* ---------- overlay: Living Water orbit + HUD drops, HoT ticks, gills, cocoon timer ---------- */
-let axOverlay=null;
+let axOverlay=null,axSprayFx=null,axKeeper=null;
+/* 2026-11-21 fix: entering a map clears every effect that is not layer 'none' (enterMap) and the bench clears them all. The overlay
+   (Living Water cooldowns, HoT ticks, gill SP regen, shield expiry, the cocoon of Second Spring) and the spray were made once at load,
+   so they died on the first map: HoTs never healed, Living Water stopped after one drop, Rebound / Overflow / Last Drop worked once,
+   Second Spring's cocoon never ended and every spray drop was never drawn. axEnsure() puts them back; the keeper (layer 'none',
+   kept by enterMap) calls it every frame and every cast calls it too (after the bench's reset). */
+class AxKeeper{constructor(){this.layer='none';}update(){axEnsure();return CHAR==='axolotl';}draw(){}}
+function axEnsure(){if(CHAR!=='axolotl')return;if(!axOverlay||!fx.includes(axOverlay)){const o=new AxOverlay();o.el=document.getElementById('axlw');axOverlay=addFx(o);}
+  if(!axSprayFx||!fx.includes(axSprayFx))axSprayFx=addFx(new AxSprayFx());if(!axKeeper||!fx.includes(axKeeper))axKeeper=addFx(new AxKeeper());}
 class AxOverlay{constructor(){this.t=0;this.layer='top';this.pop=0;this.spent=0;this.gillT=0;this.el=null;}
   update(dt){this.t+=dt;this.pop=Math.max(0,this.pop-dt);this.spent=Math.max(0,this.spent-dt);for(const k of ['icd','ovT','lastT','recT','convT','rebT'])AX[k]=Math.max(0,AX[k]-dt);
     if(AX.shieldT>0){AX.shieldT-=dt;if(AX.shieldT<=0)AX.shield=0;}
@@ -4268,17 +4276,17 @@ window.jgPostHit=(e,d)=>{if(player.hp<=0&&hasBuff('axSpring')&&!AX.cocoon){delet
 let axCushionFx=null,axMembraneFx=null;
 
 /* ---------- cast helper: hands raised (buff clip) then release ---------- */
-function axCast(o){const t=o.target;if(t)faceTo(angTo(t));else if(o.phi!=null)faceTo(o.phi);const d=player.dir,pk=bPeak(d),s=seq('buff',d,0,null,o.speed||1.8),tP=seqTimeAt(s,pk);
+function axCast(o){axEnsure();const t=o.target;if(t)faceTo(angTo(t));else if(o.phi!=null)faceTo(o.phi);const d=player.dir,pk=bPeak(d),s=seq('buff',d,0,null,o.speed||1.8),tP=seqTimeAt(s,pk);
   return act(Object.assign({key:o.key,name:o.name,seq:s,windup:tP,dur:Math.min(seqTotal(s),tP+(o.tail??.2)),hitList:[],
     update:(a,dt)=>{player.glow={color:o.glow||AXC.aqua,k:a.t<tP?.5*a.t/tP:Math.max(0,.5-(a.t-tP))};o.update&&o.update(a,dt,tP);},events:[{t:0,f:a=>o.start&&o.start(a,tP)},{t:tP,f:a=>o.release(a)}].concat(o.events?o.events(tP):[])},o.extra||{}));}
 const handPos=()=>{const w=player.socket?player.socket.w:[player.x,player.y,34];return [w[0]+Math.cos(player.phi)*8,w[1]+Math.sin(player.phi)*8,w[2]];};
 
 /* ================= BASIC: LITTLE TIDE APPRENTICE ================= */
-function mkAxBasic(tgt){const lv=LV.axFlick||1;faceTo(angTo(tgt));const d=atkDir(player.dir),c=CT(d),s=seq('attack',d,Math.max(0,c-2),c+1,2.2*aspd()),tC=seqTimeAt(s,seqIndex(s,'attack',c));
+function mkAxBasic(tgt){axEnsure();const lv=LV.axFlick||1;faceTo(angTo(tgt));const d=atkDir(player.dir),c=CT(d),s=seq('attack',d,Math.max(0,c-2),c+1,2.2*aspd()),tC=seqTimeAt(s,seqIndex(s,'attack',c));
   return act({key:'basic',name:'Water Flick',seq:s,windup:tC,dur:seqTotal(s)+.25,hitList:[],events:[{t:tC,f:a=>{const h=handPos();spray(h[0],h[1],h[2],3,80,player.phi,.4,{up0:20,up1:60,size:.7,rip:false});
     addFx(new AxBolt({sx:h[0],sy:h[1],z:h[2],e:tgt,speed:640,r:4,onHit:(x,y)=>{if(!tgt.dead){ax(tgt,.9+.1*lv,{auto:true,knock:[angTo(tgt),20],spell:true});rebound(tgt,.45);}spray(x,y,28,8,140);addFx(new Ripple({x,y,R:22,life:.45}));}}));}}]});}
 function rebound(e,m){if(!LV.axRebound||AX.rebT>0)return;const o=enemies.find(q=>q!==e&&!q.dead&&dist(q,e)<130);if(!o)return;AX.rebT=.5;addFx(new AxDropFly({sx:e.x,sy:e.y,sz:28,tx:o.x,ty:o.y,tz:24,r:3.5,life:.3,arc:40,onHit:()=>{if(!o.dead){ax(o,m,{});spray(o.x,o.y,26,6,120);}}}));}
-function mkAxSlip(c){const lv=LV.axSlip,phi=Math.atan2(mouse.wy-player.y,mouse.wx-player.x);faceTo(phi);const L=110+30*lv,sx=player.x,sy=player.y,[dx,dy]=clampPt(sx+Math.cos(phi)*L,sy+Math.sin(phi)*L),s=seq('walk',player.dir,0,null,3),T=seqTotal(s)*.8;
+function mkAxSlip(c){axEnsure();const lv=LV.axSlip,phi=Math.atan2(mouse.wy-player.y,mouse.wx-player.x);faceTo(phi);const L=110+30*lv,sx=player.x,sy=player.y,[dx,dy]=clampPt(sx+Math.cos(phi)*L,sy+Math.sin(phi)*L),s=seq('walk',player.dir,0,null,3),T=seqTotal(s)*.8;
   return act({key:'axSlip',name:'Slipstream',seq:s,windup:0,dur:T,update:(a,dt)=>{player.iframes=a.t<T*.5?.05:0;if(a.t<=T){const k=eOut(Math.min(1,a.t/T));player.x=lerp(sx,dx,k);player.y=lerp(sy,dy,k);if(Math.random()<Q.p*2)spray(player.x,player.y,2,1,90,phi+Math.PI,.7,{up0:40,up1:110,size:.8,rip:false});}},
     events:[{t:0,f:()=>{addFx(new WaterTrail({ax:sx,ay:sy,bx:dx,by:dy}));spray(sx,sy,4,8,140,phi+Math.PI,.6);}},{t:T*.9,f:()=>addFx(new Ripple({x:dx,y:dy,R:30,life:.5}))}]});}
 class WaterTrail{constructor(o){Object.assign(this,{t:0,life:1.2,layer:'ground',w:12},o);}update(dt){this.t+=dt;return this.t<this.life;}
@@ -4313,7 +4321,7 @@ function mkAxCannon(c){const t=tgtOr(c,320),phi=t?angTo(t):player.phi,lv=LV.axCa
   const hit=enemies.filter(e=>!e.dead&&distToSeg(e.x,e.y,h[0],h[1],bx,by)<e.r+20);for(const e of hit){ax(e,3.2+.5*lv,{knock:[phi,220],big:true,spell:true});e.st.slow=Math.max(e.st.slow,2);}if(hit.length)a.hitConfirmed=true;
   if(LV.acSplit&&hit.length){const m=hit.sort((p,q)=>dist(p,player)-dist(q,player))[0];for(const s of [-.5,.5]){const ex=m.x+Math.cos(phi+s)*180,ey=m.y+Math.sin(phi+s)*180;addFx(new WaterJet({ax:m.x,ay:m.y,bx:ex,by:ey,z:28,w:7,life:.4,grow:.06}));for(const e of enemies.filter(e=>e!==m&&!e.dead&&distToSeg(e.x,e.y,m.x,m.y,ex,ey)<e.r+10))ax(e,1.4,{knock:[phi+s,120],br:'C'});}}
   shake(4);stop(80);}});}
-function mkAxHeart(c){const gx=c.gx,gy=c.gy,R0=170,R3=LV.acResonant?240:R0,ATKs=[2.6,3.2,3.8];let orb=null;const d0=player.dir;faceTo(Math.atan2(gy-player.y,gx-player.x));const pk=bPeak(player.dir),s=[...seq('buff',player.dir,0,pk,1.6),...hold('buff',player.dir,pk,2600)],tA=seqTotal(seq('buff',player.dir,0,pk,1.6));
+function mkAxHeart(c){axEnsure();const gx=c.gx,gy=c.gy,R0=170,R3=LV.acResonant?240:R0,ATKs=[2.6,3.2,3.8];let orb=null;const d0=player.dir;faceTo(Math.atan2(gy-player.y,gx-player.x));const pk=bPeak(player.dir),s=[...seq('buff',player.dir,0,pk,1.6),...hold('buff',player.dir,pk,2600)],tA=seqTotal(seq('buff',player.dir,0,pk,1.6));
   const ev=[{t:.02,f:()=>{orb=addFx(new HeartOrb({x:gx,y:gy,life:tA+2.1}));addFx(new DText({x:gx,y:gy,z:140,text:"OCEAN'S HEARTBEAT",color:'#bff0ff',size:16,life:1.5}));}}];
   [tA+.6,tA+1.2,tA+1.8].forEach((tt,i)=>ev.push({t:tt,f:a=>{const R=i===2?R3:R0*(i?1:.8);if(orb)orb.beat(i);addFx(new Ripple({x:gx,y:gy,R,life:.7,w:4}));addFx(new Ripple({x:gx,y:gy,R:R*.7,life:.6,w:3}));
     for(const e of enemiesInCircle(gx,gy,R)){ax(e,ATKs[i],{knock:[Math.atan2(e.y-gy,e.x-gx),100+60*i],big:i===2,spell:i===0});a.hitConfirmed=true;}shake(2+i*1.5);stop(50+i*30);
@@ -4336,14 +4344,14 @@ function mkAsPurify(c){return axCast({key:'asPurify',name:'Purifying Rinse',spee
   for(let i=0;i<8;i++)setFxTimer(.3+i*.03,()=>axSpray.push({x:player.x+rnd(-14,14),y:player.y,z:rnd(5,20),vx:0,vy:0,vz:rnd(40,80),r:rnd(2,3.5),life:.6,t:0,rip:false,col:'rgba(230,250,255,.55)'}));}});}
 function mkAsCushion(c){return axCast({key:'asCushion',name:'Liquid Cushion',speed:2,glow:AXC.aqua,release:()=>{axUse();AX.cushion=true;addBuff('axCushion',8);axCushionFx=addFx(new Membrane({key:'axCushion',R:30}));}});}
 function mkAsLift(c){const t=tgtOr(c,240);if(!t)return null;return axCast({key:'asLift',name:'Bubble Lift',target:t,speed:2,release:a=>{if(t.boss){t.st.slow=Math.max(t.st.slow,3);addFx(new Ripple({x:t.x,y:t.y,R:50}));spray(t.x,t.y,30,10,140);}else{t.axFloat=2.5;addFx(new BubbleLift({e:t}));}ax(t,.6,{spell:true});a.hitConfirmed=true;}});}
-function mkAsMending(c){const lv=LV.asMending,dur=2.4;
+function mkAsMending(c){axEnsure();const lv=LV.asMending,dur=2.4;
   if(LV.acRestore){return axCast({key:'asMending',name:'Mending Stream',speed:2.4,glow:AXC.mint,release:()=>{addFx(new Helix({dir:1,life:dur,R:20,h:60,turns:3,col:AXC.mint}));let n=0;addFx(new Ticker({life:dur,tick:T=>{if(T.t>=n*.4+.4&&n<6){n++;axHeal(axHealPow(.32+.08*lv),{small:true});if(n===6&&LV.asSoothing){axHot(axHealPow(.25),6,'soothing');addFx(new MintGlints({n:10,life:1.2}));}}}}));}});}faceTo(player.phi);const s=hold('buff',player.dir,bPeak(player.dir),dur*1000);let acc=0;
   return act({key:'asMending',name:'Mending Stream',seq:s,windup:0,dur,hitList:[],moveOK:!!LV.acRestore,update:(a,dt)=>{player.glow={color:AXC.mint,k:.4};acc+=dt;if(acc>=.4){acc-=.4;axHeal(axHealPow(.32+.08*lv),{small:true});}if(!a.hx){a.hx=1;}},
     events:[{t:0,f:()=>addFx(new Helix({dir:1,life:dur,R:20,h:60,turns:3,col:AXC.mint}))},{t:dur-.02,f:()=>{if(LV.asSoothing){axHot(axHealPow(.25),6,'soothing');addFx(new MintGlints({n:10,life:1.2}));}}}]});}
 function mkAsFloat(c){return axCast({key:'asFloat',name:'Emergency Float',speed:2,glow:AXC.aqua,release:()=>{addBuff('axFloat',5);if(player.hp<PS.lv*AX_BAL.lowHp)axHeal(axHealPow(1.5));axMembraneFx=null;addFx(new FloatBubble({}));}});}
 class FloatBubble{constructor(){this.t=0;this.layer='ground';}update(dt){this.t+=dt;return hasBuff('axFloat');}draw(){const [x,y]=P(player.x,player.y,0),R=34,a=Math.min(1,this.t/.2);ctx.save();ctx.globalAlpha=a*.9;waterBody(()=>{ctx.beginPath();ctx.ellipse(x,y-4,R,R*.45,0,0,TAU);},x,y-4,R,.7,AXC.aqua);ctx.restore();ctx.globalAlpha=1;}}
 function mkAsRenewal(c){return axCast({key:'asRenewal',name:'Spring Renewal',speed:2,glow:AXC.mint,release:()=>{axHeal(axHealPow(.9));for(const h of AX.hots)h.t=Math.min(AX_BAL.hotCap,h.t+3);addFx(new Ripple({x:player.x,y:player.y,R:110,col:'#a8ffd8',life:.8,w:3}));addFx(new Ripple({x:player.x,y:player.y,R:70,col:'#d8fff0',life:.6}));addFx(new MintGlints({}));}});}
-function mkAsMiracle(c){const d0=player.dir,pk=bPeak(d0),s=[...seq('buff',d0,0,pk,1.4),...hold('buff',d0,pk,1800)],tA=seqTotal(seq('buff',d0,0,pk,1.4));
+function mkAsMiracle(c){axEnsure();const d0=player.dir,pk=bPeak(d0),s=[...seq('buff',d0,0,pk,1.4),...hold('buff',d0,pk,1800)],tA=seqTotal(seq('buff',d0,0,pk,1.4));
   return act({key:'asMiracle',name:'Miracle of Life',seq:s,windup:tA,dur:tA+1.8,hitList:[],update:a=>{player.glow={color:AXC.mint,k:.6};},events:[
     {t:.02,f:()=>{addFx(new Helix({dir:1,life:1.2,R:42,h:110,turns:2,col:AXC.aqua}));addFx(new Helix({dir:1,life:1.2,R:30,h:90,turns:2.5,col:AXC.mint}));addFx(new DText({x:player.x,y:player.y,z:150,text:'MIRACLE OF LIFE',color:'#c8ffe8',size:16,life:1.5}));}},
     {t:tA,f:()=>{addFx(new WaterLotus({life:2.4,art:'miracle'}));}},
@@ -4352,7 +4360,7 @@ function mkAsMiracle(c){const d0=player.dir,pk=bPeak(d0),s=[...seq('buff',d0,0,p
     {t:tA+1.5,f:()=>{addFx(new Rain({x:player.x,y:player.y,R:120,life:1.4,col:'rgba(180,255,225,.7)'}));}}]});}
 
 /* ================= CLASS C: ETERNAL SPRING ================= */
-function mkAcBlink(c){const phi=Math.atan2(mouse.wy-player.y,mouse.wx-player.x),sx=player.x,sy=player.y,[dx,dy]=clampPt(sx+Math.cos(phi)*190,sy+Math.sin(phi)*190);faceTo(phi);const s=hold('buff',player.dir,0,560);
+function mkAcBlink(c){axEnsure();const phi=Math.atan2(mouse.wy-player.y,mouse.wx-player.x),sx=player.x,sy=player.y,[dx,dy]=clampPt(sx+Math.cos(phi)*190,sy+Math.sin(phi)*190);faceTo(phi);const s=hold('buff',player.dir,0,560);
   return act({key:'acBlink',name:'Aqua Blink',seq:s,windup:0,dur:.56,hitList:[],update:(a)=>{player.iframes=.05;if(a.t>.12&&a.t<.4){const k=(a.t-.12)/.28;player.x=lerp(sx,dx,eInOut(k));player.y=lerp(sy,dy,eInOut(k));}},
     events:[{t:0,f:()=>{addFx(new BodyWash({dir:1,col:'#bff0ff',life:.14}));spray(sx,sy,20,10,100);}},{t:.1,f:()=>{player.jgHide=true;addFx(new PuddleRun({ax:sx,ay:sy,bx:dx,by:dy}));}},
       {t:.42,f:()=>{player.jgHide=false;spray(dx,dy,10,14,140,null,Math.PI,{up0:120,up1:260});addFx(new Ripple({x:dx,y:dy,R:40}));addFx(new BodyWash({dir:-1,col:'#bff0ff',life:.2}));}}]});}
@@ -4477,7 +4485,7 @@ if(CHAR==='axolotl'){
   ITEMS.tideBracelets={n:'Tidecaller Bracelets',slot:'rhand',two:1,kind:'Bracelet',atk:50,matk:190,wlv:4,aspd:152,ref:4,cards:1,w:50,b:{dex:3},size:{small:1,medium:1,large:1},d:'กำไลเรียกกระแสน้ำ MATK 190 · DEX +3'};
   EQ.rhand='jadeBracelets';INV.length=0;INV.push('tideBracelets','vikinghelm','ringPrec','clipLuck');
   Object.assign(PS,{lv:99,str:1,agi:40,vit:40,int:95,dex:70,luk:20});
-  mkBasic=mkAxBasic;addFx(new AxSprayFx());axOverlay=addFx(new AxOverlay());
+  mkBasic=mkAxBasic;axEnsure();
   const st=document.createElement('style');st.textContent='#axlw{position:absolute;left:14px;top:-22px;display:flex;gap:5px;pointer-events:none}#axlw i{width:12px;height:16px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;transform:rotate(180deg);background:rgba(20,60,90,.35);border:2px solid rgba(20,70,110,.6);box-shadow:inset 0 0 0 1px rgba(255,255,255,.2)}#axlw i.on{background:radial-gradient(circle at 40% 65%,#fff 0 18%,#9ff0ff 30%,#2aa8e0 100%);border-color:#1a6aa0;box-shadow:0 0 8px rgba(120,230,255,.8)}#axlw i.lock{opacity:.25}';document.head.appendChild(st);
   window.AX=AX;
 }
@@ -5935,15 +5943,17 @@ window.AF={levelUp:()=>{if(PS.lv<99){PS.lv++;applyStats();player.hp=player.maxHp
 <script src="char_create.js"></script>
 <script src="skill_shapes.js?v=1"></script>
 <script src="mobile.js?v=4"></script>
-<script src="totem_gems.js?v=12"></script>
+<script src="totem_gems.js?v=13"></script>
 <script src="feel_hits.js?v=1"></script>
-<script src="wolf_vfx3.js?v=66"></script>
+<script src="wolf_vfx3.js?v=67"></script>
 <script src="cat_art.js?v=1"></script>
 <script src="kitsune_art.js?v=1"></script>
-<script src="cat_vfx.js?v=20"></script>
+<script src="axolotl_art.js?v=1"></script>
+<script src="cat_vfx.js?v=21"></script>
 <script src="cat_mask.js?v=5"></script>
 <script>if(CHAR==='cat')document.write('<script src="pwing_data.js?v=1"><\/script><script src="cat_wings.js?v=2"><\/script><script src="hero_sit.js?v=1"><\/script>');</script>
 <script src="kitsune_vfx.js?v=2"></script>
+<script src="axolotl_vfx.js?v=1"></script>
 <script src="croc_vfx3.js?v=1"></script>
 <script src="ui_skin.js?v=1"></script>
 <script src="ui_v2.js?v=1"></script>

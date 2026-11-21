@@ -18,7 +18,13 @@ const AF=()=>window.AFItems||null;
    so EVERY hero saved into the wolf's key and looked for the wolf's pictures (non-wolf boards showed empty / foreign gems). */
 const HERO=(()=>{try{const c=(0,eval)('CHAR');if(c)return c;}catch(e){}return window.CHAR||'wolf';})();
 const SUF=AF()&&AF().MODE==='play'?'_play':'',SKEY='af_gems_'+HERO+SUF,LEGACY='af_gems_wolf'+SUF,NS=5,SOCK_LV=[60,70,80,90,99],TIER_LV=[0,60,70,80,90],SS_LV=[10,20,30,40,50];
-const GEM_DIR='assets/gems/'+HERO+'/',BD='assets/gems/board/';
+const GEM_DIR='assets/gems/'+HERO+'/',BD='assets/gems/board/',PG='assets/gems/page/';
+/* page v2 art (owner's pictures 2026-11-21, assets/gems/page/): ring = inner circle fitted on ring.webp (1254 px, hanging feathers removed);
+   the five C stars use one land socket each in unlock order (Norse Lv 60 · Greek 70 · Egypt 80 · Japan 90 · Aztec 99), [file, hole cx, cy, r] as
+   fractions of the picture; the skill stars use the moonstone socket */
+const RING={cx:616.8,cy:580.9,r:402.6,W:1254};
+const LAND=[['land_norse',.4952,.4629,.2008],['land_greek',.4951,.4687,.2128],['land_egypt',.4951,.4568,.2088],['land_japan',.4961,.4550,.2167],['land_aztec',.4976,.4423,.1971]];
+const SKS=['sock_skill',.4958,.5145,.2507];
 const GD=window.GEMDATA;
 const MUT=GD?GD.MUT:[ // mutation gems (gem_data.js; this copy is only a fallback): [id, name, symbol, colour, gain, cost]
  ['focus','รวมศูนย์','◎','#ffd23a','ศัตรูตัวแรกที่โดน ×1.6','ตัวอื่นที่โดน ×0.4'],
@@ -105,25 +111,27 @@ const BS=680,K=BS/1254,HX=627*K,HY=627*K,HR=446.6*K,FR=467.1*K;   /* centre + in
 const SPREAD=1,PU=0,PV=0;
 const P=(u,v)=>({x:HX+(u-PU)*HR*.96*SPREAD,y:HY+(v-PV)*HR*.96*SPREAD});
 /* socket layout: 5 main stars round the sky, each with its 3 mod stars (repulsion-relaxed) */
-const MAIN=[P(0.29,-0.40),P(-0.33,-0.40),P(-0.47,0.17),P(0.19,0.52),P(0.45,0.08)];   /* owner 2026-11-19: spread over the whole sky (relaxed so sockets keep ≥ 12 px apart) */
+/* owner 2026-11-19: spread over the whole sky. Page v2 (2026-11-21): re-relaxed for the bigger land sockets so every socket picture keeps
+   ≥ 10 px from the others and from the inner skill ring, and stays inside the ring (search: /home/claude/work/layout/opt.py) */
+const MAIN=[P(0.300,-0.468),P(-0.360,-0.413),P(-0.506,0.212),P(0.185,0.562),P(0.530,0.092)];
 const MODS=[ // [mutation, support, support] per main socket
- [P(0.48,-0.68),P(0.61,-0.42),P(0.10,-0.65)],
- [P(-0.55,-0.65),P(-0.16,-0.66),P(-0.64,-0.32)],
- [P(-0.78,0.29),P(-0.69,-0.06),P(-0.41,0.48)],
- [P(0.13,0.85),P(-0.09,0.67),P(0.48,0.64)],
- [P(0.78,0.14),P(0.52,0.39),P(0.65,-0.17)]];
+ [P(0.520,-0.737),P(0.662,-0.423),P(0.068,-0.692)],
+ [P(-0.584,-0.689),P(-0.132,-0.703),P(-0.690,-0.307)],
+ [P(-0.840,0.312),P(-0.731,-0.093),P(-0.400,0.531)],
+ [P(0.120,0.905),P(-0.135,0.694),P(0.528,0.660)],
+ [P(0.872,0.157),P(0.605,0.415),P(0.682,-0.210)]];
 /* skill stars: a regular pentagon inside the C stars (radius 58, turned 46.1° = most room between the main stars),
    ordered Lv 10 top → left → lower left → lower right → right, so the path winds on to the first C star (upper right) */
 const SS_A=[262.1,190.1,118.1,46.1,334.1],SS_R=58,SS_MO=24,rad=a=>a*Math.PI/180;
 const SSP=SS_A.map(a=>({x:HX+Math.cos(rad(a))*SS_R,y:HY+Math.sin(rad(a))*SS_R}));
 const SMP=SS_A.map(a=>({x:HX+Math.cos(rad(a))*(SS_R+SS_MO),y:HY+Math.sin(rad(a))*(SS_R+SS_MO)}));   /* their mutation socket sits on the outer rim */
 {/* place each second-mutation star in the most open spot around its main star (clearance = distance − both radii) */
-  const nodes=()=>[...MAIN.map(p=>[p,40]),...SSP.map(p=>[p,32]),...SMP.map(p=>[p,19]),...MODS.flatMap(m=>m.slice(0,4).map((p,j)=>p&&[p,j===2||j===1?20:26]).filter(Boolean))];
+  const nodes=()=>[...MAIN.map(p=>[p,54]),...SSP.map(p=>[p,32]),...SMP.map(p=>[p,19]),...MODS.flatMap(m=>m.slice(0,4).map((p,j)=>p&&[p,j===2||j===1?20:26]).filter(Boolean))];
   MODS.forEach((m,i)=>{const c=MAIN[i];let best=null,bs=-1e9;
-    for(let a=0;a<6.28;a+=.1)for(const rr of [70,78,86,96]){const p={x:c.x+Math.cos(a)*rr,y:c.y+Math.sin(a)*rr};if(Math.hypot(p.x-HX,p.y-HY)>HR*.86)continue;
+    for(let a=0;a<6.28;a+=.1)for(const rr of [84,92,100,110]){const p={x:c.x+Math.cos(a)*rr,y:c.y+Math.sin(a)*rr};if(Math.hypot(p.x-HX,p.y-HY)>HR*.86)continue;
       let cl=1e9;for(const [q,r] of nodes()){if(q===c)continue;cl=Math.min(cl,Math.hypot(q.x-p.x,q.y-p.y)-r-26);}cl-=rr*.05;if(cl>bs){bs=cl;best=p;}}
     m[3]=best;});}
-const SZ={main:80,mut:52,sup:39,skill:52,smut:34},CUP={main:{cx:.494,cy:.469,r:.28},mut:{cx:.498,cy:.506,r:.281},sup:{cx:.499,cy:.478,r:.341}};
+const SZ={main:116,mut:52,sup:39,skill:66,smut:34},CUP={main:{cx:.494,cy:.469,r:.28},mut:{cx:.498,cy:.506,r:.281},sup:{cx:.499,cy:.478,r:.341}};
 const ART={skill:'sup',smut:'mut'};   /* skill star = the round socket in silver, its mutation socket = the rune rim */
 
 /* ---------- DOM ---------- */
@@ -138,7 +146,7 @@ const css=document.createElement('style');css.textContent=`
 #tgBoard>img,#tgBoard>canvas{position:absolute;pointer-events:none}
 #tgSky{left:${HX-FR*1.01}px;top:${HY-FR*1.01}px;width:${FR*2.02}px;height:${FR*2.02}px;border-radius:50%}
 #tgLines,#tgRing{left:0;top:0;width:${BS}px;height:${BS}px}
-#tgFrame{left:0;top:0;width:${BS}px;height:${BS}px;filter:drop-shadow(0 0 6px rgba(0,0,0,.6))}
+#tgFrame{left:${HX-RING.cx*FR/RING.r}px;top:${HY-RING.cy*FR/RING.r}px;width:${RING.W*FR/RING.r}px;height:${RING.W*FR/RING.r}px;filter:drop-shadow(0 5px 10px rgba(0,0,0,.6))}
 .tgN{position:absolute;cursor:pointer;transform:translate(-50%,-50%)}
 .tgN>img.sk{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;filter:drop-shadow(0 3px 3px rgba(0,0,0,.55))}
 .tgN>.in{position:absolute;border-radius:50%;overflow:hidden;pointer-events:none}
@@ -151,8 +159,6 @@ const css=document.createElement('style');css.textContent=`
 .tgN .in.ic img,.tgN .in.ic svg{transform:scale(1.42)}
 .tgN .in.ic::after{content:'';position:absolute;inset:0;border-radius:50%;pointer-events:none;
   background:radial-gradient(circle at 34% 27%,rgba(255,255,255,.6) 0 9%,rgba(255,255,255,.14) 21%,transparent 38%),radial-gradient(circle at 50% 52%,transparent 56%,rgba(0,0,0,.5) 100%);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.3)}
-#totemWin.nw .tgN.mn>img.sk{clip-path:circle(36.5% at 49.4% 47.2%)}   /* other heroes: the wolf ears / crystals of the painted main socket are cut off until a shared socket is painted */
-#totemWin.nw #tgSky{filter:blur(7px) saturate(1.15) brightness(.92)}   /* other heroes: the wolf spirit in the painted sky is blurred into aurora clouds */
 .tgN.sel>img.sk{filter:drop-shadow(0 0 7px #ffe14a) drop-shadow(0 0 3px #fff17a)}
 .tgN .lvd{position:absolute;left:50%;bottom:-7px;transform:translateX(-50%);font:900 10px sans-serif;color:#ffe9a8;text-shadow:0 1px 2px #000;letter-spacing:-1px;white-space:nowrap;pointer-events:none}
 .tgSg{position:absolute;inset:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font:700 12px sans-serif;color:#fff;text-shadow:0 1px 1px #000;
@@ -208,9 +214,11 @@ const css=document.createElement('style');css.textContent=`
 #tgWs .gc img{width:40px;height:40px;flex:none}#tgWs .gc button{margin-left:auto}
 @keyframes tgPop{0%{transform:scale(.3);opacity:0}60%{transform:scale(1.25);opacity:1}100%{transform:scale(1)}}#tgWs .res .pop{animation:tgPop .5s ease-out}
 /* skill stars (silver inner ring) */
-.tgN.ss>img.sk{filter:grayscale(1) sepia(.35) hue-rotate(175deg) saturate(1.7) brightness(1.08) drop-shadow(0 0 6px rgba(150,205,255,.65)) drop-shadow(0 3px 3px rgba(0,0,0,.55))}
-.tgN.ss.lock>img.sk{opacity:.42;filter:grayscale(1) sepia(.3) hue-rotate(175deg) saturate(1.2) brightness(.9)}
-.tgN.ss.sel>img.sk{filter:grayscale(1) sepia(.35) hue-rotate(175deg) saturate(1.7) brightness(1.3) drop-shadow(0 0 9px #cfeaff) drop-shadow(0 0 3px #fff)}
+.tgN.ss>img.sk{filter:drop-shadow(0 0 5px rgba(150,205,255,.5)) drop-shadow(0 3px 3px rgba(0,0,0,.55))}
+.tgN.ss.lock>img.sk{opacity:.45;filter:grayscale(.4) brightness(.85)}
+.tgN.ss.sel>img.sk{filter:brightness(1.25) drop-shadow(0 0 9px #cfeaff) drop-shadow(0 0 3px #fff)}
+.tgN.mn .lvd{bottom:auto;top:61%;font-size:11px;background:rgba(20,10,4,.65);border-radius:7px;padding:0 4px}
+.tgN.mn .lk{bottom:auto;top:70%}
 .tgN.ss .in{background:#141026}.tgN.ss.off .in{filter:grayscale(1) brightness(.55)}
 .tgN.smut.dim>img.sk{filter:brightness(.55) saturate(.6) drop-shadow(0 2px 2px rgba(0,0,0,.55))}
 .tgN.smut .in .tgSg{inset:0}
@@ -236,7 +244,7 @@ const css=document.createElement('style');css.textContent=`
 #tgBox{background:radial-gradient(ellipse 60% 42% at 50% 6%,rgba(70,210,175,.17),transparent 70%),radial-gradient(ellipse 42% 38% at 14% 18%,rgba(130,95,230,.16),transparent 70%),
   radial-gradient(ellipse 42% 38% at 86% 22%,rgba(80,140,255,.13),transparent 70%),radial-gradient(ellipse 75% 45% at 50% 112%,rgba(255,165,80,.16),transparent 70%),linear-gradient(#151b3c,#0c0f27 55%,#1b1022);
   border:3px solid #c9963a;box-shadow:0 0 0 3px #2a160c,inset 0 0 0 2px rgba(255,220,150,.16),inset 0 0 70px rgba(0,0,0,.55),0 14px 40px rgba(0,0,0,.6)}
-#tgBox.hasbg{background:url(assets/gems/page/bg.webp) center/cover no-repeat}
+#tgBox.hasbg{background:linear-gradient(rgba(8,8,22,.22),rgba(8,8,22,.42)),url(assets/gems/page/bg.webp) center 38%/cover no-repeat}
 #tgBox{inset:30px 8px 8px}   /* the title banner sits half above the box: keep it on screen */
 #tgBox h2{width:300px;background:linear-gradient(#83522a,#4a2a14);border:3px solid #e9b44c;box-shadow:0 4px 0 #1a0c06,inset 0 2px 0 rgba(255,220,150,.3);letter-spacing:.5px}
 #tgBox h2::before,#tgBox h2::after{content:'✦';position:absolute;top:0;color:#7fe8d8;text-shadow:0 0 6px #3ad8c0;font-size:14px}#tgBox h2::before{left:16px}#tgBox h2::after{right:16px}
@@ -247,6 +255,16 @@ const css=document.createElement('style');css.textContent=`
 #tgLeft::before,#tgRight::before{left:-6px;top:-6px}#tgLeft::after,#tgRight::after{right:-6px;bottom:-6px}
 #tgRight{overflow:hidden}
 #tgLeft h3,#tgRight h3{color:#f0d49a;border-bottom-color:#8a6a3a}
+/* the owner's carved plaque behind both side columns (plq_top / mid / bot = rows 0–460 / 460–1136 / 1136–1536 of his 1024×1536 picture):
+   the caps keep their shape, the middle stretches; --s = column width / 1024 (set in fit()); inner wood = x 131–890, y 262–1240.
+   Not on short phone screens: the owl and paw caps would eat a third of the height there, so phones keep the plain wood columns. */
+@media (min-height:521px){
+#tgLeft,#tgRight{--s:.28;background:url(assets/gems/page/plq_top.webp) top center/100% auto no-repeat,url(assets/gems/page/plq_bot.webp) bottom center/100% auto no-repeat,
+  url(assets/gems/page/plq_mid.webp) 0 calc(var(--s)*460px)/100% calc(100% - var(--s)*860px + 2px) no-repeat;border:0;border-radius:0;box-shadow:none;
+  padding:calc(var(--s)*262px) calc(var(--s)*138px) calc(var(--s)*290px)}
+#tgLeft::before,#tgRight::before,#tgLeft::after,#tgRight::after{display:none}
+#tgLeft{width:clamp(190px,23vw,330px)}#tgRight{width:clamp(220px,27vw,380px)}
+}
 #tgSel{background:radial-gradient(ellipse at 30% 50%,rgba(255,210,120,.12),transparent 70%),rgba(0,0,0,.3);border:1px solid rgba(184,135,58,.45)}
 #tgInfo{background:linear-gradient(#f8eed6,#ecdcb6);border:2px solid #b8873a;box-shadow:inset 0 0 14px rgba(120,80,30,.22)}
 .tgAct{display:flex;flex-direction:column;gap:5px}
@@ -265,7 +283,7 @@ const css=document.createElement('style');css.textContent=`
 const win=document.createElement('div');win.id='totemWin';if(HERO!=='wolf')win.classList.add('nw');
 win.innerHTML=`<div id="tgBox"><h2>ศาลวิญญาณโทเท็ม</h2><button id="tgX">✕</button>
 <div id="tgLeft"><h3>รายละเอียด</h3><div id="tgSel"></div><div id="tgInfo"></div><div id="tgBtns"><button id="tgOut">ถอดออก</button><button id="tgUp">อัปเลเวล</button></div></div>
-<div id="tgMid"><div id="tgBoard"><img id="tgSky" src="${BD}sky.webp" alt=""><canvas id="tgLines" width="${BS*2}" height="${BS*2}"></canvas><canvas id="tgRing" width="${BS*2}" height="${BS*2}"></canvas><img id="tgFrame" src="${BD}frame.webp" alt=""></div><div id="tgWs"></div></div>
+<div id="tgMid"><div id="tgBoard"><img id="tgSky" src="${PG}sky.webp" alt=""><canvas id="tgLines" width="${BS*2}" height="${BS*2}"></canvas><canvas id="tgRing" width="${BS*2}" height="${BS*2}"></canvas><img id="tgFrame" src="${PG}ring.webp" alt=""></div><div id="tgWs"></div></div>
 <div id="tgRight"><div class="tgAct"><button id="tgGiftB" style="display:none"></button><button id="tgWsB">⛏ แกะ · คราฟต์ · ย่อยเจม</button></div>
 <div class="tgTabs"><button data-tab="sk">⭐ สกิล<small></small></button><button data-tab="gem">💠 เจม C<small></small></button><button data-tab="mut">🔶 แปรสภาพ<small></small></button><button data-tab="sup">🔹 เสริม<small></small></button></div>
 <div class="tgPane" data-pane="sk"><div class="tgHint">สกิลที่เรียนแล้ว → วางบนดาวเงินวงใน (เปิด Lv 10 / 20 / 30 / 40 / 50)</div><div class="tgInv" id="tgSkills"></div></div>
@@ -283,7 +301,7 @@ win.addEventListener('pointerdown',e=>{if(e.target===win)close();});win.querySel
 /* ---------- constellation lines (dim when locked, lit when open, gold when both ends hold a gem) ---------- */
 const STARS=Array.from({length:70},(_,i)=>{const a=Math.sin(i*12.9898)*43758.5453,b=Math.sin(i*78.233)*12345.678,r=Math.sqrt(a-Math.floor(a))*HR*1.02,q=(b-Math.floor(b))*6.283;return {x:HX+Math.cos(q)*r,y:HY+Math.sin(q)*r,s:.6+((a*7)%1+1)%1*1.4,p:i*1.7};});
 function drawLines(t){const g=lines.getContext('2d');g.setTransform(2,0,0,2,0,0);g.clearRect(0,0,BS,BS);
-  if(HERO!=='wolf'){g.save();for(const st of STARS){const a=.35+.65*Math.max(0,Math.sin(t*1.3+st.p));g.globalAlpha=a;g.fillStyle='#fff';g.shadowColor='#bfe0ff';g.shadowBlur=4;
+  {g.save();for(const st of STARS){const a=(.2+.5*Math.max(0,Math.sin(t*1.3+st.p)))*(st.s>1.6?1:.7);g.globalAlpha=a;g.fillStyle='#fff';g.shadowColor='#bfe0ff';g.shadowBlur=4;
     g.beginPath();g.arc(st.x,st.y,st.s,0,7);g.fill();if(st.s>1.6){g.fillRect(st.x-st.s*2.2,st.y-.35,st.s*4.4,.7);g.fillRect(st.x-.35,st.y-st.s*2.2,.7,st.s*4.4);}}g.restore();}
   const seg=(a,b,state,ph)=>{g.save();g.lineCap='round';
     if(state===0){g.strokeStyle='rgba(160,170,210,.22)';g.lineWidth=1.5;g.setLineDash([3,5]);}
@@ -359,9 +377,11 @@ const supInfo=id=>{const s=SUPD[id];return `<b>${s[1]}</b> (เจมเสร�
 /* painted gem if the file exists (assets/gems/mut|support/<id>.webp), else the code-drawn badge */
 const sg=(id,kind)=>{const d=kind==='mut'?MUTD[id]:SUPD[id];return `<span class="tgSg${kind==='mut'?' mut':''}" style="--c:${d[3]}"><span>${d[2]}</span><img src="assets/gems/${kind==='mut'?'mut':'support'}/${id}.webp" alt="" draggable="false" onload="this.parentNode.classList.add('art')" onerror="this.remove()"></span>`;};
 const skArt=k=>{try{const a=G('artFor'),ic=G('iconSVG'),sk=G('SKILLS')[k];return (a&&a(k))||(ic&&sk&&ic(sk.icon))||'';}catch(e){return '';}};
-function node(x,y,kind,inner,cls,title,onclick,icls){const el=document.createElement('div');const ak=ART[kind]||kind,s=SZ[kind],c=CUP[ak];el.className='tgN '+(cls||'');el.style.cssText=`left:${x}px;top:${y}px;width:${s}px;height:${s}px`;
-  const gs=c.r*2*s*(ak==='main'?1.18:1.05);
-  el.innerHTML=`<img class="sk" src="${BD}sock_${ak}.webp" alt="">`+(inner?`<div class="in ${icls||''}" style="left:${c.cx*s-gs/2}px;top:${c.cy*s-gs/2}px;width:${gs}px;height:${gs}px">${inner}</div>`
+function node(x,y,kind,inner,cls,title,onclick,icls,art){const el=document.createElement('div');const ak=ART[kind]||kind,s=SZ[kind];let c=CUP[ak],src=`${BD}sock_${ak}.webp`,gk=ak==='main'?1.18:1.05;
+  if(art){src=PG+art[0]+'.webp';c={cx:art[1],cy:art[2],r:art[3]};gk=1.04;}   /* page v2 socket picture: the gem just covers its hole */
+  el.className='tgN '+(cls||'');el.style.cssText=`left:${x}px;top:${y}px;width:${s}px;height:${s}px`;
+  const gs=c.r*2*s*gk;
+  el.innerHTML=`<img class="sk" src="${src}" alt="">`+(inner?`<div class="in ${icls||''}" style="left:${c.cx*s-gs/2}px;top:${c.cy*s-gs/2}px;width:${gs}px;height:${gs}px">${inner}</div>`
     :/lock|dim/.test(cls||'')?'':`<div class="eg" style="--eg:${kind==='skill'?'190,225,255':'255,222,140'};left:${c.cx*s-gs*.32}px;top:${c.cy*s-gs*.32}px;width:${gs*.64}px;height:${gs*.64}px"></div>`);
   el.title=title||'';el.onclick=onclick;board.appendChild(el);return el;}
 function render(keepInfo){const S=G('SKILLS');if(!S)return;
@@ -380,23 +400,24 @@ function render(keepInfo){const S=G('SKILLS');if(!S)return;
   {const T=win.querySelectorAll('.tgTabs button small'),nOpen=SS_LV.filter((l,i)=>ssOpen(i)).length,nPl=D.ss.filter((k,i)=>k&&ssOpen(i)).length;   /* tab counters */
     if(T.length===4){T[0].textContent=`${nPl}/${nOpen} ดาว`;T[1].textContent=`มี ${cKeys().filter(k=>D.own[k]).length}`;T[2].textContent=`มี ${MUT.reduce((a,m)=>a+free('mut',m[0]),0)}`;T[3].textContent=`มี ${SUP.reduce((a,m)=>a+free('sup',m[0]),0)}`;}}
   board.querySelectorAll('.tgN').forEach(e=>e.remove());
-  /* skill stars (inner silver ring) + their mutation sockets */
-  SSP.forEach((p,i)=>{const k=D.ss[i],open=ssOpen(i),id=D.sm[i];
-    const el=node(p.x,p.y,'skill',k?skArt(k):'',`ss${open?'':' lock'}${k&&open&&!ssAct(i)?' off':''}${sel&&sel.ss===i?' sel':''}`,
-      open?(k?S[k].name+(id?' · '+MUTD[id][1]:''):'ดาวสกิลว่าง'):`ดาวสกิล · เปิดที่ Lv ${SS_LV[i]}`,()=>clickSS(i),k?'ic':'');
-    if(!open)el.insertAdjacentHTML('beforeend',`<div class="lk">🔒 Lv ${SS_LV[i]}</div>`);
-    if(open){const q=SMP[i];node(q.x,q.y,'smut',id?sg(id,'mut'):'',`smut${k?'':' dim'}${sel&&sel.sm===i?' sel':''}`,!k?'วางสกิลก่อน':id?MUTD[id][1]:'ช่องแปรสภาพของดาวสกิล',()=>clickSM(i));}});
+  /* order: C stars (land sockets) → their side stars on top of the wing tips → the inner skill stars last (on top) */
   MAIN.forEach((p,i)=>{const k=D.sock[i],open=sockOpen(i);
+    const o=k&&D.own[k];
+    const el=node(p.x,p.y,'main',k?`<img src="${gemImg(k)}" onerror="this.onerror=null;this.src='assets/icons/${HERO}/${k}.webp'" alt="">`:'','mn '+(open?'':'lock ')+(sel&&sel.sock===i?'sel':''),open?(k?S[k].name:'ช่องเจมหลัก'):`เปิดที่ Lv ${SOCK_LV[i]}`,()=>clickSock(i),(o&&o.q?'q'+o.q:'')+(k?' '+gemIc():''),LAND[i]);
+    if(!open)el.insertAdjacentHTML('beforeend',`<div class="lk">🔒 Lv ${SOCK_LV[i]}</div>`);
+    if(o&&open)el.insertAdjacentHTML('beforeend',`<span class="lvd">Lv ${o.lv}</span>`);
     MODS[i].forEach((q,j)=>{if(!q||!k||!open)return;   /* an empty / locked main star shows no side stars (the board was a field of dark holes) */
       const on=open&&k&&modOpen(k,j),id=k&&(D.mods[k]||[])[j],kind=isMutJ(j)?'mut':'sup';
       if(j===3&&!on&&!id)return;   /* the second mutation star only shows once its gem reaches the cap */
       node(q.x,q.y,kind,id?sg(id,kind):'',(on?'':'lock ')+(sel&&sel.mod&&sel.mod[0]===i&&sel.mod[1]===j?'sel':''),
         !k?'ใส่เจมหลักก่อน':!on?`เปิดที่เลเวลเจม ${j===1?3:j===2?5:CAP}`:id?(kind==='mut'?MUTD[id][1]:SUPD[id][1]):(kind==='mut'?'ช่องแปรสภาพ':'ช่องเจมเสริม'),
-        ()=>on?clickMod(i,j):info(!k?'ใส่เจมหลักในดาวดวงใหญ่ก่อน':`ช่องนี้เปิดเมื่อเจมหลักถึงเลเวล ${j===1?3:j===2?5:CAP}`));});
-    const o=k&&D.own[k];
-    const el=node(p.x,p.y,'main',k?`<img src="${gemImg(k)}" onerror="this.onerror=null;this.src='assets/icons/${HERO}/${k}.webp'" alt="">`:'','mn '+(open?'':'lock ')+(sel&&sel.sock===i?'sel':''),open?(k?S[k].name:'ช่องเจมหลัก'):`เปิดที่ Lv ${SOCK_LV[i]}`,()=>clickSock(i),(o&&o.q?'q'+o.q:'')+(k?' '+gemIc():''));
-    if(!open)el.insertAdjacentHTML('beforeend',`<div class="lk">🔒 Lv ${SOCK_LV[i]}</div>`);
-    if(o&&open)el.insertAdjacentHTML('beforeend',`<span class="lvd">Lv ${o.lv}</span>`);});
+        ()=>on?clickMod(i,j):info(!k?'ใส่เจมหลักในดาวดวงใหญ่ก่อน':`ช่องนี้เปิดเมื่อเจมหลักถึงเลเวล ${j===1?3:j===2?5:CAP}`));});});
+  /* skill stars (inner moonstone ring) + their mutation sockets */
+  SSP.forEach((p,i)=>{const k=D.ss[i],open=ssOpen(i),id=D.sm[i];
+    const el=node(p.x,p.y,'skill',k?skArt(k):'',`ss${open?'':' lock'}${k&&open&&!ssAct(i)?' off':''}${sel&&sel.ss===i?' sel':''}`,
+      open?(k?S[k].name+(id?' · '+MUTD[id][1]:''):'ดาวสกิลว่าง'):`ดาวสกิล · เปิดที่ Lv ${SS_LV[i]}`,()=>clickSS(i),k?'ic':'',SKS);
+    if(!open)el.insertAdjacentHTML('beforeend',`<div class="lk">🔒 Lv ${SS_LV[i]}</div>`);
+    if(open){const q=SMP[i];node(q.x,q.y,'smut',id?sg(id,'mut'):'',`smut${k?'':' dim'}${sel&&sel.sm===i?' sel':''}`,!k?'วางสกิลก่อน':id?MUTD[id][1]:'ช่องแปรสภาพของดาวสกิล',()=>clickSM(i));}});
   const b1=win.querySelector('#tgOut'),b2=win.querySelector('#tgUp');
   b1.disabled=!(sel&&((sel.sock!=null&&D.sock[sel.sock])||(sel.mod&&(D.mods[D.sock[sel.mod[0]]]||[])[sel.mod[1]])||(sel.ss!=null&&D.ss[sel.ss])||(sel.sm!=null&&D.sm[sel.sm])));
   const gk=sel&&(sel.gem||(sel.sock!=null&&D.sock[sel.sock])),go=gk&&D.own[gk];
@@ -516,7 +537,8 @@ function wsBuild(){if(!wsEl.classList.contains('open'))return;if(wsTab==='gift')
 win.querySelector('#tgWsB').onclick=()=>{if(wsTab==='gift')wsTab='carve';wsEl.classList.add('open');wsRes='';wsBuild();};
 win.querySelector('#tgGiftB').onclick=()=>openGift();
 
-function fit(){const m=win.querySelector('#tgMid');const s=Math.max(.3,Math.min(m.clientWidth,m.clientHeight)/BS);board.style.transform=`scale(${s})`;}
+function fit(){for(const id of ['#tgLeft','#tgRight']){const p=win.querySelector(id);if(p&&p.offsetWidth)p.style.setProperty('--s',(p.offsetWidth/1024).toFixed(4));}
+  const m=win.querySelector('#tgMid');const s=Math.max(.3,Math.min(m.clientWidth,m.clientHeight)/BS);board.style.transform=`scale(${s})`;}
 const DEF_INFO='<b>ดาวเงินวงใน = ดาวสกิล</b> (เปิด Lv 10 / 20 / 30 / 40 / 50): เลือกสกิลที่เรียนแล้วในแท็บ "สกิล" วางบนดาว แล้วใส่เจมแปรสภาพ — สกิลจะเปลี่ยนไปจริงตามเจม<br><b>ดาวทองวงนอก = เจม C</b> (Lv 60–99): ดาวใหญ่ = เจมหลัก · ดาวขอบรูน = แปรสภาพ · ดาวเล็ก = เจมเสริม · เส้นทางดาวเปิดเพิ่มทุก 10 เลเวล';
 let giftSeen=false;
 function open(){D=load();sel=null;win.classList.add('open');setTab(tab);fit();render();info(DEF_INFO);win.classList.add('open');last=performance.now();cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);
