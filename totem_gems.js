@@ -156,8 +156,9 @@ const GIVES={s:'วางสกิลที่เรียนแล้ว 1 ท�
 function needRow(e,h){const a=AF(),ui=a&&a.ui,hv=haveN(e),ok=hv>=e.n,band=`Lv ${h.g*10}–${h.g*10+9}`;let ic='',nm='',src='';
   if(e.x==='z'){ic='<b class="cvz">z</b>';nm='เงิน';src='ล่ามอน · ขายของ';}
   else{const best=e.ids.slice().sort((p,q)=>bagN(q)-bagN(p))[0];ic=ui?ui.etcIcon(best,22):'';
-    if(e.x==='ma'||e.x==='mb'){const rr=e.x==='mb'?'หายาก':'ธรรมดา';nm=h.land?`${ui?ui.etcName(e.ids[0]):e.ids[0]} <small>(วัตถุดิบ${rr} แดน${LANDN[h.land]})</small>`:`วัตถุดิบ${rr} มอน ${band} <small>(แดนไหนก็ได้)</small>`;
-      src=`ดรอปจากมอน ${band}${h.land?' ในแดน'+LANDN[h.land]:''} · ตลาดกลาง`;}
+    if(e.x==='ma'||e.x==='mb'){const rr=e.x==='mb'?'หายาก':'ธรรมดา';   /* a short first line (the phone column is narrow), the details under it */
+      nm=h.land?`${ui?ui.etcName(e.ids[0]):e.ids[0]}<small style="display:block">วัตถุดิบ${rr} มอน ${band} แดน${LANDN[h.land]}</small>`:`วัตถุดิบ${rr}<small style="display:block">มอน ${band} · แดนไหนก็ได้</small>`;
+      src='ล่ามอนช่วงเลเวลนี้ · ตลาดกลาง';}   /* the land and level band are already on the line above */
     else{nm=ui?ui.etcName(e.x):e.x;const t=+e.x.slice(-1);
       src=e.x==='tess'?'มอนทุกตัว · บอส · ย่อยเจมซ้ำ · ตลาดกลาง':e.x==='sore'?'มอน Lv 70+ · บอส · ตลาดกลาง':/^tfrag/.test(e.x)?'ย่อยเจมซ้ำ (⛏ ศาล) · ตลาดกลาง':
         `มอน ${['','Lv 1–29','Lv 30–59','Lv 60–89','Lv 90+'][t]||''} (ดันเจี้ยนบ่อยกว่า) · บอส · ตลาดกลาง`;}}
