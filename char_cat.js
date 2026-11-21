@@ -567,6 +567,9 @@ function installCat(){
     {n:'Two Tails',keys:['kcRoll','kcKasa','kcShadow','kcLunge','kcStance','kcAvalanche','knFocus']});
   Object.assign(BUFFDEF,{knKi:{n:'Ki Gather',c:'#d8e8ff',i:'KI'},knFocus:{n:'Feline Focus',c:KTC.gold,i:'FOCUS'},kaSakura:{n:'Sakura Dance',c:KTC.sakura,i:'SAKURA'},kbRoar:{n:'Oni Roar',c:KTC.oni,i:'ROAR'},
     kbAshura:{n:'Ashura Mask',c:KTC.oni2,i:'ASHURA'},kcShadow:{n:'Shadow Dance',c:KTC.sakura2,i:'SHADOW'},kcStance:{n:'Mountain Stance',c:KTC.oni2,i:'STANCE'},rhSA:BUFFDEF.rhSA||{n:'Steady',c:'#c8b898',i:'SA'}});
+  /* buff bar icons: painted buff icon if it exists (assets/icons/cat/buff/<key>.webp), else the skill icon */
+  window.BUFF_ART=window.BUFF_ART||{};{const SK={knKi:'knKi',knFocus:'knFocus',kaSakura:'kaSakura',kbRoar:'kbRoar',kbAshura:'kbAshura',kcShadow:'kcShadow',kcStance:'kcStance',rhSA:'kbIron'};
+    for(const b in SK){BUFF_ART[b]='assets/icons/cat/'+SK[b]+'.webp';const im=new Image();im.onload=()=>{BUFF_ART[b]=im.src;};im.src='assets/icons/cat/buff/'+b+'.webp';}}
   JOB.name='Wandering Kitten';JOB.hpA=1.3;JOB.hpB=5;JOB.spB=3.2;
   ITEMS.roninKatana={n:'Ronin Katana',slot:'rhand',two:1,kind:'Sword',atk:158,wlv:3,aspd:154,ref:6,cards:2,w:150,b:{},size:{small:1,medium:1,large:.85},d:'คาตานะฝักสีชาดของโรนินพเนจร'};
   ITEMS.hakusenBlade={n:'Hakusen Blade',slot:'rhand',two:1,kind:'Sword',atk:180,wlv:4,aspd:152,ref:4,cards:1,w:160,b:{},size:{small:1,medium:1,large:.85},d:'ดาบเมืองฮาคุเซ็น'};

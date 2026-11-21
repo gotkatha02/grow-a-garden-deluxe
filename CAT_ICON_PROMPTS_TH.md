@@ -150,3 +150,20 @@ Icons, left to right, top to bottom:
 11. A paw print stamp in gold.
 12. The cat back to back with his own shadow, swords crossed.
 ```
+
+## ไอคอนบัฟ (แผ่นที่ 7, 2026-11-21)
+แผ่น 4×3 → ตัดเก็บที่ assets/icons/cat/buff/<key>.webp (ถ้ายังไม่มีไฟล์ เกมใช้ไอคอนสกิลแทน)
+| ช่อง | key | บัฟ |
+|---|---|---|
+| 1 | knKi | Ki Gather |
+| 2 | knFocus | Feline Focus |
+| 3 | kaSakura | Sakura Dance |
+| 4 | kbRoar | Oni Roar |
+| 5 | kbAshura | Ashura Mask |
+| 6 | kcShadow | Shadow Dance |
+| 7 | kcStance | Mountain Stance |
+| 8 | rhSA | Steady (กันกระเด็นตอนใช้สกิล) |
+| 9 | flow | Flow (สะสม) — สำรอง |
+| 10 | flowState | Flow State — สำรอง |
+| 11 | rest | นั่งพัก — สำรอง |
+| 12 | ironGuard | Iron Guard — สำรอง |
