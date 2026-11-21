@@ -25,42 +25,50 @@ def refine_part():
     print(f"+0→+10: tries mean {st.mean(t):.1f} med {q(t,.5)} P90 {q(t,.9)} · breaks mean {st.mean(b):.1f} P90 {q(b,.9)}")
     
 def gems_part():
+    """C gems on the pole (5 chosen) + skill gems on the base (5 chosen), owner 2026-11-21: 5 rarities, special-stat slots that open with the
+    gem's level, numbers that grow with level. Keep QP / SLOTS / PITY / costs in step with gem_data.js (QUAL, COST, SGEM, SLOT_LV)."""
     import random,statistics as st
     R=random.Random(3)
-    QP=[.70,.25,.05];LINES={0:1,1:2,2:3};PITY=20
-    lvEss=lambda l:round(6+2.4*l);BRK={10:1,20:1,30:2,40:2};CAP=50
-    RANK=[6,12,24,48]
+    QP=[.50,.30,.14,.05,.01];BASE=[1,1,2,2,3];PE,PL=20,50
+    lvEss=lambda l:round(6+2.4*l);sEss=lambda l:round(3+1.2*l);BRK={10:1,20:1,30:2,40:2};CAP=50
     def q(v,k): v=sorted(v);return v[min(len(v)-1,int(len(v)*k))]
     def run():
         want=[(1,0),(2,0),(3,0),(4,0),(4,1)]          # (tier, which of its 3 gems)
-        own={};pity=0;stones={1:0,2:0,3:0,4:0};frag={1:0,2:0,3:0,4:0};ess=0;day=0;done={}
+        own={};pity=[0,0];stones={1:0,2:0,3:0,4:0};frag={1:0,2:0,3:0,4:0};ess=0;day=0;done={}
+        sk=[{'lv':1,'q':None} for _ in range(5)]          # the 5 skill gems: extracted on day 1 (first free), then re-extracted below epic
         def roll():
-            nonlocal pity
-            pity+=1;x=R.random();qq=2 if x<.05 else 1 if x<.30 else 0
-            if pity>=PITY: qq=2
-            if qq==2: pity=0
+            pity[0]+=1;pity[1]+=1;x=R.random();qq=0
+            for i in (4,3,2,1,0):
+                x-=QP[i]
+                if x<0: qq=i;break
+            if pity[1]>=PL: qq=4
+            elif pity[0]>=PE and qq<3: qq=3
+            if qq>=3: pity[0]=0
+            if qq==4: pity[1]=0
             return qq
         def gain(key,qq):
             o=own.get(key)
-            if not o: own[key]={'lv':1,'q':qq,'dup':0,'ranks':[R.choice([1,1,1,2,2,3]) for _ in range(LINES[qq])]};return
-            if qq>o['q']: o['q']=qq;o['ranks']=[R.choice([1,1,1,2,2,3]) for _ in range(LINES[qq])];o['dup']+=1
-            else: o['dup']+=1
-        while len(done)<5 and day<720:
+            if not o: own[key]={'lv':1,'q':qq,'dup':0};return
+            o['dup']+=1
+            if qq>o['q']: o['q']=qq                    # the better roll is kept (the old one is the spare)
+        while len(done)<7 and day<720:
             day+=1
-            stones[4]+=7+(1 if R.random()<.0 else 0)
+            stones[4]+=7
             for t in (1,2,3): stones[t]+=3
-            ess+=60+100
+            ess+=160
+            for g in sk:
+                if g['q'] is None: g['q']=roll()
+            # re-extract a skill gem below มหากาพย์ first (2 tier-2 stones + 20 essence a try, top band), the rest of the stones carve C gems
+            for g in sk:
+                while g['q']<3 and stones[2]>=2 and ess>=20: stones[2]-=2;ess-=20;g['q']=max(g['q'],roll())
             for t in (1,2,3,4):
                 while stones[t]>=3:
                     stones[t]-=3;g=R.randrange(3);gain((t,g),roll())
-            # dismantle spares of gems we do not want, and spares beyond what breakthroughs need
             for key,o in own.items():
                 need=0 if key not in want else sum(v for l,v in BRK.items() if l>=o['lv'])
                 while o['dup']>need: o['dup']-=1;frag[key[0]]+=5;ess+=3
-            # craft a wanted gem we still miss from shards
             for key in want:
                 if key not in own and frag[key[0]]>=40: frag[key[0]]-=40;gain(key,roll())
-            # spend essence: levels first (lowest first), then line ranks
             ch=True
             while ch:
                 ch=False
@@ -69,23 +77,42 @@ def gems_part():
                     if not o or o['lv']>=CAP: continue
                     c=lvEss(o['lv']);b=BRK.get(o['lv'],0)
                     if ess>=c and o['dup']>=b: ess-=c;o['dup']-=b;o['lv']+=1;ch=True
-                if all(own.get(k,{'lv':0})['lv']>=CAP for k in want):
-                    for key in want:
-                        o=own[key]
-                        for i,r in enumerate(o['ranks']):
-                            if r<5 and ess>=RANK[r-1]: ess-=RANK[r-1];o['ranks'][i]+=1;ch=True
+                for g in sorted(sk,key=lambda g:g['lv']):      # skill gems: half the essence, stones at the breakthroughs (plenty at Lv 90+)
+                    if g['lv']<CAP and ess>=sEss(g['lv']): ess-=sEss(g['lv']);g['lv']+=1;ch=True
             def mark(k,c):
                 if c and k not in done: done[k]=day
             mark('board',all(k in own for k in want))
             mark('lv20',all(own.get(k,{'lv':0})['lv']>=20 for k in want))
+            mark('epic',all(own.get(k,{'q':0})['q']>=3 for k in want))
+            mark('legend',all(own.get(k,{'q':0})['q']==4 for k in want))
             mark('lv50',all(own.get(k,{'lv':0})['lv']>=CAP for k in want))
-            mark('legend',all(own.get(k,{'q':0})['q']==2 for k in want))
-            mark('ranks',all(k in own and own[k]['q']==2 and all(r==5 for r in own[k]['ranks']) for k in want))
+            mark('sepic',all(g['q']>=3 for g in sk))
+            mark('slv50',all(g['lv']>=CAP for g in sk))
         return done
-    runs=[run() for _ in range(400)]
-    for k,nm in [('board','5 chosen gems owned'),('lv20','all five Lv 20'),('lv50','all five Lv 50 (cap)'),('legend','all five legend (3 lines)'),('ranks','legend + all 15 lines rank V')]:
-        v=[r.get(k,720) for r in runs];print(f'  {nm:30s} median {q(v,.5):4d} days · unlucky (1 in 10) {q(v,.9):4d}')
-    
+    runs=[run() for _ in range(300)]
+    for k,nm in [('board','5 chosen C gems owned'),('lv20','C gems all Lv 20'),('epic','C gems all มหากาพย์+'),('legend','C gems all ตำนาน'),
+                 ('lv50','C gems all Lv 50'),('sepic','skill gems all มหากาพย์+'),('slv50','skill gems all Lv 50')]:
+        v=[r.get(k,720) for r in runs];print(f'  {nm:28s} median {q(v,.5):4d} days · unlucky (1 in 10) {q(v,.9):4d}')
+    # rolls needed with the two pity counters
+    def need(target):
+        c=[]
+        for _ in range(20000):
+            p=[0,0];n=0
+            while True:
+                n+=1;p[0]+=1;p[1]+=1;x=R.random();qq=0
+                for i in (4,3,2,1,0):
+                    x-=QP[i]
+                    if x<0: qq=i;break
+                if p[1]>=PL: qq=4
+                elif p[0]>=PE and qq<3: qq=3
+                if qq>=3: p[0]=0
+                if qq==4: p[1]=0
+                if qq>=target: break
+            c.append(n)
+        return st.mean(c),q(c,.9)
+    for t,nm in [(2,'หายาก+'),(3,'มหากาพย์+'),(4,'ตำนาน')]:
+        m,p9=need(t);print(f'  rolls to a {nm:9s} mean {m:5.1f} · unlucky (1 in 10) {p9}')
+
 def carve_part():
     """Carving the totem holes (gem_data.js CARVE, owner 2026-11-21). Keep this table in step with gem_data.js.
     Time per hole = max(materials hours, zeny hours): drops come in while farming the hole's level band
@@ -130,4 +157,4 @@ def carve_part():
 a=sys.argv[1:] or ['refine','gems']
 if 'carve' in a: carve_part()
 if 'refine' in a: print('REFINE v2 (−1 + break below +10 · break only above · pity +1 %/fail cap 10 % above +10 · Star Ore 1…5 per try)');refine_part()
-if 'gems' in a: print('GEMS v2 (one hero, board of 5 chosen gems, 1.5 h a day at Lv 90+)');gems_part()
+if 'gems' in a: print('GEMS v3 (one hero, 5 chosen C gems + 5 skill gems, 1.5 h a day at Lv 90+; 5 rarities, pity 20 / 50)');gems_part()

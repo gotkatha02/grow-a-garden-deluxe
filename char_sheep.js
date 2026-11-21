@@ -75,6 +75,14 @@ const SP_BAL={
     scSirens:{T:8,n:3,dmg:.6,pull:20,R:160,cd:30,mp:22}
   }};
 const SB=SP_BAL.sk;
+/* per-branch damage scale (2026-11-21, like KI_SCALE / BA_SCALE): once the bench kept the sheep's core ticker alive and Thread of Fate
+   was fixed, each branch benched alone (owner's rule for pure heroes with two same-stat branches) gave A 2,593 · B 5,667 against
+   the 2,450 target — B stacks many flat TAL bonuses (Spellbound, sleep, Lore, Harmony, War Song, Colchis). The scale is applied once
+   here to each branch's damage numbers, so every tooltip shows the real TAL×n. Bench: HERO=sheep COL=sBranch tools/qa/bench_branch.py all,A,B 8 */
+const SP_SCALE={A:.94,B:.215};
+(()=>{const sc=(k,f,keys)=>{for(const q of keys){const v=SB[k][q];SB[k][q]=Array.isArray(v)?v.map(x=>+(x*f).toFixed(3)):+(v*f).toFixed(3);}};
+  for(const [k,q] of [['saSun',['dmg']],['saEcho',['dmg']],['saPurify',['dmg']],['saRain',['dmg']],['saOlympus',['dmg']],['scChariot',['dmg']],['scGorgon',['dmg']]])sc(k,SP_SCALE.A,q);
+  for(const [k,q] of [['sbThread',['dmg']],['sbLullaby',['dmg']],['sbShatter',['dmg','per']],['sbRam',['dmg']],['sbSiren',['dmg']],['sbCauldron',['dmg']],['sbColchis',['bolt','fin']],['sbMirror',['dmg']],['scCharm',['hit']],['scSirens',['dmg']]])sc(k,SP_SCALE.B,q);})();
 const sT=n=>'TAL×'+(+n).toFixed(2).replace(/0+$/,'').replace(/\.$/,'');
 
 /* ---------------------------------------------------------------------
@@ -154,7 +162,7 @@ function sHeal(n,plain){let m=n;if(!plain){if(sL('saRod'))m+=sLv(SB.saRod.add,'s
 function sHot(n,T){SHP.hot.push({rate:n/T,until:gameTime+T});}
 function sShieldSet(n,T){SHP.shield=Math.max(SHP.shield,Math.round(sTal()*n));SHP.shieldT=gameTime+T;}
 function sCleanse(){let c=0;for(const k in player.buffs)if(k.startsWith('db')){delete player.buffs[k];c++;}if(player.ccT>0)player.ccT=0;return c;}
-function sHit(e,mult,key,o={}){if(!e||e.dead)return 0;return hurt(e,mult,Object.assign({skill:key},o));}
+function sHit(e,mult,key,o={}){if(!e||e.dead)return 0;return hurt(e,mult,Object.assign({skill:key,_m:mult},o));}   /* _m: the hit's TAL multiplier (Thread of Fate shares a part of it) */
 const sNear=(x,y,R)=>enemies.filter(e=>!e.dead&&Math.hypot(e.x-x,e.y-y)<=R+e.r*.5);
 const sLine=(x0,y0,phi,L,w)=>enemies.filter(e=>!e.dead&&distToSeg(e.x,e.y,x0,y0,x0+Math.cos(phi)*L,y0+Math.sin(phi)*L)<e.r+w);
 function sFree(x,y){const c=clampPt(x,y);if(c[0]!==x||c[1]!==y)return false;return !(curMap&&mapBlockedW(x,y));}
@@ -233,7 +241,10 @@ class STop{constructor(){this.t=0;this.layer='top';}update(dt){this.t+=dt;return
       if(e.sleepT>gameTime){ctx.fillStyle='#d8e8ff';ctx.font='700 11px Cinzel, serif';ctx.fillText('z',ex+10,ey-12-4*Math.sin(this.t*3));}
       if(e.charmT>gameTime){ctx.fillStyle='#ff6aa8';ctx.font='700 12px sans-serif';ctx.textAlign='center';ctx.fillText('♥',ex,ey-14);ctx.textAlign='start';}
       if(SHP.fate&&SHP.fate.set.has(e)&&SHP.fate.until>gameTime){const [fx,fy]=P(e.x,e.y,30);ctx.save();ctx.strokeStyle=hexA(SPC.gold,.5);ctx.lineWidth=1.5;ctx.setLineDash([4,4]);for(const o of SHP.fate.set){if(o===e||o.dead)continue;const [ox,oy]=P(o.x,o.y,30);ctx.beginPath();ctx.moveTo(fx,fy);ctx.lineTo(ox,oy);ctx.stroke();}ctx.restore();}}}}
-/* per-frame state */
+/* per-frame state. SCore lives on layer 'none' (enterMap keeps it); the balance bench clears every fx, so every cast / basic calls
+   sEnsure() to put it back (2026-11-21: without it the bench never counted rain ticks, wool orbs, the fleece's bolts, the sirens,
+   charm hits, the ends of Olympus / Colchis / the cloud, HoTs and wool growth) */
+let S_CORE=null;function sEnsure(){if(CHAR!=='sheep')return;if(!S_CORE||!fx.includes(S_CORE))S_CORE=addFx(new SCore());}
 class SCore{constructor(){this.t=0;this.layer='none';this.tk=0;}draw(){}
   update(dt){this.tick(dt);return CHAR==='sheep';}
   tick(dt){this.t+=dt;if(!this.g||!fx.includes(this.g))this.g=addFx(new SGround());if(!this.o||!fx.includes(this.o))this.o=addFx(new STop());
@@ -392,7 +403,7 @@ function installSheep(){
     if(b.mp!=null)sk.mp=b.mp;const cd=Array.isArray(b.cd)?b.cd:null;if(cd)Object.defineProperty(sk,'cd',{get(){return sLv(cd,d.key);},enumerable:true,configurable:true});else if(b.cd)sk.cd=b.cd;
     if(d.key==='saHand')Object.defineProperty(sk,'cd',{get(){return sL('scWell')?SB.scWell.cd:SB.saHand.cd;},enumerable:true,configurable:true});
     if(b.range)sk.range=b.range;if(d.passive)sk.passive=1;if(d.ult)sk.ult=1;if(d.pre&&d.br!=='C')sk.pre=d.pre;
-    if(SP_MAKE[d.key]){const mk=SP_MAKE[d.key];sk.make=function(c){const a=mk.apply(this,arguments);if(a)sFreeCast(sk);return a;};}
+    if(SP_MAKE[d.key]){const mk=SP_MAKE[d.key];sk.make=function(c){sEnsure();const a=mk.apply(this,arguments);if(a)sFreeCast(sk);return a;};}
     if(SP_FOLLOW[d.key]){sk.follow=SP_FOLLOW[d.key][0];sk.comboWin=SP_FOLLOW[d.key][1];}
     if(d.parent){sk.parent=d.parent;sk.needHit='hit';}
     if(d.br==='C'){sk.tier=d.tier;const pre=d.pre||[];sk.creq=()=>pre.every(([q,l])=>(LV[q]||0)>=l);sk.rq=pre.map(([q,l])=>`${SP_DEFS.find(x=>x.key===q).name} Lv.${l}`).join(' + ');CSK[d.key]=sk;}
@@ -433,9 +444,11 @@ function installSheep(){
   window.jgAspd=()=>1;window.jgRecover=()=>1;window.jgPlayerAlpha=()=>SHP.cloud?.35:(player.jgHide?.1:1);window.jgBleedMul=()=>1;
   window.jgSquash=()=>{const s=1+.025*SHP.wool-.04*SHP.thin;return [s,1+.01*SHP.wool];};window.jgOnSkillHit=()=>{};
   /* Thread of Fate: damage shared to the other bound enemies */
-  window.jgAfterHurt=(e,dmg,crit,o)=>{if(!o||o.dot||o.noFate||o.fate)return;const F=SHP.fate;if(F&&F.until>gameTime&&F.set.has(e)){for(const q of F.set){if(q===e||q.dead)continue;sHit(q,dmg*SB.sbFate.share/sTal(),'sbFate',{fate:true});}}};
+  /* 2026-11-21 fix: the share used to be dmg×0.3÷TAL, which went through the coefficient / bonuses a second time (≈ ×1.3 of the damage
+     per linked enemy instead of ×0.3); now each linked enemy takes the hit's own multiplier × share */
+  window.jgAfterHurt=(e,dmg,crit,o)=>{if(!o||o.dot||o.noFate||o.fate||!(o._m>0))return;const F=SHP.fate;if(F&&F.until>gameTime&&F.set.has(e)){for(const q of F.set){if(q===e||q.dead)continue;sHit(q,o._m*SB.sbFate.share,'sbFate',{fate:true});}}};
   window.sheepAutoTick=sheepAutoTick;
-  mkBasic=mkSpBasic;addFx(new SCore());for(const n of ['22_pow','h14_yawn','h15_ward'])sImg(n);
+  mkBasic=function(t){sEnsure();return mkSpBasic(t);};sEnsure();window.sEnsure=sEnsure;for(const n of ['22_pow','h14_yawn','h15_ward'])sImg(n);
   try{document.title='Aetherfall — Golden Fleece Sheep';const nm=document.querySelector('.nm b'),cl=document.querySelector('.nm .cls');if(nm)nm.textContent='Chrysie';if(cl)cl.textContent='Arcadian Lamb';}catch(e){}
   window.SHP=SHP;window.SP_DEFS=SP_DEFS;window.SP_BAL=SP_BAL;}
 /* Free Cast counter (and Olympus: every skill free) */

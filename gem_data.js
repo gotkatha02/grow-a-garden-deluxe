@@ -28,29 +28,57 @@ const SUP=[
  ['thrift','ประหยัด','◆','#4aa8ff','SP −6','Thrift'],['burn','เผาไหม้','♨','#ff5a2a','ทุกฮิตติดไฟ Lv×1/วิ 3 วิ (ท่าบัฟ: ไฟรอบตัว)','Burn'],
  ['frost','เยือกแข็ง','❄','#8fe6ff','ทุกครั้งที่ 3 ช้า −40 · ทุกครั้งที่ 6 แช่แข็ง 0.8 วิ','Frost'],['pierce','ทะลวง','➶','#d8d8e8','ไม่สน DEF 20 (ท่าบัฟ: +2 วิ)','Pierce'],
  ['leech','ดูดชีวิต','♥','#e2435a','ทุกฮิตฟื้น Lv×1 สูงสุด 10 ฮิต (ท่าบัฟ: ฟื้น Lv×3)','Leech'],['impact','กระแทก','✸','#c9a46a','ทุกครั้งที่ 5 มึน 0.5 วิ + หลอด KO (ท่าบัฟ: ผลักรอบตัว)','Impact']];
-/* random lines on a main gem: [id, name, group, text(rank) ] — values are flat / counters (rule 2), rank I–V multiplies them */
+/* random lines ("special stats", owner 2026-11-21: 'random stats / statuses, tiers whose gem light changes colour by rarity, special-stat slots,
+   all random; a higher gem level adds 1 slot and the rolled numbers grow') on C gems AND skill gems: [id, name, group, text(v)].
+   v = the line's strength = rank (I–V) × rarity multiplier × level multiplier (lineV below), so the text always shows the real number.
+   Values stay flat / counters (rule 2). Stat lines add flat character stats while the gem is active on the totem (kept small: rank V
+   legend Lv 50 = +5). The board-link group only rolls on C gems (it reads the pole). */
 const R=n=>['I','II','III','IV','V'][n-1]||n;
+const f2=x=>(+x).toFixed(2),f1=x=>(+x).toFixed(1),ri=x=>Math.max(1,Math.round(x));
+const statN=v=>Math.max(1,Math.round(.5*v));
 const LINES=[
- ['lpow','พลังท่า','พลัง',r=>`ทุกฮิต +ATK×${(.03*r).toFixed(2)} (หรือ TAL)`],
- ['lfirst','ฮิตแรก','พลัง',r=>`ฮิตแรกของการใช้ +ATK×${(.15*r).toFixed(2)}`],
- ['lsts','ซ้ำเติม','พลัง',r=>`ศัตรูที่ติดสถานะ (ช้า แช่แข็ง มึน ไหม้ เลือดไหล) ทุกฮิต +ATK×${(.06*r).toFixed(2)}`],
- ['lpier','เจาะเกราะ','พลัง',r=>`ไม่สน DEF ${4*r}`],
- ['lboss','ล่าบอส','พลัง',r=>`ใส่บอส/มอนถึก ทุกฮิต +ATK×${(.06*r).toFixed(2)}`],
- ['lcd','เร่งคูลดาวน์','จังหวะ',r=>`คูลดาวน์ −${(.2*r).toFixed(1)} วิ (ไม่เกิน 1/5 ของเดิม)`],
- ['lsp','ประหยัดแรง','จังหวะ',r=>`SP −${r}`],
- ['lfree','ไม่ติดคูล','จังหวะ',r=>`ใช้ครั้งที่ ${r>=5?4:r>=3?5:6} ทุกรอบ ไม่ติดคูลดาวน์`],
- ['lshd','โล่','เอาตัวรอด',r=>`ใช้แล้วได้โล่ Lv×${(.4*r).toFixed(1)} 5 วิ`],
- ['lheal','ฟื้นตัว','เอาตัวรอด',r=>`ใช้แล้วฟื้น HP Lv×${(.3*r).toFixed(1)}`],
- ['ldr','ตั้งรับ','เอาตัวรอด',r=>`1.5 วิหลังใช้ รับดาเมจ −Lv×${(.1*r).toFixed(1)} ต่อครั้ง`],
- ['lkill','ล่าแต้ม','เอาตัวรอด',r=>`ฆ่าด้วยท่านี้ คืน SP ${2*r}`],
- ['lslow','หน่วง','คุมเกม',r=>`ทุกฮิตที่ 4 ทำให้ช้า ${(1+.3*r).toFixed(1)} วิ`],
- ['ldur','ยืดสถานะ','คุมเกม',r=>`สถานะที่ท่านี้ใส่ นานขึ้น +${(.2*r).toFixed(1)} วิ`],
- ['lpush','ผลัก','คุมเกม',r=>`ฮิตสุดท้ายผลักศัตรูออกไป (แรง ${r}/5 · บอสไม่ขยับ)`],
- ['lnext','คอมโบดาว','เชื่อมแผง',r=>`หลังใช้ ท่าของเจมดาวถัดไป ทุกฮิต +ATK×${(.05*r).toFixed(2)} นาน 5 วิ`],
- ['lelem','ดาวพี่น้อง','เชื่อมแผง',r=>`ดาวข้างกันใส่แปรสภาพชนิดเดียวกับเจมนี้ ต่อดวง ทุกฮิต +ATK×${(.03*r).toFixed(2)}`],
- ['lall','ครบกลุ่มดาว','เชื่อมแผง',r=>`ใช้ท่าของเจมครบทุกดาวที่ใส่ไว้ภายใน 20 วิ → โล่ Lv×${r} (ทุก 20 วิ)`]];
-const QUAL=[{n:'ธรรมดา',c:'#cfd6e0',lines:1,p:.70},{n:'หายาก',c:'#5ab4ff',lines:2,p:.25},{n:'ตำนาน',c:'#ffc83a',lines:3,p:.05}];
-const RANK_P=[.55,.30,.15];                    // a new line starts at rank I / II / III
+ ['lpow','พลังท่า','พลัง',v=>`ทุกฮิต +ATK×${f2(.03*v)} (หรือ TAL)`],
+ ['lfirst','ฮิตแรก','พลัง',v=>`ฮิตแรกของการใช้ +ATK×${f2(.15*v)}`],
+ ['lsts','ซ้ำเติม','พลัง',v=>`ศัตรูที่ติดสถานะ (ช้า แช่แข็ง มึน ไหม้ เลือดไหล) ทุกฮิต +ATK×${f2(.06*v)}`],
+ ['lpier','เจาะเกราะ','พลัง',v=>`ไม่สน DEF ${ri(4*v)}`],
+ ['lboss','ล่าบอส','พลัง',v=>`ใส่บอส/มอนถึก ทุกฮิต +ATK×${f2(.06*v)}`],
+ ['lcd','เร่งคูลดาวน์','จังหวะ',v=>`คูลดาวน์ −${f1(.2*v)} วิ (ไม่เกิน 1/5 ของเดิม)`],
+ ['lsp','ประหยัดแรง','จังหวะ',v=>`SP −${ri(v)}`],
+ ['lfree','ไม่ติดคูล','จังหวะ',v=>`ใช้ครั้งที่ ${v>=5?4:v>=3?5:6} ทุกรอบ ไม่ติดคูลดาวน์`],
+ ['lshd','โล่','เอาตัวรอด',v=>`ใช้แล้วได้โล่ Lv×${f1(.4*v)} 5 วิ`],
+ ['lheal','ฟื้นตัว','เอาตัวรอด',v=>`ใช้แล้วฟื้น HP Lv×${f1(.3*v)}`],
+ ['ldr','ตั้งรับ','เอาตัวรอด',v=>`1.5 วิหลังใช้ รับดาเมจ −Lv×${f1(.1*v)} ต่อครั้ง`],
+ ['lkill','ล่าแต้ม','เอาตัวรอด',v=>`ฆ่าด้วยท่านี้ คืน SP ${ri(2*v)}`],
+ ['lslow','หน่วง','คุมเกม',v=>`ทุกฮิตที่ 4 ทำให้ช้า ${f1(1+.3*v)} วิ`],
+ ['ldur','ยืดสถานะ','คุมเกม',v=>`สถานะที่ท่านี้ใส่ นานขึ้น +${f1(.2*v)} วิ`],
+ ['lpush','ผลัก','คุมเกม',v=>`ฮิตสุดท้ายผลักศัตรูออกไป (แรง ${Math.min(5,ri(v))}/5 · บอสไม่ขยับ)`],
+ ['satk','ATK','สเตตัส',v=>`ATK +${statN(v)}`],
+ ['stal','TAL','สเตตัส',v=>`TAL +${statN(v)}`],
+ ['sdef','DEF','สเตตัส',v=>`DEF +${statN(v)}`],
+ ['sagi','AGI','สเตตัส',v=>`AGI +${statN(v)}`],
+ ['svit','VIT','สเตตัส',v=>`VIT +${statN(v)}`],
+ ['sint','INT','สเตตัส',v=>`INT +${statN(v)}`],
+ ['scha','CHA','สเตตัส',v=>`CHA +${statN(v)}`],
+ ['slck','LCK','สเตตัส',v=>`LCK +${statN(v)}`],
+ ['lnext','คอมโบดาว','เชื่อมแผง',v=>`หลังใช้ ท่าของเจมชั้นถัดไป ทุกฮิต +ATK×${f2(.05*v)} นาน 5 วิ`],
+ ['lelem','ดาวพี่น้อง','เชื่อมแผง',v=>`ชั้นข้างกันใส่แปรสภาพชนิดเดียวกับเจมนี้ ต่อชั้น ทุกฮิต +ATK×${f2(.03*v)}`],
+ ['lall','ครบกลุ่มดาว','เชื่อมแผง',v=>`ใช้ท่าของเจม C ครบทุกชั้นที่ใส่ไว้ภายใน 20 วิ → โล่ Lv×${f1(v)} (ทุก 20 วิ)`]];
+const SLINE={satk:'atk',stal:'tal',sdef:'def',sagi:'agi',svit:'vit',sint:'int',scha:'cha',slck:'lck'};   // stat line → stat key (index.html BON)
+const POOL={c:LINES.map(l=>l[0]),s:LINES.filter(l=>l[2]!=='เชื่อมแผง').map(l=>l[0])};   // C gems roll every line, skill gems no board-link lines
+/* rarity (5 tiers, owner 2026-11-21): rolled when a gem is made (carve / craft / extract / re-extract). c / g = colour of the gem's light (hex / rgb),
+   lines = special-stat slots it starts with, p = chance, m = multiplier on every line's number, rk = chance of the starting rank I…V of a new line.
+   Old saves: quality 0 / 1 / 2 → ธรรมดา / หายาก / ตำนาน (same 1 / 2 / 3 lines). */
+const QUAL=[
+ {n:'ธรรมดา', c:'#d9dee8',g:'217,222,232',lines:1,p:.50,m:1.00,rk:[.70,.30,0,0,0]},
+ {n:'ดี',      c:'#72e07a',g:'114,224,122',lines:1,p:.30,m:1.08,rk:[.45,.40,.15,0,0]},
+ {n:'หายาก',   c:'#4ab0ff',g:'74,176,255', lines:2,p:.14,m:1.16,rk:[.30,.45,.25,0,0]},
+ {n:'มหากาพย์', c:'#c17bff',g:'193,123,255',lines:2,p:.05,m:1.28,rk:[0,.40,.45,.15,0]},
+ {n:'ตำนาน',   c:'#ffb938',g:'255,185,56', lines:3,p:.01,m:1.40,rk:[0,0,.50,.35,.15]}];
+const RANK_P=[.55,.30,.15];                    // (old: a new line started at rank I / II / III — now per rarity in QUAL[].rk)
+const SLOT_LV=[10,20,30,40];                   // the gem's level opens one more special-stat slot at each (a new line is rolled at once)
+const lvMul=lv=>1+(Math.max(1,lv||1)-1)/98;    // numbers grow with the gem's level: Lv 1 ×1 … Lv 50 ×1.5
+const nSlots=(q,lv)=>QUAL[q||0].lines+SLOT_LV.filter(x=>(lv||1)>=x).length;   // ธรรมดา Lv 1 = 1 slot … ตำนาน Lv 40+ = 7
+const lineV=(r,q,lv)=>r*QUAL[q||0].m*lvMul(lv);
 const GEM_CAP=50;                              // owner 2026-11-21: gem level cap 50 for now, raised with later updates
 const BREAK={10:1,20:1,30:2,40:2};             // spare copies of the same gem needed to pass Lv 10 / 20 / 30 / 40
 const COST={
@@ -60,7 +88,8 @@ const COST={
   lvEss:lv=>Math.round(6+2.4*lv),lvZ:lv=>400*lv,   // level lv → lv+1 (1 → 50 = 3,234 essence + 490,000z per gem)
   rankEss:[6,12,24,48],rankZ:r=>3000*r,        // rank I→II … IV→V
   rerollEss:8,lockEss:12,rerollZ:5000,
-  pity:20};                                    // 20 carvings in a row without a legend → the next one is legend
+  pityE:20,pity:50};                           // 20 rolls in a row without มหากาพย์ or better → the next is มหากาพย์ · 50 without ตำนาน → ตำนาน
+                                               // (one counter per hero for every roll: carving, crafting, extracting, re-extracting)
 /* power of the target skill from gem level: +3 % per level up to Lv 5 (unchanged), then +0.4 % per level → Lv 50 = +30 % */
 const gemPow=lv=>.03*(Math.min(lv,5)-1)+.004*Math.max(0,lv-5);
 /* drops (items.js dropFor): stone tier = ore tier of the monster's level band */
@@ -107,6 +136,11 @@ const EXTRACT=[ // [skill learnable up to this level, cost]
   [29, {z:9000, it:[['tstone1',2],['tess',10]]}],
   [39, {z:16000,it:[['tstone2',1],['tess',14]]}],
   [999,{z:28000,it:[['tstone2',2],['tess',20]]}]];
-window.GEMDATA={MUT,SUP,LINES,QUAL,RANK_P,GEM_CAP,BREAK,COST,gemPow,DROPS,R,CARVE,EXTRACT,
+/* skill gems level like C gems (owner 2026-11-21) but cost half (they have no skill-power bonus, only their special stats);
+   the breakthroughs at Lv 10 / 20 / 30 / 40 take raw totem stones (+ star ore) instead of spare copies (a skill gem has no copies).
+   Re-extracting (สกัดใหม่) costs the extraction price again, rolls a new rarity + lines (level kept) and the player keeps either one. */
+const SGEM={lvEss:lv=>Math.round(3+1.2*lv),lvZ:lv=>200*lv,
+  brk:{10:[['tstone1',2]],20:[['tstone2',2]],30:[['tstone3',2],['sore',1]],40:[['tstone4',2],['sore',2]]}};
+window.GEMDATA={MUT,SUP,LINES,QUAL,RANK_P,GEM_CAP,BREAK,COST,gemPow,DROPS,R,CARVE,EXTRACT,SGEM,SLINE,POOL,SLOT_LV,lvMul,nSlots,lineV,statN,
   MUTD:Object.fromEntries(MUT.map(s=>[s[0],s])),SUPD:Object.fromEntries(SUP.map(s=>[s[0],s])),LND:Object.fromEntries(LINES.map(s=>[s[0],s]))};
 })();

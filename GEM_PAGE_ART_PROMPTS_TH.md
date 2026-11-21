@@ -148,6 +148,25 @@ Style: clean cartoon highlights matching the attached game art — crisp shapes 
 - ข้อ 12: alpha = ความสว่าง (พื้นดำ → โปร่งใส) · ย่อ/เลื่อนให้วงตรงกับรูของข้อ 11 · assets/gems/page/sgem_shine.webp
 - โค้ด: แทนเงา CSS ของเจมสกิล (.tgN .in.ic บนหลุมสกิล, #tgSkills .gx, .tgSkG) ด้วย 3 ชั้น ไอคอนในรู × win · เงาขอบในด้วย radial-gradient · shine · frame · ส่งรูปเทียบก่อน/หลังให้เจ้าของ
 
+## 13. เจม C: กรอบเจม 1 รูป ใช้กับทุกสกิลสาย C (เจ้าของ 2026-11-21: "เจมเสริมสกิลสาย C ทำให้ดีไซน์เป็นแบบที่ทำเมื่อกี้ จะได้ทำทีเดียวใช้ได้ทุกสกิลของสาย C เลย")
+ดีไซน์: เจม C = "พี่ใหญ่" ของเจมสกิล — รูปทรงกลม **รูตรงกลางขนาดเท่ากัน** (ประกายแก้วข้อ 12 ใช้ร่วมกันได้ ไม่ต้องเจนใหม่) แต่เป็น **คริสตัลแดงทับทิมในเรือนทองโบราณ** มีเขี้ยวทอง 4 ตัวจับเม็ด และปลายแหลมทอง 4 ทิศเหมือนดาวเข็มทิศ ให้ดูสำคัญกว่าเจมสกิล · สีแสงตามระดับความหายาก (ขาว เขียว ฟ้า ม่วง ทอง) โค้ดวาดเอง ในรูปไม่ต้องมีแสง · ตอนนี้ในเกมใช้กรอบมูนสโตนย้อมแดงแทนไปก่อน (assets/gems/page/cgem_frame.webp)
+
+แนบ: รูปกองไฟ (สไตล์) + รูปกรอบเจมสกิลที่ได้จากข้อ 11 (ให้รูตรงกลางขนาดเท่ากัน)
+```
+Game UI art for a cartoon fantasy RPG: an EMPTY round gem frame for the game's most powerful "totem" gems — a ring-shaped jewel with a round hole in the middle, so that a skill icon can be shown inside it later. One object, centred, seen straight from the front, on a fully transparent background with empty space on every side. Square image 1024×1024, the frame about 880 px wide including its points.
+
+It is the grander big sister of the attached moonstone gem frame: the same round shape and the SAME size of hole — the inner rim is a perfect circle about two thirds of the ring's width, exactly like the attached frame. The ring is deep ruby-red crystal cut into bright triangular facets, set in thick antique gold: a gold band on the outer rim and on the inner rim, small carved totem zigzags and little triangles in the gold, and four small gold claw prongs gripping the crystal at the top-left, top-right, bottom-left and bottom-right. Four short pointed gold tips stick out of the outer rim at the top, bottom, left and right, like a little compass star, so this frame looks more important than the plain round one. The inner rim is bevelled inward with a soft shadow, as if the crystal dips down around a window.
+
+The middle inside the inner rim is COMPLETELY EMPTY: transparent, nothing drawn there — no picture, no glass, no colour, no shine. No coloured aura or halo around the frame (the game adds its own light later).
+
+Style: friendly hand-painted chibi cartoon matching the attached game art and the attached gem frame, thick clean dark-brown outline around the outer edge, cel shading with 2–3 flat tones, soft cartoon glow on the crystal facets only, bright and warm. Not realistic, not painterly, not 3D. No text, no logo, no watermark.
+```
+ถ้ารูปที่ได้รูตรงกลางไม่กลม / มีของวาดในรู → ไม่เป็นไร โค้ดเจาะรูให้เอง · ถ้าเขี้ยว / ปลายแหลมยาวเกินขอบรูป → สั่งแก้เฉพาะส่วนนั้น (ระบายเฉพาะจุดใน ChatGPT)
+
+### หลังได้รูปข้อ 13 (สำหรับ Claude)
+- ตัดพื้นหลังถ้าไม่โปร่งใส · fit วงขอบทองด้านใน → เจาะรูโปร่งใสด้วยเรขาคณิต · ย่อ / ตัดให้ **รู = 0.664 ของความกว้างรูป** เหมือน sgem_frame (ปลายแหลมยื่นเกินได้: ถ้ารูปกว้างกว่าวงแหวนมาก ให้ใช้ขนาดที่รูได้ 0.664 แล้วยอมให้ปลายแหลมล้นกรอบ CSS นิดหน่อย หรือย่อทั้งรูปแล้วปรับ `.sgem.cg .sgi` ให้ตรงรู)
+- บันทึกทับ assets/gems/page/cgem_frame.webp (โค้ดอ่านไฟล์นี้อยู่แล้ว ไม่ต้องแก้โค้ด) · bump V ใน sw.js · เช็กภาพ: เสา (ทุกระดับ), กระเป๋าแท็บเจม C, ช่องรายละเอียด, ผลแกะในศาล, หมาป่า + แมว
+
 ## 9. แท่นหิน 7 หลุม — ยกเลิก (เจ้าของเปลี่ยนเป็นข้อ 10)
 ดาวสกิล 7 ดวง (เท่าช่องวงล้อสกิลบนมือถือ) เปิดที่ Lv 10 · 15 · 20 · 25 · 30 · 40 · 50 · แนบรูปแท่นหินเดิม (base.webp) + รูปกองไฟ แล้วสั่ง:
 ```

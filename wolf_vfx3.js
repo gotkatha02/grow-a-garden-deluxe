@@ -10,7 +10,7 @@
                  the painted rocks (WRock in wolf_fx.js) still fly. */
 (()=>{
 const on=()=>!window.__VFX3_OFF&&!/[?&]vfx3=0/.test(location.search);   /* owner approved 2026-11-20: default on; ?vfx3=0 shows the old painted version */
-if(typeof CHAR==='undefined'||!['wolf','cat','croc','kitsune','axolotl','dragon'].includes(CHAR)||!on())return;   /* 2026-11-20: the kit is shared with the cat (window.VK, used by cat_vfx.js); wolf hooks stay wolf-only */
+if(typeof CHAR==='undefined'||!['wolf','cat','croc','kitsune','axolotl','dragon','sheep'].includes(CHAR)||!on())return;   /* 2026-11-20: the kit is shared with the cat (window.VK, used by cat_vfx.js); wolf hooks stay wolf-only */
 const OUT='#3a1410',eOut=t=>1-(1-t)*(1-t)*(1-t),cl=(v,a,b)=>Math.max(a,Math.min(b,v));
 /* crescent on a flat plane at axe height, centred on the hero; a0→a1 world angles */
 /* reference-style fill (owner 2026-11-20: no dark outlines): solid colour with a soft glow of its own colour + a faint additive pass */

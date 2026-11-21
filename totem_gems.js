@@ -55,35 +55,54 @@ const MUTD=Object.fromEntries(MUT.map(s=>[s[0],s])),SUPD=Object.fromEntries(SUP.
    half strength because they open from Lv 10 — the effect still shows on the skill, its numbers are halved) */
 const sw=(A,id)=>(A.sup.includes(id)?1:0)+(A.supH?A.supH.filter(x=>x===id).length*.5:0);
 const G=n=>{try{return (0,eval)(n);}catch(e){return undefined;}};   /* global lookup (indirect eval): this file has its own D / P / K */
+/* the C node's column (Basic / A / B); heroes without s.col (cat, croc) list each tier's three C skills in that order */
+const colName=k=>{const S=G('SKILLS')||{},s=S[k]||{};if(s.col)return s.col==='basic'?'Basic':s.col;const row=Object.keys(S).filter(q=>S[q].br==='C'&&S[q].tier===s.tier);return ['Basic','A','B'][row.indexOf(k)]||'-';};
 const cKeys=()=>{const S=G('SKILLS')||{};return Object.keys(S).filter(k=>S[k].br==='C').sort((a,b)=>'basicAB'.indexOf(S[a].col)-'basicAB'.indexOf(S[b].col)||S[a].tier-S[b].tier);};
 /* ---- gem farming v2 (owner 2026-11-21) ----
    own[k] = {lv 1…GEM_CAP, q 0 normal / 1 rare / 2 legend, lines [[id, rank 1–5, locked]], dup = spare copies}
    Mutation / support gems are bag goods (gmut_<id> / gsup_<id>, tradable in the central market): socketing takes one out
    of the bag, taking it out (or taking its main gem off the board) puts it back. */
-const C=GD?GD.COST:{},QUAL=GD?GD.QUAL:[{n:'',c:'#ccc',lines:1}],CAP=GD?GD.GEM_CAP:5,BRK=GD?GD.BREAK:{};
+const C=GD?GD.COST:{},QUAL=GD?GD.QUAL:[{n:'',c:'#ccc',g:'204,204,204',lines:1,p:1,m:1,rk:[1]}],CAP=GD?GD.GEM_CAP:5,BRK=GD?GD.BREAK:{};
+/* rarity + special stats (owner 2026-11-21): QUAL = 5 rarities; a gem's lines fill nSlots(rarity, level) slots; a line's number = lineV(rank, rarity, level) */
+const NSL=GD?GD.nSlots:()=>1,LVM=GD?GD.lvMul:()=>1,LV_V=GD?GD.lineV:r=>r,SLINE=GD?GD.SLINE:{},POOL=GD?GD.POOL:{c:[],s:[]},SLV=GD?GD.SLOT_LV:[],SGC=GD&&GD.SGEM,statN=GD?GD.statN:v=>Math.round(v);
+const QN=QUAL.length-1,rnd=n=>Math.floor(Math.random()*n);
+const HITL=new Set(['lpow','lfirst','lsts','lpier','lboss','lslow','ldur','lkill','lpush']);   /* line kinds a combo follow-up gets too (the cast side stays on its starter) */
 const bagN=id=>{const a=AF();return a?(a.BAG[id]||0):0;},bagAdd=(id,n)=>{const a=AF();if(a)a.bagAdd(id,n);},bagSave=()=>{const a=AF();if(a)a.save();};
 const zeny=()=>{const a=AF();return a?a.zeny:0;},payZ=z=>{const a=AF();if(!a||a.zeny<z)return false;a.zeny=a.zeny-z;return true;};
 const fmtN=v=>{const a=AF();return a&&a.ui?a.ui.fmt(v):String(v);};
-function rollLines(q,keep){const L=GD?GD.LINES:[],out=(keep||[]).slice(),n=QUAL[q].lines;
-  while(out.length<n){const c=L.filter(l=>!out.some(o=>o[0]===l[0]));if(!c.length)break;const l=c[Math.floor(Math.random()*c.length)],x=Math.random(),P=GD.RANK_P;out.push([l[0],x<P[0]?1:x<P[0]+P[1]?2:3,0]);}
+function rollRank(q){const P=QUAL[q||0].rk||[1];let x=Math.random();for(let i=0;i<P.length;i++){x-=P[i];if(x<0)return i+1;}return 1;}
+/* fill the gem's special-stat slots (its rarity + level decide how many) with line kinds it does not have yet; kept (locked) lines stay */
+function rollLines(q,lv,keep,pool){const ids=POOL[pool||'c']||[],out=(keep||[]).slice(),n=NSL(q||0,lv||1);
+  while(out.length<n){const c=ids.filter(id=>!out.some(o=>o[0]===id));if(!c.length)break;out.push([c[rnd(c.length)],rollRank(q),0]);}
   return out;}
+/* rarity roll: rollQfree = the plain odds (test grants, old saves); rollQ = a real roll (carve / craft / extract / re-extract) that counts
+   toward the hero's two pity counters: 20 rolls without มหากาพย์ or better → มหากาพย์ · 50 without ตำนาน → ตำนาน */
+function rollQfree(){let x=Math.random();for(let i=QN;i>=0;i--){x-=QUAL[i].p||0;if(x<0)return i;}return 0;}
+function rollQ(){D.pity=(D.pity||0)+1;D.pe=(D.pe||0)+1;let q=rollQfree();
+  if(D.pity>=(C.pity||50))q=QN;else if(D.pe>=(C.pityE||20)&&q<QN-1)q=QN-1;
+  if(q>=QN-1)D.pe=0;if(q===QN)D.pity=0;return q;}
+const lnTxt=(l,q,lv)=>{const d=(GD?GD.LND:{})[l[0]];if(!d)return l[0];const v=LV_V(l[1],q,lv);return d[2]==='สเตตัส'?`<b>${d[3](v)}</b>`:`<b>${d[1]}</b> ${d[3](v)}`;};
 /* a non-wolf hero without its own save takes ITS gems out of the old shared save (only keys of its own skills) */
-function adoptLegacy(){if(HERO==='wolf')return null;let L=null;try{L=JSON.parse(localStorage.getItem(LEGACY)||'null');}catch(e){}if(!L||(L.v!==2&&L.v!==3))return null;
+function adoptLegacy(){if(HERO==='wolf')return null;let L=null;try{L=JSON.parse(localStorage.getItem(LEGACY)||'null');}catch(e){}if(!L||(L.v!==2&&L.v!==3&&L.v!==4))return null;
   const S=G('SKILLS')||{},mine=k=>!!(k&&S[k]&&S[k].br==='C'),own={};for(const k in (L.own||{}))if(mine(k))own[k]=L.own[k];if(!Object.keys(own).length)return null;
   const mods={};for(const k in own)if(L.mods&&L.mods[k])mods[k]=L.mods[k].slice();
   return {v:L.v,own,sock:(L.sock||[]).map(k=>mine(k)?k:null),mods,mutOwn:{},supOwn:{},pity:L.pity||0,tg:0};}
 function load(){let d=null,dirty=false;try{d=JSON.parse(localStorage.getItem(SKEY)||'null');}catch(e){}
   if(!d){d=adoptLegacy();if(d)dirty=true;}
-  if(!d||(d.v!==2&&d.v!==3)){d={v:2,own:{},sock:Array(NS).fill(null),mods:{},mutOwn:{},supOwn:{}};
+  if(!d||(d.v!==2&&d.v!==3&&d.v!==4)){d={v:2,own:{},sock:Array(NS).fill(null),mods:{},mutOwn:{},supOwn:{}};
     const LV=G('LV')||{};for(const k of cKeys())if(LV[k]>0){d.own[k]={lv:1};const i=d.sock.indexOf(null);if(i>=0)d.sock[i]=k;}}   /* old C points → owned (+ socketed) gems */
   if(d.v===2){   /* v2 → v3: quality + lines for owned gems; mutation / support counts move into the bag (what is socketed stays socketed) */
     for(const k in d.own){const o=d.own[k];o.q=o.q||0;o.lines=o.lines||[];o.dup=o.dup||0;}   /* gems from before farming have empty line slots: 'สุ่มบรรทัด' fills them (keeps the bench unchanged) */
     const useN={};for(const k in d.mods)(d.mods[k]||[]).forEach((id,j)=>{if(id){const key=(j===0||j===3?'gmut_':'gsup_')+id;useN[key]=(useN[key]||0)+1;}});
     for(const [own,pre] of [[d.mutOwn||{},'gmut_'],[d.supOwn||{},'gsup_']])for(const id in own){const free=(own[id]||0)-(useN[pre+id]||0);if(free>0&&!G('testMode'))bagAdd(pre+id,free);}
     delete d.mutOwn;delete d.supOwn;d.v=3;d.pity=0;d.tg=0;bagSave();}
+  if(d.v===3){/* v3 → v4 (owner 2026-11-21): 5 rarities — old quality 0 / 1 / 2 → ธรรมดา / หายาก / ตำนาน (same 1 / 2 / 3 lines); a gem that already
+      rolled lines gets the special-stat slots its level opened; pity starts over (two counters now); skill gems ('1') roll when first looked at */
+    for(const k in d.own){const o=d.own[k];o.q=[0,2,4][o.q||0]||0;if((o.lines||[]).length)o.lines=rollLines(o.q,o.lv,o.lines,'c');}
+    d.pity=0;d.pe=0;d.v=4;dirty=true;}
   if(G('testMode')&&d.tg&&!cKeys().some(k=>d.own[k]))d.tg=0;   /* the test grant was spent on another hero in the old shared save */
   if(G('testMode')&&!d.tg){   /* test mode: every gem (Lv 5, rare) + goods to try carving / levelling / lines, once */
-    for(const k of cKeys())if(!d.own[k])d.own[k]={lv:5,q:1,lines:rollLines(1),dup:2};
+    for(const k of cKeys())if(!d.own[k]){const q=rollQfree();d.own[k]={lv:5,q,lines:rollLines(q,5,null,'c'),dup:2};}
     const give=[['tess',3000],['sore',60],['guard',20]];for(let t=1;t<=4;t++)give.push(['tstone'+t,30],['tfrag'+t,80]);for(const m of MUT)give.push(['gmut_'+m[0],2]);for(const m of SUP)give.push(['gsup_'+m[0],3]);
     for(const [id,c] of give)if(bagN(id)<c)bagAdd(id,c-bagN(id));bagSave();d.tg=1;dirty=true;}
   for(const k in d.mods){const a=d.mods[k];while(a.length<4)a.push(null);}
@@ -185,7 +204,7 @@ function exNeeds(k){if(exFree())return [];const c=exCost(k).c,out=c.it.map(([x,n
 function exState(k){if(extracted(k))return 'done';if(!ssLearned(k))return 'nolearn';return exNeeds(k).every(e=>haveN(e)>=e.n)?'rdy':'short';}
 function extractNow(k){if(exState(k)!=='rdy')return false;const L=exNeeds(k).sort((a,b)=>(b.x==='z')-(a.x==='z'));
   for(const e of L){if(e.x==='z'){if(!payZ(e.n))return false;continue;}bagAdd(e.x,-e.n);}
-  bagSave();(D.sx||(D.sx={}))[k]=1;save();return true;}
+  bagSave();(D.sx||(D.sx={}))[k]=newSG(false);save();return true;}
 function exInfo(k,extra){const S=G('SKILLS'),s=S[k],st=exState(k),x=exCost(k),fr=exFree();
   let r=`<b>⚗ สกัดสกิลเป็นเจม · ${s.name}</b>`;
   if(st==='done')return r+'<br><span class="g">✔ สกัดเป็นเจมแล้ว — แตะหลุมสกิลบนแท่นหินเพื่อวาง</span>'+(extra||'');
@@ -193,6 +212,28 @@ function exInfo(k,extra){const S=G('SKILLS'),s=S[k],st=exState(k),x=exCost(k),fr
     :exNeeds(k).map(e=>needRow(e,{g:0,land:null})).join(''))+'</div>';
   r+=st==='nolearn'?'<span class="c">ยังไม่ได้เรียนสกิลนี้ — อัปในหน้าต่างสกิล (K) ก่อน</span>':st==='rdy'?'<span class="g">ของครบ — กดปุ่ม "⚗ สกัดเป็นเจม" ด้านล่าง</span>':'<span class="c">ของยังไม่ครบ (แถวสีแดง)</span>';
   return r+(extra||'')+`<br><span style="color:#2a5a8a">สกิลต้องสกัดเป็นเจมก่อนจึงจะวางบนแท่นได้ · สกัดครั้งเดียว ถอด / ย้ายหลุมได้ตลอด · ราคาตามเลเวลที่เรียนสกิลนี้ได้ (Lv ${x.L})</span>`;}
+/* skill gem = rarity + level + special stats (owner 2026-11-21), the same kind of random lines as a C gem (no board-link lines). D.sx[k] = {lv, q, lines, cand?}.
+   A skill extracted before this (D.sx[k] = 1) is rolled the first time it is looked at (plain odds, no pity); test mode makes one for every learned skill. */
+const saveQ=()=>{try{localStorage.setItem(SKEY,JSON.stringify(D));}catch(e){}};   /* save without apply() (sgo can run inside apply) */
+function newSG(free){const q=free?rollQfree():rollQ();return {lv:1,q,lines:rollLines(q,1,null,'s')};}
+function sgo(k){if(!D||!k)return null;const X=D.sx||(D.sx={});let o=X[k];
+  if(o&&typeof o!=='object'){o=X[k]=newSG(true);saveQ();}
+  else if(!o&&EX&&test()&&!SEAL&&ssLearned(k)){o=X[k]=newSG(true);saveQ();}
+  return o&&typeof o==='object'?o:null;}
+const payNeeds=L=>{const s=L.slice().sort((a,b)=>(b.x==='z')-(a.x==='z'));for(const e of s){if(e.x==='z'){if(!payZ(e.n))return false;continue;}bagAdd(e.x,-e.n);}bagSave();return true;};
+/* re-extract: the extraction price again → a new rarity + lines (level kept) waits as o.cand until the player keeps one of the two */
+function reNeeds(k){const c=exCost(k).c,out=c.it.map(([x,n])=>({x,n,ids:[x]}));if(c.z)out.push({x:'z',ids:[],n:c.z});return out;}
+const reOK=k=>{const o=sgo(k);return !!(o&&!o.cand&&reNeeds(k).every(e=>haveN(e)>=e.n));};
+function reExtract(k){const o=sgo(k);if(!reOK(k)||!payNeeds(reNeeds(k)))return false;const q=rollQ();o.cand={q,lines:rollLines(q,o.lv,null,'s')};save();return true;}
+/* skill gem level: essence + zeny (half a C gem's), stones at the breakthroughs; Lv 10 / 20 / 30 / 40 open one more special-stat slot */
+function sgNeed(o){const l=(o&&o.lv)||1;return {ess:SGC?SGC.lvEss(l):0,z:SGC?SGC.lvZ(l):0,brk:(SGC&&SGC.brk[l])||[]};}
+const sgCan=o=>{if(!o||o.lv>=CAP)return false;const n=sgNeed(o);return bagN('tess')>=n.ess&&zeny()>=n.z&&n.brk.every(([x,c])=>bagN(x)>=c);};
+function sgUp(k){const o=sgo(k);if(!sgCan(o))return null;const n=sgNeed(o);if(!payZ(n.z))return null;bagAdd('tess',-n.ess);for(const [x,c] of n.brk)bagAdd(x,-c);bagSave();
+  o.lv++;const add=openSlots(o,'s',o.lv-1);save();return `<br><span class="g">✔ ${n.brk.length?'ทะลุขีด! ':''}เลเวลเจมสกิล ${o.lv}</span>`+add;}
+/* a level that opens a slot rolls its new line at once (and fills any empty slot) */
+function openSlots(o,pool,was){if(NSL(o.q,o.lv)<=NSL(o.q,was))return '';
+  const n=(o.lines||[]).length;o.lines=rollLines(o.q,o.lv,o.lines,pool);const nw=o.lines.slice(n);
+  return nw.length?`<br><span class="g">✨ เปิดช่องสเตตัสพิเศษใหม่: ${nw.map(l=>lnTxt(l,o.q,o.lv)).join(' · ')}</span>`:'';}
 
 /* ---------- board geometry (board 680×680; frame art 1254², plain totem ring 2026-11-19, shifted so its inner rim circle sits at the centre 627,627 r 467.1) ---------- */
 const BS=680,K=BS/1254,HX=627*K,HY=627*K,HR=446.6*K,FR=467.1*K;   /* centre + inner-rim radius FR fitted to the frame art (least squares on its inner edge) */
@@ -297,11 +338,7 @@ const css=document.createElement('style');css.textContent=`
 #tgBtns{display:flex;gap:6px}
 #tgBtns button{flex:1;padding:6px 0;border-radius:12px;border:2px solid #5a2e16;background:linear-gradient(#ffd77a,#e9a43c);font:700 12px Mitr,sans-serif;color:#3a1f14;cursor:pointer;box-shadow:0 2px 0 #1a0c06}
 #tgBtns button:disabled{filter:grayscale(1);opacity:.45;cursor:default}
-.tgInv button[data-q="1"]{box-shadow:0 0 0 2px #5ab4ff,0 0 8px rgba(90,180,255,.7)}.tgInv button[data-q="2"]{box-shadow:0 0 0 2px #ffc83a,0 0 10px rgba(255,200,58,.85)}
-.tgInv button.sel[data-q]{box-shadow:0 0 0 2.5px #fff17a,0 0 9px #ffe14a}
 .tgInv button b.dp{position:absolute;left:-1px;top:-1px;font:700 8px sans-serif;color:#fff;background:#2a5a8a;border-radius:5px;padding:0 2px}
-.tgN .in.q1{box-shadow:0 0 10px 3px rgba(90,180,255,.75)}.tgN .in.q2{box-shadow:0 0 14px 5px rgba(255,200,58,.85);animation:tgLeg 2.4s linear infinite}
-@keyframes tgLeg{50%{box-shadow:0 0 18px 7px rgba(255,226,120,.95)}}
 #tgInfo .ln{display:flex;align-items:center;gap:4px;margin:2px 0;padding:2px 4px;border-radius:6px;background:rgba(201,164,106,.18)}
 #tgInfo .ln i{font-style:normal;font-weight:700;color:#7a2a1c;min-width:20px}#tgInfo .ln span{flex:1}
 #tgInfo .ln button,#tgInfo .rr button{border:1.5px solid #5a2e16;border-radius:8px;background:linear-gradient(#ffd77a,#e9a43c);font:700 10px Mitr,sans-serif;color:#3a1f14;cursor:pointer;padding:1px 5px}
@@ -343,7 +380,7 @@ const css=document.createElement('style');css.textContent=`
 #tgInfo .ssb{margin-top:4px;border:1.5px solid #5a2e16;border-radius:8px;background:linear-gradient(#ffd77a,#e9a43c);font:700 11px Mitr,sans-serif;color:#3a1f14;cursor:pointer;padding:2px 8px}
 /* gem mark on the real skill: hotbar, phone wheel, skill tree, totem lists */
 .gmk{position:absolute;right:-6px;top:-7px;z-index:6;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font:900 10px/1 sans-serif;color:#fff;text-shadow:0 1px 1px #000;pointer-events:none}
-.gmk::before{content:'';position:absolute;inset:2px;border-radius:4px;transform:rotate(45deg);background:radial-gradient(circle at 40% 35%,#fffa 0 14%,var(--c) 46%,color-mix(in srgb,var(--c),#000 48%));box-shadow:0 0 0 1.5px #2a1a0c,0 0 6px var(--c)}
+.gmk::before{content:'';position:absolute;inset:2px;border-radius:4px;transform:rotate(45deg);background:radial-gradient(circle at 40% 35%,#fffa 0 14%,var(--c) 46%,color-mix(in srgb,var(--c),#000 48%));box-shadow:0 0 0 1.5px #2a1a0c,0 0 6px var(--rc,var(--c))}
 .gmk>b{position:relative;font-weight:900}.gmk.two{right:8px}
 .mobSk .gmk{right:-2px;top:-2px;width:21px;height:21px;font-size:11px}.mobSk .gmk.two{right:15px}
 .tc .gmk{right:-5px;top:-5px}
@@ -402,6 +439,9 @@ ${TL?`#totemWin.tot #tgSky,#totemWin.tot #tgFrame{display:none}
 .tgInv{background:rgba(0,0,0,.3);border:1px solid rgba(184,135,58,.3);padding:6px;align-content:start}
 .tgInv button{background:radial-gradient(circle at 50% 38%,#3c2c20,#150d08);border:1.5px solid #5a3e22;padding:2px;box-shadow:inset 0 2px 5px rgba(0,0,0,.55)}
 .tgInv button:hover{border-color:#e9b44c}
+@media (max-height:520px){#tgSel{padding:4px 6px;gap:6px}#tgSel .big{width:46px}#tgSel b{font-size:11.5px;line-height:1.25}
+  #tgSel small{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:10px}   /* phone: a short preview leaves room for the gem card */
+  #tgInfo .ln.ln2 .lc button{font-size:9.5px}.cand .cb button{font-size:11px}}
 @media (max-height:520px){#tgBox{padding-top:30px;inset:22px 4px 4px}#tgBox h2{height:40px;line-height:36px;font-size:17px;top:-20px}.tgTabs button{font-size:10px}.tgTabs button small{display:none}.tgHint{display:none}}
 /* ---- carving (owner 2026-11-21): a sealed hole wears a plug — stone on the base, a wooden peg (end grain rings) on the pole ---- */
 .tgN .pl,.tgPl{position:absolute;inset:19.4%;border-radius:50%;pointer-events:none;
@@ -437,6 +477,37 @@ ${TL?`#totemWin.tot #tgSky,#totemWin.tot #tgFrame{display:none}
 .sgem .sgi::after{content:'';position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,transparent 58%,rgba(14,8,38,.5) 100%)}
 .sgem img.sgs,.sgem img.sgf{position:absolute!important;inset:0;width:100%!important;height:100%!important;display:block;border-radius:0!important;transform:none!important}
 .tgN .in.sg{overflow:visible;transform:scale(1.16)}   /* the frame ring sits over the hole's painted rim */
+/* rarity light (owner 2026-11-21): glow round the frame + a light ring inside the window in the rarity colour; มหากาพย์ / ตำนาน pulse + a light runs round the ring */
+.sgem .rgl{background:none;position:absolute;left:15.8%;top:15.8%;width:68.4%;height:68.4%;border-radius:50%;pointer-events:none;box-shadow:inset 0 0 0 1.5px rgba(var(--rg),.6),inset 0 0 10px 2px rgba(var(--rg),.5)}
+.sgem.rq0 .rgl{box-shadow:inset 0 0 7px 1px rgba(var(--rg),.22)}
+.sgem.rq1{filter:drop-shadow(0 0 2px rgba(var(--rg),.85))}
+.sgem.rq2{filter:drop-shadow(0 0 3px rgba(var(--rg),.95)) drop-shadow(0 0 5px rgba(var(--rg),.45))}
+.sgem.rq3{filter:drop-shadow(0 0 3px rgba(var(--rg),1)) drop-shadow(0 0 7px rgba(var(--rg),.6));animation:rqP 2.4s ease-in-out infinite}
+.sgem.rq4{filter:drop-shadow(0 0 3px rgba(var(--rg),1)) drop-shadow(0 0 9px rgba(var(--rg),.75));animation:rqL 1.9s ease-in-out infinite}
+@keyframes rqP{50%{filter:drop-shadow(0 0 4px rgba(var(--rg),1)) drop-shadow(0 0 11px rgba(var(--rg),.85))}}
+@keyframes rqL{50%{filter:drop-shadow(0 0 5px rgba(255,240,190,1)) drop-shadow(0 0 14px rgba(var(--rg),.95))}}
+.sgem .rsw{position:absolute;inset:0;border-radius:50%;pointer-events:none;display:none}
+.sgem.rq3 .rsw,.sgem.rq4 .rsw{display:block;background:conic-gradient(from 0deg,transparent 0 70%,rgba(var(--rg),.35) 78%,rgba(255,255,255,.95) 83%,rgba(var(--rg),.35) 88%,transparent 95%);
+  -webkit-mask:radial-gradient(circle closest-side,transparent 0 66%,#000 69% 93%,transparent 97%);mask:radial-gradient(circle closest-side,transparent 0 66%,#000 69% 93%,transparent 97%);mix-blend-mode:screen;animation:rqS 3s linear infinite}
+.sgem.rq3 .rsw{animation-duration:4.6s;opacity:.75}
+@keyframes rqS{to{transform:rotate(360deg)}}
+.tgInv button.lock .sgem{filter:grayscale(1) brightness(.5)!important;animation:none!important}.tgInv button.lock .sgem .rsw{display:none}
+.tgInv button b.cn{position:absolute;right:-2px;top:-3px;z-index:3;min-width:13px;height:13px;border-radius:7px;background:#e2435a;color:#fff;font:900 9px/13px sans-serif;text-align:center;box-shadow:0 0 0 1.5px #2a0c0c,0 0 6px #ff6a7a;animation:tgGift 1s ease-in-out infinite alternate}
+#tgWs .gc .gem .sgem,#tgWs .res .rgem .sgem{position:absolute;inset:0}
+#tgWs .res .rgem{position:relative;width:52px;height:52px;flex:none}
+#tgInfo .lnh{margin-top:5px;font-size:.95em}#tgInfo .lnh small{opacity:.7}
+#tgInfo .ln.st{background:rgba(120,200,255,.18)}
+#tgInfo .ln.ln2{display:grid;grid-template-columns:auto 1fr;column-gap:5px;row-gap:1px;align-items:start}#tgInfo .ln.ln2>i{padding-top:1px}
+#tgInfo .ln.ln2 .lc{grid-column:2;display:flex;gap:8px;justify-content:flex-end;align-items:center}#tgInfo .ln.ln2 .lc button,.cand .cb button{white-space:nowrap}
+#tgSel small b{white-space:nowrap}
+#tgInfo .sgc{margin:4px 0;padding:5px 6px;border-radius:9px;background:rgba(255,255,255,.45);border:1.5px solid rgba(160,120,60,.45)}
+#tgInfo .sgc .up{font-size:.92em}
+#tgInfo .ic{display:inline-flex;align-items:center;gap:1px;font-weight:700;font-size:.92em;color:#3a1f14;vertical-align:middle}#tgInfo .ic.no{color:#b8302a}#tgInfo .ic img,#tgInfo .ic svg{width:18px;height:18px}
+.cand{margin:5px 0;padding:6px;border-radius:9px;background:rgba(40,24,60,.88);color:#f4ecff;border:1.5px solid #c9a0ff;box-shadow:0 0 10px rgba(193,123,255,.45);font-size:.95em}
+.cand b{color:#ffe9a8!important}.cand .cl{margin:3px 0;line-height:1.45}.cand .cl i{font-style:normal;font-weight:700;color:#ffd27a;margin-right:2px}.cand .cl b{color:#fff!important}
+.cand .cb{display:flex;gap:6px;margin-top:4px}.cand .cb button{flex:1;padding:4px 0;border-radius:9px;border:2px solid #5a2e16;background:linear-gradient(#ffd77a,#e9a43c);font:700 12px Mitr,sans-serif;color:#3a1f14;cursor:pointer}
+.cand .cb button[data-cand="0"]{background:linear-gradient(#e8e2f2,#b8aecb)}
+.gmk.hi::before{animation:gmkHi 1.6s ease-in-out infinite alternate}@keyframes gmkHi{to{box-shadow:0 0 0 1.5px #2a1a0c,0 0 11px var(--rc,var(--c))}}
 .tgN.th.sel .in.sg{filter:drop-shadow(0 0 5px #ffe14a) drop-shadow(0 0 2px #fff17a)}
 #tgSkills button.nx img,#tgSkills button.nx svg{filter:saturate(.45) brightness(.72)}
 #tgSkills button .xb{position:absolute;left:-3px;top:-3px;width:17px;height:17px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:700 10px/1 sans-serif;
@@ -533,36 +604,60 @@ let raf=0,last=0;function loop(ts){if(!win.classList.contains('open'))return;con
 /* ---------- render ---------- */
 let sel=null,popK=null;   // {gem:k} | {mut:id} | {sup:id} | {sock:i} | {mod:[i,j]}
 const info=h=>{win.querySelector('#tgInfo').innerHTML=h;};
-const qTag=q=>`<span class="q" style="background:${QUAL[q||0].c}">${QUAL[q||0].n}</span>`;
+const qTag=q=>`<span class="q" style="background:${QUAL[q||0].c};white-space:nowrap">${QUAL[q||0].n}</span>`;
 const gemPowOf=lv=>GD?GD.gemPow(lv||1):.03*((lv||1)-1);
 function preview(){const e=win.querySelector('#tgSel');if(!e)return;const S=G('SKILLS');let k=sel&&(sel.gem||(sel.sock!=null&&D.sock[sel.sock])),art='',nm='';
-  if(k){const o=D.own[k]||{};art=`<img src="${gemImg(k)}" onerror="this.onerror=null;this.src='assets/icons/${HERO}/${k}.webp'" alt="">`;nm=S[k].name+`<br><small style="font-weight:500;color:#e9c98a">เจมขั้น ${S[k].tier} · Lv ${o.lv||0}/${CAP}${o.lv?' · '+QUAL[o.q||0].n:''}</small>`;}
+  if(k){const o=D.own[k]||{};art=cgemHtml(k);nm=S[k].name+`<br><small style="font-weight:500;color:#e9c98a">เจมขั้น ${S[k].tier} · Lv ${o.lv||0}/${CAP}${o.lv?' · '+QUAL[o.q||0].n:''}</small>`;}
   else if(sel&&(sel.mut||sel.sup)){const id=sel.mut||sel.sup;art=sg(id,sel.mut?'mut':'sup');nm=(sel.mut?MUTD:SUPD)[id][1]+`<br><small style="font-weight:500;color:#e9c98a">${sel.mut?'เจมแปรสภาพ':'เจมเสริม'}</small>`;}
   else if(sel&&sel.mod){const kk=D.sock[sel.mod[0]],id=kk&&(D.mods[kk]||[])[sel.mod[1]];if(id){const m=isMutJ(sel.mod[1]);art=sg(id,m?'mut':'sup');nm=(m?MUTD:SUPD)[id][1];}}
   else if(sel&&sel.sm!=null&&D.sm[sel.sm]){const id=D.sm[sel.sm];art=sg(id,'mut');nm=MUTD[id][1]+`<br><small style="font-weight:500;color:#e9c98a">แปรสภาพในดาวสกิล ${sel.sm+1}</small>`;}
   else if(sel&&(sel.skill||(sel.ss!=null&&D.ss[sel.ss])||(sel.sm!=null&&D.ss[sel.sm]))){const sk=sel.skill||D.ss[sel.ss!=null?sel.ss:sel.sm],s=S[sk];
-    if(s){const gx=extracted(sk);art=gx?sgemHtml(sk):skArt(sk);nm=s.name+`<br><small style="font-weight:500;color:#e9c98a">${gx?'เจมสกิล':'ยังไม่ได้สกัด'} · สาย ${BRN[s.br]||s.br} · Lv สกิล ${(G('LV')||{})[sk]||0}${sel.ss!=null?(TL?' · หลุมสกิล ':' · ดาวสกิล ')+(sel.ss+1):''}</small>`;}}
+    if(s){const gx=extracted(sk),g=gx&&sgo(sk);art=gx?sgemHtml(sk):skArt(sk);nm=s.name+`<br><small style="font-weight:500;color:#e9c98a">${gx?`เจมสกิล <b style="color:${QUAL[g?g.q:0].c}">${QUAL[g?g.q:0].n}</b>${g?' Lv '+g.lv:''}`:'ยังไม่ได้สกัด'} · สาย ${BRN[s.br]||s.br} · Lv สกิล ${(G('LV')||{})[sk]||0}${sel.ss!=null?(TL?' · หลุมสกิล ':' · ดาวสกิล ')+(sel.ss+1):''}</small>`;}}
   if(sel&&sel.carve){const h=hole(sel.carve),st=cvState(sel.carve);art=`<span class="tgPl${h.t==='p'||h.t==='q'?' wd':''}"></span>`;
     nm=h.nm+`<br><small style="font-weight:500;color:#e9c98a">${st==='open'?'สลักแล้ว':st==='lv'?'เปิดที่ Lv '+h.lv:st==='par'?'สลักหลุมใหญ่ของมันก่อน':st==='rdy'?'ของครบ — สลักได้!':'ยังไม่ได้สลัก · ของยังไม่ครบ'}</small>`;}
   e.innerHTML=art?`<div class="big">${art}</div><b>${nm}</b>`:'<b style="opacity:.6;font-weight:500">แตะเจมหรือดาวเพื่อดูรายละเอียด</b>';}
 function lvNeed(o){const l=o.lv||1;return {ess:C.lvEss?C.lvEss(l):0,z:C.lvZ?C.lvZ(l):0,dup:BRK[l]||0};}
 function gemInfo(k){const S=G('SKILLS')[k],o=D.own[k],LD=GD?GD.LND:{};
-  let h=`<b>${S.name}</b> · เจมขั้น ${S.tier} · สาย ${S.col==='basic'?'Basic':S.col}<br>${S.th||''}<br><span style="opacity:.75">ใส่ได้ตั้งแต่ Lv ${TIER_LV[S.tier]} · เงื่อนไขสกิล: ${S.rq||'-'}</span><br><span style="color:#2a5a8a">แปรสภาพ/เจมเสริม/บรรทัด มีผลกับ: ${tgtName(targetOf(k))} · พลังท่านั้น ×${(1+gemPowOf(o&&o.lv)).toFixed(3)} (เลเวลเจม)</span>`;
+  let h=`<b>${S.name}</b> · เจมขั้น ${S.tier} · สาย ${colName(k)}<br>${S.th||''}<br><span style="opacity:.75">ใส่ได้ตั้งแต่ Lv ${TIER_LV[S.tier]} · เงื่อนไขสกิล: ${S.rq||'-'}</span><br><span style="color:#2a5a8a">แปรสภาพ/เจมเสริม/บรรทัด มีผลกับ: ${tgtName(targetOf(k))} · พลังท่านั้น ×${(1+gemPowOf(o&&o.lv)).toFixed(3)} (เลเวลเจม)</span>`;
   if(!o)return h+'<br><i>ยังไม่มีเจมนี้ — แกะหินโทเท็มขั้น '+S.tier+' (สุ่มชนิด) หรือคราฟต์จากชิ้นส่วนที่ศาลโทเท็ม</i>';
   const nd=lvNeed(o),max=o.lv>=CAP;
   h+=`<br>${qTag(o.q)} เลเวลเจม <b>${o.lv}/${CAP}</b> · เจมซ้ำ ${o.dup||0} · ${o.lv>=CAP?'หลุมแปรสภาพที่ 2 เปิดแล้ว':`หลุมแปรสภาพที่ 2 เปิดที่ Lv ${CAP}`}`;
   h+=max?'<br><span class="g">เลเวลตันแล้ว (อัปเดตหน้าจะเพิ่มเลเวลตัน)</span>':`<br>อัปเลเวลถัดไป: แก่นโทเท็ม ${nd.ess} (มี ${fmtN(bagN('tess'))}) · ${fmtN(nd.z)}z${nd.dup?` · <b class="c">ทะลุขีด: ใช้เจมซ้ำ ${nd.dup} (มี ${o.dup||0})</b>`:''}`;
-  const lk=(o.lines||[]).filter(l=>l[2]).length,rz=(C.rerollEss||8)+(C.lockEss||12)*lk;
-  h+=`<div style="margin-top:4px"><b>บรรทัดสุ่ม</b> (${QUAL[o.q||0].n} ${QUAL[o.q||0].lines} บรรทัด)</div>`+(o.lines||[]).map((l,i)=>{const d=LD[l[0]],r=l[1],up=r<5?C.rankEss[r-1]:0;
-    return `<div class="ln"><i>${GD.R(r)}</i><span><b>${d?d[1]:l[0]}</b> — ${d?d[3](r):''}</span>${r<5?`<button data-lup="${i}" ${bagN('tess')>=up&&zeny()>=C.rankZ(r)?'':'disabled'} title="อัปขั้น: แก่น ${up} · ${fmtN(C.rankZ(r))}z">ขั้น+ (${up})</button>`:'<small>ขั้นสูงสุด</small>'}<label><input type="checkbox" data-lock="${i}" ${l[2]?'checked':''}>ล็อก</label></div>`;}).join('')
-    +Array.from({length:Math.max(0,QUAL[o.q||0].lines-(o.lines||[]).length)},()=>'<div class="ln"><i>–</i><span style="opacity:.6">ช่องบรรทัดว่าง — กดสุ่มเพื่อเติม</span></div>').join('')
-    +`<div class="rr" style="margin-top:3px">สุ่มบรรทัดที่ไม่ล็อกใหม่ (ขั้นเริ่ม I–III): แก่น ${rz} · ${fmtN(C.rerollZ||5000)}z <button data-reroll ${bagN('tess')>=rz&&zeny()>=(C.rerollZ||5000)&&(lk<(o.lines||[]).length||(o.lines||[]).length<QUAL[o.q||0].lines)?'':'disabled'}>🎲 สุ่มใหม่</button></div>`;
+  h+=candHtml(o)+linesHtml(o,'c');
   return h;}
-function bindInfo(k){const el=win.querySelector('#tgInfo'),o=D.own[k];if(!o)return;
-  el.querySelectorAll('[data-lock]').forEach(c=>c.onchange=()=>{o.lines[+c.dataset.lock][2]=c.checked?1:0;save();info(gemInfo(k));bindInfo(k);});
-  el.querySelectorAll('[data-lup]').forEach(b=>b.onclick=()=>{const l=o.lines[+b.dataset.lup],r=l[1],e=C.rankEss[r-1],z=C.rankZ(r);if(r>=5||bagN('tess')<e||!payZ(z))return;bagAdd('tess',-e);bagSave();l[1]++;save();info(gemInfo(k)+`<br><span class="g">✔ ${GD.LND[l[0]][1]} ขึ้นเป็นขั้น ${GD.R(l[1])}</span>`);bindInfo(k);render(true);});
+/* special-stat lines (owner 2026-11-21) — the same block for C gems ('c') and skill gems ('s'): rank badge, the real number (rank × rarity × level),
+   rank-up, lock, re-roll of the unlocked lines; empty slots wait for a roll */
+const rkRange=q=>{const P=QUAL[q||0].rk||[1],a=P.findIndex(x=>x>0)+1,b=P.length-[...P].reverse().findIndex(x=>x>0);return GD.R(a)+'–'+GD.R(b);};
+function linesHtml(o,kind){const LD=GD?GD.LND:{},q=o.q||0,n=NSL(q,o.lv),ls=o.lines||[],nx=SLV.find(x=>(o.lv||1)<x);
+  let h=`<div class="lnh">✦ <b>สเตตัสพิเศษ</b> ${ls.length}/${n} ช่อง${nx?` · ช่องถัดไป Lv ${nx}`:''} · ตัวเลข ×${(QUAL[q].m*LVM(o.lv)).toFixed(2)} <small>(ระดับ ×${QUAL[q].m.toFixed(2)} · เลเวล ×${LVM(o.lv).toFixed(2)})</small></div>`;
+  h+=ls.map((l,i)=>{const d=LD[l[0]],r=l[1],up=r<5?C.rankEss[r-1]:0,st=d&&d[2]==='สเตตัส';
+    return `<div class="ln ln2${st?' st':''}"><i>${GD.R(r)}</i><span>${lnTxt(l,q,o.lv)}</span><div class="lc">${r<5?`<button data-lup="${i}" ${bagN('tess')>=up&&zeny()>=C.rankZ(r)?'':'disabled'} title="อัปขั้น: แก่น ${up} · ${fmtN(C.rankZ(r))}z">ขั้น+ ${GD.R(r+1)} · แก่น ${up}</button>`:'<small>ขั้นสูงสุด</small>'}<label><input type="checkbox" data-lock="${i}" ${l[2]?'checked':''}>ล็อก</label></div></div>`;}).join('')
+    +Array.from({length:Math.max(0,n-ls.length)},()=>'<div class="ln"><i>–</i><span style="opacity:.6">ช่องว่าง — กดสุ่มเพื่อเติม</span></div>').join('');
+  const lk=ls.filter(l=>l[2]).length,rz=(C.rerollEss||8)+(C.lockEss||12)*lk,ok=bagN('tess')>=rz&&zeny()>=(C.rerollZ||5000)&&(lk<ls.length||ls.length<n);
+  return h+`<div class="rr">สุ่มสเตตัสที่ไม่ล็อกใหม่ (${QUAL[q].n}: ขั้นเริ่ม ${rkRange(q)}): แก่น ${rz} · ${fmtN(C.rerollZ||5000)}z <button data-reroll ${ok?'':'disabled'}>🎲 สุ่มใหม่</button></div>`;}
+function bindLines(o,kind,refresh){const el=win.querySelector('#tgInfo');
+  el.querySelectorAll('[data-lock]').forEach(c=>c.onchange=()=>{o.lines[+c.dataset.lock][2]=c.checked?1:0;save();refresh('');});
+  el.querySelectorAll('[data-lup]').forEach(b=>b.onclick=()=>{const l=o.lines[+b.dataset.lup],r=l[1],e=C.rankEss[r-1],z=C.rankZ(r);if(r>=5||bagN('tess')<e||!payZ(z))return;bagAdd('tess',-e);bagSave();l[1]++;save();
+    refresh(`<br><span class="g">✔ ${GD.LND[l[0]][1]} ขึ้นเป็นขั้น ${GD.R(l[1])}</span>`);render(true);});
   const rr=el.querySelector('[data-reroll]');if(rr)rr.onclick=()=>{const lk=o.lines.filter(l=>l[2]),e=C.rerollEss+C.lockEss*lk.length;if(bagN('tess')<e||!payZ(C.rerollZ))return;bagAdd('tess',-e);bagSave();
-    o.lines=rollLines(o.q||0,lk);save();info(gemInfo(k)+'<br><span class="g">✔ สุ่มบรรทัดใหม่แล้ว</span>');bindInfo(k);render(true);};}
+    o.lines=rollLines(o.q||0,o.lv,lk,kind);save();refresh('<br><span class="g">✔ สุ่มสเตตัสพิเศษใหม่แล้ว</span>');render(true);};}
+/* a new roll of a gem you have (better-rarity C gem copy, or a re-extracted skill gem) waits beside the old one: keep either */
+function candHtml(o){const c=o&&o.cand;if(!c)return '';
+  return `<div class="cand"><b>⚗ ได้ผลใหม่</b> ${qTag(c.q)} ${NSL(c.q,o.lv)} ช่อง <small>(เดิม ${QUAL[o.q||0].n} ${NSL(o.q||0,o.lv)} ช่อง)</small><div class="cl">${c.lines.map(l=>`<div><i>${GD.R(l[1])}</i> ${lnTxt(l,c.q,o.lv)}</div>`).join('')}</div><div class="cb"><button data-cand="1">✔ ใช้อันใหม่</button><button data-cand="0">เก็บอันเดิม</button></div></div>`;}
+function bindCand(root,o,done){root.querySelectorAll('[data-cand]').forEach(b=>b.onclick=()=>{const c=o.cand;if(!c)return;const yes=b.dataset.cand==='1';if(yes){o.q=c.q;o.lines=c.lines;}delete o.cand;boost=yes?1:.4;save();done(yes);render(true);});}
+function bindInfo(k){const o=D.own[k];if(!o)return;bindLines(o,'c',x=>showGem(k,x));
+  bindCand(win.querySelector('#tgInfo'),o,yes=>showGem(k,yes?`<br><span class="g">✔ ใช้เจมระดับ ${QUAL[o.q].n} แล้ว — เม็ดเดิมเป็นเจมซ้ำ</span>`:'<br>เก็บอันเดิม — เม็ดใหม่เป็นเจมซ้ำ'));}
+/* the skill gem's block inside a skill / skill-hole card: rarity, level, special stats, re-extract */
+function sgSection(k){const o=sgo(k);if(!o)return '';const q=o.q||0,nd=sgNeed(o),max=o.lv>=CAP;
+  let h=`<div class="sgc">💎 <b>เจมสกิล</b> ${qTag(q)} เลเวลเจม <b>${o.lv}/${CAP}</b>`;
+  h+=max?' · <span class="g">เลเวลตัน</span>':`<br><span class="up">อัปเลเวล${nd.brk.length?' <b class="c">(ทะลุขีด)</b>':''}: แก่น ${nd.ess} · ${fmtN(nd.z)}z${nd.brk.map(([x,c])=>' '+icn(x,c)).join('')} → ปุ่ม "อัปเลเวล" ด้านล่าง</span>`;
+  h+=candHtml(o)+linesHtml(o,'s');
+  if(!o.cand){const L=reNeeds(k);h+=`<div class="rr">⚗ สกัดใหม่ = สุ่มระดับ + สเตตัสพิเศษใหม่หมด (เลเวลเดิมอยู่ · ได้ผลแล้วเลือกเก็บอันไหนก็ได้): ${L.map(e=>e.x==='z'?`<span class="ic${zeny()<e.n?' no':''}">${fmtN(e.n)}z</span>`:icn(e.x,e.n)).join(' ')} <button data-rex ${reOK(k)?'':'disabled'}>⚗ สกัดใหม่</button></div>`;}
+  return h+'</div>';}
+function bindSG(k,refresh){const o=sgo(k);if(!o)return;const el=win.querySelector('#tgInfo');bindLines(o,'s',refresh);
+  const rx=el.querySelector('[data-rex]');if(rx)rx.onclick=()=>{if(!reExtract(k))return;boost=.8;refresh('<br><span class="g">⚗ สกัดใหม่แล้ว — เทียบกับอันเดิม แล้วเลือกเก็บ</span>');render(true);};
+  bindCand(el,o,yes=>{if(yes)popK=k;refresh(yes?`<br><span class="g">✔ ใช้เจมระดับ ${QUAL[o.q].n} แล้ว</span>`:'<br>เก็บอันเดิมไว้');});}
+function showSkill(k,extra){info(skillInfo(k)+(extra||''));bindSG(k,x=>showSkill(k,x));}
 function showGem(k,extra){info(gemInfo(k)+(extra||''));bindInfo(k);}
 const mutInfo=id=>{const m=MUTD[id];return `<b>${m[1]}</b> (เจมแปรสภาพ)<br><span class="g">ได้: ${m[4]}</span><br><span class="c">เสีย: ${m[5]}</span>`;};
 const supInfo=id=>{const s=SUPD[id];return `<b>${s[1]}</b> (เจมเสริม)<br>${s[4]}`;};
@@ -570,8 +665,14 @@ const supInfo=id=>{const s=SUPD[id];return `<b>${s[1]}</b> (เจมเสร�
 const sg=(id,kind)=>{const d=kind==='mut'?MUTD[id]:SUPD[id];return `<span class="tgSg${kind==='mut'?' mut':''}" style="--c:${d[3]}"><span>${d[2]}</span><img src="assets/gems/${kind==='mut'?'mut':'support'}/${id}.webp" alt="" draggable="false" onload="this.parentNode.classList.add('art')" onerror="this.remove()"></span>`;};
 /* skill gem picture (owner's frame + glass shine, 2026-11-21, GEM_PAGE_ART_PROMPTS_TH.md 11–12): the skill icon in a circle under the glass,
    the moonstone frame on top; one frame for every skill of every hero. The frame's window is .664 of its width, the icon circle .684 (tucked under the rim). */
-const SGEM={f:PG+'sgem_frame.webp',s:PG+'sgem_shine.webp'};
-const sgemHtml=k=>`<span class="sgem"><span class="sgi">${skArt(k)}</span><img class="sgs" src="${SGEM.s}" alt="" draggable="false"><img class="sgf" src="${SGEM.f}" alt="" draggable="false"></span>`;
+const SGEM={f:PG+'sgem_frame.webp',s:PG+'sgem_shine.webp',c:PG+'cgem_frame.webp'};
+/* rarity light (owner 2026-11-21: 'the gem's light changes colour by rarity'): rq<q> = glow round the frame + a light ring inside the window
+   in the rarity colour; มหากาพย์ / ตำนาน pulse and a light runs round the ring. C gems (owner 2026-11-21: 'make the C gems like the skill gem,
+   one design for every C skill'): the same build with the C frame (cgem_frame.webp — interim ruby recolour until the owner's frame art,
+   GEM_PAGE_ART_PROMPTS_TH.md 13) round the C skill's icon; the glass shine is shared. */
+const gemBox=(art,q,c)=>{q=q||0;const Q=QUAL[q]||QUAL[0];return `<span class="sgem rq${q}${c?' cg':''}" style="--rc:${Q.c};--rg:${Q.g}"><span class="sgi">${art}</span><span class="rgl"></span><img class="sgs" src="${SGEM.s}" alt="" draggable="false"><img class="sgf" src="${c?SGEM.c:SGEM.f}" alt="" draggable="false"><span class="rsw"></span></span>`;};
+const sgemHtml=(k,q)=>{const o=q==null?sgo(k):null;return gemBox(skArt(k),q!=null?q:o?o.q:0);};
+const cgemHtml=(k,q)=>gemBox(skArt(k)||`<img src="assets/icons/${HERO}/${k}.webp" alt="">`,q!=null?q:(D.own[k]||{}).q||0,1);
 const skArt=k=>{try{const a=G('artFor'),ic=G('iconSVG'),sk=G('SKILLS')[k];return (a&&a(k))||(ic&&sk&&ic(sk.icon))||'';}catch(e){return '';}};
 function node(x,y,kind,inner,cls,title,onclick,icls,art){const el=document.createElement('div');const ak=ART[kind]||kind;let s=SZ[kind];let c=CUP[ak],src=`${BD}sock_${ak}.webp`,gk=ak==='main'?1.18:1.05;
   let sz=s;
@@ -582,10 +683,11 @@ function node(x,y,kind,inner,cls,title,onclick,icls,art){const el=document.creat
   el.innerHTML=(src?`<img class="sk" src="${src}" alt="">`:'<i class="ho"></i>')+(/\bpg\b/.test(cls||'')?'<i class="pl"></i>':'')+(inner?`<div class="in ${icls||''}" style="left:${c.cx*s-gs/2}px;top:${c.cy*s-gs/2}px;width:${gs}px;height:${gs}px">${inner}</div>`
     :/lock|dim|\bpg\b/.test(cls||'')?'':`<div class="eg" style="--eg:${kind==='skill'?'190,225,255':(kind==='sup'||kind==='ssup')?'120,220,255':(kind==='mut'||kind==='smut')?'255,178,96':'255,222,140'};left:${c.cx*s-gs*.32}px;top:${c.cy*s-gs*.32}px;width:${gs*.64}px;height:${gs*.64}px"></div>`);
   el.title=title||'';el.onclick=onclick;board.appendChild(el);return el;}
+const selSG=()=>{if(!sel||sel.carve)return null;const k=sel.skill?sel.skill:sel.ss!=null?D.ss[sel.ss]:null;return k&&extracted(k)&&sgo(k)?k:null;};
 function render(keepInfo){const S=G('SKILLS');if(!S)return;
   const inv=(id,list)=>{const e=win.querySelector(id);e.innerHTML='';list.forEach(b=>e.appendChild(b));};
-  inv('#tgGems',cKeys().map(k=>{const b=document.createElement('button'),own=D.own[k];b.className=(own?'':'lock ')+(D.sock.includes(k)?'used ':'')+(sel&&sel.gem===k?'sel':'');if(own&&own.q)b.dataset.q=own.q;
-    b.innerHTML=`<img src="${gemImg(k)}" onerror="this.onerror=null;this.src='assets/icons/${HERO}/${k}.webp'" alt="" draggable="false">`+(own?`<i>${own.lv}</i>`+(own.dup?`<b class="dp">×${own.dup}</b>`:''):'');b.title=S[k].name+(own?` · Lv ${own.lv} · ${QUAL[own.q||0].n}`:' · ยังไม่มี');b.onclick=()=>{const t=sel;sel=own?{gem:k}:null;if(own&&t&&t.sock!=null&&!D.sock[t.sock]){clickSock(t.sock);return;}showGem(k);render(true);};return b;}));
+  inv('#tgGems',cKeys().map(k=>{const b=document.createElement('button'),own=D.own[k];b.className='cgb '+(own?'':'lock ')+(D.sock.includes(k)?'used ':'')+(sel&&sel.gem===k?'sel':'');
+    b.innerHTML=cgemHtml(k)+(own?`<i>${own.lv}</i>`+(own.dup?`<b class="dp">×${own.dup}</b>`:'')+(own.cand?'<b class="cn">!</b>':''):'');b.title=S[k].name+(own?` · Lv ${own.lv} · ${QUAL[own.q||0].n}`:' · ยังไม่มี');b.onclick=()=>{const t=sel;sel=own?{gem:k}:null;if(own&&t&&t.sock!=null&&!D.sock[t.sock]){clickSock(t.sock);return;}showGem(k);render(true);};return b;}));
   for(const [kind,list,el] of [['mut',MUT,'#tgMuts'],['sup',SUP,'#tgSups']])
     inv(el,list.map(([id,n])=>{const fr=free(kind,id),u=used(kind,id);const b=document.createElement('button');b.className=(fr<=0?'used ':'')+(sel&&sel[kind]===id?'sel':'');
       b.innerHTML=sg(id,kind)+(fr||u?`<i>${fr}</i>`:'');b.title=n;
@@ -597,10 +699,10 @@ function render(keepInfo){const S=G('SKILLS');if(!S)return;
   {const LVx=G('LV')||{},ks=Object.keys(S).filter(k=>ssOK(k)&&(LVx[k]||0)>0).sort((a,b)=>'basicAB'.indexOf(S[a].br)-'basicAB'.indexOf(S[b].br)||(S[a].row||0)-(S[b].row||0));
     inv('#tgSkills',ks.length?ks.map(k=>{const b=document.createElement('button'),on=D.ss.indexOf(k),gx=extracted(k),xs=gx?'done':exState(k);
       b.className=(on>=0?'used ':'')+(gx?'gx ':'nx '+(xs==='rdy'?'rdy ':''))+(sel&&sel.skill===k?'sel ':'')+(popK===k?'pop':'');b.dataset.k=k;
-      b.innerHTML=(gx?sgemHtml(k):skArt(k))+gemMark(k)+(gx?'':'<b class="xb">⚗</b>');b.title=S[k].name+(gx?' · เจมสกิล':' · ยังไม่ได้สกัดเป็นเจม')+(on>=0?` · หลุมสกิล ${on+1}`:'');
+      b.innerHTML=(gx?sgemHtml(k):skArt(k))+gemMark(k)+(gx?'':'<b class="xb">⚗</b>');b.title=S[k].name+(gx?' · เจมสกิล '+QUAL[(sgo(k)||{}).q||0].n+(sgo(k)?' Lv '+sgo(k).lv:''):' · ยังไม่ได้สกัดเป็นเจม')+(on>=0?` · หลุมสกิล ${on+1}`:'');
       b.onclick=()=>{const t=sel,ok=i=>i!=null&&!D.ss[i]&&ssOpen(i),hole=t&&ok(t.ss)?t.ss:t&&ok(t.ph)?t.ph:null;sel={skill:k};   /* an empty hole picked first (or still pending) */
         if(!extracted(k)){if(hole!=null)sel.ph=hole;info(exInfo(k,hole!=null?'<br><span class="c">สกัดสกิลนี้เป็นเจมก่อน แล้วระบบจะวางในหลุมที่เลือกไว้ให้</span>':''));render(true);return;}
-        if(hole!=null){clickSS(hole);return;}info(skillInfo(k));render(true);};return b;})
+        if(hole!=null){clickSS(hole);return;}showSkill(k);render(true);};return b;})
       :[Object.assign(document.createElement('div'),{style:'grid-column:1/-1;font:500 11px/1.4 Mitr,sans-serif;color:#e9c98a;padding:4px',textContent:'ยังไม่มีสกิลกดใช้ที่เรียน — อัปสกิลในหน้าต่างสกิล (K) ก่อน'})]);popK=null;}
   {const gb=win.querySelector('#tgGiftB'),n=giftN();gb.style.display=n?'':'none';gb.textContent=`🎁 รับเจมแปรสภาพฟรี ${n} เม็ด (ของขวัญดาวสกิล)`;}
   {const T=win.querySelectorAll('.tgTabs button small'),nOpen=SS_LV.filter((l,i)=>ssOpen(i)).length,nPl=D.ss.filter((k,i)=>k&&ssOpen(i)).length;   /* tab counters */
@@ -612,8 +714,8 @@ function render(keepInfo){const S=G('SKILLS');if(!S)return;
   const cvp=cs=>`<div class="cvp${cs==='rdy'?' on':''}">⛏ ${cs==='rdy'?'สลักได้!':'สลัก'}</div>`,sc=id=>sel&&sel.carve===id?' sel':'';
   MAIN.forEach((p,i)=>{const k=D.sock[i],open=sockOpen(i),cs=open?'open':cvState('p'+i),pid='p'+i;
     const o=k&&D.own[k];
-    const el=node(p.x,p.y,'main',k?`<img src="${gemImg(k)}" onerror="this.onerror=null;this.src='assets/icons/${HERO}/${k}.webp'" alt="">`:'','mn '+(open?'':cs==='lv'||!TL?'lock ':'pg wd '+(cs==='rdy'?'rdy ':''))+(sel&&(sel.sock===i||sel.carve===pid)?'sel':''),
-      open?(k?S[k].name:TL?'หลุมเจม C ของชั้นนี้':'ช่องเจมหลัก'):cs==='lv'?`เปิดที่ Lv ${SOCK_LV[i]}`:`${hole(pid).nm} · ยังไม่ได้สลัก — แตะเพื่อดูของที่ต้องส่ง`,()=>clickSock(i),(o&&o.q?'q'+o.q:'')+(k?' '+gemIc():''),HOLE(p)||LAND[i]);
+    const el=node(p.x,p.y,'main',k?cgemHtml(k):'','mn '+(open?'':cs==='lv'||!TL?'lock ':'pg wd '+(cs==='rdy'?'rdy ':''))+(sel&&(sel.sock===i||sel.carve===pid)?'sel':''),
+      open?(k?S[k].name:TL?'หลุมเจม C ของชั้นนี้':'ช่องเจมหลัก'):cs==='lv'?`เปิดที่ Lv ${SOCK_LV[i]}`:`${hole(pid).nm} · ยังไม่ได้สลัก — แตะเพื่อดูของที่ต้องส่ง`,()=>clickSock(i),k?'sg':'',HOLE(p)||LAND[i]);
     if(cs==='lv')el.insertAdjacentHTML('beforeend',`<div class="lk">🔒 Lv ${SOCK_LV[i]}</div>`);else if(!open)el.insertAdjacentHTML('beforeend',cvp(cs));
     if(o&&open)el.insertAdjacentHTML('beforeend',`<span class="lvd">Lv ${o.lv}</span>`);
     MODS[i].forEach((q,j)=>{if(!q||cs==='lv'||(!TL&&(!open||!k)))return;   /* round board: an empty / locked main star shows no side stars; a tier above your level is a ghost */
@@ -647,6 +749,7 @@ function render(keepInfo){const S=G('SKILLS');if(!S)return;
   const gk=sel&&(sel.gem||(sel.sock!=null&&D.sock[sel.sock])),go=gk&&D.own[gk];
   if(sel&&sel.skill&&!extracted(sel.skill)){const st=exState(sel.skill);b2.disabled=st!=='rdy';b2.textContent='⚗ สกัดเป็นเจม';b2.classList.toggle('cv',st==='rdy');}
   else if(sel&&sel.carve){const st=cvState(sel.carve);b2.disabled=st!=='rdy';b2.textContent=st==='open'?'สลักแล้ว':'⛏ สลักเปิด';b2.classList.toggle('cv',st==='rdy');}   /* a sealed hole: this button carves it */
+  else if(selSG()){const o=sgo(selSG()),n=sgNeed(o);b2.disabled=!sgCan(o);b2.textContent=!o?'อัปเลเวล':o.lv>=CAP?'เลเวลตัน':n.brk.length?`ทะลุขีด Lv ${o.lv+1}`:`อัปเลเวลเจม ${o.lv+1}`;}
   else if(go){const nd=lvNeed(go);b2.disabled=go.lv>=CAP||bagN('tess')<nd.ess||zeny()<nd.z||(go.dup||0)<nd.dup;b2.textContent=go.lv>=CAP?'เลเวลตัน':nd.dup?`ทะลุขีด Lv ${go.lv+1}`:`อัปเลเวล ${go.lv+1}`;}
   else{b2.disabled=true;b2.textContent='อัปเลเวล';}
   if(!(sel&&(sel.carve||(sel.skill&&!extracted(sel.skill)))))b2.classList.remove('cv');
@@ -684,9 +787,11 @@ function doCarve(id){const h=hole(id);if(!carveNow(id)){info(cvInfo(id));render(
   info(`<b class="g">✔ สลักเปิด ${h.nm} แล้ว!</b><br>${nx}`);try{G('msg')(`⛏ สลักเปิด ${h.nm} แล้ว`);}catch(e){}}
 /* extract a skill into its gem; when a hole was picked first, the new gem goes straight into it */
 function doExtract(k){const S=G('SKILLS'),fr=exFree(),ph=sel&&sel.ph;if(!extractNow(k)){info(exInfo(k));render(true);return;}
-  popK=k;boost=.8;try{G('msg')(`⚗ สกัด ${S[k].name} เป็นเจมแล้ว`);}catch(e){}
+  popK=k;boost=.8;try{const o=sgo(k);G('msg')(`⚗ สกัด ${S[k].name} เป็นเจมแล้ว — ระดับ ${QUAL[o?o.q:0].n}`);}catch(e){}
   if(ph!=null&&ssOpen(ph)&&!D.ss[ph]){sel={skill:k};clickSS(ph);return;}
-  sel={skill:k};render(true);info(`<b class="g">✔ สกัด ${S[k].name} เป็นเจมแล้ว${fr?' (ครั้งแรกฟรี)':''}!</b><br>ต่อไป: แตะหลุมสกิลบนแท่นหินที่เปิดแล้ว เพื่อวางเจมสกิลนี้`);}
+  sel={skill:k};render(true);info(`<b class="g">✔ สกัด ${S[k].name} เป็นเจมแล้ว${fr?' (ครั้งแรกฟรี)':''}!</b> ${exRes(k)}<br>ต่อไป: แตะหลุมสกิลบนแท่นหินที่เปิดแล้ว เพื่อวางเจมสกิลนี้<hr style="border:0;border-top:1px solid #c9a46a;margin:5px 0">`+skillInfo(k));bindSG(k,x=>showSkill(k,x));}
+/* what the extraction rolled: rarity + its special stats */
+const exRes=k=>{const o=sgo(k);return o?`<br>ได้ระดับ ${qTag(o.q)} · สเตตัสพิเศษ: ${(o.lines||[]).map(l=>lnTxt(l,o.q,o.lv)).join(' · ')}`:'';};
 /* ---- skill stars ---- */
 const cDup=(k,id)=>{const A=ACT[k];return !!(A&&A.cmut&&A.cmut.includes(id));};   /* the skill already gets this mutation from a C gem */
 function ssInfo(i,extra){const S=G('SKILLS'),k=D.ss[i],id=D.sm[i];
@@ -694,17 +799,17 @@ function ssInfo(i,extra){const S=G('SKILLS'),k=D.ss[i],id=D.sm[i];
   if(!k)return h+(TL?'ว่าง · เลือกเจมสกิลในแท็บ "สกิล" (สกิลที่ยังไม่ได้สกัด กด ⚗ สกัดก่อน) แล้วแตะหลุมนี้':'ว่าง · เลือกสกิลในแท็บ "สกิล" แล้วแตะดาวนี้')+(extra||'');
   const s=S[k],l=(G('LV')||{})[k]||0;
   const fu=ssChain(k).slice(1).map(q=>S[q].name);
-  h+=`สกิล <b>${s.name}</b>${fu.length?' + ท่าต่อ '+fu.join(', '):''} · สาย ${BRN[s.br]||s.br} · Lv สกิล ${l}${l?'':' <b class="c">(ยังไม่ได้เรียน — ดาวนี้ยังไม่มีผล)</b>'}<br>`;
+  h+=`สกิล <b>${s.name}</b>${fu.length?' + ท่าต่อ '+fu.join(', '):''} · สาย ${BRN[s.br]||s.br} · Lv สกิล ${l}${l?'':' <b class="c">(ยังไม่ได้เรียน — ดาวนี้ยังไม่มีผล)</b>'}<br>`+sgSection(k);
   if(id){const m=MUTD[id];h+=`แปรสภาพ <b>${m[1]}</b>${cDup(k,id)?' <b class="c">(ซ้ำกับเจม C — ไม่มีผล)</b>':''}<br><span class="g">ได้: ${m[4]}</span><br><span class="c">เสีย: ${m[5]}</span><br><button class="ssb" data-ssoff="${i}">ถอดเฉพาะเจมแปรสภาพ</button>`;}
   else{const av=MUT.filter(m=>free('mut',m[0])>0&&!cDup(k,m[0])&&used('mut',m[0])<2);   /* one-tap buttons: no need to scroll the gem list on a phone */
     h+=av.length?`<span style="color:#2a5a8a">ยังไม่ใส่เจมแปรสภาพ — แตะปุ่มเพื่อใส่เลย</span><div style="display:flex;flex-wrap:wrap;gap:3px;margin-top:2px">${av.map(m=>`<button class="ssb" data-ssput="${m[0]}" style="margin:0">${m[1]} ×${free('mut',m[0])}</button>`).join('')}</div>`
       :`<span style="color:#2a5a8a">ยังไม่มีเจมแปรสภาพในกระเป๋า — ${giftN()?'รับฟรีที่ปุ่ม 🎁':'หาได้จากดันเจี้ยน บอส มอนสนาม (หายาก) หรือตลาดกลาง'}</span>`;}
   return h+'<br><span style="opacity:.75">ผลติดไปกับสกิลจริง: คูลดาวน์ / SP ในคำอธิบายสกิลเปลี่ยนตาม · ปุ่มสกิลมีเครื่องหมายเจม · ย้ายสกิล = แตะสกิลในแท็บ "สกิล" แล้วแตะดาวใหม่ · "ถอดออก" = เอาสกิลและเจมออกจากดาว</span>'+(extra||'');}
-function showSS(i,extra){info(ssInfo(i,extra));win.querySelectorAll('#tgInfo [data-ssput]').forEach(b=>b.onclick=()=>placeSM(i,b.dataset.ssput));const b=win.querySelector('#tgInfo [data-ssoff]');if(b)b.onclick=()=>{if(D.sm[i]){bagAdd('gmut_'+D.sm[i],1);bagSave();D.sm[i]=null;save();}showSS(i,'<br><span class="g">✔ ถอดเจมแปรสภาพกลับเข้ากระเป๋าแล้ว</span>');render(true);};}
+function showSS(i,extra){info(ssInfo(i,extra));win.querySelectorAll('#tgInfo [data-ssput]').forEach(b=>b.onclick=()=>placeSM(i,b.dataset.ssput));const b=win.querySelector('#tgInfo [data-ssoff]');if(b)b.onclick=()=>{if(D.sm[i]){bagAdd('gmut_'+D.sm[i],1);bagSave();D.sm[i]=null;save();}showSS(i,'<br><span class="g">✔ ถอดเจมแปรสภาพกลับเข้ากระเป๋าแล้ว</span>');render(true);};if(D.ss[i])bindSG(D.ss[i],x=>showSS(i,x));}
 function skillInfo(k){const S=G('SKILLS'),s=S[k],j=D.ss.indexOf(k),A=ACT[k];
   const fu=ssChain(k).slice(1).map(q=>S[q].name);
-  return `<b>${s.name}</b> · สาย ${BRN[s.br]||s.br} · Lv สกิล ${(G('LV')||{})[k]||0}<br>${s.th||''}${fu.length?`<br><span style="color:#6a4a2a">ท่าต่อ ${fu.join(', ')} ได้ผลแปรสภาพไปด้วย (คูลดาวน์ / SP คิดที่ท่าเริ่ม)</span>`:''}<br>`
-    +(j>=0?`อยู่บนดาวสกิลดวงที่ ${j+1}${D.sm[j]?' · แปรสภาพ <b>'+MUTD[D.sm[j]][1]+'</b>':''} — ย้ายได้: แตะดาวสกิลดวงอื่นตอนนี้`
+  return `<b>${s.name}</b> · สาย ${BRN[s.br]||s.br} · Lv สกิล ${(G('LV')||{})[k]||0}<br>${s.th||''}${fu.length?`<br><span style="color:#6a4a2a">ท่าต่อ ${fu.join(', ')} ได้ผลแปรสภาพ + สเตตัสพิเศษฝั่งการตีไปด้วย (คูลดาวน์ / SP คิดที่ท่าเริ่ม)</span>`:''}<br>`+sgSection(k)
+    +(j>=0?`อยู่บน${TL?'หลุมสกิลที่':'ดาวสกิลดวงที่'} ${j+1}${D.sm[j]?' · แปรสภาพ <b>'+MUTD[D.sm[j]][1]+'</b>':''} — ย้ายได้: แตะดาวสกิลดวงอื่นตอนนี้`
       :TL?'<span style="color:#2a5a8a">แตะหลุมสกิลบนแท่นหินที่เปิดแล้วเพื่อวาง แล้วใส่เจมแปรสภาพ (ขอบทอง)'+(SSU.length?' และเจมเสริม (ขอบเขียว)':'')+' — สกิลนี้จะเปลี่ยนไปตามเจมจริงๆ</span>':'<span style="color:#2a5a8a">แตะดาวสกิลวงใน (ดาวเงิน) ที่เปิดแล้วเพื่อวาง แล้วใส่เจมแปรสภาพ — สกิลนี้จะเปลี่ยนไปตามเจมจริงๆ</span>')
     +(A&&A.cmut&&A.cmut.length?`<br>ได้แปรสภาพจากเจม C อยู่แล้ว: ${A.cmut.map(x=>MUTD[x][1]).join(', ')}`:'');}
 function placeSM(i,id){const S=G('SKILLS'),k=D.ss[i];
@@ -757,18 +862,21 @@ win.querySelector('#tgOut').onclick=()=>{if(!sel)return;
   else if(sel.ss!=null||sel.sm!=null){const i=sel.ss!=null?sel.ss:sel.sm;if(D.sm[i]){bagAdd('gmut_'+D.sm[i],1);bagSave();D.sm[i]=null;}
     if(sel.ss!=null){D.ss[i]=null;D.ssu[i]=(D.ssu[i]||[]).map(x=>{if(x){bagAdd('gsup_'+x,1);bagSave();}return null;});}}
   sel=null;save();info('ถอดออกแล้ว (เจมแปรสภาพ / เจมเสริมกลับเข้ากระเป๋า)');render();};
-win.querySelector('#tgUp').onclick=()=>{if(sel&&sel.skill&&!extracted(sel.skill)){doExtract(sel.skill);return;}if(sel&&sel.carve){doCarve(sel.carve);return;}const k=sel&&(sel.gem||(sel.sock!=null&&D.sock[sel.sock]));const o=k&&D.own[k];if(!o||o.lv>=CAP)return;
-  const nd=lvNeed(o);if(bagN('tess')<nd.ess||(o.dup||0)<nd.dup||zeny()<nd.z)return;payZ(nd.z);bagAdd('tess',-nd.ess);bagSave();o.dup-=nd.dup;o.lv++;boost=.7;save();
-  showGem(k,`<br><span class="g">✔ ${nd.dup?'ทะลุขีด! ':''}เลเวลเจม ${o.lv}${o.lv===CAP?' · เปิดช่องแปรสภาพที่ 2!':''}</span>`);render(true);};
+win.querySelector('#tgUp').onclick=()=>{if(sel&&sel.skill&&!extracted(sel.skill)){doExtract(sel.skill);return;}if(sel&&sel.carve){doCarve(sel.carve);return;}
+  {const sk=selSG();if(sk){const m=sgUp(sk);if(m==null)return;boost=.7;if(sel.ss!=null)showSS(sel.ss,m);else showSkill(sk,m);render(true);return;}}const k=sel&&(sel.gem||(sel.sock!=null&&D.sock[sel.sock]));const o=k&&D.own[k];if(!o||o.lv>=CAP)return;
+  const nd=lvNeed(o);if(bagN('tess')<nd.ess||(o.dup||0)<nd.dup||zeny()<nd.z)return;payZ(nd.z);bagAdd('tess',-nd.ess);bagSave();o.dup-=nd.dup;o.lv++;const add=openSlots(o,'c',o.lv-1);boost=.7;save();
+  showGem(k,`<br><span class="g">✔ ${nd.dup?'ทะลุขีด! ':''}เลเวลเจม ${o.lv}${o.lv===CAP?' · เปิดช่องแปรสภาพที่ 2!':''}</span>`+add);render(true);};
 
 /* ---------- totem shrine: carve (random gem) · craft from shards (the gem you choose) · dismantle spare copies ---------- */
-let wsTab='carve',wsRes='';
+let wsTab='carve',wsRes='',wsKey=null;
 const wsEl=win.querySelector('#tgWs');
-function pickQ(){D.pity=(D.pity||0)+1;const x=Math.random();let q=x<QUAL[2].p?2:x<QUAL[2].p+QUAL[1].p?1:0;if(D.pity>=(C.pity||20))q=2;if(q===2)D.pity=0;return q;}
-function gain(k,q){const o=D.own[k];if(!o){D.own[k]={lv:1,q,lines:rollLines(q),dup:0};return 'new';}
-  if(q>(o.q||0)){o.q=q;o.lines=rollLines(q);o.dup=(o.dup||0)+1;return 'up';}   /* a better copy replaces quality + lines (level stays); the old one becomes a spare */
-  o.dup=(o.dup||0)+1;return 'dup';}
-function resHtml(k,q,how){const S=G('SKILLS')[k];return `<img class="pop" src="${gemImg(k)}" onerror="this.onerror=null;this.src='assets/icons/${HERO}/${k}.webp'" alt=""><div>${qTag(q)} <b style="color:${QUAL[q].c}">${S.name}</b><br><small>${how==='new'?'ได้เจมใหม่!':how==='up'?'คุณภาพดีกว่าเดิม — แทนที่ (เลเวลเดิมอยู่) เม็ดเก่ากลายเป็นเจมซ้ำ':'ได้เจมซ้ำ +1 (ใช้ทะลุขีด / ย่อยเป็นชิ้นส่วน)'}</small></div>`;}
+/* a new copy of a C gem you own: better rarity → it waits as o.cand beside the old one (keep either; the other becomes the spare copy), else a spare */
+function gain(k,q){const o=D.own[k];if(!o){D.own[k]={lv:1,q,lines:rollLines(q,1,null,'c'),dup:0};return 'new';}
+  o.dup=(o.dup||0)+1;if(q>(o.q||0)&&(!o.cand||q>o.cand.q)){o.cand={q,lines:rollLines(q,o.lv,null,'c')};return 'cand';}
+  return 'dup';}
+const pityTxt=()=>`แต้มนำโชค: มหากาพย์ขึ้นไป ${D.pe||0}/${C.pityE||20} · ตำนาน ${D.pity||0}/${C.pity||50}`;
+const oddsTxt=()=>QUAL.map(Q=>`<span style="color:${Q.c}">${Q.n} ${+(Q.p*100).toFixed(1)}%</span> (${Q.lines} ช่อง)`).join(' · ');
+function resHtml(k,q,how){const S=G('SKILLS')[k],o=D.own[k];return `<span class="pop rgem">${cgemHtml(k,q)}</span><div style="flex:1">${qTag(q)} <b style="color:${QUAL[q].c}">${S.name}</b><br><small>${how==='new'?'ได้เจมใหม่! สเตตัสพิเศษ: '+o.lines.map(l=>lnTxt(l,o.q,o.lv)).join(' · '):how==='cand'?'ระดับสูงกว่าเม็ดเดิม! เลือกเก็บอันไหนก็ได้ (เลเวลเดิมอยู่ · อีกเม็ดเป็นเจมซ้ำ)':'ได้เจมซ้ำ +1 (ใช้ทะลุขีด / ย่อยเป็นชิ้นส่วน)'}</small>${how==='cand'?candHtml(o):''}</div>`;}
 const tierKeys=t=>cKeys().filter(k=>G('SKILLS')[k].tier===t);
 const icn=(id,need)=>{const a=AF(),h=a&&a.ui?a.ui.etcIcon(id,22):'',have=bagN(id);return `<span class="ic ${have<need?'no':''}" title="${a?a.ui.etcName(id):id}">${h}${fmtN(have)}/${need}</span>`;};
 function giftBuild(){const n=giftN();
@@ -784,22 +892,23 @@ function openGift(){wsTab='gift';wsRes='';wsEl.classList.add('open');giftBuild()
 function wsBuild(){if(!wsEl.classList.contains('open'))return;if(wsTab==='gift'){giftBuild();return;}const S=G('SKILLS');let body='';
   if(wsTab==='carve'){body=[1,2,3,4].map(t=>{const ks=tierKeys(t),z=C.carveZ(t),ok=bagN('tstone'+t)>=C.carveStones&&zeny()>=z&&ks.length;
       return `<div class="row"><div class="nm"><b>หินโทเท็มขั้น ${t}</b> → เจมขั้น ${t} (สุ่ม 1 ใน ${ks.length}: ${ks.map(k=>S[k].name).join(' · ')})</div>${icn('tstone'+t,C.carveStones)}<span class="ic">${fmtN(z)}z</span><button class="go" data-carve="${t}" ${ok?'':'disabled'}>⛏ แกะ</button></div>`;}).join('')
-      +`<div class="note">คุณภาพสุ่ม: ธรรมดา 70% (1 บรรทัด) · หายาก 25% (2) · ตำนาน 5% (3) · แกะครบ ${C.pity||20} ครั้งไม่ได้ตำนาน ครั้งถัดไปได้แน่นอน (ตอนนี้ ${D.pity||0}/${C.pity||20}) · หินขั้น 1 ดรอปจากมอน Lv 1–29, ขั้น 2 Lv 30–59, ขั้น 3 Lv 60–89, ขั้น 4 Lv 90+ · หาเพิ่มที่ตลาดกลาง (หมวดเจม/โทเท็ม)</div>`;}
+      +`<div class="note">ระดับสุ่ม: ${oddsTxt()} · เลเวลเจม 10 / 20 / 30 / 40 เปิดช่องสเตตัสพิเศษเพิ่มทีละ 1 · ${pityTxt()} (นับรวมการสกัดเจมสกิล) · หินขั้น 1 ดรอปจากมอน Lv 1–29, ขั้น 2 Lv 30–59, ขั้น 3 Lv 60–89, ขั้น 4 Lv 90+ · หาเพิ่มที่ตลาดกลาง (หมวดเจม/โทเท็ม)</div>`;}
   else if(wsTab==='craft'){body=`<div class="gg">${cKeys().map(k=>{const t=S[k].tier,z=C.craftZ(t),ok=bagN('tfrag'+t)>=C.craftFrag&&zeny()>=z;
-      return `<div class="gc"><img src="${gemImg(k)}" onerror="this.onerror=null;this.src='assets/icons/${HERO}/${k}.webp'" alt=""><div><b>${S[k].name}</b><br>ขั้น ${t} · ${icn('tfrag'+t,C.craftFrag)} · ${fmtN(z)}z</div><button class="go" data-craft="${k}" ${ok?'':'disabled'}>คราฟต์</button></div>`;}).join('')}</div>
-      <div class="note">เลือกชนิดเจมเองได้ (คุณภาพยังสุ่มและนับรวมแต้มตำนาน) · ชิ้นส่วนได้จากการย่อยเจมซ้ำ หรือซื้อที่ตลาดกลาง</div>`;}
+      return `<div class="gc"><span class="gem">${cgemHtml(k)}</span><div><b>${S[k].name}</b><br>ขั้น ${t} · ${icn('tfrag'+t,C.craftFrag)} · ${fmtN(z)}z</div><button class="go" data-craft="${k}" ${ok?'':'disabled'}>คราฟต์</button></div>`;}).join('')}</div>
+      <div class="note">เลือกชนิดเจมเองได้ (ระดับยังสุ่ม นับรวมแต้มนำโชค · ${pityTxt()}) · ชิ้นส่วนได้จากการย่อยเจมซ้ำ หรือซื้อที่ตลาดกลาง</div>`;}
   else{const ks=cKeys().filter(k=>D.own[k]&&D.own[k].dup>0);body=ks.length?`<div class="gg">${ks.map(k=>{const t=S[k].tier;
-      return `<div class="gc"><img src="${gemImg(k)}" onerror="this.onerror=null;this.src='assets/icons/${HERO}/${k}.webp'" alt=""><div><b>${S[k].name}</b><br>เจมซ้ำ ×${D.own[k].dup} → ชิ้นส่วนขั้น ${t} ${C.dismFrag} + แก่น ${C.dismEss}</div><button class="go" data-dism="${k}">ย่อย 1</button></div>`;}).join('')}</div>`:'<div class="note">ยังไม่มีเจมซ้ำ</div>';
+      return `<div class="gc"><span class="gem">${cgemHtml(k)}</span><div><b>${S[k].name}</b><br>เจมซ้ำ ×${D.own[k].dup} → ชิ้นส่วนขั้น ${t} ${C.dismFrag} + แก่น ${C.dismEss}</div><button class="go" data-dism="${k}">ย่อย 1</button></div>`;}).join('')}</div>`:'<div class="note">ยังไม่มีเจมซ้ำ</div>';
     body+=`<div class="note">เก็บเจมซ้ำไว้ใช้ทะลุขีดเลเวล 10 / 20 / 30 / 40 (ใช้ 1 / 1 / 2 / 2 เม็ด) — ย่อยเฉพาะที่เหลือ</div>`;}
   wsEl.innerHTML=`<div style="display:flex;align-items:center;gap:8px"><h4>⛏ ศาลโทเท็ม</h4><span class="note" style="margin-left:auto">แก่น ${fmtN(bagN('tess'))} · ${fmtN(zeny())}z</span><button class="go" id="wsX">✕ กลับแผง</button></div>
     <div class="tabs">${[['carve','⛏ แกะหิน (สุ่ม)'],['craft','🔨 คราฟต์จากชิ้นส่วน (เลือกได้)'],['dism','♻ ย่อยเจมซ้ำ']].map(([k,n])=>`<button data-wt="${k}" class="${wsTab===k?'on':''}">${n}</button>`).join('')}</div>
     <div class="res">${wsRes||'<span class="note">ผลการแกะ / คราฟต์จะแสดงที่นี่</span>'}</div>${body}`;
   wsEl.querySelector('#wsX').onclick=()=>{wsEl.classList.remove('open');render();};
   wsEl.querySelectorAll('[data-wt]').forEach(b=>b.onclick=()=>{wsTab=b.dataset.wt;wsRes='';wsBuild();});
+  {const o=wsKey&&D.own[wsKey],r=wsEl.querySelector('.res');if(o&&o.cand&&r)bindCand(r,o,yes=>{const k=wsKey;wsRes=`<span class="pop rgem">${cgemHtml(k)}</span><div>${yes?`✔ ใช้ <b>${G('SKILLS')[k].name}</b> ระดับ ${qTag(o.q)} แล้ว — เม็ดเดิมเป็นเจมซ้ำ`:`เก็บ <b>${G('SKILLS')[k].name}</b> อันเดิมไว้ — เม็ดใหม่เป็นเจมซ้ำ`}</div>`;wsBuild();});}
   wsEl.querySelectorAll('[data-carve]').forEach(b=>b.onclick=()=>{const t=+b.dataset.carve,ks=tierKeys(t),z=C.carveZ(t);if(bagN('tstone'+t)<C.carveStones||!ks.length||!payZ(z))return;
-    bagAdd('tstone'+t,-C.carveStones);bagSave();const k=ks[Math.floor(Math.random()*ks.length)],q=pickQ(),how=gain(k,q);save();wsRes=resHtml(k,q,how);wsBuild();});
+    bagAdd('tstone'+t,-C.carveStones);bagSave();const k=ks[Math.floor(Math.random()*ks.length)],q=rollQ(),how=gain(k,q);save();wsRes=resHtml(k,q,how);wsKey=k;wsBuild();});
   wsEl.querySelectorAll('[data-craft]').forEach(b=>b.onclick=()=>{const k=b.dataset.craft,t=G('SKILLS')[k].tier,z=C.craftZ(t);if(bagN('tfrag'+t)<C.craftFrag||!payZ(z))return;
-    bagAdd('tfrag'+t,-C.craftFrag);bagSave();const q=pickQ(),how=gain(k,q);save();wsRes=resHtml(k,q,how);wsBuild();});
+    bagAdd('tfrag'+t,-C.craftFrag);bagSave();const q=rollQ(),how=gain(k,q);save();wsRes=resHtml(k,q,how);wsKey=k;wsBuild();});
   wsEl.querySelectorAll('[data-dism]').forEach(b=>b.onclick=()=>{const k=b.dataset.dism,o=D.own[k];if(!o||!(o.dup>0))return;const t=G('SKILLS')[k].tier;o.dup--;bagAdd('tfrag'+t,C.dismFrag);bagAdd('tess',C.dismEss);bagSave();save();
     wsRes=`<span>♻ ย่อย ${G('SKILLS')[k].name} → ชิ้นส่วนขั้น ${t} +${C.dismFrag} · แก่น +${C.dismEss}</span>`;wsBuild();});}
 win.querySelector('#tgWsB').onclick=()=>{if(wsTab==='gift')wsTab='carve';wsEl.classList.add('open');wsRes='';wsBuild();};
@@ -844,29 +953,39 @@ function targetOf(k){const S=G('SKILLS'),s=S[k],o=(TGT_OVR[HERO]||{})[k];if(o&&S
   const rq=s.rq||'';let best=null,bi=-1;for(const q in S){const t=S[q];if(t.br==='C'||t.passive||!t.make||!t.name)continue;const i=rq.lastIndexOf(t.name);if(i>bi){bi=i;best=q;}}
   return best||'@auto';}
 const tgtName=t=>t==='@auto'?'ท่าตีธรรมดา (ผลครึ่งเดียว · ไม่มีผลกับคูลดาวน์/SP)':((G('SKILLS')[t]||{}).name||t);
+let GST={};   /* stat lines of the active gems → {atk:…} */
+function setGST(g){if(JSON.stringify(g)===JSON.stringify(GST))return;GST=g;try{const f=G('applyStats');if(typeof f==='function')f();}catch(e){}}
+{const _gc=G('gearCalc');if(typeof _gc==='function'){gearCalc=function(){const r=_gc.apply(this,arguments);const B=G('BON');if(B)for(const k in GST)B[k]=(B[k]||0)+GST[k];return r;};window.gearCalc=gearCalc;}}
+window.gemStats=()=>Object.assign({},GST);
 function apply(){const S=G('SKILLS'),LV=G('LV');if(!S||!LV)return;let chg=false;
   if(!window.__GEMS_ALL)for(const k of cKeys()){const i=D.sock.indexOf(k),on=i>=0&&sockOpen(i)&&tierOK(k)&&!!D.own[k],w=on?1:0;if((LV[k]||0)!==w){LV[k]=w;chg=true;}}
   const sig=JSON.stringify([D.sock,D.mods,D.own,cKeys().map(k=>LV[k]),D.ss,D.sm,D.ssu,D.ss.map((k,i)=>ssAct(i)?1:0),D.cv,D.sx,test()]);if(sig===lastSig&&!chg)return;lastSig=sig;   /* rebuild only on change: ACT keeps its hit / cast counters */
   for(const k in S){const s=S[k];if(s._gb){s.mp=s._gb.mp;s.cd=s._gb.cd;delete s._gb;}}
   ACT={};
   const tgt=D.sock.map(k=>k&&LV[k]&&D.own[k]?targetOf(k):null);
+  const GS={},addS=(l,q,lv)=>{const st=SLINE[l[0]];if(!st)return false;GS[st]=(GS[st]||0)+statN(LV_V(l[1],q,lv));return true;};   /* stat lines → character stats */
   D.sock.forEach((k,i)=>{if(!k||!LV[k]||!D.own[k])return;const t=targetOf(k);if(t!=='@auto'&&!S[t])return;const m=D.mods[k]||[];
     const A=ACT[t]||(ACT[t]={gems:[],lv:1,mut:[],sup:[],n:0,casts:0,ln:{},elem:0,next:null,socks:[]});A.gems.push(k);A.lv=Math.max(A.lv,D.own[k].lv||1);A.socks.push(i);
     m.forEach((id,j)=>{if(id&&modOpen(i,j))(isMutJ(j)?A.mut:A.sup).push(id);});
     /* random lines (gem farming v2): ranks add up per line kind on the target skill */
-    for(const l of (D.own[k].lines||[]))A.ln[l[0]]=(A.ln[l[0]]||0)+l[1];
-    const lr=(D.own[k].lines||[]).find(l=>l[0]==='lelem');if(lr){const my=[m[0],m[3]].filter(Boolean);let c=0;for(const d of [-1,1]){const kn=D.sock[(i+d+NS)%NS],mm=kn&&D.mods[kn]||[];if(my.some(x=>x===mm[0]||x===mm[3]))c++;}A.elem+=.03*lr[1]*c;}
+    {const o=D.own[k];for(const l of (o.lines||[])){if(addS(l,o.q,o.lv))continue;A.ln[l[0]]=(A.ln[l[0]]||0)+LV_V(l[1],o.q,o.lv);}A.rq=Math.max(A.rq==null?-1:A.rq,o.q||0);}
+    const lr=(D.own[k].lines||[]).find(l=>l[0]==='lelem');if(lr){const my=[m[0],m[3]].filter(Boolean);let c=0;for(const d of [-1,1]){const kn=D.sock[(i+d+NS)%NS],mm=kn&&D.mods[kn]||[];if(my.some(x=>x===mm[0]||x===mm[3]))c++;}A.elem+=.03*LV_V(lr[1],D.own[k].q,D.own[k].lv)*c;}
     if((D.own[k].lines||[]).some(l=>l[0]==='lnext')){for(let d=1;d<NS;d++){const tn=tgt[(i+d)%NS];if(tn&&tn!==t){A.next=tn;break;}}}});
   for(const t in ACT)ACT[t].cmut=ACT[t].mut.slice();   /* mutations from C gems (a skill star cannot repeat one) */
   /* skill stars: the star's mutation works on its own skill (no gem level, no supports, no lines) */
   /* a combo follow-up (no cooldown of its own) gets the hit side of its starter's mutation; cooldown / SP / charges / pillar stay on the starter */
-  D.ss.forEach((k,i)=>{if(!k||!ssAct(i))return;const id=D.sm[i]&&MUTD[D.sm[i]]?D.sm[i]:null,su=SSU[i]?(D.ssu[i]||[]).filter((x,j)=>x&&SUPD[x]&&uOpen(i,j)):[];if(!id&&!su.length)return;
+  D.ss.forEach((k,i)=>{if(!k||!ssAct(i))return;const id=D.sm[i]&&MUTD[D.sm[i]]?D.sm[i]:null,su=SSU[i]?(D.ssu[i]||[]).filter((x,j)=>x&&SUPD[x]&&uOpen(i,j)):[],g=sgo(k);
+    const eff=g?(g.lines||[]).filter(l=>!addS(l,g.q,g.lv)):[];   /* the skill gem's special stats (owner 2026-11-21): stat lines → character, the rest on the skill */
+    if(!id&&!su.length&&!g)return;
     ssChain(k).forEach((t,c)=>{const A=ACT[t]||(ACT[t]={gems:[],lv:1,mut:[],sup:[],n:0,casts:0,ln:{},elem:0,next:null,socks:[],cmut:[]});(A.ss||(A.ss=[])).push(i);if(c&&!A.gems.length)A.fol=1;
-      if(id&&!A.mut.includes(id))A.mut.push(id);if(su.length)(A.supH||(A.supH=[])).push(...su);});});
+      if(id&&!A.mut.includes(id))A.mut.push(id);if(su.length)(A.supH||(A.supH=[])).push(...su);
+      for(const l of eff){if(c&&!HITL.has(l[0]))continue;A.ln[l[0]]=(A.ln[l[0]]||0)+LV_V(l[1],g.q,g.lv);}   /* a follow-up gets the hit side only */
+      if(g)A.sq=Math.max(A.sq==null?-1:A.sq,g.q||0);});});
+  setGST(GS);
   for(const t in ACT){if(t==='@auto'||ACT[t].fol)continue;const A=ACT[t],s=S[t];s._gb={mp:s.mp,cd:s.cd};const has=id=>A.mut.includes(id)||A.sup.includes(id);
     if(typeof s.cd==='number'){let cd=s.cd;if(has('heavy'))cd+=4;if(has('rapid'))cd*=.6;{const q=sw(A,'quick');if(q)cd-=Math.min(1.5*q,cd*.2*q);}   /* −1.5 s, at most a fifth of the cooldown (short skills would double up) */s.cd=Math.round(cd*10)/10;}
     if(typeof s.cd==='number'&&A.ln.lcd){s.cd=Math.round((s.cd-Math.min(.2*A.ln.lcd,s.cd*.2))*10)/10;}   /* line: cooldown −0.2 s per rank, at most a fifth */
-    if(typeof s.mp==='number'){let mp=s.mp;if(has('heavy'))mp+=10;{const w=sw(A,'thrift');if(w)mp=Math.max(0,mp-6*w);}if(A.ln.lsp)mp=Math.max(0,mp-A.ln.lsp);s.mp=mp;}
+    if(typeof s.mp==='number'){let mp=s.mp;if(has('heavy'))mp+=10;{const w=sw(A,'thrift');if(w)mp=Math.max(0,mp-6*w);}if(A.ln.lsp)mp=Math.max(0,mp-Math.round(A.ln.lsp));s.mp=mp;}
     if(has('stack')){if(!STK[t])STK[t]={ch:2,rT:0};}else delete STK[t];}
   for(const t in STK)if(!ACT[t])delete STK[t];
   window.GEM_V=(window.GEM_V||0)+1;try{G('buildHotbar')();}catch(e){}   /* gem marks on the skill buttons (the phone wheel watches GEM_V) */
@@ -889,11 +1008,11 @@ if(_hurt)window.hurt=hurt=function(e,mult,o){o=o||{};if(o._gem||o.dot||!e||e.dea
     if(A.elem)add+=A.elem;const nb=NB[key];if(nb&&nb.u>now())add+=nb.v;m+=add*h;}
   if(A.mut.includes('focus')){if(!R.first)R.first=e;pm*=e===R.first?1.6:.4;}
   if(R.third)pm*=1+.5*R.third;if(auto)pm=1+(pm-1)/2;
-  let mon=e.m,dd=0;{const pv=20*sw(A,'pierce')+4*(A.ln.lpier||0);if(pv&&mon&&mon.def){dd=Math.min(mon.def,pv);mon.def-=dd;}}
+  let mon=e.m,dd=0;{const pv=20*sw(A,'pierce')+Math.round(4*(A.ln.lpier||0));if(pv&&mon&&mon.def){dd=Math.min(mon.def,pv);mon.def-=dd;}}
   let dmg=0;try{dmg=_hurt(e,m*pm,o);}finally{if(dd)mon.def+=dd;}
   if(!(dmg>0))return dmg;A.n++;R.hits++;R.sum+=m*pm;R.tg.add(e);const hm=m*pm,L=plv(),pl=G('player');
   if(A.ln.lslow&&A.n%4===0)G('applyCC')(e,{slow:1+.3*A.ln.lslow});
-  if(A.ln.lkill&&(e.dead||e.hp<=0)&&!auto)pl.mp=Math.min(pl.maxMp,pl.mp+2*A.ln.lkill);
+  if(A.ln.lkill&&(e.dead||e.hp<=0)&&!auto)pl.mp=Math.min(pl.maxMp,pl.mp+Math.round(2*A.ln.lkill));
   if(A.ln.lpush&&!e.boss){const tag=R.hits;TIM.push({at:now()+.3,f:()=>{if(R.hits!==tag||e.dead)return;const a=Math.atan2(e.y-pl.y,e.x-pl.x),v=40+30*Math.min(5,A.ln.lpush);e.vx=(e.vx||0)+Math.cos(a)*v;e.vy=(e.vy||0)+Math.sin(a)*v;}});}
   if(has(A,'spread')||has(A,'splash')){const f=(A.mut.includes('spread')?.35:0)+.3*sw(A,'splash'),r=A.mut.includes('spread')?80:70;
     for(const t of G('enemiesInCircle')(e.x,e.y,r))if(t!==e)gh(t,hm*f,key);}
@@ -953,15 +1072,20 @@ const _skc=G('skChange');if(_skc)window.skChange=skChange=function(k,d){const s=
 
 /* ---- the gems show on the real skill (pillar 2): a gem mark on its button / wheel / tree cell + a gem section in its tooltip ---- */
 function gemMark(k,txt){const A=ACT[k];if(!A)return '';
-  if(txt)return (A.mut.length?'\n💎 แปรสภาพ: '+A.mut.map(x=>MUTD[x][1]).join(', '):'')+(A.sup.length||(A.supH&&A.supH.length)?'\n💎 เจมเสริม: '+A.sup.map(x=>SUPD[x][1]).concat((A.supH||[]).map(x=>SUPD[x][1]+' (½)')).join(', '):'');
-  if(!A.mut.length)return A.gems.length||(A.supH&&A.supH.length)?`<span class="gmk" style="--c:${A.gems.length?'#ffc83a':'#5ad1ff'}"><b>◆</b></span>`:'';
-  return A.mut.slice(0,2).map((x,i)=>`<span class="gmk${i?' two':''}" style="--c:${MUTD[x][3]}"><b>${MUTD[x][2]}</b><img src="assets/gems/mut/${x}.webp" alt="" onerror="this.remove()" style="position:absolute;inset:0;width:100%;height:100%;border-radius:50%;box-shadow:0 0 0 1.5px #2a1a0c"></span>`).join('');}
+  if(txt){const j=D.ss.indexOf(k),g=j>=0&&sgo(k),pl=h=>h.replace(/<[^>]+>/g,'');   /* the button's title: rarity + special stats too */
+    return (g?`\n💎 เจมสกิล ${QUAL[g.q].n} Lv ${g.lv}: `+(g.lines||[]).map(l=>pl(lnTxt(l,g.q,g.lv))).join(' · '):'')
+      +A.gems.map(c=>{const o=D.own[c]||{};return `\n◆ เจม C ${QUAL[o.q||0].n} Lv ${o.lv||1}`+((o.lines||[]).length?': '+o.lines.map(l=>pl(lnTxt(l,o.q||0,o.lv))).join(' · '):'');}).join('')
+      +(A.mut.length?'\n💎 แปรสภาพ: '+A.mut.map(x=>MUTD[x][1]).join(', '):'')+(A.sup.length||(A.supH&&A.supH.length)?'\n💎 เจมเสริม: '+A.sup.map(x=>SUPD[x][1]).concat((A.supH||[]).map(x=>SUPD[x][1]+' (½)')).join(', '):'');}
+  const rq=Math.max(A.rq==null?-1:A.rq,A.sq==null?-1:A.sq),rc=rq>=0?`;--rc:${QUAL[rq].c}`:'',hi=rq>=QN-1?' hi':'';   /* the best rarity working on this skill lights the mark */
+  if(!A.mut.length)return A.gems.length||(A.supH&&A.supH.length)||A.sq!=null?`<span class="gmk${hi}" style="--c:${rq>=0?QUAL[rq].c:A.gems.length?'#ffc83a':'#5ad1ff'}${rc}"><b>◆</b></span>`:'';
+  return A.mut.slice(0,2).map((x,i)=>`<span class="gmk${i?' two':''}${hi}" style="--c:${MUTD[x][3]}${rc}"><b>${MUTD[x][2]}</b><img src="assets/gems/mut/${x}.webp" alt="" onerror="this.remove()" style="position:absolute;inset:0;width:100%;height:100%;border-radius:50%;box-shadow:0 0 0 1.5px #2a1a0c"></span>`).join('');}
 function gemTip(k){const S=G('SKILLS'),A=ACT[k];let j=D.ss.indexOf(k);if(j<0&&A&&A.fol&&A.ss)j=A.ss[0];if(!A&&j<0)return '';
   let h='<div class="tb"><small style="color:#9fd8ff">💎 เจมที่แต่งสกิลนี้</small>';
   if(j>=0){const id=D.sm[j],su=SSU[j]?(D.ssu[j]||[]).filter(Boolean):[];h+=`<div class="tl">⭐ ดาวสกิล ${j+1}: ${id?`แปรสภาพ <b>${MUTD[id][1]}</b> — ได้ ${MUTD[id][4]} · เสีย ${MUTD[id][5]}${!ssAct(j)||cDup(k,id)?' (ยังไม่มีผล)':''}`:'ยังไม่ใส่เจมแปรสภาพ'}</div>`
-    +(su.length?`<div class="tl">🔹 เจมเสริม (ผลครึ่งหนึ่ง): ${su.map(x=>`<b>${SUPD[x][1]}</b> — ${SUPD[x][4]}`).join(' · ')}</div>`:'');}
+    +(su.length?`<div class="tl">🔹 เจมเสริม (ผลครึ่งหนึ่ง): ${su.map(x=>`<b>${SUPD[x][1]}</b> — ${SUPD[x][4]}`).join(' · ')}</div>`:'');
+    const g=D.ss[j]&&sgo(D.ss[j]);if(g)h+=`<div class="tl">💎 เจมสกิล <b style="color:${QUAL[g.q].c}">${QUAL[g.q].n}</b> Lv ${g.lv}: ${(g.lines||[]).map(l=>lnTxt(l,g.q,g.lv)).join(' · ')}${D.ss[j]!==k?' (ท่าต่อได้เฉพาะผลตอนตี)':''}</div>`;}
   if(A)for(const g of A.gems){const m=D.mods[g]||[],mu=[m[0],m[3]].filter(Boolean),su=[m[1],m[2]].filter(Boolean);
-    h+=`<div class="tl">◆ เจม C <b>${S[g].name}</b> Lv ${(D.own[g]||{}).lv||1}${mu.length?' · แปรสภาพ '+mu.map(x=>MUTD[x][1]).join(', '):''}${su.length?' · เสริม '+su.map(x=>SUPD[x][1]).join(', '):''}</div>`;}
+    const o=D.own[g]||{};h+=`<div class="tl">◆ เจม C <b>${S[g].name}</b> <b style="color:${QUAL[o.q||0].c}">${QUAL[o.q||0].n}</b> Lv ${o.lv||1}${mu.length?' · แปรสภาพ '+mu.map(x=>MUTD[x][1]).join(', '):''}${su.length?' · เสริม '+su.map(x=>SUPD[x][1]).join(', '):''}${(o.lines||[]).length?' · '+o.lines.map(l=>lnTxt(l,o.q||0,o.lv)).join(' · '):''}</div>`;}
   return h+'</div>';}
 window.gemMark=gemMark;
 const _tip=G('skTip');if(_tip)window.skTip=skTip=function(k,l){const h=_tip(k,l);try{return h+gemTip(k);}catch(e){return h;}};
