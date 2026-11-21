@@ -9,6 +9,7 @@ The owner (Thai speaker) builds this game across many chats. Reply in Thai. Comm
 4. **Attack speed is fixed per character** (`CHAR_ASPD`). No skill, stat or item changes it.
 5. **Balance:** no hero stronger than the others. Target bench score ≈ 2,450 (tank Rhino ≈ 2,250). Two-way heroes are tested per branch (A alone, B alone) with a TAL build.
 6. **Pictures are the main effects, code VFX supports them.** Placeholder sprites are fine until real art arrives. Art prompts for ChatGPT: cartoon style matching the characters, one prompt per copy box, sent one at a time.
+7. **Selling points (owner 2026-11-21).** (1) branch choice — skill points cannot cover the tree, (2) upgrading / customizing skills with gems — and every gem's effect must SHOW on the real skill (its look when used, its button, its tooltip and tree node), (3) diverse stat builds. New systems must deepen or surface one of these; generic power (refine, % stats) stays small. Audit + proposals (waiting for the owner): GAME_PILLARS_TH.md.
 
 ## Stats and damage (12 Tails formulas)
 - Stats: ATK DEF AGI VIT INT CHA TAL LCK. Total = points + level growth + items/buffs.
