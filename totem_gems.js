@@ -430,17 +430,19 @@ ${TL?`#totemWin.tot #tgSky,#totemWin.tot #tgFrame{display:none}
 #tgInfo .cvr em{font-style:normal;font-weight:700;color:#2a7a3a;white-space:nowrap}#tgInfo .cvr.no em{color:#a8302a}
 #tgInfo .cvz{display:inline-flex;width:20px;height:20px;border-radius:50%;align-items:center;justify-content:center;background:radial-gradient(circle at 35% 30%,#fff3b0,#e9b44c 55%,#a8741c);color:#5a3a0c!important;font:900 11px sans-serif;box-shadow:0 0 0 1.5px #6a4a1a}
 /* skill gems (owner 2026-11-21: skills are extracted into gems before they go on the base): a gem = round + glossy, a raw skill = dim with a ⚗ badge */
-#tgSkills button.gx{border-radius:50%;border-color:#8fd8ff;box-shadow:0 0 0 1px rgba(20,40,60,.6),0 0 7px rgba(120,200,255,.5)}
-#tgSkills button.gx img,#tgSkills button.gx svg{border-radius:50%}
-#tgSkills button.gx::after,.tgSkG::after{content:'';position:absolute;inset:2px;border-radius:50%;pointer-events:none;
-  background:radial-gradient(circle at 34% 27%,rgba(255,255,255,.55) 0 9%,rgba(255,255,255,.12) 22%,transparent 40%),radial-gradient(circle at 50% 52%,transparent 56%,rgba(0,0,0,.45) 100%);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.32)}
+#tgSkills button.gx{padding:1px}
+.sgem{position:absolute;inset:0;display:block;pointer-events:none}
+.sgem .sgi{position:absolute;left:15.8%;top:15.8%;width:68.4%;height:68.4%;border-radius:50%;overflow:hidden;background:#1a1430}
+.sgem .sgi img,.sgem .sgi svg{position:absolute!important;left:-16%;top:-16%;width:132%!important;height:132%!important;display:block;border-radius:0!important;transform:none!important}
+.sgem .sgi::after{content:'';position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,transparent 58%,rgba(14,8,38,.5) 100%)}
+.sgem img.sgs,.sgem img.sgf{position:absolute!important;inset:0;width:100%!important;height:100%!important;display:block;border-radius:0!important;transform:none!important}
+.tgN .in.sg{overflow:visible;transform:scale(1.16)}   /* the frame ring sits over the hole's painted rim */
+.tgN.th.sel .in.sg{filter:drop-shadow(0 0 5px #ffe14a) drop-shadow(0 0 2px #fff17a)}
 #tgSkills button.nx img,#tgSkills button.nx svg{filter:saturate(.45) brightness(.72)}
 #tgSkills button .xb{position:absolute;left:-3px;top:-3px;width:17px;height:17px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:700 10px/1 sans-serif;
   background:#3a2a1a;border:1.5px solid #c9963a;color:#ffe9a8;box-shadow:0 1px 2px rgba(0,0,0,.6);z-index:2}
 #tgSkills button.rdy .xb{background:linear-gradient(#ffe48a,#e9a43c);color:#3a1f14;animation:tgGift 1s ease-in-out infinite alternate}
 #tgSkills button.pop{animation:tgPop .55s ease-out}
-.tgSkG{position:absolute;inset:8%;border-radius:50%;overflow:hidden;box-shadow:0 0 0 2px #8fd8ff,0 0 12px rgba(120,200,255,.6)}
-.tgSkG img,.tgSkG svg{width:100%;height:100%;display:block;transform:scale(1.25)}
 /* the plug splits, drops out and the hole flashes open */
 .tgCrk{position:absolute;transform:translate(-50%,-50%);pointer-events:none;z-index:6}
 .tgCrk>i{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 36% 28%,rgba(255,250,235,.34),transparent 36%),radial-gradient(circle,#a59b8b 0 46%,#7d7467 70%,#544c43 100%);
@@ -539,7 +541,7 @@ function preview(){const e=win.querySelector('#tgSel');if(!e)return;const S=G('S
   else if(sel&&sel.mod){const kk=D.sock[sel.mod[0]],id=kk&&(D.mods[kk]||[])[sel.mod[1]];if(id){const m=isMutJ(sel.mod[1]);art=sg(id,m?'mut':'sup');nm=(m?MUTD:SUPD)[id][1];}}
   else if(sel&&sel.sm!=null&&D.sm[sel.sm]){const id=D.sm[sel.sm];art=sg(id,'mut');nm=MUTD[id][1]+`<br><small style="font-weight:500;color:#e9c98a">แปรสภาพในดาวสกิล ${sel.sm+1}</small>`;}
   else if(sel&&(sel.skill||(sel.ss!=null&&D.ss[sel.ss])||(sel.sm!=null&&D.ss[sel.sm]))){const sk=sel.skill||D.ss[sel.ss!=null?sel.ss:sel.sm],s=S[sk];
-    if(s){const gx=extracted(sk);art=gx?`<span class="tgSkG">${skArt(sk)}</span>`:skArt(sk);nm=s.name+`<br><small style="font-weight:500;color:#e9c98a">${gx?'เจมสกิล':'ยังไม่ได้สกัด'} · สาย ${BRN[s.br]||s.br} · Lv สกิล ${(G('LV')||{})[sk]||0}${sel.ss!=null?(TL?' · หลุมสกิล ':' · ดาวสกิล ')+(sel.ss+1):''}</small>`;}}
+    if(s){const gx=extracted(sk);art=gx?sgemHtml(sk):skArt(sk);nm=s.name+`<br><small style="font-weight:500;color:#e9c98a">${gx?'เจมสกิล':'ยังไม่ได้สกัด'} · สาย ${BRN[s.br]||s.br} · Lv สกิล ${(G('LV')||{})[sk]||0}${sel.ss!=null?(TL?' · หลุมสกิล ':' · ดาวสกิล ')+(sel.ss+1):''}</small>`;}}
   if(sel&&sel.carve){const h=hole(sel.carve),st=cvState(sel.carve);art=`<span class="tgPl${h.t==='p'||h.t==='q'?' wd':''}"></span>`;
     nm=h.nm+`<br><small style="font-weight:500;color:#e9c98a">${st==='open'?'สลักแล้ว':st==='lv'?'เปิดที่ Lv '+h.lv:st==='par'?'สลักหลุมใหญ่ของมันก่อน':st==='rdy'?'ของครบ — สลักได้!':'ยังไม่ได้สลัก · ของยังไม่ครบ'}</small>`;}
   e.innerHTML=art?`<div class="big">${art}</div><b>${nm}</b>`:'<b style="opacity:.6;font-weight:500">แตะเจมหรือดาวเพื่อดูรายละเอียด</b>';}
@@ -566,6 +568,10 @@ const mutInfo=id=>{const m=MUTD[id];return `<b>${m[1]}</b> (เจมแปร�
 const supInfo=id=>{const s=SUPD[id];return `<b>${s[1]}</b> (เจมเสริม)<br>${s[4]}`;};
 /* painted gem if the file exists (assets/gems/mut|support/<id>.webp), else the code-drawn badge */
 const sg=(id,kind)=>{const d=kind==='mut'?MUTD[id]:SUPD[id];return `<span class="tgSg${kind==='mut'?' mut':''}" style="--c:${d[3]}"><span>${d[2]}</span><img src="assets/gems/${kind==='mut'?'mut':'support'}/${id}.webp" alt="" draggable="false" onload="this.parentNode.classList.add('art')" onerror="this.remove()"></span>`;};
+/* skill gem picture (owner's frame + glass shine, 2026-11-21, GEM_PAGE_ART_PROMPTS_TH.md 11–12): the skill icon in a circle under the glass,
+   the moonstone frame on top; one frame for every skill of every hero. The frame's window is .664 of its width, the icon circle .684 (tucked under the rim). */
+const SGEM={f:PG+'sgem_frame.webp',s:PG+'sgem_shine.webp'};
+const sgemHtml=k=>`<span class="sgem"><span class="sgi">${skArt(k)}</span><img class="sgs" src="${SGEM.s}" alt="" draggable="false"><img class="sgf" src="${SGEM.f}" alt="" draggable="false"></span>`;
 const skArt=k=>{try{const a=G('artFor'),ic=G('iconSVG'),sk=G('SKILLS')[k];return (a&&a(k))||(ic&&sk&&ic(sk.icon))||'';}catch(e){return '';}};
 function node(x,y,kind,inner,cls,title,onclick,icls,art){const el=document.createElement('div');const ak=ART[kind]||kind;let s=SZ[kind];let c=CUP[ak],src=`${BD}sock_${ak}.webp`,gk=ak==='main'?1.18:1.05;
   let sz=s;
@@ -591,7 +597,7 @@ function render(keepInfo){const S=G('SKILLS');if(!S)return;
   {const LVx=G('LV')||{},ks=Object.keys(S).filter(k=>ssOK(k)&&(LVx[k]||0)>0).sort((a,b)=>'basicAB'.indexOf(S[a].br)-'basicAB'.indexOf(S[b].br)||(S[a].row||0)-(S[b].row||0));
     inv('#tgSkills',ks.length?ks.map(k=>{const b=document.createElement('button'),on=D.ss.indexOf(k),gx=extracted(k),xs=gx?'done':exState(k);
       b.className=(on>=0?'used ':'')+(gx?'gx ':'nx '+(xs==='rdy'?'rdy ':''))+(sel&&sel.skill===k?'sel ':'')+(popK===k?'pop':'');b.dataset.k=k;
-      b.innerHTML=skArt(k)+gemMark(k)+(gx?'':'<b class="xb">⚗</b>');b.title=S[k].name+(gx?' · เจมสกิล':' · ยังไม่ได้สกัดเป็นเจม')+(on>=0?` · หลุมสกิล ${on+1}`:'');
+      b.innerHTML=(gx?sgemHtml(k):skArt(k))+gemMark(k)+(gx?'':'<b class="xb">⚗</b>');b.title=S[k].name+(gx?' · เจมสกิล':' · ยังไม่ได้สกัดเป็นเจม')+(on>=0?` · หลุมสกิล ${on+1}`:'');
       b.onclick=()=>{const t=sel,ok=i=>i!=null&&!D.ss[i]&&ssOpen(i),hole=t&&ok(t.ss)?t.ss:t&&ok(t.ph)?t.ph:null;sel={skill:k};   /* an empty hole picked first (or still pending) */
         if(!extracted(k)){if(hole!=null)sel.ph=hole;info(exInfo(k,hole!=null?'<br><span class="c">สกัดสกิลนี้เป็นเจมก่อน แล้วระบบจะวางในหลุมที่เลือกไว้ให้</span>':''));render(true);return;}
         if(hole!=null){clickSS(hole);return;}info(skillInfo(k));render(true);};return b;})
@@ -624,8 +630,8 @@ function render(keepInfo){const S=G('SKILLS');if(!S)return;
   /* skill holes on the stone base + their gold mutation hole and 2 teal support holes */
   SSP.forEach((p,i)=>{const k=D.ss[i],open=ssOpen(i),id=D.sm[i],sid='s'+i,cs=open?'open':cvState(sid),lvl=cs==='lv';
     const pc=open?'':TL?' pg'+(lvl?' lock':cs==='rdy'?' rdy':''):' lock';
-    const el=node(p.x,p.y,'skill',k&&open?skArt(k):'',`ss${pc}${k&&open&&!ssAct(i)?' off':''}${sel&&(sel.ss===i||sel.carve===sid)?' sel':''}`,
-      open?(k?S[k].name+(id?' · '+MUTD[id][1]:''):'ดาวสกิลว่าง'):lvl?`หลุมสกิลที่ ${i+1} · เปิดที่ Lv ${SS_LV[i]}`:`หลุมสกิลที่ ${i+1} · ยังไม่ได้สลัก — แตะเพื่อดูของที่ต้องส่ง`,()=>clickSS(i),k&&open?'ic':'',HOLE(p)||SKS);
+    const el=node(p.x,p.y,'skill',k&&open?(extracted(k)?sgemHtml(k):skArt(k)):'',`ss${pc}${k&&open&&!ssAct(i)?' off':''}${sel&&(sel.ss===i||sel.carve===sid)?' sel':''}`,
+      open?(k?S[k].name+(id?' · '+MUTD[id][1]:''):'ดาวสกิลว่าง'):lvl?`หลุมสกิลที่ ${i+1} · เปิดที่ Lv ${SS_LV[i]}`:`หลุมสกิลที่ ${i+1} · ยังไม่ได้สลัก — แตะเพื่อดูของที่ต้องส่ง`,()=>clickSS(i),k&&open?(extracted(k)?'sg':'ic'):'',HOLE(p)||SKS);
     if(lvl)el.insertAdjacentHTML('beforeend',`<div class="lk">🔒 Lv ${SS_LV[i]}</div>`);else if(!open)el.insertAdjacentHTML('beforeend',cvp(cs));
     if(open){const q=SMP[i];node(q.x,q.y,'smut',id?sg(id,'mut'):'',`smut${k?'':' dim'}${sel&&sel.sm===i?' sel':''}`,!k?'วางสกิลก่อน':id?MUTD[id][1]:'ช่องแปรสภาพของดาวสกิล',()=>clickSM(i),undefined,HOLE(q));
       if(SSU[i])SSU[i].forEach((q,j)=>{const cid='u'+i+j;
