@@ -217,15 +217,16 @@ class GfxOv{constructor(layer){this.__gt='-';this.layer=layer;this.t=0;}
   update(dt){this.t+=dt;if(this.layer!=='top')return true;const t=T();
     for(const e of ENS()){if(e.dead){if(e._gfF)e._gfF=0;continue;}
       if(e._gfF&&t>=e._gfFe){e._gfF=0;addB(new GfxBurst(e,'ice',1));}   /* thawed: the ice block shatters (own timer: works on test dummies too) */
-      const b=e._gBurn;if(b&&b.n>0&&EMB.length<90&&Math.random()<dt*5){const bd=body(e);EMB.push({x:e.x+rnd(-.6,.6)*bd.r,y:e.y+1,z:bd.zc+rnd(-.3,.6)*bd.h*.5,vz:rnd(35,75),vx:rnd(-12,12),t:0,l:rnd(.6,1),s:rnd(.7,1.2),rt:rnd(0,TAU)});}}
+      const b=e._gBurn,bs=!(b&&b.n>0)&&e._gFlat&&e._gFlat.n>0;if(((b&&b.n>0)||bs)&&EMB.length<90&&Math.random()<dt*(bs?2.5:5)){const bd=body(e);EMB.push({x:e.x+rnd(-.6,.6)*bd.r,y:e.y+1,z:bd.zc+rnd(-.3,.6)*bd.h*.5,vz:rnd(35,75),vx:rnd(-12,12),t:0,l:rnd(.6,1),s:rnd(.7,1.2),rt:rnd(0,TAU)});}}
     for(let i=EMB.length-1;i>=0;i--){const m=EMB[i];m.t+=dt;m.z+=m.vz*dt;m.x+=m.vx*dt;m.rt+=dt*3;if(m.t>m.l)EMB.splice(i,1);}
     for(let i=SCORCH.length-1;i>=0;i--)if(t-SCORCH[i].t0>3.2)SCORCH.splice(i,1);
     return true;}
   draw(){const t=T(),G=this.layer==='ground';
     if(G)for(const s of SCORCH){const age=t-s.t0,[x,y]=PJ(s.x,s.y,0);if(!onScr(x,y))continue;put('scorch',x,y,s.r*2.4,{ay:.5,a:Math.min(1,(3.2-age)/1.2)*.9});put('scorchG',x,y,s.r*2.2,{ay:.5,add:1,a:Math.max(0,1-age/1.3)});}
-    for(const e of ENS()){if(e.dead)continue;const bn=e._gBurn&&e._gBurn.n>0,ice=e._gfI>t,fz=e._gfF&&t<e._gfFe,vt=e._gfV>t;
-      if(!bn&&!ice&&!fz&&!vt)continue;const bd=body(e),r=bd.r,[gx,gy]=PJ(e.x,e.y,0);if(!onScr(gx,gy))continue;
-      if(G){if(bn)put('scorch',gx,gy+1,r*2.1,{ay:.5,a:.55});if(ice||fz)put('frost',gx,gy+1,r*3,{ay:.5,a:.9});continue;}
+    for(const e of ENS()){if(e.dead)continue;const bn=e._gBurn&&e._gBurn.n>0,bs=!bn&&e._gFlat&&e._gFlat.n>0,ice=e._gfI>t,fz=e._gfF&&t<e._gfFe,vt=e._gfV>t;   /* bs = the burn SUPPORT gem (gem_mut_fx.js step 3): two small flames */
+      if(!bn&&!bs&&!ice&&!fz&&!vt)continue;const bd=body(e),r=bd.r,[gx,gy]=PJ(e.x,e.y,0);if(!onScr(gx,gy))continue;
+      if(G){if(bn||bs)put('scorch',gx,gy+1,r*(bs?1.5:2.1),{ay:.5,a:bs?.4:.55});if(ice||fz)put('frost',gx,gy+1,r*3,{ay:.5,a:.9});continue;}
+      if(bs){[[-.45,.3,.62],[.4,.5,.55]].forEach((f,i)=>{const s=f[2]*(.86+.14*Math.sin(t*15+i*2.3)),[fx2,fy2]=PJ(e.x+f[0]*r,e.y+2,bd.h*f[1]);put('flame',fx2,fy2,r*s,{rot:Math.sin(t*8+i*1.9)*.12,ay:.9,a:.85});});}
       if(bn){const n=e._gBurn.n,fa=n<=1?.75:1;glow(gx,gy-bd.zc,r*1.6,'#ff6a1a',.32*fa);
         const F=[[-.62,.22,.82],[.6,.4,.78],[-.12,.72,1],[.28,.02,.66],[.05,.38,.7]];   /* [side, height in body heights, size] */
         F.forEach((f,i)=>{const s=f[2]*(.86+.14*Math.sin(t*15+i*2.1)),[fx2,fy2]=PJ(e.x+f[0]*r,e.y+2,bd.h*f[1]);put('flame',fx2,fy2,r*1.0*s,{rot:Math.sin(t*8+i*1.7)*.12,ay:.9,a:fa*.88});});}
@@ -256,5 +257,5 @@ function withV(k,fn){const el=elemOf(k);if(!el)return fn();const p=VC;VC=el;try{
 window.GEMFX={tint:withT,spawn:withV,art:ART,mark(e,kind,d){const t=T();ensureOv();if(kind==='freeze'){e._gfF=t;e._gfFe=t+(d||1);}else if(kind==='ice')e._gfI=t+(d||2);else if(kind==='volt')e._gfV=t+(d||1);},elemOf,mapCol,force(m){FORCE=m||null;},ramp:RAMP,stats:()=>({pix:PIX,clear:CLEAR,map:Object.assign({},MAP)}),
   tintNow:(el,fn)=>{const p=TINT,ps=SES;TINT=el;SES=++SEQ;try{return fn();}finally{TINT=p;SES=ps;}},
   /* the drawing kit, shared with gem_mut_fx.js (the other nine mutation gems) */
-  k:{art,put,glow,star4,diamond,zig,bolt,PJ,T,CX,ENS,FX,body,onScr,rnd,eOut,TAU,add:_add}};
+  k:{art,put,glow,star4,diamond,zig,bolt,shard,PJ,T,CX,ENS,FX,body,onScr,rnd,eOut,TAU,add:_add,ensureOv,burst:(e,el,big)=>{ensureOv();addB(new GfxBurst(e,el,big));}}};
 })();

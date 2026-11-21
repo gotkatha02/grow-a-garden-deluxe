@@ -1,0 +1,258 @@
+MONSTER SPRITE SHEETS — EGYPT (44 monsters)
+Game: Totem Legend, a 2D isometric fantasy MMORPG (Ragnarok Online feel). This region: Egyptian lands (desert dunes, the Nile oasis, ruined temples, tombs, pyramids, the Necropolis of Set).
+
+=== HOW TO WORK WITH THIS FILE — READ EVERYTHING FIRST ===
+• This file lists 44 monsters. For each monster you draw ONE sprite-sheet image.
+• Draw ONE image per reply, in list order, starting with #1.
+• After each image write only "#<number> <name> done" and STOP. Wait for me.
+  - "next" = draw the next monster.   - "redo" = draw the same monster again.   - a number (e.g. "12") = draw that monster.
+• Before every image, re-read the STYLE, SHEET and WALK rules below. Every image must follow them exactly.
+• Never put text, numbers or labels inside the image.
+
+=== STYLE (copy the attached pictures) ===
+Friendly hand-painted chibi cartoon, cute-but-dangerous, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft light from the top-left, bright warm colours, clear readable silhouette. Not realistic, not painterly, not 3D. Chibi proportions (big head, short body) even for giants.
+
+=== SHEET (the same for every monster) ===
+• ONE 1536×1024 image, 5 rows. The SAME monster in every frame: identical design, colours and size, never redesigned between frames.
+• Facing DOWN-RIGHT (south-east), isometric 3/4 view from about 30° above.
+• Every frame in its own equal-size cell with empty space around it; feet (or lowest point) on the same baseline within each row; nothing cropped, nothing overlapping another frame.
+• Row 1 — IDLE, 4 frames: calm breathing — neutral, body rises slightly, neutral, body sinks slightly with one small detail moving (ear, tail, cloak, flame).
+• Row 2 — WALK, 4 frames: use the walk type given for the monster (see WALK TYPES).
+• Row 3 — ATTACK, 5 frames: the monster's own attack given in its entry — 1) ready, 2) wind-up, 3) strike at full reach toward down-right, 4) follow-through, 5) back to ready.
+• Row 4 — HURT, 2 frames: 1) hit from the front — head and body jerk back, eyes squeezed shut, 2) recoiling, about to recover.
+• Row 5 — DEATH, 5 frames: 1) staggers back, 2) falling, 3) hits the ground, 4) lying still, 5) the same pose fading away. Cartoon, no blood or gore.
+• Background: SOLID FLAT PURE GREEN (#00FF00) — no gradient, no ground, no shadows. NEVER use green on the monster: anything that would normally be green (leaves, skin, slime, jade, moss) is drawn teal, turquoise, blue, gold or autumn orange instead.
+• No text, no row labels, no numbers, no borders, no motion lines, no dust, no magic effects floating around the monster (small glows ON the body are fine).
+
+=== WALK TYPES ===
+• TWO LEGS — walking in place, legs MUST alternate: 1) LEFT leg forward and planted, 2) passing pose with the RIGHT leg lifted, 3) RIGHT leg forward and planted, 4) passing pose with the LEFT leg lifted. Frames 1 and 3 clearly show a different leg in front; arms swing opposite to the legs.
+• FOUR LEGS — trotting in place, diagonal pairs MUST alternate: 1) front-LEFT + back-RIGHT legs reach forward, 2) passing pose, legs under the body, 3) front-RIGHT + back-LEFT legs reach forward, 4) passing pose. Frames 1 and 3 clearly show different legs in front; tail swings.
+• FLOATING (ghosts, spirits, no legs) — 1) high, leaning forward, 2) middle, trailing parts swept back, 3) low, 4) middle, trailing parts swinging the other way. Nothing touches the ground.
+• MANY LEGS (insects, spiders, crabs, octopus) — legs move in two alternating groups: 1) group A reaches forward, 2) passing pose, 3) group B reaches forward, 4) passing pose. Frames 1 and 3 clearly differ.
+• FLYING (birds, bats, winged things) — hovering in place: 1) wings up, 2) wings half down, 3) wings fully down, 4) wings half up; the body bobs a little, feet tucked.
+• SLITHERING (snakes, worms, tails instead of legs) — 1) body S-curve bending left, 2) straightening, 3) S-curve bending right, 4) straightening. Frames 1 and 3 clearly mirror each other.
+• HOPPING (frogs, rabbits, slimes, one-legged things) — 1) crouched low, 2) pushing off, 3) highest point in the air, 4) landing squashed.
+
+=== MONSTERS ===
+
+#1 LITTLE SCORPION
+   Walk: MANY LEGS
+   Look: tiny — a sandy-yellow scorpion with a curled tail and big pincers.
+   Attack: stabs with its tail.
+
+#2 SCARAB
+   Walk: MANY LEGS
+   Look: tiny — a shiny blue-and-gold scarab beetle pushing a little ball of sand.
+   Attack: a horn bump.
+
+#3 SAND PUP
+   Walk: FOUR LEGS
+   Look: tiny — a little sandy-gold desert puppy with huge ears and a blue bead collar.
+   Attack: a little bite.
+
+#4 BABY HIPPO
+   Walk: FOUR LEGS
+   Look: small — a round pink-grey baby hippo with a lotus flower on its head.
+   Attack: opens its big mouth and chomps.
+
+#5 IBIS
+   Walk: TWO LEGS
+   Look: small — a white ibis bird with black wing tips and a long curved beak.
+   Attack: stabs with its beak.
+
+#6 LOTUS SPRITE
+   Walk: FLOATING
+   Look: tiny — a fairy sitting inside a blue lotus flower, floating above the water.
+   Attack: throws a lotus petal.
+
+#7 DESERT FOX
+   Walk: FOUR LEGS
+   Look: small — a fennec fox with giant ears, pale sand fur and a fluffy tail.
+   Attack: a quick bite.
+
+#8 LITTLE MUMMY
+   Walk: TWO LEGS
+   Look: small — a cute little mummy wrapped in loose bandages, one glowing eye peeking out.
+   Attack: a bandage-arm swipe.
+
+#9 DUNE LIZARD
+   Walk: FOUR LEGS
+   Look: small — a sandy frilled lizard with an orange neck frill.
+   Attack: opens its frill and bites.
+
+#10 GHOST SLAVE
+   Walk: FLOATING
+   Look: human-sized — the faint grey ghost of a pyramid worker still carrying a stone block on its back, chains on its ankles.
+   Attack: throws the stone block forward.
+
+#11 GRANITE GOLEM
+   Walk: TWO LEGS
+   Look: large — a golem of red granite blocks with hieroglyph carvings and glowing gold eyes.
+   Attack: a two-fist smash.
+
+#12 SANDSTONE SOLDIER
+   Walk: TWO LEGS
+   Look: human-sized — a sandstone statue soldier with a striped headdress, a khopesh (curved sword) and a shield.
+   Attack: a khopesh slash.
+
+#13 MUMMY
+   Walk: TWO LEGS
+   Look: human-sized — a shambling mummy in yellowed bandages with glowing teal eyes and arms stretched forward.
+   Attack: a heavy arm swipe.
+
+#14 JACKAL SOLDIER
+   Walk: TWO LEGS
+   Look: human-sized — a jackal-headed soldier (not Anubis) with dark grey fur, a gold collar and a spear.
+   Attack: a spear thrust.
+
+#15 COBRA
+   Walk: SLITHERING
+   Look: small — a golden-brown cobra with a wide hood marked with a blue eye pattern.
+   Attack: rears and strikes.
+
+#16 LITTLE SPHINX
+   Walk: FOUR LEGS
+   Look: medium — a small lion-bodied sphinx with a human-like cat face, a blue-and-gold striped headdress.
+   Attack: pounces with its paws.
+
+#17 DESERT VULTURE
+   Walk: FLYING
+   Look: medium — a scruffy brown vulture with a bald pink head and a hooked beak.
+   Attack: dives and pecks.
+
+#18 CAMEL RAIDER
+   Walk: TWO LEGS
+   Look: human-sized — a desert bandit in a dark turban and face veil with a curved sword, sand-coloured robes.
+   Attack: a sword slash.
+
+#19 NOBLE MUMMY
+   Walk: TWO LEGS
+   Look: human-sized — a mummy wrapped in fine bandages with gold jewellery, a gold collar and a jewelled headdress.
+   Attack: a clawed arm swipe.
+
+#20 FLESH BEETLE
+   Walk: MANY LEGS
+   Look: small — a dark-red armoured beetle with big snapping jaws.
+   Attack: snaps its jaws.
+
+#21 TOMB BAT
+   Walk: FLYING
+   Look: small — a dusty tan bat with torn wings and gold-ringed ears.
+   Attack: dives and bites.
+
+#22 LIVING TRAP
+   Walk: HOPPING
+   Look: small — an Egyptian treasure chest with a toothy mouth for a lid, gold trim and a tongue.
+   Attack: hops forward and chomps.
+
+#23 TOMB JACKAL
+   Walk: FOUR LEGS
+   Look: medium — a lean black jackal with gold ear rings and glowing yellow eyes.
+   Attack: a lunging bite.
+
+#24 CURSED SCRIBE
+   Walk: TWO LEGS
+   Look: human-sized — a ghostly scribe with ibis-like features holding a glowing papyrus scroll and a reed pen.
+   Attack: points the pen and the scroll glows.
+
+#25 RAM STATUE
+   Walk: FOUR LEGS
+   Look: large — a stone ram-headed sphinx statue come alive with curled horns and blue-gold paint.
+   Attack: a horn ram.
+
+#26 DARK CAT PRIEST
+   Walk: TWO LEGS
+   Look: human-sized — a black cat priest (not Bastet) in purple robes with gold jewellery and a curse staff.
+   Attack: swings the staff forward.
+
+#27 SPHINX CAT
+   Walk: FOUR LEGS
+   Look: small — a hairless sphinx cat with gold collar and earrings and large amber eyes.
+   Attack: a claw swipe.
+
+#28 SAND WORM
+   Walk: SLITHERING
+   Look: medium — a pale sandy worm with a round mouth full of teeth, rising from the sand.
+   Attack: lunges forward and bites.
+
+#29 GIANT SCORPION
+   Walk: MANY LEGS
+   Look: large — a huge dark-red scorpion with glowing orange tail tip and big pincers.
+   Attack: stabs with its tail.
+
+#30 DUST DJINN
+   Walk: FLOATING
+   Look: medium — a djinn made of swirling sand with a grinning face and a tornado tail.
+   Attack: a spinning sand punch.
+
+#31 ANUBIS GUARD
+   Walk: TWO LEGS
+   Look: large — a tall black jackal-headed temple guard in gold armour with a long halberd.
+   Attack: a halberd swing.
+
+#32 ROYAL MUMMY
+   Walk: TWO LEGS
+   Look: large — a royal mummy with a gold death mask, a striped headdress and a crook and flail.
+   Attack: swings the flail.
+
+#33 CANOPIC SPIRIT
+   Walk: FLOATING
+   Look: small — a floating canopic jar with a carved animal-head lid and a ghostly spirit seeping out.
+   Attack: spits a puff of spirit.
+
+#34 GIANT SCARAB
+   Walk: MANY LEGS
+   Look: large — a huge blue-gold scarab beetle with a sun disc on its horn.
+   Attack: charges with its horn.
+
+#35 SEKHMET LIONESS
+   Walk: FOUR LEGS
+   Look: large — a fierce golden lioness with a sun disc on her head and red war paint.
+   Attack: pounces with claws.
+
+#36 PHARAOH GUARD
+   Walk: TWO LEGS
+   Look: large — a skeletal royal guard in gold-and-blue armour with a big khopesh and a tall shield.
+   Attack: a khopesh chop.
+
+#37 GOLDEN JACKAL
+   Walk: FOUR LEGS
+   Look: medium — a jackal of shining gold with turquoise eyes.
+   Attack: a lunging bite.
+
+#38 ROYAL EMBALMER
+   Walk: TWO LEGS
+   Look: human-sized — a hunched embalmer priest with a jackal mask, rolls of bandages and a hook tool.
+   Attack: lashes out with a bandage.
+
+#39 SET BEAST
+   Walk: FOUR LEGS
+   Look: large — the Set animal: a dog-like beast with a long curved snout, tall square ears, dark red fur and a forked tail.
+   Attack: a lunging bite.
+
+#40 SHADOW SOLDIER
+   Walk: TWO LEGS
+   Look: human-sized — a soldier made of black shadow with red glowing eyes and a sickle sword.
+   Attack: a sword slash.
+
+#41 AMMIT DEVOURER
+   Walk: FOUR LEGS
+   Look: large — Ammit: crocodile head, lion front body, hippo back legs, with gold jewellery.
+   Attack: a huge snapping bite.
+
+#42 GIANT SAND WORM
+   Walk: SLITHERING
+   Look: very large — a giant armoured sand worm with ringed plates and a huge toothy mouth.
+   Attack: rears up and slams down.
+
+#43 DJINN
+   Walk: FLOATING
+   Look: large — a blue-skinned djinn with a gold turban, gold bracelets and a smoky tail.
+   Attack: throws a punch.
+
+#44 SUN BARGE GUARDIAN
+   Walk: TWO LEGS
+   Look: large — a falcon-headed golden guardian with a sun disc above its head and a long spear.
+   Attack: a spear thrust.
+
+(End of list. Start with #1 when I say so.)

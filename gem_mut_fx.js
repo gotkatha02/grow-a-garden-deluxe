@@ -341,7 +341,7 @@ const SRT={layer:'sorted',__gt:'-',_sk:null,_in:0,sy:0,update(){const p=PL();thi
 const TOPP={layer:'top',__gt:'-',_sk:null,_in:0,update(){if(!NEED.t){this._in=0;return false;}return true;},draw(){rageTop();}};
 const CORE={layer:'none',__gt:'-',_sk:null,_core:1,update(dt){try{watch(dt);}catch(e){}return true;},draw(){}};
 function ensureCore(){const F=FX();if(!F.includes(CORE))_add0(CORE);}
-setInterval(()=>{mm();if(ANY||POLES.size||DM.on)ensureCore();const F=FX();for(const p of LIVE)if(!F.includes(p))LIVE.delete(p);},250);
+setInterval(()=>{mm();const S0=ST();if(ANY||POLES.size||DM.on||(S0&&S0.GU.sh>0&&S0.GU.shT>T()))ensureCore();   /* shields from support gems / gem lines also get the bubble, with no mutation gem on the board */const F=FX();for(const p of LIVE)if(!F.includes(p))LIVE.delete(p);},250);
 
 /* =============================== hooks =============================== */
 function lockOn(e,k,pre){let L=LOCK.get(k);if(L&&L.e===e&&FX().includes(L)){L.hit();return;}if(L)L.life=Math.min(L.life,L.t+.15);L=new FocusLock(e,k);if(!pre)L.hit();LOCK.set(k,L);spawn(L);}
@@ -372,4 +372,5 @@ if(typeof _hurt==='function')window.hurt=hurt=function(e,m,o){const oo=o||{};let
 
 GEMFX.mutOn=true;GEMFX.pole=true;   /* totem_gems.js: its plain rings and the old pillar are drawn here now */
 GEMFX.mut={mutsOf,state:()=>({DM,RG,TKS,POLES,LIVE:LIVE.size,NEED})};
+GEMFX.mk={rl,ellS,gRing,poly,line3,gem,puff,floorWash,tri,scr,phiTo,PL,pz,CH,KY,ST,GroundPulse,Spikes};   /* shared with gem_sup_fx.js (the 12 support gems) */
 })();

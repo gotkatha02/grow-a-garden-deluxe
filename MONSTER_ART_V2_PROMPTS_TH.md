@@ -138,3 +138,215 @@ DEATH, 5 frames: 1) staggering back in shock, 2) knees buckling, falling, 3) hit
 ```
 The legs are not alternating. Redraw the walk: in frame 1 the LEFT leg is in front, in frame 3 the RIGHT leg is in front, and frames 2 and 4 are passing poses with the other leg lifted. Look at frames 1 and 3: the front leg must clearly be a different leg.
 ```
+
+---
+# ✅ แบบรวม: 1 ตัว = 1 พรอมต์ ได้ครบทุกท่าในรูปเดียว (เจ้าของ 2026-11-21 'ตัวละพรอมต์รวมทุกท่า')
+แชทใหม่ต่อ 1 ตัว แนบรูปปกแคมป์ไฟ + รูปมอนที่วาดแล้ว 1 ตัวเป็นตัวอย่างสไตล์ แล้วส่งพรอมต์ของตัวนั้น · ได้ชีต 5 แถว (idle 4 · walk 4 · attack 5 · hurt 2 · death 5) ตัดด้วย `tools/monsheet.py <ชีต> assets/monsters/<ชื่อไฟล์>` · ขาไม่สลับ: ใช้ FIX WALK ข้างบน หรือแปรงเลือกแถวเดิน
+
+## 1. Snow Pup · ลูกหมาป่าหิมะ (snowpine)
+```
+Make ONE sprite sheet of a monster for my 2D isometric fantasy MMORPG (Ragnarok Online feel). Copy the art style of the attached pictures: friendly hand-painted chibi cartoon, cute-but-dangerous, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft light from the top-left, bright warm colours, clear silhouette. Not realistic, not painterly, not 3D.
+Monster: SNOW PUP (tiny, the weakest monster of the game) — a chubby fluffy white wolf pup with big round ice-blue eyes, ice-blue ear tips and paws, a frosty curly tail, two tiny fangs, a little snow clump on its head. Cute first enemy.
+Sheet: ONE 1536×1024 image, 5 rows. The SAME monster in every frame — identical design, colours and size, never redesigned. Facing DOWN-RIGHT (south-east), isometric 3/4 view from about 30° above. Every frame in its own equal-size cell with empty space around it; feet (or lowest point) on the same baseline in each row; nothing cropped, nothing overlapping another frame.
+Row 1 — IDLE, 4 frames: calm breathing — neutral, body rises slightly, neutral, body sinks slightly with a small detail moving.
+Row 2 — WALK, 4 frames: trotting in place, diagonal leg pairs MUST alternate: 1) front-LEFT and back-RIGHT legs reach forward, 2) passing pose, legs under the body, 3) front-RIGHT and back-LEFT legs reach forward, 4) passing pose. Frames 1 and 3 clearly show different legs in front; tail swings.
+Row 3 — ATTACK, 5 frames: a little pounce and nip — 1) ready, 2) wind-up, 3) strike at full reach toward down-right, 4) follow-through, 5) back to ready.
+Row 4 — HURT, 2 frames: 1) hit from the front, head and body jerk back, eyes squeezed shut, 2) recoiling, about to recover.
+Row 5 — DEATH, 5 frames: 1) staggers back, 2) falling, 3) hits the ground, 4) lying still, 5) the same pose fading away. Cartoon, no blood.
+Background: SOLID FLAT PURE GREEN (#00FF00), no gradient, no ground, no shadows. No green on the monster (teal is fine). No text, no row labels, no numbers, no borders, no motion lines, no dust or magic effects around it.
+```
+
+## 2. Pass Wolf · หมาป่าหิมะ (vikF6)
+```
+Make ONE sprite sheet of a monster for my 2D isometric fantasy MMORPG (Ragnarok Online feel). Copy the art style of the attached pictures: friendly hand-painted chibi cartoon, cute-but-dangerous, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft light from the top-left, bright warm colours, clear silhouette. Not realistic, not painterly, not 3D.
+Monster: PASS WOLF (medium) — a lean grey-and-white mountain wolf with snow crusted in its shaggy fur, a darker blue-grey stripe along its back, a scar over one eye, a collar of bone beads.
+Sheet: ONE 1536×1024 image, 5 rows. The SAME monster in every frame — identical design, colours and size, never redesigned. Facing DOWN-RIGHT (south-east), isometric 3/4 view from about 30° above. Every frame in its own equal-size cell with empty space around it; feet (or lowest point) on the same baseline in each row; nothing cropped, nothing overlapping another frame.
+Row 1 — IDLE, 4 frames: calm breathing — neutral, body rises slightly, neutral, body sinks slightly with a small detail moving.
+Row 2 — WALK, 4 frames: trotting in place, diagonal leg pairs MUST alternate: 1) front-LEFT and back-RIGHT legs reach forward, 2) passing pose, legs under the body, 3) front-RIGHT and back-LEFT legs reach forward, 4) passing pose. Frames 1 and 3 clearly show different legs in front; tail swings.
+Row 3 — ATTACK, 5 frames: a lunging bite — 1) ready, 2) wind-up, 3) strike at full reach toward down-right, 4) follow-through, 5) back to ready.
+Row 4 — HURT, 2 frames: 1) hit from the front, head and body jerk back, eyes squeezed shut, 2) recoiling, about to recover.
+Row 5 — DEATH, 5 frames: 1) staggers back, 2) falling, 3) hits the ground, 4) lying still, 5) the same pose fading away. Cartoon, no blood.
+Background: SOLID FLAT PURE GREEN (#00FF00), no gradient, no ground, no shadows. No green on the monster (teal is fine). No text, no row labels, no numbers, no borders, no motion lines, no dust or magic effects around it.
+```
+
+## 3. Shadow Wolf · หมาป่าเงา (vikH1)
+```
+Make ONE sprite sheet of a monster for my 2D isometric fantasy MMORPG (Ragnarok Online feel). Copy the art style of the attached pictures: friendly hand-painted chibi cartoon, cute-but-dangerous, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft light from the top-left, bright warm colours, clear silhouette. Not realistic, not painterly, not 3D.
+Monster: SHADOW WOLF (medium) — a black wolf whose body is made of thick dark smoke, glowing violet eyes and mouth, violet wisps curling from its fur and tail, paws fading into smoke.
+Sheet: ONE 1536×1024 image, 5 rows. The SAME monster in every frame — identical design, colours and size, never redesigned. Facing DOWN-RIGHT (south-east), isometric 3/4 view from about 30° above. Every frame in its own equal-size cell with empty space around it; feet (or lowest point) on the same baseline in each row; nothing cropped, nothing overlapping another frame.
+Row 1 — IDLE, 4 frames: calm breathing — neutral, body rises slightly, neutral, body sinks slightly with a small detail moving.
+Row 2 — WALK, 4 frames: trotting in place, diagonal leg pairs MUST alternate: 1) front-LEFT and back-RIGHT legs reach forward, 2) passing pose, legs under the body, 3) front-RIGHT and back-LEFT legs reach forward, 4) passing pose. Frames 1 and 3 clearly show different legs in front; tail swings.
+Row 3 — ATTACK, 5 frames: a fast lunging bite, its smoky body stretching forward — 1) ready, 2) wind-up, 3) strike at full reach toward down-right, 4) follow-through, 5) back to ready.
+Row 4 — HURT, 2 frames: 1) hit from the front, head and body jerk back, eyes squeezed shut, 2) recoiling, about to recover.
+Row 5 — DEATH, 5 frames: 1) staggers back, 2) falling, 3) hits the ground, 4) lying still, 5) the same pose fading away. Cartoon, no blood.
+Background: SOLID FLAT PURE GREEN (#00FF00), no gradient, no ground, no shadows. No green on the monster (teal is fine). No text, no row labels, no numbers, no borders, no motion lines, no dust or magic effects around it.
+```
+
+## 4. Wolf Priest · นักบวชหมาป่า (vikD2a)
+```
+Make ONE sprite sheet of a monster for my 2D isometric fantasy MMORPG (Ragnarok Online feel). Copy the art style of the attached pictures: friendly hand-painted chibi cartoon, cute-but-dangerous, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft light from the top-left, bright warm colours, clear silhouette. Not realistic, not painterly, not 3D.
+Monster: WOLF PRIEST (human-sized) — a hunched cultist in a purple robe with a wolf-skull hood over a shadowed face with glowing ice-blue eyes, bone and fang necklaces, a bone staff topped with a small wolf skull and a hanging violet rune stone.
+Sheet: ONE 1536×1024 image, 5 rows. The SAME monster in every frame — identical design, colours and size, never redesigned. Facing DOWN-RIGHT (south-east), isometric 3/4 view from about 30° above. Every frame in its own equal-size cell with empty space around it; feet (or lowest point) on the same baseline in each row; nothing cropped, nothing overlapping another frame.
+Row 1 — IDLE, 4 frames: calm breathing — neutral, body rises slightly, neutral, body sinks slightly with a small detail moving.
+Row 2 — WALK, 4 frames: walking in place, legs MUST alternate: 1) LEFT leg forward and planted, 2) passing pose with the RIGHT leg lifted, 3) RIGHT leg forward and planted, 4) passing pose with the LEFT leg lifted. Frames 1 and 3 clearly show a different leg in front; arms swing opposite to the legs.
+Row 3 — ATTACK, 5 frames: raises the staff and thrusts it forward, the rune stone glowing violet — 1) ready, 2) wind-up, 3) strike at full reach toward down-right, 4) follow-through, 5) back to ready.
+Row 4 — HURT, 2 frames: 1) hit from the front, head and body jerk back, eyes squeezed shut, 2) recoiling, about to recover.
+Row 5 — DEATH, 5 frames: 1) staggers back, 2) falling, 3) hits the ground, 4) lying still, 5) the same pose fading away. Cartoon, no blood.
+Background: SOLID FLAT PURE GREEN (#00FF00), no gradient, no ground, no shadows. No green on the monster (teal is fine). No text, no row labels, no numbers, no borders, no motion lines, no dust or magic effects around it.
+```
+
+## 5. Gleipnir Weaver · ช่างทอโซ่เกลปเนียร์ (vikD2a)
+```
+Make ONE sprite sheet of a monster for my 2D isometric fantasy MMORPG (Ragnarok Online feel). Copy the art style of the attached pictures: friendly hand-painted chibi cartoon, cute-but-dangerous, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft light from the top-left, bright warm colours, clear silhouette. Not realistic, not painterly, not 3D.
+Monster: GLEIPNIR WEAVER (medium) — a big cave spider with a dark-blue carapace etched with glowing silver runes, eight thin legs ringed with silver bands, a pale face with six small ice-blue eyes, a shining silver silk ribbon (the magic cord that binds Fenrir) trailing from its back end.
+Sheet: ONE 1536×1024 image, 5 rows. The SAME monster in every frame — identical design, colours and size, never redesigned. Facing DOWN-RIGHT (south-east), isometric 3/4 view from about 30° above. Every frame in its own equal-size cell with empty space around it; feet (or lowest point) on the same baseline in each row; nothing cropped, nothing overlapping another frame.
+Row 1 — IDLE, 4 frames: calm breathing — neutral, body rises slightly, neutral, body sinks slightly with a small detail moving.
+Row 2 — WALK, 4 frames: crawling in place, legs in two alternating groups: 1) left legs 1+3 and right legs 2+4 reach forward, 2) passing pose, 3) the other four legs reach forward, 4) passing pose. Frames 1 and 3 clearly differ.
+Row 3 — ATTACK, 5 frames: rears up on its back legs and stabs down with its two front legs — 1) ready, 2) wind-up, 3) strike at full reach toward down-right, 4) follow-through, 5) back to ready.
+Row 4 — HURT, 2 frames: 1) hit from the front, head and body jerk back, eyes squeezed shut, 2) recoiling, about to recover.
+Row 5 — DEATH, 5 frames: 1) staggers back, 2) falling, 3) hits the ground, 4) lying still, 5) the same pose fading away. Cartoon, no blood.
+Background: SOLID FLAT PURE GREEN (#00FF00), no gradient, no ground, no shadows. No green on the monster (teal is fine). No text, no row labels, no numbers, no borders, no motion lines, no dust or magic effects around it.
+```
+
+## 6. Draugr Wolf · หมาป่าเดรากร์ (vikD2b)
+```
+Make ONE sprite sheet of a monster for my 2D isometric fantasy MMORPG (Ragnarok Online feel). Copy the art style of the attached pictures: friendly hand-painted chibi cartoon, cute-but-dangerous, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft light from the top-left, bright warm colours, clear silhouette. Not realistic, not painterly, not 3D.
+Monster: DRAUGR WOLF (medium) — an undead half-skeleton wolf: tattered grey fur, exposed ribs with blue soul-fire inside its chest, bone tail, empty eye sockets with blue flames, a rusty broken chain on its neck.
+Sheet: ONE 1536×1024 image, 5 rows. The SAME monster in every frame — identical design, colours and size, never redesigned. Facing DOWN-RIGHT (south-east), isometric 3/4 view from about 30° above. Every frame in its own equal-size cell with empty space around it; feet (or lowest point) on the same baseline in each row; nothing cropped, nothing overlapping another frame.
+Row 1 — IDLE, 4 frames: calm breathing — neutral, body rises slightly, neutral, body sinks slightly with a small detail moving.
+Row 2 — WALK, 4 frames: trotting in place, diagonal leg pairs MUST alternate: 1) front-LEFT and back-RIGHT legs reach forward, 2) passing pose, legs under the body, 3) front-RIGHT and back-LEFT legs reach forward, 4) passing pose. Frames 1 and 3 clearly show different legs in front; tail swings.
+Row 3 — ATTACK, 5 frames: a lunging bite with its bony jaws — 1) ready, 2) wind-up, 3) strike at full reach toward down-right, 4) follow-through, 5) back to ready.
+Row 4 — HURT, 2 frames: 1) hit from the front, head and body jerk back, eyes squeezed shut, 2) recoiling, about to recover.
+Row 5 — DEATH, 5 frames: 1) staggers back, 2) falling, 3) hits the ground, 4) lying still, 5) the same pose fading away. Cartoon, no blood.
+Background: SOLID FLAT PURE GREEN (#00FF00), no gradient, no ground, no shadows. No green on the monster (teal is fine). No text, no row labels, no numbers, no borders, no motion lines, no dust or magic effects around it.
+```
+
+## 7. Draugr · เดรากร์ (vikD2b)
+```
+Make ONE sprite sheet of a monster for my 2D isometric fantasy MMORPG (Ragnarok Online feel). Copy the art style of the attached pictures: friendly hand-painted chibi cartoon, cute-but-dangerous, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft light from the top-left, bright warm colours, clear silhouette. Not realistic, not painterly, not 3D.
+Monster: DRAUGR (human-sized) — an undead Viking warrior with blue-grey rotting skin, a dented iron helmet, rusty torn chainmail and a ragged fur cloak, glowing blue eyes, a notched sword in the right hand and a cracked round wooden shield with a faded raven painting.
+Sheet: ONE 1536×1024 image, 5 rows. The SAME monster in every frame — identical design, colours and size, never redesigned. Facing DOWN-RIGHT (south-east), isometric 3/4 view from about 30° above. Every frame in its own equal-size cell with empty space around it; feet (or lowest point) on the same baseline in each row; nothing cropped, nothing overlapping another frame.
+Row 1 — IDLE, 4 frames: calm breathing — neutral, body rises slightly, neutral, body sinks slightly with a small detail moving.
+Row 2 — WALK, 4 frames: walking in place, legs MUST alternate: 1) LEFT leg forward and planted, 2) passing pose with the RIGHT leg lifted, 3) RIGHT leg forward and planted, 4) passing pose with the LEFT leg lifted. Frames 1 and 3 clearly show a different leg in front; arms swing opposite to the legs.
+Row 3 — ATTACK, 5 frames: a sword slash from behind the shield — 1) ready, 2) wind-up, 3) strike at full reach toward down-right, 4) follow-through, 5) back to ready.
+Row 4 — HURT, 2 frames: 1) hit from the front, head and body jerk back, eyes squeezed shut, 2) recoiling, about to recover.
+Row 5 — DEATH, 5 frames: 1) staggers back, 2) falling, 3) hits the ground, 4) lying still, 5) the same pose fading away. Cartoon, no blood.
+Background: SOLID FLAT PURE GREEN (#00FF00), no gradient, no ground, no shadows. No green on the monster (teal is fine). No text, no row labels, no numbers, no borders, no motion lines, no dust or magic effects around it.
+```
+
+## 8. Chain Wraith · วิญญาณโซ่ (vikD2b)
+```
+Make ONE sprite sheet of a monster for my 2D isometric fantasy MMORPG (Ragnarok Online feel). Copy the art style of the attached pictures: friendly hand-painted chibi cartoon, cute-but-dangerous, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft light from the top-left, bright warm colours, clear silhouette. Not realistic, not painterly, not 3D.
+Monster: CHAIN WRAITH (medium, floating) — a hooded ghost in a tattered dark-blue cloak, no legs (the cloak fades into ragged tails), two glowing ice-blue eyes in the hood, wrapped in broken iron chains whose loose ends hang from its bony hands.
+Sheet: ONE 1536×1024 image, 5 rows. The SAME monster in every frame — identical design, colours and size, never redesigned. Facing DOWN-RIGHT (south-east), isometric 3/4 view from about 30° above. Every frame in its own equal-size cell with empty space around it; feet (or lowest point) on the same baseline in each row; nothing cropped, nothing overlapping another frame.
+Row 1 — IDLE, 4 frames: calm breathing — neutral, body rises slightly, neutral, body sinks slightly with a small detail moving.
+Row 2 — WALK, 4 frames: floating forward, no legs touching the ground: 1) high, leaning forward, 2) middle, trailing parts swept back, 3) low, 4) middle, trailing parts swinging the other way.
+Row 3 — ATTACK, 5 frames: whips a chain forward like a lash — 1) ready, 2) wind-up, 3) strike at full reach toward down-right, 4) follow-through, 5) back to ready.
+Row 4 — HURT, 2 frames: 1) hit from the front, head and body jerk back, eyes squeezed shut, 2) recoiling, about to recover.
+Row 5 — DEATH, 5 frames: 1) staggers back, 2) falling, 3) hits the ground, 4) lying still, 5) the same pose fading away. Cartoon, no blood.
+Background: SOLID FLAT PURE GREEN (#00FF00), no gradient, no ground, no shadows. No green on the monster (teal is fine). No text, no row labels, no numbers, no borders, no motion lines, no dust or magic effects around it.
+```
+
+## 9. Fenrir Guard · องครักษ์เฟนเรียร์ (vikD2c)
+```
+Make ONE sprite sheet of a monster for my 2D isometric fantasy MMORPG (Ragnarok Online feel). Copy the art style of the attached pictures: friendly hand-painted chibi cartoon, cute-but-dangerous, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft light from the top-left, bright warm colours, clear silhouette. Not realistic, not painterly, not 3D.
+Monster: FENRIR GUARD (large) — a huge armoured black wolf with dark iron plates on its back and shoulders, a spiked iron collar, an ice-blue flame mane, glowing ice-blue eyes, heavy paws with iron claw caps.
+Sheet: ONE 1536×1024 image, 5 rows. The SAME monster in every frame — identical design, colours and size, never redesigned. Facing DOWN-RIGHT (south-east), isometric 3/4 view from about 30° above. Every frame in its own equal-size cell with empty space around it; feet (or lowest point) on the same baseline in each row; nothing cropped, nothing overlapping another frame.
+Row 1 — IDLE, 4 frames: calm breathing — neutral, body rises slightly, neutral, body sinks slightly with a small detail moving.
+Row 2 — WALK, 4 frames: trotting in place, diagonal leg pairs MUST alternate: 1) front-LEFT and back-RIGHT legs reach forward, 2) passing pose, legs under the body, 3) front-RIGHT and back-LEFT legs reach forward, 4) passing pose. Frames 1 and 3 clearly show different legs in front; tail swings.
+Row 3 — ATTACK, 5 frames: rears up and smashes down with a clawed paw — 1) ready, 2) wind-up, 3) strike at full reach toward down-right, 4) follow-through, 5) back to ready.
+Row 4 — HURT, 2 frames: 1) hit from the front, head and body jerk back, eyes squeezed shut, 2) recoiling, about to recover.
+Row 5 — DEATH, 5 frames: 1) staggers back, 2) falling, 3) hits the ground, 4) lying still, 5) the same pose fading away. Cartoon, no blood.
+Background: SOLID FLAT PURE GREEN (#00FF00), no gradient, no ground, no shadows. No green on the monster (teal is fine). No text, no row labels, no numbers, no borders, no motion lines, no dust or magic effects around it.
+```
+
+## 10. Wolf High Priest · มหานักบวชหมาป่า (vikD2c)
+```
+Make ONE sprite sheet of a monster for my 2D isometric fantasy MMORPG (Ragnarok Online feel). Copy the art style of the attached pictures: friendly hand-painted chibi cartoon, cute-but-dangerous, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft light from the top-left, bright warm colours, clear silhouette. Not realistic, not painterly, not 3D.
+Monster: WOLF HIGH PRIEST (tall human-sized) — a priest in layered crimson-and-violet robes with gold trim, a crown made of a wolf skull with small horns, a long grey beard braid, small violet rune stones floating above his palms.
+Sheet: ONE 1536×1024 image, 5 rows. The SAME monster in every frame — identical design, colours and size, never redesigned. Facing DOWN-RIGHT (south-east), isometric 3/4 view from about 30° above. Every frame in its own equal-size cell with empty space around it; feet (or lowest point) on the same baseline in each row; nothing cropped, nothing overlapping another frame.
+Row 1 — IDLE, 4 frames: calm breathing — neutral, body rises slightly, neutral, body sinks slightly with a small detail moving.
+Row 2 — WALK, 4 frames: walking in place, legs MUST alternate: 1) LEFT leg forward and planted, 2) passing pose with the RIGHT leg lifted, 3) RIGHT leg forward and planted, 4) passing pose with the LEFT leg lifted. Frames 1 and 3 clearly show a different leg in front; arms swing opposite to the legs.
+Row 3 — ATTACK, 5 frames: pulls both hands back then pushes them forward, the rune stones flying out a little and returning — 1) ready, 2) wind-up, 3) strike at full reach toward down-right, 4) follow-through, 5) back to ready.
+Row 4 — HURT, 2 frames: 1) hit from the front, head and body jerk back, eyes squeezed shut, 2) recoiling, about to recover.
+Row 5 — DEATH, 5 frames: 1) staggers back, 2) falling, 3) hits the ground, 4) lying still, 5) the same pose fading away. Cartoon, no blood.
+Background: SOLID FLAT PURE GREEN (#00FF00), no gradient, no ground, no shadows. No green on the monster (teal is fine). No text, no row labels, no numbers, no borders, no motion lines, no dust or magic effects around it.
+```
+
+## 11. Undying Viking · ไวกิ้งอมตะ (vikE1)
+```
+Make ONE sprite sheet of a monster for my 2D isometric fantasy MMORPG (Ragnarok Online feel). Copy the art style of the attached pictures: friendly hand-painted chibi cartoon, cute-but-dangerous, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft light from the top-left, bright warm colours, clear silhouette. Not realistic, not painterly, not 3D.
+Monster: UNDYING VIKING (large) — a hulking undead Viking chieftain: horned helmet, barnacles and shells crusted on rusty armour, a beard of dark seaweed (dark brown-purple, not green), glowing teal eyes, a huge two-handed bearded axe.
+Sheet: ONE 1536×1024 image, 5 rows. The SAME monster in every frame — identical design, colours and size, never redesigned. Facing DOWN-RIGHT (south-east), isometric 3/4 view from about 30° above. Every frame in its own equal-size cell with empty space around it; feet (or lowest point) on the same baseline in each row; nothing cropped, nothing overlapping another frame.
+Row 1 — IDLE, 4 frames: calm breathing — neutral, body rises slightly, neutral, body sinks slightly with a small detail moving.
+Row 2 — WALK, 4 frames: walking in place, legs MUST alternate: 1) LEFT leg forward and planted, 2) passing pose with the RIGHT leg lifted, 3) RIGHT leg forward and planted, 4) passing pose with the LEFT leg lifted. Frames 1 and 3 clearly show a different leg in front; arms swing opposite to the legs.
+Row 3 — ATTACK, 5 frames: raises the axe overhead and chops down — 1) ready, 2) wind-up, 3) strike at full reach toward down-right, 4) follow-through, 5) back to ready.
+Row 4 — HURT, 2 frames: 1) hit from the front, head and body jerk back, eyes squeezed shut, 2) recoiling, about to recover.
+Row 5 — DEATH, 5 frames: 1) staggers back, 2) falling, 3) hits the ground, 4) lying still, 5) the same pose fading away. Cartoon, no blood.
+Background: SOLID FLAT PURE GREEN (#00FF00), no gradient, no ground, no shadows. No green on the monster (teal is fine). No text, no row labels, no numbers, no borders, no motion lines, no dust or magic effects around it.
+```
+
+## 12. Sea Ghost Wolf · หมาป่าวิญญาณทะเล (vikE1)
+```
+Make ONE sprite sheet of a monster for my 2D isometric fantasy MMORPG (Ragnarok Online feel). Copy the art style of the attached pictures: friendly hand-painted chibi cartoon, cute-but-dangerous, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft light from the top-left, bright warm colours, clear silhouette. Not realistic, not painterly, not 3D.
+Monster: SEA GHOST WOLF (medium) — a translucent pale-teal ghost wolf made of sea water, white wave-foam mane and tail curling like breaking waves, dripping water drops, glowing white eyes.
+Sheet: ONE 1536×1024 image, 5 rows. The SAME monster in every frame — identical design, colours and size, never redesigned. Facing DOWN-RIGHT (south-east), isometric 3/4 view from about 30° above. Every frame in its own equal-size cell with empty space around it; feet (or lowest point) on the same baseline in each row; nothing cropped, nothing overlapping another frame.
+Row 1 — IDLE, 4 frames: calm breathing — neutral, body rises slightly, neutral, body sinks slightly with a small detail moving.
+Row 2 — WALK, 4 frames: trotting in place, diagonal leg pairs MUST alternate: 1) front-LEFT and back-RIGHT legs reach forward, 2) passing pose, legs under the body, 3) front-RIGHT and back-LEFT legs reach forward, 4) passing pose. Frames 1 and 3 clearly show different legs in front; tail swings.
+Row 3 — ATTACK, 5 frames: a lunging bite, its foam mane crashing forward like a wave — 1) ready, 2) wind-up, 3) strike at full reach toward down-right, 4) follow-through, 5) back to ready.
+Row 4 — HURT, 2 frames: 1) hit from the front, head and body jerk back, eyes squeezed shut, 2) recoiling, about to recover.
+Row 5 — DEATH, 5 frames: 1) staggers back, 2) falling, 3) hits the ground, 4) lying still, 5) the same pose fading away. Cartoon, no blood.
+Background: SOLID FLAT PURE GREEN (#00FF00), no gradient, no ground, no shadows. No green on the monster (teal is fine). No text, no row labels, no numbers, no borders, no motion lines, no dust or magic effects around it.
+```
+
+## 13. Drowned Shieldmaiden · วาลคิรีจมน้ำ (vikE1)
+```
+Make ONE sprite sheet of a monster for my 2D isometric fantasy MMORPG (Ragnarok Online feel). Copy the art style of the attached pictures: friendly hand-painted chibi cartoon, cute-but-dangerous, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft light from the top-left, bright warm colours, clear silhouette. Not realistic, not painterly, not 3D.
+Monster: DROWNED SHIELDMAIDEN (human-sized) — a pale drowned Viking shieldmaiden with wet dark braids, a dented winged helmet, a coral-crusted round shield and a long spear, torn dress and armour with barnacles, eerie teal glowing eyes.
+Sheet: ONE 1536×1024 image, 5 rows. The SAME monster in every frame — identical design, colours and size, never redesigned. Facing DOWN-RIGHT (south-east), isometric 3/4 view from about 30° above. Every frame in its own equal-size cell with empty space around it; feet (or lowest point) on the same baseline in each row; nothing cropped, nothing overlapping another frame.
+Row 1 — IDLE, 4 frames: calm breathing — neutral, body rises slightly, neutral, body sinks slightly with a small detail moving.
+Row 2 — WALK, 4 frames: walking in place, legs MUST alternate: 1) LEFT leg forward and planted, 2) passing pose with the RIGHT leg lifted, 3) RIGHT leg forward and planted, 4) passing pose with the LEFT leg lifted. Frames 1 and 3 clearly show a different leg in front; arms swing opposite to the legs.
+Row 3 — ATTACK, 5 frames: a long spear thrust from behind the shield — 1) ready, 2) wind-up, 3) strike at full reach toward down-right, 4) follow-through, 5) back to ready.
+Row 4 — HURT, 2 frames: 1) hit from the front, head and body jerk back, eyes squeezed shut, 2) recoiling, about to recover.
+Row 5 — DEATH, 5 frames: 1) staggers back, 2) falling, 3) hits the ground, 4) lying still, 5) the same pose fading away. Cartoon, no blood.
+Background: SOLID FLAT PURE GREEN (#00FF00), no gradient, no ground, no shadows. No green on the monster (teal is fine). No text, no row labels, no numbers, no borders, no motion lines, no dust or magic effects around it.
+```
+
+## 14. Frost Giant · ยักษ์น้ำแข็ง (vikE2)
+```
+Make ONE sprite sheet of a monster for my 2D isometric fantasy MMORPG (Ragnarok Online feel). Copy the art style of the attached pictures: friendly hand-painted chibi cartoon, cute-but-dangerous, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft light from the top-left, bright warm colours, clear silhouette. Not realistic, not painterly, not 3D.
+Monster: FROST GIANT (very large, chibi proportions) — a towering blue-skinned Jotun with an icicle beard, white fur loincloth, glacier-ice shoulder plates, glowing pale-blue eyes, a club made of a big ice boulder on a log.
+Sheet: ONE 1536×1024 image, 5 rows. The SAME monster in every frame — identical design, colours and size, never redesigned. Facing DOWN-RIGHT (south-east), isometric 3/4 view from about 30° above. Every frame in its own equal-size cell with empty space around it; feet (or lowest point) on the same baseline in each row; nothing cropped, nothing overlapping another frame.
+Row 1 — IDLE, 4 frames: calm breathing — neutral, body rises slightly, neutral, body sinks slightly with a small detail moving.
+Row 2 — WALK, 4 frames: walking in place, legs MUST alternate: 1) LEFT leg forward and planted, 2) passing pose with the RIGHT leg lifted, 3) RIGHT leg forward and planted, 4) passing pose with the LEFT leg lifted. Frames 1 and 3 clearly show a different leg in front; arms swing opposite to the legs.
+Row 3 — ATTACK, 5 frames: lifts the boulder club and slams it on the ground — 1) ready, 2) wind-up, 3) strike at full reach toward down-right, 4) follow-through, 5) back to ready.
+Row 4 — HURT, 2 frames: 1) hit from the front, head and body jerk back, eyes squeezed shut, 2) recoiling, about to recover.
+Row 5 — DEATH, 5 frames: 1) staggers back, 2) falling, 3) hits the ground, 4) lying still, 5) the same pose fading away. Cartoon, no blood.
+Background: SOLID FLAT PURE GREEN (#00FF00), no gradient, no ground, no shadows. No green on the monster (teal is fine). No text, no row labels, no numbers, no borders, no motion lines, no dust or magic effects around it.
+```
+
+## 15. Dark Valkyrie Wolf · หมาป่าวาลคิรีมืด (vikE2)
+```
+Make ONE sprite sheet of a monster for my 2D isometric fantasy MMORPG (Ragnarok Online feel). Copy the art style of the attached pictures: friendly hand-painted chibi cartoon, cute-but-dangerous, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft light from the top-left, bright warm colours, clear silhouette. Not realistic, not painterly, not 3D.
+Monster: DARK VALKYRIE WOLF (large) — a black wolf with two big dark-feathered wings folded on its back, a silver winged valkyrie helmet, silver chest armour, glowing silver eyes.
+Sheet: ONE 1536×1024 image, 5 rows. The SAME monster in every frame — identical design, colours and size, never redesigned. Facing DOWN-RIGHT (south-east), isometric 3/4 view from about 30° above. Every frame in its own equal-size cell with empty space around it; feet (or lowest point) on the same baseline in each row; nothing cropped, nothing overlapping another frame.
+Row 1 — IDLE, 4 frames: calm breathing — neutral, body rises slightly, neutral, body sinks slightly with a small detail moving.
+Row 2 — WALK, 4 frames: trotting in place, diagonal leg pairs MUST alternate: 1) front-LEFT and back-RIGHT legs reach forward, 2) passing pose, legs under the body, 3) front-RIGHT and back-LEFT legs reach forward, 4) passing pose. Frames 1 and 3 clearly show different legs in front; tail swings.
+Row 3 — ATTACK, 5 frames: spreads its wings and pounces forward with claws out — 1) ready, 2) wind-up, 3) strike at full reach toward down-right, 4) follow-through, 5) back to ready.
+Row 4 — HURT, 2 frames: 1) hit from the front, head and body jerk back, eyes squeezed shut, 2) recoiling, about to recover.
+Row 5 — DEATH, 5 frames: 1) staggers back, 2) falling, 3) hits the ground, 4) lying still, 5) the same pose fading away. Cartoon, no blood.
+Background: SOLID FLAT PURE GREEN (#00FF00), no gradient, no ground, no shadows. No green on the monster (teal is fine). No text, no row labels, no numbers, no borders, no motion lines, no dust or magic effects around it.
+```
+
+## 16. Glacier Wyrmling · ลูกมังกรธารน้ำแข็ง (vikE2)
+```
+Make ONE sprite sheet of a monster for my 2D isometric fantasy MMORPG (Ragnarok Online feel). Copy the art style of the attached pictures: friendly hand-painted chibi cartoon, cute-but-dangerous, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft light from the top-left, bright warm colours, clear silhouette. Not realistic, not painterly, not 3D.
+Monster: GLACIER WYRMLING (large) — a young four-legged ice dragon with pale-blue scales, a row of clear ice-crystal spikes along its back and tail, small frosty wings, big curious eyes.
+Sheet: ONE 1536×1024 image, 5 rows. The SAME monster in every frame — identical design, colours and size, never redesigned. Facing DOWN-RIGHT (south-east), isometric 3/4 view from about 30° above. Every frame in its own equal-size cell with empty space around it; feet (or lowest point) on the same baseline in each row; nothing cropped, nothing overlapping another frame.
+Row 1 — IDLE, 4 frames: calm breathing — neutral, body rises slightly, neutral, body sinks slightly with a small detail moving.
+Row 2 — WALK, 4 frames: trotting in place, diagonal leg pairs MUST alternate: 1) front-LEFT and back-RIGHT legs reach forward, 2) passing pose, legs under the body, 3) front-RIGHT and back-LEFT legs reach forward, 4) passing pose. Frames 1 and 3 clearly show different legs in front; tail swings.
+Row 3 — ATTACK, 5 frames: snaps its jaws forward, wings flaring — 1) ready, 2) wind-up, 3) strike at full reach toward down-right, 4) follow-through, 5) back to ready.
+Row 4 — HURT, 2 frames: 1) hit from the front, head and body jerk back, eyes squeezed shut, 2) recoiling, about to recover.
+Row 5 — DEATH, 5 frames: 1) staggers back, 2) falling, 3) hits the ground, 4) lying still, 5) the same pose fading away. Cartoon, no blood.
+Background: SOLID FLAT PURE GREEN (#00FF00), no gradient, no ground, no shadows. No green on the monster (teal is fine). No text, no row labels, no numbers, no borders, no motion lines, no dust or magic effects around it.
+```

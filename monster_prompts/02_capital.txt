@@ -1,0 +1,152 @@
+MONSTER SPRITE SHEETS — CAPITAL (23 monsters)
+Game: Totem Legend, a 2D isometric fantasy MMORPG (Ragnarok Online feel). This region: the royal capital: farmland, meadows, old mills, and the catacombs under the city.
+
+=== HOW TO WORK WITH THIS FILE — READ EVERYTHING FIRST ===
+• This file lists 23 monsters. For each monster you draw ONE sprite-sheet image.
+• Draw ONE image per reply, in list order, starting with #1.
+• After each image write only "#<number> <name> done" and STOP. Wait for me.
+  - "next" = draw the next monster.   - "redo" = draw the same monster again.   - a number (e.g. "12") = draw that monster.
+• Before every image, re-read the STYLE, SHEET and WALK rules below. Every image must follow them exactly.
+• Never put text, numbers or labels inside the image.
+
+=== STYLE (copy the attached pictures) ===
+Friendly hand-painted chibi cartoon, cute-but-dangerous, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft light from the top-left, bright warm colours, clear readable silhouette. Not realistic, not painterly, not 3D. Chibi proportions (big head, short body) even for giants.
+
+=== SHEET (the same for every monster) ===
+• ONE 1536×1024 image, 5 rows. The SAME monster in every frame: identical design, colours and size, never redesigned between frames.
+• Facing DOWN-RIGHT (south-east), isometric 3/4 view from about 30° above.
+• Every frame in its own equal-size cell with empty space around it; feet (or lowest point) on the same baseline within each row; nothing cropped, nothing overlapping another frame.
+• Row 1 — IDLE, 4 frames: calm breathing — neutral, body rises slightly, neutral, body sinks slightly with one small detail moving (ear, tail, cloak, flame).
+• Row 2 — WALK, 4 frames: use the walk type given for the monster (see WALK TYPES).
+• Row 3 — ATTACK, 5 frames: the monster's own attack given in its entry — 1) ready, 2) wind-up, 3) strike at full reach toward down-right, 4) follow-through, 5) back to ready.
+• Row 4 — HURT, 2 frames: 1) hit from the front — head and body jerk back, eyes squeezed shut, 2) recoiling, about to recover.
+• Row 5 — DEATH, 5 frames: 1) staggers back, 2) falling, 3) hits the ground, 4) lying still, 5) the same pose fading away. Cartoon, no blood or gore.
+• Background: SOLID FLAT PURE GREEN (#00FF00) — no gradient, no ground, no shadows. NEVER use green on the monster: anything that would normally be green (leaves, skin, slime, jade, moss) is drawn teal, turquoise, blue, gold or autumn orange instead.
+• No text, no row labels, no numbers, no borders, no motion lines, no dust, no magic effects floating around the monster (small glows ON the body are fine).
+
+=== WALK TYPES ===
+• TWO LEGS — walking in place, legs MUST alternate: 1) LEFT leg forward and planted, 2) passing pose with the RIGHT leg lifted, 3) RIGHT leg forward and planted, 4) passing pose with the LEFT leg lifted. Frames 1 and 3 clearly show a different leg in front; arms swing opposite to the legs.
+• FOUR LEGS — trotting in place, diagonal pairs MUST alternate: 1) front-LEFT + back-RIGHT legs reach forward, 2) passing pose, legs under the body, 3) front-RIGHT + back-LEFT legs reach forward, 4) passing pose. Frames 1 and 3 clearly show different legs in front; tail swings.
+• FLOATING (ghosts, spirits, no legs) — 1) high, leaning forward, 2) middle, trailing parts swept back, 3) low, 4) middle, trailing parts swinging the other way. Nothing touches the ground.
+• MANY LEGS (insects, spiders, crabs, octopus) — legs move in two alternating groups: 1) group A reaches forward, 2) passing pose, 3) group B reaches forward, 4) passing pose. Frames 1 and 3 clearly differ.
+• FLYING (birds, bats, winged things) — hovering in place: 1) wings up, 2) wings half down, 3) wings fully down, 4) wings half up; the body bobs a little, feet tucked.
+• HOPPING (frogs, rabbits, slimes, one-legged things) — 1) crouched low, 2) pushing off, 3) highest point in the air, 4) landing squashed.
+
+=== MONSTERS ===
+
+#1 WILD HORSE
+   Walk: FOUR LEGS
+   Look: large — a chestnut-brown wild horse with a long wind-tossed cream mane, white socks on its legs, a proud head.
+   Attack: rears up and kicks with its front hooves.
+
+#2 PLAINS WOLF
+   Walk: FOUR LEGS
+   Look: medium — a tawny golden-brown grassland wolf with a cream belly, a darker back stripe and alert big ears.
+   Attack: a lunging bite.
+
+#3 FIELD RABBIT
+   Walk: HOPPING
+   Look: tiny — a round tan bunny with a white cotton tail, one floppy ear and a little clover tucked behind it.
+   Attack: a quick double-foot kick.
+
+#4 FIELD HAWK
+   Walk: FLYING
+   Look: small — a brown-and-cream hawk with barred wing feathers, a yellow hooked beak and sharp yellow talons.
+   Attack: dives forward and rakes with its talons.
+
+#5 MEADOW SLIME
+   Walk: HOPPING
+   Look: small — a wobbly sky-blue jelly slime with a daisy floating inside it and two shiny dot eyes.
+   Attack: squashes down then lunges in a big bouncy body slam.
+
+#6 DANDELION PUFF
+   Walk: FLOATING
+   Look: tiny — a fluffy white dandelion seed-ball creature with a sleepy face, a short yellow stem body and two leaf arms.
+   Attack: puffs out its fluff and spins into the target.
+
+#7 WILD BULL
+   Walk: FOUR LEGS
+   Look: large — a dark brown bull with a cream muzzle, big curved horns, a nose ring and a stamping attitude.
+   Attack: lowers its horns and charges.
+
+#8 GIANT BEE
+   Walk: FLYING
+   Look: small — a fat fuzzy golden bumblebee with black stripes, clear little wings, big eyes and a sharp stinger.
+   Attack: curls its body and jabs with the stinger.
+
+#9 WILD ROOSTER
+   Walk: TWO LEGS
+   Look: small — a proud red-and-orange rooster with a big red comb, glossy dark tail feathers and spurs.
+   Attack: jumps and kicks with its spurs.
+
+#10 GOLDEN STAG
+   Walk: FOUR LEGS
+   Look: large — a noble cream-white stag with shining golden antlers decorated with tiny flowers, a soft glow on the antler tips.
+   Attack: lowers its antlers and rams.
+
+#11 WILD BOAR
+   Walk: FOUR LEGS
+   Look: medium — a bristly dark-brown boar with long curved tusks, a ridge of stiff hair along the back and angry little eyes.
+   Attack: a tusk-first charge.
+
+#12 ANTLER BEETLE
+   Walk: MANY LEGS
+   Look: small — a glossy chestnut stag beetle with huge branching pincer jaws and a bronze shell.
+   Attack: snaps its pincer jaws shut.
+
+#13 HAUNTED MILL SPIRIT
+   Walk: FLOATING
+   Look: medium — a ghost made of an old flour sack with a stitched angry face, floating, a tiny broken windmill sail on its head, flour dust drifting off it.
+   Attack: swings forward and slams with its heavy sack body.
+
+#14 GIANT CROW
+   Walk: FLYING
+   Look: medium — a big glossy black crow with a purple sheen, a thick beak, red eyes and a ragged tail.
+   Attack: pecks hard with its beak.
+
+#15 SCARECROW KNIGHT
+   Walk: TWO LEGS
+   Look: human-sized — a scarecrow in dented old knight armour, a carved pumpkin head with glowing orange eyes, straw poking out of the joints, a rusty sword.
+   Attack: a clumsy overhead sword chop.
+
+#16 WATER SPRITE
+   Walk: FLOATING
+   Look: small — a little water spirit girl made of clear blue water, hair like a splash, glowing white eyes, a lily pad hat.
+   Attack: flicks a splash of water forward.
+
+#17 RUSTED SOLDIER
+   Walk: TWO LEGS
+   Look: human-sized — an empty suit of rusty orange-brown armour moving by itself, a dented helmet with a dark visor and two yellow glowing eyes, a chipped spear.
+   Attack: a stiff spear thrust.
+
+#18 FROG BANDIT
+   Walk: TWO LEGS
+   Look: small — a chubby blue-and-yellow frog standing upright with a black bandit mask, a red bandana and a little dagger.
+   Attack: a hop-in dagger stab.
+
+#19 SKELETON SOLDIER
+   Walk: TWO LEGS
+   Look: human-sized — a rattling skeleton in a rusty half-helmet and a torn red tabard, a short sword and a small round shield.
+   Attack: a sword slash.
+
+#20 SEWER RAT
+   Walk: FOUR LEGS
+   Look: small — a fat grey rat with pink ears and tail, a chipped tooth, a dirty bandage on its tail.
+   Attack: a lunging bite.
+
+#21 CRYPT SPIDER
+   Walk: MANY LEGS
+   Look: medium — a pale bone-white spider with a skull pattern on its back, purple joints and red eyes.
+   Attack: rears and bites with its fangs.
+
+#22 WRAITH KNIGHT
+   Walk: TWO LEGS
+   Look: large — a ghostly knight in black spiked armour with a tattered purple cape, a hollow helmet glowing purple inside, a long dark greatsword.
+   Attack: a heavy diagonal greatsword slash.
+
+#23 BONE ARCHER
+   Walk: TWO LEGS
+   Look: human-sized — a skeleton archer with a hooded brown cloak, a quiver of black arrows and a worn longbow.
+   Attack: draws the bow and shoots (the arrow just leaving the bow).
+
+(End of list. Start with #1 when I say so.)

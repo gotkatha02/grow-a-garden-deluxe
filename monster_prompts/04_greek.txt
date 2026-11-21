@@ -1,0 +1,257 @@
+MONSTER SPRITE SHEETS — GREEK (44 monsters)
+Game: Totem Legend, a 2D isometric fantasy MMORPG (Ragnarok Online feel). This region: Greek lands (olive hills, marble ruins, the Aegean coast, Cyclops caves, the Labyrinth, the Underworld, Mount Olympus).
+
+=== HOW TO WORK WITH THIS FILE — READ EVERYTHING FIRST ===
+• This file lists 44 monsters. For each monster you draw ONE sprite-sheet image.
+• Draw ONE image per reply, in list order, starting with #1.
+• After each image write only "#<number> <name> done" and STOP. Wait for me.
+  - "next" = draw the next monster.   - "redo" = draw the same monster again.   - a number (e.g. "12") = draw that monster.
+• Before every image, re-read the STYLE, SHEET and WALK rules below. Every image must follow them exactly.
+• Never put text, numbers or labels inside the image.
+
+=== STYLE (copy the attached pictures) ===
+Friendly hand-painted chibi cartoon, cute-but-dangerous, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft light from the top-left, bright warm colours, clear readable silhouette. Not realistic, not painterly, not 3D. Chibi proportions (big head, short body) even for giants.
+
+=== SHEET (the same for every monster) ===
+• ONE 1536×1024 image, 5 rows. The SAME monster in every frame: identical design, colours and size, never redesigned between frames.
+• Facing DOWN-RIGHT (south-east), isometric 3/4 view from about 30° above.
+• Every frame in its own equal-size cell with empty space around it; feet (or lowest point) on the same baseline within each row; nothing cropped, nothing overlapping another frame.
+• Row 1 — IDLE, 4 frames: calm breathing — neutral, body rises slightly, neutral, body sinks slightly with one small detail moving (ear, tail, cloak, flame).
+• Row 2 — WALK, 4 frames: use the walk type given for the monster (see WALK TYPES).
+• Row 3 — ATTACK, 5 frames: the monster's own attack given in its entry — 1) ready, 2) wind-up, 3) strike at full reach toward down-right, 4) follow-through, 5) back to ready.
+• Row 4 — HURT, 2 frames: 1) hit from the front — head and body jerk back, eyes squeezed shut, 2) recoiling, about to recover.
+• Row 5 — DEATH, 5 frames: 1) staggers back, 2) falling, 3) hits the ground, 4) lying still, 5) the same pose fading away. Cartoon, no blood or gore.
+• Background: SOLID FLAT PURE GREEN (#00FF00) — no gradient, no ground, no shadows. NEVER use green on the monster: anything that would normally be green (leaves, skin, slime, jade, moss) is drawn teal, turquoise, blue, gold or autumn orange instead.
+• No text, no row labels, no numbers, no borders, no motion lines, no dust, no magic effects floating around the monster (small glows ON the body are fine).
+
+=== WALK TYPES ===
+• TWO LEGS — walking in place, legs MUST alternate: 1) LEFT leg forward and planted, 2) passing pose with the RIGHT leg lifted, 3) RIGHT leg forward and planted, 4) passing pose with the LEFT leg lifted. Frames 1 and 3 clearly show a different leg in front; arms swing opposite to the legs.
+• FOUR LEGS — trotting in place, diagonal pairs MUST alternate: 1) front-LEFT + back-RIGHT legs reach forward, 2) passing pose, legs under the body, 3) front-RIGHT + back-LEFT legs reach forward, 4) passing pose. Frames 1 and 3 clearly show different legs in front; tail swings.
+• FLOATING (ghosts, spirits, no legs) — 1) high, leaning forward, 2) middle, trailing parts swept back, 3) low, 4) middle, trailing parts swinging the other way. Nothing touches the ground.
+• MANY LEGS (insects, spiders, crabs, octopus) — legs move in two alternating groups: 1) group A reaches forward, 2) passing pose, 3) group B reaches forward, 4) passing pose. Frames 1 and 3 clearly differ.
+• FLYING (birds, bats, winged things) — hovering in place: 1) wings up, 2) wings half down, 3) wings fully down, 4) wings half up; the body bobs a little, feet tucked.
+• SLITHERING (snakes, worms, tails instead of legs) — 1) body S-curve bending left, 2) straightening, 3) S-curve bending right, 4) straightening. Frames 1 and 3 clearly mirror each other.
+
+=== MONSTERS ===
+
+#1 MOUNTAIN GOAT
+   Walk: FOUR LEGS
+   Look: small — a sturdy cream-white mountain goat with curved grey horns, a little beard and a red tassel on its collar.
+   Attack: a horn butt.
+
+#2 OLIVE SPRITE
+   Walk: TWO LEGS
+   Look: tiny — a little tree spirit with a body of grey bark, silver-grey olive leaves for hair and two dark purple olives hanging like earrings.
+   Attack: swings a twig arm.
+
+#3 WILD LAMB
+   Walk: FOUR LEGS
+   Look: tiny — a fluffy white lamb with a black face and legs and a tiny bell.
+   Attack: a little headbutt.
+
+#4 MARBLE CRAB
+   Walk: MANY LEGS
+   Look: small — a crab whose shell is a chunk of white marble with grey veins, a broken column piece on its back.
+   Attack: pinches with a big claw.
+
+#5 WALKING STATUE
+   Walk: TWO LEGS
+   Look: human-sized — a cracked white marble statue of a Greek warrior with a laurel wreath, blank eyes and a broken stone sword.
+   Attack: a stiff sword swing.
+
+#6 OLIVE BEETLE
+   Walk: MANY LEGS
+   Look: tiny — a round dark-purple beetle shaped like an olive with gold leg joints.
+   Attack: a quick horn bump.
+
+#7 SATYR
+   Walk: TWO LEGS
+   Look: small — a cheeky goat-legged satyr with curly brown hair, little horns, a grape vine sash and pan flutes.
+   Attack: kicks with a goat hoof.
+
+#8 HONEY BEE
+   Walk: FLYING
+   Look: tiny — a chubby golden honey bee carrying a tiny honey pot.
+   Attack: jabs with its stinger.
+
+#9 NYMPH
+   Walk: TWO LEGS
+   Look: human-sized — a gentle tree nymph with bark skin, flowing hair of pale pink blossoms and a white chiton.
+   Attack: sweeps her hand and blossom petals fly out.
+
+#10 CRACKED SOLDIER
+   Walk: TWO LEGS
+   Look: human-sized — a stone hoplite soldier with big cracks across its body, a crested helmet and a round shield.
+   Attack: a spear thrust.
+
+#11 PHILOSOPHER GHOST
+   Walk: FLOATING
+   Look: human-sized — a floating pale-blue ghost of an old bearded philosopher in a toga, holding a scroll.
+   Attack: points and the scroll flaps forward.
+
+#12 BRONZE AUTOMATON
+   Walk: TWO LEGS
+   Look: human-sized — a clockwork bronze robot made by Hephaestus, round glowing eyes, gears visible on its chest.
+   Attack: punches with a piston arm.
+
+#13 SIREN
+   Walk: SLITHERING
+   Look: human-sized — a mermaid siren with long sea-blue hair, a coral crown and a shimmering purple fish tail, holding a small lyre.
+   Attack: sings and sweeps her arm forward.
+
+#14 HARPY
+   Walk: FLYING
+   Look: medium — a harpy with a wild face, grey-brown feathered wings for arms and sharp yellow talons.
+   Attack: dives and slashes with its talons.
+
+#15 TRITON SCOUT
+   Walk: TWO LEGS
+   Look: human-sized — a merman scout with blue scaly skin, fin ears, a shell armour and a bronze trident.
+   Attack: a trident thrust.
+
+#16 YOUNG CENTAUR
+   Walk: FOUR LEGS
+   Look: large — a young centaur with a chestnut horse body, a leather breastplate and a short bow.
+   Attack: shoots an arrow from the bow.
+
+#17 BLACK WOLF
+   Walk: FOUR LEGS
+   Look: medium — a black Greek wolf with a grey mane, yellow eyes and a bronze collar.
+   Attack: a lunging bite.
+
+#18 ERYMANTHIAN BOAR
+   Walk: FOUR LEGS
+   Look: large — a huge golden-bristled boar with giant tusks and a scarred snout.
+   Attack: a tusk charge.
+
+#19 LITTLE CYCLOPS
+   Walk: TWO LEGS
+   Look: small — a chubby baby cyclops with one huge eye, a fur loincloth and a small club.
+   Attack: a club bonk.
+
+#20 GIANT RAM
+   Walk: FOUR LEGS
+   Look: large — a giant woolly cave ram with huge spiral horns and thick cream fleece.
+   Attack: a horn charge.
+
+#21 ROCK LIZARD
+   Walk: FOUR LEGS
+   Look: small — a grey-brown lizard with rocky plates on its back that look like stones.
+   Attack: a quick bite.
+
+#22 CAVE BAT
+   Walk: FLYING
+   Look: small — a grey cave bat with big ears and a white chest.
+   Attack: dives and bites.
+
+#23 CYCLOPS
+   Walk: TWO LEGS
+   Look: very large — a big one-eyed cyclops shepherd with a sheepskin cloak, a brown beard and a tree-trunk club.
+   Attack: a club smash.
+
+#24 CAVE HOUND
+   Walk: FOUR LEGS
+   Look: medium — a scruffy brown cave dog with a spiked collar and glowing eyes.
+   Attack: a lunging bite.
+
+#25 HECATE WITCH
+   Walk: TWO LEGS
+   Look: human-sized — a witch of Hecate in a purple starry robe, a crescent-moon hairpin and a torch with violet flame.
+   Attack: throws the torch flame forward.
+
+#26 LITTLE CERBERUS
+   Walk: FOUR LEGS
+   Look: medium — a cute but fierce three-headed black puppy with a gold spiked collar and red eyes.
+   Attack: all three heads bite at once.
+
+#27 SHADE
+   Walk: FLOATING
+   Look: human-sized — a dark grey-violet shadow spirit of the underworld in a hooded shroud with sad white eyes.
+   Attack: reaches out with a long shadowy hand.
+
+#28 SPARTAN GHOST
+   Walk: TWO LEGS
+   Look: human-sized — a translucent pale-blue Spartan warrior ghost with a red crested helmet, round shield and spear.
+   Attack: a spear thrust.
+
+#29 AMAZON
+   Walk: TWO LEGS
+   Look: human-sized — a fierce Amazon warrior woman in a bronze breastplate, a red cloak and a crescent axe.
+   Attack: an axe swing.
+
+#30 BRONZE HOPLITE
+   Walk: TWO LEGS
+   Look: human-sized — a heavy hoplite in full bronze armour, a horsehair-crested helmet and a big round shield with an owl emblem.
+   Attack: a shield bash.
+
+#31 STONE BULL
+   Walk: FOUR LEGS
+   Look: large — a bull made of grey labyrinth stone with gold maze carvings and glowing red eyes.
+   Attack: a head-down charge.
+
+#32 LITTLE MEDUSA
+   Walk: SLITHERING
+   Look: small — a little medusa girl with a snake tail, snake hair and glowing yellow eyes.
+   Attack: her snake hair strikes forward.
+
+#33 LABYRINTH HOUND
+   Walk: FOUR LEGS
+   Look: medium — a thin grey hound with bronze armour plates engraved with maze patterns.
+   Attack: a lunging bite.
+
+#34 LOST ONE
+   Walk: FLOATING
+   Look: human-sized — a ghostly lost traveller in a grey hooded cloak holding a burnt-out lamp, faint blue glow.
+   Attack: swings the lamp.
+
+#35 GORGON SHADE
+   Walk: SLITHERING
+   Look: human-sized — a dark gorgon spirit with a long scaly purple tail, snake hair and glowing petrifying eyes.
+   Attack: a gaze attack: lunges forward, eyes flashing.
+
+#36 LABYRINTH GUARD
+   Walk: TWO LEGS
+   Look: large — a big bull-headed guard in red-and-gold armour with a double-bladed axe.
+   Attack: an axe chop.
+
+#37 BRONZE BULL
+   Walk: FOUR LEGS
+   Look: large — a mechanical bronze bull with gears in its joints and smoke from its nostrils.
+   Attack: a horn charge.
+
+#38 MINOTAUR CALF
+   Walk: TWO LEGS
+   Look: medium — a young minotaur with brown fur, short horns, a gold nose ring and a small axe.
+   Attack: an axe swing.
+
+#39 CERBERUS
+   Walk: FOUR LEGS
+   Look: very large — the three-headed black hellhound with gold spiked collars, red eyes and a snake tail.
+   Attack: all three heads bite.
+
+#40 STYX GHOST
+   Walk: FLOATING
+   Look: human-sized — a drowned ghost rising from dark water, long hair, pale teal-blue glow, chains on its wrists.
+   Attack: grabs forward with both hands.
+
+#41 CHARON'S OARSMAN
+   Walk: TWO LEGS
+   Look: human-sized — a hooded skeletal ferryman in a black robe with a long oar and a lantern hanging from it.
+   Attack: swings the oar.
+
+#42 GRIFFIN
+   Walk: FOUR LEGS
+   Look: large — a griffin with a golden eagle head and wings and a lion body.
+   Attack: pounces with its talons.
+
+#43 THUNDER GUARD
+   Walk: TWO LEGS
+   Look: large — a golden armoured guard of Zeus with white wings on the helmet, a lightning-bolt spear and a sky-blue cape.
+   Attack: a lightning spear thrust.
+
+#44 STORM PEGASUS
+   Walk: FOUR LEGS
+   Look: large — a dark storm-grey pegasus with wings crackling with gold lightning and a cloudy mane.
+   Attack: rears and strikes with its hooves.
+
+(End of list. Start with #1 when I say so.)

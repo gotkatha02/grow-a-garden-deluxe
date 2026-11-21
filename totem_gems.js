@@ -1258,8 +1258,8 @@ const _cast=G('castSkillNow');
 if(_cast)window.castSkillNow=castSkillNow=function(key,c){const A=ACT[key];if(!A)return _cast(key,c);ensureCore();
   const S=G('SKILLS'),pl=G('player'),st=STK[key];
   if(PIL.some(p=>p.key===key&&!(p.bal&&p.n<=1))){G('msg')('เสาโทเท็มกำลังร่ายท่านี้อยู่');return false;}   /* balance: free again from the pillar's 3rd cast */
-  const R=rec(key,true);A.casts++;R.third=A.casts%3===0?sw(A,'third'):0;curCast=key;let ok=false;try{ok=_cast(key,c);}finally{curCast=null;}
-  if(!ok)return ok;const L=plv();
+  const R=rec(key,true),nc=A.casts+1;R.third=nc%3===0?sw(A,'third'):0;curCast=key;let ok=false;try{ok=_cast(key,c);}finally{curCast=null;}
+  if(!ok)return ok;A.casts=nc;const L=plv();   /* only casts that really happen count (a press with no target used to advance 'every third cast') */
   if(R.third)G('addFx')(new (G('DText'))({x:pl.x,y:pl.y,z:110,text:'×3!',color:'#ffb13b',size:14,life:.9}));
   if(st){st.ch=Math.max(0,st.ch-1);if(st.rT<=0)st.rT=(S[key].cd||1)*rv('stackR',BAL());pl.cd[key]=st.ch>0?0:st.rT;}
   if(A.mut.includes('guard')){GU.sh=L*rv('guardSh',RS('guard'));GU.shT=now()+5;GU.guardT=now()+3;ring(pl.x,pl.y,'#c9ccd8',60);}
@@ -1336,7 +1336,7 @@ const CORE={layer:'sorted',sy:0,_gemCore:1,
     for(let i=TIM.length-1;i>=0;i--)if(t>=TIM[i].at){const f=TIM[i].f;TIM.splice(i,1);try{f();}catch(e){}}
     for(const e of en){if(e.dead)continue;
       const b=e._gBurn;if(b&&t>=b.nt){b.n--;b.nt=t+1;gh(e,b.m,b.key,{dot:true});try{G('sparks')(e.x,e.y,30,-Math.PI/2,3,'#ff7a2a',80,.6);}catch(er){}if(b.n<=0)e._gBurn=null;}
-      const f=e._gFlat;if(f&&t>=f.nt){f.n--;f.nt=t+1;e.hp-=f.v;try{G('dmgNum')(e.x,e.y,40,f.v,'hit',{who:e});}catch(er){}if(e.hp<=0&&!e.dead)G('kill')(e);if(f.n<=0)e._gFlat=null;}}
+      const f=e._gFlat;if(f&&t>=f.nt){f.n--;f.nt=t+1;e.hp-=f.v;try{G('dmgNum')(e.x,e.y,40,Math.max(1,Math.round(f.v)),'hit',{who:e});}catch(er){}if(e.hp<=0&&!e.dead)G('kill')(e);if(f.n<=0)e._gFlat=null;}}
     for(const key in REC){const R=REC[key],A=ACT[key];if(!A||!R.chainAt||t<R.chainAt)continue;R.chainAt=0;const src=R.lastE;if(!src)continue;
       const f=(A.mut.includes('volt')?.4:0)+.3*sw(A,'chain');let from=src;
       const pool=en.filter(o=>!o.dead&&o!==src&&Math.hypot(o.x-src.x,o.y-src.y)<170).sort((p,q)=>Math.hypot(p.x-src.x,p.y-src.y)-Math.hypot(q.x-src.x,q.y-src.y)).slice(0,A.mut.includes('volt')?rv('voltN',RS('volt')):2);

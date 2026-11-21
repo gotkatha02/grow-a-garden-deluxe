@@ -1,0 +1,263 @@
+MONSTER SPRITE SHEETS — AZTEC (45 monsters)
+Game: Totem Legend, a 2D isometric fantasy MMORPG (Ragnarok Online feel). This region: Aztec / Maya jungle lands (rainforest, cornfields, swamps, step pyramids, caves, a volcano).
+
+=== HOW TO WORK WITH THIS FILE — READ EVERYTHING FIRST ===
+• This file lists 45 monsters. For each monster you draw ONE sprite-sheet image.
+• Draw ONE image per reply, in list order, starting with #1.
+• After each image write only "#<number> <name> done" and STOP. Wait for me.
+  - "next" = draw the next monster.   - "redo" = draw the same monster again.   - a number (e.g. "12") = draw that monster.
+• Before every image, re-read the STYLE, SHEET and WALK rules below. Every image must follow them exactly.
+• Never put text, numbers or labels inside the image.
+
+=== STYLE (copy the attached pictures) ===
+Friendly hand-painted chibi cartoon, cute-but-dangerous, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft light from the top-left, bright warm colours, clear readable silhouette. Not realistic, not painterly, not 3D. Chibi proportions (big head, short body) even for giants.
+
+=== SHEET (the same for every monster) ===
+• ONE 1536×1024 image, 5 rows. The SAME monster in every frame: identical design, colours and size, never redesigned between frames.
+• Facing DOWN-RIGHT (south-east), isometric 3/4 view from about 30° above.
+• Every frame in its own equal-size cell with empty space around it; feet (or lowest point) on the same baseline within each row; nothing cropped, nothing overlapping another frame.
+• Row 1 — IDLE, 4 frames: calm breathing — neutral, body rises slightly, neutral, body sinks slightly with one small detail moving (ear, tail, cloak, flame).
+• Row 2 — WALK, 4 frames: use the walk type given for the monster (see WALK TYPES).
+• Row 3 — ATTACK, 5 frames: the monster's own attack given in its entry — 1) ready, 2) wind-up, 3) strike at full reach toward down-right, 4) follow-through, 5) back to ready.
+• Row 4 — HURT, 2 frames: 1) hit from the front — head and body jerk back, eyes squeezed shut, 2) recoiling, about to recover.
+• Row 5 — DEATH, 5 frames: 1) staggers back, 2) falling, 3) hits the ground, 4) lying still, 5) the same pose fading away. Cartoon, no blood or gore.
+• Background: SOLID FLAT PURE GREEN (#00FF00) — no gradient, no ground, no shadows. NEVER use green on the monster: anything that would normally be green (leaves, skin, slime, jade, moss) is drawn teal, turquoise, blue, gold or autumn orange instead.
+• No text, no row labels, no numbers, no borders, no motion lines, no dust, no magic effects floating around the monster (small glows ON the body are fine).
+
+=== WALK TYPES ===
+• TWO LEGS — walking in place, legs MUST alternate: 1) LEFT leg forward and planted, 2) passing pose with the RIGHT leg lifted, 3) RIGHT leg forward and planted, 4) passing pose with the LEFT leg lifted. Frames 1 and 3 clearly show a different leg in front; arms swing opposite to the legs.
+• FOUR LEGS — trotting in place, diagonal pairs MUST alternate: 1) front-LEFT + back-RIGHT legs reach forward, 2) passing pose, legs under the body, 3) front-RIGHT + back-LEFT legs reach forward, 4) passing pose. Frames 1 and 3 clearly show different legs in front; tail swings.
+• FLOATING (ghosts, spirits, no legs) — 1) high, leaning forward, 2) middle, trailing parts swept back, 3) low, 4) middle, trailing parts swinging the other way. Nothing touches the ground.
+• MANY LEGS (insects, spiders, crabs, octopus) — legs move in two alternating groups: 1) group A reaches forward, 2) passing pose, 3) group B reaches forward, 4) passing pose. Frames 1 and 3 clearly differ.
+• FLYING (birds, bats, winged things) — hovering in place: 1) wings up, 2) wings half down, 3) wings fully down, 4) wings half up; the body bobs a little, feet tucked.
+• SLITHERING (snakes, worms, tails instead of legs) — 1) body S-curve bending left, 2) straightening, 3) S-curve bending right, 4) straightening. Frames 1 and 3 clearly mirror each other.
+• HOPPING (frogs, rabbits, slimes, one-legged things) — 1) crouched low, 2) pushing off, 3) highest point in the air, 4) landing squashed.
+
+=== MONSTERS ===
+
+#1 DART FROG
+   Walk: HOPPING
+   Look: tiny — a bright blue poison dart frog with orange spots and big black eyes.
+   Attack: flicks a long sticky tongue.
+
+#2 HOWLER MONKEY
+   Walk: TWO LEGS
+   Look: small — a reddish-brown howler monkey with a long curly tail, a dark face and a loud open mouth.
+   Attack: leaps and swats with both hands.
+
+#3 LEAFCUTTER ANT
+   Walk: MANY LEGS
+   Look: tiny — a big-headed rust-red ant carrying a yellow autumn leaf over its back.
+   Attack: snaps its mandibles.
+
+#4 WILD AXOLOTL
+   Walk: FOUR LEGS
+   Look: small — a wild pink axolotl with frilly magenta gills, a goofy smile and little stubby legs (cute, not the hero).
+   Attack: a splashy headbutt.
+
+#5 QUETZAL
+   Walk: FLYING
+   Look: small — a quetzal bird with turquoise-blue feathers, a scarlet chest and a very long flowing tail.
+   Attack: dives and pecks.
+
+#6 BABY TAPIR
+   Walk: FOUR LEGS
+   Look: small — a baby tapir with a brown coat covered in cream stripes and spots and a short wiggly trunk-nose.
+   Attack: a little headbutt charge.
+
+#7 MAIZE RAT
+   Walk: FOUR LEGS
+   Look: tiny — a plump golden-brown rat hugging a yellow corn cob.
+   Attack: a quick bite.
+
+#8 SCARECROW GOD
+   Walk: TWO LEGS
+   Look: medium — a straw scarecrow dressed as an Aztec idol: a carved wooden mask with a gold sun on the brow, a feathered headdress, a red-and-cream woven cloak, corn husks sticking out.
+   Attack: swings its wooden staff.
+
+#9 CORN SPIRIT
+   Walk: TWO LEGS
+   Look: small — a cute spirit shaped like a corn cob with golden kernels, a husk cape and a tassel of hair, big shiny eyes.
+   Attack: throws itself into a spinning husk slap.
+
+#10 YOUNG CROCODILE
+   Walk: FOUR LEGS
+   Look: medium — a stocky young dark teal-brown crocodile with yellow eyes, bumpy back scales and a wide toothy grin.
+   Attack: snaps its long jaws.
+
+#11 GIANT FROG
+   Walk: HOPPING
+   Look: medium — a fat orange-and-brown toad with warty skin, a pale belly and a huge mouth.
+   Attack: a belly-flop body slam.
+
+#12 SWAMP LEECH
+   Walk: SLITHERING
+   Look: small — a fat purple-black leech with a round toothy sucker mouth and shiny slime.
+   Attack: lunges and latches with its sucker mouth.
+
+#13 FEATHERED SERPENT
+   Walk: SLITHERING
+   Look: medium — a turquoise snake with a crest and collar of red and yellow feathers and gold scale bands.
+   Attack: rears up and strikes.
+
+#14 STONE MASK WARRIOR
+   Walk: TWO LEGS
+   Look: human-sized — a short warrior hidden behind a big carved grey stone mask with a fierce face, feathers on top, a cotton armour vest and a wooden club.
+   Attack: a club swing.
+
+#15 MACAW RAIDER
+   Walk: FLYING
+   Look: small — a scarlet macaw with blue-and-yellow wings, a little bandana and a sly look.
+   Attack: swoops and bites with its hooked beak.
+
+#16 BLACK JAGUAR
+   Walk: FOUR LEGS
+   Look: medium — a sleek black jaguar with faint darker rosettes, glowing amber eyes and a long tail.
+   Attack: pounces with claws out.
+
+#17 LOST PRIEST
+   Walk: FLOATING
+   Look: human-sized — the ghost of a jungle priest in a pale tattered robe with a feather headdress, hollow eyes glowing yellow, floating.
+   Attack: raises a bone dagger and slashes.
+
+#18 VINE SNAPPER
+   Walk: SLITHERING
+   Look: medium — a giant purple carnivorous flower with a toothy mouth and yellow spots, on a thick coiling teal vine.
+   Attack: lunges and bites with its flower jaws.
+
+#19 GIANT BAT
+   Walk: FLYING
+   Look: medium — a big dusky purple-brown bat with leathery wings, big ears and a fanged grin.
+   Attack: dives and bites.
+
+#20 CAVE SPIDER
+   Walk: MANY LEGS
+   Look: medium — a hairy brown cave spider with orange stripes on its legs and many glowing yellow eyes.
+   Attack: rears and bites.
+
+#21 GLOWWORM SWARM
+   Walk: FLOATING
+   Look: small — a cluster of five plump glowing yellow grubs floating together like a little bunch.
+   Attack: the swarm rushes forward together.
+
+#22 STONE SLAVE
+   Walk: TWO LEGS
+   Look: large — a hunched golem of grey cave stone with dripping stalactites on its back, broken chains on its wrists and sad glowing eyes.
+   Attack: a heavy two-fist smash.
+
+#23 VAMPIRE BAT PACK
+   Walk: FLYING
+   Look: small — three small dark-red vampire bats flying close together as one group.
+   Attack: the three dive and bite.
+
+#24 CAVE SHAMAN
+   Walk: TWO LEGS
+   Look: small — a little cave goblin shaman with grey skin, a jaguar-skin hood, bone necklaces and a rattle staff topped with a skull.
+   Attack: shakes the rattle staff forward.
+
+#25 JAGUAR WARRIOR
+   Walk: TWO LEGS
+   Look: human-sized — an Aztec jaguar warrior in a spotted jaguar-skin suit with the jaguar head as a helmet, a round feathered shield and an obsidian-edged club.
+   Attack: a club slash.
+
+#26 MIST SPIRIT
+   Walk: FLOATING
+   Look: medium — a soft white-grey mist spirit with a calm mask face of pale jade-turquoise stone, wisps for arms.
+   Attack: sweeps a misty arm forward.
+
+#27 DART SHAMAN
+   Walk: TWO LEGS
+   Look: small — a jungle shaman with a painted face, a feather headdress and a long blowpipe.
+   Attack: blows a dart through the blowpipe.
+
+#28 EAGLE WARRIOR
+   Walk: TWO LEGS
+   Look: human-sized — an Aztec eagle warrior wearing an eagle-head helmet with an open beak, brown-and-white feather armour and a spear.
+   Attack: a spear thrust.
+
+#29 BLOOD PRIEST
+   Walk: TWO LEGS
+   Look: human-sized — a gaunt priest in a black-and-red robe with a skull headdress, red face paint and a wavy obsidian dagger.
+   Attack: a dagger slash.
+
+#30 RAIN SPIRIT
+   Walk: FLOATING
+   Look: medium — a Tlaloc rain spirit: a round blue water body with goggle-ring eyes and fangs, a small cloud on its head dripping rain.
+   Attack: throws a splash of water.
+
+#31 SUN PRIEST
+   Walk: TWO LEGS
+   Look: human-sized — a priest in a gold-and-orange robe with a sun-disc headdress and a staff topped with a burning sun emblem.
+   Attack: swings the sun staff.
+
+#32 GOLDEN SERPENT
+   Walk: SLITHERING
+   Look: medium — a shining golden snake with turquoise inlaid scales and ruby eyes.
+   Attack: rears up and strikes.
+
+#33 OBSIDIAN PRIEST
+   Walk: TWO LEGS
+   Look: human-sized — a priest in black robes with a polished obsidian skull mask with orange glowing eyes and a mirror on his chest.
+   Attack: thrusts his hand, the mirror flashing.
+
+#34 JADE GOLEM
+   Walk: TWO LEGS
+   Look: large — a temple golem carved from teal-turquoise jade (not green) with gold bands and a glowing carved face.
+   Attack: a heavy punch.
+
+#35 TEMPLE JAGUAR
+   Walk: FOUR LEGS
+   Look: medium — a stone jaguar statue come alive, sandstone body with turquoise inlaid spots and glowing eyes.
+   Attack: pounces and claws.
+
+#36 SUN SENTINEL
+   Walk: TWO LEGS
+   Look: human-sized — a stone guard statue with a sun-disc shield and a long bow, carved feathers on its helmet.
+   Attack: shoots an arrow from the bow.
+
+#37 SUN GUARDIAN
+   Walk: TWO LEGS
+   Look: large — a gold-armoured temple guardian with a sun-ray crest, a big macuahuitl (wooden sword edged with obsidian) and a round sun shield.
+   Attack: a big sword sweep.
+
+#38 OBSIDIAN JAGUAR
+   Walk: FOUR LEGS
+   Look: medium — a jaguar of shiny black obsidian with orange glowing cracks and ember eyes.
+   Attack: pounces and bites.
+
+#39 SUNFEATHER PRIESTESS
+   Walk: TWO LEGS
+   Look: human-sized — a priestess in a white-and-gold dress with a fan of golden feathers on her head, holding a feathered spear.
+   Attack: a graceful spear thrust.
+
+#40 GOLDEN STATUE
+   Walk: TWO LEGS
+   Look: large — a living golden idol statue of a crowned warrior with turquoise eyes and a huge stone shield.
+   Attack: slams with its shield.
+
+#41 JAGUAR KING
+   Walk: FOUR LEGS
+   Look: large — a huge spotted golden jaguar wearing a gold crown and a feather mantle, a fierce roar face.
+   Attack: pounces with both claws.
+
+#42 JUNGLE TITAN
+   Walk: TWO LEGS
+   Look: very large — a giant of brown bark and stone carrying a whole log on its shoulder, orange flowers and teal leaves growing on it.
+   Attack: smashes down with the log.
+
+#43 OBSIDIAN GOLEM
+   Walk: TWO LEGS
+   Look: very large — a golem of black obsidian and glowing lava cracks with smoking shoulders.
+   Attack: a molten fist slam.
+
+#44 FIRE BIRD
+   Walk: FLYING
+   Look: medium — a bird of flame with orange-red and gold feathers, a long burning tail and bright eyes.
+   Attack: dives in a fiery swoop.
+
+#45 VOLCANO SALAMANDER
+   Walk: FOUR LEGS
+   Look: medium — a black-and-orange salamander with a crest of flames along its back and glowing lava spots.
+   Attack: a flaming bite.
+
+(End of list. Start with #1 when I say so.)

@@ -1,0 +1,115 @@
+MONSTER SPRITE SHEETS — VIKING (16 monsters)
+Game: Totem Legend, a 2D isometric fantasy MMORPG (Ragnarok Online feel). This region: Norse lands (snow, fjords, pine forests, Viking ruins).
+
+=== HOW TO WORK WITH THIS FILE — READ EVERYTHING FIRST ===
+• This file lists 16 monsters. For each monster you draw ONE sprite-sheet image.
+• Draw ONE image per reply, in list order, starting with #1.
+• After each image write only "#<number> <name> done" and STOP. Wait for me.
+  - "next" = draw the next monster.   - "redo" = draw the same monster again.   - a number (e.g. "12") = draw that monster.
+• Before every image, re-read the STYLE, SHEET and WALK rules below. Every image must follow them exactly.
+• Never put text, numbers or labels inside the image.
+
+=== STYLE (copy the attached pictures) ===
+Friendly hand-painted chibi cartoon, cute-but-dangerous, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft light from the top-left, bright warm colours, clear readable silhouette. Not realistic, not painterly, not 3D. Chibi proportions (big head, short body) even for giants.
+
+=== SHEET (the same for every monster) ===
+• ONE 1536×1024 image, 5 rows. The SAME monster in every frame: identical design, colours and size, never redesigned between frames.
+• Facing DOWN-RIGHT (south-east), isometric 3/4 view from about 30° above.
+• Every frame in its own equal-size cell with empty space around it; feet (or lowest point) on the same baseline within each row; nothing cropped, nothing overlapping another frame.
+• Row 1 — IDLE, 4 frames: calm breathing — neutral, body rises slightly, neutral, body sinks slightly with one small detail moving (ear, tail, cloak, flame).
+• Row 2 — WALK, 4 frames: use the walk type given for the monster (see WALK TYPES).
+• Row 3 — ATTACK, 5 frames: the monster's own attack given in its entry — 1) ready, 2) wind-up, 3) strike at full reach toward down-right, 4) follow-through, 5) back to ready.
+• Row 4 — HURT, 2 frames: 1) hit from the front — head and body jerk back, eyes squeezed shut, 2) recoiling, about to recover.
+• Row 5 — DEATH, 5 frames: 1) staggers back, 2) falling, 3) hits the ground, 4) lying still, 5) the same pose fading away. Cartoon, no blood or gore.
+• Background: SOLID FLAT PURE GREEN (#00FF00) — no gradient, no ground, no shadows. NEVER use green on the monster: anything that would normally be green (leaves, skin, slime, jade, moss) is drawn teal, turquoise, blue, gold or autumn orange instead.
+• No text, no row labels, no numbers, no borders, no motion lines, no dust, no magic effects floating around the monster (small glows ON the body are fine).
+
+=== WALK TYPES ===
+• TWO LEGS — walking in place, legs MUST alternate: 1) LEFT leg forward and planted, 2) passing pose with the RIGHT leg lifted, 3) RIGHT leg forward and planted, 4) passing pose with the LEFT leg lifted. Frames 1 and 3 clearly show a different leg in front; arms swing opposite to the legs.
+• FOUR LEGS — trotting in place, diagonal pairs MUST alternate: 1) front-LEFT + back-RIGHT legs reach forward, 2) passing pose, legs under the body, 3) front-RIGHT + back-LEFT legs reach forward, 4) passing pose. Frames 1 and 3 clearly show different legs in front; tail swings.
+• FLOATING (ghosts, spirits, no legs) — 1) high, leaning forward, 2) middle, trailing parts swept back, 3) low, 4) middle, trailing parts swinging the other way. Nothing touches the ground.
+• MANY LEGS (insects, spiders, crabs, octopus) — legs move in two alternating groups: 1) group A reaches forward, 2) passing pose, 3) group B reaches forward, 4) passing pose. Frames 1 and 3 clearly differ.
+
+=== MONSTERS ===
+
+#1 SNOW PUP
+   Walk: FOUR LEGS
+   Look: tiny, the weakest monster of the game — a chubby fluffy white wolf pup with big round ice-blue eyes, ice-blue ear tips and paws, a frosty curly tail, two tiny fangs, a snow clump on its head.
+   Attack: a little pounce and nip.
+
+#2 PASS WOLF
+   Walk: FOUR LEGS
+   Look: medium — a lean grey-and-white mountain wolf with snow crusted in its shaggy fur, a darker blue-grey stripe along its back, a scar over one eye, a collar of bone beads.
+   Attack: a lunging bite.
+
+#3 SHADOW WOLF
+   Walk: FOUR LEGS
+   Look: medium — a black wolf made of thick dark smoke, glowing violet eyes and mouth, violet wisps curling from its fur and tail, paws fading into smoke.
+   Attack: a fast lunging bite, its smoky body stretching forward.
+
+#4 WOLF PRIEST
+   Walk: TWO LEGS
+   Look: human-sized — a hunched cultist in a purple robe with a wolf-skull hood over a shadowed face with glowing ice-blue eyes, bone and fang necklaces, a bone staff topped with a wolf skull and a hanging violet rune stone.
+   Attack: raises the staff and thrusts it forward, the rune stone glowing.
+
+#5 GLEIPNIR WEAVER
+   Walk: MANY LEGS
+   Look: medium — a big cave spider with a dark-blue carapace etched with glowing silver runes, eight thin legs ringed with silver bands, six small ice-blue eyes, a shining silver silk ribbon trailing from its back end.
+   Attack: rears up and stabs down with its two front legs.
+
+#6 DRAUGR WOLF
+   Walk: FOUR LEGS
+   Look: medium — an undead half-skeleton wolf: tattered grey fur, exposed ribs with blue soul-fire inside its chest, bone tail, eye sockets with blue flames, a rusty broken chain on its neck.
+   Attack: a lunging bite with bony jaws.
+
+#7 DRAUGR
+   Walk: TWO LEGS
+   Look: human-sized — an undead Viking warrior with blue-grey rotting skin, dented iron helmet, rusty torn chainmail, ragged fur cloak, glowing blue eyes, a notched sword and a cracked round wooden shield with a faded raven.
+   Attack: a sword slash from behind the shield.
+
+#8 CHAIN WRAITH
+   Walk: FLOATING
+   Look: medium — a floating hooded ghost in a tattered dark-blue cloak that fades into ragged tails (no legs), glowing ice-blue eyes, wrapped in broken iron chains hanging from its bony hands.
+   Attack: whips a chain forward like a lash.
+
+#9 FENRIR GUARD
+   Walk: FOUR LEGS
+   Look: large — a huge armoured black wolf with dark iron plates on its back, a spiked iron collar, an ice-blue flame mane, glowing ice-blue eyes, iron claw caps.
+   Attack: rears up and smashes down with a clawed paw.
+
+#10 WOLF HIGH PRIEST
+   Walk: TWO LEGS
+   Look: tall human-sized — a priest in layered crimson-and-violet robes with gold trim, a wolf-skull crown with small horns, a long grey beard braid, small violet rune stones floating above his palms.
+   Attack: pushes both hands forward, the rune stones flying out and back.
+
+#11 UNDYING VIKING
+   Walk: TWO LEGS
+   Look: large — a hulking undead Viking chieftain: horned helmet, barnacles and shells on rusty armour, a beard of dark brown-purple seaweed, glowing teal eyes, a huge two-handed bearded axe.
+   Attack: raises the axe overhead and chops down.
+
+#12 SEA GHOST WOLF
+   Walk: FOUR LEGS
+   Look: medium — a translucent pale-teal ghost wolf made of sea water, white wave-foam mane and tail curling like breaking waves, dripping drops, glowing white eyes.
+   Attack: a lunging bite, the foam mane crashing forward.
+
+#13 DROWNED SHIELDMAIDEN
+   Walk: TWO LEGS
+   Look: human-sized — a pale drowned shieldmaiden with wet dark braids, a dented winged helmet, a coral-crusted round shield and a long spear, torn armour with barnacles, teal glowing eyes.
+   Attack: a long spear thrust from behind the shield.
+
+#14 FROST GIANT
+   Walk: TWO LEGS
+   Look: very large — a towering blue-skinned Jotun with an icicle beard, white fur loincloth, glacier-ice shoulder plates, glowing pale-blue eyes, a club made of an ice boulder on a log.
+   Attack: lifts the boulder club and slams it down.
+
+#15 DARK VALKYRIE WOLF
+   Walk: FOUR LEGS
+   Look: large — a black wolf with two big dark-feathered wings folded on its back, a silver winged valkyrie helmet, silver chest armour, glowing silver eyes.
+   Attack: spreads its wings and pounces with claws out.
+
+#16 GLACIER WYRMLING
+   Walk: FOUR LEGS
+   Look: large — a young four-legged ice dragon with pale-blue scales, clear ice-crystal spikes along its back and tail, small frosty wings, big curious eyes.
+   Attack: snaps its jaws forward, wings flaring.
+
+(End of list. Start with #1 when I say so.)
