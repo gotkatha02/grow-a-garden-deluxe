@@ -23,8 +23,9 @@ def main(pole, base, stand=None, foot=None, cuts=None):
         tiers.append({'m': b[:3], 'h': [L[1][:3], L[0][:3], R[1][:3], R[0][:3]]})   # inner-left, outer-left, outer-right, inner-right
     ys = [t['m'][1] for t in tiers]; cut = [round((ys[i] + ys[i+1]) / 2) for i in range(4)]
     bx0, bx1, by0, by1, BW, BH = bbox(base); bh = find(base, 8)
-    bb = sorted(bh, key=lambda h: -h[2]); S = sorted(bb[:5], key=lambda h: h[0]); T = sorted(bb[5:10], key=lambda h: h[0])
-    assert len(S) == 5 and len(T) == 5, ('base holes', len(bh))
+    rs = sorted(h[2] for h in bh); gaps = [(rs[i+1] / rs[i], i) for i in range(len(rs) - 1)]; cutr = rs[max(gaps)[1] + 1] if gaps else 0
+    S = sorted([h for h in bh if h[2] >= cutr], key=lambda h: h[0]); T = sorted([h for h in bh if h[2] < cutr], key=lambda h: h[0])   # big = skill holes, small = their mutation
+    assert len(S) == len(T) and len(S) >= 3, ('base holes big/small', len(S), len(T))
     if stand is None: stand = [round((bx0 + bx1) / 2), round(by0 + (S[2][1] - S[2][2] - by0) * .55)]
     if foot is not None: py1 = foot
     if cuts is not None: cut = cuts
