@@ -135,7 +135,19 @@ function crxHit(e,m,o={}){if(!e||e.dead)return 0;const key=crxKey(),kind=o.kind|
   return hurt(e,mul,Object.assign({critOK:true,crFlat:flat,br:(player.action&&player.action.skill&&SKILLS[player.action.skill])?SKILLS[player.action.skill].br:'basic'},o));}
 function crxHeal(n){n=Math.round(n);if(n<=0)return;const g=Math.min(player.maxHp-player.hp,n);if(g<=0)return;player.hp+=g;try{dmgNum(player.x,player.y,74,'+'+g,'heal');}catch(_){}}
 
-/* gauges on screen + upkeep */
+/* gauges on screen + upkeep.
+   2026-11-21 BUG FIX: enterMap() clears every effect object, and the game enters its first map right after the croc is installed,
+   so CrxCore (Armor Break / Blood Frenzy decay, gauges) and the old CrOverlay (it holds the grabbed prey: Jaw Lock, Death Roll,
+   Off-Balance marks, Ancient Maw reset) were gone from the start — a locked prey could still walk and attack, stacks never expired.
+   crEnsure() puts them back on every cast and basic attack (like kEnsure / bEnsure / uEnsure of the other heroes).
+   A keeper on layer 'none' (enterMap keeps those) calls it every frame, so after a map change nothing waits for the next cast
+   (same pattern as the axolotl's AxKeeper); the bench clears everything, then the next cast brings it all back. */
+let CRX_CORE=null,CRX_KEEP=null;
+class CrKeeper{constructor(){this.layer='none';}update(){crEnsure();return CHAR==='croc';}draw(){}}
+function crEnsure(){if(CHAR!=='croc')return;if(!CRX_CORE||!fx.includes(CRX_CORE))CRX_CORE=addFx(new CrxCore());
+  try{if(typeof CrOverlay!=='undefined'&&(!crOverlay||!fx.includes(crOverlay)))crOverlay=addFx(new CrOverlay());}catch(_){}
+  if(!CRX_KEEP||!fx.includes(CRX_KEEP))CRX_KEEP=addFx(new CrKeeper());
+  if(window.CRV&&window.CRV.ensure)window.CRV.ensure();}
 class CrxCore{constructor(){this.t=0;this.layer='top';this.dk=0;}
   update(dt){this.t+=dt;for(const e of enemies)if(e.crAB&&e.crABT<gameTime)e.crAB=0;
     if(hasBuff('crFeast'))CRX.fz=CRX_BAL.fz.cap;
@@ -213,4 +225,9 @@ function installCrocRework(){if(CHAR!=='croc')return;
     if(hasBuff('crScales')){r+=cxL(CXV.crScales,'crScales');delete player.buffs.crScales;addFx(new SheenSweep({color:'#f4ead2',life:.35}));}return Math.max(1,d-r);};
   window.jgPostHit=()=>{if(LV.ccScales&&player.hp>0&&player.hp<player.maxHp*.3&&CRX.scaleT<=gameTime){CRX.scaleT=gameTime+45;addBuff('crAncient',5);addFx(new SheenSweep({color:'#ffb060'}));}};
   window.jgMove=()=>1+(hasBuff('crStride')?cxL(CXV.crStride,'crStride'):0)/165;
-  window.crocAutoTick=crocAutoTick;addFx(new CrxCore());window.CRX=CRX;}
+  /* every cast and basic attack re-adds the core tickers if a map change took them away */
+  for(const k in SKILLS){const sk=SKILLS[k];if(!sk.make)continue;const mk=sk.make;sk.make=function(){crEnsure();return mk.apply(this,arguments);};}
+  if(typeof mkBasic==='function'){const mb=mkBasic;mkBasic=function(){crEnsure();return mb.apply(this,arguments);};}
+  window.crocAutoTick=crocAutoTick;crEnsure();window.crEnsure=crEnsure;window.CRX=CRX;
+  /* branch of a skill (C skills: the column they belong to) — for the per-branch bench: HERO=croc COL=crCol tools/qa/bench_branch.py */
+  window.crCol=k=>{const s=SKILLS[k];if(!s)return 'basic';if(s.br!=='C')return s.br;const d=CRX_DEFS.find(x=>x.key===k);return d&&d.col||'basic';};}

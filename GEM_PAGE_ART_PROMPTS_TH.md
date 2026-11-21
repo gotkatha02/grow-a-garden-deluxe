@@ -104,7 +104,11 @@ Style: friendly hand-painted chibi cartoon matching the attached game art, thick
 ```
 วิธีเจนรอบสอง: แนบรูปกองไฟ + รูปพื้นหลังศาล (bg) เป็นแบบสไตล์ · ถ้าจำนวนหลุมผิด ใช้แปรงเลือกเฉพาะชั้นนั้นแล้วสั่งแก้
 
-## 9. แท่นหิน 7 หลุม (เจ้าของเลือก 2026-11-21: "แท่นหิน 7 หลุม") — รอรูป
+## 10. แท่นหิน v2: 5 หลุมสกิล × หลุมเล็ก 3 (ใช้จริง 2026-11-21)
+เจ้าของเปลี่ยนใจ: "เจมใหญ่พอแล้ว อยากเพิ่มเจมเล็กในการปรับแต่ง" → แท่น 5 หลุมเหมือนเดิม ใต้แต่ละหลุมมีหลุมเล็ก 3 (กลางขอบทอง = แปรสภาพ, ซ้าย-ขวาขอบเขียว = เจมเสริม) — รูปได้แล้ว = assets/gems/page/base.webp (ตารางวัดด้วย totlay.py: หลุมเล็กจัดกลุ่มเข้าหลุมใหญ่ที่ใกล้สุด เรียงซ้าย→ขวา กลาง = t, ซ้าย/ขวา = u)
+พรอมต์ที่ใช้: แนบแท่นเดิม + รูปกองไฟ แล้วสั่ง "Redraw the attached stone platform … keeps the FIVE large sockets … under each large socket a short curved row of THREE small sockets: middle gold rim, left and right teal rims …" (ข้อความเต็มอยู่ในแชต 2026-11-21)
+
+## 9. แท่นหิน 7 หลุม — ยกเลิก (เจ้าของเปลี่ยนเป็นข้อ 10)
 ดาวสกิล 7 ดวง (เท่าช่องวงล้อสกิลบนมือถือ) เปิดที่ Lv 10 · 15 · 20 · 25 · 30 · 40 · 50 · แนบรูปแท่นหินเดิม (base.webp) + รูปกองไฟ แล้วสั่ง:
 ```
 Game UI art for a gem-socket screen of a cartoon fantasy RPG. Redraw the attached stone platform in exactly the same style, colours, shape and camera angle (a wide round carved stone platform seen from a 3/4 top-down view, a flat wide ellipse with its thick front side visible, the gold ring with the plain grey circle on the top surface, teal and cream spirals and zigzags, gold trims, a little snow on the top edge), centred, on a fully transparent background, with empty space on every side. Landscape image 1536×1024.

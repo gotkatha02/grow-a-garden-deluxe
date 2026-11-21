@@ -9,7 +9,7 @@
    Loaded after svg_vfx.js / vfx_rework.js. Inert for the other characters.
    ========================================================================= */
 (function(){
-if(typeof CHAR==='undefined'||CHAR!=='croc'||!window.svgRegister)return;
+if(typeof CHAR==='undefined'||CHAR!=='croc'||!window.svgRegister||!/[?&]vfx3=0/.test(location.search))return;   /* 2026-11-21: only for the old look (?vfx3=0); croc_vfx3.js + croc_art.js are the default */
 const XL=window.SVG_XL,deg=Math.PI/180;
 const pt=(cx,cy,r,a)=>[(cx+Math.cos(a*deg)*r).toFixed(1),(cy+Math.sin(a*deg)*r).toFixed(1)];
 const scr=phi=>Math.atan2(Math.sin(phi)*K,Math.cos(phi));

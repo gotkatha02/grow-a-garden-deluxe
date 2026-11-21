@@ -24,13 +24,22 @@ def main(pole, base, stand=None, foot=None, cuts=None):
     ys = [t['m'][1] for t in tiers]; cut = [round((ys[i] + ys[i+1]) / 2) for i in range(4)]
     bx0, bx1, by0, by1, BW, BH = bbox(base); bh = find(base, 8)
     rs = sorted(h[2] for h in bh); gaps = [(rs[i+1] / rs[i], i) for i in range(len(rs) - 1)]; cutr = rs[max(gaps)[1] + 1] if gaps else 0
-    S = sorted([h for h in bh if h[2] >= cutr], key=lambda h: h[0]); T = sorted([h for h in bh if h[2] < cutr], key=lambda h: h[0])   # big = skill holes, small = their mutation
-    assert len(S) == len(T) and len(S) >= 3, ('base holes big/small', len(S), len(T))
+    S = sorted([h for h in bh if h[2] >= cutr], key=lambda h: h[0]); T0 = [h for h in bh if h[2] < cutr]   # big = skill holes, small = their mutation (+ supports)
+    if T0: md = float(np.median([h[2] for h in T0])); T0 = [h for h in T0 if h[2] > md * .6]   # drop dark specks in the ornaments
+    grp = [[] for _ in S]
+    for h in T0: grp[min(range(len(S)), key=lambda i: (S[i][0] - h[0]) ** 2 + (S[i][1] - h[1]) ** 2)].append(h)   # each small hole belongs to the nearest skill hole
+    n = {len(g) for g in grp}; assert len(S) >= 3 and n in ({1}, {3}), ('small holes per skill hole', [len(g) for g in grp])
+    T, U = [], []
+    for g in grp:
+        g.sort(key=lambda h: h[0])
+        if len(g) == 1: T.append(g[0])
+        else: T.append(g[1]); U.append([g[0][:3], g[2][:3]])        # 3 per hole: middle = mutation (gold rim), left / right = supports
     if stand is None: stand = [round((bx0 + bx1) / 2), round(by0 + (S[2][1] - S[2][2] - by0) * .55)]
     if foot is not None: py1 = foot
     if cuts is not None: cut = cuts
     out = {'pole': {'src': pole.split('/')[-1].split('.')[0], 'W': PW, 'H': PH, 'top': int(py0), 'foot': int(py1), 'cx': round(float(np.mean([t['m'][0] for t in tiers])), 1), 'cut': cut, 'tiers': tiers},
            'base': {'src': base.split('/')[-1].split('.')[0], 'W': BW, 'H': BH, 'top': int(by0), 'bot': int(by1), 'cx': round((bx0 + bx1) / 2, 1), 'stand': stand, 's': [h[:3] for h in S], 't': [h[:3] for h in T]}}
+    if U: out['base']['u'] = U
     return out
 if __name__ == '__main__':
     st = [float(sys.argv[3]), float(sys.argv[4])] if len(sys.argv) > 4 else None

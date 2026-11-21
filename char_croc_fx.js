@@ -118,13 +118,15 @@ function cxOnHit(e,o){if(!e||(o&&o.dot))return;const now=gameTime;if(e._cxT===no
   if(kind==='spear')cxSpark('c31_hitjade',e,big?80:56);else if(kind==='maw')cxSpark('c32_hitred',e,big?78:54);else cxSpark('c34_splash',e,big?80:60,{ay:.85,z:2});
   if(big)cxBits(kind==='spear'?'c35_shards':'c36_drops',e.x,e.y,3);}
 
-function installCrocFx(){if(CHAR!=='croc')return;CXF.forEach(cxImg);
+function installCrocFx(){if(CHAR!=='croc')return;
+  /* 2026-11-21: the painted recipes are the old look (?vfx3=0); by default croc_vfx3.js + croc_art.js draw the effects. Icons load either way. */
+  if(/[?&]vfx3=0/.test(location.search)){installCrocPaint();}
+  if(typeof SKILL_ICON_ART!=='undefined')for(const k in SKILLS){const sk=SKILLS[k];if(!sk||!sk.name)continue;const src='assets/icons/croc/'+k+'.webp',im=new Image();
+    im.onload=()=>{SKILL_ICON_ART[sk.name]=src;};im.src=src;}
+  window.CX_RECIPE=CX_RECIPE;}
+function installCrocPaint(){CXF.forEach(cxImg);
   for(const k in CX_RECIPE){const sk=SKILLS[k];if(!sk||!sk.make)continue;const mk=sk.make;sk.make=function(c){const a=mk.apply(this,arguments);if(a)try{CX_RECIPE[k](a,c||{});}catch(err){console.warn('croc fx',k,err);}return a;};}
   /* basic attack goes through mkCrBasic, not SKILLS */
   if(typeof mkBasic==='function'){const mb=mkBasic;mkBasic=function(tgt){const a=mb.apply(this,arguments);if(a)try{CX_RECIPE.basic(a,{target:tgt});if(a.name==='Spear Poke')cxAt(a,a.windup-.03,()=>cxStreak('c01_thrust',tgt?angTo(tgt):player.phi,120,{glow:.4,life:.24}));else if(a.name==='Snap')cxAt(a,a.windup-.02,()=>{if(tgt&&!tgt.dead)cxSpark('c13_jaw',tgt,90,{rot:0,life:.26});});}catch(_){}return a;};}
   /* armor break cash-in: big shatter on the target */
-  const _hit=cr;cr=function(e,m,o={}){const ab=e&&e.crAB||0,r=_hit.apply(this,arguments);try{cxOnHit(e,o);if(e&&ab>0&&!(e.crAB>=ab)&&!e.dead){cxSpark('c42_shatter',e,90+ab*14,{life:.45,delay:.02});cxSpark('c06_armorbreak',e,70,{life:.5,z:(e.boss?80:56),s0:.6});cxBits('c35_shards',e.x,e.y,4+ab);}}catch(_){}return r;};
-  /* painted skill icons (assets/icons/croc/<key>.webp); a missing file keeps the old icon */
-  if(typeof SKILL_ICON_ART!=='undefined')for(const k in SKILLS){const sk=SKILLS[k];if(!sk||!sk.name)continue;const src='assets/icons/croc/'+k+'.webp',im=new Image();
-    im.onload=()=>{SKILL_ICON_ART[sk.name]=src;};im.src=src;}
-  window.CX_RECIPE=CX_RECIPE;}
+  const _hit=cr;cr=function(e,m,o={}){const ab=e&&e.crAB||0,r=_hit.apply(this,arguments);try{cxOnHit(e,o);if(e&&ab>0&&!(e.crAB>=ab)&&!e.dead){cxSpark('c42_shatter',e,90+ab*14,{life:.45,delay:.02});cxSpark('c06_armorbreak',e,70,{life:.5,z:(e.boss?80:56),s0:.6});cxBits('c35_shards',e.x,e.y,4+ab);}}catch(_){}return r;};}

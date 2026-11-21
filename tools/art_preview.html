@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>effect art preview</title>
+<style>body{margin:0;background:#222;font:12px system-ui,sans-serif;color:#eee}canvas{display:block}</style></head>
+<body>
+<!-- Contact sheet of an effect-art file (window.KTA): tools/art_preview.html?f=croc_art.js  (each piece on snow, on grass and on dark) -->
+<canvas id="c"></canvas>
+<script>window.__KT_ART_PREVIEW=window.__KI_ART_PREVIEW=window.__CR_ART_PREVIEW=1;</script>
+<script>document.write('<script src="../'+(new URLSearchParams(location.search).get('f')||'croc_art.js')+'?cb='+Date.now()+'"><\/script>');</script>
+<script>
+function draw(){const A=window.KTA;if(!A||!A.ready()){setTimeout(draw,100);return;}
+  const qs=new URLSearchParams(location.search),only=qs.get('n'),names=only?only.split(','):A.names,cell=+(qs.get('cell')||190),cols=+(qs.get('cols')||6),rows=Math.ceil(names.length/cols),c=document.getElementById('c');c.width=cols*cell*1;c.height=rows*cell;const g=c.getContext('2d');
+  names.forEach((n,i)=>{const x=(i%cols)*cell,y=Math.floor(i/cols)*cell,bg=['#e9eef6','#5f8a48','#141a22'][i%3];g.fillStyle=bg;g.fillRect(x,y,cell,cell);
+    const im=A.get(n),[w,h]=A.size(n),s=Math.min((cell-30)/w,(cell-34)/h,+(qs.get('max')||3));g.drawImage(im,x+cell/2-w*s/2,y+18+(cell-34)/2-h*s/2,w*s,h*s);
+    g.fillStyle=i%3===2?'#fff':'#111';g.fillText(n+' '+w+'x'+h,x+5,y+13);});
+  document.title='ready';}
+draw();
+</script></body></html>
