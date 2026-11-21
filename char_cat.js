@@ -195,6 +195,7 @@ const ktL=k=>LV[k]||0;
 const ktLv=(arr,k)=>arr[Math.max(1,Math.min(arr.length,ktL(k)))-1];
 const ktFlowCap=()=>hasBuff('kaSakura')?KB.kaSakura.cap:KT_BAL.flow.cap;
 const ktDecay=()=>ktL('kaFeet')?ktLv(KB.kaFeet.decay,'kaFeet'):KT_BAL.flow.decay;
+const KT_SBD={flow:{n:'Flow — ATK +4 / เดิน +2 ต่อแต้ม',c:'#ffc8de',i:'FLOW'},flowState:{n:'Flow State — คริเพิ่ม',c:'#6ee0e0',i:'STATE'},rest:{n:'นั่งพัก — ฟื้น HP/SP ×2',c:'#8fd86a',i:'REST'}};
 function ktAddFlow(n){const b=CAT.flow;CAT.flow=Math.min(ktFlowCap(),CAT.flow+n);CAT.lastHit=gameTime;if(CAT.flow>=10&&b<10)addFx(new DText({x:player.x,y:player.y,z:96,text:'FLOW',color:'#ffd0e8',size:12,life:.8}));}
 const ktBranch=k=>!k?'':k==='basic'?'N':k.startsWith('ka')||k==='kcSwallows'||k==='kcShadow'||k==='kcLunge'?'A':k.startsWith('kb')||k==='kcStance'||k==='kcOni'||k==='kcAvalanche'||k==='kcCleaveWind'?'B':'N';
 /* charge time for heavy skills (Iron Grip shortens, Ashura makes it instant) */
@@ -357,6 +358,9 @@ class KtCore{constructor(){this.t=0;this.layer='none';}draw(){}
     if(player.jgHide&&!(A&&A.key==='kaHana')){player.jgHide=false;skyDarkT=0;}
     if(CAT.flow>0&&gameTime-CAT.lastHit>ktDecay()&&!(ktL('kaUnbroken')&&player.moving))CAT.flow=0;
     if(CAT.flow>ktFlowCap())CAT.flow=ktFlowCap();
+    /* buff bar: Flow stacks (n/cap), Flow State at 10 (when learned), resting while sitting — shown, not timed */
+    {const st=(k,on,lbl)=>{if(on&&BUFFDEF[k]!==KT_SBD[k])BUFFDEF[k]=KT_SBD[k];if(on)player.buffs[k]={t:1e9,total:1e9,lbl};else if(player.buffs[k]&&player.buffs[k].lbl!=null)delete player.buffs[k];};
+     st('flow',CAT.flow>0,CAT.flow+'/'+ktFlowCap());st('flowState',CAT.flow>=10&&ktL('kaFlowState'),'คริ');st('rest',!!player.sitting,'×2');}
     if(CAT.mom>0&&gameTime-CAT.momT>KB.kbMomentum.dur)CAT.mom=0;
     if(hasBuff('knKi')){if(player.moving||(player.action&&player.action.key!=='knKi')){delete player.buffs.knKi;}
       else{player.mp=Math.min(player.maxMp,player.mp+ktLv(KB.knKi.sp,'knKi')*dt);if(ktL('kcStill')){player.hp=Math.min(player.maxHp,player.hp+PS.lv*KB.kcStill.hpPerLv*dt);if(player.buffs.dbSlow)delete player.buffs.dbSlow;}
@@ -568,7 +572,7 @@ function installCat(){
   Object.assign(BUFFDEF,{knKi:{n:'Ki Gather',c:'#d8e8ff',i:'KI'},knFocus:{n:'Feline Focus',c:KTC.gold,i:'FOCUS'},kaSakura:{n:'Sakura Dance',c:KTC.sakura,i:'SAKURA'},kbRoar:{n:'Oni Roar',c:KTC.oni,i:'ROAR'},
     kbAshura:{n:'Ashura Mask',c:KTC.oni2,i:'ASHURA'},kcShadow:{n:'Shadow Dance',c:KTC.sakura2,i:'SHADOW'},kcStance:{n:'Mountain Stance',c:KTC.oni2,i:'STANCE'},rhSA:BUFFDEF.rhSA||{n:'Steady',c:'#c8b898',i:'SA'}});
   /* buff bar icons: painted buff icon if it exists (assets/icons/cat/buff/<key>.webp), else the skill icon */
-  window.BUFF_ART=window.BUFF_ART||{};{const SK={knKi:'knKi',knFocus:'knFocus',kaSakura:'kaSakura',kbRoar:'kbRoar',kbAshura:'kbAshura',kcShadow:'kcShadow',kcStance:'kcStance',rhSA:'kbIron'};
+  window.BUFF_ART=window.BUFF_ART||{};{const SK={knKi:'knKi',knFocus:'knFocus',kaSakura:'kaSakura',kbRoar:'kbRoar',kbAshura:'kbAshura',kcShadow:'kcShadow',kcStance:'kcStance',rhSA:'kbIron',flow:'kaFlowState',flowState:'kaFlowState',rest:'knKi'};
     for(const b in SK){BUFF_ART[b]='assets/icons/cat/'+SK[b]+'.webp';const im=new Image();im.onload=()=>{BUFF_ART[b]=im.src;};im.src='assets/icons/cat/buff/'+b+'.webp';}}
   JOB.name='Wandering Kitten';JOB.hpA=1.3;JOB.hpB=5;JOB.spB=3.2;
   ITEMS.roninKatana={n:'Ronin Katana',slot:'rhand',two:1,kind:'Sword',atk:158,wlv:3,aspd:154,ref:6,cards:2,w:150,b:{},size:{small:1,medium:1,large:.85},d:'คาตานะฝักสีชาดของโรนินพเนจร'};
