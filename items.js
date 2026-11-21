@@ -119,9 +119,13 @@ const DRILL_W=[[1,45],[2,30],[3,18],[4,7]];
 /* max holes by slot: weapon & body armour 4, everything else 2 */
 const holeCap=it=>it.slot==='acc'?0:it.dset!==undefined?1:(it.slot==='rhand'||it.slot==='armor')?4:2;   // weapon / armour 4 holes, other gear 2, accessories none, drop-set pieces 1
 /* base stats by grade g (0–9): the slot's main stat + the town pair (×pm for small pieces) */
-const SLOTS={rhand:{nm:'อาวุธ',code:'W',main:g=>40+20*g,pm:1,w:150},armor:{nm:'เกราะ',code:'B',kind:'Armor',noun:'Mail',main:g=>4+1.35*g,pm:1,w:200},
-  top:{nm:'หมวก',code:'T',kind:'Upper Headgear',noun:'Helm',main:g=>2+.67*g,pm:.6,w:50},garment:{nm:'ผ้าคลุม',code:'G',kind:'Garment',noun:'Cloak',main:g=>2+.56*g,pm:.6,w:40},
-  shoes:{nm:'รองเท้า',code:'S',kind:'Shoes',noun:'Boots',main:g=>2+.56*g,pm:.6,w:40},acc:{nm:'เครื่องประดับ',code:'A',kind:'Accessory',noun:'Charm',main:null,pm:1,w:10}};
+/* 5 kinds since 2026-11-21 (owner: weapon · headgear · armour · shoes · one accessory). The cut pieces' stats moved onto the rest so a full set
+   is as strong as before: town-pair weight 1+1+.6+.6+.6+1+1 (old 7 pieces) = 1+1+1+1+1.8 (new 5) · DEF 10+3.14g = armour 5+1.75g + helm 2.5+.72g + boots 2.5+.67g.
+   garment stays defined (gone:1) so old cloaks in bags still show and sell; GEAR = the kinds that exist now. */
+const SLOTS={rhand:{nm:'อาวุธ',code:'W',main:g=>40+20*g,pm:1,w:150},armor:{nm:'เกราะ',code:'B',kind:'Armor',noun:'Mail',main:g=>5+1.75*g,pm:1,w:200},
+  top:{nm:'หมวก',code:'T',kind:'Upper Headgear',noun:'Helm',main:g=>2.5+.72*g,pm:1,w:50},garment:{nm:'ผ้าคลุม',code:'G',kind:'Garment',noun:'Cloak',main:g=>2+.56*g,pm:.6,w:40,gone:1},
+  shoes:{nm:'รองเท้า',code:'S',kind:'Shoes',noun:'Boots',main:g=>2.5+.67*g,pm:1,w:40},acc:{nm:'เครื่องประดับ',code:'A',kind:'Accessory',noun:'Charm',main:null,pm:1.8,w:10}};
+const GEAR=Object.keys(SLOTS).filter(s=>!SLOTS[s].gone);
 const PAIR=g=>[3+1.7*g,2+1.33*g,1+.78*g];                                        // town pair stat 1 / 2 / third stat
 const W_NOUN={wolf:'Greataxe',rhino:'Knuckles',owl:'Crossbow',jaguar:'Fang Daggers',croc:'Spear',axolotl:'Bracelets'};
 
@@ -174,8 +178,9 @@ function load(){let s=null;try{s=JSON.parse(localStorage.getItem(SKEY)||'null');
     for(const k in s.bag||{}){const m=/^m_(\w+)_(\d)_([ab])$/.exec(k);if(m&&!ETC[k])continue;BAG[k]=s.bag[k];}   // drop materials from the old 4-tier table
     for(const id in s.inst||{}){const it=ITEMS[id]=s.inst[id];if(it.crafted&&it.grade===undefined){it.grade=[0,3,6,9][(it.tier||1)-1];restat(id);}
       if(it.crafted&&![3,5,7,9].includes(it.grade)){it.grade=[3,3,3,3,3,5,5,7,7,9][it.grade]??3;restat(id);}
-      if(it.crafted&&!it.renamed)it.n=craftName(it.town,it.cslot,it.grade);}   /* crafting now has 4 tiers (Lv30/50/70/90): older pieces move to the nearest */
-    INV.length=0;for(const id of s.inv||[])if(ITEMS[id])INV.push(id);for(const sl in EQ)EQ[sl]=s.eq&&ITEMS[s.eq[sl]]?s.eq[sl]:null;for(const sl of ['low','lhand'])if(s.eq&&ITEMS[s.eq[sl]]&&!INV.includes(s.eq[sl]))INV.push(s.eq[sl]);return;}   /* removed slots: old gear goes back to the bag */
+      if(it.crafted&&!it.renamed)it.n=craftName(it.town,it.cslot,it.grade);   /* crafting now has 4 tiers (Lv30/50/70/90): older pieces move to the nearest */
+      if(!it.s5&&it.cslot&&SLOTS[it.cslot]&&!SLOTS[it.cslot].gone&&it.grade!=null){it.st=it.crafted?craftStats(it.town,it.cslot,it.grade,it.magic):it.dset!==undefined?dsStats(it.dset,it.cslot,it.magic):it.st;it.s5=1;}}   /* 5-slot cut (2026-11-21): helms / boots / armour / accessories carry the stats of the removed pieces */
+    INV.length=0;for(const id of s.inv||[])if(ITEMS[id])INV.push(id);for(const sl in EQ)EQ[sl]=s.eq&&ITEMS[s.eq[sl]]?s.eq[sl]:null;for(const sl of ['low','lhand','mid','garment','acc2'])if(s.eq&&ITEMS[s.eq[sl]]&&!INV.includes(s.eq[sl]))INV.push(s.eq[sl]);return;}   /* removed slots (2026-11-19: low, lhand · 2026-11-21: mid, garment, acc2): old gear goes back to the bag */
   FRESH=true;
   if(MODE==='play'){newGame();return;}                                            // real game: start with the Lv1 kit only
   /* first run (test mode): turn the starting gear into instances (own refine/holes/orbs), give money, tools and a Lv1 starter kit */
@@ -216,33 +221,34 @@ const CRAFT_G=[3,5,7,9];
 COST.craftA2=6;
 const craftCost=(r,g)=>[[matA(r,g-2),COST.craftA2],[matA(r,g-1),COST.craftA2],[matB(r,g),COST.craftB]];
 const CSET={
-  vik:k=>[[2,{hpPct:5+2*k}],[4,{autoDmg:5+2*k,skillDmg:5+2*k}],[6,{bossDmg:8+3*k,lifesteal:1+.5*k}]],
-  azt:k=>[[2,{move:5+k}],[4,{crit:3+k}],[6,{critDmg:10+4*k,autoDmg:5+2*k}]],
-  grk:k=>[[2,{hpPct:6+2*k}],[4,{dmgRed:4+k}],[6,{hpRegen:30+10*k,dmgRed:3}]],
-  egy:k=>[[2,{spPct:8+2*k}],[4,{skillDmg:6+2*k}],[6,{cdr:5+k,spCost:5+k}]],
-  jpn:k=>[[2,{crit:3+k}],[4,{critDmg:10+3*k}],[6,{autoDmg:8+2*k,move:5}]]};
+  vik:k=>[[2,{hpPct:5+2*k}],[4,{autoDmg:5+2*k,skillDmg:5+2*k}],[5,{bossDmg:8+3*k,lifesteal:1+.5*k}]],
+  azt:k=>[[2,{move:5+k}],[4,{crit:3+k}],[5,{critDmg:10+4*k,autoDmg:5+2*k}]],
+  grk:k=>[[2,{hpPct:6+2*k}],[4,{dmgRed:4+k}],[5,{hpRegen:30+10*k,dmgRed:3}]],
+  egy:k=>[[2,{spPct:8+2*k}],[4,{skillDmg:6+2*k}],[5,{cdr:5+k,spCost:5+k}]],
+  jpn:k=>[[2,{crit:3+k}],[4,{critDmg:10+3*k}],[5,{autoDmg:8+2*k,move:5}]]};
 const csTier=g=>Math.max(0,CRAFT_G.indexOf(g));
 const csCount=()=>{const c={};for(const sl in EQ){const it=ITEMS[EQ[sl]];if(it&&!it.broken&&it.crafted&&(it.lvReq||1)<=PS.lv){const k=it.town+'_'+it.grade;c[k]=(c[k]||0)+1;}}return c;};
 const csBonusText=(t,g,n=-1)=>CSET[t](csTier(g)).map(([p,o])=>`<span style="${n<0?'':n>=p?'color:#2a9a28;font-weight:700':'color:#8a94a8'}">${p} ชิ้น: ${Object.entries(o).map(([k,v])=>affLabel(k,v)).join(', ')}</span>`).join(' · ');
 {const _gc=gearCalc;gearCalc=function(){_gc();const c=csCount();
   for(const key in c){const [t,g]=key.split('_');for(const [p,o] of CSET[t](csTier(+g)))if(c[key]>=p)for(const k in o)BON[k]=(BON[k]||0)+o[k];}};}
-/* ---------------- DROP SETS (มอนดรอป): one 6-piece set per 10 levels, ~60% of a crafted piece of the same grade ----------------
+/* ---------------- DROP SETS (มอนดรอป): one 5-piece set per 10 levels (6 before the 5-slot cut, 2026-11-21), ~60% of a crafted piece of the same grade ----------------
    Any monster drops pieces of the set for its level band. No random special stats, 1 socket max, can be refined.
-   Set bonus (equipped pieces of the SAME set, worn at your level): 2 = MaxHP · 4 = damage · 6 = crit + move speed. */
+   Set bonus (equipped pieces of the SAME set, worn at your level): 2 = MaxHP · 4 = damage · 5 = crit + move speed. */
 const DSET=[['Traveler','นักเดินทาง',['vit','agi']],['Hunter','นักล่า',['atk','lck']],['Scout','หน่วยสอดแนม',['agi','lck']],['Mercenary','ทหารรับจ้าง',['atk','vit']],
   ['Ranger','เรนเจอร์',['agi','int']],['Knight','อัศวิน',['vit','def']],['Warden','ผู้พิทักษ์',['def','tal']],['Champion','แชมเปี้ยน',['atk','agi']],
   ['Warlord','ขุนศึก',['atk','vit']],['Ancient','โบราณ',['tal','lck']]];
 const DSET_MUL=.6;
 const dsBonus=g=>({hp:Math.round(3+g*.5),dmg:Math.round(3+g*.45),crit:Math.round(2+g*.35),move:5});
-function dropSetItem(g,slot){const S=SLOTS[slot],D=DSET[g],cw=slot==='rhand'?classWeapon():{},P=PAIR(g),st={},put=(k,v)=>{v=Math.round(v*DSET_MUL);if(v)st[k]=(st[k]||0)+v;};
-  if(slot==='rhand')put(cw.magic?'tal':'atk',S.main(g));else if(S.main)put('def',S.main(g));
-  put(D[2][0],P[0]*S.pm);put(D[2][1],P[1]*S.pm);
+function dsStats(g,slot,magic){const S=SLOTS[slot],D=DSET[g],P=PAIR(g),st={},put=(k,v)=>{v=Math.round(v*DSET_MUL);if(v)st[k]=(st[k]||0)+v;};
+  if(slot==='rhand')put(magic?'tal':'atk',S.main(g));else if(S.main)put('def',S.main(g));
+  put(D[2][0],P[0]*S.pm);put(D[2][1],P[1]*S.pm);return st;}
+function dropSetItem(g,slot){const S=SLOTS[slot],D=DSET[g],cw=slot==='rhand'?classWeapon():{},st=dsStats(g,slot,cw.magic);
   return newInst(null,{base:null,n:`${D[0]}'s ${slot==='rhand'?(W_NOUN[CHAR]||'Weapon'):S.noun}`,slot,kind:slot==='rhand'?cw.kind:S.kind,two:cw.two,aspd:cw.aspd,size:cw.size,magic:!!cw.magic,
     st,x:{},aff:[],b:{},grade:g,tier:gradeTier(g),wlv:gradeTier(g),lvReq:gradeLv(g),dset:g,sockets:0,orbs:[],ref:0,w:S.w,cslot:slot,
     rank:slot==='rhand'?JOB.name:'All',d:`ชุด${D[1]} (ของดรอป Lv${gradeLv(g)}) · อ่อนกว่าของคราฟ แต่สวมครบเซ็ทได้โบนัส`});}
 const dsCount=()=>{const c={};for(const sl in EQ){const it=ITEMS[EQ[sl]];if(it&&!it.broken&&it.dset!==undefined&&(it.lvReq||1)<=PS.lv)c[it.dset]=(c[it.dset]||0)+1;}return c;};
 {const _gc=gearCalc;gearCalc=function(){_gc();const c=dsCount();
-  for(const g in c){const n=c[g],b=dsBonus(+g);if(n>=2)BON.hpPct=(BON.hpPct||0)+b.hp;if(n>=4){BON.autoDmg=(BON.autoDmg||0)+b.dmg;BON.skillDmg=(BON.skillDmg||0)+b.dmg;}if(n>=6){BON.crit=(BON.crit||0)+b.crit;BON.move=(BON.move||0)+b.move;}}};}
+  for(const g in c){const n=c[g],b=dsBonus(+g);if(n>=2)BON.hpPct=(BON.hpPct||0)+b.hp;if(n>=4){BON.autoDmg=(BON.autoDmg||0)+b.dmg;BON.skillDmg=(BON.skillDmg||0)+b.dmg;}if(n>=5){BON.crit=(BON.crit||0)+b.crit;BON.move=(BON.move||0)+b.move;}}};}
 DROP.dset=.008;
 /* ---------------- traits + special stats in combat ---------------- */
 const ON={};let aegisT=-99,rushT=-99;
@@ -306,7 +312,7 @@ function dropFor(e){const m=e.m||{},L=m.lv||1,t=tierOfLv(L),g=gradeOfLv(L),R=Loo
       for(let i=0;i<B2.sup;i++)got.push('gsup_'+GD.SUP[Math.floor(Math.random()*GD.SUP.length)][0]);if(Math.random()<B2.mutChance)got.push('gmut_'+GD.MUT[Math.floor(Math.random()*GD.MUT.length)][0]);}}}
   /* drop-set gear for this level band (boss: 10×) */
   if(Math.random()<Math.min(1,DROP.dset*R*dm*(m.boss?10:1))){if(eqFull())chatLog('sys','<span style="color:#e2574c">กระเป๋าอุปกรณ์เต็ม</span> — อุปกรณ์ดรอปหายไป');
-    else{const sl=Object.keys(SLOTS)[Math.floor(Math.random()*6)],id=dropSetItem(g,sl);INV.push(id);const it=ITEMS[id];
+    else{const sl=GEAR[Math.floor(Math.random()*GEAR.length)],id=dropSetItem(g,sl);INV.push(id);const it=ITEMS[id];
       addFx(new DText({x:e.x,y:e.y,z:70,text:'+ '+it.n,color:'#ffb35a',size:13,life:2}));chatLog('bat',`ได้รับอุปกรณ์ <b style="color:#d9861a">${it.n}</b> (ชุด${DSET[g][1]})`);
       if($('#itw')&&$('#itw').classList.contains('open')&&itTab==='equip')buildItems();}}
   const lost=got.filter(id=>!add(id,1));if(lost.length){chatLog('sys',`<span style="color:#e2574c">กระเป๋าเต็ม</span> — ทิ้ง ${lost.map(etcName).join(', ')} (ฝากของในคลัง: กด H ในเมือง)`);}
@@ -318,9 +324,9 @@ function dropFor(e){const m=e.m||{},L=m.lv||1,t=tierOfLv(L),g=gradeOfLv(L),R=Loo
 /* ---------------- item card extra info + equip/unequip save ---------------- */
 const stars=it=>{const r=affRating(it);return r>=2.2?'★★★':r>=1.4?'★★':r>=.7?'★':'';};
 window.itemExtraInfo=id=>{const it=ITEMS[id];if(!it)return '';const L=[];
-  if(it.crafted){const n=csCount()[it.town+'_'+it.grade]||0;L.push(`เซ็ทคราฟ<b>${TOWNS[it.town].name} Lv${gradeLv(it.grade)}</b> · สวมอยู่ ${n}/6 ${stars(it)?`<span style="color:#e0a020">${stars(it)}</span>`:''}<br>${csBonusText(it.town,it.grade,n)}`);}
+  if(it.crafted){const n=csCount()[it.town+'_'+it.grade]||0;L.push(`เซ็ทคราฟ<b>${TOWNS[it.town].name} Lv${gradeLv(it.grade)}</b> · สวมอยู่ ${n}/5 ${stars(it)?`<span style="color:#e0a020">${stars(it)}</span>`:''}<br>${csBonusText(it.town,it.grade,n)}`);}
   if(it.dset!==undefined){const g=it.dset,b=dsBonus(g),n=dsCount()[g]||0,on=k=>n>=k?'color:#2a9a28;font-weight:700':'color:#8a94a8';
-    L.push(`ชุด<b>${DSET[g][1]}</b> · ของดรอป Lv${gradeLv(g)} · สวมอยู่ ${n}/6<br><span style="${on(2)}">2 ชิ้น: MaxHP +${b.hp}%</span> · <span style="${on(4)}">4 ชิ้น: ดาเมจ +${b.dmg}%</span> · <span style="${on(6)}">6 ชิ้น: คริ +${b.crit}%, เดินเร็ว +${b.move}%</span>`);}
+    L.push(`ชุด<b>${DSET[g][1]}</b> · ของดรอป Lv${gradeLv(g)} · สวมอยู่ ${n}/5<br><span style="${on(2)}">2 ชิ้น: MaxHP +${b.hp}%</span> · <span style="${on(4)}">4 ชิ้น: ดาเมจ +${b.dmg}%</span> · <span style="${on(5)}">5 ชิ้น: คริ +${b.crit}%, เดินเร็ว +${b.move}%</span>`);}
   if(it.aff&&it.aff.length)L.push(`<b style="color:#2a7ac8">สถานะพิเศษ</b>: ${it.aff.map(a=>affLabel(a.k,a.v)).join(' · ')}`);
   if(it.trait){const T=TRAITS[it.trait];L.push(`<span style="color:#c2541c">✦ ${T.n}</span>: ${T.d(gradePow(it.grade??0))}`);}
   return L.length?`<div class="t12x">${L.join('<br>')}</div>`:'';};
@@ -447,7 +453,7 @@ function buildSmithOld(){const w=$('#smw');if(!w.classList.contains('open'))retu
   if(smTab==='craft'){const g=smGrade,cost=craftCost(smTown,g),cz=COST.craftZ(g),cr=has('trait_'+smTown),cb=csBonusText(smTown,g);
     body=`<div class="ix-grades">${CRAFT_G.map(i=>`<button class="rob ${i===g?'on':''} ${gradeLv(i)>PS.lv?'lock':''}" data-grade="${i}">เซ็ท Lv${gradeLv(i)}</button>`).join('')}</div>
       <div class="ix-note">เซ็ทคราฟ Lv${gradeLv(g)} · ใช้ <b>${etcName(matA(smTown,g-2))}</b> + <b>${etcName(matA(smTown,g-1))}</b> (มอน Lv${(g-2)*10}–${g*10-1}) + ของหายาก <b>${etcName(matB(smTown,g))}</b> (มอน Lv${g*10}–${g*10+9} / บอส) ในภูมิภาค${T.name} · <b>ทุกครั้งที่คราฟต์ สุ่มสถานะพิเศษ 1–3 ช่อง</b><br><b style="color:#c2541c">โบนัสเซ็ท</b>: ${cb}</div>`+
-      Object.keys(SLOTS).map(sl=>`<div class="ix-row"><div class="mid"><b>${craftName(smTown,sl,g)}</b> <small>${SLOTS[sl].nm} · Lv${gradeLv(g)} · ${statLine(craftStats(smTown,sl,g,sl==='rhand'&&classWeapon().magic))} · สถานะพิเศษที่ออกได้: ${Object.keys(AFF).filter(k=>AFF[k].s.includes(SLOTS[sl].code)).map(k=>AFF[k].n).join(', ')}</small><div class="ix-cost">${costHtml(cost,cz)}</div></div>
+      GEAR.map(sl=>`<div class="ix-row"><div class="mid"><b>${craftName(smTown,sl,g)}</b> <small>${SLOTS[sl].nm} · Lv${gradeLv(g)} · ${statLine(craftStats(smTown,sl,g,sl==='rhand'&&classWeapon().magic))} · สถานะพิเศษที่ออกได้: ${Object.keys(AFF).filter(k=>AFF[k].s.includes(SLOTS[sl].code)).map(k=>AFF[k].n).join(', ')}</small><div class="ix-cost">${costHtml(cost,cz)}</div></div>
         <button class="rob" data-craft="${sl}" ${canPay(cost,cz)?'':'disabled'}>คราฟต์</button>${cr?`<button class="rob" data-craft="${sl}" data-wt="1" ${canPay(cost,cz)?'':'disabled'} title="ใช้ผลึกนิสัย 1 ก้อน">+นิสัย</button>`:''}</div>`).join('');}
   else if(smTab==='trait'){const L=owned.filter(id=>ITEMS[id].crafted&&ITEMS[id].town===smTown),cost=[['trait_'+smTown,1]];
     body=`<div class="ix-note">นิสัยของเมืองนี้ (สุ่ม 1 แบบ · แรงขึ้นตามระดับไอเทม ×1 → ×3): ${Object.entries(TRAITS).filter(([k,v])=>v.town===smTown).map(([k,v])=>`<b>${v.n}</b> — ${v.d(1)}`).join(' · ')}</div>`+
@@ -735,7 +741,7 @@ const eqFair=(g,ref)=>Math.round(1500*Math.pow(g+1,1.6)*(1+(ref||0)*.35));
 const fairOf=l=>l.eq?Math.round(eqFair(l.eq.g??l.eq.grade??0,l.eq.ref)*(l.eq.copy&&l.eq.copy.dset!==undefined?.35:1)):Math.max(1,(ETC[l.k]||{}).price||1);
 const rnd2=(a,b)=>a+Math.random()*(b-a),pick=a=>a[Math.floor(Math.random()*a.length)];
 function mkGen(n){const G=gradeOfLv(PS.lv),out=[];                                 // gear only (stackable goods: market.js)
-  for(let i=0;i<n;i++){const g=Math.max(0,Math.min(9,G-Math.floor(Math.random()*2))),ref=Math.random()<.5?0:Math.floor(rnd2(1,7)),town=pick(Object.keys(TOWNS)),slot=pick(Object.keys(SLOTS));
+  for(let i=0;i<n;i++){const g=Math.max(0,Math.min(9,G-Math.floor(Math.random()*2))),ref=Math.random()<.5?0:Math.floor(rnd2(1,7)),town=pick(Object.keys(TOWNS)),slot=pick(GEAR);
       if(Math.random()<.45){const id=dropSetItem(g,slot),c=JSON.parse(JSON.stringify(ITEMS[id]));delete ITEMS[id];c.ref=ref;out.push({u:MK.uid++,eq:{n:c.n,slot,grade:g,ref,copy:c},n:1,p:Math.round(eqFair(g,ref)*.35*rnd2(.8,1.5)/10)*10,s:pick(MK_NAMES),t:Date.now()-Math.random()*36e5});continue;}
       const cg=CRAFT_G.filter(x=>x<=Math.max(3,g)).pop();out.push({u:MK.uid++,eq:{town,slot,g:cg,ref},n:1,p:Math.round(eqFair(cg,ref)*rnd2(.8,1.55)/10)*10,s:pick(MK_NAMES),t:Date.now()-Math.random()*36e5});}
   return out;}
@@ -903,10 +909,11 @@ function buildSmith(){const w=$('#smw');if(!w||!w.classList.contains('open'))ret
   if(test)top+=`<div class="topbar"><span class="ttnote ttwarn">${here==='cap'?'เมืองหลวงไม่มีช่าง':'ไม่ได้อยู่ในเมือง'} · โหมดทดสอบ เลือกช่าง:</span>${Object.keys(TOWNS).map(r=>`<button class="ttb ${r===smTown?'':'blue'} sm" data-town="${r}">${TOWNS[r].name}</button>`).join('')}</div>`;
   top+=`<div class="tttab">${SM_TABS.map(([k,n])=>`<button class="${smTab===k?'on':''}" data-tab="${k}"><img src="assets/ui/tab_${k}.webp" alt="">${n}</button>`).join('')}</div>`;
   let body='';
+  if(!GEAR.includes(smSlot))smSlot='rhand';
   if(smTab==='craft'){const g=smGrade,cost=craftCost(smTown,g),cz=COST.craftZ(g),cr=has('trait_'+smTown),ok=canPay(cost,cz),sl=smSlot,st=craftStats(smTown,sl,g,sl==='rhand'&&classWeapon().magic);
     const affs=Object.keys(AFF).filter(k=>AFF[k].s.includes(SLOTS[sl].code)).map(k=>AFF[k].n);
     body=`<div class="sgrid"><div class="ttp"><h4>📜 เลือกเซ็ทและชิ้น</h4><div class="grades">${CRAFT_G.map(i=>`<button class="${i===g?'on':''} ${gradeLv(i)>PS.lv?'lock':''}" data-grade="${i}">Lv${gradeLv(i)}</button>`).join('')}</div>
-      <div class="slots">${Object.keys(SLOTS).map(s=>`<div class="s"><div class="tts ${s===sl?'sel':''}" data-slot="${s}">${smSlotIcon(s,g,42)}</div>${SLOTS[s].nm}</div>`).join('')}</div>
+      <div class="slots">${GEAR.map(s=>`<div class="s"><div class="tts ${s===sl?'sel':''}" data-slot="${s}">${smSlotIcon(s,g,42)}</div>${SLOTS[s].nm}</div>`).join('')}</div>
       <div class="bonus"><b style="color:#c2541c">โบนัสเซ็ท</b> ${csBonusText(smTown,g)}</div></div>
       <div class="ttp"><div class="stage2"><div class="lv2">${craftName(smTown,sl,g)}</div><div class="bigc">${smSlotIcon(sl,g,58)}</div><div class="sub2">${SLOTS[sl].nm} · Lv${gradeLv(g)} · สุ่มสถานะพิเศษ 1–3 ช่อง</div></div>
       <div class="chips">${Object.entries(st).map(([k,v])=>`<span class="chip">${STN[k]||k.toUpperCase()} +${v}</span>`).join('')}</div>

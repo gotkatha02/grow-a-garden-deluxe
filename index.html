@@ -1190,10 +1190,11 @@ const ITEMS={
  ringSwift:{n:'Ring of Swiftness',slot:'acc',kind:'Accessory',w:10,b:{agi:2},d:'แหวนความเร็ว AGI +2'},
  ringPrec:{n:'Ring of Precision',slot:'acc',kind:'Accessory',w:10,b:{dex:3},d:'แหวนแม่นยำ DEX +3'},
  clipLuck:{n:'Clover Clip',slot:'acc',kind:'Accessory',cards:1,w:10,b:{luk:3,crit:3},d:'กิ๊บใบโคลเวอร์ LUK +3 · CRIT +3'}};
-/* 8 gear slots (owner 2026-11-19: Lower Headgear and Left Hand removed) */
-const EQSLOTS=[['top','Upper Headgear'],['mid','Middle Headgear'],['armor','Armor'],['rhand','Right Hand'],['garment','Garment'],['shoes','Shoes'],['acc1','Accessory'],['acc2','Accessory']];
-const EQ={top:'wolfhelm',mid:'visor',armor:'mail',rhand:'greataxe',garment:'cape',shoes:'boots',acc1:'ringFury',acc2:'ringSwift'};
-const INV=['cleaver','hatchet','vikinghelm','ringPrec','clipLuck'];
+/* 5 gear slots (owner 2026-11-21: weapon · headgear · armour · shoes · ONE accessory — the gem system carries the depth; before: 8 slots,
+   Lower Headgear + Left Hand removed 2026-11-19; Middle Headgear, Garment and the 2nd accessory removed 2026-11-21 → old pieces go back to the bag) */
+const EQSLOTS=[['top','Headgear'],['armor','Armor'],['rhand','Weapon'],['shoes','Shoes'],['acc1','Accessory']];
+const EQ={top:'wolfhelm',armor:'mail',rhand:'greataxe',shoes:'boots',acc1:'ringFury'};
+const INV=['cleaver','hatchet','vikinghelm','ringSwift','ringPrec','clipLuck'];
 /* ---------- 12 Tails style item stats ----------
    Every item gives several of the 8 stats with one stand-out stat (st = the item's own stats).
    sockets = drilled holes (0–4); orbs = stones already set in them, each {s:stat, v:value}.
@@ -5564,7 +5565,7 @@ const itName=it=>`${it.ref?'+'+it.ref+' ':''}${it.n}`;
 let eqDir=0,eqAnim=0;const EQDIRS=['S','SW','W','NW','N','NE','E','SE'];
 function equipItem(id){const it=ITEMS[id];if(!it)return;const i=INV.indexOf(id);if(i<0)return;
   const need=itemSt(id).lv;if(PS.lv<need){msg(`ต้องเลเวล ${need} ถึงจะใส่ ${it.n} ได้`);return;}INV.splice(i,1);
-  let sl=it.slot;if(sl==='acc')sl=!EQ.acc1?'acc1':!EQ.acc2?'acc2':'acc1';
+  let sl=it.slot;if(sl==='acc')sl='acc1';   /* one accessory slot (2026-11-21) */
   if(!(sl in EQ)){INV.push(id);msg(`${it.n}: ช่องนี้ถูกตัดออกจากเกมแล้ว`);return;}
   if(EQ[sl])INV.push(EQ[sl]);EQ[sl]=id;applyStats();buildItems();msg(`สวมใส่ ${it.n}`);}
 function unequip(sl){if(!EQ[sl])return;INV.push(EQ[sl]);EQ[sl]=null;applyStats();buildItems();}
@@ -5582,7 +5583,7 @@ function itemInfo(id){const it=ITEMS[id];if(!it)return;const w=document.getEleme
 function buildEquip(){const w=document.getElementById('eqw');if(!w||!w.classList.contains('open'))return;
   const slot=([sl,lab])=>{const id=EQ[sl],it=ITEMS[id];const two=false;
     return `<div class="sl${it||two?'':' empty'}" data-sl="${sl}" title="${it?'ดับเบิลคลิก = ถอด · คลิกขวา = ข้อมูล':lab}"><div class="ic">${it?itemIcon(it):two?`<span style="opacity:.35">${itemIcon(ITEMS[EQ.rhand])}</span>`:''}</div><div class="nm">${it?itName(it):two?'<span style="color:#9aa3b5">(Two-Handed)</span>':lab}${it?`<small>${lab}</small>`:''}</div></div>`;};
-  const L=['top','armor','rhand','acc1'],R=['mid','garment','shoes','acc2'],lab=Object.fromEntries(EQSLOTS);
+  const L=['top','armor','shoes'],R=['rhand','acc1'],lab=Object.fromEntries(EQSLOTS);   /* 5 slots: head → body → feet on the left, weapon + accessory on the right */
   roWin('eqw','Equipment',`<div class="ro-eq"><div class="col">${L.map(k=>slot([k,lab[k]])).join('')}</div><div class="pv"><canvas id="eqcv" width="200" height="260"></canvas><div><button class="rob" id="eqrl">◀</button><button class="rob" id="eqrr">▶</button></div></div><div class="col rt">${R.map(k=>slot([k,lab[k]])).join('')}</div></div>`,
     `<span>Weight : ${Math.round(D.wUsed/10)} / ${D.weight/10}</span><span style="margin-left:auto">โจมตี ${D.patk} · เวท ${D.mag} · ป้องกัน ${D.def}</span>`);
   w.querySelectorAll('.sl').forEach(e=>{const sl=e.dataset.sl;e.ondblclick=()=>unequip(sl);e.oncontextmenu=ev=>{ev.preventDefault();if(EQ[sl])itemInfo(EQ[sl]);};});
@@ -5932,18 +5933,18 @@ window.AF={levelUp:()=>{if(PS.lv<99){PS.lv++;applyStats();player.hp=player.maxHp
 <script src="croc_vfx.js?v=2"></script>
 <script src="worldmap.js"></script>
 <script src="gem_data.js?v=5"></script>
-<script src="items.js?v=17"></script>
+<script src="items.js?v=18"></script>
 <script src="market.js?v=2"></script>
-<script src="npcs.js?v=8"></script>
+<script src="npcs.js?v=9"></script>
 <script src="monsters.js"></script>
 <script src="monster-sprites.js?v=3"></script>
 <script src="monster-catalog.js"></script>
-<script src="boss_fenrir.js?v=2"></script>
+<script src="boss_fenrir.js?v=3"></script>
 <script src="progress.js"></script>
 <script src="char_create.js"></script>
 <script src="skill_shapes.js?v=1"></script>
 <script src="mobile.js?v=4"></script>
-<script src="totem_gems.js?v=26"></script>
+<script src="totem_gems.js?v=27"></script>
 <script src="feel_hits.js?v=1"></script>
 <script src="wolf_vfx3.js?v=69"></script>
 <script src="cat_art.js?v=1"></script>

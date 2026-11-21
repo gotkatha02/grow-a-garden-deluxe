@@ -166,7 +166,7 @@ function onBossDead(e){if(e.cast&&e.cast.k==='howl')skyDarkT=0;e._paid=1;e.cast=
   for(const o of enemies)if(o.summon&&!o.dead){o.hp=0;kill(o);}
   shake(5);chatLog&&chatLog('sys','🏆 ล้ม <b style="color:#c9a8ff">เฟนเรียร์</b> ได้แล้ว! (เกิดใหม่ใน 5 นาที)');msg&&msg('MVP! ล้มเฟนเรียร์');
   const A=window.AFItems;if(A&&A.dropSetItem){const z=25000+Math.round(Math.random()*15000);A.zeny=A.zeny+z;
-    const sl=['rhand','armor','top','garment','shoes','acc'][Math.floor(Math.random()*6)],id=A.dropSetItem(8,sl);A.buyGear(id,0);
+    const sl=['rhand','armor','top','shoes','acc'][Math.floor(Math.random()*5)],id=A.dropSetItem(8,sl);A.buyGear(id,0);
     chatLog&&chatLog('sys',`ได้รับ ${z.toLocaleString()}z + <b>${A.ITEMS[id].n}</b>`);}}
 function spawnBoss(){const h=mapHosts[MAP];if(h&&h.W){const k=h.W/3600;HOME.x=1800*k;HOME.y=1530*k;}   /* the den is laid out larger since 2026-11-20 */
   let [x,y]=M2W(HOME);

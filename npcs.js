@@ -465,7 +465,7 @@ function hlShow(n,sub,text,buttons){hlOpen=n.key;const fr=n.img.front.ok?n.img.f
   const m=W2M(player.x,player.y);if(Math.hypot(m.x-n.pos.x,m.y-n.pos.y)>420)hlClose();})();
 /* ---- weapon / armour merchants: the monster-drop sets (Traveler Lv1 … Ancient Lv90), up to the hero's level band ---- */
 const SLOT_TH={armor:'ชุดเกราะ',top:'หมวก',garment:'ผ้าคลุม',shoes:'รองเท้า',acc:'เครื่องประดับ'};
-function gearShop(n,kind){const A=AFItems,lv=(typeof PS!=='undefined'&&PS.lv)||1,maxG=Math.min(9,Math.floor(lv/10)),slots=kind==='weapon'?['rhand']:['armor','top','garment','shoes','acc'];
+function gearShop(n,kind){const A=AFItems,lv=(typeof PS!=='undefined'&&PS.lv)||1,maxG=Math.min(9,Math.floor(lv/10)),slots=kind==='weapon'?['rhand']:['armor','top','shoes','acc'];   /* 5 gear slots since 2026-11-21 */
   const price=g=>Math.round(A.eqFair(g,0)*.6/10)*10,btn=[];
   for(let g=0;g<=maxG;g++)for(const s of slots){const D=A.DSET[g],nm=s==='rhand'?`${D[0]}'s ${A.W_NOUN[CHAR]||'Weapon'}`:`${D[0]}'s ${(A.SLOTS[s]&&A.SLOTS[s].noun)||s}`,pr=price(g);
     const key=s==='rhand'?`ds_${g}_${CHAR}`:`ds_${g}_${s}`;
@@ -484,7 +484,7 @@ function guildInfo(n){hlShow(n,'กิลด์มาสเตอร์ · ก�
   if(wbPend&&curMap==='rift3'&&!mapFadeDir){const h=mapHosts.rift3;if(h&&h.ready){wbPend=false;const [x,y]=M2W({x:1800,y:1380});const e=spawnEnemy(x,y,true);if(!enemies.includes(e))enemies.push(e);
       e.maxHp=e.hp=Math.round(e.maxHp*6);e.spr='Aether Drake';e.bossName='AETHER WYRM · บอสโลก';e.wb=1;e.aggro=6;e.koMax=600;e.ko=600;wbBoss=e;shake&&shake(4);msg('บอสโลกปรากฏตัว!');chatLog('sys','<b style="color:#ff8a5a">Aether Wyrm</b> ตื่นขึ้นแล้ว!');}}
   if(wbBoss&&wbBoss.dead&&!wbBoss._paid){wbBoss._paid=1;const A=AFItems,z=50000+Math.round(Math.random()*30000);A.zeny=A.zeny+z;
-    const sl=['rhand','armor','top','garment','shoes','acc'][Math.floor(Math.random()*6)],id=A.dropSetItem(9,sl);A.buyGear(id,0);
+    const sl=['rhand','armor','top','shoes','acc'][Math.floor(Math.random()*5)],id=A.dropSetItem(9,sl);A.buyGear(id,0);
     chatLog('sys',`🏆 ล้ม <b>Aether Wyrm</b> ได้! ได้รับ ${z.toLocaleString()}z + <b>${A.ITEMS[id].n}</b>`);msg('ชนะบอสโลก!');wbBoss=null;}
   if(wbBoss&&curMap!=='rift3')wbBoss=null;})();
 

@@ -475,7 +475,15 @@ ${TL?`#totemWin.tot #tgSky,#totemWin.tot #tgFrame{display:none}
 .sgem .sgi{position:absolute;left:15.8%;top:15.8%;width:68.4%;height:68.4%;border-radius:50%;overflow:hidden;background:#1a1430}
 .sgem .sgi img,.sgem .sgi svg{position:absolute!important;left:-16%;top:-16%;width:132%!important;height:132%!important;display:block;border-radius:0!important;transform:none!important}
 .sgem .sgi::after{content:'';position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,transparent 58%,rgba(14,8,38,.5) 100%)}
-.sgem img.sgs,.sgem img.sgf{position:absolute!important;inset:0;width:100%!important;height:100%!important;display:block;border-radius:0!important;transform:none!important}
+.sgem img.sgf{position:absolute!important;inset:0;width:100%!important;height:100%!important;display:block;border-radius:0!important;transform:none!important}
+.sgem img.sgs,.sgem img.sgh{position:absolute!important;left:13.77%;top:13.77%;width:72.46%!important;height:72.46%!important;display:block;border-radius:0!important}   /* shine rim (r 236 of 512) on the window */
+.sgem img.sgs{transform:rotate(var(--fa,0deg)) var(--fmx,scale(1))!important}.sgem img.sgh{transform:none!important}
+/* C gem = a glass orb: icon over most of the box, the shine's rim on its edge, a thin dark outline (cartoon) */
+.sgem.cg .sgi,.sgem.cg .rgl{left:2%;top:2%;width:96%;height:96%}.sgem.cg .sgi{box-shadow:0 0 0 1.6px rgba(30,15,6,.92)}
+.sgem.cg img.sgs,.sgem.cg img.sgh{left:-2.07%;top:-2.07%;width:104.14%!important;height:104.14%!important}
+.sgem.cg{isolation:isolate}.sgem.cg img.sgs,.sgem.cg img.sgh{mix-blend-mode:plus-lighter}   /* the orb has no frame: the glass light is added, so it reads over bright icons */
+.sgem.cg .sgi::after{background:radial-gradient(circle at 34% 28%,rgba(255,255,255,.16) 0 22%,transparent 46%),radial-gradient(circle at 50% 46%,transparent 50%,rgba(10,6,30,.58) 100%)}   /* dome shading */
+.tgN .in.sg.cgi{transform:none}
 .tgN .in.sg{overflow:visible;transform:scale(1.16)}   /* the frame ring sits over the hole's painted rim */
 /* rarity light (owner 2026-11-21): glow round the frame + a light ring inside the window in the rarity colour; มหากาพย์ / ตำนาน pulse + a light runs round the ring */
 .sgem .rgl{background:none;position:absolute;left:15.8%;top:15.8%;width:68.4%;height:68.4%;border-radius:50%;pointer-events:none;box-shadow:inset 0 0 0 1.5px rgba(var(--rg),.6),inset 0 0 10px 2px rgba(var(--rg),.5)}
@@ -490,6 +498,7 @@ ${TL?`#totemWin.tot #tgSky,#totemWin.tot #tgFrame{display:none}
 .sgem.rq3 .rsw,.sgem.rq4 .rsw{display:block;background:conic-gradient(from 0deg,transparent 0 70%,rgba(var(--rg),.35) 78%,rgba(255,255,255,.95) 83%,rgba(var(--rg),.35) 88%,transparent 95%);
   -webkit-mask:radial-gradient(circle closest-side,transparent 0 66%,#000 69% 93%,transparent 97%);mask:radial-gradient(circle closest-side,transparent 0 66%,#000 69% 93%,transparent 97%);mix-blend-mode:screen;animation:rqS 3s linear infinite}
 .sgem.rq3 .rsw{animation-duration:4.6s;opacity:.75}
+.sgem.cg .rsw{-webkit-mask:radial-gradient(circle closest-side,transparent 0 84%,#000 88% 95%,transparent 98%);mask:radial-gradient(circle closest-side,transparent 0 84%,#000 88% 95%,transparent 98%)}
 @keyframes rqS{to{transform:rotate(360deg)}}
 .tgInv button.lock .sgem{filter:grayscale(1) brightness(.5)!important;animation:none!important}.tgInv button.lock .sgem .rsw{display:none}
 .tgInv button b.cn{position:absolute;right:-2px;top:-3px;z-index:3;min-width:13px;height:13px;border-radius:7px;background:#e2435a;color:#fff;font:900 9px/13px sans-serif;text-align:center;box-shadow:0 0 0 1.5px #2a0c0c,0 0 6px #ff6a7a;animation:tgGift 1s ease-in-out infinite alternate}
@@ -665,14 +674,18 @@ const supInfo=id=>{const s=SUPD[id];return `<b>${s[1]}</b> (เจมเสร�
 const sg=(id,kind)=>{const d=kind==='mut'?MUTD[id]:SUPD[id];return `<span class="tgSg${kind==='mut'?' mut':''}" style="--c:${d[3]}"><span>${d[2]}</span><img src="assets/gems/${kind==='mut'?'mut':'support'}/${id}.webp" alt="" draggable="false" onload="this.parentNode.classList.add('art')" onerror="this.remove()"></span>`;};
 /* skill gem picture (owner's frame + glass shine, 2026-11-21, GEM_PAGE_ART_PROMPTS_TH.md 11–12): the skill icon in a circle under the glass,
    the moonstone frame on top; one frame for every skill of every hero. The frame's window is .664 of its width, the icon circle .684 (tucked under the rim). */
-const SGEM={f:PG+'sgem_frame.webp',s:PG+'sgem_shine.webp',c:PG+'cgem_frame.webp'};
-/* rarity light (owner 2026-11-21: 'the gem's light changes colour by rarity'): rq<q> = glow round the frame + a light ring inside the window
-   in the rarity colour; มหากาพย์ / ตำนาน pulse and a light runs round the ring. C gems (owner 2026-11-21: 'make the C gems like the skill gem,
-   one design for every C skill'): the same build with the C frame (cgem_frame.webp — interim ruby recolour until the owner's frame art,
-   GEM_PAGE_ART_PROMPTS_TH.md 13) round the C skill's icon; the glass shine is shared. */
-const gemBox=(art,q,c)=>{q=q||0;const Q=QUAL[q]||QUAL[0];return `<span class="sgem rq${q}${c?' cg':''}" style="--rc:${Q.c};--rg:${Q.g}"><span class="sgi">${art}</span><span class="rgl"></span><img class="sgs" src="${SGEM.s}" alt="" draggable="false"><img class="sgf" src="${c?SGEM.c:SGEM.f}" alt="" draggable="false"><span class="rsw"></span></span>`;};
-const sgemHtml=(k,q)=>{const o=q==null?sgo(k):null;return gemBox(skArt(k),q!=null?q:o?o.q:0);};
-const cgemHtml=(k,q)=>gemBox(skArt(k)||`<img src="assets/icons/${HERO}/${k}.webp" alt="">`,q!=null?q:(D.own[k]||{}).q||0,1);
+/* glass shine (owner 2026-11-21, after the C-frame prompt: 'just this shine is already pretty — but turn its facets so the gems are not all
+   the same'): his shine (prompt 12) is split into a fixed highlight (light stays upper left, cshine_hl) and the rim + facets (cshine_fc), which
+   turn −42…+42° and / or mirror across the light's diagonal per gem (fcv: from the skill key, so a gem always looks the same).
+   tools/gems/shine_split.py makes both 512² pictures (rim circle r 236 at the centre). Skill gems keep the moonstone frame on top; C gems are
+   frameless glass orbs (.cg) with a thin dark outline. The rarity light (rq0–4) works on both. */
+const SGEM={f:PG+'sgem_frame.webp',h:PG+'cshine_hl.webp',fc:PG+'cshine_fc.webp'};
+const fcv=k=>{let h=7;for(const ch of String(k||''))h=(h*31+ch.charCodeAt(0))|0;h=Math.abs(h);
+  return `--fa:${((h%13)-6)*7}deg;--fmx:${(h>>5)&1?'rotate(45deg) scaleY(-1) rotate(-45deg)':'scale(1)'}`;};
+const gemBox=(art,q,c,k)=>{q=q||0;const Q=QUAL[q]||QUAL[0];return `<span class="sgem rq${q}${c?' cg':''}" style="--rc:${Q.c};--rg:${Q.g};${fcv(k)}"><span class="sgi">${art}</span><span class="rgl"></span>`
+  +`<img class="sgs" src="${SGEM.fc}" alt="" draggable="false"><img class="sgh" src="${SGEM.h}" alt="" draggable="false">${c?'':`<img class="sgf" src="${SGEM.f}" alt="" draggable="false">`}<span class="rsw"></span></span>`;};
+const sgemHtml=(k,q)=>{const o=q==null?sgo(k):null;return gemBox(skArt(k),q!=null?q:o?o.q:0,0,k);};
+const cgemHtml=(k,q)=>gemBox(skArt(k)||`<img src="assets/icons/${HERO}/${k}.webp" alt="">`,q!=null?q:(D.own[k]||{}).q||0,1,k);
 const skArt=k=>{try{const a=G('artFor'),ic=G('iconSVG'),sk=G('SKILLS')[k];return (a&&a(k))||(ic&&sk&&ic(sk.icon))||'';}catch(e){return '';}};
 function node(x,y,kind,inner,cls,title,onclick,icls,art){const el=document.createElement('div');const ak=ART[kind]||kind;let s=SZ[kind];let c=CUP[ak],src=`${BD}sock_${ak}.webp`,gk=ak==='main'?1.18:1.05;
   let sz=s;
@@ -715,7 +728,7 @@ function render(keepInfo){const S=G('SKILLS');if(!S)return;
   MAIN.forEach((p,i)=>{const k=D.sock[i],open=sockOpen(i),cs=open?'open':cvState('p'+i),pid='p'+i;
     const o=k&&D.own[k];
     const el=node(p.x,p.y,'main',k?cgemHtml(k):'','mn '+(open?'':cs==='lv'||!TL?'lock ':'pg wd '+(cs==='rdy'?'rdy ':''))+(sel&&(sel.sock===i||sel.carve===pid)?'sel':''),
-      open?(k?S[k].name:TL?'หลุมเจม C ของชั้นนี้':'ช่องเจมหลัก'):cs==='lv'?`เปิดที่ Lv ${SOCK_LV[i]}`:`${hole(pid).nm} · ยังไม่ได้สลัก — แตะเพื่อดูของที่ต้องส่ง`,()=>clickSock(i),k?'sg':'',HOLE(p)||LAND[i]);
+      open?(k?S[k].name:TL?'หลุมเจม C ของชั้นนี้':'ช่องเจมหลัก'):cs==='lv'?`เปิดที่ Lv ${SOCK_LV[i]}`:`${hole(pid).nm} · ยังไม่ได้สลัก — แตะเพื่อดูของที่ต้องส่ง`,()=>clickSock(i),k?'sg cgi':'',HOLE(p)||LAND[i]);
     if(cs==='lv')el.insertAdjacentHTML('beforeend',`<div class="lk">🔒 Lv ${SOCK_LV[i]}</div>`);else if(!open)el.insertAdjacentHTML('beforeend',cvp(cs));
     if(o&&open)el.insertAdjacentHTML('beforeend',`<span class="lvd">Lv ${o.lv}</span>`);
     MODS[i].forEach((q,j)=>{if(!q||cs==='lv'||(!TL&&(!open||!k)))return;   /* round board: an empty / locked main star shows no side stars; a tier above your level is a ghost */
