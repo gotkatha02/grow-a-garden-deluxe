@@ -238,7 +238,7 @@ class KiCore{constructor(){this.t=0;this.layer='none';this.tk=0;this.h=0;}draw()
     /* yata mirror expiry */
     const M=KI.mirror;if(M&&M.until<gameTime){KI.mirror=null;if(kL('kbShards')){for(const e of kNear(M.x,M.y,KB.kbShards.R))kHit(e,kLv(KB.kbShards.dmg,'kbShards'),'kbShards');kFireBurst(M.x,M.y,KB.kbShards.R,KIC.moon);}}
     /* tsukuyomi's night */
-    const N=KI.night;if(N){if(N.until<gameTime){KI.night=null;if(N.rise){addFx(new KiPillar({x:player.x,y:player.y,w:60,life:.6}));for(const e of kNear(player.x,player.y,KB.kbMoonrise.R))kHit(e,KB.kbMoonrise.dmg,'kbMoonrise',{big:true});kFireBurst(player.x,player.y,KB.kbMoonrise.R,KIC.moon);shake(3);}}
+    const N=KI.night;if(N){if(N.until<gameTime){KI.night=null;if(N.rise){if(!kiV('moonrise',player.x,player.y))addFx(new KiPillar({x:player.x,y:player.y,w:60,life:.6}));for(const e of kNear(player.x,player.y,KB.kbMoonrise.R))kHit(e,KB.kbMoonrise.dmg,'kbMoonrise',{big:true});kFireBurst(player.x,player.y,KB.kbMoonrise.R,KIC.moon);shake(3);}}
       else if((N.tk+=dt)>=1){N.tk=0;skyDarkT=Math.max(skyDarkT||0,.4);for(const e of kNear(player.x,player.y,KB.kbNight.R)){addFx(new KiPillar({x:e.x,y:e.y}));kHit(e,N.dmg,'kbNight');applyCC(e,{slow:1.2});}}}
     /* shield expiry */
     if(KI.shieldUntil<gameTime)KI.shield=0;
@@ -293,9 +293,9 @@ function mkKaBurst(c){return kCast({key:'kaBurst',name:'Tail Burst',speed:1.6,f:
   for(const e of kNear(player.x,player.y,KB.kaBurst.R))kHit(e,m,'kaBurst',{big:true,knock:[angTo(e),140]});if(!kiV('tailBurst',KB.kaBurst.R,n))kFireBurst(player.x,player.y,KB.kaBurst.R);shake(2.6);stop(60);
   if(n)addFx(new DText({x:player.x,y:player.y,z:100,text:'TAILS ×'+n,color:KIC.fire,size:13,life:.8}));if(kL('kaAfterglow'))setFxTimer(.1,()=>kTail(kLv(KB.kaAfterglow.back,'kaAfterglow')));}});}
 function mkKaVeil(c){return kCast({key:'kaVeil',name:'Foxfire Veil',f:()=>{addBuff('kaVeil',KB.kaVeil.T);kFireBurst(player.x,player.y,KB.kaVeil.R);}});}
-function mkKaInferno(c){return buffAct({key:'kaInferno',name:'Nine-Tailed Inferno',speed:1.4,glow:KIC.fire,events:tP=>{const ev=[{t:0,f:()=>kiV('infernoStart',tP)}];for(let i=0;i<9;i++)ev.push({t:tP+i*.08,f:()=>{const L=kNear(player.x,player.y,KB.kaInferno.R).sort((a,b)=>dist(a,player)-dist(b,player));if(!L.length)return;const e=L[i%L.length];
+function mkKaInferno(c){return buffAct({key:'kaInferno',name:'Nine-Tailed Inferno',speed:1.4,glow:KIC.fire,events:(tP,s)=>{const TT=seqTotal(s)-.02,sp=Math.min(.08,(TT-tP)/9);const ev=[{t:0,f:()=>kiV('infernoStart',tP)}];for(let i=0;i<9;i++)ev.push({t:tP+i*sp,f:()=>{const L=kNear(player.x,player.y,KB.kaInferno.R).sort((a,b)=>dist(a,player)-dist(b,player));if(!L.length)return;const e=L[i%L.length];
     addFx(new KiBeam({x:player.x,y:player.y,phi:angTo(e),L:dist(player,e),col:KIC.fire,w:8}));kHit(e,kLv(KB.kaInferno.dmg,'kaInferno'),'kaInferno',{big:true});kPow(e,true);}});
-    ev.push({t:tP+.8,f:()=>{if(kL('kaCelestial')){KI.tails=KI_BAL.tails.cap;addBuff('kaCelestial',KB.kaCelestial.T);}}});return ev;}});}
+    ev.push({t:TT,f:()=>{if(kL('kaCelestial')){KI.tails=KI_BAL.tails.cap;addBuff('kaCelestial',KB.kaCelestial.T);kiV('celestialOn');}}});return ev;}});}
 
 /* ---------- B · Moon Mirror Priestess ---------- */
 function kBeamLine(x,y,phi,L,w,m,key,o={}){addFx(new KiBeam({x,y,phi,L,w:w/2,col:o.col||KIC.moon}));for(const e of kLine(x,y,phi,L,w))kHit(e,m,key,{big:o.big});

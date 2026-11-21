@@ -66,9 +66,9 @@ function tail(x,y,L,w,p,a=1){ctx.save();ctx.globalAlpha=a*.7;ctx.fillStyle=p[1];
    2. CAST · HIT · THE FOUR THINGS EVERYTHING IS BUILT FROM (orb, shot, beam, sky pillar)
    --------------------------------------------------------------------- */
 KIV.cast=function(o,tP,a){ensure();const br=kCol(o.key),p=br==='B'?MN:br==='A'?FP:GD,T=rt(tP);ring({x:player.x,y:player.y,follow:1,r0:58,r1:14,w:4,pal:p,life:Math.max(.12,T),ease:eI,segs:4,gap:.35});
-  const k=o.key;if(k==='kcTsukuyomi')sprite({n:'moonGod',layer:'ground',follow:player,oy:-8,z:0,ay:.97,w:210,life:T+.75,fi:.12,fo:.45,s0:.55,s1:1,pop:Math.max(.2,T),a:.92,under:'#28244e',ua:.3});
+  const k=o.key;if(k==='kcTsukuyomi'&&!KIV.__nogod)sprite({n:'moonGod',layer:'ground',follow:player,oy:-8,z:0,ay:.97,w:210,life:T+.75,fi:.12,fo:.45,s0:.55,s1:1,pop:Math.max(.2,T),a:.92,under:'#28244e',ua:.3});
   if(k==='kbBeam'||k==='kcTsukuyomi'||k==='kbMirror')sprite({follow:player,layer:'top',life:T+.22,fi:.05,fo:.12,paint:f=>{const q=tip(),[x,y]=P(q[0],q[1],q[2]),s=cl(f.t/Math.max(.1,T),0,1);art('mirror',x,y,(k==='kcTsukuyomi'?30:20)*(.5+.5*s),{under:'#28244e',ua:.4});if(f.t>T)star(x,y-3,22*(1-(f.t-T)/.22),'#c8d4ff',f.t*5);}});
-  if(k==='kcTamamo'||k==='kaInferno'||k==='kcAwaken')sprite({n:'tails',layer:'ground',follow:player,oy:-6,z:6,ay:.96,w:150,life:T+.5,fi:.1,fo:.3,s0:.4,s1:1,pop:Math.max(.2,T),under:'#4a0c30',ua:.25});};
+  if((k==='kcTamamo'||(k==='kaInferno'&&!KIV.__notails)||(k==='kcAwaken'&&!(KIV.clipOk&&KIV.clipOk('awaken'))))&&1)sprite({n:'tails',layer:'ground',follow:player,oy:-6,z:6,ay:.96,w:150,life:T+.5,fi:.1,fo:.3,s0:.4,s1:1,pop:Math.max(.2,T),under:'#4a0c30',ua:.25});};
 KIV.release=function(o){const q=tip(),br=kCol(o.key),p=br==='B'?MN:br==='A'?FP:GD;addFx(new KGlint({x:q[0],y:q[1],z:q[2],s:15,col:p[2],life:.18}));};
 /* basic attack — she is a ranged caster: fox fire gathers at the head of the staff during the wind-up and is thrown from there */
 KIV.staffStart=function(o,tC){const T=rt(tC);sprite({follow:player,layer:'top',life:T+.02,fi:.03,fo:.02,paint:f=>{const q=tip(),[x,y]=P(q[0],q[1],q[2]),k=cl(f.t/Math.max(.05,T),0,1);art('wispP'+(((f.t*18)|0)%2),x,y+2,6+11*k,{ay:.74,under:FP[0],ua:.35});}});};
@@ -148,7 +148,7 @@ KIV.meteorDrop=function(x,y,delay){fall({x,y,delay,fall:.34,H:280,slant:50,pal:F
 KIV.tailBurst=function(R,n){const x=player.x,y=player.y;sprite({n:'tails',layer:'ground',follow:player,oy:-6,z:6,ay:.96,w:150+6*n,life:.55,fi:.02,fo:.3,s0:.5,s1:1.08,pop:.14,under:FP[0],ua:.25});fireBurst(x,y,R,FP,1);};
 /* Nine-Tailed Inferno: the fan opens during the wind-up (KIV.cast), then one beam per tail */
 KIV.infernoStart=function(tP){INF={n:0,t0:gameTime};sprite({follow:player,layer:'top',life:rt(tP+9*.08)+.3,fi:.05,fo:.2,paint:f=>{const lit=Math.min(9,Math.floor(f.t/Math.max(.02,rt(tP))*9));for(let i=0;i<lit;i++){const q=tailTip([4,3,5,2,6,1,7,0,8][i]),[x,y]=P(q[0],q[1],q[2]);art('wispP'+((i+((f.t*12)|0))%2),x,y,13,{ay:.8});}}});
-  sprite({n:'tails',layer:'ground',follow:player,oy:-6,z:6,ay:.96,w:156,life:rt(tP+9*.08)+.45,delay:rt(tP),fi:.01,fo:.35,under:FP[0],ua:.25});};
+  if(!KIV.__notails)sprite({n:'tails',layer:'ground',follow:player,oy:-6,z:6,ay:.96,w:156,life:rt(tP+9*.08)+.45,delay:rt(tP),fi:.01,fo:.35,under:FP[0],ua:.25});};
 /* Starfall: every star is on its way down before its hit */
 KIV.starDrop=function(t,delay){fall({e:t,x:t.x,y:t.y,delay,fall:.22,H:250,slant:34,pal:ST,w:12,draw:(sx,sy,u,tt)=>{tail(sx,sy-4,84,6,ST);star(sx,sy,17,ST[1],tt*9);star(sx,sy,11,'#fffbe0',tt*9);}});};
 /* Lunar Circle / Moonlight Form / Tsukuyomi's Night / Inari's Grace / Awakening: what happens at the moment of the cast */
@@ -166,7 +166,7 @@ function ktDelay(t,f){if(typeof setFxTimer==='function')setFxTimer(t,f);else set
    4. WHAT IS DRAWN ALL THE TIME (KiGround.draw / KiTop.draw)
    --------------------------------------------------------------------- */
 const hash=(a,b)=>{const s=Math.sin(a*12.9898+b*78.233)*43758.5453;return s-Math.floor(s);};
-let MIR=null;
+let MIR=null,AWK=null;
 function orbit(n,R,ry,z,spd,t,front,draw){for(let i=0;i<n;i++){const an=t*spd+i*TAU/n,sn=Math.sin(an);if((sn>=0)!==front)continue;const [x,y]=P(player.x+Math.cos(an)*R,player.y+sn*ry,z+(player.z||0));draw(x,y,i,sn,an);}}
 function sharedRings(t,front){
   if(KI.shield>0&&KI.shieldUntil>gameTime)orbit(3,30,19,34,1.5,t,front,(x,y,i,sn)=>art('ofuda',x,y+3*Math.sin(t*3+i),11+1.5*sn,{rot:.12*Math.sin(t*2+i),under:GD[0],ua:.4}));
@@ -182,7 +182,7 @@ KIV.ground=function(g){ensure();const t=gameTime,T=KI.torii,C=KI.circle;
   for(const p of KI.petals){const a=cl((p.until-gameTime)/.4,0,1);for(let i=0;i<5;i++){const h1=hash(p.x+i,p.y),h2=hash(p.y,p.x+i*3),[x,y]=P(p.x+(h1-.5)*p.R*1.5,p.y+(h2-.5)*p.R*1.1,0);art('petal'+(i%3),x,y,9,{flat:1,rot:h1*6,a:a*.9});}}
   for(const l of KI.lanterns){const [x,y]=P(l.x,l.y,0);ctx.save();ctx.globalAlpha=.3;ctx.fillStyle='#2a1a1a';ctx.beginPath();ctx.ellipse(x,y,9,3.6,0,0,TAU);ctx.fill();ctx.globalAlpha=.3+.08*Math.sin(t*6+l.x);ctx.fillStyle='#ffb070';ctx.beginPath();ctx.ellipse(x,y,22,9,0,0,TAU);ctx.fill();ctx.restore();}
   const M=KI.mirror;if(M){const [x,y]=P(M.x,M.y,0);ctx.save();ctx.globalAlpha=.28;ctx.fillStyle='#14102a';ctx.beginPath();ctx.ellipse(x,y,15,6,0,0,TAU);ctx.fill();ctx.restore();}
-  if(kAwake()){const [x,y]=P(player.x,player.y-6,6+(player.z||0));art('tails',x,y,128,{ay:.96,a:.62+.08*Math.sin(t*5),rot:.03*Math.sin(t*2.2),under:FP[0],ua:.2});}
+  if(kAwake()&&!(AWK&&AWK.end==null&&AWK.t<1e9&&fx.includes(AWK))){const [x,y]=P(player.x,player.y-6,6+(player.z||0));art('tails',x,y,128,{ay:.96,a:.62+.08*Math.sin(t*5),rot:.03*Math.sin(t*2.2),under:FP[0],ua:.2});}
   if(hasBuff('kbMoonlight')){const [x,y]=P(player.x,player.y-4,74+(player.z||0));art('moonC',x,y,58,{a:.7,rot:-.5,under:MN[0],ua:.25});}
   sharedRings(t,false);return true;};
 KIV.top=function(tp){const t=gameTime,pz=(player.z||0)+92*(typeof CHAR_SCALE==='number'?CHAR_SCALE:1),[x,y]=P(player.x,player.y,pz);
@@ -200,4 +200,40 @@ KIV.top=function(tp){const t=gameTime,pz=(player.z||0)+92*(typeof CHAR_SCALE==='
   /* Tsukuyomi's Night: the sky goes dark and the moon she called hangs over the field */
   const N=KI.night;if(N){ctx.save();ctx.fillStyle='rgba(10,12,40,.18)';ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height);ctx.restore();const q=moonPos(),[mx,my]=P(q[0],q[1],q[2]),a=cl((gameTime-(N.t0||0))/.5,0,1)*cl((N.until-gameTime)/.5,0,1);art('moonF',mx,my-18*(1-a),92,{a});}
   return true;};
+
+/* ---------------------------------------------------------------------
+   5. VIDEO CLIPS (owner 2026-11-21: his 5 videos on black, luminance-keyed strips in assets/fx/kitsune, 8 cols, 24 fps,
+      every 2nd video frame). Celestial Fox (end of Inferno), Nine-Tailed Inferno (ground loop), Tsukuyomi Descends
+      (god behind her, the rays line up with the beam), Nine-Tail Awakening (intro 0–17 then loop 18–58 while the buff
+      lasts), Moonrise (moon + light column at the end of Tsukuyomi's Night, on the damage frame).
+   --------------------------------------------------------------------- */
+const CLIP={};
+function clipDef(k,n,cw,ch){const im=new Image();im.src='assets/fx/kitsune/clip_'+k+'.webp?v=1';CLIP[k]={im,n,cw,ch};}
+clipDef('celestial',54,240,225);clipDef('inferno',61,288,158);clipDef('tsukuyomi',56,224,239);clipDef('awaken',59,256,173);clipDef('moonrise',51,224,239);
+const clipOk=k=>{const c=CLIP[k];return c&&c.im.complete&&c.im.naturalWidth>0;};
+class KiClip{constructor(o){Object.assign(this,{t:0,i0:0,fps:24,layer:'ground',ay:.97,fi:.12,fo:.35,a:1,oy:0},o);this.c=CLIP[o.k];
+    this.T=this.life!=null?this.life:((this.last!=null?this.last+1:this.c.n)-this.i0)/this.fps;}
+  update(dt){this.t+=dt;if(this.until&&!this.end&&!this.until())this.end=this.t;return this.end!=null?this.t-this.end<this.fo:this.until?true:this.t<this.T;}
+  frame(){const c=this.c,f=this.i0+Math.floor(this.t*this.fps);if(this.loop){const [a,b]=this.loop;return f<=b?f:a+((f-a)%(b-a+1));}return Math.min(this.last!=null?this.last:c.n-1,f);}
+  draw(){const c=this.c,im=c.im;if(!im.complete||!im.naturalWidth)return;const i=this.frame(),sx=(i%8)*c.cw,sy=Math.floor(i/8)*c.ch;
+    const ox=this.follow?player.x:this.x,oy=(this.follow?player.y:this.y)+this.oy,[x,y]=P(ox,oy,0),W=this.w,H=W*c.ch/c.cw;
+    let a=this.a*Math.min(1,this.t/Math.max(.01,this.fi));if(this.end!=null)a*=1-(this.t-this.end)/this.fo;else if(!this.until)a*=cl((this.T-this.t)/this.fo,0,1);
+    if(a<=0)return;ctx.save();ctx.globalAlpha*=a;ctx.drawImage(im,sx,sy,c.cw,c.ch,x-W/2,y-H*this.ay,W,H);ctx.restore();}}
+KIV.clipOk=clipOk;
+/* Celestial Fox: the spirit fox flies round her and lands, then breaks into sparks */
+KIV.celestialOn=function(){if(!clipOk('celestial'))return false;addFx(new KiClip({k:'celestial',follow:1,oy:-4,w:210,ay:.95,fi:.2,fo:.3}));return true;};
+/* Nine-Tailed Inferno: the burning pinwheel lies on the ground under her for the whole ultimate */
+function infernoClip(tP){if(!clipOk('inferno'))return false;const R=KB.kaInferno.R;addFx(new KiClip({k:'inferno',follow:1,w:R*2.05,ay:.55,life:rt(tP+9*.08)+.9,loop:[0,60],fi:.25,fo:.45,a:.82}));return true;}
+/* Tsukuyomi Descends: the god rises behind her; the rays of the mirror (strip frame ~26) come on the release frame */
+function tsukuClip(T){if(!clipOk('tsukuyomi'))return false;const i0=Math.max(0,Math.round(26-T*24));addFx(new KiClip({k:'tsukuyomi',follow:1,oy:-10,w:215,ay:.97,i0,last:47,fi:i0?.1:.2,fo:.45,a:.95}));return true;}
+/* Nine-Tail Awakening: the tails open behind her, then sway for as long as the buff lasts */
+function awakenClip(){if(!clipOk('awaken'))return false;AWK=new KiClip({k:'awaken',follow:1,oy:-6,w:230,ay:.93,loop:[18,58],until:()=>kAwake(),fi:.15,fo:.5,a:.92});addFx(AWK);return true;}
+/* Moonrise: the moon of the night comes down as a column of light on the damage frame */
+KIV.moonrise=function(x,y){if(!clipOk('moonrise'))return false;addFx(new KiClip({k:'moonrise',x,y,w:KB.kbMoonrise.R*2.1,ay:.95,fi:.08,fo:.5}));shake(3);return true;};
+{const c0=KIV.cast;KIV.cast=function(o,tP,a){const k=o.key,T=rt(tP);
+   if(k==='kcTsukuyomi'&&tsukuClip(T)){const keep=KIV.__nogod;KIV.__nogod=1;try{return c0.call(this,o,tP,a);}finally{KIV.__nogod=keep;}}
+   if(k==='kaInferno'&&clipOk('inferno')){KIV.__notails=1;try{return c0.call(this,o,tP,a);}finally{KIV.__notails=0;}}
+   return c0.call(this,o,tP,a);};}
+{const i0=KIV.infernoStart;KIV.infernoStart=function(tP){const ok=infernoClip(tP);KIV.__notails=ok?1:0;try{return i0.call(this,tP);}finally{KIV.__notails=0;}};}
+{const a0=KIV.awakenOn;KIV.awakenOn=function(){awakenClip();return a0.call(this);};}
 })();
