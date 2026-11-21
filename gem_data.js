@@ -97,6 +97,16 @@ const CARVE={land:['vik','grk','egy','jpn','azt'],
      {z:120000,it:[['ma',60],['mb',15],['tfrag3',16],['tess',36],['sore',1]]},
      {z:180000,it:[['ma',70],['mb',18],['tfrag4',10],['tess',45],['sore',1]]},
      {z:250000,it:[['ma',80],['mb',20],['tfrag4',14],['tess',55],['sore',2]]}]};
-window.GEMDATA={MUT,SUP,LINES,QUAL,RANK_P,GEM_CAP,BREAK,COST,gemPow,DROPS,R,CARVE,
+/* extracting a skill into a skill gem (owner 2026-11-21: 'every skill must be extracted into a gem before it goes on the base, so it
+   is not too easy'). A learned Basic / A / B skill is distilled once into a gem (a raw totem stone is the vessel); the gem then goes into
+   any open skill hole and can be taken out / moved freely. Band = the character level that skill's first level needs (SKREQ).
+   The first extraction is free, so the free first skill hole is still a free try. */
+const EXTRACT=[ // [skill learnable up to this level, cost]
+  [9,  {z:1500, it:[['tstone1',1],['tess',3]]}],
+  [19, {z:4000, it:[['tstone1',1],['tess',6]]}],
+  [29, {z:9000, it:[['tstone1',2],['tess',10]]}],
+  [39, {z:16000,it:[['tstone2',1],['tess',14]]}],
+  [999,{z:28000,it:[['tstone2',2],['tess',20]]}]];
+window.GEMDATA={MUT,SUP,LINES,QUAL,RANK_P,GEM_CAP,BREAK,COST,gemPow,DROPS,R,CARVE,EXTRACT,
   MUTD:Object.fromEntries(MUT.map(s=>[s[0],s])),SUPD:Object.fromEntries(SUP.map(s=>[s[0],s])),LND:Object.fromEntries(LINES.map(s=>[s[0],s]))};
 })();

@@ -118,6 +118,14 @@ def carve_part():
     for i,nm in enumerate(['bear','owl','wolf','eagle','thunderbird']):
         row(f'pole tier {i+1} {nm} (+ inner mutation)',PLV[i],P[i]);row('  its outer support hole',PLV[i],Q[i],2)
     print(f'  all 29 carvings: essence {tot["tess"]:,} · zeny {tot["z"]:,} (without market buys) · ~{tot["h"]:.0f} h of farming in total')
+    # skill gems (gem_data.js EXTRACT): one extraction per skill before it can sit in a skill hole; the first one is free
+    EXT=[(9,1500,[('tstone1',1),('tess',3)]),(19,4000,[('tstone1',1),('tess',6)]),(29,9000,[('tstone1',2),('tess',10)]),(39,16000,[('tstone2',1),('tess',14)]),(99,28000,[('tstone2',2),('tess',20)])]
+    print('SKILL GEMS (extract a learned skill once before it goes on the base; first one free) — by the level the skill is learned at')
+    lo=1
+    for hi,z,it in EXT:
+        d=dict(it);buy=sum(PRICE.get(k,0)*v for k,v in it);lv=max(10,min(hi,50))
+        h=max(d.get('tess',0)/(.03*KPH),(z+buy)/((10+3*lv)*KPH))
+        print(f'  skill learned Lv {lo:2d}–{min(hi,99):2d}: {" + ".join(f"{k} ×{v}" for k,v in it)} + {z:,}z  → ~{h*60:3.0f} min');lo=hi+1
 
 a=sys.argv[1:] or ['refine','gems']
 if 'carve' in a: carve_part()
