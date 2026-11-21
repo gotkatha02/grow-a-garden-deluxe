@@ -148,7 +148,40 @@ Style: clean cartoon highlights matching the attached game art — crisp shapes 
 - ข้อ 12: alpha = ความสว่าง (พื้นดำ → โปร่งใส) · ย่อ/เลื่อนให้วงตรงกับรูของข้อ 11 · assets/gems/page/sgem_shine.webp
 - โค้ด: แทนเงา CSS ของเจมสกิล (.tgN .in.ic บนหลุมสกิล, #tgSkills .gx, .tgSkG) ด้วย 3 ชั้น ไอคอนในรู × win · เงาขอบในด้วย radial-gradient · shine · frame · ส่งรูปเทียบก่อน/หลังให้เจ้าของ
 
-## 13. เจม C: กรอบเจม 1 รูป — **ยกเลิก** (เจ้าของ 2026-11-21 ส่งรูปประกายแก้วข้อ 12 กลับมา: "ใส่แค่นี้ก็สวยแล้ว แต่อาจจะทำให้มันเปลี่ยนมุมหยักให้ไม่เหมือนกัน" → เจม C = ลูกแก้ว: ไอคอน + ประกายแก้วข้อ 12 ไม่มีกรอบ · เหลี่ยมคริสตัลหมุนต่างกันทุกเม็ด (TOTEM_GEM_SYSTEM_TH.md ข้อ 1e) · prompt ด้านล่างเก็บไว้เผื่ออยากได้กรอบภายหลัง)
+## 13–14 (ใหม่). เจม C เป็นเพชรแปดเหลี่ยม (เจ้าของ 2026-11-21 หลังเห็นลูกแก้ว: "อยากได้ให้เหมือนเพชร อันนี้กลมไป ขอ prompt") — **ส่ง prompt ให้แล้ว รอรูป**
+ดีไซน์: เพชรแปดเหลี่ยมด้านบนแบน มองจากด้านบน · หน้าตัดตรงกลาง (table) เป็นรูแปดเหลี่ยม ~2/3 ของความกว้าง = ช่องไอคอนสกิล · เหลี่ยมเพชรสามเหลี่ยม/ว่าวรอบนอก ขาวฟ้า แสงจากซ้ายบน ประกายรุ้งเล็กน้อย · ขอบทองบางรอบนอกและรอบรู · ไม่มีแสงสีรอบนอก (โค้ดใส่สีตามระดับเอง)
+
+### 13. ตัวเพชร (ตรงกลางเป็นรู) — แนบ: รูปกองไฟ + กรอบเจมสกิลมูนสโตน (ข้อ 11) + รูปประกายแก้ว (ข้อ 12)
+```
+Game UI art for a cartoon fantasy RPG: an EMPTY cut gemstone frame — a big octagonal diamond seen straight from the front (a top view of a brilliant-cut gem), whose flat centre facet (the table) is a hole, so that a skill icon can be shown inside it later. One object, centred, on a fully transparent background with empty space on every side. Square image 1024×1024, the gem about 880 px wide.
+
+Shape: a regular octagon with a flat top side (eight straight sides of equal length, corners cut evenly), with a sharp clean silhouette. The table hole in the middle is also a regular octagon with a flat top side, about two thirds of the gem's width, centred. Between the table and the outer edge, the crown is cut into bright triangular and kite-shaped facets that radiate from the table to the edge, like a real diamond seen from above. The crystal is clear diamond: white and pale ice-blue, lit from the upper left, with small rainbow glints on a few facet edges, crisp facet lines and a few bright white sparkles on facet corners. A thin antique-gold edge runs round the outer silhouette and round the table hole.
+
+The table hole is COMPLETELY EMPTY: transparent, nothing drawn inside it — no picture, no glass, no colour, no shine. No coloured aura or halo outside the gem (the game adds its own light later).
+
+Style: friendly hand-painted chibi cartoon matching the attached game art and the attached gem pictures, thick clean dark-brown outline around the outer edge, cel shading with 2–3 flat tones, soft cartoon glow on the facets only, bright and warm. Not realistic, not painterly, not 3D. No text, no logo, no watermark.
+```
+
+### 14. ประกายบนหน้าตัดแปดเหลี่ยม (พื้นดำ, ไม่บังคับ) — แนบ: รูปกองไฟ + รูปข้อ 13
+```
+Game UI art for a cartoon fantasy RPG: ONLY the light reflections on the flat octagonal top facet (the table) of a cut diamond, to be laid on top of a skill icon so the icon looks sealed inside the gem. Square image 1024×1024 on a PURE BLACK background (#000000). The reflections sit inside a centred regular octagon with a flat top side, about 600 px wide — the same size and shape as the empty middle of the attached diamond.
+
+Draw only light, in white and very pale gold / ice-blue, nothing else:
+- one broad soft diagonal band of light across the upper-left part of the octagon, with a straight crisp edge, like light on a flat glass facet;
+- a thin bright line of light along the upper-left edges of the octagon and a softer one along the lower-right edges;
+- a few faint straight facet lines running in from the corners of the octagon, fading before the middle;
+- one small four-point star sparkle near the upper-left corner and a tiny round dot beside it.
+Keep the middle of the octagon mostly black (empty) so the icon underneath stays clear. No outline, no border, no other shapes.
+
+Style: clean cartoon highlights matching the attached game art — crisp shapes with a soft cartoon glow, not realistic. No text, no logo, no watermark.
+```
+
+### หลังได้รูปข้อ 13–14 (สำหรับ Claude)
+- ข้อ 13: ตัดพื้นหลังถ้าไม่โปร่งใส · fit แปดเหลี่ยมของรูตรงกลาง (หรือวงในของขอบทอง) → เจาะรูให้โปร่งใสด้วยเรขาคณิต · ย่อให้ apothem ของรู = 155 และขอบนอก ≈ 232 ใน 512² (เท่าเพชรชั่วคราว) → assets/gems/page/cgem_oct0.webp · ถ้าเจ้าของเจนมาหลายแบบ ใส่เป็น cgem_oct1… · ตั้ง `OCT_N` ใน totem_gems.js = จำนวนรูป (แต่ละเม็ดยังกลับด้านได้อีก ×2) แล้วลบไฟล์ชั่วคราวที่เกิน
+- ข้อ 14: alpha = ความสว่าง (พื้นดำ → โปร่งใส) · ย่อให้แปดเหลี่ยมเต็มรูป 512² (apothem 256) → assets/gems/page/cgem_tshine.webp (ไม่มีข้อ 14 = ใช้ของชั่วคราวต่อ)
+- bump V ใน sw.js (รูปชื่อเดิม) · เช็กภาพ: เสาทุกระดับ, กระเป๋าแท็บเจม C, ช่องรายละเอียด, ผลแกะในศาล, หมาป่า + แมว
+
+## 13 (เดิม). เจม C: กรอบเจม 1 รูป — **ยกเลิก** (เจ้าของ 2026-11-21 ส่งรูปประกายแก้วข้อ 12 กลับมา: "ใส่แค่นี้ก็สวยแล้ว แต่อาจจะทำให้มันเปลี่ยนมุมหยักให้ไม่เหมือนกัน" → เจม C = ลูกแก้ว: ไอคอน + ประกายแก้วข้อ 12 ไม่มีกรอบ · เหลี่ยมคริสตัลหมุนต่างกันทุกเม็ด (TOTEM_GEM_SYSTEM_TH.md ข้อ 1e) · prompt ด้านล่างเก็บไว้เผื่ออยากได้กรอบภายหลัง)
 เดิม (เจ้าของ 2026-11-21: "เจมเสริมสกิลสาย C ทำให้ดีไซน์เป็นแบบที่ทำเมื่อกี้ จะได้ทำทีเดียวใช้ได้ทุกสกิลของสาย C เลย")
 ดีไซน์: เจม C = "พี่ใหญ่" ของเจมสกิล — รูปทรงกลม **รูตรงกลางขนาดเท่ากัน** (ประกายแก้วข้อ 12 ใช้ร่วมกันได้ ไม่ต้องเจนใหม่) แต่เป็น **คริสตัลแดงทับทิมในเรือนทองโบราณ** มีเขี้ยวทอง 4 ตัวจับเม็ด และปลายแหลมทอง 4 ทิศเหมือนดาวเข็มทิศ ให้ดูสำคัญกว่าเจมสกิล · สีแสงตามระดับความหายาก (ขาว เขียว ฟ้า ม่วง ทอง) โค้ดวาดเอง ในรูปไม่ต้องมีแสง · ตอนนี้ในเกมใช้กรอบมูนสโตนย้อมแดงแทนไปก่อน (assets/gems/page/cgem_frame.webp)
 
