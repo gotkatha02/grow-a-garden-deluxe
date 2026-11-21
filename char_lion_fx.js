@@ -67,7 +67,8 @@ class LxWatch{constructor(){this.t=0;this.layer='none';this.seen=new WeakSet();t
     return true;}}
 function lxEnsure(){if(!fx.some(f=>f instanceof LxWatch))addFx(new LxWatch());}
 
-function installLionFx(){if(CHAR!=='lion')return;if(window.TV)TV.toonify();LXF.forEach(lxImg);lxEnsure();
+function installLionFx(){if(CHAR!=='lion')return;if(!/[?&]vfx3=0/.test(location.search))return;   /* 2026-11-21: the painted toon look only with ?vfx3=0 — lion_vfx.js (SVG + code VFX) is the default */
+  if(window.TV)TV.toonify();LXF.forEach(lxImg);lxEnsure();
   for(const k in LX_CAST){const f=LX_CAST[k],s=SKILLS[k];if(!f||!s||!s.make||s._lx)continue;const mk=s.make;
     s.make=function(c){const a=mk.apply(this,arguments);if(a){try{lxEnsure();const cc=c||{};setFxTimer(.12,()=>f(cc));}catch(e){}}return a;};s._lx=1;}
   if(window._lxHook)return;window._lxHook=1;

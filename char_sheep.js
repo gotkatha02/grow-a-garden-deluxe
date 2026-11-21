@@ -425,7 +425,7 @@ function installSheep(){
   /* flat TAL bonuses for magic hits */
   const flat=(e,o)=>{const k=o&&(o.skill||(o.auto?'basic':null))||window.SKCTX,br=sBranch(k);let b=0;
     if(hasBuff('sbSong'))b+=sLv(SB.sbSong.tal,'sbSong');if(SHP.colchis)b+=SB.sbColchis.tal;
-    if(br==='B'){if(sL('sbLore'))b+=sLv(SB.sbLore.tal,'sbLore');if(sL('sbHarmony')){let n=0;for(const q in player.buffs)if(!q.startsWith('db')&&q!=='rhSA')n++;b+=n*sLv(SB.sbHarmony.per,'sbHarmony');}}
+    if(br==='B'){if(sL('sbLore'))b+=sLv(SB.sbLore.tal,'sbLore');if(sL('sbHarmony')){let n=0;for(const q in player.buffs)if(!q.startsWith('db')&&!q.startsWith('sl_')&&q!=='rhSA')n++;b+=n*sLv(SB.sbHarmony.per,'sbHarmony');}}
     if(e){if(sBound(e))b+=SP_BAL.enc.tal+(sL('sbBinder')?sLv(SB.sbBinder.tal,'sbBinder'):0);if(e.sleepT>gameTime)b+=SB.sbSleep.tal+(sL('scSlumber')?SB.scSlumber.tal:0);}
     return b;};
   window.jgHit=()=>0;window.jgCrit=()=>0;window.jgCritDmg=()=>0;window.jgDmgTaken=()=>1;

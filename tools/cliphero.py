@@ -3,6 +3,13 @@ usage: python3 -I tools/cliphero.py PLAN.json OUT.js PREFIX
 PLAN.json: {"height":230, "flip":true, "clips":{"idle":{"S":"a.mp4",...}, "walk":{...}, "attack":{...}, "buff":{...}},
             "attack":{"S":{"frames":[...],"contact":5}, ...}, "buff":{"S":{"frames":[...],"peak":6}, ...},
             "normalize":["walk/S"]}   # clips whose size changes (character walks toward the camera) get each frame rescaled
+Optional (2026-11-21, axolotl): "topFade":6 / "sideFade":60 (px faded at the top / left-right edges, default 28 — heads that touch the top need less,
+  water rings wider than the video fade out instead of ending in a straight cut),
+  "strict":{"buff/N":[16,17]} (frames keyed with a strict matte: light green-tinted rays / glow become transparent),
+  "attack":{"S":{...,"dur":[ms ×n]}} / "buff":{...,"dur":[...]} (frame times instead of the default 55/40/75 and 70),
+  "orb":true (sockets for attack AND buff = centre of the held cyan-blue orb / water burst; grip = the hand just behind it),
+  "feetFit":{"buff/N":[16,17]} (frames where the CAMERA zooms: each is scaled back by the width of the feet in the clip's first
+  frame ÷ its own, about the feet point — use it only where the stance does not change; the factors are printed).
 Keying: soft green matte + despill + speck removal (keeps the body and anything touching it, e.g. the sword).
 Idle / walk loops are found automatically (period of best self-match); hurt is made from the idle pose."""
 import sys, io, json, base64, math, subprocess, numpy as np
@@ -20,13 +27,17 @@ def read(path):
     raw = subprocess.run(['ffmpeg', '-v', 'error', '-i', path, '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-'], capture_output=True).stdout
     return np.frombuffer(raw, np.uint8).reshape(-1, h, w, 3)
 
-def key(fr, flip=None):
+TOPF = plan.get('topFade', 28); SIDEF = plan.get('sideFade', 28)
+def key(fr, flip=None, strict=False):
     flip = FLIP if flip is None else flip
     im = fr.astype(np.float32)
     k = np.median(np.concatenate([im[:8].reshape(-1, 3), im[:, :8].reshape(-1, 3), im[:, -8:].reshape(-1, 3)]), 0)
     ex = im[..., 1] - np.maximum(im[..., 0], im[..., 2]); kx = k[1] - max(k[0], k[2])
-    a = np.clip(1 - (ex - 18) / (kx * .55 - 18), 0, 1)          # tight matte: green-ish edge pixels go transparent
-    col = np.clip((im - (1 - a[..., None]) * k) / np.maximum(a, 1e-3)[..., None], 0, 255)
+    if strict:   # flash / ray frames: anything green-tinted, even pale, is background; colours are kept as they are
+        a = np.clip(1 - (ex - 6) / 24, 0, 1); col = im.copy()
+    else:
+        a = np.clip(1 - (ex - 18) / (kx * .55 - 18), 0, 1)          # tight matte: green-ish edge pixels go transparent
+        col = np.clip((im - (1 - a[..., None]) * k) / np.maximum(a, 1e-3)[..., None], 0, 255)
     mx = np.maximum(col[..., 0], col[..., 2]); col[..., 1] = np.minimum(col[..., 1], mx + 6)   # despill everywhere
     a[a < .08] = 0
     # speck removal: keep components that touch the main body
@@ -36,7 +47,10 @@ def key(fr, flip=None):
         keep = (lab == main) | np.isin(lab, [i + 1 for i, s in enumerate(sizes) if s > sizes.max() * .08])
         a = a * keep
     # fade near the video border so effects that leave the frame don't end in a hard line
-    H_, W_ = a.shape; m = 28; yy = np.minimum(np.arange(H_), H_ - 1 - np.arange(H_)); xx = np.minimum(np.arange(W_), W_ - 1 - np.arange(W_))
+    if strict:   # the white glow left round the orb: near-white pixels that are not inside / against the body go
+        wh = (col.min(-1) > 200) & (col.max(-1) - col.min(-1) < 40); body = (a > .5) & ~wh
+        a = np.where(wh & ~nd.binary_fill_holes(nd.binary_closing(body, iterations=2)), 0, a)   # only white enclosed by the body (orb highlights) stays
+    H_, W_ = a.shape; m = 28; yy = np.minimum(np.arange(H_) * m / max(1, TOPF), H_ - 1 - np.arange(H_)); xx = np.minimum(np.arange(W_), W_ - 1 - np.arange(W_)) * m / max(1, SIDEF)
     a = a * np.clip(np.minimum(yy[:, None], xx[None, :]) / m, 0, 1)
     # soften the outer fringe by one pixel
     er = nd.binary_erosion(a > .5, iterations=1); a = np.where((a > 0) & ~er, a * .7, a)
@@ -68,12 +82,20 @@ def period(masks, lo=8, hi=40):
         if d < best: best, bp = d, P
     return bp
 
-CACHE = {}
+CACHE = {}; RAW = {}
 FLIPDIRS = set(plan.get('flipDirs', DIRS if FLIP else []))
 def clip(path, d='S'):
     k = (path, d in FLIPDIRS)
-    if k not in CACHE: CACHE[k] = [key(f, d in FLIPDIRS) for f in read(path)]
+    if k not in CACHE:
+        if path not in RAW: RAW[path] = read(path)
+        CACHE[k] = [key(f, d in FLIPDIRS) for f in RAW[path]]
     return CACHE[k]
+STRICT = plan.get('strict', {})
+FIT = plan.get('feetFit', {})
+def fspan(img):
+    """width of the feet: alpha extent of the bottom 15 rows (camera-zoom gauge where the stance stays the same)"""
+    A = np.asarray(img)[..., 3] > 60; ys = np.nonzero(A.any(1))[0]; fy = ys.max(); xs = np.nonzero(A[fy - 14:fy + 1].any(0))[0]
+    return float(xs.max() - xs.min())
 
 # one global scale from the front idle pose
 ref = clip(plan['clips']['idle']['S'], 'S')[0]; b = bbox(ref); S0 = HT / (b[3] - b[1])
@@ -86,11 +108,14 @@ for _d in DIRS:
 
 def frames_for(st, d):
     path = plan['clips'][st][d]; F = clip(path, d); norm = f'{st}/{d}' in plan.get('normalize', [])
-    anchor0 = feet(F[0])
+    anchor0 = feet(F[0]); fit = FIT.get(f'{st}/{d}', []); span0 = fspan(F[0]) if fit else None
     def cell(i):
-        img = F[i]
+        img = F[i] if i not in STRICT.get(f'{st}/{d}', []) else key(RAW[path][i], d in FLIPDIRS, True)
         if norm:
             bb = bbox(img); s = HT / (bb[3] - bb[1]); return place(img, s, feet(img))
+        if i in fit:   # undo the camera zoom about the feet: video point p -> c + (p - c)·k, then placed like every other frame
+            k = span0 / fspan(img); c = feet(img); print(f'  feetFit {st}/{d} frame {i}: ×{k:.3f}')
+            return place(img, SD[d] * k, (c[0] - (c[0] - anchor0[0]) / k, c[1] - (c[1] - anchor0[1]) / k))
         return place(img, SD[d], anchor0)
     if st in ('idle', 'walk'):
         P = period([mask_small(f) for f in F], 20 if st == 'walk' else 16, 40 if st == 'walk' else 70) or len(F) // 2
@@ -110,7 +135,21 @@ def hurt_from(c, d):
         big.paste(q, (round(v * fx * .8), round(v * fy * .3)), q); F.append(big)
     return F
 
-meta = {'cell': {'w': CW, 'h': CH}, 'pivot': {'x': PX, 'y': PY}, 'scale': .56, 'states': {}, 'sockets': {'attack': {}},
+CELLS = {}
+def orb_at(c_, prev):
+    """centre of the held orb / water burst in a placed cell: compact cyan-blue blob (rings and spray are thin or tiny)"""
+    A = np.asarray(c_).astype(np.int16); m = (A[..., 3] > 120) & (A[..., 2] > 165) & (A[..., 2] - A[..., 0] > 60) & (A[..., 1] > 110) & (A[..., 2] - A[..., 1] > 15)   # blue, not the teal gems
+    lab, n = nd.label(m); best, bs = None, 0
+    for i, sl in enumerate(nd.find_objects(lab)):
+        hh, ww = sl[0].stop - sl[0].start, sl[1].stop - sl[1].start; ar = (lab[sl] == i + 1).sum()
+        asp = max(hh, ww) / max(1, min(hh, ww))
+        if ar < 40 or asp > 2.4: continue
+        fill = ar / (hh * ww); cy, cx = nd.center_of_mass(lab == i + 1)
+        sc = ar * fill ** 3 * (1 if asp <= 1.5 else .15) * (1 if cy < PY - HT * .3 else .1)   # the orb is round and held above the waist; rings round the feet are not
+        if prev is not None: sc /= 1 + math.hypot(cx - prev[0], cy - prev[1]) / 60
+        if sc > bs: bs = sc; best = (float(cx), float(cy))
+    return best
+meta = {'cell': {'w': CW, 'h': CH}, 'pivot': {'x': PX, 'y': PY}, 'scale': .56, 'states': {}, 'sockets': {'attack': {}, 'buff': {}} if plan.get('orb') else {'attack': {}},
         'contact': {'attack': {}}, 'mirror': {'SW': 'SE', 'W': 'E', 'NW': 'NE'}, 'qa': {}, 'buffPeak': {}}
 atlas = {}; report = {}
 for st in ['idle', 'walk', 'attack', 'buff', 'hurt']:
@@ -124,10 +163,12 @@ for st in ['idle', 'walk', 'attack', 'buff', 'hurt']:
             elif st == 'walk': dur = [max(70, round(1000 * P / 24 / len(F)))] * len(F)
             elif st == 'attack':
                 c = plan['attack'][d]['contact']; n = len(F)
-                dur = [55 if i < c - 1 else 40 if i <= c + 1 else 75 for i in range(n)]
+                dur = plan['attack'][d].get('dur') or [55 if i < c - 1 else 40 if i <= c + 1 else 75 for i in range(n)]
                 meta['contact']['attack'][d] = c
             else:
-                dur = [70] * len(F); meta['buffPeak'][d] = plan['buff'][d]['peak']
+                dur = plan['buff'][d].get('dur') or [70] * len(F); meta['buffPeak'][d] = plan['buff'][d]['peak']
+            assert len(dur) == len(F), f'{st}/{d}: {len(dur)} durations for {len(F)} frames'
+            if st in ('attack', 'buff'): CELLS[(st, d)] = F
             report[f'{st}/{d}'] = (len(F), P)
         crops, rects = [], []
         for c_ in F:
@@ -142,7 +183,15 @@ for st in ['idle', 'walk', 'attack', 'buff', 'hurt']:
             sheet.paste(c_, (x, y)); fl.append([x, y, bw, bh, bx, by, bw, bh]); x += c_.width + 2
         meta['states'][st]['dirs'][d] = {'dur': dur, 'f': fl}; y += hmax + 2
     bio = io.BytesIO(); sheet.save(bio, 'WEBP', quality=90, method=6); atlas[st] = 'data:image/webp;base64,' + base64.b64encode(bio.getvalue()).decode()
-    if st == 'attack':
+    if plan.get('orb') and st in ('attack', 'buff'):
+        for d in DIRS:
+            o = []; prev = None; pts = [orb_at(c_, None) for c_ in CELLS[(st, d)]]
+            for i, p in enumerate(pts):   # a frame where the orb is hidden borrows its neighbour
+                p = p or next((q for q in pts[i + 1:] if q), None) or next((q for q in reversed(pts[:i]) if q), None) or (PX + 30, PY - HT * .45)
+                gx = p[0] + (8 if p[0] < PX else -8); o.append({'head': [round(p[0]), round(p[1])], 'grip': [round(gx), round(p[1] + 6)]})
+            meta['sockets'][st][d] = o
+        if st == 'buff': continue
+    if st == 'attack' and not plan.get('orb'):
         for d in DIRS:
             fx, fy = FWD[d]; sgn = 1 if fx >= -.01 else -1; gx, gy = PX + 18 * sgn, PY - HT * .42; n = len(meta['states'][st]['dirs'][d]['f']); c = meta['contact']['attack'][d]; o = []
             for i in range(n):

@@ -20,6 +20,25 @@ const MUT=[
  ['rage','บ้าคลั่ง','✶','#e2435a','พลัง ×1.3','3 วิหลังใช้ รับดาเมจ +Lv×0.6 ต่อครั้ง','Rage'],
  ['siphon','ดูดพลัง','◆','#4aa8ff','ทุกฮิตคืน SP 2 (สูงสุด 12 ต่อการใช้)','พลัง ×0.85','Siphon'],
  ['totem','เสาร่ายแทน','♆','#d9a441','ปักเสาร่ายสกิลทุก 2 วิ × 4 ครั้ง พลัง ×0.45','ระหว่างเสาอยู่ใช้สกิลนั้นเองไม่ได้','Totem']];
+/* resonance + balance (owner 2026-11-21 'โอเค' to GEAR_GEM_LONGTERM_TH.md §3.6, TOTEM_GEM_SYSTEM_TH.md §1f):
+   • RESONANCE — two mutation gems of the same kind working on the totem (any holes: pole wings or skill holes; the board's cap is 2 per kind)
+     = that kind's GAIN one step stronger on both skills: g = the gain text that replaces MUT[4].
+   • BALANCE — no kind twice and at least BAL_N different kinds working = every mutation's COST one step softer: c replaces MUT[5].
+   A totem leans one way or the other (one pair already breaks the balance). The numbers live in totem_gems.js RV (same order). */
+const RESO={
+ focus: {g:'ศัตรูตัวแรกที่โดน ×1.75',c:'ตัวอื่นที่โดน ×0.55'},
+ spread:{g:'ทุกตัวที่โดน แตกดาเมจ ×0.45 รัศมี 80',c:'พลังหลัก ×0.82'},
+ heavy: {g:'พลัง ×1.65',c:'คูลดาวน์ +3 วิ · SP +7'},
+ rapid: {g:'คูลดาวน์ ×0.55',c:'พลัง ×0.72'},
+ stack: {g:'เก็บได้ 3 ครั้ง',c:'พลังครั้งละ ×0.85 · เติมคืนช้ากว่าเดิมน้อยลง'},
+ fire:  {g:'ติดไหม้ต่อเนื่อง 5 วิ (สีไฟ)',c:'ดาเมจทันที ×0.77'},
+ ice:   {g:'ทุกฮิตช้า −40 · ทุกครั้งที่ 4 แช่แข็ง 0.8 วิ',c:'พลัง ×0.86'},
+ volt:  {g:'ฮิตสุดท้ายชิ่ง 3 ตัว ×0.4',c:'พลัง ×0.86'},
+ guard: {g:'โล่ Lv×6 · รับดาเมจ −Lv×0.5 ต่อครั้ง 3 วิ',c:'พลัง ×0.86'},
+ rage:  {g:'พลัง ×1.4',c:'3 วิหลังใช้ รับดาเมจ +Lv×0.4 ต่อครั้ง'},
+ siphon:{g:'ทุกฮิตคืน SP 3 (สูงสุด 18 ต่อการใช้)',c:'พลัง ×0.9'},
+ totem: {g:'ปักเสาร่ายสกิลทุก 2 วิ × 4 ครั้ง พลัง ×0.55',c:'ใช้สกิลนั้นเองได้อีกตั้งแต่เสาร่ายครั้งที่ 3'}};
+const BAL_N=5;
 /* support gems: [id, Thai name, symbol, colour, effect, English] */
 const SUP=[
  ['echo','เงาสกิล','⟲','#9b7bff','0.5 วิหลังใช้ ออกซ้ำ ×0.35 (ท่าบัฟ: +3 วิ)','Echo'],['third','ทุกครั้งที่สาม','③','#ffb13b','ทุกครั้งที่ 3 แรง ×1.5 (ท่าบัฟ: รีเซ็ตคูลดาวน์)','Third'],
@@ -141,6 +160,6 @@ const EXTRACT=[ // [skill learnable up to this level, cost]
    Re-extracting (สกัดใหม่) costs the extraction price again, rolls a new rarity + lines (level kept) and the player keeps either one. */
 const SGEM={lvEss:lv=>Math.round(3+1.2*lv),lvZ:lv=>200*lv,
   brk:{10:[['tstone1',2]],20:[['tstone2',2]],30:[['tstone3',2],['sore',1]],40:[['tstone4',2],['sore',2]]}};
-window.GEMDATA={MUT,SUP,LINES,QUAL,RANK_P,GEM_CAP,BREAK,COST,gemPow,DROPS,R,CARVE,EXTRACT,SGEM,SLINE,POOL,SLOT_LV,lvMul,nSlots,lineV,statN,
+window.GEMDATA={MUT,SUP,RESO,BAL_N,LINES,QUAL,RANK_P,GEM_CAP,BREAK,COST,gemPow,DROPS,R,CARVE,EXTRACT,SGEM,SLINE,POOL,SLOT_LV,lvMul,nSlots,lineV,statN,
   MUTD:Object.fromEntries(MUT.map(s=>[s[0],s])),SUPD:Object.fromEntries(SUP.map(s=>[s[0],s])),LND:Object.fromEntries(LINES.map(s=>[s[0],s]))};
 })();

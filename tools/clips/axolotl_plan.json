@@ -1,0 +1,364 @@
+{
+ "_note": "Axolotl sprite plan (owner clips 2026-11-21, 5 dirs x buff/attack/walk/idle, 24 fps green). Clip paths are the upload paths of that chat, put the clips there (or edit the paths) to rebuild: python3 -I tools/cliphero.py tools/clips/axolotl_plan.json assets_axolotl.js AXL. attack/buff dur = the wolf sprite E timings, so every cast / hit keeps its timing.",
+ "height": 230,
+ "flip": false,
+ "topFade": 6,
+ "orb": true,
+ "clips": {
+  "buff": {
+   "S": "/mnt/user-data/uploads/4fd11d3d-1000000927.mp4",
+   "SE": "/mnt/user-data/uploads/4faa232d-1000000931.mp4",
+   "E": "/mnt/user-data/uploads/535b9d1d-1000000935.mp4",
+   "NE": "/mnt/user-data/uploads/cf50c944-1000000941.mp4",
+   "N": "/mnt/user-data/uploads/eb9e0663-1000000946.mp4"
+  },
+  "attack": {
+   "S": "/mnt/user-data/uploads/7091fb67-1000000928.mp4",
+   "SE": "/mnt/user-data/uploads/d218a56d-1000000932.mp4",
+   "E": "/mnt/user-data/uploads/ecc5bb3b-1000000938.mp4",
+   "NE": "/mnt/user-data/uploads/a0c19a65-1000000942.mp4",
+   "N": "/mnt/user-data/uploads/a701e2c3-1000000947.mp4"
+  },
+  "walk": {
+   "S": "/mnt/user-data/uploads/7611d08e-1000000929.mp4",
+   "SE": "/mnt/user-data/uploads/8ea77acf-1000000933.mp4",
+   "E": "/mnt/user-data/uploads/a922736e-1000000939.mp4",
+   "NE": "/mnt/user-data/uploads/4acd69bb-1000000943.mp4",
+   "N": "/mnt/user-data/uploads/926fc79c-1000000948.mp4"
+  },
+  "idle": {
+   "S": "/mnt/user-data/uploads/aca3d854-1000000930.mp4",
+   "SE": "/mnt/user-data/uploads/acf161a6-1000000934.mp4",
+   "E": "/mnt/user-data/uploads/9611db0c-1000000940.mp4",
+   "NE": "/mnt/user-data/uploads/b611d21b-1000000944.mp4",
+   "N": "/mnt/user-data/uploads/7e94b990-1000000949.mp4"
+  }
+ },
+ "attack": {
+  "S": {
+   "frames": [
+    12,
+    15,
+    18,
+    21,
+    24,
+    30,
+    33,
+    39,
+    45,
+    51,
+    63,
+    84
+   ],
+   "contact": 6,
+   "dur": [
+    80,
+    50,
+    50,
+    100,
+    50,
+    120,
+    60,
+    120,
+    50,
+    50,
+    50,
+    120
+   ]
+  },
+  "SE": {
+   "frames": [
+    8,
+    12,
+    16,
+    20,
+    23,
+    26,
+    29,
+    32,
+    38,
+    44,
+    86,
+    95
+   ],
+   "contact": 6,
+   "dur": [
+    80,
+    50,
+    50,
+    100,
+    50,
+    120,
+    60,
+    120,
+    50,
+    50,
+    50,
+    120
+   ]
+  },
+  "E": {
+   "frames": [
+    16,
+    28,
+    40,
+    49,
+    52,
+    55,
+    58,
+    61,
+    67,
+    73,
+    79,
+    88
+   ],
+   "contact": 6,
+   "dur": [
+    80,
+    50,
+    50,
+    100,
+    50,
+    120,
+    60,
+    120,
+    50,
+    50,
+    50,
+    120
+   ]
+  },
+  "NE": {
+   "frames": [
+    12,
+    14,
+    16,
+    18,
+    21,
+    24,
+    27,
+    30,
+    36,
+    45,
+    57,
+    66
+   ],
+   "contact": 6,
+   "dur": [
+    80,
+    50,
+    50,
+    100,
+    50,
+    120,
+    60,
+    120,
+    50,
+    50,
+    50,
+    120
+   ]
+  },
+  "N": {
+   "frames": [
+    4,
+    8,
+    12,
+    16,
+    19,
+    22,
+    31,
+    34,
+    37,
+    40,
+    46,
+    70
+   ],
+   "contact": 6,
+   "dur": [
+    80,
+    50,
+    50,
+    100,
+    50,
+    120,
+    60,
+    120,
+    50,
+    50,
+    50,
+    120
+   ]
+  }
+ },
+ "buff": {
+  "S": {
+   "frames": [
+    8,
+    14,
+    18,
+    22,
+    26,
+    29,
+    44,
+    50,
+    56,
+    68,
+    80,
+    92
+   ],
+   "peak": 7,
+   "dur": [
+    70,
+    50,
+    50,
+    50,
+    50,
+    70,
+    170,
+    580,
+    50,
+    50,
+    50,
+    160
+   ]
+  },
+  "SE": {
+   "frames": [
+    3,
+    9,
+    13,
+    17,
+    21,
+    24,
+    36,
+    42,
+    54,
+    66,
+    75,
+    84
+   ],
+   "peak": 7,
+   "dur": [
+    70,
+    50,
+    50,
+    50,
+    50,
+    70,
+    170,
+    580,
+    50,
+    50,
+    50,
+    160
+   ]
+  },
+  "E": {
+   "frames": [
+    4,
+    8,
+    11,
+    14,
+    17,
+    19,
+    37,
+    43,
+    52,
+    61,
+    70,
+    79
+   ],
+   "peak": 7,
+   "dur": [
+    70,
+    50,
+    50,
+    50,
+    50,
+    70,
+    170,
+    580,
+    50,
+    50,
+    50,
+    160
+   ]
+  },
+  "NE": {
+   "frames": [
+    4,
+    6,
+    8,
+    10,
+    12,
+    14,
+    25,
+    31,
+    43,
+    55,
+    61,
+    67
+   ],
+   "peak": 7,
+   "dur": [
+    70,
+    50,
+    50,
+    50,
+    50,
+    70,
+    170,
+    580,
+    50,
+    50,
+    50,
+    160
+   ]
+  },
+  "N": {
+   "frames": [
+    2,
+    4,
+    6,
+    8,
+    11,
+    14,
+    16,
+    17,
+    14,
+    11,
+    6,
+    2
+   ],
+   "peak": 7,
+   "dur": [
+    70,
+    50,
+    50,
+    50,
+    50,
+    70,
+    170,
+    580,
+    50,
+    50,
+    50,
+    160
+   ]
+  }
+ },
+ "strict": {
+  "buff/N": [
+   16,
+   17
+  ]
+ },
+ "sideFade": 60,
+ "feetFit": {
+  "buff/N": [
+   16,
+   17
+  ]
+ }
+}

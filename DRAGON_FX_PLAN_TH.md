@@ -61,6 +61,8 @@
   → A 2,441 · B 2,474 (`HERO=dragon COL=dCol PRESET=สายเวท python3 tools/qa/bench_branch.py A,B 8`)
 - เอฟเฟกต์เปิด/ปิด (ชุดเดียวกัน 8 รอบ): A เปิด 2,498 / 2,455 · ปิด 2,406 / 2,441 (วัด 2 ครั้ง) · B เปิด 2,481 · ปิด 2,465 — อยู่ในช่วงแกว่งของ bench (เวลาดาเมจทุกสกิลเท่ากันเป๊ะ)
 
+- 2026-11-21 (ตอนทำสิงห์): ฟ้ามืดค้างหลัง Azure Dragon Descends (`skyDarkT=.6` ไม่เคยคืนค่า) → คืนเป็น 0 ตอนพายุจบ (char_dragon.js, DgCore)
+
 ## เครื่องมือ
 - `tools/fx/strip.py` (HERO=dragon, `near=62` วางฮีโร่ข้างหุ่นก่อนกด) · `tools/fx/custom.py` · `tools/fx/timing.py` · `tools/fx/dgclip.py basic|a|b` (คลิปโชว์ภาษาไทย)
 - `tools/fxlab.py hits dragon <keys> q=vfx3=0` เทียบเวลาดาเมจเก่า/ใหม่ · `tools/qa/leak.py dragon` (fx ไม่สะสม) · `tools/art_preview.html?f=dragon_art.js`

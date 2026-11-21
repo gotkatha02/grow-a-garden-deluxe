@@ -165,6 +165,7 @@ const _upd=updEnemies;updEnemies=function(dt){
 function onBossDead(e){if(e.cast&&e.cast.k==='howl')skyDarkT=0;e._paid=1;e.cast=null;e.clipA=null;e.hidden=0;nextSpawn=Date.now()+RESPAWN_MS;
   for(const o of enemies)if(o.summon&&!o.dead){o.hp=0;kill(o);}
   shake(5);chatLog&&chatLog('sys','🏆 ล้ม <b style="color:#c9a8ff">เฟนเรียร์</b> ได้แล้ว! (เกิดใหม่ใน 5 นาที)');msg&&msg('MVP! ล้มเฟนเรียร์');
+  try{window.RELIC&&RELIC.bossKill('fenrir',e);}catch(err){}   /* boss relic: 1 shard every kill + the fang 1/800 (relics.js) */
   const A=window.AFItems;if(A&&A.dropSetItem){const z=25000+Math.round(Math.random()*15000);A.zeny=A.zeny+z;
     const sl=['rhand','armor','top','shoes','acc'][Math.floor(Math.random()*5)],id=A.dropSetItem(8,sl);A.buyGear(id,0);
     chatLog&&chatLog('sys',`ได้รับ ${z.toLocaleString()}z + <b>${A.ITEMS[id].n}</b>`);}}

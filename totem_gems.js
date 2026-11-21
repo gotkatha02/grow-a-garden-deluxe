@@ -9,8 +9,14 @@
      Each holds one learned active Basic / A / B skill + one MUTATION gem (no supports, no gem level → power only moves by the
      mutation's own trade-off). The path runs Lv 10 → 50 round the inner ring, then out to the first C star (Lv 60).
      Every opened skill star gives one free mutation gem of the player's choice (D.gift counts the gifts taken).
-   Save: localStorage 'af_gems_<hero>[_play]' = {v:3, own:{key:{lv,q,lines,dup}}, sock:[key|null ×5], mods:{key:[mut,sup,sup,mut2]},
-         ss:[skill key|null ×5], sm:[mutation id|null ×5], gift:n, pity:n, tg:0|1}
+   • Totem pages (owner 2026-11-21 'โอเค', TOTEM_GEM_SYSTEM_TH.md §1f): 3 named layouts of the whole totem (C gems + their wing gems,
+     skill holes + their gold / teal gems). Free switch: in a town any time, outside only after 5 s without fighting (test mode any time).
+     Switching takes every mutation / support gem off into the bag and sockets the page's gems back from it; what the bag lacks stays empty.
+   • Resonance / balance (same day): 2 working mutation gems of one kind = its gain one step stronger; ≥ 5 kinds, none twice = every
+     mutation's cost one step softer (gem_data.js RESO texts, RV numbers below).
+   Save: localStorage 'af_gems_<hero>[_play]' = {v:4, own:{key:{lv,q,lines,dup}}, sock:[key|null ×5], mods:{key:[mut,sup,sup,mut2]},
+         ss:[skill key|null ×5], sm:[mutation id|null ×5], ssu:[[sup,sup] ×5], gift:n, pity:n, pe:n, tg:0|1, sx:{skill gems}, cv:{carved holes},
+         pg:{c:active page, n:[3 names], L:[layout|null ×3]}} — the active page's layout is the live sock / mods / ss / sm / ssu (L[c] is not read)
    ===================================================================== */
 (function(){
 const AF=()=>window.AFItems||null;
@@ -23,6 +29,7 @@ const SUF=AF()&&AF().MODE==='play'?'_play':'',SKEY='af_gems_'+HERO+SUF,LEGACY='a
 /* skill stars: as many as the base picture has holes (owner 2026-11-21: 7, one per slot of the skill wheel); unlock levels per count */
 const NSS=TOT?TOT.base.s.length:5,SS_LV=({5:[10,20,30,40,50],7:[10,15,20,25,30,40,50]})[NSS]||Array.from({length:NSS},(_,i)=>Math.round(10+i*40/Math.max(1,NSS-1)));
 const GEM_DIR='assets/gems/'+HERO+'/',BD='assets/gems/board/',PG='assets/gems/page/';
+const PG_N=['ฟาร์ม','บอส','ปาร์ตี้'];   /* default names of the 3 totem pages (the player can rename them) */
 /* page v2 art (owner's pictures 2026-11-21, assets/gems/page/): ring = inner circle fitted on ring.webp (1254 px, hanging feathers removed);
    the five C stars use one land socket each in unlock order (Norse Lv 60 · Greek 70 · Egypt 80 · Japan 90 · Aztec 99), [file, hole cx, cy, r] as
    fractions of the picture; the skill stars use the moonstone socket */
@@ -51,6 +58,19 @@ const SUP=GD?GD.SUP:[ // support gems: [id, name, symbol, colour, effect]
  ['frost','เยือกแข็ง','❄','#8fe6ff','ทุกครั้งที่ 3 ช้า −40 · ทุกครั้งที่ 6 แช่แข็ง 0.8 วิ'],['pierce','ทะลวง','➶','#d8d8e8','ไม่สน DEF 20 (ท่าบัฟ: +2 วิ)'],
  ['leech','ดูดชีวิต','♥','#e2435a','ทุกฮิตฟื้น Lv×1 สูงสุด 10 ฮิต (ท่าบัฟ: ฟื้น Lv×3)'],['impact','กระแทก','✸','#c9a46a','ทุกครั้งที่ 5 มึน 0.5 วิ + หลอด KO (ท่าบัฟ: ผลักรอบตัว)']];
 const MUTD=Object.fromEntries(MUT.map(s=>[s[0],s])),SUPD=Object.fromEntries(SUP.map(s=>[s[0],s]));
+const RESO=GD&&GD.RESO||{},BAL_N=GD&&GD.BAL_N||5;
+/* resonance state of the totem, rebuilt by apply(): n = working mutation gems per kind, on = kinds that resonate (2), bal = balance */
+let RES={n:{},on:new Set(),tot:0,kinds:0,bal:false};
+const RS=id=>!window.__RESO_OFF&&RES.on.has(id),BAL=()=>!window.__RESO_OFF&&RES.bal;
+/* the numbers behind RESO (gem_data.js): [normal, resonance (gain side) / balance (cost side)] */
+const RV={focusF:[1.6,1.75],focusO:[.4,.55],spreadF:[.35,.45],spreadP:[.75,.82],heavyP:[1.5,1.65],heavyCd:[4,3],heavyMp:[10,7],
+  rapidCd:[.6,.55],rapidP:[.65,.72],rapidB:[.6,.66],stackCh:[2,3],stackP:[.8,.85],stackR:[1.25,1.15],fireN:[4,5],fireP:[.7,.77],iceF:[.6,.8],iceP:[.8,.86],
+  voltN:[2,3],voltP:[.8,.86],guardSh:[4,6],guardP:[.8,.86],rageP:[1.3,1.4],rageT:[.6,.4],siphonV:[2,3],siphonCap:[12,18],siphonP:[.85,.9],
+  totemF:[.45,.55],totemK:[2.2,2.7],totemLock:[4,3]};
+const rv=(k,up)=>RV[k][up?1:0];
+/* a mutation's gain / cost text as it works right now (resonance / balance swap in the stronger line) */
+const mutG=id=>RS(id)&&RESO[id]?RESO[id].g:MUTD[id][4],mutC=id=>BAL()&&RESO[id]?RESO[id].c:MUTD[id][5];
+const mutTag=id=>RS(id)?' <b class="rsT" title="เรโซแนนซ์">🔗</b>':BAL()&&RES.n[id]?' <b class="blT" title="สมดุล">⚖</b>':'';
 /* support strength: 1 per C-gem support, ½ per support in a skill hole (page v3, owner 2026-11-21: skill holes get 2 support sockets;
    half strength because they open from Lv 10 — the effect still shows on the skill, its numbers are halved) */
 const sw=(A,id)=>(A.sup.includes(id)?1:0)+(A.supH?A.supH.filter(x=>x===id).length*.5:0);
@@ -120,6 +140,8 @@ function load(){let d=null,dirty=false;try{d=JSON.parse(localStorage.getItem(SKE
       A save from before keeps every hole that already holds something — nobody loses a socketed gem. */
     const cv=d.cv={};d.ss.forEach((k,i)=>{if(k||d.sm[i])cv['s'+i]=1;(d.ssu[i]||[]).forEach((x,j)=>{if(x){cv['s'+i]=1;cv['u'+i+j]=1;}});});
     d.sock.forEach((k,i)=>{if(!k)return;cv['p'+i]=1;(d.mods[k]||[]).forEach((x,j)=>{if(x&&(j===1||j===2))cv['q'+i+j]=1;});});dirty=true;}
+  if(!d.pg||!Array.isArray(d.pg.L)){d.pg={c:0,n:PG_N.slice(),L:[null,null,null]};dirty=true;}   /* totem pages (2026-11-21): the board as it is = page 1 */
+  else{const p=d.pg;while(p.L.length<3)p.L.push(null);p.L.length=3;p.n=[0,1,2].map(i=>String((p.n&&p.n[i])||PG_N[i]).slice(0,12));p.c=Math.max(0,Math.min(2,p.c|0));}
   if(dirty)try{localStorage.setItem(SKEY,JSON.stringify(d));}catch(e){}
   return d;}
 let D=load();const save=()=>{try{localStorage.setItem(SKEY,JSON.stringify(D));}catch(e){}try{apply();}catch(e){}};
@@ -553,17 +575,56 @@ ${TL?`#totemWin.tot #tgSky,#totemWin.tot #tgFrame{display:none}
 .tgCrk>s{position:absolute;left:50%;top:50%;width:4px;height:3px;margin:-1.5px -2px;background:#8d8476;border-radius:1px;box-shadow:0 0 0 .5px rgba(0,0,0,.4);animation:tgCrkS .8s cubic-bezier(.2,.6,.4,1) var(--dl) both}
 .tgCrk.wd>s{background:#7a4e2c}
 @keyframes tgCrkS{0%{transform:rotate(var(--a)) translateX(0)}100%{transform:rotate(var(--a)) translateX(var(--d)) rotate(160deg);opacity:0}}
+/* ---- totem pages (owner 2026-11-21): 3 bookmark tabs on top of the left column; tap the active one = its card (rename, copy) ---- */
+#tgPg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px;padding-bottom:3px;border-bottom:1.5px solid #8a6a3a}
+#tgPg button{min-width:0;padding:3px 2px 2px;border-radius:9px 9px 4px 4px;border:1.5px solid #6a4a2a;background:linear-gradient(#4c3220,#2a1a10);color:#e9c98a;font:700 12px/1.2 Mitr,sans-serif;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#tgPg button small{display:block;font:500 9px/1.15 Mitr,sans-serif;opacity:.75}
+#tgPg button.on{background:linear-gradient(#ffd77a,#e9a43c);color:#3a1f14;border-color:#ffe9a8;box-shadow:0 0 8px rgba(255,210,110,.45)}
+#tgPg button.on small::after{content:' · ✎'}
+#tgPg button.wait{opacity:.6}
+@keyframes tgPgSw{0%{filter:brightness(1.55) saturate(1.25) drop-shadow(0 0 18px rgba(255,220,130,.9))}100%{filter:none}}
+#tgBoard.pgsw{animation:tgPgSw .75s ease-out}
+#tgInfo .pgr{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin:4px 0}
+#tgInfo .pgr input{flex:1;min-width:70px;font:600 12px Mitr,sans-serif;padding:2px 6px;border-radius:7px;border:1.5px solid #b8873a;background:#fffaf0;color:#3a1f14}
+#tgInfo .pgr button{border:1.5px solid #5a2e16;border-radius:8px;background:linear-gradient(#ffd77a,#e9a43c);font:700 11px Mitr,sans-serif;color:#3a1f14;cursor:pointer;padding:2px 8px}
+#tgInfo .pgr button.arm{background:linear-gradient(#ffb0a0,#e2604a);color:#fff}
+#tgInfo .pgo{margin:2px 0 4px;padding:3px 6px;border-radius:7px;background:rgba(201,164,106,.16);font-size:.93em;color:#5a3a1a}
+/* ---- resonance / balance: badges on the board's top right, a status line in the mutation tab, marks on gems and skill buttons ---- */
+#tgRes{position:absolute;right:4px;top:4px;z-index:4;display:flex;flex-direction:column;align-items:center;gap:4px}
+#tgRes .rh{width:30px;height:30px;border-radius:50%;border:2px solid #8a6a3a;background:radial-gradient(circle at 40% 35%,#4a3a2a,#1a120c);color:#fff;font:14px/1 sans-serif;cursor:pointer;opacity:.55;box-shadow:0 2px 6px rgba(0,0,0,.5)}
+#tgRes.on .rh{opacity:1;border-color:#9fe8ff;box-shadow:0 0 10px rgba(120,220,255,.7),0 2px 6px rgba(0,0,0,.5);animation:tgGift 1.4s ease-in-out infinite alternate}
+#tgRes.bl .rh{border-color:#ffd86a;box-shadow:0 0 10px rgba(255,216,106,.75),0 2px 6px rgba(0,0,0,.5)}
+#tgRes .rl{display:flex;flex-direction:column;gap:4px;align-items:center}
+#tgRes .rb{position:relative;width:26px;height:26px;cursor:pointer;filter:drop-shadow(0 0 4px var(--c))}
+#tgRes .rb .tgSg{inset:0}
+#tgRes .rb i{position:absolute;right:-6px;bottom:-4px;font:900 9px/12px sans-serif;font-style:normal;color:#fff;background:#1a3a5a;border-radius:6px;padding:0 3px;box-shadow:0 0 0 1px #9fe8ff}
+#tgRes .rb.bal{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:16px/1 sans-serif;background:radial-gradient(circle at 40% 35%,#fff3c0,#e9a43c 60%,#8a5a1a);--c:#ffd86a}
+#tgRes .rb.bal i{background:#5a3a0c;box-shadow:0 0 0 1px #ffd86a}
+.tgRsb{display:block;width:100%;text-align:left;border:1.5px solid rgba(159,232,255,.35);border-radius:9px;background:rgba(20,40,60,.55);color:#cfefff;font:500 11px/1.35 Mitr,sans-serif;padding:4px 7px;cursor:pointer}
+.tgRsb b{color:#fff}.tgRsb.on{border-color:#9fe8ff;box-shadow:0 0 8px rgba(120,220,255,.35)}.tgRsb.bl{border-color:#ffd86a;background:rgba(60,44,12,.6);color:#ffefc0;box-shadow:0 0 8px rgba(255,216,106,.35)}
+.tgInv button b.rsb{position:absolute;left:-3px;top:-4px;z-index:3;font:11px/1 sans-serif;filter:drop-shadow(0 0 3px #5ad1ff)}.tgInv button b.rsb.bl{filter:drop-shadow(0 0 3px #ffd86a)}
+#tgInfo .rsT{color:#1a7ab8}#tgInfo .blT{color:#a8741c}
+#tgInfo .rsx{margin:5px 0 2px;padding:4px 6px;border-radius:8px;background:rgba(90,180,230,.13);border:1px solid rgba(60,140,200,.3);font-size:.93em}
+#tgInfo .rsx.on{background:rgba(90,180,230,.25);border-color:rgba(60,140,200,.6)}
+#tgInfo .rst{display:grid;grid-template-columns:auto 1fr;gap:1px 6px;align-items:center;margin-top:4px;font-size:.9em}
+#tgInfo .rst .gi{position:relative;width:20px;height:20px}#tgInfo .rst .gi .tgSg{inset:0;font-size:9px}
+#tgInfo .rst div{line-height:1.3;padding:1px 0;border-bottom:1px dashed rgba(160,120,60,.3)}#tgInfo .rst div.on{background:rgba(90,180,230,.2)}
+.gmk.rs::after,.gmk.bl::after{content:'';position:absolute;inset:-2px;border-radius:50%;pointer-events:none}
+.gmk.rs::after{box-shadow:0 0 0 1.5px #e8fbff,0 0 8px 1px var(--c);animation:gmkRs 1.1s ease-in-out infinite alternate}
+.gmk.bl::after{box-shadow:0 0 0 1.5px #ffd86a,0 0 7px #ffd86a}
+@keyframes gmkRs{to{box-shadow:0 0 0 2px #fff,0 0 13px 3px var(--c)}}
+@media (max-height:520px){#tgPg button{font-size:11px;padding:2px 1px}#tgPg button small{display:none}#tgPg button.on::after{content:' ✎';font-size:9px}#tgRes .rh{width:26px;height:26px;font-size:12px}#tgRes .rb{width:22px;height:22px}}
 `;document.head.appendChild(css);
 const GFRAME=/[?&]gframe=1/.test(location.search);   /* owner 2026-11-21 14:06: no frames by default; ?gframe=1 = the framed look (moonstone ring / his diamond crown) */
 const win=document.createElement('div');win.id='totemWin';if(HERO!=='wolf')win.classList.add('nw');if(GFRAME)win.classList.add('gfr');
 win.innerHTML=`<div id="tgBox"><h2>ศาลวิญญาณโทเท็ม</h2><button id="tgX">✕</button>
-<div id="tgLeft"><h3>รายละเอียด</h3><div id="tgSel"></div><div id="tgInfo"></div><div id="tgBtns"><button id="tgOut">ถอดออก</button><button id="tgUp">อัปเลเวล</button></div></div>
-<div id="tgMid"><div id="tgScr"><div id="tgZoom"><div id="tgBoard"><img id="tgSky" src="${PG}sky.webp" alt="">${TL?`<img id="tgBaseI" src="${PG}${TOT.base.src}.webp" alt=""><div id="tgPole">${[0,1,2,3,4].map(i=>`<img class="tgT" data-t="${i}" src="${PG}${TOT.pole.src}.webp" alt="" style="clip-path:inset(${i<4?TL.ct[i]-.5:0}px 0 ${i?TL.ph-TL.ct[i-1]-.5:0}px 0)">`).join('')}</div>`:''}<canvas id="tgLines" width="${BS*2}" height="${BS*2}"></canvas><canvas id="tgRing" width="${BS*2}" height="${BS*2}"></canvas><img id="tgFrame" src="${PG}ring.webp" alt=""></div></div></div><div id="tgWs"></div></div>
+<div id="tgLeft"><div id="tgPg">${[0,1,2].map(i=>`<button data-pg="${i}"></button>`).join('')}</div><div id="tgSel"></div><div id="tgInfo"></div><div id="tgBtns"><button id="tgOut">ถอดออก</button><button id="tgUp">อัปเลเวล</button></div></div>
+<div id="tgMid"><div id="tgScr"><div id="tgZoom"><div id="tgBoard"><img id="tgSky" src="${PG}sky.webp" alt="">${TL?`<img id="tgBaseI" src="${PG}${TOT.base.src}.webp" alt=""><div id="tgPole">${[0,1,2,3,4].map(i=>`<img class="tgT" data-t="${i}" src="${PG}${TOT.pole.src}.webp" alt="" style="clip-path:inset(${i<4?TL.ct[i]-.5:0}px 0 ${i?TL.ph-TL.ct[i-1]-.5:0}px 0)">`).join('')}</div>`:''}<canvas id="tgLines" width="${BS*2}" height="${BS*2}"></canvas><canvas id="tgRing" width="${BS*2}" height="${BS*2}"></canvas><img id="tgFrame" src="${PG}ring.webp" alt=""></div></div></div><div id="tgRes"><button class="rh" title="เรโซแนนซ์ / สมดุล ของเจมแปรสภาพ">🔗</button><div class="rl"></div></div><div id="tgWs"></div></div>
 <div id="tgRight"><div class="tgAct"><button id="tgGiftB" style="display:none"></button><button id="tgWsB">⛏ แกะ · คราฟต์ · ย่อยเจม</button></div>
 <div class="tgTabs"><button data-tab="sk">⭐ สกิล<small></small></button><button data-tab="gem">💠 เจม C<small></small></button><button data-tab="mut">🔶 แปรสภาพ<small></small></button><button data-tab="sup">🔹 เสริม<small></small></button></div>
 <div class="tgPane" data-pane="sk"><div class="tgHint">${TL?'สกิลที่เรียนแล้ว → ⚗ สกัดเป็นเจม (ครั้งแรกฟรี) → วางในหลุมบนแท่นหิน (Lv '+SS_LV.join(' / ')+')':'สกิลที่เรียนแล้ว → วางบนดาวเงินวงใน (เปิด Lv '+SS_LV.join(' / ')+')'}</div><div class="tgInv" id="tgSkills"></div></div>
 <div class="tgPane" data-pane="gem"><div class="tgHint">${TL?'เจมหลัก = สกิล C → หลุมใหญ่กลางชั้นเสา (ชั้นเปิด Lv 60 / 70 / 80 / 90 / 99)':'เจมหลัก = สกิล C → ดาวทองวงนอก (เปิด Lv 60–99)'}</div><div class="tgInv" id="tgGems"></div></div>
-<div class="tgPane" data-pane="mut"><div class="tgHint">${TL?'ได้อย่าง เสียอย่าง · หลุมด้านในปีกเสา หรือหลุมเล็กข้างหลุมสกิล':'ได้อย่าง เสียอย่าง · ใส่ได้ทั้งดาวสกิลและดาว C'}</div><div class="tgInv" id="tgMuts"></div></div>
+<div class="tgPane" data-pane="mut"><div class="tgHint">${TL?'ได้อย่าง เสียอย่าง · หลุมด้านในปีกเสา หรือหลุมเล็กข้างหลุมสกิล':'ได้อย่าง เสียอย่าง · ใส่ได้ทั้งดาวสกิลและดาว C'}</div><button class="tgRsb" id="tgRsb"></button><div class="tgInv" id="tgMuts"></div></div>
 <div class="tgPane" data-pane="sup"><div class="tgHint">${TL?(SSU.length?'หลุมนอกปีกเสา · หลุมขอบเขียวใต้หลุมสกิล (ผลครึ่งหนึ่ง) — หลุมเสริมทุกหลุมต้องสลักเปิดก่อน':'หลุมด้านนอกปีกเสา (สลักเปิดทีละหลุม)'):'ใส่ได้เฉพาะดาว C (สลักเปิดช่องทีละช่อง)'}</div><div class="tgInv" id="tgSups"></div></div></div></div>`;
 document.body.appendChild(win);
 if(TL)win.classList.add('tot');
@@ -577,7 +638,7 @@ win.addEventListener('pointerdown',e=>{if(e.target===win)close();});win.querySel
 /* ---------- constellation lines (dim when locked, lit when open, gold when both ends hold a gem) ---------- */
 const STARS=Array.from({length:70},(_,i)=>{const a=Math.sin(i*12.9898)*43758.5453,b=Math.sin(i*78.233)*12345.678,r=Math.sqrt(a-Math.floor(a))*HR*1.02,q=(b-Math.floor(b))*6.283;return {x:HX+Math.cos(q)*r,y:HY+Math.sin(q)*r,s:.6+((a*7)%1+1)%1*1.4,p:i*1.7};});
 function drawLines(t){const g=lines.getContext('2d');g.setTransform(2,0,0,2,0,0);g.clearRect(0,0,BS,BS);
-  if(TL){totGlow(g,t);return;}
+  if(TL){totGlow(g,t);resGlow(g,t);return;}
   {g.save();for(const st of STARS){const a=(.2+.5*Math.max(0,Math.sin(t*1.3+st.p)))*(st.s>1.6?1:.7);g.globalAlpha=a;g.fillStyle='#fff';g.shadowColor='#bfe0ff';g.shadowBlur=4;
     g.beginPath();g.arc(st.x,st.y,st.s,0,7);g.fill();if(st.s>1.6){g.fillRect(st.x-st.s*2.2,st.y-.35,st.s*4.4,.7);g.fillRect(st.x-.35,st.y-st.s*2.2,.7,st.s*4.4);}}g.restore();}
   const seg=(a,b,state,ph)=>{g.save();g.lineCap='round';
@@ -600,7 +661,35 @@ function drawLines(t){const g=lines.getContext('2d');g.setTransform(2,0,0,2,0,0)
       lg.addColorStop(0,`rgba(${rgb},${a*.9})`);lg.addColorStop(1,`rgba(${rgb},0)`);g.strokeStyle=lg;g.lineWidth=1.6;g.beginPath();g.moveTo(p.x,p.y);g.lineTo(p.x+Math.cos(an)*L,p.y+Math.sin(an)*L);g.stroke();}
     g.restore();};
   for(let i=0;i<NSS;i++)if(ssOpen(i))light(SSP[i],SZ.skill*.78,D.ss[i]?'200,230,255':'150,190,255',(D.ss[i]?.38:.16)*(.85+.15*Math.sin(t*2.2+i)),i);
-  for(let i=0;i<NS;i++)if(sockOpen(i))light(MAIN[i],SZ.main*.82,D.sock[i]?'255,226,150':'170,200,255',(D.sock[i]?.4:.16)*(.85+.15*Math.sin(t*2+i)),i+5);}
+  for(let i=0;i<NS;i++)if(sockOpen(i))light(MAIN[i],SZ.main*.82,D.sock[i]?'255,226,150':'170,200,255',(D.sock[i]?.4:.16)*(.85+.15*Math.sin(t*2+i)),i+5);
+  resGlow(g,t);}
+/* resonance: a glowing thread joins the two holes of a pair, two sparks run along it · balance: a gold halo breathes round every working mutation hole */
+function mutHoles(){const out=[],LV=G('LV')||{};
+  D.sock.forEach((k,i)=>{if(!k||!sockOpen(i)||!LV[k])return;const m=D.mods[k]||[];[0,3].forEach(j=>{const id=m[j],p=MODS[i][j];if(id&&p&&modOpen(i,j))out.push({id,p,r:p.r||SZ.mut/2});});});
+  D.ss.forEach((k,i)=>{const id=D.sm[i],p=SMP[i];if(id&&p&&ssAct(i))out.push({id,p,r:p.r||SZ.smut/2});});return out;}
+function resGlow(g,t){if(!RES.tot||window.__RESO_OFF)return;const H=mutHoles();g.save();
+  if(BAL())for(const h of H){/* balance: a white-gold ring of light turns slowly round every working mutation hole */
+    const R=Math.max(9,h.r*1.9),a=.65+.25*Math.sin(t*2.2+h.p.x*.05);g.globalCompositeOperation='lighter';
+    const gr=g.createRadialGradient(h.p.x,h.p.y,h.r*.6,h.p.x,h.p.y,R*1.35);gr.addColorStop(0,'rgba(255,216,106,.55)');gr.addColorStop(1,'rgba(255,216,106,0)');
+    g.globalAlpha=a;g.fillStyle=gr;g.beginPath();g.arc(h.p.x,h.p.y,R*1.35,0,7);g.fill();
+    g.setLineDash([R*.55,R*.35]);g.lineDashOffset=-t*R*.9;g.strokeStyle='#fff2b8';g.lineWidth=1.8;g.shadowColor='#ffd86a';g.shadowBlur=8;g.beginPath();g.arc(h.p.x,h.p.y,R,0,7);g.stroke();g.setLineDash([]);}
+  let n=0;for(const id of RES.on){const ps=H.filter(h=>h.id===id).slice(0,2);if(ps.length<2)continue;const a=ps[0].p,b=ps[1].p,c=MUTD[id][3];
+    const mx=(a.x+b.x)/2,my=(a.y+b.y)/2,dx=b.x-a.x,dy=b.y-a.y,L=Math.hypot(dx,dy)||1;let cx,cy;
+    /* side by side (the base): hangs down like a garland, each pair a little deeper so crossing pairs stay apart · one above the other (the wings): bows outward */
+    if(Math.abs(dx)>=Math.abs(dy)){cx=mx;cy=my+L*(.2+.09*(n%3));}else{cx=mx+(mx<HX?-1:1)*L*(.24+.06*(n%3));cy=my;}n++;
+    const pt=f=>({x:(1-f)*(1-f)*a.x+2*(1-f)*f*cx+f*f*b.x,y:(1-f)*(1-f)*a.y+2*(1-f)*f*cy+f*f*b.y}),pulse=.8+.2*Math.sin(t*3+n);
+    g.globalCompositeOperation='source-over';g.beginPath();g.moveTo(a.x,a.y);g.quadraticCurveTo(cx,cy,b.x,b.y);
+    g.globalAlpha=.55;g.strokeStyle='rgba(20,10,30,.9)';g.lineWidth=5.5;g.shadowBlur=0;g.stroke();   /* a dark under-line keeps the thread readable on the bright stone */
+    g.globalCompositeOperation='lighter';g.globalAlpha=.85*pulse;g.strokeStyle=c;g.lineWidth=3.6;g.shadowColor=c;g.shadowBlur=12;g.stroke();
+    g.globalAlpha=.9*pulse;g.strokeStyle='#fff';g.lineWidth=1.2;g.shadowBlur=4;g.stroke();
+    for(const q of [a,b]){const R=Math.max(14,(ps[0].r||10)*2.4),gr=g.createRadialGradient(q.x,q.y,1,q.x,q.y,R);gr.addColorStop(0,c);gr.addColorStop(1,'rgba(0,0,0,0)');
+      g.globalAlpha=.55*pulse;g.shadowBlur=0;g.fillStyle=gr;g.beginPath();g.arc(q.x,q.y,R,0,7);g.fill();}
+    for(const f0 of [(t*.45)%1,1-(t*.45)%1]){const p=pt(f0);g.globalAlpha=Math.sin(f0*Math.PI);g.fillStyle='#fff';g.shadowColor=c;g.shadowBlur=10;g.beginPath();
+      for(let q=0;q<8;q++){const an=q*Math.PI/4,rr=q%2?1.4:4.2;g.lineTo(p.x+Math.cos(an)*rr,p.y+Math.sin(an)*rr);}g.closePath();g.fill();}
+    {/* the kind's symbol rides the middle of the thread */const p=pt(.5);g.globalCompositeOperation='source-over';g.globalAlpha=1;g.shadowColor=c;g.shadowBlur=8;
+      g.fillStyle='#1a1026';g.beginPath();g.arc(p.x,p.y,7,0,7);g.fill();g.shadowBlur=0;g.lineWidth=1.6;g.strokeStyle=c;g.stroke();
+      g.fillStyle='#fff';g.font='bold 9px sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText(MUTD[id][2],p.x,p.y+.5);}}
+  g.restore();}
 /* totem: soft light in every hole that holds a gem, a faint call in empty open holes, motes rising up the built part of the pole */
 function totGlow(g,t){const light=(p,r,rgb,a)=>{g.save();g.globalCompositeOperation='lighter';const gr=g.createRadialGradient(p.x,p.y,r*.12,p.x,p.y,r);
     gr.addColorStop(0,`rgba(${rgb},${a})`);gr.addColorStop(1,`rgba(${rgb},0)`);g.fillStyle=gr;g.beginPath();g.arc(p.x,p.y,r,0,7);g.fill();g.restore();},w=q=>.82+.18*Math.sin(t*2.1+q);
@@ -627,7 +716,9 @@ function drawRing(dt){const g=ringC.getContext('2d');g.setTransform(2,0,0,2,0,0)
   g.font='bold 11px serif';g.textAlign='center';g.textBaseline='middle';g.fillStyle=`rgba(150,240,255,${glow})`;g.shadowColor='#7fe8ff';g.shadowBlur=6+boost*10;
   for(let q=0;q<24;q++){const a=q/24*Math.PI*2;g.save();g.rotate(a);g.translate(0,-(R-9));g.fillText(RUNES[q],0,0);g.restore();}
   g.restore();}
-let raf=0,last=0;function loop(ts){if(!win.classList.contains('open'))return;const dt=Math.min(.05,(ts-last)/1000||0);last=ts;drawRing(dt);drawLines(ts/1000);raf=requestAnimationFrame(loop);}
+let raf=0,last=0,pgT=0;function loop(ts){if(!win.classList.contains('open'))return;const dt=Math.min(.05,(ts-last)/1000||0);last=ts;drawRing(dt);drawLines(ts/1000);
+  if(ts-pgT>500){pgT=ts;try{pgBar();}catch(e){}}   /* the page tabs dim while you are still fighting outside a town */
+  raf=requestAnimationFrame(loop);}
 
 /* ---------- render ---------- */
 let sel=null,popK=null;   // {gem:k} | {mut:id} | {sup:id} | {sock:i} | {mod:[i,j]}
@@ -687,7 +778,11 @@ function bindSG(k,refresh){const o=sgo(k);if(!o)return;const el=win.querySelecto
   bindCand(el,o,yes=>{if(yes)popK=k;refresh(yes?`<br><span class="g">✔ ใช้เจมระดับ ${QUAL[o.q].n} แล้ว</span>`:'<br>เก็บอันเดิมไว้');});}
 function showSkill(k,extra){info(skillInfo(k)+(extra||''));bindSG(k,x=>showSkill(k,x));}
 function showGem(k,extra){info(gemInfo(k)+(extra||''));bindInfo(k);}
-const mutInfo=id=>{const m=MUTD[id];return `<b>${m[1]}</b> (เจมแปรสภาพ)<br><span class="g">ได้: ${m[4]}</span><br><span class="c">เสีย: ${m[5]}</span>`;};
+const mutInfo=id=>{const m=MUTD[id],R=RESO[id],n=RES.n[id]||0;
+  let h=`<b>${m[1]}</b> (เจมแปรสภาพ)${mutTag(id)}<br><span class="g">ได้: ${mutG(id)}</span><br><span class="c">เสีย: ${mutC(id)}</span>`;
+  if(R)h+=`<div class="rsx${RS(id)||(BAL()&&n)?' on':''}">🔗 <b>เรโซแนนซ์</b> (แบบนี้ 2 เม็ดบนเสา${n?` · ตอนนี้ ${n} เม็ด`:''}): ได้ → ${R.g}${RS(id)?' <b class="g">✔ ติดแล้ว</b>':''}`
+    +`<br>⚖ <b>สมดุล</b> (แปรสภาพไม่ซ้ำกันครบ ${BAL_N} แบบ · ตอนนี้ ${RES.kinds}): เสีย → ${R.c}${BAL()?' <b class="g">✔ ติดแล้ว</b>':''}</div>`;
+  return h;};
 const supInfo=id=>{const s=SUPD[id];return `<b>${s[1]}</b> (เจมเสริม)<br>${s[4]}`;};
 /* painted gem if the file exists (assets/gems/mut|support/<id>.webp), else the code-drawn badge */
 const sg=(id,kind)=>{const d=kind==='mut'?MUTD[id]:SUPD[id];return `<span class="tgSg${kind==='mut'?' mut':''}" style="--c:${d[3]}"><span>${d[2]}</span><img src="assets/gems/${kind==='mut'?'mut':'support'}/${id}.webp" alt="" draggable="false" onload="this.parentNode.classList.add('art')" onerror="this.remove()"></span>`;};
@@ -738,13 +833,80 @@ function node(x,y,kind,inner,cls,title,onclick,icls,art){const el=document.creat
     :/lock|dim|\bpg\b/.test(cls||'')?'':`<div class="eg" style="--eg:${kind==='skill'?'190,225,255':(kind==='sup'||kind==='ssup')?'120,220,255':(kind==='mut'||kind==='smut')?'255,178,96':'255,222,140'};left:${c.cx*s-gs*.32}px;top:${c.cy*s-gs*.32}px;width:${gs*.64}px;height:${gs*.64}px"></div>`);
   el.title=title||'';el.onclick=onclick;board.appendChild(el);return el;}
 const selSG=()=>{if(!sel||sel.carve)return null;const k=sel.skill?sel.skill:sel.ss!=null?D.ss[sel.ss]:null;return k&&extracted(k)&&sgo(k)?k:null;};
+/* ---------- totem pages (owner 2026-11-21 'โอเค' to GEAR_GEM_LONGTERM_TH.md §3.6: 3 layouts, e.g. farm / boss / party) ----------
+   A page = where every gem sits: C gems in the pole tiers + their wing gems, skills in the base holes + their gold / teal gems.
+   Gems themselves are shared (a C gem / skill gem is owned once; mutation / support gems come from the bag), so switching takes every
+   wing / skill-hole gem off into the bag and puts the page's own back from it — a gem the bag no longer has (sold, traded) leaves
+   its hole empty and is listed. Free: in a town any time, elsewhere after PG_CALM s without dealing or taking damage. */
+const esc=s=>String(s==null?'':s).replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
+const snap=()=>({sock:D.sock.slice(),mods:Object.fromEntries(D.sock.filter(Boolean).map(k=>[k,(D.mods[k]||[null,null,null,null]).slice(0,4)])),ss:D.ss.slice(),sm:D.sm.slice(),ssu:D.ssu.map(a=>(a||[null,null]).slice(0,2))});
+function pgCount(L){const o={c:0,s:0,m:0,u:0};if(!L)return o;(L.sock||[]).forEach(k=>{if(!k)return;o.c++;((L.mods||{})[k]||[]).forEach((x,j)=>{if(x)isMutJ(j)?o.m++:o.u++;});});
+  (L.ss||[]).forEach((k,i)=>{if(k)o.s++;if((L.sm||[])[i])o.m++;(((L.ssu||[])[i])||[]).forEach(x=>{if(x)o.u++;});});return o;}
+let FIGHT_T=-99;const PG_CALM=5;
+/* '' = may switch now, else why not */
+function pgBlock(){if(test()&&!SEAL)return '';const a=AF();try{if(a&&a.townHere&&a.townHere())return '';}catch(e){}const w=PG_CALM-(now()-FIGHT_T);
+  return w>0?`เพิ่งต่อสู้ — นอกเมืองสลับหน้าได้เมื่อไม่ได้สู้ ${PG_CALM} วิ (อีก ${Math.ceil(w)} วิ)`:'';}
+function switchPage(t,quiet){const P=D.pg;t=+t;if(!(t>=0&&t<3))return false;if(t===P.c)return {same:1,miss:[]};const why=pgBlock();
+  if(why){if(!quiet){info(`<b>📑 สลับหน้าไม่ได้ตอนนี้</b><br><span class="c">${why}</span>`+pgRules());pgBar();}return false;}
+  const S=G('SKILLS')||{},T=P.L[t];P.L[P.c]=snap();P.c=t;
+  if(!T){save();return {fresh:1,miss:[]};}   /* a page used for the first time starts as a copy of the page you were on */
+  /* 1 · everything comes off into the bag */
+  for(const k of D.sock)if(k)giveBack(k);D.sock=Array(NS).fill(null);
+  for(let i=0;i<NSS;i++){if(D.sm[i])bagAdd('gmut_'+D.sm[i],1);(D.ssu[i]||[]).forEach(x=>{if(x)bagAdd('gsup_'+x,1);});D.ss[i]=null;D.sm[i]=null;D.ssu[i]=[null,null];}
+  /* 2 · the page goes on: C gems + wings, then skills + their gold / teal holes */
+  const miss={},lack=s=>{miss[s]=(miss[s]||0)+1;};
+  const take=(id,mu)=>{const d=(mu?MUTD:SUPD)[id];if(!d)return false;const g=(mu?'gmut_':'gsup_')+id;if(bagN(g)<=0){lack((mu?'แปรสภาพ ':'เสริม ')+d[1]+' (กระเป๋าไม่พอ)');return false;}
+    if(mu&&used('mut',id)>=2)return false;bagAdd(g,-1);return true;};
+  (T.sock||[]).forEach((k,i)=>{if(!k||i>=NS)return;const nm=(S[k]||{}).name||k;if(!D.own[k]||!S[k]){lack('เจม C '+nm);return;}if(!sockOpen(i)||!tierOK(k)){lack(`ชั้นเสาที่ ${i+1} ยังไม่เปิด`);return;}if(D.sock.includes(k))return;
+    D.sock[i]=k;const a=D.mods[k]=[null,null,null,null];(((T.mods||{})[k])||[]).forEach((id,j)=>{if(!id||j>3)return;if(!modOpen(i,j)){lack(`หลุมปีกชั้นที่ ${i+1} ยังไม่เปิด`);return;}if(take(id,isMutJ(j)))a[j]=id;});});
+  (T.ss||[]).forEach((k,i)=>{if(!k||i>=NSS)return;const nm=(S[k]||{}).name||k;if(!S[k]||!ssOpen(i)||!ssLearned(k)||!extracted(k)){lack('สกิล '+nm+(S[k]&&!ssLearned(k)?' (ยังไม่ได้เรียน)':''));return;}if(D.ss.includes(k))return;
+    D.ss[i]=k;const id=(T.sm||[])[i];if(id&&take(id,true))D.sm[i]=id;((((T.ssu||[])[i])||[])).forEach((x,j)=>{if(!x||j>1)return;if(!uOpen(i,j)){lack('หลุมขอบเขียวยังไม่ได้สลัก');return;}if(take(x,false))D.ssu[i][j]=x;});});
+  bagSave();save();return {miss:Object.entries(miss).map(([s,n])=>s+(n>1?' ×'+n:''))};}
+const pgRules=()=>`<br><span style="color:#2a5a8a">📑 3 หน้า = จัดเสาไว้ 3 แบบ (เช่น ฟาร์ม / บอส / ปาร์ตี้) · สลับฟรี: ในเมืองได้ตลอด · นอกเมืองได้เมื่อไม่ได้สู้ ${PG_CALM} วิ · เจม C / เจมสกิลใช้ร่วมกันทุกหน้า · เจมแปรสภาพ / เสริมย้ายตามหน้า (ถอดกลับกระเป๋าแล้วหยิบใส่หน้าใหม่) — ถ้าในกระเป๋าไม่พอ หลุมนั้นว่างไว้</span>`;
+function doPage(t){const P=D.pg,from=P.c;const r=switchPage(t);if(!r)return;if(r.same){pgCard();return;}
+  sel=null;boost=1;render();const bd=board;bd.classList.remove('pgsw');void bd.offsetWidth;bd.classList.add('pgsw');
+  try{G('msg')(`📑 เสาโทเท็ม: หน้า "${P.n[P.c]}"`);}catch(e){}
+  info(`<b class="g">✔ สลับเป็นหน้า "${esc(P.n[P.c])}" แล้ว</b>`+(r.fresh?`<br>หน้านี้ใช้ครั้งแรก — เริ่มจากสำเนาหน้า "${esc(P.n[from])}" ให้แล้ว ปรับเจมได้เลย (หน้า "${esc(P.n[from])}" ยังเก็บไว้ครบ)`:'')
+    +(r.miss.length?`<br><span class="c">ขาด: ${r.miss.map(esc).join(' · ')} — หลุมนั้นว่างไว้</span>`:'')+resLine()+pgRules());}
+function pgCard(extra){const P=D.pg,c=P.c,n=pgCount(snap());
+  let h=`<b>📑 หน้า ${c+1} "${esc(P.n[c])}"</b> · ใช้อยู่<br>บนหน้านี้: เจม C ${n.c} · สกิล ${n.s} · แปรสภาพ ${n.m} · เสริม ${n.u}`;
+  h+=`<div class="pgr">ชื่อหน้า <input id="pgName" maxlength="12" value="${esc(P.n[c])}"><button data-pgren>บันทึก</button></div>`;
+  h+=`<div class="pgr">คัดลอกหน้านี้ไปทับ ${[0,1,2].filter(i=>i!==c).map(i=>`<button data-pgcp="${i}">${i+1} · ${esc(P.n[i])}</button>`).join('')}</div>`;
+  h+='<div class="pgo">'+[0,1,2].filter(i=>i!==c).map(i=>{const L=P.L[i],k=pgCount(L);return `<div>หน้า ${i+1} "${esc(P.n[i])}": ${L?`เจม C ${k.c} · สกิล ${k.s} · แปรสภาพ ${k.m} · เสริม ${k.u}`:'ยังไม่เคยใช้ (เปิดครั้งแรก = สำเนาหน้าที่ใช้อยู่)'}</div>`;}).join('')+'</div>';
+  info(h+pgRules().replace(/^<br>/,'')+(extra||''));
+  const el=win.querySelector('#tgInfo'),inp=el.querySelector('#pgName');
+  const ren=()=>{const v=inp.value.trim().slice(0,12);if(!v)return;P.n[c]=v;saveQ();render(true);pgCard('<br><span class="g">✔ เปลี่ยนชื่อหน้าแล้ว</span>');};
+  inp.addEventListener('keydown',e=>{e.stopPropagation();if(e.key==='Enter')ren();});inp.addEventListener('keyup',e=>e.stopPropagation());
+  el.querySelector('[data-pgren]').onclick=ren;
+  el.querySelectorAll('[data-pgcp]').forEach(b=>b.onclick=()=>{const i=+b.dataset.pgcp;if(!b.classList.contains('arm')){b.classList.add('arm');b.textContent=`แตะอีกครั้ง = เขียนทับหน้า "${P.n[i]}"`;return;}
+    P.L[i]=snap();saveQ();pgCard(`<br><span class="g">✔ คัดลอกหน้า "${esc(P.n[c])}" ไปทับหน้า "${esc(P.n[i])}" แล้ว</span>`);});}
+/* ---------- resonance / balance panels ---------- */
+function resLine(){if(BAL())return `<br><span class="blT">⚖ สมดุล: แปรสภาพ ${RES.kinds} แบบไม่ซ้ำกัน — ข้อเสียของทุกเม็ดเบาลง</span>`;
+  if(RES.on.size)return `<br><span class="rsT">🔗 เรโซแนนซ์: ${[...RES.on].map(id=>MUTD[id][1]).join(' · ')} — ข้อดีแรงขึ้น</span>`;return '';}
+function resSum(){if(BAL())return `<b>⚖ สมดุล</b> · แปรสภาพ ${RES.kinds} แบบไม่ซ้ำ → ข้อเสียทุกเม็ดเบาลง`;
+  if(RES.on.size)return `<b>🔗 เรโซแนนซ์</b> · ${[...RES.on].map(id=>MUTD[id][1]).join(' · ')} → ข้อดีแรงขึ้น`;
+  return RES.tot?`🔗 แบบเดียวกัน 2 เม็ด = เรโซแนนซ์ · ⚖ ไม่ซ้ำครบ ${BAL_N} แบบ = สมดุล (ตอนนี้ ${RES.kinds}/${BAL_N})`:`🔗 เรโซแนนซ์ / ⚖ สมดุล — แตะดูวิธีติด`;}
+function resInfo(){const ks=Object.keys(RES.n);
+  let h=`<b>🔗 เรโซแนนซ์ · ⚖ สมดุล</b> (เจมแปรสภาพบนเสา)<br>ทำงานอยู่ ${RES.tot} เม็ด · ${ks.length} แบบ${resLine()}`;
+  h+=`<div class="rsx${RES.on.size?' on':''}"><b>🔗 เรโซแนนซ์</b> = แบบเดียวกัน 2 เม็ด (หลุมไหนก็ได้บนเสา) → <b>ข้อดี</b>ของแบบนั้นแรงขึ้น ทั้ง 2 สกิล</div>`;
+  h+=`<div class="rsx${BAL()?' on':''}"><b>⚖ สมดุล</b> = ไม่มีแบบไหนซ้ำ และครบ ${BAL_N} แบบขึ้นไป (ตอนนี้ ${ks.length}/${BAL_N}${Object.keys(RES.n).some(id=>RES.n[id]>1)?' · มีคู่ซ้ำอยู่ = ไม่ติด':''}) → <b>ข้อเสีย</b>ของทุกเม็ดเบาลง</div>`;
+  h+='<div class="rst">'+MUT.map(m=>{const id=m[0],R=RESO[id];if(!R)return '';const n=RES.n[id]||0,on=RS(id)||(BAL()&&n);
+    return `<span class="gi">${sg(id,'mut')}</span><div class="${on?'on':''}"><b>${m[1]}</b>${n?` · บนเสา ${n}`:''}${mutTag(id)}<br>🔗 ได้ ${m[4]} → <b>${R.g}</b><br>⚖ เสีย ${m[5]} → <b>${R.c}</b></div>`;}).join('')+'</div>';
+  info(h);}
+function pgBar(){const P=D.pg,why=pgBlock();win.querySelectorAll('#tgPg button').forEach(b=>{const i=+b.dataset.pg,on=i===P.c;b.classList.toggle('on',on);b.classList.toggle('wait',!on&&!!why);
+  const h=`<small>หน้า ${i+1}</small>${esc(P.n[i])}`;if(b.innerHTML!==h)b.innerHTML=h;
+  b.title=`หน้า ${i+1} "${P.n[i]}"`+(on?' · ใช้อยู่ — แตะเพื่อตั้งชื่อ / คัดลอก':why?' · '+why:' · แตะเพื่อสลับ');});}
+win.querySelectorAll('#tgPg button').forEach(b=>b.onclick=()=>{const t=+b.dataset.pg;if(t===D.pg.c){sel=null;render(true);pgCard();return;}doPage(t);});
+win.querySelector('#tgRes').onclick=()=>{sel=null;setTab('mut');render(true);resInfo();};
+win.querySelector('#tgRsb').onclick=()=>{sel=null;render(true);resInfo();};
 function render(keepInfo){const S=G('SKILLS');if(!S)return;
   const inv=(id,list)=>{const e=win.querySelector(id);e.innerHTML='';list.forEach(b=>e.appendChild(b));};
   inv('#tgGems',cKeys().map(k=>{const b=document.createElement('button'),own=D.own[k];b.className='cgb '+(own?'':'lock ')+(D.sock.includes(k)?'used ':'')+(sel&&sel.gem===k?'sel':'');
     b.innerHTML=cgemHtml(k)+(own?`<i>${own.lv}</i>`+(own.dup?`<b class="dp">×${own.dup}</b>`:'')+(own.cand?'<b class="cn">!</b>':''):'');b.title=S[k].name+(own?` · Lv ${own.lv} · ${QUAL[own.q||0].n}`:' · ยังไม่มี');b.onclick=()=>{const t=sel;sel=own?{gem:k}:null;if(own&&t&&t.sock!=null&&!D.sock[t.sock]){clickSock(t.sock);return;}showGem(k);render(true);};return b;}));
   for(const [kind,list,el] of [['mut',MUT,'#tgMuts'],['sup',SUP,'#tgSups']])
     inv(el,list.map(([id,n])=>{const fr=free(kind,id),u=used(kind,id);const b=document.createElement('button');b.className=(fr<=0?'used ':'')+(sel&&sel[kind]===id?'sel':'');
-      b.innerHTML=sg(id,kind)+(fr||u?`<i>${fr}</i>`:'');b.title=n;
+      const rz=kind==='mut'?(RS(id)?'<b class="rsb" title="เรโซแนนซ์">🔗</b>':BAL()&&RES.n[id]?'<b class="rsb bl" title="สมดุล">⚖</b>':''):'';
+      b.innerHTML=sg(id,kind)+(fr||u?`<i>${fr}</i>`:'')+rz;b.title=n+(kind==='mut'&&RS(id)?' · 🔗 เรโซแนนซ์':kind==='mut'&&BAL()&&RES.n[id]?' · ⚖ สมดุล':'');
       b.onclick=()=>{const t=sel;sel=fr>0?{[kind]:id}:null;
         if(fr>0&&t){if(t.mod&&(isMutJ(t.mod[1])?'mut':'sup')===kind&&!(D.mods[D.sock[t.mod[0]]]||[])[t.mod[1]]){clickMod(t.mod[0],t.mod[1]);return;}
           if(kind==='sup'&&t.ssu&&D.ss[t.ssu[0]]&&!(D.ssu[t.ssu[0]]||[])[t.ssu[1]]){clickSSU(t.ssu[0],t.ssu[1]);return;}
@@ -761,6 +923,11 @@ function render(keepInfo){const S=G('SKILLS');if(!S)return;
   {const gb=win.querySelector('#tgGiftB'),n=giftN();gb.style.display=n?'':'none';gb.textContent=`🎁 รับเจมแปรสภาพฟรี ${n} เม็ด (ของขวัญดาวสกิล)`;}
   {const T=win.querySelectorAll('.tgTabs button small'),nOpen=SS_LV.filter((l,i)=>ssOpen(i)).length,nPl=D.ss.filter((k,i)=>k&&ssOpen(i)).length;   /* tab counters */
     if(T.length===4){T[0].textContent=`${nPl}/${nOpen} ดาว`;T[1].textContent=`มี ${cKeys().filter(k=>D.own[k]).length}`;T[2].textContent=`มี ${MUT.reduce((a,m)=>a+free('mut',m[0]),0)}`;T[3].textContent=`มี ${SUP.reduce((a,m)=>a+free('sup',m[0]),0)}`;}}
+  pgBar();
+  {const R=win.querySelector('#tgRes'),bl=BAL();R.classList.toggle('on',bl||RES.on.size>0);R.classList.toggle('bl',bl);   /* resonance badges (board, top right) + the status line of the mutation tab */
+    R.querySelector('.rl').innerHTML=bl?`<span class="rb bal" title="สมดุล: แปรสภาพ ${RES.kinds} แบบไม่ซ้ำกัน">⚖<i>${RES.kinds}</i></span>`
+      :[...RES.on].map(id=>`<span class="rb" style="--c:${MUTD[id][3]}" title="เรโซแนนซ์ ${MUTD[id][1]}">${sg(id,'mut')}<i>×2</i></span>`).join('');
+    const rb=win.querySelector('#tgRsb');rb.innerHTML=resSum();rb.className='tgRsb'+(bl?' bl':RES.on.size?' on':'');}
   board.querySelectorAll('.tgN').forEach(e=>e.remove());
   /* order: C stars (land sockets) → their side stars on top of the wing tips → the inner skill stars last (on top) */
   /* sealed holes (carving, owner 2026-11-21): level reached + not carved = a plug in the hole (wooden peg on the pole, stone on the base) with a
@@ -854,7 +1021,7 @@ function ssInfo(i,extra){const S=G('SKILLS'),k=D.ss[i],id=D.sm[i];
   const s=S[k],l=(G('LV')||{})[k]||0;
   const fu=ssChain(k).slice(1).map(q=>S[q].name);
   h+=`สกิล <b>${s.name}</b>${fu.length?' + ท่าต่อ '+fu.join(', '):''} · สาย ${BRN[s.br]||s.br} · Lv สกิล ${l}${l?'':' <b class="c">(ยังไม่ได้เรียน — ดาวนี้ยังไม่มีผล)</b>'}<br>`+sgSection(k);
-  if(id){const m=MUTD[id];h+=`แปรสภาพ <b>${m[1]}</b>${cDup(k,id)?' <b class="c">(ซ้ำกับเจม C — ไม่มีผล)</b>':''}<br><span class="g">ได้: ${m[4]}</span><br><span class="c">เสีย: ${m[5]}</span><br><button class="ssb" data-ssoff="${i}">ถอดเฉพาะเจมแปรสภาพ</button>`;}
+  if(id){const m=MUTD[id];h+=`แปรสภาพ <b>${m[1]}</b>${cDup(k,id)?' <b class="c">(ซ้ำกับเจม C — ไม่มีผล)</b>':mutTag(id)}<br><span class="g">ได้: ${mutG(id)}</span><br><span class="c">เสีย: ${mutC(id)}</span><br><button class="ssb" data-ssoff="${i}">ถอดเฉพาะเจมแปรสภาพ</button>`;}
   else{const av=MUT.filter(m=>free('mut',m[0])>0&&!cDup(k,m[0])&&used('mut',m[0])<2);   /* one-tap buttons: no need to scroll the gem list on a phone */
     h+=av.length?`<span style="color:#2a5a8a">ยังไม่ใส่เจมแปรสภาพ — แตะปุ่มเพื่อใส่เลย</span><div style="display:flex;flex-wrap:wrap;gap:3px;margin-top:2px">${av.map(m=>`<button class="ssb" data-ssput="${m[0]}" style="margin:0">${m[1]} ×${free('mut',m[0])}</button>`).join('')}</div>`
       :`<span style="color:#2a5a8a">ยังไม่มีเจมแปรสภาพในกระเป๋า — ${giftN()?'รับฟรีที่ปุ่ม 🎁':'หาได้จากดันเจี้ยน บอส มอนสนาม (หายาก) หรือตลาดกลาง'}</span>`;}
@@ -978,7 +1145,8 @@ function fit(){for(const id of ['#tgLeft','#tgRight']){const p=win.querySelector
   const s=Math.max(.3,Math.min(m.clientWidth,m.clientHeight)/BS);board.style.transform=`scale(${s})`;}
 const DEF_INFO=TL?'<b>เสาโทเท็มของคุณ</b> — สลักขึ้นใหม่จากเศษโทเท็มใหญ่ ทีละชั้นตามเลเวล<br><b>⛏ หลุมที่มีฝาปิด</b> ต้องส่งของสลักเปิดก่อน — แตะหลุมเพื่อดูว่าต้องใช้อะไร (หลุมสกิลแรกเปิดฟรีให้ลอง)<br><b>แท่นหินฐานเสา = ดาวสกิล</b> (เปิด Lv '+SS_LV.join(' / ')+'): สกัดสกิลที่เรียนแล้วเป็นเจม (แท็บ "สกิล" → ⚗ สกัด · ครั้งแรกฟรี) แล้วใส่ในหลุม แล้วใส่เจมแปรสภาพในหลุมเล็ก'+(SSU.length?' (ขอบทอง) และเจมเสริมในหลุมขอบเขียว 2 หลุม (ผลครึ่งหนึ่ง)':'ข้างๆ')+' — สกิลจะเปลี่ยนไปจริงตามเจม<br><b>ชั้นเสา 5 ชั้น = เจม C</b> (หมี Lv 60 · นกฮูก 70 · หมาป่า 80 · อินทรี 90 · นกสายฟ้า 99): หลุมใหญ่กลางชั้น = เจมหลัก · หลุมด้านในปีก = แปรสภาพ (ข้างขวาเปิดเมื่อเจมเลเวลตัน) · หลุมด้านนอกปีก = เจมเสริม':'<b>ดาวเงินวงใน = ดาวสกิล</b> (เปิด Lv '+SS_LV.join(' / ')+'): เลือกสกิลที่เรียนแล้วในแท็บ "สกิล" วางบนดาว แล้วใส่เจมแปรสภาพ — สกิลจะเปลี่ยนไปจริงตามเจม<br><b>ดาวทองวงนอก = เจม C</b> (Lv 60–99): ดาวใหญ่ = เจมหลัก · ดาวขอบรูน = แปรสภาพ · ดาวเล็ก = เจมเสริม · เส้นทางดาวเปิดเพิ่มทุก 10 เลเวล';
 let giftSeen=false;
-function open(){D=load();sel=null;win.classList.add('open');setTab(tab);fit();render();info(DEF_INFO);win.classList.add('open');last=performance.now();cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);
+const DEF_MORE=()=>`<br><b>📑 หน้า 1–3</b> (แท็บบนสุดของช่องนี้): จัดเสาไว้ 3 แบบ เช่น ฟาร์ม / บอส / ปาร์ตี้ — สลับได้ฟรี<br><b>🔗 เรโซแนนซ์ / ⚖ สมดุล</b>: เจมแปรสภาพแบบเดียวกัน 2 เม็ด = ข้อดีแรงขึ้น · ไม่ซ้ำกันครบ ${BAL_N} แบบ = ข้อเสียเบาลง — แตะปุ่ม 🔗 มุมขวาบนของเสา`+resLine();
+function open(){D=load();sel=null;win.classList.add('open');setTab(tab);fit();try{apply();}catch(e){}render();info(DEF_INFO+DEF_MORE());win.classList.add('open');last=performance.now();cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);
   if(giftN()>0&&!giftSeen){giftSeen=true;openGift();}}
 function close(){win.classList.remove('open');}
 addEventListener('resize',()=>{if(win.classList.contains('open'))fit();});
@@ -1013,14 +1181,15 @@ function setGST(g){if(JSON.stringify(g)===JSON.stringify(GST))return;GST=g;try{c
 window.gemStats=()=>Object.assign({},GST);
 function apply(){const S=G('SKILLS'),LV=G('LV');if(!S||!LV)return;let chg=false;
   if(!window.__GEMS_ALL)for(const k of cKeys()){const i=D.sock.indexOf(k),on=i>=0&&sockOpen(i)&&tierOK(k)&&!!D.own[k],w=on?1:0;if((LV[k]||0)!==w){LV[k]=w;chg=true;}}
-  const sig=JSON.stringify([D.sock,D.mods,D.own,cKeys().map(k=>LV[k]),D.ss,D.sm,D.ssu,D.ss.map((k,i)=>ssAct(i)?1:0),D.cv,D.sx,test()]);if(sig===lastSig&&!chg)return;lastSig=sig;   /* rebuild only on change: ACT keeps its hit / cast counters */
+  const sig=JSON.stringify([D.sock,D.mods,D.own,cKeys().map(k=>LV[k]),D.ss,D.sm,D.ssu,D.ss.map((k,i)=>ssAct(i)?1:0),D.cv,D.sx,test(),!!window.__RESO_OFF]);if(sig===lastSig&&!chg)return;lastSig=sig;   /* rebuild only on change: ACT keeps its hit / cast counters */
   for(const k in S){const s=S[k];if(s._gb){s.mp=s._gb.mp;s.cd=s._gb.cd;delete s._gb;}}
   ACT={};
   const tgt=D.sock.map(k=>k&&LV[k]&&D.own[k]?targetOf(k):null);
   const GS={},addS=(l,q,lv)=>{const st=SLINE[l[0]];if(!st)return false;GS[st]=(GS[st]||0)+statN(LV_V(l[1],q,lv));return true;};   /* stat lines → character stats */
+  const MC={};   /* working mutation gems per kind (resonance / balance) */
   D.sock.forEach((k,i)=>{if(!k||!LV[k]||!D.own[k])return;const t=targetOf(k);if(t!=='@auto'&&!S[t])return;const m=D.mods[k]||[];
     const A=ACT[t]||(ACT[t]={gems:[],lv:1,mut:[],sup:[],n:0,casts:0,ln:{},elem:0,next:null,socks:[]});A.gems.push(k);A.lv=Math.max(A.lv,D.own[k].lv||1);A.socks.push(i);
-    m.forEach((id,j)=>{if(id&&modOpen(i,j))(isMutJ(j)?A.mut:A.sup).push(id);});
+    m.forEach((id,j)=>{if(id&&modOpen(i,j)){(isMutJ(j)?A.mut:A.sup).push(id);if(isMutJ(j)&&MUTD[id])MC[id]=(MC[id]||0)+1;}});
     /* random lines (gem farming v2): ranks add up per line kind on the target skill */
     {const o=D.own[k];for(const l of (o.lines||[])){if(addS(l,o.q,o.lv))continue;A.ln[l[0]]=(A.ln[l[0]]||0)+LV_V(l[1],o.q,o.lv);}A.rq=Math.max(A.rq==null?-1:A.rq,o.q||0);}
     const lr=(D.own[k].lines||[]).find(l=>l[0]==='lelem');if(lr){const my=[m[0],m[3]].filter(Boolean);let c=0;for(const d of [-1,1]){const kn=D.sock[(i+d+NS)%NS],mm=kn&&D.mods[kn]||[];if(my.some(x=>x===mm[0]||x===mm[3]))c++;}A.elem+=.03*LV_V(lr[1],D.own[k].q,D.own[k].lv)*c;}
@@ -1032,15 +1201,16 @@ function apply(){const S=G('SKILLS'),LV=G('LV');if(!S||!LV)return;let chg=false;
     const eff=g?(g.lines||[]).filter(l=>!addS(l,g.q,g.lv)):[];   /* the skill gem's special stats (owner 2026-11-21): stat lines → character, the rest on the skill */
     if(!id&&!su.length&&!g)return;
     ssChain(k).forEach((t,c)=>{const A=ACT[t]||(ACT[t]={gems:[],lv:1,mut:[],sup:[],n:0,casts:0,ln:{},elem:0,next:null,socks:[],cmut:[]});(A.ss||(A.ss=[])).push(i);if(c&&!A.gems.length)A.fol=1;
-      if(id&&!A.mut.includes(id))A.mut.push(id);if(su.length)(A.supH||(A.supH=[])).push(...su);
+      if(id&&!A.mut.includes(id)){A.mut.push(id);if(!c)MC[id]=(MC[id]||0)+1;}if(su.length)(A.supH||(A.supH=[])).push(...su);
       for(const l of eff){if(c&&!HITL.has(l[0]))continue;A.ln[l[0]]=(A.ln[l[0]]||0)+LV_V(l[1],g.q,g.lv);}   /* a follow-up gets the hit side only */
       if(g)A.sq=Math.max(A.sq==null?-1:A.sq,g.q||0);});});
   setGST(GS);
+  {const ks=Object.keys(MC),on=new Set(ks.filter(id=>MC[id]>=2));RES={n:MC,on,tot:ks.reduce((a,id)=>a+MC[id],0),kinds:ks.length,bal:!on.size&&ks.length>=BAL_N};}
   for(const t in ACT){if(t==='@auto'||ACT[t].fol)continue;const A=ACT[t],s=S[t];s._gb={mp:s.mp,cd:s.cd};const has=id=>A.mut.includes(id)||A.sup.includes(id);
-    if(typeof s.cd==='number'){let cd=s.cd;if(has('heavy'))cd+=4;if(has('rapid'))cd*=.6;{const q=sw(A,'quick');if(q)cd-=Math.min(1.5*q,cd*.2*q);}   /* −1.5 s, at most a fifth of the cooldown (short skills would double up) */s.cd=Math.round(cd*10)/10;}
+    if(typeof s.cd==='number'){let cd=s.cd;if(has('heavy'))cd+=rv('heavyCd',BAL());if(has('rapid'))cd*=rv('rapidCd',RS('rapid'));{const q=sw(A,'quick');if(q)cd-=Math.min(1.5*q,cd*.2*q);}   /* −1.5 s, at most a fifth of the cooldown (short skills would double up) */s.cd=Math.round(cd*10)/10;}
     if(typeof s.cd==='number'&&A.ln.lcd){s.cd=Math.round((s.cd-Math.min(.2*A.ln.lcd,s.cd*.2))*10)/10;}   /* line: cooldown −0.2 s per rank, at most a fifth */
-    if(typeof s.mp==='number'){let mp=s.mp;if(has('heavy'))mp+=10;{const w=sw(A,'thrift');if(w)mp=Math.max(0,mp-6*w);}if(A.ln.lsp)mp=Math.max(0,mp-Math.round(A.ln.lsp));s.mp=mp;}
-    if(has('stack')){if(!STK[t])STK[t]={ch:2,rT:0};}else delete STK[t];}
+    if(typeof s.mp==='number'){let mp=s.mp;if(has('heavy'))mp+=rv('heavyMp',BAL());{const w=sw(A,'thrift');if(w)mp=Math.max(0,mp-6*w);}if(A.ln.lsp)mp=Math.max(0,mp-Math.round(A.ln.lsp));s.mp=mp;}
+    if(has('stack')){const mx=rv('stackCh',RS('stack'));if(!STK[t])STK[t]={ch:mx,rT:0,mx};else{STK[t].mx=mx;if(STK[t].ch>mx)STK[t].ch=mx;}}else delete STK[t];}
   for(const t in STK)if(!ACT[t])delete STK[t];
   window.GEM_V=(window.GEM_V||0)+1;try{G('buildHotbar')();}catch(e){}   /* gem marks on the skill buttons (the phone wheel watches GEM_V) */
   if(chg){try{G('buildLevels')();}catch(e){}}}
@@ -1048,19 +1218,21 @@ const has=(A,id)=>A.mut.includes(id)||A.sup.includes(id)||!!(A.supH&&A.supH.incl
 function rec(key,fresh){let R=REC[key];if(fresh||!R||now()-R.t>(key==='@auto'?3:6))R=REC[key]={t:now(),first:null,hits:0,sp:0,heal:0,sum:0,tg:new Set(),third:false,chainAt:0,buffs:[]};return R;}
 /* hit on behalf of a skill outside its own frame (echo, chains, pillar): set SKCTX so damage type + KO follow the skill */
 function gh(e,m,key,x){if(!e||e.dead)return 0;const old=window.SKCTX;window.SKCTX=key==='@auto'?null:key;let d=0;try{d=hurt(e,m,Object.assign({_gem:1,skill:key==='@auto'?undefined:key,auto:key==='@auto'},x||{}));}catch(err){}window.SKCTX=old;return d;}
-function mut(A,auto){let pm=1+gemPowOf(A.lv);const M={heavy:1.5,rapid:.65,stack:.8,fire:.7,ice:.8,volt:.8,guard:.8,rage:1.3,siphon:.85,spread:.75};for(const id of A.mut)if(M[id])pm*=M[id];return pm;}
+function mut(A,auto){let pm=1+gemPowOf(A.lv);const b=BAL();   /* gains move with resonance, costs with balance */
+  const M={heavy:rv('heavyP',RS('heavy')),rapid:rv('rapidP',b),stack:rv('stackP',b),fire:rv('fireP',b),ice:rv('iceP',b),volt:rv('voltP',b),guard:rv('guardP',b),rage:rv('rageP',RS('rage')),siphon:rv('siphonP',b),spread:rv('spreadP',b)};
+  for(const id of A.mut)if(M[id])pm*=M[id];return pm;}
 function freeze(e,d){const s=e.st;if(!s)return;d=e.boss?d*.5:d;s.frozen=Math.max(s.frozen||0,d);s.slow=Math.max(s.slow||0,d+1);}
 
 /* ---- damage ---- */
 const _hurt=G('hurt');
-if(_hurt)window.hurt=hurt=function(e,mult,o){o=o||{};if(o._gem||o.dot||!e||e.dead||!Object.keys(ACT).length)return _hurt(e,mult,o);
+if(_hurt)window.hurt=hurt=function(e,mult,o){o=o||{};FIGHT_T=now();if(o._gem||o.dot||!e||e.dead||!Object.keys(ACT).length)return _hurt(e,mult,o);
   const pa=G('player');const auto=!!o.auto,key=auto?'@auto':(o.skill||window.SKCTX||(pa&&pa.action&&pa.action.skill)||null);const A=key&&ACT[key];if(!A)return _hurt(e,mult,o);
   ensureCore();const R=rec(key);let m=mult;{const w=sw(A,'force');if(w)m+=(auto?.075:.15)*w;}let pm=mut(A,auto);
   {const L=A.ln,h=auto?.5:1,st=e.st||{};let add=0;   /* random lines on the gem: flat additions to the hit (half on normal attacks) */
     if(L.lpow)add+=.03*L.lpow;if(L.lfirst&&!R.hits)add+=.15*L.lfirst;if(L.lboss&&(e.boss||(e.m&&e.m.role==='brute')))add+=.06*L.lboss;
     if(L.lsts&&(st.slow>0||st.stun>0||st.frozen>0||st.stagger>0||st.bleed>0||st.burn>0||st.poison>0||e._gBurn||e._gFlat))add+=.06*L.lsts;
     if(A.elem)add+=A.elem;const nb=NB[key];if(nb&&nb.u>now())add+=nb.v;m+=add*h;}
-  if(A.mut.includes('focus')){if(!R.first)R.first=e;pm*=e===R.first?1.6:.4;}
+  if(A.mut.includes('focus')){if(!R.first)R.first=e;pm*=e===R.first?rv('focusF',RS('focus')):rv('focusO',BAL());}
   if(R.third)pm*=1+.5*R.third;if(auto)pm=1+(pm-1)/2;
   let mon=e.m,dd=0;{const pv=20*sw(A,'pierce')+Math.round(4*(A.ln.lpier||0));if(pv&&mon&&mon.def){dd=Math.min(mon.def,pv);mon.def-=dd;}}
   let dmg=0;try{dmg=_hurt(e,m*pm,o);}finally{if(dd)mon.def+=dd;}
@@ -1068,14 +1240,14 @@ if(_hurt)window.hurt=hurt=function(e,mult,o){o=o||{};if(o._gem||o.dot||!e||e.dea
   if(A.ln.lslow&&A.n%4===0)G('applyCC')(e,{slow:1+.3*A.ln.lslow});
   if(A.ln.lkill&&(e.dead||e.hp<=0)&&!auto)pl.mp=Math.min(pl.maxMp,pl.mp+Math.round(2*A.ln.lkill));
   if(A.ln.lpush&&!e.boss){const tag=R.hits;TIM.push({at:now()+.3,f:()=>{if(R.hits!==tag||e.dead)return;const a=Math.atan2(e.y-pl.y,e.x-pl.x),v=40+30*Math.min(5,A.ln.lpush);e.vx=(e.vx||0)+Math.cos(a)*v;e.vy=(e.vy||0)+Math.sin(a)*v;}});}
-  if(has(A,'spread')||has(A,'splash')){const f=(A.mut.includes('spread')?.35:0)+.3*sw(A,'splash'),r=A.mut.includes('spread')?80:70;
+  if(has(A,'spread')||has(A,'splash')){const f=(A.mut.includes('spread')?rv('spreadF',RS('spread')):0)+.3*sw(A,'splash'),r=A.mut.includes('spread')?80:70;
     for(const t of G('enemiesInCircle')(e.x,e.y,r))if(t!==e)gh(t,hm*f,key);}
-  if(A.mut.includes('fire')){{const o=e._gBurn;e._gBurn={n:4,nt:o?o.nt:now()+1,m:Math.max(o?o.m:0,hm*.35/4),key};}   /* refresh keeps the tick timer, else fast hits would postpone every tick */}
+  if(A.mut.includes('fire')){{const o=e._gBurn;e._gBurn={n:rv('fireN',RS('fire')),nt:o?o.nt:now()+1,m:Math.max(o?o.m:0,hm*.35/4),key};}   /* refresh keeps the tick timer, else fast hits would postpone every tick; resonance = 5 ticks */}
   {const w=sw(A,'burn');if(w){const o=e._gFlat;e._gFlat={n:3,nt:o?o.nt:now()+1,v:L*w,key};}}
-  if(A.mut.includes('ice')){G('applyCC')(e,{slow:2});if(A.n%4===0)freeze(e,.6);}
+  if(A.mut.includes('ice')){G('applyCC')(e,{slow:2});if(A.n%4===0)freeze(e,rv('iceF',RS('ice')));}
   {const w=sw(A,'frost');if(w){if(A.n%3===0)G('applyCC')(e,{slow:2*w});if(A.n%6===0)freeze(e,.8*w);}}
   {const w=sw(A,'impact');if(w&&A.n%5===0){G('applyCC')(e,{stun:.5*w});try{G('koHit')(e,3*w,{skill:key==='@auto'?undefined:key,koMul:2});}catch(err){}}}
-  if(A.mut.includes('siphon')&&R.sp<12){const v=Math.min(2,12-R.sp);R.sp+=v;pl.mp=Math.min(pl.maxMp,pl.mp+v);}
+  if(A.mut.includes('siphon')){const rs=RS('siphon'),cap=rv('siphonCap',rs);if(R.sp<cap){const v=Math.min(rv('siphonV',rs),cap-R.sp);R.sp+=v;pl.mp=Math.min(pl.maxMp,pl.mp+v);}}
   {const w=sw(A,'leech');if(w&&R.heal<10){R.heal++;pl.hp=Math.min(pl.maxHp,pl.hp+L*w);}}
   if(A.mut.includes('volt')||sw(A,'chain')){R.lastE=e;R.lastM=hm;R.chainAt=now()+.3;}
   {const w=sw(A,'echo');if(w&&!auto)TIM.push({at:now()+.5,f:()=>{if(!e.dead){gh(e,hm*.35*w,key,{label:'ECHO',labelColor:'#c9b4ff'});}}});}
@@ -1085,12 +1257,12 @@ if(_hurt)window.hurt=hurt=function(e,mult,o){o=o||{};if(o._gem||o.dot||!e||e.dea
 const _cast=G('castSkillNow');
 if(_cast)window.castSkillNow=castSkillNow=function(key,c){const A=ACT[key];if(!A)return _cast(key,c);ensureCore();
   const S=G('SKILLS'),pl=G('player'),st=STK[key];
-  if(PIL.some(p=>p.key===key)){G('msg')('เสาโทเท็มกำลังร่ายท่านี้อยู่');return false;}
+  if(PIL.some(p=>p.key===key&&!(p.bal&&p.n<=1))){G('msg')('เสาโทเท็มกำลังร่ายท่านี้อยู่');return false;}   /* balance: free again from the pillar's 3rd cast */
   const R=rec(key,true);A.casts++;R.third=A.casts%3===0?sw(A,'third'):0;curCast=key;let ok=false;try{ok=_cast(key,c);}finally{curCast=null;}
   if(!ok)return ok;const L=plv();
   if(R.third)G('addFx')(new (G('DText'))({x:pl.x,y:pl.y,z:110,text:'×3!',color:'#ffb13b',size:14,life:.9}));
-  if(st){st.ch=Math.max(0,st.ch-1);if(st.rT<=0)st.rT=(S[key].cd||1)*1.25;pl.cd[key]=st.ch>0?0:st.rT;}
-  if(A.mut.includes('guard')){GU.sh=L*4;GU.shT=now()+5;GU.guardT=now()+3;ring(pl.x,pl.y,'#c9ccd8',60);}
+  if(st){st.ch=Math.max(0,st.ch-1);if(st.rT<=0)st.rT=(S[key].cd||1)*rv('stackR',BAL());pl.cd[key]=st.ch>0?0:st.rT;}
+  if(A.mut.includes('guard')){GU.sh=L*rv('guardSh',RS('guard'));GU.shT=now()+5;GU.guardT=now()+3;ring(pl.x,pl.y,'#c9ccd8',60);}
   {const N=A.ln;   /* random lines on cast */
     if(N.lshd){GU.sh=Math.max(GU.sh,L*.4*N.lshd);GU.shT=now()+5;}
     if(N.lheal)pl.hp=Math.min(pl.maxHp,pl.hp+L*.3*N.lheal);
@@ -1098,8 +1270,10 @@ if(_cast)window.castSkillNow=castSkillNow=function(key,c){const A=ACT[key];if(!A
     if(N.lfree&&!st){const ev=N.lfree>=5?4:N.lfree>=3?5:6;if(A.casts%ev===0){pl.cd[key]=0;G('addFx')(new (G('DText'))({x:pl.x,y:pl.y,z:120,text:'FREE!',color:'#9fe0ff',size:13,life:.9}));}}
     if(N.lnext&&A.next)NB[A.next]={v:.05*N.lnext,u:now()+5};
     LASTC[key]=now();if(N.lall&&now()-GU.allT>20){const T=Object.keys(ACT).filter(t=>t!=='@auto'&&ACT[t].gems.length);if(T.every(t=>LASTC[t]&&now()-LASTC[t]<=20)){GU.allT=now();GU.sh=Math.max(GU.sh,L*N.lall);GU.shT=now()+6;ring(pl.x,pl.y,'#ffd27a',90);}}}
-  if(A.mut.includes('rage')){GU.rageT=now()+3;ring(pl.x,pl.y,'#e2435a',60);}
-  if(A.mut.includes('totem')&&!A.fol){const p={key,f:Math.min(.45,Math.max(.12,2.2/Math.max(1,S[key].cd||5))),x:pl.x+Math.cos(pl.phi||0)*-30,y:pl.y+Math.sin(pl.phi||0)*-30,n:4,nt:now()+2,R,born:now()};PIL.push(p);pl.cd[key]=Math.max(pl.cd[key]||0,8+(S[key].cd||0));}
+  if(A.mut.includes('rage')){GU.rageT=now()+3;GU.rageV=L*rv('rageT',BAL());ring(pl.x,pl.y,'#e2435a',60);}
+  if(A.mut.includes('totem')&&!A.fol){const tr=RS('totem'),tb=BAL();
+    const p={key,f:Math.min(rv('totemF',tr),Math.max(.12,rv('totemK',tr)/Math.max(1,S[key].cd||5))),x:pl.x+Math.cos(pl.phi||0)*-30,y:pl.y+Math.sin(pl.phi||0)*-30,n:4,nt:now()+2,R,born:now(),bal:tb};
+    PIL.push(p);pl.cd[key]=Math.max(pl.cd[key]||0,2*rv('totemLock',tb)+(S[key].cd||0));}
   /* skills that hit nothing within 0.9 s count as buff skills → the support gems' buff-side effect */
   TIM.push({at:now()+.9,f:()=>{if(R.hits)return;const e0=G('enemiesInCircle')(pl.x,pl.y,90);
     {const w=sw(A,'splash');if(w){GU.sh=Math.max(GU.sh,L*3*w);GU.shT=now()+5;}}
@@ -1113,13 +1287,14 @@ const _buff=G('addBuff');
 if(_buff)window.addBuff=addBuff=function(k,dur){const key=curCast||window.SKCTX,A=key&&ACT[key];
   if(A){let x=3*sw(A,'echo'),f=1;for(const id of['force','chain','pierce'])x+=2*sw(A,id);
     /* time trade-offs reach buffs too, so a faster / slower / stored skill keeps the same uptime per SP (rapid on a buff skill gave free uptime) */
-    if(A.mut.includes('heavy'))f*=1.5;if(A.mut.includes('rapid'))f*=.6;if(A.mut.includes('stack'))f*=.8;
+    /* resonance / balance: heavy's longer buff grows with its gain, rapid's / stack's shorter buff shrinks less with balance */
+    if(A.mut.includes('heavy'))f*=rv('heavyP',RS('heavy'));if(A.mut.includes('rapid'))f*=rv('rapidB',BAL());if(A.mut.includes('stack'))f*=rv('stackP',BAL());
     dur=dur*f+x;const R=REC[key];if(R)R.buffs.push([k,dur]);}
   return _buff(k,dur);};
 const _acc=G('applyCC');
 if(_acc)window.applyCC=applyCC=function(e,cc){const key=curCast||window.SKCTX,A=key&&ACT[key];if(A&&A.ln&&A.ln.ldur&&cc){cc=Object.assign({},cc);for(const f of ['stun','flinch','slow'])if(cc[f])cc[f]+=.2*A.ln.ldur;}return _acc(e,cc);};
 const _abs=window.ENH_ABSORB;
-window.ENH_ABSORB=function(d){const t=now(),L=plv();if(GU.guardT>t)d=Math.max(0,d-L*.5);if(GU.drT>t)d=Math.max(0,d-GU.drV);if(GU.rageT>t)d+=L*.6;if(GU.sh>0&&GU.shT>t){const a=Math.min(GU.sh,d);GU.sh-=a;d-=a;}return _abs?_abs(d):d;};
+window.ENH_ABSORB=function(d){const t=now(),L=plv();if(d>0)FIGHT_T=t;if(GU.guardT>t)d=Math.max(0,d-L*.5);if(GU.drT>t)d=Math.max(0,d-GU.drV);if(GU.rageT>t)d+=GU.rageV||L*.6;if(GU.sh>0&&GU.shT>t){const a=Math.min(GU.sh,d);GU.sh-=a;d-=a;}return _abs?_abs(d):d;};
 /* the skill tree no longer takes C points: tapping a C node opens this board */
 const _cr=G('canRaise');if(_cr)window.canRaise=canRaise=function(k){const s=G('SKILLS')[k];if(s&&s.br==='C'&&!window.__GEMS_ALL)return false;return _cr(k);};
 const _skc=G('skChange');if(_skc)window.skChange=skChange=function(k,d){const s=G('SKILLS')[k];if(s&&s.br==='C'&&!window.__GEMS_ALL){open();return;}return _skc(k,d);};
@@ -1129,17 +1304,20 @@ function gemMark(k,txt){const A=ACT[k];if(!A)return '';
   if(txt){const j=D.ss.indexOf(k),g=j>=0&&sgo(k),pl=h=>h.replace(/<[^>]+>/g,'');   /* the button's title: rarity + special stats too */
     return (g?`\n💎 เจมสกิล ${QUAL[g.q].n} Lv ${g.lv}: `+(g.lines||[]).map(l=>pl(lnTxt(l,g.q,g.lv))).join(' · '):'')
       +A.gems.map(c=>{const o=D.own[c]||{};return `\n◆ เจม C ${QUAL[o.q||0].n} Lv ${o.lv||1}`+((o.lines||[]).length?': '+o.lines.map(l=>pl(lnTxt(l,o.q||0,o.lv))).join(' · '):'');}).join('')
-      +(A.mut.length?'\n💎 แปรสภาพ: '+A.mut.map(x=>MUTD[x][1]).join(', '):'')+(A.sup.length||(A.supH&&A.supH.length)?'\n💎 เจมเสริม: '+A.sup.map(x=>SUPD[x][1]).concat((A.supH||[]).map(x=>SUPD[x][1]+' (½)')).join(', '):'');}
+      +(A.mut.length?'\n💎 แปรสภาพ: '+A.mut.map(x=>MUTD[x][1]+(RS(x)?' (🔗 เรโซแนนซ์: '+mutG(x)+')':BAL()?' (⚖ สมดุล: เสีย '+mutC(x)+')':'')).join(', '):'')+(A.sup.length||(A.supH&&A.supH.length)?'\n💎 เจมเสริม: '+A.sup.map(x=>SUPD[x][1]).concat((A.supH||[]).map(x=>SUPD[x][1]+' (½)')).join(', '):'');}
   const rq=Math.max(A.rq==null?-1:A.rq,A.sq==null?-1:A.sq),rc=rq>=0?`;--rc:${QUAL[rq].c}`:'',hi=rq>=QN-1?' hi':'';   /* the best rarity working on this skill lights the mark */
   if(!A.mut.length)return A.gems.length||(A.supH&&A.supH.length)||A.sq!=null?`<span class="gmk${hi}" style="--c:${rq>=0?QUAL[rq].c:A.gems.length?'#ffc83a':'#5ad1ff'}${rc}"><b>◆</b></span>`:'';
-  return A.mut.slice(0,2).map((x,i)=>`<span class="gmk${i?' two':''}${hi}" style="--c:${MUTD[x][3]}${rc}"><b>${MUTD[x][2]}</b><img src="assets/gems/mut/${x}.webp" alt="" onerror="this.remove()" style="position:absolute;inset:0;width:100%;height:100%;border-radius:50%;box-shadow:0 0 0 1.5px #2a1a0c"></span>`).join('');}
+  return A.mut.slice(0,2).map((x,i)=>`<span class="gmk${i?' two':''}${hi}${RS(x)?' rs':BAL()?' bl':''}" style="--c:${MUTD[x][3]}${rc}"><b>${MUTD[x][2]}</b><img src="assets/gems/mut/${x}.webp" alt="" onerror="this.remove()" style="position:absolute;inset:0;width:100%;height:100%;border-radius:50%;box-shadow:0 0 0 1.5px #2a1a0c"></span>`).join('');}
 function gemTip(k){const S=G('SKILLS'),A=ACT[k];let j=D.ss.indexOf(k);if(j<0&&A&&A.fol&&A.ss)j=A.ss[0];if(!A&&j<0)return '';
   let h='<div class="tb"><small style="color:#9fd8ff">💎 เจมที่แต่งสกิลนี้</small>';
-  if(j>=0){const id=D.sm[j],su=SSU[j]?(D.ssu[j]||[]).filter(Boolean):[];h+=`<div class="tl">⭐ ดาวสกิล ${j+1}: ${id?`แปรสภาพ <b>${MUTD[id][1]}</b> — ได้ ${MUTD[id][4]} · เสีย ${MUTD[id][5]}${!ssAct(j)||cDup(k,id)?' (ยังไม่มีผล)':''}`:'ยังไม่ใส่เจมแปรสภาพ'}</div>`
+  if(j>=0){const id=D.sm[j],su=SSU[j]?(D.ssu[j]||[]).filter(Boolean):[];h+=`<div class="tl">⭐ ดาวสกิล ${j+1}: ${id?`แปรสภาพ <b>${MUTD[id][1]}</b>${RS(id)?' 🔗 เรโซแนนซ์':BAL()?' ⚖ สมดุล':''} — ได้ ${mutG(id)} · เสีย ${mutC(id)}${!ssAct(j)||cDup(k,id)?' (ยังไม่มีผล)':''}`:'ยังไม่ใส่เจมแปรสภาพ'}</div>`
     +(su.length?`<div class="tl">🔹 เจมเสริม (ผลครึ่งหนึ่ง): ${su.map(x=>`<b>${SUPD[x][1]}</b> — ${SUPD[x][4]}`).join(' · ')}</div>`:'');
     const g=D.ss[j]&&sgo(D.ss[j]);if(g)h+=`<div class="tl">💎 เจมสกิล <b style="color:${QUAL[g.q].c}">${QUAL[g.q].n}</b> Lv ${g.lv}: ${(g.lines||[]).map(l=>lnTxt(l,g.q,g.lv)).join(' · ')}${D.ss[j]!==k?' (ท่าต่อได้เฉพาะผลตอนตี)':''}</div>`;}
   if(A)for(const g of A.gems){const m=D.mods[g]||[],mu=[m[0],m[3]].filter(Boolean),su=[m[1],m[2]].filter(Boolean);
-    const o=D.own[g]||{};h+=`<div class="tl">◆ เจม C <b>${S[g].name}</b> <b style="color:${QUAL[o.q||0].c}">${QUAL[o.q||0].n}</b> Lv ${o.lv||1}${mu.length?' · แปรสภาพ '+mu.map(x=>MUTD[x][1]).join(', '):''}${su.length?' · เสริม '+su.map(x=>SUPD[x][1]).join(', '):''}${(o.lines||[]).length?' · '+o.lines.map(l=>lnTxt(l,o.q||0,o.lv)).join(' · '):''}</div>`;}
+    const o=D.own[g]||{};h+=`<div class="tl">◆ เจม C <b>${S[g].name}</b> <b style="color:${QUAL[o.q||0].c}">${QUAL[o.q||0].n}</b> Lv ${o.lv||1}${mu.length?' · แปรสภาพ '+mu.map(x=>MUTD[x][1]+(RS(x)?' 🔗':BAL()?' ⚖':'')).join(', '):''}${su.length?' · เสริม '+su.map(x=>SUPD[x][1]).join(', '):''}${(o.lines||[]).length?' · '+o.lines.map(l=>lnTxt(l,o.q||0,o.lv)).join(' · '):''}</div>`;}
+  if(A&&A.mut.length){const rs=A.mut.filter(x=>RS(x));   /* resonance / balance on this skill's mutations, with the numbers that work now */
+    if(rs.length)h+=`<div class="tl">🔗 <b>เรโซแนนซ์</b>: ${rs.map(x=>`${MUTD[x][1]} — ได้ ${mutG(x)}`).join(' · ')}</div>`;
+    else if(BAL())h+=`<div class="tl">⚖ <b>สมดุล</b> (แปรสภาพ ${RES.kinds} แบบไม่ซ้ำ): ${A.mut.map(x=>`${MUTD[x][1]} — เสียเหลือ ${mutC(x)}`).join(' · ')}</div>`;}
   return h+'</div>';}
 window.gemMark=gemMark;
 const _tip=G('skTip');if(_tip)window.skTip=skTip=function(k,l){const h=_tip(k,l);try{return h+gemTip(k);}catch(e){return h;}};
@@ -1160,14 +1338,14 @@ const CORE={layer:'sorted',sy:0,_gemCore:1,
       const f=e._gFlat;if(f&&t>=f.nt){f.n--;f.nt=t+1;e.hp-=f.v;try{G('dmgNum')(e.x,e.y,40,f.v,'hit',{who:e});}catch(er){}if(e.hp<=0&&!e.dead)G('kill')(e);if(f.n<=0)e._gFlat=null;}}
     for(const key in REC){const R=REC[key],A=ACT[key];if(!A||!R.chainAt||t<R.chainAt)continue;R.chainAt=0;const src=R.lastE;if(!src)continue;
       const f=(A.mut.includes('volt')?.4:0)+.3*sw(A,'chain');let from=src;
-      const pool=en.filter(o=>!o.dead&&o!==src&&Math.hypot(o.x-src.x,o.y-src.y)<170).sort((p,q)=>Math.hypot(p.x-src.x,p.y-src.y)-Math.hypot(q.x-src.x,q.y-src.y)).slice(0,2);
+      const pool=en.filter(o=>!o.dead&&o!==src&&Math.hypot(o.x-src.x,o.y-src.y)<170).sort((p,q)=>Math.hypot(p.x-src.x,p.y-src.y)-Math.hypot(q.x-src.x,q.y-src.y)).slice(0,A.mut.includes('volt')?rv('voltN',RS('volt')):2);
       for(const o of pool){G('addFx')(new GemZap(from,o,A.mut.includes('volt')?'#5ad1ff':'#bfe8ff'));gh(o,R.lastM*f,key);from=o;}}
     for(let i=PIL.length-1;i>=0;i--){const p=PIL[i];if(t<p.nt)continue;p.nt=t+2;p.n--;const R=p.R;ring(p.x,p.y,'#d9a441',150);
       if(R.hits){const m=R.sum/Math.max(1,R.tg.size)*p.f;   /* ×0.45 at most; long-cooldown skills get less (the pillar would out-cast the skill) */for(const e of G('enemiesInCircle')(p.x,p.y,150).slice(0,4))gh(e,m,p.key,{label:'TOTEM',labelColor:'#ffd27a'});}
       else for(const [k,d] of R.buffs)_buff(k,Math.min(d,2.5));
       if(p.n<=0)PIL.splice(i,1);}
     const cdm=(G('D')||{}).cdMul||1;
-    for(const k in STK){const st=STK[k];if(st.ch<2){st.rT-=dt/cdm;if(st.rT<=0){st.ch++;st.rT=st.ch<2?(S[k].cd||1)*1.25:0;}}pl.cd[k]=st.ch>0?0:Math.max(.01,st.rT);}
+    for(const k in STK){const st=STK[k],mx=st.mx||2;if(st.ch<mx){st.rT-=dt/cdm;if(st.rT<=0){st.ch++;st.rT=st.ch<mx?(S[k].cd||1)*rv('stackR',BAL()):0;}}pl.cd[k]=st.ch>0?0:Math.max(.01,st.rT);}
     this.sy=PIL.length?PIL[0].y:-1e9;return true;},
   draw(){if(!PIL.length)return;const P=G('P'),ctx=G('ctx'),t=now();
     for(const p of PIL){const [x,y]=P(p.x,p.y,0),h=58,a=Math.min(1,(t-p.born)*4);ctx.save();ctx.globalAlpha=a;
@@ -1186,5 +1364,7 @@ setInterval(()=>{if(!localStorage.getItem(SKEY))D=load();apply();if(Object.keys(
   /* the menu button gets a red dot while a free mutation gem waits or a hole can be carved right now */
   seenLv=L;const mb=document.querySelector('#mgrid [data-m="tgem"]');if(mb)mb.classList.toggle('tgDot',giftN()>0||anyRdy());},400);
 setTimeout(apply,50);
-window.totemGems={open,close,data:()=>D,apply,act:()=>ACT,targetOf,key:SKEY,ssPos:()=>({star:SSP,mut:SMP}),gift:openGift};
+window.totemGems={open,close,data:()=>D,apply,act:()=>ACT,targetOf,key:SKEY,ssPos:()=>({star:SSP,mut:SMP}),gift:openGift,
+  refill:f=>{let n=0;for(const t in STK){if(f&&!f(t))continue;const st=STK[t],mx=st.mx||2;if(st.ch<mx)n++;st.ch=mx;st.rT=0;}return n;},   /* relics.js: Fenrir's Fang refills 'stack' charges too */
+  res:()=>({n:Object.assign({},RES.n),on:[...RES.on],tot:RES.tot,kinds:RES.kinds,bal:RES.bal}),stk:()=>JSON.parse(JSON.stringify(STK)),page:p=>p==null?{c:D.pg.c,n:D.pg.n.slice()}:switchPage(p,true),canSwitch:()=>pgBlock()};
 })();

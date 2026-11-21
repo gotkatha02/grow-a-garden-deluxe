@@ -1,6 +1,9 @@
 """Item icon sheet (solid green / magenta bg) -> one transparent PNG per item.
 usage: iconsheet.py SHEET OUTDIR rows key1,key2,... [size=128]
-rows = items per row, e.g. 5,5,5,5 ; keys in reading order (left->right, top->bottom)."""
+rows = items per row, e.g. 5,5,5,5 ; keys in reading order (left->right, top->bottom).
+GLOBAL=1: the sheet has NO key colour on its items (e.g. the boss relics) -> chroma-key every pixel, not only the
+background connected to the border: green seen through chain links / webs / glass and green-tinted glow become
+(semi-)transparent, every pixel is despilled, inner holes are left open."""
 import sys, os, numpy as np
 from PIL import Image
 from scipy import ndimage as nd
@@ -19,9 +22,11 @@ lab0,_=nd.label(cand);edge=np.unique(np.concatenate([lab0[0],lab0[-1],lab0[:,0],
 pk,_=nd.label(dist<38);ps=np.bincount(pk.ravel());big_pk=np.isin(pk,np.where(ps>int(os.environ.get("POCKET","400")))[0][1:]) if len(ps)>1 else np.zeros_like(pk,bool)
 bg=np.isin(lab0,edge)|big_pk
 band=nd.binary_dilation(bg,iterations=2)&~bg
-a=np.where(bg,0.0,np.where(band,soft,1.0))
+GLOB=os.environ.get('GLOBAL')=='1'
+a=np.where(bg,0.0,soft) if GLOB else np.where(bg,0.0,np.where(band,soft,1.0))
 col=np.where((a<1)[...,None],np.clip((im-(1-a[...,None])*key)/np.maximum(a,1e-3)[...,None],0,255),im)
 rim=nd.binary_dilation(a<.98,iterations=3)          # despill only near the background, keep real purples / pinks inside
+if GLOB:rim=np.ones_like(rim)
 if MAG:
     sp=rim&(np.minimum(col[...,0],col[...,2])>col[...,1]+40)
     col[...,0]=np.where(sp,np.minimum(col[...,0],col[...,1]+40),col[...,0]);col[...,2]=np.where(sp,np.minimum(col[...,2],col[...,1]+40),col[...,2])
@@ -87,6 +92,7 @@ for c,kname in zip(order,keys):
     fill=np.zeros_like(m)
     for i_,v in enumerate(hs[1:],1):
         if v<m.sum()*.06 and (dist[c['y0']:c['y1'],c['x0']:c['x1']][hl==i_]<38).mean()<.5:fill|=hl==i_   # real gaps (pure key colour) stay open
+    if GLOB:fill[:]=False   # holes are real gaps (chain links, webs) on these sheets
     if fill.any():   # paint holes with the nearest opaque colour
         idx=nd.distance_transform_edt(~m,return_distances=False,return_indices=True)
         p[fill,:3]=p[idx[0][fill],idx[1][fill],:3];p[fill,3]=255

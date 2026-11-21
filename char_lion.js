@@ -231,7 +231,14 @@ class LiCore{constructor(){this.t=0;this.layer='none';this.tk=0;}draw(){}
     /* supercell: storm cloud rides along with Overcharge */
     if(lL('lcSupercell')&&lOver()){if(!LI.cloud||LI.cloud.until<gameTime+.2)LI.cloud={x:player.x,y:player.y,R:LB.lbCloud.R,until:gameTime+.6,tk:LI.cloud?LI.cloud.tk:0,dmg:lLv(LB.lbCloud.dmg,'lbCloud')||LB.lbCloud.dmg[0],slow:lL('lbThunderhead')>0,follow:true};}
     const C=LI.cloud;if(C){if(C.follow){C.x=player.x;C.y=player.y;}if(C.until<gameTime)LI.cloud=null;else if((C.tk+=dt)>=.5){C.tk=0;const L=lNear(C.x,C.y,C.R);if(C.slow)for(const e of L)applyCC(e,{slow:.6});
-      const e=L.sort((a,b)=>b.hp-a.hp)[0];if(e){lBolt(e,C.dmg,'lbCloud');lCharge(1);}}}}}
+      const e=L.sort((a,b)=>b.hp-a.hp)[0];if(e){lBolt(e,C.dmg,'lbCloud');lCharge(1);}}}
+    return CHAR==='lion';}}
+/* 2026-11-21 bug fix: LiCore.update returned nothing, so the engine dropped the ticker after its first frame (and the bench clears fx):
+   glory and charge never ran out, a grabbed enemy was not held, Laurel Rest / Laurel Crown never healed, Static Field never shocked,
+   Storm Cloud never struck and never ended, Supercell never followed. One core, re-added on every cast. */
+let liCore=null;
+function lEnsure(){if(CHAR!=='lion')return;if(!liCore||!fx.includes(liCore)){const o=fx.find(f=>f instanceof LiCore);liCore=o||addFx(new LiCore());}}
+window.lEnsure=lEnsure;
 
 /* =====================================================================
    5. SKILL ACTIONS
@@ -246,7 +253,7 @@ function lBurst(o){return buffAct({key:o.key,name:o.name,phi:o.phi,speed:o.speed
 const lGrabT=(c,r)=>lHeld()||lTgt(c,r);
 
 /* ---------- normal attack ---------- */
-function mkLiBasic(tgt){const lv=Math.max(1,lL('lnCombo')),chain=LB.lnCombo.chain[lv-1]+(lL('lcCombo')?1:0);if(gameTime-player.basicLast>1.2||player.basicIdx>=chain)player.basicIdx=0;
+function mkLiBasic(tgt){lEnsure();const lv=Math.max(1,lL('lnCombo')),chain=LB.lnCombo.chain[lv-1]+(lL('lcCombo')?1:0);if(gameTime-player.basicLast>1.2||player.basicIdx>=chain)player.basicIdx=0;
   const idx=player.basicIdx,last=idx===chain-1,phi=angTo(tgt),upper=lL('lcCombo')&&last;
   return lPunches({key:'basic',name:upper?'Thunder Combo':'Olympian Fist '+(idx+1),phi,n:1,lastSpeed:last?1.15:2.1,glow:LIC.bolt,f:a=>{player.basicIdx=idx+1;player.basicLast=gameTime;
     if(tgt.dead||dist(player,tgt)>BASIC_RANGE+40+tgt.r)return;
@@ -257,7 +264,7 @@ function mkLiBasic(tgt){const lv=Math.max(1,lL('lnCombo')),chain=LB.lnCombo.chai
 
 /* ---------- BASIC ---------- */
 function mkLnHide(c){return lBurst({key:'lnHide',name:'Nemean Hide',glow:LIC.marble,f:()=>{addBuff('lnHide',LB.lnHide.T);addBuff('rhSA',LB.lnHide.T);addFx(new GRing({x:player.x,y:player.y,r0:10,r1:54,w:6,color:LIC.marble,life:.4}));}});}
-function mkLnPounce(c){const t=lTgt(c,LB.lnPounce.range),phi=lPhi(c,t);faceTo(phi);const sx=player.x,sy=player.y,L=t?Math.min(lLv(LB.lnPounce.dist,'lnPounce'),dist(player,t)-t.r-10):lLv(LB.lnPounce.dist,'lnPounce'),[dx,dy]=lPathEnd(sx,sy,phi,Math.max(20,L)),T=.32,s=seq('walk',player.dir,0,null,3);
+function mkLnPounce(c){const t=lTgt(c,LB.lnPounce.range),phi=lPhi(c,t);faceTo(phi);const sx=player.x,sy=player.y,L=t?Math.min(lLv(LB.lnPounce.dist,'lnPounce'),dist(player,t)-t.r-10):lLv(LB.lnPounce.dist,'lnPounce'),[dx,dy]=lPathEnd(sx,sy,phi,Math.max(20,L)),T=.32,s=seq('walk',player.dir,0,null,seqTotal(seq('walk',player.dir,0,null,1))/(T+.15));   /* 2026-11-21: the clip must last T+.15 (at speed 3 it ended at .267 s, before the landing at .32 -> the pounce never hit) */
   return act({key:'lnPounce',name:'Lion Pounce',seq:s,windup:T,dur:T+.15,hitList:[],update:(a,dt)=>{dashUpd(a,dt,0,T,sx,sy,dx,dy,LIC.gold2,50);},
     events:[{t:T,f:a=>{for(const e of lNear(player.x,player.y,LB.lnPounce.R)){lHit(e,LB.lnPounce.dmg,'lnPounce',{big:e===t});applyCC(e,{flinch:.35});lPow(e,e===t);a.hitList.push(e);a.hitConfirmed=true;}lSlamFx(player.x,player.y,LB.lnPounce.R);}}]});}
 function mkLnRest(c){return lBurst({key:'lnRest',name:'Laurel Rest',glow:'#9aff9a',f:()=>{LI.restUntil=gameTime+LB.lnRest.T;addBuff('lnRest',LB.lnRest.T);player.slowT=0;if(player.st)player.st.slow=0;addFx(new GRing({x:player.x,y:player.y,r0:10,r1:60,w:5,color:'#9aff9a',life:.4}));}});}
@@ -280,7 +287,7 @@ function mkLaShove(c){const t=lTgt(c,LB.laShove.range),phi=lPhi(c,t);
     for(const e of L){lHit(e,lLv(LB.laShove.dmg,'laShove'),'laShove',{big:true,knock:[phi,e.boss?40:LB.laShove.push*2]});lPow(e,true);a.hitList.push(e);a.hitConfirmed=true;}
     if(lL('laDomino')&&L.length)setFxTimer(.25,()=>{const done=new Set();for(const e of L){if(e.dead)continue;for(const q of enemies){if(q.dead||q===e||done.has(q)||dist(q,e)>q.r+e.r+24)continue;done.add(q);lHit(q,lLv(LB.laDomino.dmg,'laDomino'),'laDomino');lHit(e,lLv(LB.laDomino.dmg,'laDomino'),'laDomino');lPow(q,false);}}});shake(2);}});}
 function mkLaSpin(c){const t=lGrabT(c,LB.laSpin.range);if(!t){msg('ไม่มีเป้าหมาย');return null;}const turns=lL('laHurricane')?LB.laHurricane.turns:LB.laSpin.turns,gap=.24,T=turns*gap+.15,d=player.dir;
-  if(!t.boss)lHold(t,T+.2);const s=[];for(let i=0;i<turns*2;i++)s.push(...hold('attack',DIR8[(DIR8.indexOf(d)+i*2)%8]==='N'?'NE':atkDir(DIR8[(DIR8.indexOf(d)+i*2)%8]),CT(atkDir(d)),gap*500));
+  if(!t.boss)lHold(t,T+.2);const s=[];for(let i=0;i<=turns*2;i++){const dd=DIR8[(DIR8.indexOf(d)+i*2)%8];s.push(...hold('attack',dd==='N'?'NE':atkDir(dd),CT(atkDir(d)),i<turns*2?gap*500:150));}   /* 2026-11-21: one more .15 s hold so the clip lasts T (it ended .15 s early and the release at T-.05 never fired) */
   const ev=[];for(let i=0;i<turns;i++)ev.push({t:.08+i*gap,f:a=>{for(const e of lNear(player.x,player.y,LB.laSpin.R)){if(e===t)continue;lHit(e,lLv(LB.laSpin.dmg,'laSpin'),'laSpin',{knock:[angTo(e),60]});lPow(e,false);a.hitConfirmed=true;}if(!t.dead)lHit(t,lLv(LB.laSpin.dmg,'laSpin')*.5,'laSpin');addFx(new GRing({x:player.x,y:player.y,r0:20,r1:LB.laSpin.R,w:6,color:LIC.marble,life:.22}));player.phi+=Math.PI;}});
   ev.push({t:T-.05,f:a=>{lRelease();if(!t.dead&&!t.boss){const ph=player.phi,[tx,ty]=lPathEnd(t.x,t.y,ph,lL('laHurricane')?260:130);addFx(new LiFling({e:t,tx,ty,T:.3,h:50,land:(x,y)=>{lHit(t,lLv(LB.laSpin.dmg,'laSpin')*1.5,'laSpin',{big:true});dustPuff(x,y,6,'#e8e0d0',70,8);}}));}lGlory(1);
     if(lL('lcAtlas')){for(const e of lNear(player.x,player.y,LB.lcAtlas.R))lHit(e,LB.lcAtlas.dmg,'lcAtlas',{big:true});lSlamFx(player.x,player.y,LB.lcAtlas.R);}}});
@@ -316,9 +323,12 @@ function mkLbOver(c){if(LI.charge<LI_BAL.charge.cap){msg('ต้องมีป�
   return lBurst({key:'lbOver',name:'Overcharge',speed:1.6,glow:LIC.bolt,f:()=>{lSpendCharge();addBuff('lbOver',LB.lbOver.T);addFx(new GRing({x:player.x,y:player.y,r0:10,r1:110,w:10,color:LIC.bolt,life:.45}));addFx(new DText({x:player.x,y:player.y,z:110,text:'OVERCHARGE',color:LIC.bolt2,size:15,life:1}));lBoltAt(player.x,player.y);shake(2.4);}});}
 function mkLbAegis(c){return lBurst({key:'lbAegis',name:'Aegis Flash',glow:LIC.bolt,f:()=>{LI.aegis=LB.lbAegis.n;addFx(new GRing({x:player.x,y:player.y,r0:10,r1:56,w:6,color:LIC.bolt,life:.4}));}});}
 function mkLbWrath(c){const n=LB.lbWrath.n,gap=.18,R=LB.lbWrath.R;
-  return buffAct({key:'lbWrath',name:'Wrath of Olympus',speed:1.4,glow:LIC.bolt,events:tP=>{const ev=[{t:.02,f:()=>{skyDarkT=.8;}}];for(let i=0;i<n;i++)ev.push({t:tP+i*gap,f:()=>{const L=lNear(player.x,player.y,R).sort((a,b)=>dist(a,player)-dist(b,player));
-      if(L.length){const e=L[i%L.length];lBolt(e,lLv(LB.lbWrath.dmg,'lbWrath'),'lbWrath');}else{const an=i*2.4;lBoltAt(player.x+Math.cos(an)*R*.6,player.y+Math.sin(an)*R*.6);}lCharge(1);}});
-    if(lL('lbKing'))ev.push({t:tP+n*gap+.15,f:()=>{const ch=lSpendCharge(),m=LB.lbKing.dmg+LB.lbKing.per*ch;addFx(new LiBolt({x:player.x,y:player.y,w:12,life:.5}));for(const e of lNear(player.x,player.y,R*.6))lHit(e,m,'lbKing',{big:true});addFx(new GRing({x:player.x,y:player.y,r0:20,r1:R*.6,w:16,color:LIC.bolt,life:.5}));shake(4);stop(80);}});
+  /* 2026-11-21 bug fix: the 12 bolts were action events up to tP+2.3 s, but the buff clip ends at ~1.0 s, so only 4 bolts fell and King of the Gods
+     never came. They are now timers started on the release (same rhythm: gap in action seconds = gap/ACTION_TEMPO real seconds); the lion is free to move. */
+  return buffAct({key:'lbWrath',name:'Wrath of Olympus',speed:1.4,glow:LIC.bolt,events:tP=>{const ev=[{t:.02,f:()=>{skyDarkT=.8;}}],k=1/(ACTION_TEMPO||.75);ev.push({t:tP,f:()=>{for(let i=0;i<n;i++)setFxTimer(.001+i*gap*k,()=>{const L=lNear(player.x,player.y,R).sort((a,b)=>dist(a,player)-dist(b,player));
+      if(L.length){const e=L[i%L.length];lBolt(e,lLv(LB.lbWrath.dmg,'lbWrath'),'lbWrath');}else{const an=i*2.4;lBoltAt(player.x+Math.cos(an)*R*.6,player.y+Math.sin(an)*R*.6);}lCharge(1);});
+    setFxTimer((n*gap+(lL('lbKing')?.5:.25))*k,()=>{skyDarkT=0;});   /* the sky was left dark after the ult */
+    if(lL('lbKing'))setFxTimer(.001+(n*gap+.15)*k,()=>{const ch=lSpendCharge(),m=LB.lbKing.dmg+LB.lbKing.per*ch;addFx(new LiBolt({x:player.x,y:player.y,w:12,life:.5}));for(const e of lNear(player.x,player.y,R*.6))lHit(e,m,'lbKing',{big:true});addFx(new GRing({x:player.x,y:player.y,r0:20,r1:R*.6,w:16,color:LIC.bolt,life:.5}));shake(4);stop(80);});}});
     return ev;}});}
 
 /* ---------- C ---------- */
@@ -419,7 +429,8 @@ function installLion(){
   window.jgPostHit=()=>{};
   window.jgMove=()=>1;window.jgDetect=()=>1;window.jgAspd=()=>1;window.jgRecover=()=>1;window.jgPlayerAlpha=()=>1;window.jgBleedMul=()=>1;window.jgOnSkillHit=()=>{};window.jgAfterHurt=()=>{};
   window.lionAutoTick=lionAutoTick;
-  mkBasic=mkLiBasic;addFx(new LiCore());
+  mkBasic=mkLiBasic;lEnsure();
+  for(const k in SKILLS){const sk=SKILLS[k];if(sk.make&&!sk.make._lE){const mk=sk.make;sk.make=function(){lEnsure();return mk.apply(this,arguments);};sk.make._lE=1;}}
   try{document.title='Aetherfall — Olympian White Lion';const nm=document.querySelector('.nm b'),cl=document.querySelector('.nm .cls');if(nm)nm.textContent='Olympian Lion';if(cl)cl.textContent='Olympian Cub';}catch(e){}
   window.LI=LI;window.LI_DEFS=LI_DEFS;window.LI_BAL=LI_BAL;}
 

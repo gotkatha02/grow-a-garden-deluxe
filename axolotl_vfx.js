@@ -138,7 +138,8 @@ if(typeof axCast==='function'){const _c=axCast;axCast=function(o){const a=_c(o);
 /* normal attack: a quick cast (the 'buff' clip timed like the swing it replaces), water gathers in the hand, then the flick */
 if(typeof mkBasic==='function'){const _b=mkBasic;mkBasic=function(t){const a=_b(t);if(!a||!a.seq||a.key!=='basic')return a;try{ensureWatch();
     const tC=a.windup,tot=seqTotal(a.seq),d2=player.dir,b=seq('buff',d2,0,null,1),pk=bPeak(d2),t1=Math.max(.001,seqTimeAt(b,pk)),t2=Math.max(.001,seqTotal(b)-t1);
-    if(b.length>pk&&tot>tC)a.seq=b.map((q,i)=>({st:q.st,d:q.d,f:q.f,ms:q.ms*(i<pk?tC/t1:(tot-tC)/t2)}));
+    /* 2026-11-21: with her own sprite (AXL_ART) the attack clip IS a water cast — only the wolf placeholder's axe swing is swapped */
+    if(!(typeof AXL_ART!=='undefined'&&AXL_ART)&&b.length>pk&&tot>tC)a.seq=b.map((q,i)=>({st:q.st,d:q.d,f:q.f,ms:q.ms*(i<pk?tC/t1:(tot-tC)/t2)}));
     const T=rt(tC);a.events.push({t:0,f:()=>{sprite({layer:'top',follow:player,life:T+.03,fi:.03,fo:.03,paint:f=>{const h=hand(),[x,y]=P(h[0],h[1],h[2]),s=cl(f.t/Math.max(.04,T),0,1);orb(x,y,1.5+3.5*eO(s),WAT,1);}});inflow(T,WAT,2);}},
       {t:Math.max(0,tC-.005),f:()=>{const h=hand();addFx(new KGlint({x:h[0],y:h[1],z:h[2],s:13,col:WAT[2],life:.14}));}});}catch(e){console.warn('axv basic',e);}return a;};}
 /* the old code's spray() throws many drops per splash: 60 % of them read better as a spray (visual only) */

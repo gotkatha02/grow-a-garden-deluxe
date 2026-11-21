@@ -223,7 +223,7 @@ class DgCore{constructor(){this.t=0;this.layer='none';this.tk=0;}draw(){}
     DG.clouds=DG.clouds.filter(c=>c.until>gameTime);for(const c of DG.clouds){for(const e of dNear(c.x,c.y,c.R))applyCC(e,{slow:.4});if(tick&&c.rain)for(const e of dNear(c.x,c.y,c.R))dHit(e,c.rain,'dkRain');
       if(c.rain&&Math.random()<Q.p*1.2)emit({type:'round',x:c.x+rnd(-c.R,c.R),y:c.y+rnd(-c.R,c.R)*.6,z:90,vx:0,vy:0,vz:-260,drag:0,life:.35,size:1.6,size1:1,color:'#cfe8ff'});}
     /* azure dragon zone */
-    const S=DG.storm;if(S){if(S.until<gameTime){DG.storm=null;if(S.king){for(const e of dNear(S.x,S.y,S.R+40)){const n=e.dgSeal||0;if(n>0){e.dgSeal=0;dBolt(e,DB.dkKingRain.per*n,'dkKingRain');}}}}
+    const S=DG.storm;if(S){if(S.until<gameTime){DG.storm=null;skyDarkT=0;   /* 2026-11-21: the sky was left dark after the storm */if(S.king){for(const e of dNear(S.x,S.y,S.R+40)){const n=e.dgSeal||0;if(n>0){e.dgSeal=0;dBolt(e,DB.dkKingRain.per*n,'dkKingRain');}}}}
       else if((S.tk+=dt)>=1){S.tk=0;for(const e of dNear(S.x,S.y,S.R)){dBolt(e,S.dmg,'dkDescend');dSeal(e,1);}}}
     /* gale wall: enemies cannot walk through */
     const W=DG.wall;if(W){if(W.until<gameTime)DG.wall=null;else{const nx=-Math.sin(W.phi),ny=Math.cos(W.phi),L=DB.dkWall.len/2;for(const e of enemies){if(e.dead||e.boss)continue;const d=dSeg(e.x,e.y,W.x+nx*L,W.y+ny*L,W.x-nx*L,W.y-ny*L);
