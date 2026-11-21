@@ -131,6 +131,23 @@ const SMP=SS_A.map(a=>({x:HX+Math.cos(rad(a))*(SS_R+SS_MO),y:HY+Math.sin(rad(a))
     for(let a=0;a<6.28;a+=.1)for(const rr of [84,92,100,110]){const p={x:c.x+Math.cos(a)*rr,y:c.y+Math.sin(a)*rr};if(Math.hypot(p.x-HX,p.y-HY)>HR*.86)continue;
       let cl=1e9;for(const [q,r] of nodes()){if(q===c)continue;cl=Math.min(cl,Math.hypot(q.x-p.x,q.y-p.y)-r-26);}cl-=rr*.05;if(cl>bs){bs=cl;best=p;}}
     m[3]=best;});}
+/* ---------- page v3 'your totem pole' (owner 2026-11-21: 'put the gems INTO a totem' — the themed land sockets looked cluttered) ----------
+   One carved pole, 5 tiers bottom → top = the C sockets (Lv 60 / 70 / 80 / 90 / 99), standing on a stone base whose 5 front holes are the
+   skill stars (small hole beside each = its mutation). Every hole is painted in the two pictures; TOT = the holes measured from them by
+   tools/gems/totlay.py, [cx, cy, r] in picture px. Tier holes h = [inner-left = mutation, outer-left = support,
+   outer-right = support, inner-right = 2nd mutation]; cut = the y between two tiers (locked tiers are drawn as a pale ghost).
+   TOT = null → the round board above. window.__TOT lets a test page try a table without editing this file. */
+const TOT=window.__TOT||{"pole":{"src":"totem","W":1024,"H":1536,"top":16,"foot":1500,"cx":511.7,"cut":[1140,885,625,362],"tiers":[{"m":[511.8,1327.1,69.2],"h":[[304.5,1312.2,32.4],[214.3,1312.0,32.4],[808.9,1312.0,32.3],[718.8,1312.1,32.4]]},{"m":[511.8,1075.0,64.4],"h":[[310.9,1053.3,31.7],[221.0,1053.3,31.6],[801.7,1053.3,31.7],[711.7,1053.3,31.7]]},{"m":[511.9,827.1,68.5],"h":[[310.8,808.2,32.4],[219.6,808.1,32.1],[802.5,808.1,32.0],[711.9,808.3,32.3]]},{"m":[511.4,539.6,67.9],"h":[[310.0,528.1,34.5],[215.7,528.1,34.5],[807.4,528.0,34.3],[713.9,528.2,34.6]]},{"m":[511.5,252.1,73.5],"h":[[315.6,239.4,35.1],[216.9,239.3,35.2],[806.6,239.4,35.1],[707.7,239.4,35.1]]}]},"base":{"src":"base","W":1536,"H":1024,"top":110,"bot":940,"cx":767.5,"stand":[766.0,339.0],"s":[[252.8,633.1,81.4],[510.9,682.7,82.5],[766.0,708.8,84.0],[1020.3,682.1,82.5],[1278.6,633.5,81.6]],"t":[[330.7,717.3,31.9],[589.7,767.4,31.9],[847.6,793.9,32.0],[1098.3,765.8,31.9],[1358.6,717.1,31.8]]}};   /* owner's pictures 2026-11-21: totem.webp + base.webp; foot contact 1500, stand = centre of the gold ring on the base (766, 339), cuts at the carved bands */
+const TL=(()=>{if(!TOT)return null;const P=TOT.pole,B=TOT.base;
+  /* the pole is drawn 1.25× the base's scale, so its foot nearly fills the gold ring; together they fill the board's height
+     (pole top 6 px under the board top, base bottom 4 px over the board floor, the foot's contact point on the ring's centre) */
+  const K=1.25,sb=(BS-10)/((P.foot-P.top)*K+(B.bot-B.stand[1])),sp=sb*K;
+  const bx=HX-B.stand[0]*sb,by=BS-4-B.bot*sb,stY=by+B.stand[1]*sb,px=HX-P.cx*sp,py=stY-P.foot*sp;
+  const pp=h=>({x:px+h[0]*sp,y:py+h[1]*sp,r:h[2]*sp}),bp=h=>({x:bx+h[0]*sb,y:by+h[1]*sb,r:h[2]*sb});
+  P.tiers.forEach((t,i)=>{MAIN[i]=pp(t.m);MODS[i]=t.h.map(pp);});
+  B.s.forEach((h,i)=>{SSP[i]=bp(h);SMP[i]=bp(B.t[i]);});
+  return {sp,px,py,pw:P.W*sp,ph:P.H*sp,ct:P.cut.map(y=>y*sp),bx,by,bw:B.W*sb,bh:B.H*sb,cw:B.W*sb+16};})();
+const HOLE=p=>TL&&p&&p.r?{r:p.r}:null;
 const SZ={main:116,mut:52,sup:39,skill:66,smut:34},CUP={main:{cx:.494,cy:.469,r:.28},mut:{cx:.498,cy:.506,r:.281},sup:{cx:.499,cy:.478,r:.341}};
 const ART={skill:'sup',smut:'mut'};   /* skill star = the round socket in silver, its mutation socket = the rune rim */
 
@@ -142,6 +159,12 @@ const css=document.createElement('style');css.textContent=`
 #tgBox h2{position:absolute;left:0;right:0;top:-24px;margin:0 auto;width:320px;height:48px;line-height:44px;text-align:center;font:700 20px Mitr,serif;color:#fff3c8;background:linear-gradient(#a8452c,#5a1a10);border:3px solid #e9b44c;border-radius:24px;box-shadow:0 4px 0 #1a0c06;text-shadow:0 2px 0 #3a1f14;z-index:2}
 #tgX{position:absolute;right:-14px;top:-14px;width:40px;height:40px;border-radius:50%;border:3px solid #e9b44c;background:#a8452c;color:#fff;font:900 20px sans-serif;cursor:pointer;box-shadow:0 3px 0 #1a0c06;z-index:3}
 #tgMid{flex:1;min-width:0;position:relative;display:flex;align-items:center;justify-content:center}
+#tgScr{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+#tgScr.scr{overflow-x:hidden;overflow-y:auto;align-items:flex-start;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;scrollbar-width:none;
+  -webkit-mask-image:linear-gradient(transparent,#000 28px,#000 calc(100% - 8px),transparent);mask-image:linear-gradient(transparent,#000 28px,#000 calc(100% - 8px),transparent)}
+#tgScr.scr::-webkit-scrollbar{display:none}   /* short phone screens: the totem fits the column's width, scroll up and down the pole */
+#tgZoom{position:relative;flex:none;width:${BS}px;height:${BS}px}
+#tgScr.scr #tgBoard{position:absolute;left:0;top:0;transform-origin:0 0}
 #tgBoard{position:relative;flex:none;width:${BS}px;height:${BS}px;transform-origin:center}
 #tgBoard>img,#tgBoard>canvas{position:absolute;pointer-events:none}
 #tgSky{left:${HX-FR*1.01}px;top:${HY-FR*1.01}px;width:${FR*2.02}px;height:${FR*2.02}px;border-radius:50%}
@@ -255,6 +278,19 @@ const css=document.createElement('style');css.textContent=`
 #tgLeft::before,#tgRight::before{left:-6px;top:-6px}#tgLeft::after,#tgRight::after{right:-6px;bottom:-6px}
 #tgRight{overflow:hidden}
 #tgLeft h3,#tgRight h3{color:#f0d49a;border-bottom-color:#8a6a3a}
+${TL?`#totemWin.tot #tgSky,#totemWin.tot #tgFrame{display:none}
+#tgBaseI{position:absolute;left:${TL.bx}px;top:${TL.by}px;width:${TL.bw}px;height:${TL.bh}px;pointer-events:none;filter:drop-shadow(0 8px 12px rgba(0,0,0,.55))}
+#tgPole{position:absolute;left:${TL.px}px;top:${TL.py}px;width:${TL.pw}px;height:${TL.ph}px;pointer-events:none;filter:drop-shadow(0 6px 10px rgba(0,0,0,.5))}
+#tgPole .tgT{position:absolute;left:0;top:0;width:100%;height:100%;transition:opacity .6s,filter .6s}
+#tgPole .tgT.lk{opacity:.3;filter:grayscale(1) sepia(1) hue-rotate(180deg) saturate(2.4) brightness(1.25)}   /* a tier above your level = a pale spirit of the pole, built when you get there */
+.tgN.th,.tgN.th.lock{transform:translate(-50%,-50%)}
+.tgN.th .ho{position:absolute;inset:20.6%;border-radius:50%;pointer-events:none;transition:box-shadow .15s}
+.tgN.th:hover .ho{box-shadow:0 0 0 2px rgba(255,236,170,.75),0 0 12px rgba(255,220,130,.55)}
+.tgN.th.sel .ho{box-shadow:0 0 0 3px #ffe14a,0 0 16px 5px rgba(255,225,74,.65)}
+.tgN.th.lock .ho{background:radial-gradient(circle,rgba(6,8,22,.35),rgba(6,8,22,.7));box-shadow:inset 0 0 0 1px rgba(160,190,255,.25)}
+.tgN.th .lk{top:50%;bottom:auto;transform:translate(-50%,-50%)}
+.tgN.th .lvd{bottom:4%}
+.tgN.th.ss .in{background:none}`:''}
 /* the owner's carved plaque behind both side columns (plq_top / mid / bot = rows 0–460 / 460–1136 / 1136–1536 of his 1024×1536 picture):
    the caps keep their shape, the middle stretches; --s = column width / 1024 (set in fit()); inner wood = x 131–890, y 262–1240.
    Not on short phone screens: the owl and paw caps would eat a third of the height there, so phones keep the plain wood columns. */
@@ -283,14 +319,15 @@ const css=document.createElement('style');css.textContent=`
 const win=document.createElement('div');win.id='totemWin';if(HERO!=='wolf')win.classList.add('nw');
 win.innerHTML=`<div id="tgBox"><h2>ศาลวิญญาณโทเท็ม</h2><button id="tgX">✕</button>
 <div id="tgLeft"><h3>รายละเอียด</h3><div id="tgSel"></div><div id="tgInfo"></div><div id="tgBtns"><button id="tgOut">ถอดออก</button><button id="tgUp">อัปเลเวล</button></div></div>
-<div id="tgMid"><div id="tgBoard"><img id="tgSky" src="${PG}sky.webp" alt=""><canvas id="tgLines" width="${BS*2}" height="${BS*2}"></canvas><canvas id="tgRing" width="${BS*2}" height="${BS*2}"></canvas><img id="tgFrame" src="${PG}ring.webp" alt=""></div><div id="tgWs"></div></div>
+<div id="tgMid"><div id="tgScr"><div id="tgZoom"><div id="tgBoard"><img id="tgSky" src="${PG}sky.webp" alt="">${TL?`<img id="tgBaseI" src="${PG}${TOT.base.src}.webp" alt=""><div id="tgPole">${[0,1,2,3,4].map(i=>`<img class="tgT" data-t="${i}" src="${PG}${TOT.pole.src}.webp" alt="" style="clip-path:inset(${i<4?TL.ct[i]-.5:0}px 0 ${i?TL.ph-TL.ct[i-1]-.5:0}px 0)">`).join('')}</div>`:''}<canvas id="tgLines" width="${BS*2}" height="${BS*2}"></canvas><canvas id="tgRing" width="${BS*2}" height="${BS*2}"></canvas><img id="tgFrame" src="${PG}ring.webp" alt=""></div></div></div><div id="tgWs"></div></div>
 <div id="tgRight"><div class="tgAct"><button id="tgGiftB" style="display:none"></button><button id="tgWsB">⛏ แกะ · คราฟต์ · ย่อยเจม</button></div>
 <div class="tgTabs"><button data-tab="sk">⭐ สกิล<small></small></button><button data-tab="gem">💠 เจม C<small></small></button><button data-tab="mut">🔶 แปรสภาพ<small></small></button><button data-tab="sup">🔹 เสริม<small></small></button></div>
-<div class="tgPane" data-pane="sk"><div class="tgHint">สกิลที่เรียนแล้ว → วางบนดาวเงินวงใน (เปิด Lv 10 / 20 / 30 / 40 / 50)</div><div class="tgInv" id="tgSkills"></div></div>
-<div class="tgPane" data-pane="gem"><div class="tgHint">เจมหลัก = สกิล C → ดาวทองวงนอก (เปิด Lv 60–99)</div><div class="tgInv" id="tgGems"></div></div>
-<div class="tgPane" data-pane="mut"><div class="tgHint">ได้อย่าง เสียอย่าง · ใส่ได้ทั้งดาวสกิลและดาว C</div><div class="tgInv" id="tgMuts"></div></div>
-<div class="tgPane" data-pane="sup"><div class="tgHint">ใส่ได้เฉพาะดาว C (ช่องเปิดที่เลเวลเจม 3 / 5)</div><div class="tgInv" id="tgSups"></div></div></div></div>`;
+<div class="tgPane" data-pane="sk"><div class="tgHint">${TL?'สกิลที่เรียนแล้ว → หลุมบนแท่นหินฐานเสา (เปิด Lv 10 / 20 / 30 / 40 / 50)':'สกิลที่เรียนแล้ว → วางบนดาวเงินวงใน (เปิด Lv 10 / 20 / 30 / 40 / 50)'}</div><div class="tgInv" id="tgSkills"></div></div>
+<div class="tgPane" data-pane="gem"><div class="tgHint">${TL?'เจมหลัก = สกิล C → หลุมใหญ่กลางชั้นเสา (ชั้นเปิด Lv 60 / 70 / 80 / 90 / 99)':'เจมหลัก = สกิล C → ดาวทองวงนอก (เปิด Lv 60–99)'}</div><div class="tgInv" id="tgGems"></div></div>
+<div class="tgPane" data-pane="mut"><div class="tgHint">${TL?'ได้อย่าง เสียอย่าง · หลุมด้านในปีกเสา หรือหลุมเล็กข้างหลุมสกิล':'ได้อย่าง เสียอย่าง · ใส่ได้ทั้งดาวสกิลและดาว C'}</div><div class="tgInv" id="tgMuts"></div></div>
+<div class="tgPane" data-pane="sup"><div class="tgHint">${TL?'หลุมด้านนอกปีกเสา (เปิดที่เลเวลเจม 3 / 5)':'ใส่ได้เฉพาะดาว C (ช่องเปิดที่เลเวลเจม 3 / 5)'}</div><div class="tgInv" id="tgSups"></div></div></div></div>`;
 document.body.appendChild(win);
+if(TL)win.classList.add('tot');
 const box=win.querySelector('#tgBox'),board=win.querySelector('#tgBoard'),lines=win.querySelector('#tgLines'),ringC=win.querySelector('#tgRing');
 {const bg=new Image();bg.onload=()=>box.classList.add('hasbg');bg.src='assets/gems/page/bg.webp';}   /* the painted shrine background, once it exists */
 let tab='sk';
@@ -301,6 +338,7 @@ win.addEventListener('pointerdown',e=>{if(e.target===win)close();});win.querySel
 /* ---------- constellation lines (dim when locked, lit when open, gold when both ends hold a gem) ---------- */
 const STARS=Array.from({length:70},(_,i)=>{const a=Math.sin(i*12.9898)*43758.5453,b=Math.sin(i*78.233)*12345.678,r=Math.sqrt(a-Math.floor(a))*HR*1.02,q=(b-Math.floor(b))*6.283;return {x:HX+Math.cos(q)*r,y:HY+Math.sin(q)*r,s:.6+((a*7)%1+1)%1*1.4,p:i*1.7};});
 function drawLines(t){const g=lines.getContext('2d');g.setTransform(2,0,0,2,0,0);g.clearRect(0,0,BS,BS);
+  if(TL){totGlow(g,t);return;}
   {g.save();for(const st of STARS){const a=(.2+.5*Math.max(0,Math.sin(t*1.3+st.p)))*(st.s>1.6?1:.7);g.globalAlpha=a;g.fillStyle='#fff';g.shadowColor='#bfe0ff';g.shadowBlur=4;
     g.beginPath();g.arc(st.x,st.y,st.s,0,7);g.fill();if(st.s>1.6){g.fillRect(st.x-st.s*2.2,st.y-.35,st.s*4.4,.7);g.fillRect(st.x-.35,st.y-st.s*2.2,.7,st.s*4.4);}}g.restore();}
   const seg=(a,b,state,ph)=>{g.save();g.lineCap='round';
@@ -324,6 +362,17 @@ function drawLines(t){const g=lines.getContext('2d');g.setTransform(2,0,0,2,0,0)
     g.restore();};
   for(let i=0;i<NS;i++)if(ssOpen(i))light(SSP[i],SZ.skill*.78,D.ss[i]?'200,230,255':'150,190,255',(D.ss[i]?.38:.16)*(.85+.15*Math.sin(t*2.2+i)),i);
   for(let i=0;i<NS;i++)if(sockOpen(i))light(MAIN[i],SZ.main*.82,D.sock[i]?'255,226,150':'170,200,255',(D.sock[i]?.4:.16)*(.85+.15*Math.sin(t*2+i)),i+5);}
+/* totem: soft light in every hole that holds a gem, a faint call in empty open holes, motes rising up the built part of the pole */
+function totGlow(g,t){const light=(p,r,rgb,a)=>{g.save();g.globalCompositeOperation='lighter';const gr=g.createRadialGradient(p.x,p.y,r*.12,p.x,p.y,r);
+    gr.addColorStop(0,`rgba(${rgb},${a})`);gr.addColorStop(1,`rgba(${rgb},0)`);g.fillStyle=gr;g.beginPath();g.arc(p.x,p.y,r,0,7);g.fill();g.restore();},w=q=>.82+.18*Math.sin(t*2.1+q);
+  let top=null;
+  for(let i=0;i<NS;i++){if(!sockOpen(i))continue;const k=D.sock[i];top=MAIN[i].y;
+    light(MAIN[i],MAIN[i].r*(k?2.6:1.9),k?'255,222,140':'150,200,255',(k?.36:.13)*w(i));
+    if(k)MODS[i].forEach((q,j)=>{if((D.mods[k]||[])[j])light(q,q.r*2.5,isMutJ(j)?'255,170,90':'120,220,255',.3*w(i+j));});}
+  for(let i=0;i<NS;i++){if(!ssOpen(i))continue;light(SSP[i],SSP[i].r*(D.ss[i]?2.4:1.8),D.ss[i]?'200,230,255':'150,190,255',(D.ss[i]?.3:.12)*w(i+3));if(D.sm[i])light(SMP[i],SMP[i].r*2.5,'255,170,90',.28*w(i));}
+  if(top!=null){const y0=TL.py+TOT.pole.foot*TL.sp,span=y0-top+30;g.save();g.globalCompositeOperation='lighter';
+    for(let n=0;n<14;n++){const f=((t*.09+n/14)%1),y=y0-f*span,x=HX+Math.sin(n*2.3+t*.7)*TL.pw*.12,a=Math.sin(f*Math.PI)*.7;
+      g.globalAlpha=a;g.fillStyle='#fff3c8';g.shadowColor='#ffd86a';g.shadowBlur=8;g.beginPath();g.arc(x,y,1.3+(n%3)*.5,0,7);g.fill();}g.restore();}}
 /* ---------- rotating rune ring between sky and frame ---------- */
 let spin=0,boost=0;const RUNES='ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃᛇᛈᛉᛊᛏᛒᛖᛗᛚᛜᛞᛟ';
 /* painted ring shared by every hero (assets/gems/board/ring.webp): when it exists it is turned instead of the code ring */
@@ -377,24 +426,29 @@ const supInfo=id=>{const s=SUPD[id];return `<b>${s[1]}</b> (เจมเสร�
 /* painted gem if the file exists (assets/gems/mut|support/<id>.webp), else the code-drawn badge */
 const sg=(id,kind)=>{const d=kind==='mut'?MUTD[id]:SUPD[id];return `<span class="tgSg${kind==='mut'?' mut':''}" style="--c:${d[3]}"><span>${d[2]}</span><img src="assets/gems/${kind==='mut'?'mut':'support'}/${id}.webp" alt="" draggable="false" onload="this.parentNode.classList.add('art')" onerror="this.remove()"></span>`;};
 const skArt=k=>{try{const a=G('artFor'),ic=G('iconSVG'),sk=G('SKILLS')[k];return (a&&a(k))||(ic&&sk&&ic(sk.icon))||'';}catch(e){return '';}};
-function node(x,y,kind,inner,cls,title,onclick,icls,art){const el=document.createElement('div');const ak=ART[kind]||kind,s=SZ[kind];let c=CUP[ak],src=`${BD}sock_${ak}.webp`,gk=ak==='main'?1.18:1.05;
-  if(art){src=PG+art[0]+'.webp';c={cx:art[1],cy:art[2],r:art[3]};gk=1.04;}   /* page v2 socket picture: the gem just covers its hole */
-  el.className='tgN '+(cls||'');el.style.cssText=`left:${x}px;top:${y}px;width:${s}px;height:${s}px`;
-  const gs=c.r*2*s*gk;
-  el.innerHTML=`<img class="sk" src="${src}" alt="">`+(inner?`<div class="in ${icls||''}" style="left:${c.cx*s-gs/2}px;top:${c.cy*s-gs/2}px;width:${gs}px;height:${gs}px">${inner}</div>`
+function node(x,y,kind,inner,cls,title,onclick,icls,art){const el=document.createElement('div');const ak=ART[kind]||kind;let s=SZ[kind];let c=CUP[ak],src=`${BD}sock_${ak}.webp`,gk=ak==='main'?1.18:1.05;
+  let sz=s;
+  if(art&&art.r){sz=art.r*2*1.7;src='';c={cx:.5,cy:.5,r:1/3.4};gk=1.06;cls=(cls||'')+' th';}   /* page v3: the hole is painted in the totem — just the gem, a bit over its rim */
+  else if(art){src=PG+art[0]+'.webp';c={cx:art[1],cy:art[2],r:art[3]};gk=1.04;}   /* page v2 socket picture: the gem just covers its hole */
+  el.className='tgN '+(cls||'');el.style.cssText=`left:${x}px;top:${y}px;width:${sz}px;height:${sz}px`;
+  const gs=c.r*2*sz*gk;s=sz;
+  el.innerHTML=(src?`<img class="sk" src="${src}" alt="">`:'<i class="ho"></i>')+(inner?`<div class="in ${icls||''}" style="left:${c.cx*s-gs/2}px;top:${c.cy*s-gs/2}px;width:${gs}px;height:${gs}px">${inner}</div>`
     :/lock|dim/.test(cls||'')?'':`<div class="eg" style="--eg:${kind==='skill'?'190,225,255':'255,222,140'};left:${c.cx*s-gs*.32}px;top:${c.cy*s-gs*.32}px;width:${gs*.64}px;height:${gs*.64}px"></div>`);
   el.title=title||'';el.onclick=onclick;board.appendChild(el);return el;}
 function render(keepInfo){const S=G('SKILLS');if(!S)return;
   const inv=(id,list)=>{const e=win.querySelector(id);e.innerHTML='';list.forEach(b=>e.appendChild(b));};
   inv('#tgGems',cKeys().map(k=>{const b=document.createElement('button'),own=D.own[k];b.className=(own?'':'lock ')+(D.sock.includes(k)?'used ':'')+(sel&&sel.gem===k?'sel':'');if(own&&own.q)b.dataset.q=own.q;
-    b.innerHTML=`<img src="${gemImg(k)}" onerror="this.onerror=null;this.src='assets/icons/${HERO}/${k}.webp'" alt="" draggable="false">`+(own?`<i>${own.lv}</i>`+(own.dup?`<b class="dp">×${own.dup}</b>`:''):'');b.title=S[k].name+(own?` · Lv ${own.lv} · ${QUAL[own.q||0].n}`:' · ยังไม่มี');b.onclick=()=>{sel=own?{gem:k}:null;showGem(k);render(true);};return b;}));
+    b.innerHTML=`<img src="${gemImg(k)}" onerror="this.onerror=null;this.src='assets/icons/${HERO}/${k}.webp'" alt="" draggable="false">`+(own?`<i>${own.lv}</i>`+(own.dup?`<b class="dp">×${own.dup}</b>`:''):'');b.title=S[k].name+(own?` · Lv ${own.lv} · ${QUAL[own.q||0].n}`:' · ยังไม่มี');b.onclick=()=>{const t=sel;sel=own?{gem:k}:null;if(own&&t&&t.sock!=null&&!D.sock[t.sock]){clickSock(t.sock);return;}showGem(k);render(true);};return b;}));
   for(const [kind,list,el] of [['mut',MUT,'#tgMuts'],['sup',SUP,'#tgSups']])
     inv(el,list.map(([id,n])=>{const fr=free(kind,id),u=used(kind,id);const b=document.createElement('button');b.className=(fr<=0?'used ':'')+(sel&&sel[kind]===id?'sel':'');
       b.innerHTML=sg(id,kind)+(fr||u?`<i>${fr}</i>`:'');b.title=n;
-      b.onclick=()=>{sel=fr>0?{[kind]:id}:null;info((kind==='mut'?mutInfo(id):supInfo(id))+`<br><span style="opacity:.75">ในกระเป๋า ${fr} · ใส่อยู่ ${u} — ${fr>0?`แตะดาว${kind==='mut'?'กลาง (ขอบรูน)':'เล็ก'}ข้างเจมหลักเพื่อใส่`:'หาเพิ่ม: ดรอปจากมอนดันเจี้ยน · ตลาดกลาง (หมวดเจม/โทเท็ม)'}</span>`);render(true);};return b;}));
+      b.onclick=()=>{const t=sel;sel=fr>0?{[kind]:id}:null;
+        if(fr>0&&t){if(t.mod&&(isMutJ(t.mod[1])?'mut':'sup')===kind&&!(D.mods[D.sock[t.mod[0]]]||[])[t.mod[1]]){clickMod(t.mod[0],t.mod[1]);return;}
+          const si=t.ss!=null?t.ss:t.sm;if(kind==='mut'&&si!=null&&D.ss[si]&&!D.sm[si]){placeSM(si,id);return;}}
+        info((kind==='mut'?mutInfo(id):supInfo(id))+`<br><span style="opacity:.75">ในกระเป๋า ${fr} · ใส่อยู่ ${u} — ${fr>0?`แตะดาว${kind==='mut'?'กลาง (ขอบรูน)':'เล็ก'}ข้างเจมหลักเพื่อใส่`:'หาเพิ่ม: ดรอปจากมอนดันเจี้ยน · ตลาดกลาง (หมวดเจม/โทเท็ม)'}</span>`);render(true);};return b;}));
   {const LVx=G('LV')||{},ks=Object.keys(S).filter(k=>ssOK(k)&&(LVx[k]||0)>0).sort((a,b)=>'basicAB'.indexOf(S[a].br)-'basicAB'.indexOf(S[b].br)||(S[a].row||0)-(S[b].row||0));
     inv('#tgSkills',ks.length?ks.map(k=>{const b=document.createElement('button'),on=D.ss.indexOf(k);b.className=(on>=0?'used ':'')+(sel&&sel.skill===k?'sel':'');
-      b.innerHTML=skArt(k)+gemMark(k);b.title=S[k].name+(on>=0?` · ดาวสกิล ${on+1}`:'');b.onclick=()=>{sel={skill:k};info(skillInfo(k));render(true);};return b;})
+      b.innerHTML=skArt(k)+gemMark(k);b.title=S[k].name+(on>=0?` · ดาวสกิล ${on+1}`:'');b.onclick=()=>{const t=sel;sel={skill:k};if(t&&t.ss!=null&&!D.ss[t.ss]&&ssOpen(t.ss)){clickSS(t.ss);return;}info(skillInfo(k));render(true);};return b;})
       :[Object.assign(document.createElement('div'),{style:'grid-column:1/-1;font:500 11px/1.4 Mitr,sans-serif;color:#e9c98a;padding:4px',textContent:'ยังไม่มีสกิลกดใช้ที่เรียน — อัปสกิลในหน้าต่างสกิล (K) ก่อน'})]);}
   {const gb=win.querySelector('#tgGiftB'),n=giftN();gb.style.display=n?'':'none';gb.textContent=`🎁 รับเจมแปรสภาพฟรี ${n} เม็ด (ของขวัญดาวสกิล)`;}
   {const T=win.querySelectorAll('.tgTabs button small'),nOpen=SS_LV.filter((l,i)=>ssOpen(i)).length,nPl=D.ss.filter((k,i)=>k&&ssOpen(i)).length;   /* tab counters */
@@ -403,21 +457,22 @@ function render(keepInfo){const S=G('SKILLS');if(!S)return;
   /* order: C stars (land sockets) → their side stars on top of the wing tips → the inner skill stars last (on top) */
   MAIN.forEach((p,i)=>{const k=D.sock[i],open=sockOpen(i);
     const o=k&&D.own[k];
-    const el=node(p.x,p.y,'main',k?`<img src="${gemImg(k)}" onerror="this.onerror=null;this.src='assets/icons/${HERO}/${k}.webp'" alt="">`:'','mn '+(open?'':'lock ')+(sel&&sel.sock===i?'sel':''),open?(k?S[k].name:'ช่องเจมหลัก'):`เปิดที่ Lv ${SOCK_LV[i]}`,()=>clickSock(i),(o&&o.q?'q'+o.q:'')+(k?' '+gemIc():''),LAND[i]);
+    const el=node(p.x,p.y,'main',k?`<img src="${gemImg(k)}" onerror="this.onerror=null;this.src='assets/icons/${HERO}/${k}.webp'" alt="">`:'','mn '+(open?'':'lock ')+(sel&&sel.sock===i?'sel':''),open?(k?S[k].name:TL?'หลุมเจม C ของชั้นนี้':'ช่องเจมหลัก'):`เปิดที่ Lv ${SOCK_LV[i]}`,()=>clickSock(i),(o&&o.q?'q'+o.q:'')+(k?' '+gemIc():''),HOLE(p)||LAND[i]);
     if(!open)el.insertAdjacentHTML('beforeend',`<div class="lk">🔒 Lv ${SOCK_LV[i]}</div>`);
     if(o&&open)el.insertAdjacentHTML('beforeend',`<span class="lvd">Lv ${o.lv}</span>`);
-    MODS[i].forEach((q,j)=>{if(!q||!k||!open)return;   /* an empty / locked main star shows no side stars (the board was a field of dark holes) */
+    MODS[i].forEach((q,j)=>{if(!q||!open||(!k&&!TL))return;   /* round board: an empty / locked main star shows no side stars (it was a field of dark holes); the totem's holes are painted anyway */
       const on=open&&k&&modOpen(k,j),id=k&&(D.mods[k]||[])[j],kind=isMutJ(j)?'mut':'sup';
-      if(j===3&&!on&&!id)return;   /* the second mutation star only shows once its gem reaches the cap */
-      node(q.x,q.y,kind,id?sg(id,kind):'',(on?'':'lock ')+(sel&&sel.mod&&sel.mod[0]===i&&sel.mod[1]===j?'sel':''),
-        !k?'ใส่เจมหลักก่อน':!on?`เปิดที่เลเวลเจม ${j===1?3:j===2?5:CAP}`:id?(kind==='mut'?MUTD[id][1]:SUPD[id][1]):(kind==='mut'?'ช่องแปรสภาพ':'ช่องเจมเสริม'),
-        ()=>on?clickMod(i,j):info(!k?'ใส่เจมหลักในดาวดวงใหญ่ก่อน':`ช่องนี้เปิดเมื่อเจมหลักถึงเลเวล ${j===1?3:j===2?5:CAP}`));});});
+      if(j===3&&!on&&!id&&!TL)return;   /* the second mutation star only shows once its gem reaches the cap */
+      node(q.x,q.y,kind,id?sg(id,kind):'',(on?'':k?'lock ':'dim ')+(sel&&sel.mod&&sel.mod[0]===i&&sel.mod[1]===j?'sel':''),
+        !k?(TL?'ใส่เจม C ในหลุมใหญ่ของชั้นนี้ก่อน':'ใส่เจมหลักก่อน'):!on?`เปิดที่เลเวลเจม ${j===1?3:j===2?5:CAP}`:id?(kind==='mut'?MUTD[id][1]:SUPD[id][1]):(kind==='mut'?'ช่องแปรสภาพ':'ช่องเจมเสริม'),
+        ()=>on?clickMod(i,j):info(!k?(TL?'ใส่เจม C ในหลุมใหญ่กลางชั้นนี้ก่อน แล้วหลุมบนปีกสองข้างจะใช้ได้':'ใส่เจมหลักในดาวดวงใหญ่ก่อน'):`ช่องนี้เปิดเมื่อเจมหลักถึงเลเวล ${j===1?3:j===2?5:CAP}`),undefined,HOLE(q));});});
   /* skill stars (inner moonstone ring) + their mutation sockets */
   SSP.forEach((p,i)=>{const k=D.ss[i],open=ssOpen(i),id=D.sm[i];
     const el=node(p.x,p.y,'skill',k?skArt(k):'',`ss${open?'':' lock'}${k&&open&&!ssAct(i)?' off':''}${sel&&sel.ss===i?' sel':''}`,
-      open?(k?S[k].name+(id?' · '+MUTD[id][1]:''):'ดาวสกิลว่าง'):`ดาวสกิล · เปิดที่ Lv ${SS_LV[i]}`,()=>clickSS(i),k?'ic':'',SKS);
+      open?(k?S[k].name+(id?' · '+MUTD[id][1]:''):'ดาวสกิลว่าง'):`ดาวสกิล · เปิดที่ Lv ${SS_LV[i]}`,()=>clickSS(i),k?'ic':'',HOLE(p)||SKS);
     if(!open)el.insertAdjacentHTML('beforeend',`<div class="lk">🔒 Lv ${SS_LV[i]}</div>`);
-    if(open){const q=SMP[i];node(q.x,q.y,'smut',id?sg(id,'mut'):'',`smut${k?'':' dim'}${sel&&sel.sm===i?' sel':''}`,!k?'วางสกิลก่อน':id?MUTD[id][1]:'ช่องแปรสภาพของดาวสกิล',()=>clickSM(i));}});
+    if(open){const q=SMP[i];node(q.x,q.y,'smut',id?sg(id,'mut'):'',`smut${k?'':' dim'}${sel&&sel.sm===i?' sel':''}`,!k?'วางสกิลก่อน':id?MUTD[id][1]:'ช่องแปรสภาพของดาวสกิล',()=>clickSM(i),undefined,HOLE(q));}});
+  if(TL)win.querySelectorAll('#tgPole .tgT').forEach(e=>{const i=+e.dataset.t;e.classList.toggle('lk',!sockOpen(i));e.classList.toggle('on',sockOpen(i)&&!!D.sock[i]);});
   const b1=win.querySelector('#tgOut'),b2=win.querySelector('#tgUp');
   b1.disabled=!(sel&&((sel.sock!=null&&D.sock[sel.sock])||(sel.mod&&(D.mods[D.sock[sel.mod[0]]]||[])[sel.mod[1]])||(sel.ss!=null&&D.ss[sel.ss])||(sel.sm!=null&&D.sm[sel.sm])));
   const gk=sel&&(sel.gem||(sel.sock!=null&&D.sock[sel.sock])),go=gk&&D.own[gk];
@@ -430,7 +485,7 @@ function clickSock(i){const S=G('SKILLS');
     const j=D.sock.indexOf(k),old=D.sock[i];if(j>=0&&j!==i)D.sock[j]=old;else if(old&&old!==k)giveBack(old);   /* a gem taken off the board gives its mutation / supports back */
     D.sock[i]=k;sel=null;boost=1;save();showGem(k,'<br>✔ ใส่เจมแล้ว');render(true);return;}
   if(sel&&sel.sock!=null&&sel.sock!==i){const a=sel.sock;[D.sock[a],D.sock[i]]=[D.sock[i],D.sock[a]];sel=null;boost=.6;save();render();return;}
-  sel=D.sock[i]?{sock:i}:null;if(D.sock[i])showGem(D.sock[i],'<br>แตะดาวดวงใหญ่อื่นเพื่อสลับ หรือกด "ถอดออก"');else{setTab('gem');info('ดาวว่าง · เลือกเจมหลักในแท็บ "เจม C" แล้วแตะดาวดวงนี้');}render(true);}
+  sel={sock:i};if(D.sock[i])showGem(D.sock[i],'<br>แตะดาวดวงใหญ่อื่นเพื่อสลับ หรือกด "ถอดออก"');else{setTab('gem');info('ดาวว่าง · เลือกเจมหลักในแท็บ "เจม C" แล้วแตะดาวดวงนี้');}render(true);}
 /* ---- skill stars ---- */
 const cDup=(k,id)=>{const A=ACT[k];return !!(A&&A.cmut&&A.cmut.includes(id));};   /* the skill already gets this mutation from a C gem */
 function ssInfo(i,extra){const S=G('SKILLS'),k=D.ss[i],id=D.sm[i];
@@ -538,8 +593,14 @@ win.querySelector('#tgWsB').onclick=()=>{if(wsTab==='gift')wsTab='carve';wsEl.cl
 win.querySelector('#tgGiftB').onclick=()=>openGift();
 
 function fit(){for(const id of ['#tgLeft','#tgRight']){const p=win.querySelector(id);if(p&&p.offsetWidth)p.style.setProperty('--s',(p.offsetWidth/1024).toFixed(4));}
-  const m=win.querySelector('#tgMid');const s=Math.max(.3,Math.min(m.clientWidth,m.clientHeight)/BS);board.style.transform=`scale(${s})`;}
-const DEF_INFO='<b>ดาวเงินวงใน = ดาวสกิล</b> (เปิด Lv 10 / 20 / 30 / 40 / 50): เลือกสกิลที่เรียนแล้วในแท็บ "สกิล" วางบนดาว แล้วใส่เจมแปรสภาพ — สกิลจะเปลี่ยนไปจริงตามเจม<br><b>ดาวทองวงนอก = เจม C</b> (Lv 60–99): ดาวใหญ่ = เจมหลัก · ดาวขอบรูน = แปรสภาพ · ดาวเล็ก = เจมเสริม · เส้นทางดาวเปิดเพิ่มทุก 10 เลเวล';
+  const m=win.querySelector('#tgMid'),sc=win.querySelector('#tgScr'),zm=win.querySelector('#tgZoom');
+  if(TL){const hs=m.clientHeight/BS,ws=m.clientWidth/TL.cw;
+    if(hs<ws*.75){/* a short (phone) column: fit the totem's width and let the pole scroll — the holes would be too small to tap otherwise */
+      const s=Math.min(ws,1.25),was=sc.classList.contains('scr');sc.classList.add('scr');zm.style.width=TL.cw*s+'px';zm.style.height=BS*s+'px';
+      board.style.transform=`translate(${-(HX-TL.cw/2)*s}px,0) scale(${s})`;if(!was)sc.scrollTop=sc.scrollHeight;return;}}
+  sc.classList.remove('scr');zm.style.width=zm.style.height='';
+  const s=Math.max(.3,Math.min(m.clientWidth,m.clientHeight)/BS);board.style.transform=`scale(${s})`;}
+const DEF_INFO=TL?'<b>เสาโทเท็มของคุณ</b> — สลักขึ้นใหม่จากเศษโทเท็มใหญ่ ทีละชั้นตามเลเวล<br><b>แท่นหินฐานเสา = ดาวสกิล</b> (เปิด Lv 10 / 20 / 30 / 40 / 50): เลือกสกิลที่เรียนแล้วในแท็บ "สกิล" ใส่ในหลุม แล้วใส่เจมแปรสภาพในหลุมเล็กข้างๆ — สกิลจะเปลี่ยนไปจริงตามเจม<br><b>ชั้นเสา 5 ชั้น = เจม C</b> (หมี Lv 60 · นกฮูก 70 · หมาป่า 80 · อินทรี 90 · นกสายฟ้า 99): หลุมใหญ่กลางชั้น = เจมหลัก · หลุมด้านในปีก = แปรสภาพ (ข้างขวาเปิดเมื่อเจมเลเวลตัน) · หลุมด้านนอกปีก = เจมเสริม':'<b>ดาวเงินวงใน = ดาวสกิล</b> (เปิด Lv 10 / 20 / 30 / 40 / 50): เลือกสกิลที่เรียนแล้วในแท็บ "สกิล" วางบนดาว แล้วใส่เจมแปรสภาพ — สกิลจะเปลี่ยนไปจริงตามเจม<br><b>ดาวทองวงนอก = เจม C</b> (Lv 60–99): ดาวใหญ่ = เจมหลัก · ดาวขอบรูน = แปรสภาพ · ดาวเล็ก = เจมเสริม · เส้นทางดาวเปิดเพิ่มทุก 10 เลเวล';
 let giftSeen=false;
 function open(){D=load();sel=null;win.classList.add('open');setTab(tab);fit();render();info(DEF_INFO);win.classList.add('open');last=performance.now();cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);
   if(giftN()>0&&!giftSeen){giftSeen=true;openGift();}}
