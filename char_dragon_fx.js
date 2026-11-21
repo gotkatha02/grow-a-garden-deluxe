@@ -64,7 +64,8 @@ const DX_CAST={
 };
 DX_CAST.dcThunder=null;
 
-function installDragonFx(){if(CHAR!=='dragon')return;if(window.TV)TV.toonify();DXF.forEach(dxImg);
+function installDragonFx(){if(CHAR!=='dragon')return;if(!/[?&]vfx3=0/.test(location.search))return;   /* 2026-11-21: v3 = dragon_art.js + dragon_vfx.js; the painted look only with ?vfx3=0 */
+  if(window.TV)TV.toonify();DXF.forEach(dxImg);
   for(const k in DX_CAST){const f=DX_CAST[k],s=SKILLS[k];if(!f||!s||!s.make||s._dx)continue;const mk=s.make;
     s.make=function(c){const a=mk.apply(this,arguments);if(a){try{f(c||{});}catch(e){}}return a;};s._dx=1;}
   /* hit sparks: water for basic / A, wind for B, short and on the body; one per enemy per 0.07 s */

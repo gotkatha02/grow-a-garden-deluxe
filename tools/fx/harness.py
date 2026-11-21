@@ -15,7 +15,7 @@ class Game:
         s.hero=hero;s.w=w;s.h=h;s.extra=extra;s.errs=[];s.miss=[]
     async def start(s,pw):
         s.b=await pw.chromium.launch(args=['--disable-gpu-vsync'])
-        s.pg=await s.b.new_page(viewport={'width':s.w,'height':s.h})
+        s.pg=await s.b.new_page(viewport={'width':s.w,'height':s.h},device_scale_factor=float(os.environ.get('DSF','1')))   # DSF=2 → sharper close-up frames
         s.pg.on('pageerror',lambda e:s.errs.append(str(e)[:400]))
         s.pg.on('console',lambda m:s.errs.append('console: '+m.text[:300]) if m.type=='error' and 'Failed to load resource' not in m.text else None)
         s.pg.on('response',lambda r:s.miss.append(r.url.split('/',3)[-1].split('?')[0]) if r.status>=400 and 'fonts.g' not in r.url else None)

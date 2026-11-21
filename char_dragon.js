@@ -229,7 +229,14 @@ class DgCore{constructor(){this.t=0;this.layer='none';this.tk=0;}draw(){}
     const W=DG.wall;if(W){if(W.until<gameTime)DG.wall=null;else{const nx=-Math.sin(W.phi),ny=Math.cos(W.phi),L=DB.dkWall.len/2;for(const e of enemies){if(e.dead||e.boss)continue;const d=dSeg(e.x,e.y,W.x+nx*L,W.y+ny*L,W.x-nx*L,W.y-ny*L);
       if(d<e.r+10){const side=Math.cos(W.phi)*(e.x-W.x)+Math.sin(W.phi)*(e.y-W.y),s=side>=0?1:-1;e.x=W.x+nx*((e.x-W.x)*nx+(e.y-W.y)*ny)+Math.cos(W.phi)*s*(e.r+12);e.y=W.y+ny*((e.x-W.x)*nx+(e.y-W.y)*ny)+Math.sin(W.phi)*s*(e.r+12);}}}}
     /* maelstrom pull */
-    const M=DG.mael;if(M){for(const e of dNear(M.x,M.y,M.R)){if(e.boss)continue;const d=Math.hypot(M.x-e.x,M.y-e.y);if(d>8){e.x+=(M.x-e.x)/d*Math.min(d,140*dt);e.y+=(M.y-e.y)/d*Math.min(d,140*dt);}}}}}
+    const M=DG.mael;if(M){for(const e of dNear(M.x,M.y,M.R)){if(e.boss)continue;const d=Math.hypot(M.x-e.x,M.y-e.y);if(d>8){e.x+=(M.x-e.x)/d*Math.min(d,140*dt);e.y+=(M.y-e.y)/d*Math.min(d,140*dt);}}}
+    return CHAR==='dragon';}}
+/* 2026-11-21 bug fix: DgCore.update returned nothing, so the engine dropped the ticker after its first frame (and the bench clears
+   fx entirely): flow never faded, Still Mind / Ki Orbit never worked, clouds never slowed or rained, Gale Wall never blocked,
+   Maelstrom never pulled, Azure Dragon Descends never struck and its zone never ended. One core, re-added on every cast. */
+let dgCore=null;
+function dEnsure(){if(CHAR!=='dragon')return;if(!dgCore||!fx.includes(dgCore)){const o=fx.find(f=>f instanceof DgCore);dgCore=o||addFx(new DgCore());}}
+window.dEnsure=dEnsure;
 
 /* =====================================================================
    5. SKILL ACTIONS
@@ -250,7 +257,7 @@ function dDash(o){faceTo(o.phi);const sx=player.x,sy=player.y,[dx,dy]=dPathEnd(s
     events:[{t:.01,f:()=>{dustPuff(sx,sy,4,'#e8f0f8',50,6);o.start&&o.start();}},{t:T,f:a=>{o.end&&o.end(a);}}]});}
 
 /* ---------- normal attack ---------- */
-function mkDgBasic(tgt){const lv=Math.max(1,dL('dnCombo')),chain=DB.dnCombo.chain[lv-1]+(dL('dcChain')?1:0);if(gameTime-player.basicLast>1.2||player.basicIdx>=chain)player.basicIdx=0;
+function mkDgBasic(tgt){dEnsure();const lv=Math.max(1,dL('dnCombo')),chain=DB.dnCombo.chain[lv-1]+(dL('dcChain')?1:0);if(gameTime-player.basicLast>1.2||player.basicIdx>=chain)player.basicIdx=0;
   const idx=player.basicIdx,last=idx===chain-1,phi=angTo(tgt),ki=dL('dcChain')&&last,sweep=dL('dnSweep')&&last&&!ki&&chain>=2;
   return dPunches({key:'basic',name:ki?'Dragon Chain':sweep?'Dragon Tail Sweep':'Azure Fist '+(idx+1),phi,n:1,lastSpeed:last?1.15:2.2,f:a=>{player.basicIdx=idx+1;player.basicLast=gameTime;
     const awk=dAwake()?1:0;
@@ -408,7 +415,8 @@ function installDragon(){
   window.jgPostHit=()=>{};
   window.jgMove=()=>1;window.jgDetect=()=>1;window.jgAspd=()=>1;window.jgRecover=()=>1;window.jgPlayerAlpha=()=>1;window.jgBleedMul=()=>1;window.jgOnSkillHit=()=>{};window.jgAfterHurt=()=>{};
   window.dragonAutoTick=dragonAutoTick;
-  mkBasic=mkDgBasic;addFx(new DgCore());
+  mkBasic=mkDgBasic;dEnsure();
+  for(const k in SKILLS){const sk=SKILLS[k];if(sk.make&&!sk.make._dE){const mk=sk.make;sk.make=function(){dEnsure();return mk.apply(this,arguments);};sk.make._dE=1;}}
   try{document.title='Aetherfall — Azure Dragon-Lion';const nm=document.querySelector('.nm b'),cl=document.querySelector('.nm .cls');if(nm)nm.textContent='Azure Dragon-Lion';if(cl)cl.textContent='Azure Pupil';}catch(e){}
   window.DG=DG;window.DG_DEFS=DG_DEFS;window.DG_BAL=DG_BAL;}
 

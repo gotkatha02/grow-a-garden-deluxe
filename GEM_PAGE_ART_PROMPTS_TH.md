@@ -108,6 +108,41 @@ Style: friendly hand-painted chibi cartoon matching the attached game art, thick
 เจ้าของเปลี่ยนใจ: "เจมใหญ่พอแล้ว อยากเพิ่มเจมเล็กในการปรับแต่ง" → แท่น 5 หลุมเหมือนเดิม ใต้แต่ละหลุมมีหลุมเล็ก 3 (กลางขอบทอง = แปรสภาพ, ซ้าย-ขวาขอบเขียว = เจมเสริม) — รูปได้แล้ว = assets/gems/page/base.webp (ตารางวัดด้วย totlay.py: หลุมเล็กจัดกลุ่มเข้าหลุมใหญ่ที่ใกล้สุด เรียงซ้าย→ขวา กลาง = t, ซ้าย/ขวา = u)
 พรอมต์ที่ใช้: แนบแท่นเดิม + รูปกองไฟ แล้วสั่ง "Redraw the attached stone platform … keeps the FIVE large sockets … under each large socket a short curved row of THREE small sockets: middle gold rim, left and right teal rims …" (ข้อความเต็มอยู่ในแชต 2026-11-21)
 
+## 11–12. เจมสกิล: กรอบเจม 1 รูป + ประกายแก้ว 1 รูป ใช้กับทุกสกิล (เจ้าของ 2026-11-21: "อยากได้เป็นเจมแล้วมีไอคอนสกิลอยู่ตรงกลางแบบกลมกลืน เจนมาแค่กรอบเจมแล้วใส่ได้ทุกสกิล")
+แยกเป็น 2 รูปเพราะ AI วาด "แก้วใสทับรูปข้างใน" ไม่ได้ในรูปเดียว — โค้ดประกอบ: ไอคอนสกิล (ตัดกลม) → เงาขอบด้านใน (โค้ด) → ประกายแก้ว (ข้อ 12) → กรอบเจม (ข้อ 11) ทับบนสุด = ไอคอนดูเหมือนถูกผนึกอยู่ในเจม · กรอบเดียวใช้ได้ทุกสกิลทุกฮีโร่ · แสดงในหลุมสกิลบนแท่นหิน แท็บ ⭐ สกิล และช่องรายละเอียด
+
+### 11. กรอบเจมสกิล (ตรงกลางเป็นรู)
+แนบ: รูปกองไฟ (สไตล์) + รูปเจมที่เคยเจน 1–2 รูป (เจมแปรสภาพ / เจมหมาป่า) ให้คริสตัลเข้าชุดกัน
+```
+Game UI art for a cartoon fantasy RPG: an EMPTY round gem frame — a ring-shaped crystal gem with a round hole in the middle, so that a skill icon can be shown inside it later. One object, centred, seen straight from the front, on a fully transparent background with empty space on every side. Square image 1024×1024, the gem about 860 px wide.
+
+The ring is pale moonstone crystal (milky white with a soft blue-violet and pearl sheen), cut into bright triangular facets that catch the light, with a thin gold band of small carved totem patterns (zigzags and little triangles) running round it, and a thin gold edge on the outer rim and on the inner rim. The inner rim is a perfect circle about two thirds of the gem's width, bevelled inward with a soft shadow, as if the crystal dips down around a window.
+
+The middle inside the inner rim is COMPLETELY EMPTY: transparent, nothing drawn there — no picture, no glass, no colour, no shine.
+
+Style: friendly hand-painted chibi cartoon matching the attached game art and the attached gem pictures, thick clean dark-brown outline around the outer edge, cel shading with 2–3 flat tones, soft cartoon glow, bright and warm. Not realistic, not painterly, not 3D. No text, no logo, no watermark.
+```
+
+### 12. ประกายแก้ววางทับไอคอน (พื้นดำ)
+แนบ: รูปกองไฟ + รูปผลจากข้อ 11 (ให้ขนาดวงตรงกับรูตรงกลางกรอบ)
+```
+Game UI art for a cartoon fantasy RPG: ONLY the light reflections of a round glass-crystal dome, to be laid on top of a skill icon so the icon looks sealed inside a gem. Square image 1024×1024 on a PURE BLACK background (#000000). The reflections sit inside a centred circle about 580 px wide (the same size as the empty middle of the attached gem frame).
+
+Draw only light, in white and very pale gold, nothing else:
+- one large soft curved highlight across the upper-left part of the circle, like the shine on a glass dome;
+- one small bright round sparkle and one tiny four-point star twinkle beside it;
+- a thin soft rim of light along the lower-right inner edge of the circle;
+- a few very faint, thin facet lines fanning in from the edge, fading before the middle.
+Keep the middle of the circle mostly black (empty) so the icon underneath stays clear. No outline, no circle border, no other shapes.
+
+Style: clean cartoon highlights matching the attached game art — crisp shapes with a soft cartoon glow, not realistic. No text, no logo, no watermark.
+```
+
+### หลังได้รูปข้อ 11–12 (สำหรับ Claude)
+- ข้อ 11: ตัดพื้นหลังถ้าไม่โปร่งใส · หาวงขอบทองด้านใน (fit วงกลม) แล้วเจาะรูตรงกลางเป็นโปร่งใสด้วยเรขาคณิต (ถ้า AI วาดอะไรติดมาก็หายไป) · บันทึก assets/gems/page/sgem_frame.webp + อัตราส่วนรู (win = รัศมีรู ÷ รัศมีรูป)
+- ข้อ 12: alpha = ความสว่าง (พื้นดำ → โปร่งใส) · ย่อ/เลื่อนให้วงตรงกับรูของข้อ 11 · assets/gems/page/sgem_shine.webp
+- โค้ด: แทนเงา CSS ของเจมสกิล (.tgN .in.ic บนหลุมสกิล, #tgSkills .gx, .tgSkG) ด้วย 3 ชั้น ไอคอนในรู × win · เงาขอบในด้วย radial-gradient · shine · frame · ส่งรูปเทียบก่อน/หลังให้เจ้าของ
+
 ## 9. แท่นหิน 7 หลุม — ยกเลิก (เจ้าของเปลี่ยนเป็นข้อ 10)
 ดาวสกิล 7 ดวง (เท่าช่องวงล้อสกิลบนมือถือ) เปิดที่ Lv 10 · 15 · 20 · 25 · 30 · 40 · 50 · แนบรูปแท่นหินเดิม (base.webp) + รูปกองไฟ แล้วสั่ง:
 ```
