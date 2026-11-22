@@ -401,7 +401,7 @@ function installBastet(){
     {n:'Bastet',keys:['bcStorm','bcLord','bcBless','bcAvatar','bcSekhmet','bcOsiris','bnAnkh']});
   Object.assign(BUFFDEF,{bnGrace:{n:"Cat's Grace",c:BAC.white,i:'CAT'},baEternal:{n:'Eternal Curse',c:BAC.hex,i:'HEX'},bcBless:{n:"Bastet's Blessing",c:BAC.gold,i:'BLESS'},bcAvatar:{n:'Avatar of Bastet',c:BAC.gold,i:'BAST'}});
   JOB.name='Temple Kitten';JOB.hpA=1.15;JOB.hpB=4.2;JOB.spB=4.2;
-  ITEMS.ankhTome={n:'Ankh Tome',slot:'rhand',two:1,kind:'Staff',atk:60,matk:180,wlv:3,aspd:156,ref:6,cards:2,w:60,b:{tal:2},size:{small:1,medium:1,large:1},d:'คัมภีร์อังค์ MATK +2'};
+  ITEMS.ankhTome={n:'Ankh Tome',slot:'rhand',two:1,kind:'Staff',atk:60,matk:180,wlv:3,aspd:156,ref:6,cards:2,w:60,b:{int:2},size:{small:1,medium:1,large:1},d:'คัมภีร์อังค์ INT +2'};
   ITEMS.bookOfDead={n:'Book of the Dead',slot:'rhand',two:1,kind:'Staff',atk:60,matk:200,wlv:4,aspd:154,ref:4,cards:1,w:70,b:{int:3},size:{small:1,medium:1,large:1},d:'คัมภีร์แห่งความตาย INT +3'};
   EQ.rhand='ankhTome';INV.length=0;INV.push('bookOfDead','vikinghelm','ringPrec','clipLuck');
   BA.souls=bL('bbJars')?bLv(BB.bbJars.start,'bbJars'):0;

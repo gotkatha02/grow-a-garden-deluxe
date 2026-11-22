@@ -367,7 +367,7 @@ function installAnubis(){
     {n:'Duat',keys:['acDevil','acBreaker','acRebirth','acAvatar','acWrath','acVerdict','anRite']});
   Object.assign(BUFFDEF,{acRebirth:{n:'Rite of Rebirth',c:'#9aff9a',i:'RITE'},acAvatar:{n:'Avatar of Anubis',c:UC.gold,i:'ANUB'}});
   JOB.name='Duat Initiate';JOB.hpA=1.3;JOB.hpB=5.2;JOB.spB=3.2;
-  ITEMS.ankhFlail={n:'Ankh Flail',slot:'rhand',two:1,kind:'Mace',atk:180,matk:0,wlv:3,aspd:152,ref:6,cards:2,w:160,b:{atk:2},size:{small:1,medium:1,large:1},d:'ลูกตุ้มโซ่ลายอังค์ ATK +2'};
+  ITEMS.ankhFlail={n:'Ankh Flail',slot:'rhand',two:1,kind:'Mace',atk:180,matk:0,wlv:3,aspd:152,ref:6,cards:2,w:160,b:{str:2},size:{small:1,medium:1,large:1},d:'ลูกตุ้มโซ่ลายอังค์ STR +2'};
   ITEMS.duatFlail={n:'Flail of the Duat',slot:'rhand',two:1,kind:'Mace',atk:200,matk:0,wlv:4,aspd:150,ref:4,cards:1,w:180,b:{vit:3},size:{small:1,medium:1,large:1},d:'ลูกตุ้มแห่งดูอัต VIT +3'};
   EQ.rhand='ankhFlail';INV.length=0;INV.push('duatFlail','vikinghelm','ringPrec','clipLuck');
   /* flat ATK bonuses */

@@ -372,7 +372,7 @@ function installKitsune(){
     {n:'Inari',keys:['kcWheel','kcDisc','kcGrace','kcAwaken','kcTamamo','kcTsukuyomi','knBless']});
   Object.assign(BUFFDEF,{kaVeil:{n:'Foxfire Veil',c:KIC.fire,i:'VEIL'},kaCelestial:{n:'Celestial Fox',c:KIC.fire2,i:'FOX'},kbMoonlight:{n:'Moonlight Form',c:KIC.moon,i:'MOON'},kcGrace:{n:"Inari's Grace",c:KIC.gold,i:'GRACE'},kcAwaken:{n:'Nine-Tail Awakening',c:KIC.fire,i:'NINE'}});
   JOB.name='Shrine Apprentice';JOB.hpA=1.15;JOB.hpB=4.2;JOB.spB=4.2;
-  ITEMS.inariStaff={n:'Inari Shrine Staff',slot:'rhand',two:1,kind:'Staff',atk:60,matk:180,wlv:3,aspd:156,ref:6,cards:2,w:80,b:{tal:2},size:{small:1,medium:1,large:1},d:'ไม้เท้าศาลเจ้าอินาริ MATK +2'};
+  ITEMS.inariStaff={n:'Inari Shrine Staff',slot:'rhand',two:1,kind:'Staff',atk:60,matk:180,wlv:3,aspd:156,ref:6,cards:2,w:80,b:{int:2},size:{small:1,medium:1,large:1},d:'ไม้เท้าศาลเจ้าอินาริ INT +2'};
   ITEMS.moonMirrorStaff={n:'Moon Mirror Staff',slot:'rhand',two:1,kind:'Staff',atk:60,matk:200,wlv:4,aspd:154,ref:4,cards:1,w:90,b:{int:3},size:{small:1,medium:1,large:1},d:'ไม้เท้ากระจกจันทรา INT +3'};
   EQ.rhand='inariStaff';INV.length=0;INV.push('moonMirrorStaff','vikinghelm','ringPrec','clipLuck');
   /* flat MATK bonuses */

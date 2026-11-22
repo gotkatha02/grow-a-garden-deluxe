@@ -664,7 +664,7 @@ body.th-c .ro-st .r span[style]{text-shadow:none}
 <script src="assets.js"></script>
 <script>/* Jaguar has its own sprite set; it is only downloaded when Jaguar is the character being played */
 (function(){var c='';try{c=new URLSearchParams(location.search).get('char')||'';if(!c){var h=(location.hash||'').slice(1);if(['wolf','jaguar','rhino','axolotl','croc','owl','cat','hippo','sheep','dragon','lion','kitsune','bastet','anubis'].indexOf(h)>=0)c=h;}if(!c)c=localStorage.getItem('af_char')||'';}catch(e){}
-document.write('<script src="vfx_layer.js"><\/script>');if(c==='jaguar')document.write('<script src="assets_jaguar.js"><\/script>');if(c==='dragon'){document.write('<script src="assets_dragon.js"><\/script>');document.write('<script src="char_dragon.js?v=4"><\/script>');document.write('<script src="char_dragon_fx.js?v=2"><\/script>');}if(c==='lion'){document.write('<script src="char_lion.js?v=3"><\/script>');document.write('<script src="char_lion_fx.js?v=2"><\/script>');}if(c==='kitsune'){document.write('<script src="char_kitsune.js?v=7"><\/script>');document.write('<script src="char_kitsune_fx.js"><\/script>');}if(c==='bastet')document.write('<script src="char_bastet.js?v=4"><\/script>');if(c==='anubis'){document.write('<script src="char_anubis.js?v=3"><\/script>');document.write('<script src="char_anubis_fx.js"><\/script>');}if(c==='owl'){document.write('<script src="assets_owl.js"><\/script>');document.write('<script src="char_owl.js?v=2"><\/script>');document.write('<script src="char_owl_fx.js"><\/script>');}if(c==='wolf')document.write('<script src="wolf_fx.js?v=72"><\/script>');if(c==='croc'){document.write('<script src="char_croc.js?v=3"><\/script>');document.write('<script src="char_croc_fx.js?v=2"><\/script>');}if(c==='rhino'){document.write('<script src="char_rhino.js?v=2"><\/script>');document.write('<script src="char_rhino_fx.js"><\/script>');}if(c==='jaguar'){document.write('<script src="char_jaguar.js?v=2"><\/script>');document.write('<script src="char_jaguar_fx.js"><\/script>');}if(c==='cat'){document.write('<script src="assets_cat.js"><\/script>');document.write('<script src="char_cat.js?v=7"><\/script>');}if(c==='hippo'){document.write('<script src="assets_hippo.js"><\/script>');document.write('<script src="char_hippo.js?v=2"><\/script>');}if(c==='sheep'){document.write('<script src="assets_sheep.js"><\/script>');document.write('<script src="char_sheep.js?v=5"><\/script>');}if(c==='axolotl')document.write('<script src="assets_axolotl.js?v=2"><\/script>');if(c==='rhino')document.write('<script src="assets_rhino.js"><\/script>');})();</script>
+document.write('<script src="vfx_layer.js"><\/script>');if(c==='jaguar')document.write('<script src="assets_jaguar.js"><\/script>');if(c==='dragon'){document.write('<script src="assets_dragon.js"><\/script>');document.write('<script src="char_dragon.js?v=5"><\/script>');document.write('<script src="char_dragon_fx.js?v=2"><\/script>');}if(c==='lion'){document.write('<script src="char_lion.js?v=3"><\/script>');document.write('<script src="char_lion_fx.js?v=2"><\/script>');}if(c==='kitsune'){document.write('<script src="char_kitsune.js?v=8"><\/script>');document.write('<script src="char_kitsune_fx.js"><\/script>');}if(c==='bastet')document.write('<script src="char_bastet.js?v=5"><\/script>');if(c==='anubis'){document.write('<script src="char_anubis.js?v=4"><\/script>');document.write('<script src="char_anubis_fx.js"><\/script>');}if(c==='owl'){document.write('<script src="assets_owl.js"><\/script>');document.write('<script src="char_owl.js?v=2"><\/script>');document.write('<script src="char_owl_fx.js"><\/script>');}if(c==='wolf')document.write('<script src="wolf_fx.js?v=72"><\/script>');if(c==='croc'){document.write('<script src="char_croc.js?v=3"><\/script>');document.write('<script src="char_croc_fx.js?v=2"><\/script>');}if(c==='rhino'){document.write('<script src="char_rhino.js?v=2"><\/script>');document.write('<script src="char_rhino_fx.js"><\/script>');}if(c==='jaguar'){document.write('<script src="char_jaguar.js?v=2"><\/script>');document.write('<script src="char_jaguar_fx.js"><\/script>');}if(c==='cat'){document.write('<script src="assets_cat.js"><\/script>');document.write('<script src="char_cat.js?v=7"><\/script>');}if(c==='hippo'){document.write('<script src="assets_hippo.js"><\/script>');document.write('<script src="char_hippo.js?v=2"><\/script>');}if(c==='sheep'){document.write('<script src="assets_sheep.js"><\/script>');document.write('<script src="char_sheep.js?v=5"><\/script>');}if(c==='axolotl')document.write('<script src="assets_axolotl.js?v=2"><\/script>');if(c==='rhino')document.write('<script src="assets_rhino.js"><\/script>');})();</script>
 <script src="assets_banner.js"></script>
 <script src="assets_fenrir.js?v=2"></script>
 <script src="assets_snowwolf.js"></script>
@@ -1232,7 +1232,7 @@ const SYS={ptsStart:48,max:99,hpBase:300,hpLvP:14,hpLv:20,hpVit:10,mpBase:40,mpL
   monHpBase:536,monHp:2.2,monAtk:1.86};   /* RO stats (2026-11-22): heroes hit harder (weapon ATK) → monster HP ×2.2 / ATK ×1.2 keeps the Lv 60 pacing (tools/progression_bench.js) */
 const PS={lv:LV_CAP,str:1,agi:1,vit:1,int:1,dex:1,luk:1};
 /* RO item bonus keys (the old item data) → our keys: the same six now */
-const OLD_KEY={str:'str',agi:'agi',vit:'vit',int:'int',dex:'dex',luk:'luk'};
+const OLD_KEY={str:'str',agi:'agi',vit:'vit',int:'int',dex:'dex',luk:'luk',tal:'int',atk:'str',cha:'luk',lck:'luk'};   // item bonus keys b:{…}: RO names + the 12 Tails names still in old saves (TAL → INT, ATK stat → STR, CHA / LCK → LUK)
 /* 12 Tails keys (saves / item data from before 2026-11-22) → RO keys. 'int' was SP + cast speed → DEX now; TAL (magic) → INT; CHA is gone → LUK */
 const K12={atk:'str',tal:'int',int:'dex',cha:'luk',lck:'luk',agi:'agi',vit:'vit'};
 const JOB={name:'Frost Raider',hpA:1.5,hpB:5,spB:3};                         // Knight HP/SP table
@@ -1378,7 +1378,7 @@ function defAdjust(d,def){const N=clamp(def,1,512),light=Math.max(Math.trunc(d-.
 const lckRoll=()=>0;   // RO: no luck roll on every hit (LUK gives CRIT / perfect dodge / small ATK instead)
 /* visible coefficient scale per hero / branch: every "ATK×n" / "MATK×n" in a skill text is already multiplied by this.
    Re-tuned 2026-11-22 for the RO stats (RO_STATS_TH.md §10): every branch benches ≈ 2,050 at Lv 60 (tank rhino ≈ 1,880); the 12 Tails values are in git */
-const CHAR_COEF={wolf:{A:1.763,B:2.499,basic:1.0,all:1.0},jaguar:{A:0.592,B:1.502,basic:.95,all:.95},owl:{A:1,B:0.699,basic:1.22,all:1.4},hippo:{A:1.52,B:0.98,basic:1.67,all:1.67},dragon:{A:0.78,B:0.981,basic:1.4,all:1.4},lion:{A:1.714,B:0.92,basic:1.4,all:1.4},rhino:4.283,croc:2.365,cat:0.658,sheep:2.01,axolotl:1.315,kitsune:0.349,bastet:0.385,anubis:1.5};
+const CHAR_COEF={wolf:{A:1.763,B:2.499,basic:1.0,all:1.0},jaguar:{A:0.592,B:1.502,basic:.95,all:.95},owl:{A:1,B:0.699,basic:1.22,all:1.4},hippo:{A:1.52,B:0.98,basic:1.67,all:1.67},dragon:{A:0.78,B:0.981,basic:1.4,all:1.4},lion:{A:1.714,B:0.92,basic:1.4,all:1.4},rhino:4.283,croc:2.365,cat:0.658,sheep:2.01,axolotl:1.315,kitsune:0.331,bastet:0.368,anubis:1.5};
 const coefOf=br=>{const c=CHAR_COEF[CHAR];if(c==null)return 1;return typeof c==='number'?c:(c[br]??c.all??1);};
 function derive(){gearCalc();const s={},lv=PS.lv;for(const k of STATK)s[k]=Math.max(1,PS[k]+growStat(k,lv)+(BON[k]||0));   // total = points + hero bonus + items / buffs
   const f5=v=>Math.floor(v/5),sq=v=>Math.floor(v/10)**2;
@@ -5690,16 +5690,17 @@ function equipItem(id){const it=ITEMS[id];if(!it)return;const i=INV.indexOf(id);
   if(!(sl in EQ)){INV.push(id);msg(`${it.n}: ช่องนี้ถูกตัดออกจากเกมแล้ว`);return;}
   if(EQ[sl])INV.push(EQ[sl]);EQ[sl]=id;applyStats();buildItems();msg(`สวมใส่ ${it.n}`);}
 function unequip(sl){if(!EQ[sl])return;INV.push(EQ[sl]);EQ[sl]=null;applyStats();buildItems();}
-/* item card in 12 Tails layout: 8 stats as "own value + value from orbs", socket dots (green = orb set, grey = empty hole) */
+/* item card: weapon ATK / MATK and armour DEF / MDEF on top, then the six RO stats as "own value + value from orbs", socket dots (green = orb set, grey = empty hole) */
 function itemInfo(id){const it=ITEMS[id];if(!it)return;const w=document.getElementById('idw'),S=itemSt(id);
   const cell=k=>{const b=S.st[k]||0,o=S.orb[k]||0;if(S.st0){const b0=S.st0[k]||0,d=b-b0;return `<div class="c"><span>${k.toUpperCase()}</span><i>${b0||d||o?`${b0}${d?` <b style="color:${d>0?'#2a9a28':'#d23a2a'}">${d>0?'+':''}${d}</b>`:''}${o?` <em>+${o}</em>`:''}`:'-'}</i></div>`;}
     return `<div class="c"><span>${k.toUpperCase()}</span><i>${b||o?`${b}${o?` <em>+${o}</em>`:''}`:'-'}</i></div>`;};
   const dots=Array.from({length:Math.max(4,S.sockets)},(_,i)=>`<b class="${i<S.orbs.length?'on':i<S.sockets?'hole':'none'}" title="${i<S.orbs.length?S.orbs[i].s.toUpperCase()+' +'+S.orbs[i].v:i<S.sockets?'รูว่าง':'ไม่มีรู'}"></b>`).join('');
-  const ex=it.aff?'':Object.entries(S.x).map(([k,v])=>`${{hpPct:'MaxHP',crit:'คริ'}[k]||k} +${v}%`).join(' · ');   // crafted items list their special stats in itemExtraInfo
-  const ref=it.ref?(it.slot==='rhand'?`ตีบวก +${it.ref}: พลังโจมตี/เวท +${it.ref*REF_ATK[it.wlv]}`:`ตีบวก +${it.ref}: DEF +${armorRefDef(it)}`):'';
+  const AL=window.AFItems&&AFItems.affLabel,ex=it.aff?'':Object.entries(S.x).map(([k,v])=>AL?AL(k,v):`${k} +${v}`).join(' · ');   // crafted items list their special stats in itemExtraInfo
+  const PW=[['atk','ATK'],['matk','MATK'],['def','DEF'],['mdef','MDEF']].filter(([k])=>S.st[k]||(S.st0&&S.st0[k])||S.orb[k]),pcell=([k,n])=>cell(k).replace(`<span>${k.toUpperCase()}</span>`,`<span>${n}</span>`);
+  const ref=it.ref?(it.slot==='rhand'?`ตีบวก +${it.ref}: ${S.st.matk>(S.st.atk||0)?'MATK':'ATK'} +${it.ref*REF_ATK[clamp(it.wlv||1,1,4)]}`:`ตีบวก +${it.ref}: DEF +${armorRefDef(it)}`):'';
   roWin('idw',`${itName(it)} <small>Lv${S.lv}</small>`,`<div class="t12"><div class="t12h"><div class="bigic">${itemIcon(it,52)}</div><div class="kv">
     <div><span>Type</span>${it.kind}</div><div><span>Rank</span>${S.rank}</div><div><span>Slot</span><span class="dots">${dots}</span></div></div></div>
-    <div class="t12g">${ST8.map(cell).join('')}</div>${it.broken?`<div class="t12x" style="color:#c0202a">💔 แตก — ไม่ให้ค่าพลังจนกว่าจะซ่อม (ช่างตีบวก: ใช้ของช่องเดียวกัน ระดับเดียวกัน 1 ชิ้น หรือจ่ายเงิน)</div>`:''}${it.rep?`<div class="t12x" style="color:#7a3ab8">◈ Replica: สเตตัสจำลองจาก <b>${it.rep.n}</b></div>`:''}${window.itemExtraInfo?itemExtraInfo(id):''}${ex||ref?`<div class="t12x">${[ex,ref].filter(Boolean).join('<br>')}</div>`:''}
+    ${PW.length?`<div class="t12g" style="margin-bottom:4px;background:#fff8e6">${PW.map(pcell).join('')}</div>`:''}<div class="t12g">${ST8.map(cell).join('')}</div>${it.broken?`<div class="t12x" style="color:#c0202a">💔 แตก — ไม่ให้ค่าพลังจนกว่าจะซ่อม (ช่างตีบวก: ใช้ของช่องเดียวกัน ระดับเดียวกัน 1 ชิ้น หรือจ่ายเงิน)</div>`:''}${it.rep?`<div class="t12x" style="color:#7a3ab8">◈ Replica: สเตตัสจำลองจาก <b>${it.rep.n}</b></div>`:''}${window.itemExtraInfo?itemExtraInfo(id):''}${ex||ref?`<div class="t12x">${[ex,ref].filter(Boolean).join('<br>')}</div>`:''}
     <p>${(it.d||'').replace(/\s*(·\s*)?(STR|AGI|VIT|INT|DEX|LUK|HIT|FLEE|CRIT|MATK|MaxHP)\s*[+\-]?\d+%?/g,'')}</p><div class="t12w">Weight ${it.w/10}</div></div>`);w.classList.add('open');w.style.zIndex=40;}
 function buildEquip(){const w=document.getElementById('eqw');if(!w||!w.classList.contains('open'))return;
   const slot=([sl,lab])=>{const id=EQ[sl],it=ITEMS[id];const two=false;
@@ -6054,7 +6055,7 @@ window.AF={levelUp:()=>{if(PS.lv<LV_CAP){PS.lv++;applyStats();player.hp=player.m
 <script src="croc_vfx.js?v=2"></script>
 <script src="worldmap.js"></script>
 <script src="gem_data.js?v=6"></script>
-<script src="items.js?v=21"></script>
+<script src="items.js?v=22"></script>
 <script src="market.js?v=2"></script>
 <script src="npcs.js?v=10"></script>
 <script src="monsters.js"></script>
@@ -6067,7 +6068,7 @@ window.AF={levelUp:()=>{if(PS.lv<LV_CAP){PS.lv++;applyStats();player.hp=player.m
 <script src="mobile.js?v=5"></script>
 <script src="totem_gems.js?v=35"></script>
 <script src="seals.js?v=1"></script>
-<script src="relics.js?v=2"></script>
+<script src="relics.js?v=3"></script>
 <script src="gem_fx.js?v=3"></script>
 <script src="gem_mut_fx.js?v=3"></script>
 <script src="gem_sup_fx.js?v=2"></script>

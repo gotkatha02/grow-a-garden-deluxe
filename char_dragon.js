@@ -391,7 +391,7 @@ function installDragon(){
   Object.assign(BUFFDEF,{dnRoar:{n:"Lion's Roar",c:DGC.gold,i:'ROAR'},dkCoil:{n:'Dragon Coil',c:DGC.azure,i:'COIL'},dkMirror:{n:'Mirror Pond',c:'#bfe8ff',i:'MIRROR'},dcAwaken:{n:'Shishi Awakening',c:DGC.azure,i:'SHISHI'},dcSovereign:{n:'Storm Sovereign',c:DGC.thunder,i:'STORM'},rhSA:BUFFDEF.rhSA||{n:'Steady',c:'#c8b898',i:'SA'}});
   JOB.name='Azure Pupil';JOB.hpA=1.35;JOB.hpB=5;JOB.spB=3.4;
   ITEMS.azureKnuckles={n:'Azure Wave Knuckles',slot:'rhand',two:1,kind:'Knuckle',atk:140,matk:120,wlv:3,aspd:156,ref:6,cards:2,w:120,b:{agi:2},size:{small:1,medium:1,large:.85},d:'สนับมือลายคลื่นคราม AGI +2'};
-  ITEMS.cloudKnuckles={n:'Cloud Dragon Knuckles',slot:'rhand',two:1,kind:'Knuckle',atk:150,matk:160,wlv:4,aspd:154,ref:4,cards:1,w:130,b:{tal:3},size:{small:1,medium:1,large:.85},d:'สนับมือมังกรเมฆ MATK +3'};
+  ITEMS.cloudKnuckles={n:'Cloud Dragon Knuckles',slot:'rhand',two:1,kind:'Knuckle',atk:150,matk:160,wlv:4,aspd:154,ref:4,cards:1,w:130,b:{int:3},size:{small:1,medium:1,large:.85},d:'สนับมือมังกรเมฆ INT +3'};
   EQ.rhand='azureKnuckles';INV.length=0;INV.push('cloudKnuckles','vikinghelm','ringPrec','clipLuck');
   /* flat ATK / MATK bonuses */
   const flat=(e,o)=>{const k=o&&(o.skill||(o.auto?'basic':null))||window.SKCTX,col=dCol(k);let b=0;
