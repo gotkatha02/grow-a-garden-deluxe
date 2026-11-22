@@ -664,7 +664,7 @@ body.th-c .ro-st .r span[style]{text-shadow:none}
 <script src="assets.js"></script>
 <script>/* Jaguar has its own sprite set; it is only downloaded when Jaguar is the character being played */
 (function(){var c='';try{c=new URLSearchParams(location.search).get('char')||'';if(!c){var h=(location.hash||'').slice(1);if(['wolf','jaguar','rhino','axolotl','croc','owl','cat','hippo','sheep','dragon','lion','kitsune','bastet','anubis'].indexOf(h)>=0)c=h;}if(!c)c=localStorage.getItem('af_char')||'';}catch(e){}
-document.write('<script src="vfx_layer.js"><\/script>');if(c==='jaguar')document.write('<script src="assets_jaguar.js"><\/script>');if(c==='dragon'){document.write('<script src="assets_dragon.js"><\/script>');document.write('<script src="char_dragon.js?v=3"><\/script>');document.write('<script src="char_dragon_fx.js?v=2"><\/script>');}if(c==='lion'){document.write('<script src="char_lion.js?v=2"><\/script>');document.write('<script src="char_lion_fx.js?v=2"><\/script>');}if(c==='kitsune'){document.write('<script src="char_kitsune.js?v=5"><\/script>');document.write('<script src="char_kitsune_fx.js"><\/script>');}if(c==='bastet')document.write('<script src="char_bastet.js?v=2"><\/script>');if(c==='anubis'){document.write('<script src="char_anubis.js"><\/script>');document.write('<script src="char_anubis_fx.js"><\/script>');}if(c==='owl'){document.write('<script src="assets_owl.js"><\/script>');document.write('<script src="char_owl.js"><\/script>');document.write('<script src="char_owl_fx.js"><\/script>');}if(c==='wolf')document.write('<script src="wolf_fx.js?v=72"><\/script>');if(c==='croc'){document.write('<script src="char_croc.js?v=2"><\/script>');document.write('<script src="char_croc_fx.js?v=2"><\/script>');}if(c==='rhino'){document.write('<script src="char_rhino.js"><\/script>');document.write('<script src="char_rhino_fx.js"><\/script>');}if(c==='jaguar'){document.write('<script src="char_jaguar.js"><\/script>');document.write('<script src="char_jaguar_fx.js"><\/script>');}if(c==='cat'){document.write('<script src="assets_cat.js"><\/script>');document.write('<script src="char_cat.js?v=6"><\/script>');}if(c==='hippo'){document.write('<script src="assets_hippo.js"><\/script>');document.write('<script src="char_hippo.js"><\/script>');}if(c==='sheep'){document.write('<script src="assets_sheep.js"><\/script>');document.write('<script src="char_sheep.js?v=3"><\/script>');}if(c==='axolotl')document.write('<script src="assets_axolotl.js?v=2"><\/script>');if(c==='rhino')document.write('<script src="assets_rhino.js"><\/script>');})();</script>
+document.write('<script src="vfx_layer.js"><\/script>');if(c==='jaguar')document.write('<script src="assets_jaguar.js"><\/script>');if(c==='dragon'){document.write('<script src="assets_dragon.js"><\/script>');document.write('<script src="char_dragon.js?v=4"><\/script>');document.write('<script src="char_dragon_fx.js?v=2"><\/script>');}if(c==='lion'){document.write('<script src="char_lion.js?v=3"><\/script>');document.write('<script src="char_lion_fx.js?v=2"><\/script>');}if(c==='kitsune'){document.write('<script src="char_kitsune.js?v=6"><\/script>');document.write('<script src="char_kitsune_fx.js"><\/script>');}if(c==='bastet')document.write('<script src="char_bastet.js?v=3"><\/script>');if(c==='anubis'){document.write('<script src="char_anubis.js?v=2"><\/script>');document.write('<script src="char_anubis_fx.js"><\/script>');}if(c==='owl'){document.write('<script src="assets_owl.js"><\/script>');document.write('<script src="char_owl.js?v=2"><\/script>');document.write('<script src="char_owl_fx.js"><\/script>');}if(c==='wolf')document.write('<script src="wolf_fx.js?v=72"><\/script>');if(c==='croc'){document.write('<script src="char_croc.js?v=3"><\/script>');document.write('<script src="char_croc_fx.js?v=2"><\/script>');}if(c==='rhino'){document.write('<script src="char_rhino.js?v=2"><\/script>');document.write('<script src="char_rhino_fx.js"><\/script>');}if(c==='jaguar'){document.write('<script src="char_jaguar.js?v=2"><\/script>');document.write('<script src="char_jaguar_fx.js"><\/script>');}if(c==='cat'){document.write('<script src="assets_cat.js"><\/script>');document.write('<script src="char_cat.js?v=7"><\/script>');}if(c==='hippo'){document.write('<script src="assets_hippo.js"><\/script>');document.write('<script src="char_hippo.js?v=2"><\/script>');}if(c==='sheep'){document.write('<script src="assets_sheep.js"><\/script>');document.write('<script src="char_sheep.js?v=4"><\/script>');}if(c==='axolotl')document.write('<script src="assets_axolotl.js?v=2"><\/script>');if(c==='rhino')document.write('<script src="assets_rhino.js"><\/script>');})();</script>
 <script src="assets_banner.js"></script>
 <script src="assets_fenrir.js?v=2"></script>
 <script src="assets_snowwolf.js"></script>
@@ -692,7 +692,8 @@ document.write('<script src="vfx_layer.js"><\/script>');if(c==='jaguar')document
 <script src="maps/greek-maps.js"></script>
 <script src="maps/japan-maps.js"></script>
 <script src="maps/capital-maps.js?v=19"></script>
-<script src="maps/level-zones.js"></script>
+<script src="level_cap.js?v=1"></script>
+<script src="maps/level-zones.js?v=2"></script>
 <script src="maps/monster-roster.js"></script>
 <script src="skill_rules.js?v=4"></script>
 <script src="skill_enh.js"></script>
@@ -1226,7 +1227,7 @@ const SYS={ptsStart:20,ptsLv:2,max:200,hpBase:300,hpLv:20,hpVit:10,mpBase:40,mpL
   /* monsters are tuned against a player of the same level wearing that level's crafted gear (tier + refine ≈ +0…+7):
      ~12 plain hits to kill a normal monster, ~20 monster hits to die. Without gear the player deals ~½ damage and takes ~1.5× → crafting is needed. */
   monHpBase:536,monHp:1,monAtk:1.55};
-const PS={lv:99,atk:150,tal:1,vit:60,def:40,int:20,agi:30,cha:10,lck:4};
+const PS={lv:LV_CAP,atk:150,tal:1,vit:60,def:40,int:20,agi:30,cha:10,lck:4};
 /* item bonus keys from the old RO item data → new stats (until the item rework) */
 const OLD_KEY={str:'atk',agi:'agi',vit:'vit',int:'tal',dex:'int',luk:'lck'};
 const JOB={name:'Frost Raider',hpA:1.5,hpB:5,spB:3};                         // Knight HP/SP table
@@ -1285,6 +1286,7 @@ const ITEM12={
   tideBracelets:{lv:90,st:{tal:190,atk:50,int:10},sockets:1},
   obsidianSpear:{lv:75,st:{atk:160,agi:5,def:3},sockets:2},
   templeSpear:{lv:90,st:{atk:185,vit:6,cha:3},sockets:1}};
+for(const k in ITEM12)if(ITEM12[k].lv)ITEM12[k].lv=LVC.nc(ITEM12[k].lv);   /* level cap 60 (level_cap.js): base items keep their old design level above, the game reads the new one (Lv 90 → 55) */
 const ST8=['atk','def','agi','vit','int','cha','tal','lck'];                    // display order (as in 12 Tails)
 const ITEM_STAT_SCALE=.1,ORB_MAX=[1,1,1,2],ORB_CAP=it=>{const c=it.slot==='acc'?0:it.dset!==undefined?1:(it.slot==='rhand'||it.slot==='armor')?4:2;return c&&(it.ref||0)>=12?c+1:c;};   /* refine +12 = one extra hole (owner 2026-11-21) */
 function itemSt(id){const it=ITEMS[id];if(!it)return null;const T=ITEM12[it.base||id];
@@ -1385,9 +1387,12 @@ function monStats(lv,role='normal'){const P=MON_PROFILE[role]||MON_PROFILE.norma
   for(const k of ['atk','vit','def','agi','cha'])s[k]=Math.round(pts*(P[k]||0));
   const hp=Math.round((SYS.monHpBase+lv*SYS.hpLv+s.vit*SYS.hpVit)*SYS.monHp*(R.hp||1)),a=(lv+s.atk)*SYS.monAtk*(R.atk||1);
   return {lv,hp,atk:[Math.round(a*.85),Math.round(a*1.15)],def:s.def,vit:s.vit,agi:s.agi,cha:s.cha,spd:1+Math.min(SYS.agiMoveMax,s.agi*SYS.agiMove),role};}
-const MON={frostling:Object.assign({name:'Frostling',size:'medium',race:'Formless',el:'Water 1'},monStats(62)),
-  elder:Object.assign({name:'Elder Frostling',size:'large',race:'Formless',el:'Water 3',boss:1},monStats(85,'boss')),
-  snowwolf:Object.assign({name:'Snow Wolf',th:'หมาป่าหิมะ',size:'medium',race:'Brute',el:'Water 1'},monStats(72,'swift'))};
+/* the bench / test-room dummies (world monsters get their own level from VK_MONS). Level cap 60: design Lv 62 / 85 / 72 → 38 / 52 / 44
+   (tools/balance_bench.js swaps the design levels back in for its Lv 99 reference runs: MON_LV0) */
+const MON_LV0={frostling:62,elder:85,snowwolf:72};
+const MON={frostling:Object.assign({name:'Frostling',size:'medium',race:'Formless',el:'Water 1'},monStats(LVC.n(62))),
+  elder:Object.assign({name:'Elder Frostling',size:'large',race:'Formless',el:'Water 3',boss:1},monStats(LVC.n(85),'boss')),
+  snowwolf:Object.assign({name:'Snow Wolf',th:'หมาป่าหิมะ',size:'medium',race:'Brute',el:'Water 1'},monStats(LVC.n(72),'swift'))};
 applyStats();
 function spawnEnemy(x,y,boss=false,kind=null){const M=kind?MON[kind]:boss?MON.elder:MON.frostling;if(kind==='snowwolf'&&x==null){const p=forestWolfPoint();x=p[0];y=p[1];}
   const e={id:eid++,boss,kind,sc:kind?rnd(.94,1.08):boss?1.6:1,x:x??rnd(-520,520),y:y??rnd(-420,420),r:kind?20:boss?28:17,m:M,hp:M.hp,maxHp:M.hp,atk:0,acd:0,aggro:0,vx:0,vy:0,tx:0,ty:0,wait:rnd(0,2),flash:0,
@@ -3317,7 +3322,7 @@ if(CHAR==='jaguar'){
   ITEMS.obsidianDaggers={n:'Obsidian Fang Daggers',slot:'rhand',two:1,kind:'Dual Daggers',atk:150,wlv:3,aspd:166,ref:7,cards:2,w:120,b:{},size:{small:1,medium:.75,large:.5},d:'มีดคู่ออบซิเดียนดำมันวาวเหมือนกระจก'};
   ITEMS.sunDaggers={n:'Sunstone Twin Fangs',slot:'rhand',two:1,kind:'Dual Daggers',atk:175,wlv:4,aspd:162,ref:4,cards:1,w:140,b:{luk:3},size:{small:1,medium:.75,large:.5},d:'มีดคู่หินสุริยะ LUK +3'};
   EQ.rhand='obsidianDaggers';INV.length=0;INV.push('sunDaggers','vikinghelm','ringPrec','clipLuck');
-  Object.assign(PS,{lv:99,str:70,agi:90,vit:35,int:1,dex:55,luk:45});
+  Object.assign(PS,{lv:LV_CAP,str:70,agi:90,vit:35,int:1,dex:55,luk:45});
   mkBasic=mkJgBasic;
   addFx(new MarkOverlay());
 }
@@ -3802,7 +3807,7 @@ if(CHAR==='rhino'){
   ITEMS.ironGauntlets={n:'Frost Iron Gauntlets',slot:'rhand',two:1,kind:'Knuckle',atk:145,wlv:3,aspd:148,ref:7,cards:2,w:200,b:{vit:2},size:{small:1,medium:1,large:.75},d:'หมัดเหล็กคู่ หนักแน่น VIT +2'};
   ITEMS.titanKnuckles={n:'Titan Breaker Knuckles',slot:'rhand',two:1,kind:'Knuckle',atk:170,wlv:4,aspd:142,ref:4,cards:1,w:240,b:{str:3},size:{small:1,medium:1,large:.75},d:'สนับมือไททัน STR +3'};
   EQ.rhand='ironGauntlets';INV.length=0;INV.push('titanKnuckles','vikinghelm','ringPrec','clipLuck');
-  Object.assign(PS,{lv:99,str:85,agi:40,vit:80,int:1,dex:40,luk:20});
+  Object.assign(PS,{lv:LV_CAP,str:85,agi:40,vit:80,int:1,dex:40,luk:20});
   mkBasic=mkRhBasic;rhOverlay=addFx(new RhOverlay());
   window.RH=RH;window.RH_BAL=RH_BAL;
 }
@@ -4544,7 +4549,7 @@ if(CHAR==='axolotl'){
   ITEMS.jadeBracelets={n:'Twin Jade Bracelets',slot:'rhand',two:1,kind:'Bracelet',atk:40,matk:160,wlv:3,aspd:156,ref:7,cards:2,w:40,b:{int:2},size:{small:1,medium:1,large:1},d:'กำไลหยกคู่ MATK 160 · INT +2'};
   ITEMS.tideBracelets={n:'Tidecaller Bracelets',slot:'rhand',two:1,kind:'Bracelet',atk:50,matk:190,wlv:4,aspd:152,ref:4,cards:1,w:50,b:{dex:3},size:{small:1,medium:1,large:1},d:'กำไลเรียกกระแสน้ำ MATK 190 · DEX +3'};
   EQ.rhand='jadeBracelets';INV.length=0;INV.push('tideBracelets','vikinghelm','ringPrec','clipLuck');
-  Object.assign(PS,{lv:99,str:1,agi:40,vit:40,int:95,dex:70,luk:20});
+  Object.assign(PS,{lv:LV_CAP,str:1,agi:40,vit:40,int:95,dex:70,luk:20});
   mkBasic=mkAxBasic;axEnsure();
   const st=document.createElement('style');st.textContent='#axlw{position:absolute;left:14px;top:-22px;display:flex;gap:5px;pointer-events:none}#axlw i{width:12px;height:16px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;transform:rotate(180deg);background:rgba(20,60,90,.35);border:2px solid rgba(20,70,110,.6);box-shadow:inset 0 0 0 1px rgba(255,255,255,.2)}#axlw i.on{background:radial-gradient(circle at 40% 65%,#fff 0 18%,#9ff0ff 30%,#2aa8e0 100%);border-color:#1a6aa0;box-shadow:0 0 8px rgba(120,230,255,.8)}#axlw i.lock{opacity:.25}';document.head.appendChild(st);
   window.AX=AX;
@@ -4875,7 +4880,7 @@ if(CHAR==='croc'){
   ITEMS.obsidianSpear={n:'Obsidian Spear',slot:'rhand',two:1,kind:'Spear',atk:160,wlv:3,aspd:150,ref:7,cards:2,w:180,b:{},size:{small:.75,medium:.75,large:1},d:'หอกไม้ปลายออบซิเดียน'};
   ITEMS.templeSpear={n:'Temple Lance',slot:'rhand',two:1,kind:'Spear',atk:185,wlv:4,aspd:146,ref:4,cards:1,w:200,b:{str:3},size:{small:.75,medium:.75,large:1},d:'หอกวิหาร STR +3'};
   EQ.rhand='obsidianSpear';INV.length=0;INV.push('templeSpear','vikinghelm','ringPrec','clipLuck');
-  Object.assign(PS,{lv:99,str:90,agi:55,vit:60,int:1,dex:50,luk:20});
+  Object.assign(PS,{lv:LV_CAP,str:90,agi:55,vit:60,int:1,dex:50,luk:20});
   mkBasic=mkCrBasic;crOverlay=addFx(new CrOverlay());window.CR=CR;
 }
 /* Snowy Owl · Silent Wing — module in char_owl.js */
@@ -5326,7 +5331,7 @@ function updUI(){
     el.classList.toggle('active-target',!!(targeting&&targeting.key===k));}
   {const sh=!!hasBuff('runeGuard'),row=document.getElementById('shrow');row.classList.toggle('on',sh);if(sh){const t=player.buffs.runeGuard.t,T=player.buffs.runeGuard.max||t;player.buffs.runeGuard.max=Math.max(T,t);document.getElementById('shb').style.width=(t/player.buffs.runeGuard.max*100)+'%';document.getElementById('sht').textContent=`Rune Guard ${t.toFixed(1)}s`;}}
   document.getElementById('lvb').textContent=PS.lv;
-  document.getElementById('expb').style.width=(player.exp*100)+'%';document.getElementById('expt').textContent=`Base Lv ${PS.lv}${PS.lv>=99?' (MAX)':''} · ${(player.exp*100).toFixed(2)}%`;
+  document.getElementById('expb').style.width=(player.exp*100)+'%';document.getElementById('expt').textContent=`Base Lv ${PS.lv}${PS.lv>=LV_CAP?' (MAX)':''} · ${(player.exp*100).toFixed(2)}%`;
   let h='';for(const k in player.buffs){const b=player.buffs[k];if(b.t<=0){delete player.buffs[k];continue;}const d=BUFFDEF[k];if(!d)continue;const art=buffArt(k);h+=`<span class="buff${art?' art':''}" style="--c:${d.c}" title="${d.n}"><b>${art?`<img src="${art}" alt="" onerror="this.style.display='none'">`:d.i}</b><span>${b.lbl!=null?b.lbl:b.t>=60?Math.floor(b.t/60)+':'+String(Math.floor(b.t%60)).padStart(2,'0'):Math.ceil(b.t)+'s'}</span></span>`;}
   if(buffBox.innerHTML!==h)buffBox.innerHTML=h;}
 let testMode=true;
@@ -5334,8 +5339,8 @@ const ROWREQ=[0,0,3,6,9,12,15,18,21];
 function spUsed(br){let n=0;for(const k in SKILLS){const s=SKILLS[k];if(k===BASIC_KEY||s.br==='C')continue;if(!br||s.br===br)n+=LV[k];}return n;}
 /* 12 Tails style skill points: no Job level — points come from Base Level only */
 const SP_MAX=lv=>clamp(lv-1,0,49);                                    // 1 SP per level from Lv2 → 49 at Lv50 (cap)
-const CP_MAX=lv=>lv<55?0:Math.min(10,Math.floor((lv-55)/5)+1+(lv>=99?1:0));   // C-Point every 5 Lv from Lv55 → 3 at Lv65, 10 at Lv99
-const CTIER_LV=[0,55,60,70,80];
+const CP_MAX=lv=>{const L=LVC.gi(lv);return L<55?0:Math.min(10,Math.floor((L-55)/5)+1+(L>=99?1:0));};   // old C-Points (C is gems now): every 5 design Lv from 55, squeezed into Lv 51–60 by the level cap (level_cap.js)
+const CTIER_LV=[0,55,60,70,80].map(v=>v&&LVC.g(v));   // design 55 / 60 / 70 / 80 → Lv 51 / 52 / 54 / 56 under the Lv 60 cap
 /* ===== 12 Tails-style per-level skill requirements: each level of each skill may need Character Lv, points spent in its tree, and/or other skills at a level ===== */
 const ROWLV=[0,5,10,15,20,25,30,35,45];
 const XREQ={ // cross-skill prerequisites for level 1 (key:[[skill,lv],...])
@@ -5372,7 +5377,7 @@ function buildLevels(){const box=document.getElementById('lvls');box.innerHTML='
       row.querySelectorAll('button').forEach(b=>b.onclick=()=>{const d=+b.dataset.d;if(d>0&&!canRaise(k))return;LV[k]=clamp(LV[k]+d,k===BASIC_KEY?1:0,s.max);
         for(const q in SKILLS){const r=SKILLS[q].req;if(r&&LV[r[0]]<r[1])LV[q]=0;}buildLevels();buildHotbar();});box.appendChild(row);}}
   {const h=document.createElement('div');h.className='brh';h.textContent=`C · FENRIR'S LEGACY (C-Point ${cUsed()}/${CP_MAX(PS.lv)})`;box.appendChild(h);
-   const note=document.createElement('div');note.className='note';note.style.marginTop='2px';note.textContent='Tier 1 Lv.55 · Tier 2 Lv.65 (ลง C แล้ว 2) · Tier 3 Lv.75 (4) · Tier 4 Lv.90 (7)';box.appendChild(note);
+   const note=document.createElement('div');note.className='note';note.style.marginTop='2px';note.textContent=`Tier 1 Lv.${CTIER_LV[1]} · Tier 2 Lv.${CTIER_LV[2]} (ลง C แล้ว 2) · Tier 3 Lv.${CTIER_LV[3]} (4) · Tier 4 Lv.${CTIER_LV[4]} (7)`;box.appendChild(note);
    for(const k in CSK){const s=SKILLS[k],ok=s.creq(),row=document.createElement('div');row.className='lvrow';const can=canRaise(k);
      row.innerHTML=`<div class="n">${s.name}${s.passive?' <em>passive</em>':''}<small>${s.id} · Tier ${s.tier} · ${s.th}<br><span style="color:${ok?'#7fe0a0':'#ff8a7a'}">ต้องมี: ${s.rq}</span></small></div><button data-d="-1">−</button><span class="v">${LV[k]}/1</span><button data-d="1" ${can?'':'disabled style="opacity:.35"'}>+</button>`;
      row.querySelectorAll('button').forEach(b=>b.onclick=()=>{const d=+b.dataset.d;if(d>0&&!canRaise(k))return;LV[k]=clamp(LV[k]+d,0,1);buildLevels();buildHotbar();});box.appendChild(row);}
@@ -5381,9 +5386,12 @@ function buildLevels(){const box=document.getElementById('lvls');box.innerHTML='
 buildLevels();
 
 /* ---------- Status window (Ragnarok style) ---------- */
-/* Lv99 presets — 314 points each (20 + 3 per level) */
+/* stat presets, written for Lv 99 (216 points: 20 + 2 per level); presetAt(name, lv) scales one to the points a level has —
+   test mode uses it at the Lv 60 cap (level_cap.js), the balance bench at its own level (Lv 99 by default) */
 const PRESETS={'ตีแรง':{atk:150,tal:1,vit:25,def:15,int:5,agi:15,cha:5,lck:4},'แทงก์':{atk:70,tal:1,vit:70,def:60,int:5,agi:5,cha:5,lck:4},
   'สายเวท':{atk:1,tal:150,vit:25,def:15,int:15,agi:5,cha:5,lck:4},'เร็ว/บัฟ':{atk:110,tal:1,vit:25,def:15,int:5,agi:40,cha:20,lck:4}};
+const presetAt=(name,lv)=>{const P=PRESETS[name]||PRESETS['ตีแรง'];if(lv>=99)return {...P};const B=pointsAt(lv),U=STATK.reduce((n,k)=>n+P[k]-1,0),f=Math.min(1,B/U),o={};let u=0;
+  for(const k of STATK){o[k]=1+Math.floor((P[k]-1)*f);u+=o[k]-1;}const main=STATK.reduce((a,c)=>P[c]>P[a]?c:a,'atk');o[main]+=Math.max(0,B-u);return o;};   // same shape, every point of that level spent
 const STATDESC={atk:'ATK +1 · สกิลกายภาพ = ตัวคูณ × ATK',tal:'TAL +1 · พลัง TAL = 50 × (1 + 0.02 × TAL) ใช้กับสกิลเวทและฮีล',vit:'HP +10',def:'DEF +1 · ลดดาเมจ 35% × (ดาเมจ − DEF/2) + 65% × ดาเมจ × (1 − DEF/(DEF+64))',
   int:'MAG +1 · SP +5 · ร่ายเร็วขึ้น',agi:'AGI +1 · คูลดาวน์ × (1 − AGI/(AGI+128)) · เดินเร็วขึ้น (ไม่เพิ่มความเร็วตี)',cha:'CHA +1 · บัฟนาน ×(1 + 0.015 × CHA) · สถานะที่เราใส่ติดนาน (เทียบ CHA ศัตรู)',lck:'LCK +1 · ทุกฮิตบวกดาเมจสุ่ม 0 ถึง 0.2 × LCK · เลือดไหล/พิษแรงขึ้น'};
 function fitStats(){while(pointsLeft()<0){const k=STATK.reduce((a,c)=>PS[c]>PS[a]?c:a,'atk');PS[k]--;}}
@@ -5474,16 +5482,17 @@ CHAT.push({type:'sys',t:'ยินดีต้อนรับสู่ <b>Totem 
 document.getElementById('chatin').addEventListener('keydown',e=>{e.stopPropagation();if(e.key==='Enter'){const v=e.target.value.trim();if(v)chatLog('me',v.replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c])));e.target.value='';e.target.blur();}else if(e.key==='Escape')e.target.blur();});
 document.getElementById('chatin').addEventListener('pointerdown',e=>e.stopPropagation());
 /* EXP (Ragnarok-style): a kill gives a share of the level that depends on the level gap.
-   On-level monsters: ~21 kills per level at Lv1, ~60 at Lv50, ~100 at Lv99 (the grind grows with level).
+   On-level monsters: ~21 kills per level at Lv1, ~60 at Lv30, ~100 for the last level before the Lv 60 cap (the grind grows with level).
+   Level cap 60 (owner 2026-11-22, level_cap.js): the curve keeps its old 1–99 shape through LVC.o (the design level of a level).
    Higher monsters give up to +30%; monsters more than 5 levels below lose 10% per level (floor 10%),
    so players have to move on to maps that fit their level. Role: critter ×0.7, brute ×1.3. */
 const EXP_ROLE={critter:.7,brute:1.3};
-function killExp(m){const L=PS.lv,d=m.lv-L,base=1/(20+L*.8);
+function killExp(m){const L=PS.lv,d=m.lv-L,base=1/(20+LVC.o(L)*.8);
   const gap=d>=0?1+Math.min(d,10)*.03:d>=-5?1:Math.max(.1,1-(-d-5)*.1);
   return base*gap*(m.boss?8:EXP_ROLE[m.role]||1);}
 function onKill(e){const m=e.m||MON.frostling,g=killExp(m);player.exp+=g;
   chatLog('bat',`กำจัด <b>${m.name}</b> · +${(g*100).toFixed(2)}% EXP`);
-  while(player.exp>=1){if(PS.lv<99){player.exp-=1;PS.lv++;applyStats();player.hp=player.maxHp;player.mp=player.maxMp;levelUpFx(PS.lv-1,PS.lv);chatLog('sys',`เลเวลอัป! Base Lv <b>${PS.lv}</b> · ได้ Status Point เพิ่ม${SP_MAX(PS.lv)>SP_MAX(PS.lv-1)?' · +1 Skill Point':''}${CP_MAX(PS.lv)>CP_MAX(PS.lv-1)?' · +1 C-Point':''}`);buildLevels();}else{player.exp=.9999;break;}}}
+  while(player.exp>=1){if(PS.lv<LV_CAP){player.exp-=1;PS.lv++;applyStats();player.hp=player.maxHp;player.mp=player.maxMp;levelUpFx(PS.lv-1,PS.lv);chatLog('sys',`เลเวลอัป! Base Lv <b>${PS.lv}</b> · ได้ Status Point เพิ่ม${SP_MAX(PS.lv)>SP_MAX(PS.lv-1)?' · +1 Skill Point':''}${!window.totemGems&&CP_MAX(PS.lv)>CP_MAX(PS.lv-1)?' · +1 C-Point':''}`);buildLevels();}else{player.exp=.9999;break;}}}
 /* ---- Level up world FX: golden pillar, cartoon star burst, rising halo rings, bouncing text ---- */
 class LvStar{constructor(o){Object.assign(this,{t:0,layer:'top'},o);}update(dt){this.t+=dt;this.an+=this.w*dt;this.r+=this.vr*dt;this.z+=this.vz*dt;this.vz*=.985;this.rot+=this.vrot*dt;return this.t<this.life;}
   draw(){const k=this.t/this.life,[x,y]=P(player.x+Math.cos(this.an)*this.r,player.y+Math.sin(this.an)*this.r*.7,this.z),s=this.s*(k<.15?k/.15:1)*(1-k*.4);ctx.save();ctx.translate(x,y);ctx.rotate(this.rot);ctx.globalAlpha=k<.7?1:(1-k)/.3;
@@ -5504,7 +5513,7 @@ function levelUpFx(from,to){const cx=player.x,cy=player.y;
   for(let i=0;i<qn(30);i++){const an=rnd(0,TAU);emit({type:'ember',x:cx+Math.cos(an)*rnd(4,30),y:cy+Math.sin(an)*rnd(2,16),z:rnd(0,20),vz:rnd(120,300),drag:.6,life:rnd(.7,1.3),size:rnd(1.5,3),size1:.3,color:Math.random()<.6?'#ffd36a':'#ffffff'});}
   screenFlash(.25,'#fff6c8');shake(2);
   const el=document.getElementById('lvup');document.getElementById('lulv').innerHTML=`Lv. ${from} ➜ <b>${to}</b>`;
-  const gains=[`Status Point +${Math.floor(from/5)+3}`];if(SP_MAX(to)>SP_MAX(from))gains.push('Skill Point +1');if(CP_MAX(to)>CP_MAX(from))gains.push('C-Point +1');gains.push('HP / SP เต็ม');document.getElementById('lugain').textContent=gains.join(' · ');
+  const gains=[`Status Point +${(to-from)*SYS.ptsLv}`];if(SP_MAX(to)>SP_MAX(from))gains.push('Skill Point +1');if(!window.totemGems&&CP_MAX(to)>CP_MAX(from))gains.push('C-Point +1');gains.push('HP / SP เต็ม');document.getElementById('lugain').textContent=gains.join(' · ');
   el.classList.remove('on');void el.offsetWidth;el.classList.add('on');clearTimeout(lvupTimer);lvupTimer=setTimeout(()=>el.classList.remove('on'),3200);}
 function toggleAuto(){autoMode=!autoMode;document.getElementById('autob').classList.toggle('on',autoMode);msg(autoMode?'AUTO: เปิด':'AUTO: ปิด');}
 document.getElementById('autob').onclick=toggleAuto;
@@ -5564,8 +5573,8 @@ function openRollWin(onDone){let cur=rollStats(),n=1;const old=document.getEleme
       <polygon points="${RAD.map((k,i)=>pt(i,Rr*cb[k]/12).join(',')).join(' ')}" fill="none" stroke="#9a8a6a" stroke-dasharray="2 2" stroke-width="1"/>
       <polygon points="${RAD.map((k,i)=>pt(i,Rr*cur[k]/12).join(',')).join(' ')}" fill="rgba(214,58,58,.15)" stroke="#d63a3a" stroke-width="1.8" stroke-linejoin="round"/>
       ${RAD.map((k,i)=>{const [x,y]=pt(i,Rr+12);return `<text x="${x}" y="${(+y+3).toFixed(1)}" text-anchor="middle" font-size="8.5" font-weight="700" fill="#6a2a10">${lab[k]}</text>`;}).join('')}</svg>`;
-    const rows=ORD.map(k=>{const d=cur[k]-(cb[k]+1),g=Math.floor(98*(cur[k]+3)*.083);return `<div style="display:flex;justify-content:space-between;gap:10px;padding:3px 8px;margin:2px 0;background:rgba(255,248,226,.7);border:2px solid #c99a4a;border-radius:9px">
-      <b style="color:#6a2a10;width:34px">${lab[k]}</b><b style="font-size:15px;color:${d>0?'#2a8a28':d<0?'#c0392b':'#3a2a1a'}">${cur[k]}</b><span style="color:#8a6a4a;font-size:11px;min-width:70px;text-align:right">Lv99 +${g}</span></div>`;}).join('');
+    const rows=ORD.map(k=>{const d=cur[k]-(cb[k]+1),g=Math.floor((LV_CAP-1)*(cur[k]+3)*.083);return `<div style="display:flex;justify-content:space-between;gap:10px;padding:3px 8px;margin:2px 0;background:rgba(255,248,226,.7);border:2px solid #c99a4a;border-radius:9px">
+      <b style="color:#6a2a10;width:34px">${lab[k]}</b><b style="font-size:15px;color:${d>0?'#2a8a28':d<0?'#c0392b':'#3a2a1a'}">${cur[k]}</b><span style="color:#8a6a4a;font-size:11px;min-width:70px;text-align:right">Lv${LV_CAP} +${g}</span></div>`;}).join('');
     box.innerHTML=`<div style="width:430px;max-width:94vw;background:linear-gradient(#fff6dc,#f3dfae);border:3px solid #b8823a;border-radius:16px;box-shadow:0 10px 40px rgba(0,0,0,.5);padding:14px 16px;color:#3a2a1a">
       <div style="text-align:center;font-weight:800;font-size:17px;color:#7a2a10">สร้างตัวละคร · สุ่มสเตตัสเริ่มต้น</div>
       <div style="text-align:center;font-size:11px;color:#7a5a3a;margin:2px 0 8px">ค่าพื้นฐานใช้คำนวณการโตทุกเลเวล ยิ่งสูงยิ่งโตเร็ว (เส้นประ = ค่าของคลาส) · สุ่มใหม่ได้ไม่จำกัด</div>
@@ -5601,10 +5610,10 @@ function buildStatus(){const w=document.getElementById('stw');if(!w||!w.classLis
   w.querySelectorAll('[data-s]').forEach(b=>b.onclick=ev=>{const k=b.dataset.s,d=+b.dataset.d*(ev.shiftKey?10:1);
     PS[k]=d>0?Math.min(SYS.max,PS[k]+Math.min(d,pointsLeft())):Math.max(1,PS[k]+d);applyStats();});
   {const rb=w.querySelector('#rerollBase');if(rb)rb.onclick=()=>openRollWin(()=>buildStatus());}
-  w.querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>{PS.lv=clamp(PS.lv+ +b.dataset.l,1,99);fitStats();applyStats();});
-  w.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{const p=b.dataset.p;if(p==='reset')for(const k of STATK)PS[k]=1;else{PS.lv=99;Object.assign(PS,PRESETS[p]);}applyStats();});
+  w.querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>{PS.lv=clamp(PS.lv+ +b.dataset.l,1,LV_CAP);fitStats();applyStats();});
+  w.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{const p=b.dataset.p;if(p==='reset')for(const k of STATK)PS[k]=1;else{PS.lv=LV_CAP;Object.assign(PS,presetAt(p,LV_CAP));PS._pre=p;}applyStats();});
   const fr=w.querySelector('#fastreg');if(fr)fr.onchange=e=>{fastRegen=e.target.checked;};
-  w.querySelector('#stx2').onclick=()=>{stOpenX=!stOpenX;buildStatus();};w.querySelector('#lutest').onclick=()=>{if(PS.lv>=99){PS.lv=98;applyStats();}AF.levelUp();};}
+  w.querySelector('#stx2').onclick=()=>{stOpenX=!stOpenX;buildStatus();};w.querySelector('#lutest').onclick=()=>{if(PS.lv>=LV_CAP){PS.lv=LV_CAP-1;applyStats();}AF.levelUp();};}
 
 /* ---------- item icons ---------- */
 function itemIcon(it,sz=24){const k=it.slot,c=it.slot==='rhand'?'#7fd0ff':'#c9a46a';let g='';
@@ -5982,30 +5991,30 @@ document.getElementById('inspX').onclick=()=>{INS.open=false;insEl.style.display
 document.getElementById('inspOpen').onclick=()=>{INS.open=true;insEl.style.display='block';INS.d=player.dir;insBuild();};
 function insTick(rdt){if(!INS.open||!INS.play)return;INS.acc+=rdt*1000;const D=durs(INS.st,INS.d);let moved=false;while(INS.acc>=D[INS.f]){INS.acc-=D[INS.f];INS.f=(INS.f+1)%D.length;moved=true;}if(moved)insDraw();}
 
-/* default Lv99 test build per hero (12 Tails stats) */
+/* default test build per hero (12 Tails stats) — a Lv 60 hero since the level cap (presetAt scales the Lv 99 presets) */
 const CHAR_PRESET={wolf:'ตีแรง',owl:'ตีแรง',croc:'ตีแรง',cat:'ตีแรง',hippo:'ตีแรง',sheep:'สายเวท',dragon:'ตีแรง',lion:'ตีแรง',kitsune:'สายเวท',bastet:'สายเวท',anubis:'ตีแรง',jaguar:'เร็ว/บัฟ',rhino:'แทงก์',axolotl:'สายเวท'};
-Object.assign(PS,PRESETS[CHAR_PRESET[CHAR]||'ตีแรง']);applyStats();player.hp=player.maxHp;player.mp=player.maxMp;
-window.AF={levelUp:()=>{if(PS.lv<99){PS.lv++;applyStats();player.hp=player.maxHp;player.mp=player.maxMp;levelUpFx(PS.lv-1,PS.lv);}},player,enemies,useSlot,useSkill,command,SKILLS,get tab(){return tab;},setTab:i=>{tab=i;buildHotbar();},ground:(x,y,key='icePrison')=>{targeting={key};groundClick(x,y);},setSlow:v=>timeScale=v,LV,fx,get state(){return player.state;}};
+PS._pre=CHAR_PRESET[CHAR]||'ตีแรง';Object.assign(PS,presetAt(PS._pre,PS.lv));applyStats();player.hp=player.maxHp;player.mp=player.maxMp;
+window.AF={levelUp:()=>{if(PS.lv<LV_CAP){PS.lv++;applyStats();player.hp=player.maxHp;player.mp=player.maxMp;levelUpFx(PS.lv-1,PS.lv);}},player,enemies,useSlot,useSkill,command,SKILLS,get tab(){return tab;},setTab:i=>{tab=i;buildHotbar();},ground:(x,y,key='icePrison')=>{targeting={key};groundClick(x,y);},setSlow:v=>timeScale=v,LV,fx,get state(){return player.state;}};
 </script>
 <script src="svg_vfx.js"></script>
 <script src="vfx_rework.js?v=2"></script>
 <script src="croc_vfx.js?v=2"></script>
 <script src="worldmap.js"></script>
 <script src="gem_data.js?v=6"></script>
-<script src="items.js?v=20"></script>
+<script src="items.js?v=21"></script>
 <script src="market.js?v=2"></script>
-<script src="npcs.js?v=9"></script>
+<script src="npcs.js?v=10"></script>
 <script src="monsters.js"></script>
 <script src="monster-sprites.js?v=3"></script>
 <script src="monster-catalog.js"></script>
-<script src="boss_fenrir.js?v=4"></script>
-<script src="progress.js"></script>
-<script src="char_create.js"></script>
+<script src="boss_fenrir.js?v=5"></script>
+<script src="progress.js?v=2"></script>
+<script src="char_create.js?v=2"></script>
 <script src="skill_shapes.js?v=1"></script>
 <script src="mobile.js?v=5"></script>
-<script src="totem_gems.js?v=34"></script>
+<script src="totem_gems.js?v=35"></script>
 <script src="seals.js?v=1"></script>
-<script src="relics.js?v=1"></script>
+<script src="relics.js?v=2"></script>
 <script src="gem_fx.js?v=3"></script>
 <script src="gem_mut_fx.js?v=3"></script>
 <script src="gem_sup_fx.js?v=2"></script>

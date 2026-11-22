@@ -3,6 +3,8 @@
    Wolf board art: assets/gems/board/ (frame · sky · sock_main / sock_mut / sock_sup), painted by the owner.
    • 5 main sockets on the stars of the hero's spirit constellation, open at Lv 60/70/80/90/99 (the path of stars
      lights up as they open). Gem tier 1/2/3/4 needs Lv 60/70/80/90.
+     LEVEL CAP 60 (owner 2026-11-22, level_cap.js): these gates are squeezed by LVC.g → pole tiers Lv 52/54/56/58/60, gem tiers
+     52/54/56/58 (SOCK_LV / TIER_LV); skill holes (SS_LV 10–50) are unchanged; carving goods keep the design band (SOCK_LV0).
    • Each main gem has 1 mutation socket (opens with the gem) + 2 support sockets (open at gem level 3 / 5).
    • A thin rune ring between sky and frame turns slowly, and spins up + glows when a gem is set.
    • Skill stars (owner 2026-11-21 'เอาข้อ2', GAME_PILLARS_TH.md): an inner ring of 5 silver stars that open at Lv 10/20/30/40/50.
@@ -25,7 +27,7 @@ const AF=()=>window.AFItems||null;
 const HERO=(()=>{try{const c=(0,eval)('CHAR');if(c)return c;}catch(e){}return window.CHAR||'wolf';})();
 /* the totem page's hole table (page v3, see 'your totem pole' below) — here because the number of skill stars = the holes on its stone base */
 const TOT=window.__TOT||{"pole":{"src":"totem","W":1024,"H":1536,"top":16,"foot":1500,"cx":511.7,"cut":[1140,885,625,362],"tiers":[{"m":[511.8,1327.1,69.2],"h":[[304.5,1312.2,32.4],[214.3,1312.0,32.4],[808.9,1312.0,32.3],[718.8,1312.1,32.4]]},{"m":[511.8,1075.0,64.4],"h":[[310.9,1053.3,31.7],[221.0,1053.3,31.6],[801.7,1053.3,31.7],[711.7,1053.3,31.7]]},{"m":[511.9,827.1,68.5],"h":[[310.8,808.2,32.4],[219.6,808.1,32.1],[802.5,808.1,32.0],[711.9,808.3,32.3]]},{"m":[511.4,539.6,67.9],"h":[[310.0,528.1,34.5],[215.7,528.1,34.5],[807.4,528.0,34.3],[713.9,528.2,34.6]]},{"m":[511.5,252.1,73.5],"h":[[315.6,239.4,35.1],[216.9,239.3,35.2],[806.6,239.4,35.1],[707.7,239.4,35.1]]}]},"base":{"src":"base","W":1536,"H":1024,"top":107,"bot":964,"cx":767.0,"stand":[766.0,339.0],"s":[[262.9,630.5,80.2],[515.4,680.8,79.9],[767.3,699.6,80.0],[1020.3,680.9,80.0],[1270.7,630.8,80.0]],"t":[[262.8,764.2,22.9],[515.5,816.0,22.9],[768.1,833.9,23.1],[1021.4,816.2,23.0],[1275.3,764.4,22.8]],"u":[[[197.0,745.1,21.0],[329.0,746.9,21.2]],[[450.6,796.4,21.3],[580.5,797.3,21.3]],[[702.5,816.6,21.6],[834.1,816.5,21.5]],[[955.6,798.0,21.5],[1086.2,796.4,21.5]],[[1209.8,747.3,21.2],[1340.4,744.0,21.3]]]}};   /* owner's pictures 2026-11-21: totem.webp + base.webp; base v2 = 5 skill holes × (gold mutation + 2 teal supports); foot contact 1500, stand = centre of the gold ring on the base (766, 339), cuts at the carved bands */
-const SUF=AF()&&AF().MODE==='play'?'_play':'',SKEY='af_gems_'+HERO+SUF,LEGACY='af_gems_wolf'+SUF,NS=5,SOCK_LV=[60,70,80,90,99],TIER_LV=[0,60,70,80,90];
+const SUF=AF()&&AF().MODE==='play'?'_play':'',SKEY='af_gems_'+HERO+SUF,LEGACY='af_gems_wolf'+SUF,NS=5,LG=v=>window.LVC?LVC.g(v):v,SOCK_LV0=[60,70,80,90,99],SOCK_LV=SOCK_LV0.map(LG),TIER_LV=[0,60,70,80,90].map(v=>v&&LG(v));   /* level cap 60 (level_cap.js): pole tiers 60–99 → Lv 52/54/56/58/60, gem tiers → 52/54/56/58 (skill holes 10–50 unchanged) */
 /* skill stars: as many as the base picture has holes (owner 2026-11-21: 7, one per slot of the skill wheel); unlock levels per count */
 const NSS=TOT?TOT.base.s.length:5,SS_LV=({5:[10,20,30,40,50],7:[10,15,20,25,30,40,50]})[NSS]||Array.from({length:NSS},(_,i)=>Math.round(10+i*40/Math.max(1,NSS-1)));
 const GEM_DIR='assets/gems/'+HERO+'/',BD='assets/gems/board/',PG='assets/gems/page/';
@@ -175,9 +177,10 @@ const gemIc=()=>GEM_ART[HERO]?'':'ic';
 /* ---------- carving: what each sealed hole asks for (gem_data.js CARVE) ---------- */
 const TIERN=['หมี','นกฮูก','หมาป่า','อินทรี','นกสายฟ้า'],LANDN={vik:'นอร์ส',grk:'กรีก',egy:'อียิปต์',jpn:'ญี่ปุ่น',azt:'แอซเท็ก'};
 const LANDS=()=>Object.keys((AF()&&AF().TOWNS)||LANDN);
+const LC0=v=>window.LVC?LVC.nc(v):v,bandLv=g=>`Lv ${g?LC0(g*10):1}–${g<9?LC0((g+1)*10)-1:(window.LVC?LVC.CAP:99)}`;   /* monster levels of material grade g on the Lv 60 scale */
 function hole(id){const t=id[0],i=+id[1],j=id.length>2?+id[2]:null,base=t==='s'||t==='u',arr=CV&&CV[t]||[];
-  const L=base?SS_LV[i]:SOCK_LV[i],c=arr.length?arr[Math.min(i,arr.length-1)]:null;
-  return {id,t,i,j,lv:L,c:t==='s'&&i===0?null:c,land:base?null:CV&&CV.land[i],par:t==='u'?'s'+i:t==='q'?'p'+i:null,g:Math.min(9,Math.floor(L/10)),
+  const L=base?SS_LV[i]:SOCK_LV[i],L0=base?SS_LV[i]:SOCK_LV0[i],c=arr.length?arr[Math.min(i,arr.length-1)]:null;   /* L0 = design level: its material grade stays as carved before the cap (base 1–5 · pole 6/7/8/9/9) */
+  return {id,t,i,j,lv:L,c:t==='s'&&i===0?null:c,land:base?null:CV&&CV.land[i],par:t==='u'?'s'+i:t==='q'?'p'+i:null,g:Math.min(9,Math.floor(L0/10)),
     nm:t==='s'?`หลุมสกิลที่ ${i+1}`:t==='u'?`หลุมเสริมขอบเขียว${j?'ขวา':'ซ้าย'} · หลุมสกิลที่ ${i+1}`:t==='p'?`ชั้นเสาที่ ${i+1} · ${TIERN[i]||''}`:`หลุมเสริม${j===1?'ซ้าย':'ขวา'}นอกปีก · ชั้นเสาที่ ${i+1}`};}
 /* 'ma' / 'mb' = common / rare monster material of the hole's level band, from any land (base) or the tier's own land (pole) */
 function needs(h){if(!h.c)return [];const out=[];
@@ -195,15 +198,15 @@ const HOLE_IDS=()=>{const o=[];for(let i=0;i<NSS;i++){o.push('s'+i);if(SSU[i])o.
 const anyRdy=()=>!!CV&&HOLE_IDS().some(id=>cvState(id)==='rdy');
 const GIVES={s:'วางสกิลที่เรียนแล้ว 1 ท่า · หลุมแปรสภาพขอบทองข้างล่างเปิดพร้อมกัน · ได้เจมแปรสภาพฟรี 1 เม็ด (ของขวัญ)',u:'ใส่เจมเสริม 1 เม็ดให้สกิลในหลุมนี้ (ผลครึ่งหนึ่ง)',
   p:'ใส่เจม C (สกิลขั้น C) 1 เม็ด · หลุมแปรสภาพด้านในปีกเปิดพร้อมกัน',q:'ใส่เจมเสริม 1 เม็ดให้เจม C ของชั้นนี้ (ผลเต็ม)'};
-function needRow(e,h){const a=AF(),ui=a&&a.ui,hv=haveN(e),ok=hv>=e.n,band=`Lv ${h.g*10}–${h.g*10+9}`;let ic='',nm='',src='';
+function needRow(e,h){const a=AF(),ui=a&&a.ui,hv=haveN(e),ok=hv>=e.n,band=bandLv(h.g);let ic='',nm='',src='';
   if(e.x==='z'){ic='<b class="cvz">z</b>';nm='เงิน';src='ล่ามอน · ขายของ';}
   else{const best=e.ids.slice().sort((p,q)=>bagN(q)-bagN(p))[0];ic=ui?ui.etcIcon(best,22):'';
     if(e.x==='ma'||e.x==='mb'){const rr=e.x==='mb'?'หายาก':'ธรรมดา';   /* a short first line (the phone column is narrow), the details under it */
       nm=h.land?`${ui?ui.etcName(e.ids[0]):e.ids[0]}<small style="display:block">วัตถุดิบ${rr} มอน ${band} แดน${LANDN[h.land]}</small>`:`วัตถุดิบ${rr}<small style="display:block">มอน ${band} · แดนไหนก็ได้</small>`;
       src='ล่ามอนช่วงเลเวลนี้ · ตลาดกลาง';}   /* the land and level band are already on the line above */
     else{nm=ui?ui.etcName(e.x):e.x;const t=+e.x.slice(-1);
-      src=e.x==='tess'?'มอนทุกตัว · บอส · ย่อยเจมซ้ำ · ตลาดกลาง':e.x==='sore'?'มอน Lv 70+ · บอส · ตลาดกลาง':/^tfrag/.test(e.x)?'ย่อยเจมซ้ำ (⛏ ศาล) · ตลาดกลาง':
-        `มอน ${['','Lv 1–29','Lv 30–59','Lv 60–89','Lv 90+'][t]||''} (ดันเจี้ยนบ่อยกว่า) · บอส · ตลาดกลาง`;}}
+      src=e.x==='tess'?'มอนทุกตัว · บอส · ย่อยเจมซ้ำ · ตลาดกลาง':e.x==='sore'?`มอน Lv ${LC0(70)}+ · บอส · ตลาดกลาง`:/^tfrag/.test(e.x)?'ย่อยเจมซ้ำ (⛏ ศาล) · ตลาดกลาง':
+        `มอน ${t>=1&&t<=4?'Lv '+[1,LC0(30),LC0(60),LC0(90)][t-1]+(t<4?'–'+(LC0([30,60,90][t-1])-1):'+'):''} (ดันเจี้ยนบ่อยกว่า) · บอส · ตลาดกลาง`;}}
   return `<div class="cvr${ok?'':' no'}" title="${src}"><span class="cvi">${ic}</span><span class="cvn">${nm}${ok?'':`<small class="cvs">หาได้: ${src}</small>`}</span><em>${fmtN(hv)}/${fmtN(e.n)}</em></div>`;}
 function cvInfo(id,extra){const h=hole(id),st=cvState(id);
   const gv=`<br><span style="color:#2a5a8a">เปิดแล้วได้: ${GIVES[h.t]}</span>`;let r=`<b>⛏ สลักเปิด · ${h.nm}</b>`;   /* the list first: on a phone only a few lines show */
@@ -623,7 +626,7 @@ win.innerHTML=`<div id="tgBox"><h2>ศาลวิญญาณโทเท็ม
 <div id="tgRight"><div class="tgAct"><button id="tgGiftB" style="display:none"></button><button id="tgWsB">⛏ แกะ · คราฟต์ · ย่อยเจม</button></div>
 <div class="tgTabs"><button data-tab="sk">⭐ สกิล<small></small></button><button data-tab="gem">💠 เจม C<small></small></button><button data-tab="mut">🔶 แปรสภาพ<small></small></button><button data-tab="sup">🔹 เสริม<small></small></button></div>
 <div class="tgPane" data-pane="sk"><div class="tgHint">${TL?'สกิลที่เรียนแล้ว → ⚗ สกัดเป็นเจม (ครั้งแรกฟรี) → วางในหลุมบนแท่นหิน (Lv '+SS_LV.join(' / ')+')':'สกิลที่เรียนแล้ว → วางบนดาวเงินวงใน (เปิด Lv '+SS_LV.join(' / ')+')'}</div><div class="tgInv" id="tgSkills"></div></div>
-<div class="tgPane" data-pane="gem"><div class="tgHint">${TL?'เจมหลัก = สกิล C → หลุมใหญ่กลางชั้นเสา (ชั้นเปิด Lv 60 / 70 / 80 / 90 / 99)':'เจมหลัก = สกิล C → ดาวทองวงนอก (เปิด Lv 60–99)'}</div><div class="tgInv" id="tgGems"></div></div>
+<div class="tgPane" data-pane="gem"><div class="tgHint">${TL?'เจมหลัก = สกิล C → หลุมใหญ่กลางชั้นเสา (ชั้นเปิด Lv '+SOCK_LV.join(' / ')+')':'เจมหลัก = สกิล C → ดาวทองวงนอก (เปิด Lv '+SOCK_LV[0]+'–'+SOCK_LV[NS-1]+')'}</div><div class="tgInv" id="tgGems"></div></div>
 <div class="tgPane" data-pane="mut"><div class="tgHint">${TL?'ได้อย่าง เสียอย่าง · หลุมด้านในปีกเสา หรือหลุมเล็กข้างหลุมสกิล':'ได้อย่าง เสียอย่าง · ใส่ได้ทั้งดาวสกิลและดาว C'}</div><button class="tgRsb" id="tgRsb"></button><div class="tgInv" id="tgMuts"></div></div>
 <div class="tgPane" data-pane="sup"><div class="tgHint">${TL?(SSU.length?'หลุมนอกปีกเสา · หลุมขอบเขียวใต้หลุมสกิล (ผลครึ่งหนึ่ง) — หลุมเสริมทุกหลุมต้องสลักเปิดก่อน':'หลุมด้านนอกปีกเสา (สลักเปิดทีละหลุม)'):'ใส่ได้เฉพาะดาว C (สลักเปิดช่องทีละช่อง)'}</div><div class="tgInv" id="tgSups"></div></div></div></div>`;
 document.body.appendChild(win);

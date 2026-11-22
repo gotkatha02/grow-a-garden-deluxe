@@ -35,9 +35,14 @@ const TOWNS={
 const HOME={wolf:'vik',rhino:'vik',owl:'vik',jaguar:'azt',croc:'azt',axolotl:'azt'};
 const regionOf=id=>!id?HOME[CHAR]||'vik':id==='frostheim'||id==='snowpine'?'vik':/^(capT|c[A-Z]|cata|rift)/.test(id)?'cap':id.slice(0,3);
 const townHere=()=>{const m=(window.AF_ROOM_TOWN&&AF_ROOM_TOWN[curMap])||curMap;for(const r in TOWNS)if(TOWNS[r].map===m)return r;return m==='capT'?'cap':null;};   // a craft hall room counts as its town
-const tierOfLv=L=>L<30?1:L<60?2:L<90?3:4;                                      // ore / orb tier
-const gradeOfLv=L=>Math.max(0,Math.min(9,Math.floor(L/10)));                    // material / item grade 0–9
-const gradeLv=g=>g?g*10:1;                                                       // item level of a grade
+/* LEVEL CAP 60 (owner 2026-11-22, level_cap.js): grades / ore tiers keep their old 1–99 design bands; a level of the game is read
+   through LC.o (its design level), so every monster drops the grade it dropped before and an item asks for the new level of its band */
+const LC=window.LVC||{n:v=>v,nc:v=>v,o:v=>v,CAP:99};
+const tierOfLv=L=>{const v=LC.o(L);return v<30?1:v<60?2:v<90?3:4;};             // ore / orb tier (design 1–29 / 30–59 / 60–89 / 90+ → Lv 1–18 / 19–36 / 37–54 / 55–60)
+const gradeOfLv=L=>Math.max(0,Math.min(9,Math.floor(LC.o(L)/10)));              // material / item grade 0–9 (design Lv ÷ 10)
+const gradeLv=g=>g?LC.nc(g*10):1;                                                // item level of a grade: 1 · 7 · 13 · 19 · 25 · 31 · 37 · 43 · 49 · 55
+const bandTxt=g=>`Lv${gradeLv(g)}–${g<9?gradeLv(g+1)-1:LC.CAP}`;                 // monster levels that drop grade g
+const ORE_LV=[1,LC.nc(30),LC.nc(60),LC.nc(90)];                                  // first level of ore / stone tier 1–4
 const gradeTier=g=>1+Math.min(3,Math.floor(g/3));                               // which ore refines it (1–4)
 const gradePow=g=>1+g*2/9;                                                       // trait power ×1 … ×3
 
@@ -57,17 +62,17 @@ const STN={atk:'ATK',def:'DEF',agi:'AGI',vit:'VIT',int:'INT',cha:'CHA',tal:'TAL'
 const ORB_COL={atk:'#e2574c',def:'#8a96a8',agi:'#5fd0a0',vit:'#f08a3a',int:'#7fa8ff',cha:'#f0a8d8',tal:'#b07aff',lck:'#f5d040'};
 const matA=(r,g)=>`m_${r}_${g}_a`,matB=(r,g)=>`m_${r}_${g}_b`;
 const ETC={};
-for(const r in MATS)MATS[r].forEach((m,g)=>{const lv=`Lv${g*10}–${g*10+9}`;
+for(const r in MATS)MATS[r].forEach((m,g)=>{const lv=bandTxt(g);
   ETC[matA(r,g)]={n:m[0],th:m[1],price:8+6*g,kind:'mat',reg:r,grade:g,col:TOWNS[r].col,d:`วัตถุดิบ${TOWNS[r].name} ระดับ ${g+1} (มอน ${lv}) · ใช้คราฟต์ของ Lv${gradeLv(g)}`};
   ETC[matB(r,g)]={n:m[2],th:m[3],price:30+25*g,kind:'mat',reg:r,grade:g,rare:1,col:TOWNS[r].col,d:`วัตถุดิบหายาก${TOWNS[r].name} ระดับ ${g+1} (มอน ${lv}) · ใช้คราฟต์ของ Lv${gradeLv(g)}`};});
-[100,400,1500,5000].forEach((p,i)=>ETC['ore'+(i+1)]={n:`Refine Ore T${i+1}`,th:`แร่ตีบวก ขั้น ${i+1}`,price:p,kind:'ore',tier:i+1,col:['#b0b8c8','#7fd0ff','#c08aff','#ffd36a'][i],d:`ตีบวกของ Lv${[1,30,60,90][i]}–${[29,59,89,99][i]}`});
+[100,400,1500,5000].forEach((p,i)=>ETC['ore'+(i+1)]={n:`Refine Ore T${i+1}`,th:`แร่ตีบวก ขั้น ${i+1}`,price:p,kind:'ore',tier:i+1,col:['#b0b8c8','#7fd0ff','#c08aff','#ffd36a'][i],d:`ตีบวกของ Lv${ORE_LV[i]}–${i<3?ORE_LV[i+1]-1:LC.CAP}`});
 ETC.drill={n:'Drill',th:'สว่านเจาะรู',price:3000,kind:'tool',col:'#c9a46a',d:'เจาะรูอุปกรณ์ สุ่ม 1–4 รู (เจาะใหม่ หินเดิมหายหมด)'};
 ETC.pliers={n:'Orb Pliers',th:'คีมถอดหิน',price:2000,kind:'tool',col:'#8a96a8',d:'ถอดหินออฟออกมาโดยหินไม่หาย'};
 ETC.guard={n:'Guard Stone',th:'หินกันแตก',price:50000,kind:'tool',col:'#5fd0ff',d:'ตีบวกพลาด ของไม่แตก (ที่ +6–+10 ยังลดบวก 1) · +11 ขึ้นไปใช้ครั้งละ (บวก − 9) ก้อน'};
 /* owner 2026-11-21: refine up to +15 — very hard. +11…+15 also need Star Ore (bosses / Lv 70+ monsters, tradable) */
-ETC.sore={n:'Star Ore',th:'แร่ดาวตก',price:50000,kind:'ore',tier:5,col:'#ff7ad8',d:'ตีบวก +11 ถึง +15 · ใช้ครั้งละ 1/2/3/4/5 ก้อน (ไป +11/+12/+13/+14/+15) · ดรอปจากมอน Lv 70+ (ดันเจี้ยนบ่อยกว่า) และบอส'};
+ETC.sore={n:'Star Ore',th:'แร่ดาวตก',price:50000,kind:'ore',tier:5,col:'#ff7ad8',d:'ตีบวก +11 ถึง +15 · ใช้ครั้งละ 1/2/3/4/5 ก้อน (ไป +11/+12/+13/+14/+15) · ดรอปจากมอน Lv '+LC.nc(70)+'+ (ดันเจี้ยนบ่อยกว่า) และบอส'};
 /* totem gem goods (owner 2026-11-21): all tradable in the central market — the way to the gem you want */
-{const GD=window.GEMDATA||{MUT:[],SUP:[]},SC=['#c9b48a','#8fd0c8','#c08aff','#ffcf5a'],LB=['Lv 1–29','Lv 30–59','Lv 60–89','Lv 90+'];
+{const GD=window.GEMDATA||{MUT:[],SUP:[]},SC=['#c9b48a','#8fd0c8','#c08aff','#ffcf5a'],LB=[0,1,2,3].map(i=>`Lv ${ORE_LV[i]}${i<3?'–'+(ORE_LV[i+1]-1):'+'}`);
   [2000,6000,15000,40000].forEach((p,i)=>ETC['tstone'+(i+1)]={n:`Totem Stone T${i+1}`,th:`หินโทเท็มดิบ ขั้น ${i+1}`,price:p,kind:'tstone',tier:i+1,col:SC[i],d:`แกะ 3 ก้อน = เจมหลักขั้น ${i+1} 1 เม็ด (สุ่มชนิด สุ่มคุณภาพ) ที่แผงกลุ่มดาว (G) · ดรอปจากมอน ${LB[i]} (ดันเจี้ยนบ่อยกว่า) และบอส`});
   [800,2400,6000,16000].forEach((p,i)=>ETC['tfrag'+(i+1)]={n:`Gem Shard T${i+1}`,th:`ชิ้นส่วนเจม ขั้น ${i+1}`,price:p,kind:'tfrag',tier:i+1,col:SC[i],d:`40 ชิ้น = คราฟต์เจมหลักขั้น ${i+1} ชนิดที่เลือกเองได้ (สุ่มคุณภาพ) · ได้จากการย่อยเจมซ้ำ`});
   ETC.tess={n:'Totem Essence',th:'แก่นโทเท็ม',price:2500,kind:'tess',col:'#ffb84a',d:'อัปเลเวลเจม · อัปขั้น/ล้างบรรทัดเจม · ดรอปจากมอนทั่วไป และได้จากการย่อยเจมซ้ำ'};
@@ -96,6 +101,7 @@ const CONS={
   ret:{n:'Return Scroll',th:'ม้วนกลับเมืองเกิด',lv:1,warp:'home',price:300,col:'#e8d8a0',d:'วาร์ปกลับเมืองเกิด'},
   capscroll:{n:'Capital Scroll',th:'ม้วนวาร์ปเมืองหลวง',lv:1,warp:'capT',price:800,col:'#f5d36a',d:'วาร์ปไปเมืองหลวง (ตลาดกลาง)'},
   wing:{n:'Fly Feather',th:'ขนนกวาร์ป',lv:1,warp:'random',price:60,col:'#bfe6ff',d:'วาร์ปไปจุดสุ่มในแมพเดิม'}};
+for(const k in CONS)if(CONS[k].lv>1)CONS[k].lv=LC.nc(CONS[k].lv);   /* level cap 60: potions keep their design level band (Orange 20 → 13 · Yellow 45 → 28 · White 70 → 43 · Blue 30 → 19 · Elixir 60 → 37) */
 for(const k in CONS)ETC[k]=Object.assign({kind:'use'},CONS[k]);
 const ORB_RANGE=t=>[[1,1],[1,1],[1,1],[1,2]][Math.max(1,Math.min(4,t))-1];   // owner 2026-11-19: 12 Tails has 3 gear pieces × 4 holes, we have 8 pieces / 16 holes → orbs stay tiny; all items together ≈ +50 to one stat
 //   // value rolled when socketed   // rebalanced 2026-11-18: was 1–5 … 16–20 (24 holes × 20 = +480 to one stat)
@@ -178,6 +184,12 @@ function newInst(base,data){const id='i'+(++SEQ);ITEMS[id]=Object.assign({},ITEM
 function ownedIds(){return [...Object.values(EQ).filter(Boolean),...INV];}
 function save(){try{const inst={};for(const id of ownedIds())inst[id]=ITEMS[id];localStorage.setItem(SKEY,JSON.stringify({v:1,zeny:ZENY,seq:SEQ,bag:BAG,buff:BUFF,inst,inv:INV.slice(),eq:{...EQ}}));}catch(e){}}
 let FRESH=false;                                                                // no item save yet = a brand-new hero (market.js clears that hero's market record)
+/* level cap 60 (owner 2026-11-22): an item's level requirement is re-read from its grade / base item on the new scale, so saves
+   from before (grade 9 = Lv 90) open as Lv 55 pieces; a replicated look keeps its source's level, converted once (rep.lc) */
+function lvFix(it){if(!it||typeof it!=='object')return it;
+  if(it.grade!=null){it.lvReq=gradeLv(it.grade);if(it.crafted&&typeof it.d==='string')it.d=it.d.replace(/Lv\d+$/,'Lv'+it.lvReq);}
+  else{const T=typeof ITEM12!=='undefined'&&ITEM12[it.base];if(T&&T.lv)it.lvReq=T.lv;}
+  if(it.rep&&it.rep.lv&&!it.rep.lc){it.rep.lv=LC.nc(it.rep.lv);it.rep.lc=1;}return it;}
 function load(){let s=null;try{s=JSON.parse(localStorage.getItem(SKEY)||'null');}catch(e){}
   if(s&&s.v===1){ZENY=s.zeny||0;SEQ=s.seq||0;Object.assign(BUFF,s.buff||{});
     for(const k in s.bag||{}){const m=/^m_(\w+)_(\d)_([ab])$/.exec(k);if(m&&!ETC[k])continue;BAG[k]=s.bag[k];}   // drop materials from the old 4-tier table
@@ -186,7 +198,7 @@ function load(){let s=null;try{s=JSON.parse(localStorage.getItem(SKEY)||'null');
       if(it.crafted&&!it.renamed)it.n=craftName(it.town,it.cslot,it.grade);   /* crafting now has 4 tiers (Lv30/50/70/90): older pieces move to the nearest */
       if(!it.sealM){const sl=it.cslot||it.slot;if(SEAL_SL.includes(sl)&&!it.seal){if(it.crafted&&TOWNS[it.town])it.seal=it.town;else if(it.dset!==undefined)it.seal=Object.keys(TOWNS)[(parseInt(id.slice(1))||0)%5];}it.sealM=1;}   /* totem seals (2026-11-21): crafted = its town, drop pieces = a fixed pick */
       if(it.trait){const g=TRAIT2SEAL[it.trait];if(g)(window.__SEAL_GRANTS=window.__SEAL_GRANTS||[]).push(g);delete it.trait;}   /* an old trait unlocks the seal power it became */
-      if(!it.s5&&it.cslot&&SLOTS[it.cslot]&&!SLOTS[it.cslot].gone&&it.grade!=null){it.st=it.crafted?craftStats(it.town,it.cslot,it.grade,it.magic):it.dset!==undefined?dsStats(it.dset,it.cslot,it.magic):it.st;it.s5=1;}}   /* 5-slot cut (2026-11-21): helms / boots / armour / accessories carry the stats of the removed pieces */
+      if(!it.s5&&it.cslot&&SLOTS[it.cslot]&&!SLOTS[it.cslot].gone&&it.grade!=null){it.st=it.crafted?craftStats(it.town,it.cslot,it.grade,it.magic):it.dset!==undefined?dsStats(it.dset,it.cslot,it.magic):it.st;it.s5=1;}lvFix(it);}   /* 5-slot cut (2026-11-21): helms / boots / armour / accessories carry the stats of the removed pieces */
     INV.length=0;for(const id of s.inv||[])if(ITEMS[id])INV.push(id);for(const sl in EQ)EQ[sl]=s.eq&&ITEMS[s.eq[sl]]?s.eq[sl]:null;for(const sl of ['low','lhand','mid','garment','acc2'])if(s.eq&&ITEMS[s.eq[sl]]&&!INV.includes(s.eq[sl]))INV.push(s.eq[sl]);return;}   /* removed slots (2026-11-19: low, lhand · 2026-11-21: mid, garment, acc2): old gear goes back to the bag */
   FRESH=true;
   if(MODE==='play'){newGame();return;}                                            // real game: start with the Lv1 kit only
@@ -280,11 +292,11 @@ onKill=function(e){_onKill(e);const xb=B('exp')+(BUFF.manual>Date.now()?CONS.man
   try{dropFor(e);}catch(err){console.warn(err);}};
 function dropFor(e){const m=e.m||{},L=m.lv||1,t=tierOfLv(L),g=gradeOfLv(L),R=Loot.rate,got=[],ch=p=>Math.random()<Math.min(1,p*R);
   let r=regionOf(curMap);if(!TOWNS[r])r=Object.keys(TOWNS)[Math.floor(Math.random()*5)];          // capital monsters drop goods of every town (trade hub)
-  const crit=m.role==='critter'?.5:1,z=Math.round((DROP.zenyBase+L*DROP.zenyLv)*rnd(.8,1.2)*crit*(m.boss?10:1)*(1+B('zeny')));ZENY+=z;
+  const crit=m.role==='critter'?.5:1,L0=LC.o(L),z=Math.round((DROP.zenyBase+L0*DROP.zenyLv)*rnd(.8,1.2)*crit*(m.boss?10:1)*(1+B('zeny')));ZENY+=z;
   const dm=1+B('drop');
   if(ch(DROP.matA*dm))got.push(matA(r,g));if(ch(DROP.matB*dm))got.push(matB(r,g));
   if(ch(DROP.ore))got.push('ore'+t);
-  if(ch(DROP.hpPot))got.push(L<20?'hp1':L<45?'hp2':L<70?'hp3':'hp4');if(ch(DROP.spPot))got.push(L<30?'sp1':L<60?'sp2':'sp3');
+  if(ch(DROP.hpPot))got.push(L0<20?'hp1':L0<45?'hp2':L0<70?'hp3':'hp4');if(ch(DROP.spPot))got.push(L0<30?'sp1':L0<60?'sp2':'sp3');   /* zeny / potions follow the design level (level cap 60) */
   if(ch(DROP.food))got.push(['food_atk','food_def','food_vit','food_agi','food_tal','food_cha'][Math.floor(Math.random()*6)]);
   if(ch(DROP.orb))got.push(`orb_${Object.keys(STN)[Math.floor(Math.random()*8)]}_${t}`);
   const dun=/D\d|H\d|E\d|cata|rift/.test(curMap||'');
@@ -294,7 +306,7 @@ function dropFor(e){const m=e.m||{},L=m.lv||1,t=tierOfLv(L),g=gradeOfLv(L),R=Loo
   {const GD=window.GEMDATA,D2=GD&&GD.DROPS;if(D2){const tough=m.role==='brute'?2:1,boss=m.boss||(e.vdef&&e.vdef.role==='boss');
     if(ch((dun?D2.stoneDun:D2.stoneField)*tough))got.push('tstone'+t);
     if(ch(D2.ess))for(let i=0,k=D2.essN[0]+Math.floor(Math.random()*(D2.essN[1]-D2.essN[0]+1));i<k;i++)got.push('tess');
-    if(L>=D2.soreLv&&ch(dun?D2.soreDun:D2.soreField))got.push('sore');
+    if(L0>=D2.soreLv&&ch(dun?D2.soreDun:D2.soreField))got.push('sore');
     if(ch(dun?D2.mutDun:(D2.mutField||0)))got.push('gmut_'+GD.MUT[Math.floor(Math.random()*GD.MUT.length)][0]);   /* field: rare, since skill stars open at Lv 10 */
     if(ch(dun?D2.supDun:D2.supField))got.push('gsup_'+GD.SUP[Math.floor(Math.random()*GD.SUP.length)][0]);
     if(boss){const B2=D2.boss;for(let i=0;i<B2.stones;i++)got.push('tstone'+t);for(let i=0;i<B2.ess;i++)got.push('tess');for(let i=0;i<B2.sore;i++)got.push('sore');
@@ -520,6 +532,7 @@ function buildShop(){const w=$('#shw');if(!w.classList.contains('open'))return;c
 /* ---------------- Storage (H) — shared by all heroes, in any town (capital included) ---------------- */
 const STKEY='af_storage_v1',STO={equip:{},etc:{}},STO_EQ_MAX=300;
 try{Object.assign(STO,JSON.parse(localStorage.getItem(STKEY)||'{}'));}catch(e){}
+for(const k in STO.equip)lvFix(STO.equip[k]);   /* level cap 60: stored pieces read their level on the new scale */
 const saveSto=()=>{try{localStorage.setItem(STKEY,JSON.stringify(STO));}catch(e){}};
 let kfTab='equip';
 function openStorage(){const w=$('#kfw');if(!townHere()&&!(window.AFProgress&&AFProgress.mode==='test')){msg('คลังใช้ได้ในเมืองเท่านั้น');return;}
@@ -721,6 +734,7 @@ function refineAnim(b){if(rfBusy)return;const id=rfSel,it=ITEMS[id];if(!it)retur
    game is closed). Your own listings sell over time — the cheaper versus the market price, the faster. Fee 3% on each sale. */
 const MKEY='af_market_v1_'+CHAR+(MODE==='play'?'_play':''),MK_FEE=.03,MK_MAX=10,MK_REFRESH=15*60000;
 const MK={list:[],mine:[],cash:0,log:[],next:0,uid:1};try{Object.assign(MK,JSON.parse(localStorage.getItem(MKEY)||'{}'));}catch(e){}
+for(const l of [...MK.list,...MK.mine])if(l&&l.eq&&l.eq.copy)lvFix(l.eq.copy);   /* level cap 60 */
 const mkSave=()=>{try{localStorage.setItem(MKEY,JSON.stringify(MK));}catch(e){}};
 const MK_NAMES=['หมีขั้วโลก99','ลูกแมวนักรบ','KafraLover','ป้าขายยา','จิ้งจอกเงิน','NightOwl_TH','ช่างตีเหล็กมือใหม่','ราชาแร่','สายฟาร์มOrb','MoonRabbit','แมวส้มรวยมาก','IceQueen','เต่าซิ่ง','ตลาดนัดเฟนเรียร์','พ่อค้าทะเลทราย','SamuraiMeow','ร้านลุงหนวด','HoneyBadger','BlueSlime','คุณนายเหมืองทอง'];
 const MK_CATS=[['eq','อุปกรณ์','⚔']];
@@ -975,7 +989,7 @@ function buildSmith(){const w=$('#smw');if(!w||!w.classList.contains('open'))ret
   q('[data-pick]',b=>{smPick=b.dataset.pick;buildSmith();});
   q('[data-rpsrc]',b=>{rpSrc=b.dataset.rpsrc===rpSrc?null:b.dataset.rpsrc;rpDst=null;buildSmith();});q('[data-rpdst]',b=>{rpDst=b.dataset.rpdst;buildSmith();});
   q('[data-rpgo]',()=>{const s=ITEMS[rpSrc],d=ITEMS[rpDst];if(!s||!d||s.slot!==d.slot)return;const z=REP_Z(d);if(ZENY<z)return;if(!confirm(`จำลองสเตตัสของ ${s.n} ไปให้ ${d.n}?\n${s.n} จะหายไป`))return;
-    const S=itemSt(rpSrc),st={...(S.st0||S.st)};ZENY-=z;d.rep={n:s.n,st,lv:S.lv};destroyItem(rpSrc);rpSrc=null;done(`◈ จำลองสเตตัสสำเร็จ: ${d.n} ใช้สเตตัสของ ${d.rep.n}`);buildSmith();});
+    const S=itemSt(rpSrc),st={...(S.st0||S.st)};ZENY-=z;d.rep={n:s.n,st,lv:S.lv,lc:1};destroyItem(rpSrc);rpSrc=null;done(`◈ จำลองสเตตัสสำเร็จ: ${d.n} ใช้สเตตัสของ ${d.rep.n}`);buildSmith();});
   q('[data-rpclear]',b=>{const d=ITEMS[b.dataset.rpclear];if(!d||!confirm(`ล้างสเตตัสจำลองของ ${d.n}? (กลับเป็นสเตตัสเดิม ต้นแบบไม่คืน)`))return;delete d.rep;done(`ล้างสเตตัสจำลอง ${d.n} แล้ว`);buildSmith();});
   q('[data-drill]',()=>doDrill(smPick));q('[data-sock]',b=>doSocket(smPick,b.dataset.sock));q('[data-unsock]',b=>doUnsocket(smPick,+b.dataset.unsock));
   q('[data-merge]',b=>doMerge(+b.dataset.merge));}

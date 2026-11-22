@@ -431,7 +431,7 @@ function hippoAutoTick(){if(busy()||player.casting||targeting||player.pending)re
 
 function installHippo(){
   for(const k in SKILLS)delete SKILLS[k];for(const k in LV)delete LV[k];for(const k in CSK)delete CSK[k];
-  setTimeout(()=>{try{CTIER_LV[1]=55;CTIER_LV[2]=60;CTIER_LV[3]=70;CTIER_LV[4]=80;}catch(_){}},0);
+  setTimeout(()=>{try{CTIER_LV[1]=LVC.g(55);CTIER_LV[2]=LVC.g(60);CTIER_LV[3]=LVC.g(70);CTIER_LV[4]=LVC.g(80);}catch(_){}},0);
   for(const d of HP_DEFS){const b=HB[d.key]||{};const sk={id:d.id,name:d.name,br:d.br,row:d.row||d.tier,max:d.br==='C'?1:d.max,type:d.type,icon:hIconSpec(d),th:d.d.replace(/^\([^)]*\)\s*/,'').slice(0,40),characterId:'nile_hippo'};
     if(b.mp!=null)sk.mp=b.mp;const cd=Array.isArray(b.cd)?b.cd:null;if(cd)Object.defineProperty(sk,'cd',{get(){return hLv(cd,d.key);},enumerable:true,configurable:true});else if(b.cd)sk.cd=b.cd;
     if(b.range)sk.range=b.range;if(d.passive)sk.passive=1;if(d.ult)sk.ult=1;if(d.pre&&d.br!=='C')sk.pre=d.pre;if(HP_MAKE[d.key])sk.make=HP_MAKE[d.key];

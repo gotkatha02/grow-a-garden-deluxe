@@ -1,6 +1,6 @@
 /* =====================================================================
    AETHERFALL — GAME PROGRESS (single-player). Loaded last.
-   • Two modes per hero:  play = real game from Lv1 (saved)  ·  test = Lv99, every skill unlocked (the old dev mode)
+   • Two modes per hero:  play = real game from Lv1 (saved)  ·  test = Lv 60 (the level cap, level_cap.js), every skill unlocked (the old dev mode)
    • Saves level, EXP, stat points, skill levels, map, position, HP/SP, save point — every 5 s and on leave.
    • Save point: the last town you entered (each start town + the capital). Starts at the hero's home town.
    • Death (play mode): lose 2% EXP of the current level (never de-levels), then return to the save point with 50% HP/SP.
@@ -22,7 +22,8 @@ function setMode(m,fresh){const o={mode:m,save:{map:HOME_MAP}};if(!fresh&&m==='p
 
 /* ---------------- apply the saved state ---------------- */
 function startPlay(){testMode=false;if(P.roll)ROLL=P.roll;
-  if(P.lv){PS.lv=P.lv;for(const k of STATK)if(P.ps&&P.ps[k]!=null)PS[k]=P.ps[k];player.exp=P.exp||0;for(const k in SKILLS)LV[k]=(P.skills&&P.skills[k])||0;if(!LV[BASIC_KEY])LV[BASIC_KEY]=1;}
+  if(P.lv){PS.lv=Math.min(P.lv,window.LV_CAP||99);   /* level cap 60 (2026-11-22): an older save above the cap comes back at the cap; fitStats below hands back the extra points */
+    for(const k of STATK)if(P.ps&&P.ps[k]!=null)PS[k]=P.ps[k];player.exp=P.lv>PS.lv?0:(P.exp||0);for(const k in SKILLS)LV[k]=(P.skills&&P.skills[k])||0;if(!LV[BASIC_KEY])LV[BASIC_KEY]=1;}
   else{PS.lv=1;for(const k of STATK)PS[k]=1;player.exp=0;for(const k in SKILLS)LV[k]=k===BASIC_KEY?1:0;}   // brand-new hero: 20 status points to spend
   fitStats();if(typeof skValidate==='function')skValidate();applyStats();
   const map=P.map!==undefined?P.map:HOME_MAP;if(map&&MAPDEF[map]&&curMap!==map)enterMap(map);
@@ -66,9 +67,9 @@ const md=document.createElement('div');md.style.cssText='position:fixed;inset:0;
 document.body.appendChild(md);md.addEventListener('pointerdown',e=>e.stopPropagation());
 function openModes(){const hasPlay=(()=>{try{return !!JSON.parse(localStorage.getItem(KEY)||'{}').lv;}catch(e){return false;}})();
   md.innerHTML=`<div class="ro" style="position:relative;display:block;width:min(420px,92vw)"><div class="tb">Totem Legend — เลือกโหมด</div><div class="bd" style="display:flex;flex-direction:column;gap:8px">
-    ${hasPlay?`<button class="rob" data-m="continue" style="height:40px;font-size:14px">▶ เล่นต่อ (Lv ${JSON.parse(localStorage.getItem(KEY)).lv})</button>`:''}
+    ${hasPlay?`<button class="rob" data-m="continue" style="height:40px;font-size:14px">▶ เล่นต่อ (Lv ${Math.min(JSON.parse(localStorage.getItem(KEY)).lv,window.LV_CAP||99)})</button>`:''}
     <button class="rob" data-m="new" style="height:40px;font-size:14px">🌱 เริ่มเกมใหม่ — Lv 1 ที่เมืองเกิด${hasPlay?' (ลบความคืบหน้าเดิมของฮีโร่นี้)':''}</button>
-    <button class="rob" data-m="test" style="height:34px">🧪 โหมดทดสอบ — Lv 99 ทุกสกิล (ไม่เซฟเลเวล)</button>
+    <button class="rob" data-m="test" style="height:34px">🧪 โหมดทดสอบ — Lv ${window.LV_CAP||99} ทุกสกิล (ไม่เซฟเลเวล)</button>
     <small style="color:#8a6a4a">เซฟแยกตามฮีโร่ · คลังเก็บของใช้ร่วมกันทุกฮีโร่</small>${P.mode?'<button class="rob" data-m="close">ปิด</button>':''}</div></div>`;
   md.style.display='flex';
   md.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{const m=b.dataset.m;

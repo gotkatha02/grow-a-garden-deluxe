@@ -16,7 +16,7 @@
    ===================================================================== */
 (function(){
 if(typeof enemyAI!=='function'||!window.MSPR||!MSPR.Fenrir)return;
-const MAP='vikD2c',HOME={x:1800,y:1530},RESPAWN_MS=5*60*1000,LV=80;
+const MAP='vikD2c',HOME={x:1800,y:1530},RESPAWN_MS=5*60*1000,LV=window.LVC?LVC.n(80):80;   /* design Lv 80 → 49 under the Lv 60 cap (level_cap.js) */
 const NAME='Fenrir',CL=MSPR.Fenrir.clip;
 const BAL={hpMul:2.2,atkMul:1,claw:1.15,leap:1.6,breath:.42,orb:1.8,howl:.8,leash:1150,aggroR:420,maxHounds:4};
 const T=(k,f)=>(f+.5)/CL[k].fps;              // time of animation frame f

@@ -465,7 +465,7 @@ function hlShow(n,sub,text,buttons){hlOpen=n.key;const fr=n.img.front.ok?n.img.f
   const m=W2M(player.x,player.y);if(Math.hypot(m.x-n.pos.x,m.y-n.pos.y)>420)hlClose();})();
 /* ---- weapon / armour merchants: the monster-drop sets (Traveler Lv1 … Ancient Lv90), up to the hero's level band ---- */
 const SLOT_TH={armor:'ชุดเกราะ',top:'หมวก',garment:'ผ้าคลุม',shoes:'รองเท้า',acc:'เครื่องประดับ'};
-function gearShop(n,kind){const A=AFItems,lv=(typeof PS!=='undefined'&&PS.lv)||1,maxG=Math.min(9,Math.floor(lv/10)),slots=kind==='weapon'?['rhand']:['armor','top','shoes','acc'];   /* 5 gear slots since 2026-11-21 */
+function gearShop(n,kind){const A=AFItems,lv=(typeof PS!=='undefined'&&PS.lv)||1,maxG=A.gradeOfLv?A.gradeOfLv(lv):Math.min(9,Math.floor(lv/10)),slots=kind==='weapon'?['rhand']:['armor','top','shoes','acc'];   /* 5 gear slots since 2026-11-21 */
   const price=g=>Math.round(A.eqFair(g,0)*.6/10)*10,btn=[];
   for(let g=0;g<=maxG;g++)for(const s of slots){const D=A.DSET[g],nm=s==='rhand'?`${D[0]}'s ${A.W_NOUN[CHAR]||'Weapon'}`:`${D[0]}'s ${(A.SLOTS[s]&&A.SLOTS[s].noun)||s}`,pr=price(g);
     const key=s==='rhand'?`ds_${g}_${CHAR}`:`ds_${g}_${s}`;
@@ -476,7 +476,7 @@ function gearShop(n,kind){const A=AFItems,lv=(typeof PS!=='undefined'&&PS.lv)||1
 const WB_CD=20*60*1000,wbKey=()=>'af_wb_'+CHAR,wbLeft=()=>{try{return Math.max(0,(+localStorage.getItem(wbKey())||0)+WB_CD-Date.now());}catch(e){return 0;}};
 let wbPend=false,wbBoss=null;
 function guildMenu(n){const left=wbLeft(),mm=Math.ceil(left/60000);
-  hlShow(n,'กิลด์มาสเตอร์ · กิลด์นักผจญภัย',`${n.hello}<br><small>บอสโลก <b>Aether Wyrm</b> รออยู่ในรังชั้นลึกสุดของรอยแยกเอเธอร์ · แนะนำ Lv 85+ · ลงได้ทุก 20 นาที</small>`,
+  hlShow(n,'กิลด์มาสเตอร์ · กิลด์นักผจญภัย',`${n.hello}<br><small>บอสโลก <b>Aether Wyrm</b> รออยู่ในรังชั้นลึกสุดของรอยแยกเอเธอร์ · แนะนำ Lv ${window.LVC?LVC.n(85):85}+ · ลงได้ทุก 20 นาที</small>`,
     [{html:`<span>⚔ ลงบอสโลก: Aether Wyrm</span><em>${left?`อีก ${mm} นาที`:'พร้อม'}</em>`,dis:!!left,fn:()=>{hlClose();try{localStorage.setItem(wbKey(),Date.now());}catch(e){}wbPend=true;chatLog('sys','กิลด์ส่งคุณไปยัง <b>รังเอเธอร์เวิร์ม</b>… ระวังตัว!');mapTravel('rift3',null);}},
      {html:'<span>📜 รางวัลบอสโลก</span><em>ดู</em>',fn:()=>guildInfo(n)}]);}
 function guildInfo(n){hlShow(n,'กิลด์มาสเตอร์ · กิลด์นักผจญภัย','ล้มบอสโลกได้: <b>Zeny ก้อนใหญ่</b> + <b>ของเซ็ทดรอปโบราณ (Lv90)</b> 1 ชิ้นแน่นอน<br><small>บอสหลอด KO หนามาก ใช้ท่าทุบ/กระโดดเพื่อ KO มัน</small>',[{html:'<span>← กลับ</span>',fn:()=>guildMenu(n)}]);}

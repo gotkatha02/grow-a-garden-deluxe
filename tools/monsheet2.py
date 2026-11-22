@@ -172,6 +172,7 @@ elif LAY=='B4':
 else:P=dict(idle=R[0][:4],walk=spread(R[1],4),attack=spread(R[2],5),hurt=[R[3][0],R[4][0]],death=R[4][-5:] if len(R[4])>=5 else [R[4][0]]+R[4][1:])
 def slam(r2):
     c=r2[3:-1] or r2[2:3];return max(c,key=lambda q:q['m'])
+if WMODE and len(R)==5 and len(R[3])>=4:P['hurt']=[R[3][0],R[4][0]];P['death']=R[4][1:]   # newer sheets: row 4 = reactions, row 5 = hurt + fall + death
 if LAY in('B','B4'):P['attack']=[R[2][-1],R[2][1],R[2][2],slam(R[2]),R[2][-1]]
 if ATT=='r3':P['attack']=[R[0][0]]+R[3][1:5]
 print('layout',LAY,file=sys.stderr)

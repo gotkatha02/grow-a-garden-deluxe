@@ -185,7 +185,7 @@ function crocAutoTick(){if(busy()||player.casting||targeting||player.pending)ret
 function installCrocRework(){if(CHAR!=='croc')return;
   const OLD=Object.assign({},SKILLS);
   for(const k in SKILLS)delete SKILLS[k];for(const k in LV)delete LV[k];for(const k in CSK)delete CSK[k];
-  setTimeout(()=>{try{CTIER_LV[1]=55;CTIER_LV[2]=60;CTIER_LV[3]=70;CTIER_LV[4]=80;}catch(_){}},0);
+  setTimeout(()=>{try{CTIER_LV[1]=LVC.g(55);CTIER_LV[2]=LVC.g(60);CTIER_LV[3]=LVC.g(70);CTIER_LV[4]=LVC.g(80);}catch(_){}},0);
   const MAKE={ccFeast:mkCcFeast};
   for(const d of CRX_DEFS){const o=OLD[d.key]||{},nw=CRX_NEW[d.key]||{};
     const sk=Object.assign({},o,{br:d.br,row:d.row||d.tier,max:d.br==='C'?1:d.max,name:d.name||nw.name||o.name,icon:d.icon||nw.icon||o.icon||['star','#e8b44a','#1a1612']});

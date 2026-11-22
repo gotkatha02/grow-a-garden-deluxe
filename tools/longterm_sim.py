@@ -130,7 +130,7 @@ def carve_part():
     Q=[(50000,[('ma',40),('mb',10),('tfrag3',8),('tess',20)]),(80000,[('ma',50),('mb',12),('tfrag3',12),('tess',28)]),
        (120000,[('ma',60),('mb',15),('tfrag3',16),('tess',36),('sore',1)]),(180000,[('ma',70),('mb',18),('tfrag4',10),('tess',45),('sore',1)]),
        (250000,[('ma',80),('mb',20),('tfrag4',14),('tess',55),('sore',2)])]
-    SSLV=[10,20,30,40,50];PLV=[60,70,80,90,99]
+    SSLV=[10,20,30,40,50];PLV=[60,70,80,90,99]   # DESIGN levels of the holes: their goods / zeny bands. Since the Lv 60 cap the pole tiers open at game Lv 52/54/56/58/60 (level_cap.js) but still take these bands
     tot={'tess':0,'z':0,'h':0}
     def row(name,lv,c,n=1):
         if not c: print(f'  {name:34s} Lv {lv:2d}  free');return

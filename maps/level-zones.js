@@ -16,6 +16,8 @@
        Lv 90–99. Later each one will drop its own item line (drops not designed yet).
    Extra monsters and roles are added afterwards by maps/monster-roster.js.
    To retune: edit FIELD / ROUTE / LATE / FIXED below; nothing else needs to change.
+   LEVEL CAP 60 (owner 2026-11-22): the tables stay on the 1–99 design scale; LVC.n (level_cap.js) squeezes every band into
+   1–60 right after they are built (Lv 1–10 → 1–6 … Lv 96–99 → 58–60), so monsters, map labels and warp signs all follow.
    ===================================================================== */
 (function(){
 const TOWN={vik:'frostheim',azt:'aztT',grk:'grkT',egy:'egyT',jpn:'jpnT'};
@@ -49,13 +51,16 @@ for(const p in TOWN){const town=TOWN[p],dist={[town]:0},par={},q=[town];
   rest.forEach((id,i)=>{ZONE[id]=[Math.round(lo+i*w),Math.min(hi,Math.round(lo+(i+1)*w+3))];});
   for(const s in LATE){const id=p+s;if(MAPS[id])ZONE[id]=LATE[s];}}
 Object.assign(ZONE,FIXED);
+/* LEVEL CAP 60 (owner 2026-11-22, level_cap.js): every band above is on the old 1–99 design scale → spread evenly over 1–60 */
+const LC=window.LVC,CAP=LC?LC.CAP:99;
+if(LC)for(const id in ZONE){const a=LC.n(ZONE[id][0]);ZONE[id]=[a,Math.max(a,LC.n(ZONE[id][1]))];}
 window.MAP_ZONE=ZONE;window.MAP_ROUTES=ROUTES;
 
 const txt=r=>r[0]+'–'+r[1];
 /* monsters: map each entry's old range proportionally into the new range */
 for(const id in MONS){const z=ZONE[id],L=MONS[id];if(!z||!Array.isArray(L)||!L.length)continue;
   const A=Math.min(...L.map(m=>m.lv[0])),B=Math.max(...L.map(m=>m.lv[1])),span=Math.max(1,B-A),f=v=>Math.round(z[0]+(v-A)/span*(z[1]-z[0]));
-  for(const m of L){const a=f(m.lv[0]),b=Math.max(a,f(m.lv[1]));m.lv=[Math.max(1,a),Math.min(99,b)];}}
+  for(const m of L){const a=f(m.lv[0]),b=Math.max(a,f(m.lv[1]));m.lv=[Math.max(1,a),Math.min(CAP,b)];}}
 /* map level labels */
 for(const id in MAPS)if(ZONE[id])MAPS[id].lv=txt(ZONE[id]);
 /* warp labels: a floor label ("ชั้น …") shows that floor; a dungeon entrance shows the whole dungeon span */

@@ -57,7 +57,8 @@ const DATA=[
  ['mictlan','azt','E1','มิกตลันเตกุตลี',"Staff of Mictlan",'ไม้เท้ามิกตลัน','rule','กองทัพกระดูก','ทุกตัวที่ 5 ที่ฆ่า ลุกเป็นโครงกระดูกสู้ให้ 15 วิ (สูงสุด 3 ตัว)'],
  ['quetzal','azt','E2','เควตซัลโคอาทล์',"Quetzal Feather",'ขนนกเควตซัล','rule','ใบลมขนนก','ทุกครั้งที่ใช้สกิล ปล่อยใบลมขนนกพุ่งทะลุแถว 400 ใส่ศัตรูที่ใกล้สุด ATK/TAL×1']];
 /* live relics: the boss is in the maps and the power is coded */
-const LIVE={fenrir:{lv:80,map:'vikD2c',where:'บัลลังก์เฟนเรียร์ (ถ้ำเฟนเรียร์ ชั้น 3)',cd:[90,84,78,72,66],use:o=>fenrirHowl(o)}};
+const LV0=v=>window.LVC?LVC.n(v):v;   /* level cap 60: relic levels are their boss's design level, on the new scale (80 → 49) */
+const LIVE={fenrir:{lv:LV0(80),map:'vikD2c',where:'บัลลังก์เฟนเรียร์ (ถ้ำเฟนเรียร์ ชั้น 3)',cd:[90,84,78,72,66],use:o=>fenrirHowl(o)}};
 const R={},KEYS=[];
 for(const d of DATA){const [key,land,slot,boss,en,th,type,pw,txt]=d;R[key]={key,land,slot,tier:SLOT_TIER[slot],boss,en,th,type,pw,txt,live:LIVE[key]||null};KEYS.push(key);}
 
@@ -68,7 +69,7 @@ try{const s=JSON.parse(localStorage.getItem(SKEY)||'null');if(s&&s.v===1)RS=Obje
 const saveRS=()=>{try{localStorage.setItem(SKEY,JSON.stringify(RS));}catch(e){}};
 
 /* ---------------- items ---------------- */
-const gradeOf=r=>A.gradeOfLv(r.live?r.live.lv:80);
+const gradeOf=r=>A.gradeOfLv(r.live?r.live.lv:LV0(80));
 function makeRelic(k,star=1){const r=R[k],g=gradeOf(r),t=A.gradeTier(g);
   return A.mkInst({base:null,n:r.en,slot:'acc',kind:'Accessory',relic:k,star:Math.max(1,Math.min(5,star|0||1)),st:A.craftStats(r.land,'acc',g,false),x:{},b:{},
     grade:g,tier:t,wlv:t,lvReq:A.gradeLv(g),sockets:0,orbs:[],ref:0,w:10,rank:'All',sealM:1,d:`วัตถุโบราณจาก${r.boss} · ${TYPE[r.type][0]} ${r.pw}`});}

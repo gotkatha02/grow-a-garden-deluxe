@@ -30,7 +30,7 @@ function installRhinoRework(){if(CHAR!=='rhino')return;
   const keep={};for(const [k,t,cr,rq] of CL){const s=CSK[k];if(!s)continue;Object.assign(s,{tier:t,creq:cr,rq});keep[k]=s;}
   for(const k in CSK){delete SKILLS[k];delete LV[k];delete CSK[k];}
   for(const k in keep){CSK[k]=keep[k];SKILLS[k]=Object.assign({br:'C',max:1},keep[k]);LV[k]=1;}
-  setTimeout(()=>{try{CTIER_LV[1]=55;CTIER_LV[2]=60;CTIER_LV[3]=70;CTIER_LV[4]=80;}catch(_){}},0);
+  setTimeout(()=>{try{CTIER_LV[1]=LVC.g(55);CTIER_LV[2]=LVC.g(60);CTIER_LV[3]=LVC.g(70);CTIER_LV[4]=LVC.g(80);}catch(_){}},0);
   /* ---------- zigzag ---------- */
   SKILLS.rhStance.pre=[['rhSkin',1]];SKILLS.rhHammer.pre=[['rhKnuckle',1]];
   if(typeof jgBuildReq==='function'){const _b=jgBuildReq;jgBuildReq=function(){_b();for(const [a,b] of [['rhSkin','rhStance'],['rhKnuckle','rhHammer']]){const A=SKREQ[a],B=SKREQ[b];if(!A||!B)continue;

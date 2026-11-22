@@ -111,7 +111,8 @@ const COST={
                                                // (one counter per hero for every roll: carving, crafting, extracting, re-extracting)
 /* power of the target skill from gem level: +3 % per level up to Lv 5 (unchanged), then +0.4 % per level → Lv 50 = +30 % */
 const gemPow=lv=>.03*(Math.min(lv,5)-1)+.004*Math.max(0,lv-5);
-/* drops (items.js dropFor): stone tier = ore tier of the monster's level band */
+/* drops (items.js dropFor): stone tier = ore tier of the monster's level band. soreLv is a DESIGN level: dropFor compares the monster's
+   design level (LVC.o, level cap 60) → Star Ore from monsters Lv 43+ */
 const DROPS={stoneField:.002,stoneDun:.005,ess:.015,essN:[1,3],soreLv:70,soreField:.0005,soreDun:.0015,mutDun:.0003,mutField:.0001,supDun:.0006,supField:.00015,
   boss:{stones:3,ess:10,sore:2,sup:1,mutChance:.3}};
 /* carving the totem's holes open (owner 2026-11-21: 'turn in goods to unlock each hole, not very easy; only the first skill hole is free
@@ -119,8 +120,10 @@ const DROPS={stoneField:.002,stoneDun:.005,ess:.015,essN:[1,3],soreLv:70,soreFie
    ids: s<i> skill hole i on the stone base (opens with its gold mutation hole) · u<i><j> its 2 teal support holes ·
         p<i> pole tier i (opens with its inner mutation hole) · q<i><j> the tier's 2 outer support holes (j 1 / 2).
         The tier's 2nd mutation hole is not carved: it still opens when that tier's C gem reaches the level cap.
-   Level = the hole's own level (skill holes SS_LV, tiers 60/70/80/90/99); a small hole needs its big hole carved first.
-   Goods: 'ma' / 'mb' = common / rare monster material of the hole's level band (grade = Lv ÷ 10): the base takes any land's,
+   Level = the hole's own level (skill holes SS_LV 10–50; pole tiers Lv 52/54/56/58/60 since the Lv 60 cap — designed as 60/70/80/90/99);
+   a small hole needs its big hole carved first.
+   Goods: 'ma' / 'mb' = common / rare monster material of the hole's DESIGN level band (grade = design Lv ÷ 10: base 1–5, pole 6/7/8/9/9 —
+   unchanged by the level cap; those grades now drop from monsters Lv 7–36 / 37–60, see level_cap.js): the base takes any land's,
    a pole tier and its support holes take that tier's land (bottom → top: Norse · Greek · Egypt · Japan · Aztec).
    Totals (all 29 carvings): 1,018 essence · 4.0 M zeny · ~49 h of farming — `python3 tools/longterm_sim.py carve` prints each hole
    (keep its table in step with this one). */

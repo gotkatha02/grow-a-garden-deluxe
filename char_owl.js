@@ -628,7 +628,7 @@ function installOwl(){
     else SKILLS[d.key]=sk;
     JG_DESC[d.key]={d:(d.br==='C'?(d.passive?'[Enhancement] ':'[New Active] '):'')+d.d,lv:(()=>{const o={};for(let i=1;i<=(d.br==='C'?1:d.max);i++)o[i]=d.lv(i);return o;})()};}
   for(const k in SKILLS)LV[k]=SKILLS[k].max;
-  setTimeout(()=>{try{CTIER_LV[1]=55;CTIER_LV[2]=60;CTIER_LV[3]=70;CTIER_LV[4]=80;}catch(_){}},0);
+  setTimeout(()=>{try{CTIER_LV[1]=LVC.g(55);CTIER_LV[2]=LVC.g(60);CTIER_LV[3]=LVC.g(70);CTIER_LV[4]=LVC.g(80);}catch(_){}},0);
   if(typeof jgBuildReq==='function'&&!jgBuildReq.owZig){const _b=jgBuildReq;jgBuildReq=function(){_b();if(CHAR!=='owl')return;for(const [a,b] of [['oaFatal','oaPierce'],['obFlurry','obSnare']]){const A=SKREQ[a],B=SKREQ[b];if(!A||!B)continue;
       B.forEach((r,i)=>{if(i>0)r.need.push([a,Math.min(SKILLS[a].max,i+1)]);});A.forEach((r,i)=>{if(i>0&&i<=B.length)r.need.push([b,i]);});}};jgBuildReq.owZig=1;}
   TABS.length=0;TABS.push({n:'Marksman',keys:['oaFatal','oaPierce','oaAim','oaDeadeye','oaMark','oaHeavy','oaDrill','oaRico','oaExec','owHop']},
@@ -639,7 +639,7 @@ function installOwl(){
   ITEMS.nordicCrossbow={n:'Nordic Crossbow',slot:'rhand',two:1,kind:'Bow',atk:150,wlv:3,aspd:152,ref:5,cards:2,w:150,b:{dex:2},size:{small:1,medium:1,large:.75},d:'หน้าไม้ไม้และเหล็กแดนเหนือ'};
   ITEMS.whiteNightBow={n:'White Night Crossbow',slot:'rhand',two:1,kind:'Bow',atk:172,wlv:4,aspd:150,ref:4,cards:1,w:160,b:{dex:3},size:{small:1,medium:1,large:.75},d:'หน้าไม้คืนขาว DEX +3'};
   EQ.rhand='nordicCrossbow';INV.length=0;INV.push('whiteNightBow','vikinghelm','ringPrec','clipLuck');
-  Object.assign(PS,{lv:99,str:55,agi:70,vit:40,int:1,dex:95,luk:30});
+  Object.assign(PS,{lv:LV_CAP,str:55,agi:70,vit:40,int:1,dex:95,luk:30});
   // shared-combat hooks
   window.jgHit=(e,o)=>owL('owEye')?owLv(OB.owEye.hit,'owEye'):0;
   window.jgCrit=(e,o)=>{const c=o&&o.owShot;if(!c)return 0;let v=0;if(c.auto&&owL('oaCrit'))v+=owLv(OB.oaCrit.crit,'oaCrit');if(c.veil)v+=c.erase?100:OB.obVeil.crit;if(c.key==='oaDeadeye'&&(e.owMark||0)>0)v+=100;return v;};
