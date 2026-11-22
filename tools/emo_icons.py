@@ -1,6 +1,6 @@
 """Painted UI icons that replace emoji (ui_emoji.js, prompts in UI_ICON_PROMPTS_TH.md).
 usage:
-  python3 tools/emo_icons.py cut <sheet 1-5> <sheet.png>   cut one ChatGPT sheet into assets/ui/emo/<key>.webp (128 px) and rebuild the list
+  python3 tools/emo_icons.py cut <sheet 1-6> <sheet.png>   cut one ChatGPT sheet into assets/ui/emo/<key>.webp (128 px) and rebuild the list
   python3 tools/emo_icons.py list                           rebuild assets/ui/emo/list.js from the files there (+ bump its ?v= in index.html)
   python3 tools/emo_icons.py board [out.png]                reference board of icons already in the game (attach it in ChatGPT)
 Sheets are read left -> right, top row first; the background (green or magenta) is found from the border by tools/iconsheet.py."""
@@ -14,6 +14,7 @@ SHEETS={  # sheet -> (rows, keys) ; keys = the names in ui_emoji.js T table
  3:([4,4,4],'poison bleed skull warn broken crown trophy party folder chart mailbox news'.split()),
  4:([4,4],'herb sprout turtle fashion paw blueprint wrench chat'.split()),
  5:([4,4],'grab key mute note dark blind web scorpion'.split()),
+ 6:([3,3,3],'leaf icecube chains sun moon horus sunrise feet cane'.split()),   # square 1024x1024, 3x3
 }
 def rebuild():
     keys=sorted(f[:-5] for f in os.listdir(EMO) if f.endswith('.webp'))

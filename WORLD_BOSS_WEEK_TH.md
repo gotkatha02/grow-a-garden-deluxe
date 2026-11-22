@@ -1,7 +1,7 @@
 # บอสโลก 7 วัน — วันละตัว (ข้อเสนอ 2026-11-22)
 
 เจ้าของ: *"ขอทำ world boss ให้ครบทุกตัวก่อน เอาอีก6ตัวให้ครบ7วัน ขอพร้อมเอาไปดีไซน์หน่อย"*
-สถานะ: **ออกแบบ + พรอมต์รูปต้นแบบ · ยังไม่ได้สร้างในเกม**
+สถานะ: **ออกแบบ + รูปต้นแบบครบ 7 ตัว (2026-11-22) · ร่างแอดวานซ์ = ข้อเสนอ + พรอมต์ (ข้อ 13–14) · ยังไม่ได้สร้างในเกม**
 - วันเสาร์ = เออร์ทอค (แบบเต็มใน WORLD_BOSS_TH.md รูปเข้าแล้ว)
 - ไฟล์นี้ = ตารางสัปดาห์ กติกากลาง และอีก 6 ตัว
 
@@ -280,11 +280,126 @@ Background: SOLID FLAT PURE GREEN (#00FF00), no gradient, no ground, no shadow. 
 ```
 
 ## 11. ขั้นต่อไป
-1. รูปต้นแบบ 6 ตัว → เก็บที่ assets/bosses/world/<ชื่อ>.png + ตัดพื้น + ลองขนาดในแมพ (`tools/fx/bossmock.py`)
+1. ~~รูปต้นแบบ 6 ตัว~~ **เข้าแล้ว 2026-11-22**: assets/bosses/world/<ชื่อ>.png (รูปดิบ) + <ชื่อ>_cut.webp (ตัดพื้นแล้ว)
+   - ชื่อไฟล์: khepra · puijantra · burumba · mayawee · brontara · lumina · urtok
+   - ตัดพื้นด้วย /home/claude/work/wb2/cut2.py (ไม่อยู่ใน repo): สีพื้นวัดจากขอบรูป · เขียวหรือแดงม่วง · แสงเรือง (สายฟ้า วิญญาณมือกลอง เปลวไฟ) เก็บเป็นแสงโปร่ง · ช่องปิดที่เห็นพื้นผ่านแสงก็ตัดด้วย · ของเขียวที่อยู่ในเส้นขอบ (ตะไคร่บนเกาะของลูมินา) ไม่ถูกตัด
+   - ลองขนาดในแมพแล้ว: กว้าง 400 px ทุกตัว · บรอนทารา / ลูมินา ลอย 120 px (`tools/fx/bossmock.py … lift=120`)
 2. วิดีโอท่าทางทีละตัวแบบเออร์ทอค (WORLD_BOSS_TH.md ข้อ 18)
 3. สร้างในเกม (ทางออฟไลน์ก่อน ตามที่ตกลง) เริ่มที่เออร์ทอค ระบบกลาง (ตารางเวลา N แต้ม รางวัล วิญญาณนักรบ) ใช้ร่วมทุกตัว แล้วเพิ่มทีละวัน
+4. รูปร่างแอดวานซ์ 7 ตัว (ข้อ 14) → เก็บเป็น <ชื่อ>_adv.png + <ชื่อ>_adv_cut.webp
 
 ## 12. คำถามถึงเจ้าของ
 1. ชื่อ / คอนเซปทั้ง 6 ตัวโอเคไหม (อยากเปลี่ยนตัวไหน)
 2. ลานเดียวเปลี่ยนของตามวัน หรืออยากได้ 7 ลานแยก
 3. สีประจำวันแบบไทยตามตารางนี้ใช้เลยไหม
+4. ร่างแอดวานซ์ (ข้อ 13): เปิดที่เลเวลโลก 50 โอเคไหม · ให้เป็นร่างแอดวานซ์เฉพาะรอบ 20:30 หรือทั้งสองรอบ
+
+---
+
+## 13. ร่างแอดวานซ์ (ข้อเสนอ 2026-11-22)
+เจ้าของ: *"ขอพร้อมเพิ่มหน่อยสำหรับทำเวอร์ชั่นแอดว้านโหดขึ้น ที่จะเจอได้เมื่อเลเวลเฉลี่ยของผู้เล่นเลย… ดีไซน์ดุดันขึ้นแต่ยังมีเค้าโครงของตัวเดิม"*
+
+- **เรื่อง:** พอนักผจญภัยทั้งเซิฟแกร่งขึ้น เศษโทเท็มในตัวบอสก็ตอบรับ ปลุกพลังเต็มที่ออกมาทดสอบ
+  - ตัวเดิม ท่าเดิม แต่ดุกว่า
+  - รูปใหม่ต้องดูออกทันทีว่าเป็นตัวไหน (ข้อ 14)
+- **เจอเมื่อไร** (ตัวเลขรอเจ้าของเคาะ):
+  - **เลเวลโลก** = เลเวลเฉลี่ยของคนที่ลงบอสโลกใน 7 วันล่าสุด (นับคนละ 1 ครั้ง เฉพาะ Lv 20 ขึ้นไป · ตัวสำรองที่ไม่ได้ลงไม่ถูกนับ)
+  - เช็กตอนรีเซ็ตสัปดาห์ (จันทร์ 00:00): เลเวลโลกถึง **50** → ทั้งสัปดาห์ รอบ 20:30 เป็นร่างแอดวานซ์
+  - รอบ 12:30 ยังเป็นร่างปกติ คนเลเวลน้อยยังมีบอสของตัวเอง
+  - กลับเป็นร่างปกติเมื่อเลเวลโลกต่ำกว่า 47 (กันสลับไปมาทุกสัปดาห์)
+  - เล่นออฟไลน์ (ยังไม่มีเซิร์ฟ) = ใช้เลเวลเราเอง
+- **โหดขึ้นยังไง** (ไม่มีเปอร์เซ็นต์ ตัวเลขเป็นตัวคูณในตารางท่า):
+  - ทุกท่าแรงขึ้น: ตัวคูณ ×1.4 ปัดเศษ (เช่น ×10 → ×14) · พลาดกลไกยังไม่ตายในทีเดียว
+  - HP ต่อคน ×1.6
+  - ช่วงเปิดสั้นลง 3 วิ · กลไกที่ต้องใช้คน (วงยัน แนวโล่ ปลุกเสา) ต้องใช้เพิ่ม 2 คน
+  - โกรธที่นาที 13 (ร่างปกตินาที 16)
+  - **กลไกเพิ่มตัวละ 1 อย่าง** ผูกกับของใหม่ในรูป:
+
+| บอส | ของใหม่ในรูป | กลไกเพิ่ม |
+|---|---|---|
+| เคปรา | ลูกอาทิตย์ร้อนจัด หน้าโกรธ | ลูกอาทิตย์ทิ้งทางทรายลุกไฟ (พื้นแดง) 10 วิ ลานถูกแบ่งเป็นช่อง ต้องเดินอ้อมไปวงยัน |
+| ปุยจันทรา | จันทร์คราสบนหน้าผาก | เดือนมืด: กระต่ายเล็กมาเป็นคู่ (ลายเดียวกัน) · คู่ไหนตายห่างกันเกิน 3 วิ ตัวที่เหลือชุบอีกตัวกลับมา |
+| บุรุมบา | ป้อมมีปราการ หมวกเขา | พุ่งชน 2 เที่ยวติด: ชนแล้วเลี้ยวกลับพุ่งอีกเส้น ต้องตั้งแนวโล่ใหม่ใน 4 วิ |
+| มายาวี | ตาที่สามบนหงอน | ตอนล่องหนทิ้งตัวหลอก 2 ตัว · สาดสีโดนตัวหลอก = หมึกระเบิด มืด 4 วิ · ตัวจริงทิ้งรอยเท้าบนพื้น |
+| บรอนทารา | สายฟ้าหนาขึ้น | สายฟ้ากระโดดต่อไปคนที่ยืนใกล้ ≤ 120 ทีละคน (สูงสุด 4) → ต้องยืนกระจาย ยกเว้นรอบเสาที่ตื่นแล้ว (เสาดูดให้หมด) |
+| ลูมินา | หนามคริสตัลบนหลัง | หนามคริสตัล ◎ 4 อันบนหลัง ยิงจากไกลให้แตก · หนามที่ยังอยู่ = กรดในท้อง +1 ต่อวิต่ออัน → คนข้างนอกต้องช่วยคนข้างใน |
+| เออร์ทอค | กระดองหนาม รอยร้าว | ขาแต่ละข้างนับแต้มพลิกได้ไม่เกิน 1 ใน 4 ของเกจ → ต้องตีครบ 4 ขา · ลุกแล้วหมุนกระดอง 2 รอบ |
+
+- **รางวัลร่างแอดวานซ์:** เกล็ดดาว ×2 · ชิ้นส่วนบอส +1 · วัตถุโบราณ 1/400 → 1/250 · ฉายาสีทองของร่างตื่น · ของสะสมเวอร์ชันสีพิเศษ
+- **รูปในเกม:** รูปใหม่จากข้อ 14 · กว้าง ~440 px (ใหญ่กว่าร่างปกติราว 1 ใน 10) · วิดีโอท่าทางทำจากรูปใหม่แบบเดียวกับร่างปกติ
+
+## 14. พรอมต์ร่างแอดวานซ์ (ส่งให้ ChatGPT ทีละตัว)
+- แนบ 2 รูปทุกครั้ง: รูปปกแคมป์ไฟ (สไตล์) + **รูปต้นแบบของตัวนั้น** (assets/bosses/world/<ชื่อ>.png)
+- แชทเดียวกันได้ ถ้าแนบรูปให้ตรงตัวทุกครั้ง
+- อยากแก้แค่บางจุด: ใช้แปรงเลือกเฉพาะส่วนนั้นใน ChatGPT (แก้ทั้งรูปจะวาดใหม่หมด)
+- มายาวีใช้พื้นแดงม่วงเหมือนเดิม ที่เหลือพื้นเขียว
+
+**อาทิตย์ — เคปรา ร่างสุริยะพิโรธ**
+```
+ADVANCED FORM of the attached world boss, for my 2D isometric fantasy MMORPG (Ragnarok Online feel). Attached: the campfire key art (the game's art style) and the sun scarab's master picture (the design to evolve).
+Redraw the SAME boss as its advanced, awakened form, the harder version players meet once the whole server has grown strong. Players must recognise it instantly: keep the same species, body plan, proportions, silhouette, pose, camera angle (isometric 3/4 view from about 30° above, facing DOWN-RIGHT / south-east), signature props and main colours. Make it fiercer, more battle-hardened and more powerful, not a different monster.
+KHEPRA, WRATH OF THE NOON SUN — the sun scarab, enraged by its overheated sun. Eyes blazing white-gold under angry brows; sharp gold mandibles open at the front of the head. The sun-ray head crest is taller and more jagged, with extra spikes and glowing molten cracks. The ruby shell turns deep crimson with dark maroon edges, its gold sun lines become glowing molten-gold cracks, and a row of short gold spikes runs along the shell rim. Thicker legs with spiked gold armour cuffs; the two front legs end in serrated gold blades pressed against the sun. The sun orb is bigger and hotter: wilder flames wrapped tightly around it, a white-hot core, and the carved stone sun disk inside now wears an angry glowing face. Deep crimson, molten gold and orange dominate.
+Keep the art style of the attached pictures exactly: friendly hand-painted chibi cartoon, cute-but-dangerous, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft light from the top-left, bright warm colours, clear readable silhouette. Fierce but still a cartoon: no blood, no gore, not realistic, not painterly, not 3D.
+One boss alone on a 1024×1024 image, full body, the same size in the frame as the attached picture (about 85%) with clear empty space on every side.
+Background: SOLID FLAT PURE GREEN (#00FF00), no gradient, no ground, no shadow. Never use green on the boss. No text, no labels, no frames, no effects floating around it — glow only ON the body and the sun orb.
+```
+
+**จันทร์ — ปุยจันทรา ร่างจันทร์คราส**
+```
+ADVANCED FORM of the attached world boss, for my 2D isometric fantasy MMORPG (Ragnarok Online feel). Attached: the campfire key art (the game's art style) and the moon rabbit's master picture (the design to evolve).
+Redraw the SAME boss as its advanced, awakened form, the harder version players meet once the whole server has grown strong. Players must recognise it instantly: keep the same species, body plan, proportions, silhouette, pose, camera angle (isometric 3/4 view from about 30° above, facing DOWN-RIGHT / south-east), signature props and main colours. Make it fiercer, more battle-hardened and more powerful, not a different monster.
+PUIJANTRA, THE ECLIPSE MOON RABBIT — the moon rabbit, stern and battle-ready under an eclipse. Narrowed glowing gold eyes with sharp brows, a fierce frown and two small fangs; the fur on its cheeks and chest is spikier, like a wild mane. Longer ears swept back, capped with jagged gold ear guards. The forehead crescent becomes a small eclipsed full moon: a dark disc with a blazing gold ring around it. The yellow festival vest becomes a yellow-and-gold battle coat with crescent-moon shoulder armour and a thick gold rope belt. The mallet is now a huge war mallet: a bigger head with gold bands, crescent-blade edges and glowing moon runes. The stone mortar is cracked and bound with gold bands, glowing pale-gold elixir overflows from it, and bigger crystal shards stick out. Silver-white and yellow-gold dominate, with small deep night-blue shadow accents.
+Keep the art style of the attached pictures exactly: friendly hand-painted chibi cartoon, cute-but-dangerous, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft light from the top-left, bright warm colours, clear readable silhouette. Fierce but still a cartoon: no blood, no gore, not realistic, not painterly, not 3D.
+One boss alone on a 1024×1024 image, full body, the same size in the frame as the attached picture (about 85%) with clear empty space on every side.
+Background: SOLID FLAT PURE GREEN (#00FF00), no gradient, no ground, no shadow. Never use green on the boss. No text, no labels, no frames, no effects floating around it — glow only ON the body, the moon mark, the runes and the elixir.
+```
+
+**อังคาร — บุรุมบา ร่างศึกมหาสงคราม**
+```
+ADVANCED FORM of the attached world boss, for my 2D isometric fantasy MMORPG (Ragnarok Online feel). Attached: the campfire key art (the game's art style) and the war mammoth's master picture (the design to evolve).
+Redraw the SAME boss as its advanced, awakened form, the harder version players meet once the whole server has grown strong. Players must recognise it instantly: keep the same species, body plan, proportions, silhouette, pose, camera angle (isometric 3/4 view from about 30° above, facing DOWN-RIGHT / south-east), signature props and main colours. Make it fiercer, more battle-hardened and more powerful, not a different monster.
+BURUMBA, THE GREAT WAR DRUM — the war mammoth, armoured for total war. Eyes glowing hot pink under a heavy bronze battle helmet with two short horns and the spiral emblem; a bold pink war-paint stripe across the face. Longer, sharper tusks with jagged bronze caps and pink war ribbons; bronze rings around the trunk. Heavier armour: a spiked bronze collar, spiked knee guards and bronze plates on the flanks; the woolly coat is shaggier, darker rose-brown with hot-pink tips. The fortress on its back is taller and fortified with a spiked wooden palisade and torn pink war banners; still exactly FOUR big war drums, now with bronze rims and glowing pink spiral drum heads. The pale-blue spirit drummers are fierce little spirit warriors in tiny horned helmets, drumming with both sticks. Rose-pink, dark rose-brown and bronze dominate.
+Keep the art style of the attached pictures exactly: friendly hand-painted chibi cartoon, cute-but-dangerous, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft light from the top-left, bright warm colours, clear readable silhouette. Fierce but still a cartoon: no blood, no gore, not realistic, not painterly, not 3D.
+One boss alone on a 1024×1024 image, full body, the same size in the frame as the attached picture (about 85%) with clear empty space on every side.
+Background: SOLID FLAT PURE GREEN (#00FF00), no gradient, no ground, no shadow. Never use green on the boss. No text, no labels, no frames, no effects floating around it — glow only ON the body, the eyes, the drum heads and the spirit drummers.
+```
+
+**พุธ — มายาวี ร่างพันเขี้ยว** (พื้นแดงม่วง)
+```
+ADVANCED FORM of the attached world boss, for my 2D isometric fantasy MMORPG (Ragnarok Online feel). Attached: the campfire key art (the game's art style) and the chameleon's master picture (the design to evolve).
+Redraw the SAME boss as its advanced, awakened form, the harder version players meet once the whole server has grown strong. Players must recognise it instantly: keep the same species, body plan, proportions, silhouette, pose, camera angle (isometric 3/4 view from about 30° above, facing DOWN-RIGHT / south-east), signature props and main colours. Make it fiercer, more battle-hardened and more powerful, not a different monster.
+MAYAWEE, THE THOUSAND-FANG TRICKSTER — the chameleon, now a menacing jungle trickster. The helmet-like casque is taller with a jagged crest and gold edge spikes; the sun emblem on it becomes a glowing third-eye gem. Both crystal eyeballs glow brighter (one teal, one gold) with narrow slit pupils, and the cone eye turrets are ringed with small gold spikes. The sly smile becomes a wide menacing grin with small sharp teeth (mouth inside dark red). The back frill becomes a row of sharp jade crystal blades with gold edges. Deeper emerald skin with glowing lime vein lines and gold spots; a few scales shimmer teal and gold as if changing colour. The totem-bead collar has snarling carved faces and a gold mask pendant; longer, sharper gold claws; the spiral-curled tail ends in a gold spike. Jade and emerald green dominate.
+Keep the art style of the attached pictures exactly: friendly hand-painted chibi cartoon, cute-but-dangerous, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft light from the top-left, bright warm colours, clear readable silhouette. Fierce but still a cartoon: no blood, no gore, not realistic, not painterly, not 3D.
+One boss alone on a 1024×1024 image, full body, the same size in the frame as the attached picture (about 85%) with clear empty space on every side.
+Background: SOLID FLAT PURE MAGENTA (#FF00FF), no gradient, no ground, no shadow. Never use pink, purple or magenta on the boss. No text, no labels, no frames, no effects floating around it — glow only ON the body, the eyes and the third-eye gem.
+```
+
+**พฤหัสบดี — บรอนทารา ร่างราชาพายุ**
+```
+ADVANCED FORM of the attached world boss, for my 2D isometric fantasy MMORPG (Ragnarok Online feel). Attached: the campfire key art (the game's art style) and the thunderbird's master picture (the design to evolve).
+Redraw the SAME boss as its advanced, awakened form, the harder version players meet once the whole server has grown strong. Players must recognise it instantly: keep the same species, body plan, proportions, silhouette, pose, camera angle (isometric 3/4 view from about 30° above, facing DOWN-RIGHT / south-east), signature props and main colours. Make it fiercer, more battle-hardened and more powerful, not a different monster.
+BRONTARA, THE STORM KING — the thunderbird, crowned king of the storm. Wider wings with jagged storm-feather edges and spiked gold armour plates on the wing arms; the bold totem-pole shapes on the feathers glow at their edges. A gold totem helm with a taller feather crest and two small horns; eyes blazing blue-white; beak wide open in a screech. The carved totem mask on its chest becomes a bigger snarling war mask with glowing blue-white eyes. The storm-cloud belly feathers turn dark charcoal with glowing lightning cracks inside. Thicker blue-white lightning crackles along the wing edges, tail feathers and talons, always touching the body. Longer tail feathers with lightning-tipped ends; bigger gold talons with spiked bands. It still hovers with wings raised and talons hanging, whole body visible. Orange, gold and copper dominate.
+Keep the art style of the attached pictures exactly: friendly hand-painted chibi cartoon, cute-but-dangerous, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft light from the top-left, bright warm colours, clear readable silhouette. Fierce but still a cartoon: no blood, no gore, not realistic, not painterly, not 3D.
+One boss alone on a 1024×1024 image, full body, the same size in the frame as the attached picture (about 85%) with clear empty space on every side.
+Background: SOLID FLAT PURE GREEN (#00FF00), no gradient, no ground, no shadow. Never use green on the boss (no green lightning). No text, no labels, no frames, no effects floating around it — glow only ON the body and its lightning.
+```
+
+**ศุกร์ — ลูมินา ร่างดาราพิโรธ**
+```
+ADVANCED FORM of the attached world boss, for my 2D isometric fantasy MMORPG (Ragnarok Online feel). Attached: the campfire key art (the game's art style) and the sky whale's master picture (the design to evolve).
+Redraw the SAME boss as its advanced, awakened form, the harder version players meet once the whole server has grown strong. Players must recognise it instantly: keep the same species, body plan, proportions, silhouette, pose, camera angle (isometric 3/4 view from about 30° above, facing DOWN-RIGHT / south-east), signature props and main colours. Make it fiercer, more battle-hardened and more powerful, not a different monster.
+LUMINA, THE TEMPEST-STAR WHALE — the sky whale, wild with the pain of the star shard inside her. The shard has grown: big pale-blue and white crystal spikes with gold rims burst out along her back and sides, glowing. Sharp glowing eyes with star-shaped pupils and a stern brow; her mouth is open, showing a row of crystal teeth. Deeper sky-blue body with dark navy shading accents; the gold constellation lines and stars glow brighter. The star halo above her head becomes a bigger spiked star crown, and gold armour plates run along her back and head. Longer, blade-like wing flippers with sharp gold edges; a larger, jagged tail fluke with gold star spikes. The little island on her back now holds a fortified white-and-gold shrine tower with gold spires; the blossom trees stay pink-white and its small waterfall glows like falling starlight. Grey-white storm clouds with gold linings curl around her tail. It floats in the air, whole body visible. Light blue, white and gold dominate.
+Keep the art style of the attached pictures exactly: friendly hand-painted chibi cartoon, cute-but-dangerous, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft light from the top-left, bright warm colours, clear readable silhouette. Fierce but still a cartoon: no blood, no gore, not realistic, not painterly, not 3D.
+One boss alone on a 1024×1024 image, full body, the same size in the frame as the attached picture (about 85%) with clear empty space on every side.
+Background: SOLID FLAT PURE GREEN (#00FF00), no gradient, no ground, no shadow. Never use green on the boss (no green moss or grass on the island). No text, no labels, no frames, no effects floating around it — glow only ON the body, the stars and the crystals.
+```
+
+**เสาร์ — เออร์ทอค ร่างภูผาคลั่ง**
+```
+ADVANCED FORM of the attached world boss, for my 2D isometric fantasy MMORPG (Ragnarok Online feel). Attached: the campfire key art (the game's art style) and the giant tortoise's master picture (the design to evolve).
+Redraw the SAME boss as its advanced, awakened form, the harder version players meet once the whole server has grown strong. Players must recognise it instantly: keep the same species, body plan, proportions, silhouette, pose, camera angle (isometric 3/4 view from about 30° above, facing DOWN-RIGHT / south-east), signature props and main colours. Make it fiercer, more battle-hardened and more powerful, not a different monster.
+URTOK, THE SHATTERED MOUNTAIN — the totem-bearing tortoise, now an angry living mountain. The stone shell is a darker violet-slate with jagged stone spikes along its rim, and glowing violet-gold cracks run between the plates; the gold Greek-key trims stay. The broken totem stump in the middle has glowing eyes and snarling mouths in its carved bear, owl and wolf faces, and its broken top burns with gold light. The five land crystal pillars around it (ice-blue rune, gold lightning, gold ankh, red cherry blossom, dark violet with a teal spiral) are bigger, spikier and glowing. A heavier gold crown-helm with two curved horns; blazing teal eyes under furrowed white brows; small tusk-like fangs; a wilder white beard and braids with more gold rings. The glowing heart crystal on its chest is bigger, with gold cracks spreading from it. Stone legs wrapped in spiked gold-banded armour, bigger claws, longer tail spikes. Violet-slate, purple and gold dominate.
+Keep the art style of the attached pictures exactly: friendly hand-painted chibi cartoon, cute-but-dangerous, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft light from the top-left, bright warm colours, clear readable silhouette. Fierce but still a cartoon: no blood, no gore, not realistic, not painterly, not 3D.
+One boss alone on a 1024×1024 image, full body, the same size in the frame as the attached picture (about 85%) with clear empty space on every side.
+Background: SOLID FLAT PURE GREEN (#00FF00), no gradient, no ground, no shadow. Never use green on the boss. No text, no labels, no frames, no effects floating around it — glow only ON the body, the cracks, the crystals and the heart.
+```

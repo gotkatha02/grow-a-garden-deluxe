@@ -8,15 +8,15 @@
 - เปลี่ยนให้ทุกที่: หน้าต่าง แท็บ ปุ่ม แชท การ์ดเควสต์ ทูลทิปการ์ด แถบบัฟ (สถานะติดพิษ ไฟไหม้ ฯลฯ) ปุ่มบนมือถือ (🎯 🧘) และตัวหนังสือที่วาดบนจอเกม (ป้ายเหนือหัว NPC เช่น 🌀 วาร์ป ⚒ ช่างคราฟ 🗡 🛡 ⚔ · ข้อความลอย 🗿 วัตถุโบราณ!)
 - ภาพใหม่ชนะภาพเดิมเสมอ: ถ้าอยากได้ภาพใหม่ของตัวที่ใช้ภาพเดิมอยู่ (เช่น 🛒 หรือ ⚙) แค่เพิ่มเข้าชีต ไม่ต้องแก้โค้ด
 - ปิดระบบดูของเดิม: ต่อท้ายลิงก์ `&emo=0`
-- อิโมจิตัวเดียวแต่สองความหมาย: 👁 ในแถบสถานะ = ทรายเข้าตา (ภาพ blind) แต่ในปริศนาสฟิงซ์ = ตาฮอรัส → ตาราง T ใส่ขอบเขต '#buffs' ให้ 👁 เปลี่ยนเป็นภาพเฉพาะในแถบสถานะ ปริศนายังเป็นอิโมจิ
-- ยังไม่มีภาพ (แชทบอสประจำแมพเพิ่มทีหลัง): 🍂 🧊 ⛓ (ชื่อท่าบอส) · ☀ 🌙 🌅 🚶 🦯 👁 (สัญลักษณ์ปริศนาสฟิงซ์) — ถ้าจะทำต่อเป็นชีต 6
+- อิโมจิตัวเดียวแต่สองความหมาย: 👁 ในแถบสถานะ = ทรายเข้าตา (ภาพ `blind` ชีต 5) · ที่อื่น (ปริศนาสฟิงซ์ ป้ายประกาศ แชท) = ตาฮอรัส (ภาพ `horus` ชีต 6) → ตาราง `ALT` ใน ui_emoji.js: `'👁':[['#buffs','blind']]` = ในกรอบที่ตรง CSS นี้ใช้ภาพอื่น (บนจอเกม canvas ใช้ภาพหลักเสมอ)
+- **ชีต 6 (2026-11-22 21:36, รอรูป):** 🍂 🧊 ⛓ (ชื่อท่าบอสไวกิ้ง) · ☀ 🌙 👁 (สัญลักษณ์ปริศนาสฟิงซ์) · 🌅 🚶 🦯 (ปริศนาเช้า / สองขา / สามขา) — โค้ดพร้อมแล้ว ได้รูปเมื่อไรตัดด้วย `cut 6` เกมเปลี่ยนเอง (ทดสอบด้วยภาพจำลองแล้ว: วงปริศนาบนพื้น ฟองคำถามเหนือหัวสฟิงซ์ ป้ายประกาศ แชท)
 
 ## วิธีใช้ (เจ้าของ)
 1. แชทใหม่ใน ChatGPT แนบ **รูปปกแคมป์ไฟ** (สไตล์เกม) + **ref_ui_icons.png** (ไอคอนที่มีในเกมแล้ว — ผมส่งให้ในแชท) แล้วส่ง **พรอมต์กลาง (0)** รอให้ตอบ OK
-2. ส่งพรอมต์ชีต 1 → ได้รูปแล้วส่งกลับมาให้ผม → ชีต 2 → 3 → 4 → 5 (ทีละชีต ชีตไหนก่อนก็ได้ · ชีต 1 เห็นบ่อยสุด)
+2. ส่งพรอมต์ชีต 1 → ได้รูปแล้วส่งกลับมาให้ผม → ชีต 2 → 3 → 4 → 5 → 6 (ทีละชีต ชีตไหนก่อนก็ได้ · ชีต 1 เห็นบ่อยสุด · ชีต 6 ส่งต่อในแชทเดิมได้เลย)
 3. ผมตัดเป็นไฟล์ละชิ้นแล้วใส่เกมเอง — ไม่ต้องแก้โค้ด เกมเปลี่ยนเป็นภาพใหม่เอง
 - ชิ้นไหนไม่ถูกใจ: ใน ChatGPT ใช้แปรงเลือกเฉพาะชิ้นนั้นแล้วสั่งวาดใหม่ อย่าสั่งแก้ทั้งรูป
-- **ชีต 1–3 และ 5 พื้นเขียว** ห้ามมีสีเขียวบนตัวของ (จะถูกตัดหาย) · **ชีต 4 พื้นชมพูม่วง** (ของที่ต้องเป็นสีเขียว: ใบไม้ ต้นกล้า เต่า) ห้ามมีชมพู / ม่วงบนตัวของ
+- **ชีต 1–3, 5, 6 พื้นเขียว** ห้ามมีสีเขียวบนตัวของ (จะถูกตัดหาย) · **ชีต 4 พื้นชมพูม่วง** (ของที่ต้องเป็นสีเขียว: ใบไม้ ต้นกล้า เต่า) ห้ามมีชมพู / ม่วงบนตัวของ
 
 ## ชีต → ไฟล์ (สำหรับแชทที่ตัดรูป)
 | ชีต | พื้น | แถว 1 | แถว 2 | แถว 3 |
@@ -26,10 +26,11 @@
 | 3 สถานะ + รางวัล + ตลาด (4×3) | เขียว | `poison` ☠ `bleed` 🩸 `skull` 💀 `warn` ⚠ | `broken` 💔 `crown` 👑 `trophy` 🏆 `party` 🎉 | `folder` 🗂 `chart` 📈 `mailbox` 📬 `news` 📰 |
 | 4 ของสีเขียว + อื่น ๆ (4×2) | ชมพูม่วง | `herb` 🌿 `sprout` 🌱 `turtle` 🐢 `fashion` 👗 | `paw` 🐾 `blueprint` 📋 `wrench` 🔧 `chat` 💬 | – |
 | 5 สถานะบอสประจำแมพ (4×2) | เขียว | `grab` ✋ `key` 🗝 `mute` 🔇 `note` 🎵 | `dark` 🌑 `blind` 👁 `web` 🕸 `scorpion` 🦂 | – |
+| 6 ท่าบอส + ปริศนาสฟิงซ์ (3×3 จัตุรัส) | เขียว | `leaf` 🍂 `icecube` 🧊 `chains` ⛓ | `sun` ☀ `moon` 🌙 `horus` 👁 | `sunrise` 🌅 `feet` 🚶 `cane` 🦯 |
 
 - ตัด: `python3 tools/emo_icons.py cut <เลขชีต> <ไฟล์ชีต.png>` → assets/ui/emo/<key>.webp (128 px) + เขียน assets/ui/emo/list.js ใหม่ + ขยับ `?v=` ของ list.js ใน index.html เอง (ใช้ `GLOBAL=1 tools/iconsheet.py` ข้างใน · สีพื้นเขียว / ชมพูม่วงหาเองจากขอบรูป)
 - ภาพกระดานอ้างอิง: `python3 tools/emo_icons.py board ref_ui_icons.png` (ไม่ต้องเก็บใน repo)
-- เพิ่มอิโมจิใหม่ในเกม: ใส่บรรทัดในตาราง `T` ของ ui_emoji.js (`'อิโมจิ':['key','ภาพสำรองใต้ assets/ (ถ้ามี)','md' ถ้าเป็นเหรียญกรอบทอง]`) แล้วเพิ่ม key ในชีตของ tools/emo_icons.py
+- เพิ่มอิโมจิใหม่ในเกม: ใส่บรรทัดในตาราง `T` ของ ui_emoji.js (`'อิโมจิ':['key','ภาพสำรองใต้ assets/ (ถ้ามี)','md' ถ้าเป็นเหรียญกรอบทอง]`) แล้วเพิ่ม key ในชีตของ tools/emo_icons.py · อิโมจิตัวเดิมที่มีความหมายอื่นในบางหน้าต่าง → ใส่ในตาราง `ALT` (`'อิโมจิ':[['CSS ของหน้าต่างนั้น','key อื่น']]`)
 
 ## อิโมจิที่ใช้ภาพวาดเดิมแล้ว (47)
 | อิโมจิ | key | ภาพตอนนี้ | ใช้ที่ |
@@ -155,4 +156,24 @@ Row 2:
 Same style as the key art: friendly hand-painted chibi cartoon, thick clean dark-brown outlines, cel shading with 2–3 flat tones, bright and warm. No text, no frame, no glow halo, nothing touching the cell edges.
 ```
 
-**สถานะ 2026-11-22 21:28:** ครบ — เจ้าของส่งรูปทั้ง 5 ชีต ตัดใส่เกมแล้ว 52 ภาพ (ชีต 1–3 1536×1024 พื้นเขียว · ชีต 4 1774×887 พื้นชมพูม่วง · ชีต 5 1774×887 พื้นเขียว)
+**สถานะ 2026-11-22 21:28:** ชีต 1–5 ครบ — เจ้าของส่งรูปทั้ง 5 ชีต ตัดใส่เกมแล้ว 52 ภาพ (ชีต 1–3 1536×1024 พื้นเขียว · ชีต 4 1774×887 พื้นชมพูม่วง · ชีต 5 1774×887 พื้นเขียว)
+
+## 6. ชีต 6 — ท่าบอส + ปริศนาสฟิงซ์ (พื้นเขียว · 3×3 จัตุรัส)
+แถว 1 = ชื่อท่าบอสไวกิ้ง: 🍂 ร่างลวงใบไม้ (ฮุลดรา) · 🧊 ทุบธารน้ำแข็ง (โยตุน) · ⛓ โซ่ตะขอ (ดรากร์) · แถว 2 = สัญลักษณ์ปริศนาสฟิงซ์: ☀ ดวงอาทิตย์ · 🌙 จันทร์ · 👁 ตาฮอรัส · แถว 3 = ปริศนาจริงช่วงหลัง: 🌅 เช้า · 🚶 สองขา · 🦯 สามขา (☀ เที่ยง กับ 🌙 เย็น ใช้รูปแถว 2 · 🐾 สี่ขา ใช้รูปอุ้งเท้าชีต 4 ที่มีแล้ว)
+```
+Sheet 6 — BOSS MOVE AND SPHINX RIDDLE ICONS. This sheet is SQUARE: 1024×1024, 3 columns × 3 rows, read left to right, top row first, icons evenly spaced with wide clear gaps. Background: SOLID FLAT PURE GREEN (#00FF00); never use green on the objects (no green leaves, no grass, no green glow).
+Row 1 (boss moves):
+1) FALLEN LEAVES — two overlapping autumn leaves, an orange maple leaf and a rust-red oak leaf, with one short curling wind-swirl line; autumn colours only (orange, rust red, gold, brown), no green anywhere, not even on the veins or stems.
+2) ICE BLOCK — a chunky cube of clear glacier ice with bevelled edges and bright white highlights, a jagged crack across its front face and two small chips breaking off; pale icy blue leaning toward lavender, never cyan, teal or mint.
+3) CHAIN HOOK — a short length of heavy dark iron chain (four or five chunky links) ending in a sharp curved iron hook, cold blue-grey steel with warm highlights.
+Row 2 (riddle symbols):
+4) SUN — a round golden sun disc with short triangular orange rays all around and one bright white highlight, warm and cheerful, no face.
+5) MOON — a plump cream-gold crescent moon with soft shading and one tiny four-point star sparkle beside it, no face.
+6) EYE OF HORUS — an ancient Egyptian Wedjat eye amulet of polished gold with deep lapis-blue enamel lines: the stylised eye with its long eyebrow, the straight drop line under the eye and the curled spiral tail.
+Row 3 (the riddle of the legs):
+7) SUNRISE — the upper half of an orange-gold sun with fanned rays rising from behind a small golden sand dune, two thin pink-orange cloud wisps across it.
+8) TWO FEET — a pair of bare human footprints, left and right, one a step ahead of the other, warm tan-brown, carved like small wooden stamps with five round toes each (the same carved style as the paw print of sheet 4).
+9) WALKING CANE — an old man's wooden walking cane with a curved crook handle, polished gnarled brown wood and a small brass tip, standing slightly tilted.
+Same style as the key art: friendly hand-painted chibi cartoon, thick clean dark-brown outlines, cel shading with 2–3 flat tones, bright and warm. No text, no frame, no glow halo, nothing touching the cell edges.
+```
+- ตัด: `python3 tools/emo_icons.py cut 6 <ไฟล์ชีต.png>` (ถ้าได้รูป 1536×1024 แทนจัตุรัสก็ตัดได้เหมือนกัน — ตัวตัดหาชิ้นจากพื้นเขียวเอง)
