@@ -45,7 +45,7 @@ const T={
   '📈':['chart'],'📬':['mailbox'],'📰':['news'],'📋':['blueprint'],'👗':['fashion'],'🌱':['sprout'],'🐾':['paw'],'🐢':['turtle'],
   '🗿':['relic'],   /* relic AND the map bosses' 'turned to stone' status → a stone idol head, not the Fenrir fang */
   /* map boss statuses + moves (map_boss_kit.js, map_bosses_*.js) */
-  '✋':['grab'],'🗝':['key'],'🔇':['mute'],'🎵':['note'],'🌑':['dark'],'👁':['blind'],'🕸':['web'],'🦂':['scorpion']
+  '✋':['grab'],'🗝':['key'],'🔇':['mute'],'🎵':['note'],'🌑':['dark'],'👁':['blind',null,null,'#buffs'],   /* scoped: the Sphinx riddle draws 👁 as the Eye of Horus (map_bosses_egy.js) */'🕸':['web'],'🦂':['scorpion']
 };
 const HAVE=new Set(window.EMO_HAVE||[]);
 const EMO_V=window.EMO_V||1;
@@ -53,7 +53,8 @@ let ON=true;
 const ST={cb:0,rec:0,ms:0,set:0,tx:0};   /* cost counters: window.EMO.st */
 /* glyph → {k, src, md} for every glyph that has a picture now */
 const P={};
-for(const g in T){const [k,f,md]=T[g];
+const SC={};   /* glyph → CSS scope: replaced only inside matching elements, never on canvas (same glyph, other meaning elsewhere) */
+for(const g in T){const [k,f,md,sc]=T[g];if(sc)SC[g]=sc;
   if(HAVE.has(k))P[g]={k,src:'assets/ui/emo/'+k+'.webp?v='+EMO_V,md:false};
   else if(f)P[g]={k,src:'assets/'+f,md:md==='md'};}
 const GL=Object.keys(P).sort((a,b)=>b.length-a.length);
@@ -73,18 +74,19 @@ emo-g{position:absolute;left:0;top:0;width:1px;height:1px;overflow:hidden;opacit
   for(const g in P)c+=`\nemo-i.e-${P[g].k}{background-image:url("${P[g].src}")}`;
   st.textContent=c;(document.head||document.documentElement).appendChild(st);}
 const tagOf=g=>{const p=P[base(g)];return p?`<emo-i class="e-${p.k}${p.md?' md':''}"><emo-g>${g}</emo-g></emo-i>`:g;};
-const wrapText=s=>RE1.test(s)?s.replace(REG,tagOf):s;
+const inScope=(g,el)=>{const sc=SC[base(g)];if(!sc)return true;try{return !!(el&&el.closest&&el.closest(sc));}catch(e){return false;}};
+const wrapText=(s,el)=>RE1.test(s)?s.replace(REG,g=>inScope(g,el)?tagOf(g):g):s;
 /* ---------- HTML strings ---------- */
 const TAGRE=/<!--[\s\S]*?-->|<(?:[^>"']|"[^"]*"|'[^']*')*>/g;
 const SKIPT=new Set(['select','textarea','script','style','svg','math','emo-g','title','option']);
-function tx(html){
+function tx(html,el){
   if(!RE1.test(html))return html;
   let out='',last=0,skip=0,m;TAGRE.lastIndex=0;
   while((m=TAGRE.exec(html))){
-    const txt=html.slice(last,m.index);out+=skip?txt:wrapText(txt);out+=m[0];last=m.index+m[0].length;
+    const txt=html.slice(last,m.index);out+=skip?txt:wrapText(txt,el);out+=m[0];last=m.index+m[0].length;
     const t=/^<(\/?)\s*([a-zA-Z][\w-]*)/.exec(m[0]);
     if(t&&SKIPT.has(t[2].toLowerCase())){if(t[1])skip=Math.max(0,skip-1);else if(!/\/\s*>$/.test(m[0]))skip++;}}
-  const rest=html.slice(last);out+=skip?rest:wrapText(rest);return out;}
+  const rest=html.slice(last);out+=skip?rest:wrapText(rest,el);return out;}
 const SVGNS='http://www.w3.org/2000/svg';
 const SKIPEL=new Set(['SELECT','OPTION','TEXTAREA','SCRIPT','STYLE','TITLE','EMO-G','NOSCRIPT','CANVAS','IFRAME']);
 const badEl=el=>!el||SKIPEL.has(el.nodeName)||(el.namespaceURI&&el.namespaceURI!=='http://www.w3.org/1999/xhtml')||!!(el.closest&&el.closest('select,textarea,svg,emo-g,[contenteditable],.emoNo'));
@@ -94,15 +96,15 @@ if(D&&D.set&&D.get){
     get(){const c=D.get.call(this);const r=this.__emR;if(r!==undefined){if(c===this.__emS)return r;this.__emR=undefined;}return c;},
     set(v){const s=v==null?'':String(v);
       if(!ON||!RE1.test(s)||SKIPEL.has(this.nodeName)||(this.namespaceURI&&this.namespaceURI===SVGNS)){if(this.__emR!==undefined)this.__emR=undefined;D.set.call(this,s);return;}
-      const t0=performance.now(),t=tx(s);D.set.call(this,t);if(t!==s){this.__emR=s;this.__emS=D.get.call(this);}else if(this.__emR!==undefined)this.__emR=undefined;ST.set++;ST.tx+=performance.now()-t0;}});}
+      const t0=performance.now(),t=tx(s,this);D.set.call(this,t);if(t!==s){this.__emR=s;this.__emS=D.get.call(this);}else if(this.__emR!==undefined)this.__emR=undefined;ST.set++;ST.tx+=performance.now()-t0;}});}
 const IAH=Element.prototype.insertAdjacentHTML;
-Element.prototype.insertAdjacentHTML=function(pos,h){const s=String(h);return IAH.call(this,pos,ON&&RE1.test(s)&&!SKIPEL.has(this.nodeName)?tx(s):s);};
+Element.prototype.insertAdjacentHTML=function(pos,h){const s=String(h);return IAH.call(this,pos,ON&&RE1.test(s)&&!SKIPEL.has(this.nodeName)?tx(s,/^(beforebegin|afterend)$/i.test(pos)?this.parentElement:this):s);};
 /* ---------- text nodes (textContent, createTextNode, the parser) ---------- */
 function fixText(n){
   const p=n.parentNode;if(!p||p.nodeType!==1||!ON)return;
   const s=n.data;if(!s||!RE1.test(s)||badEl(p))return;
   const f=document.createDocumentFragment();let last=0,m;REG.lastIndex=0;
-  while((m=REG.exec(s))){const pp=P[base(m[0])];if(!pp)continue;
+  while((m=REG.exec(s))){const pp=P[base(m[0])];if(!pp||!inScope(m[0],p))continue;
     if(m.index>last)f.appendChild(document.createTextNode(s.slice(last,m.index)));
     const e=document.createElement('emo-i');e.className='e-'+pp.k+(pp.md?' md':'');const gg=document.createElement('emo-g');gg.textContent=m[0];e.appendChild(gg);f.appendChild(e);
     last=m.index+m[0].length;}
@@ -132,8 +134,8 @@ const IMG={};
 const imgOf=g=>{const p=P[base(g)];if(!p)return null;let o=IMG[p.k];if(!o){o=IMG[p.k]=new Image();o.decoding='async';o.src=p.src;}return o.complete&&o.naturalWidth?o:null;};
 const C2=CanvasRenderingContext2D.prototype,CF=C2.fillText,CS=C2.strokeText,MT=C2.measureText;
 function segs(s){const out=[];let last=0,m;REG.lastIndex=0;
-  while((m=REG.exec(s))){const im=imgOf(m[0]);if(!im)return null;if(m.index>last)out.push(s.slice(last,m.index));out.push({im,g:m[0]});last=m.index+m[0].length;}
-  if(last<s.length)out.push(s.slice(last));return out;}
+  while((m=REG.exec(s))){if(SC[base(m[0])])continue;const im=imgOf(m[0]);if(!im)return null;if(m.index>last)out.push(s.slice(last,m.index));out.push({im,g:m[0]});last=m.index+m[0].length;}
+  if(last<s.length)out.push(s.slice(last));return out.some(q=>typeof q!=='string')?out:null;}
 function mixed(ctx,s,x,y,fill){
   const sg=segs(s);if(!sg)return false;
   const fm=/(\d+(?:\.\d+)?)px/.exec(ctx.font),fs=fm?+fm[1]:16,IS=fs*(sg.length===1?1.55:1.2),gap=fs*.06;   // a lone icon (NPC sign) reads bigger, like the emoji did

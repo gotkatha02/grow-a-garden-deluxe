@@ -93,4 +93,113 @@ function burrow(e,second){const b=e.mb,p2=b.phase>=2,v=SC.trail[p2?1:0],T=second
         M.strike(e,{shape:{k:'circle',x,y,r:86},T:.5,mul:2,cc:['air',.8],boomCol:'#ffe0ea',onFire(){e.hidden=0;e.x=x;e.y=y;hitPose(e);shatter(x,y);dustPuff(x,y,16,'#e9dcd8',140,16);}});}},
     end(e,a){e.hidden=0;M.hint(e,'หลบวงแดง · เหล็กไนครั้งที่ 3 = เส้นยาว: ยืนให้เสาเกลือบัง');if(b.phase>=2&&!second)burrow(e,1);},
     cancel(e,a){e.hidden=0;st.on=0;}});}
+
+/* ---------------- Sphinx Guardian (egyH1 · Lv 37): riddle glyphs ---------------- */
+const SPH={glR:58,ring:205};
+const SYM=[['☀️','ดวงอาทิตย์'],['🌙','จันทร์'],['👁️','ตาฮอรัส']],TIME=[['🌅','เช้า'],['☀️','เที่ยง'],['🌙','เย็น']],LEGS=[['🐾','สี่ขา'],['🚶','สองขา'],['🦯','สามขา']];
+const EMO='"Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji",sans-serif';
+function emo(x,y,t,sz){ctx.save();ctx.font=`${sz}px ${EMO}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(t,x,y);ctx.restore();}
+function glyphs(e,syms,okI){const c={x:e.x,y:e.y},a0=Math.random()*T2,out=[];
+  for(let i=0;i<3;i++){let a=a0+i*T2/3,x,y,k=0;do{x=c.x+Math.cos(a)*SPH.ring;y=c.y+Math.sin(a)*SPH.ring*.82;a+=.35;}while(curMap&&mapBlockedW(x,y)&&++k<10);
+    out.push(M.prop(e,{kind:'glyph',x,y,r:SPH.glR,sym:syms[i],ok:i===okI,life:5,fadeT:.4,layer:'ground',arrow:1,
+      draw(q,x,y,t){const on=Math.hypot(player.x-q.x,player.y-q.y)<q.r+6,pu=.7+.3*Math.sin(t*6);ctx.save();ctx.translate(x,y);ctx.scale(1,K);
+        ctx.globalAlpha*=.3;ctx.fillStyle=on?'#ffe08a':'#ffd23a';ctx.beginPath();ctx.arc(0,0,q.r,0,T2);ctx.fill();ctx.globalAlpha/=.3;
+        ctx.lineWidth=4;ctx.strokeStyle='#5a3a08';ctx.beginPath();ctx.arc(0,0,q.r+1.5,0,T2);ctx.stroke();ctx.lineWidth=3;ctx.strokeStyle=on?'#fff0b0':`rgba(255,200,60,${pu})`;ctx.beginPath();ctx.arc(0,0,q.r,0,T2);ctx.stroke();
+        ctx.setLineDash([6,8]);ctx.lineDashOffset=-t*18;ctx.beginPath();ctx.arc(0,0,q.r*.72,0,T2);ctx.stroke();ctx.setLineDash([]);ctx.restore();
+        emo(x,y-6,q.sym[0],30);G.text(x,y+22,q.sym[1],12,'#ffe9b0');}}));}
+  return out;}
+function bubble(e,txt,life){return M.prop(e,{kind:'bubble',x:e.x,y:e.y,layer:'top',life,fadeT:.3,update(q){q.x=e.x;q.y=e.y;},
+  draw(q,x,y,t){const h=(MSPR_H(e)||90)+44,by=y-h,w=Math.max(70,txt.length*15+30);ctx.save();ctx.fillStyle='rgba(255,250,236,.96)';ctx.strokeStyle='#8a5a10';ctx.lineWidth=3;
+    ctx.beginPath();ctx.roundRect(x-w/2,by-26,w,48,14);ctx.fill();ctx.stroke();ctx.beginPath();ctx.moveTo(x-8,by+21);ctx.lineTo(x,by+32);ctx.lineTo(x+8,by+21);ctx.fill();ctx.restore();
+    emo(x,by-2,txt,26);}});}
+function gust(e,mul){const phi=M.angTo(e,player);pose(e,1);
+  return M.strike(e,{shape:{k:'cone',x:e.x,y:e.y,r:270,phi,half:1.05},T:1,mul:mul||.7,push:160,from:phi,boomKind:'quiet',
+    onFire(hit){hitPose(e);for(let i=0;i<18;i++)emit({type:'dust',x:e.x+Math.cos(phi)*rnd(40,220),y:e.y+Math.sin(phi)*rnd(40,220),z:rnd(4,30),vx:Math.cos(phi)*rnd(120,260),vy:Math.sin(phi)*rnd(120,260),drag:2,life:rnd(.5,.9),size:rnd(8,14),size1:18,color:'#e8d0a0'});
+      if(hit)M.buff('mbBlind',3);}});}
+M.def('sphinx',{R:560,see:330,spd:66,reach:110,hpMul:1.25,enrage:300,minH:100,
+  cry:'ตอบมา…',intro:'สฟิงซ์ — ตอบปริศนาให้ถูก: ไปยืนบนวงที่ตรงกับสัญลักษณ์เหนือหัว',
+  cd0:{paw:1.5,pounce:4,gust:7,riddle:8},phases:[.5],
+  setup(e,b){M.hint(e,'หลบวงแดง · ปริศนา = ไปยืนบนวงทองที่ตรงกับสัญลักษณ์เหนือหัวสฟิงซ์');},
+  phase(e,ph){M.banner('ปริศนาจริง: เช้า = 🐾 · เที่ยง = 🚶 · เย็น = 🦯','gold',3.6);M.hint(e,'ปริศนาจริง: เช้า = 🐾 สี่ขา · เที่ยง = 🚶 สองขา · เย็น = 🦯 สามขา');},
+  think(e,dt,L){const b=e.mb;
+    if(M.ready(e,'riddle')){M.cd(e,'riddle',25);riddle(e);return true;}
+    if(M.ready(e,'gust')&&L<250){M.cd(e,'gust',12);M.act(e,{name:'ลมปีกทราย',T:1.15,start(e){gust(e);}});return true;}
+    if(M.ready(e,'pounce')&&L>150&&L<430){M.cd(e,'pounce',9);const x=player.x,y=player.y;pose(e,1.2);
+      M.act(e,{name:'กระโจน',T:1.35,start(e){M.strike(e,{shape:{k:'circle',x,y,r:95},T:1.2,mul:1.6,cc:['air',.6],onFire(){if(!curMap||!mapBlockedW(x,y)){e.x=x;e.y=y;}hitPose(e);}});}});return true;}
+    if(M.ready(e,'paw')&&L<135){M.cd(e,'paw',3);const phi=M.angTo(e,player);pose(e,.8);
+      M.act(e,{T:.95,start(e){M.strike(e,{shape:{k:'cone',x:e.x,y:e.y,r:125,phi,half:.8},T:.8,mul:1.3,boomKind:'quiet',onFire(){hitPose(e);}});}});return true;}
+    return false;}});
+function riddle(e){const b=e.mb,p2=b.phase>=2,n=M.count(e,'riddle'),i=(n-1)%3;
+  let ask,syms,okI;const order=[0,1,2];for(let k=order.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[order[k],order[j]]=[order[j],order[k]];}
+  if(!p2){ask=SYM[i][0];syms=order.map(o=>SYM[o]);okI=order.indexOf(i);}else{ask=TIME[i][0]+' '+TIME[i][1];syms=order.map(o=>LEGS[o]);okI=order.indexOf(i);}
+  if(!b.seenRid){b.seenRid=1;M.banner('ปริศนา! ไปยืนบนวงที่ตรงกับสัญลักษณ์เหนือหัว','blue',3);}else M.banner(p2?'ปริศนา: '+ask+' = กี่ขา?':'ปริศนา: '+ask,'blue',2);
+  M.act(e,{name:'❓ ปริศนาสฟิงซ์',T:4.4,unstop:1,start(e,a){e.atk=0;a.gl=glyphs(e,syms,okI);a.bub=bubble(e,ask,4.6);M.say(e,'ตอบมา!','#ffe9a0',18);},
+    step(e,a){e.atk=0;if(p2&&!a.g&&a.t>1.5){a.g=1;gust(e,.4);}},
+    end(e,a){const g=(a.gl||[]).find(q=>!q.dead&&Math.hypot(player.x-q.x,player.y-q.y)<q.r+10);for(const q of a.gl||[])q.dead=1;if(a.bub)a.bub.dead=1;
+      if(player.hp>0&&g&&g.ok){M.say(e,'ถูกต้อง…','#ffe9a0',19);M.window(e,5,'ถูกต้อง! สฟิงซ์ก้มหัว');}
+      else if(player.hp>0){M.say(e,'ผิด!','#ff8a6a',20);M.banner(g?'ผิด! กลายเป็นหิน':'ไม่ได้ตอบ! กลายเป็นหิน','red',1.6);M.fail(e,'ตอบปริศนาผิด');
+        addFx(new GRing({x:player.x,y:player.y,r0:10,r1:110,w:14,color:'#e8c890',life:.5}));if(M.hit(e,2,{}))M.pc('stone',2);else M.pc('stone',2);}},
+    cancel(e,a){for(const q of a.gl||[])q.dead=1;if(a.bub)a.bub.dead=1;}});}
+
+/* ---------------- Mummy Vizier (egyD1b · Lv 49): canopic jars + blood toll ---------------- */
+const MU={jar:40,heal:30};
+const LIDS=[['#3a2a1a','jackal'],['#8a6a4a','baboon'],['#4a6a8a','falcon'],['#c8a070','human']];
+function drawJar(p,x,y,t){const L=LIDS[p.data.i||0];G.shadow(x,y+2,22,.3);
+  G.poly([[x-15,y],[x-19,y-22],[x-14,y-36],[x+14,y-36],[x+19,y-22],[x+15,y]],'#e8d2a0','#5a3a10',2.4);
+  ctx.fillStyle='#2a5a9a';ctx.fillRect(x-17,y-26,34,5);ctx.fillStyle='#d8a028';ctx.fillRect(x-17,y-21,34,3);
+  G.ell(x,y-41,13,9,L[0],'#2a1a08',2.2);if(L[1]==='jackal'){G.poly([[x-9,y-47],[x-6,y-58],[x-2,y-48]],L[0],'#2a1a08',1.6);G.poly([[x+9,y-47],[x+6,y-58],[x+2,y-48]],L[0],'#2a1a08',1.6);}
+  if(L[1]==='falcon')G.poly([[x+9,y-42],[x+17,y-39],[x+9,y-37]],'#e8b030','#2a1a08',1.4);
+  ctx.fillStyle='#ffe08a';ctx.fillRect(x-5,y-43,3,2);ctx.fillRect(x+2,y-43,3,2);
+  const e=p.mbOf;if(e&&e.mb&&e.mb.act&&e.mb.act.heal){G.glow(x,y-30,40,'#5fc8ff',.45);}}
+function jars(e){const b=e.mb,c=b.home,pts=[[-215,-150],[215,-150],[-215,150],[215,150]];b.jarN=0;
+  pts.forEach(([dx,dy],i)=>{let x=c.x+dx,y=c.y+dy;for(let k=0;k<12&&curMap&&mapBlockedW(x,y);k++){x=c.x+dx*(1-k*.07);y=c.y+dy*(1-k*.07);}
+    M.part(e,{x,y,hp:M.lvOf(e)*MU.jar,r:20,h:58,name:'Canopic Jar',th:'โถคาโนปิก',kind:'jar',data:{i},draw:drawJar,
+      onBreak(p){shatterJar(p.x,p.y);M.say(p,'โถแตก!','#ffe08a',16);jackal(e,p.x,p.y);if(!MB_left(e))M.banner('โถแตกครบ! ไม่ฟื้นแล้ว','gold',1.8);}});});}
+const MB_left=e=>M.parts(e,'jar').length;
+function shatterJar(x,y){for(let i=0;i<14;i++)emit({type:'ember',x,y,z:rnd(10,40),vx:rnd(-150,150),vy:rnd(-100,100),vz:rnd(80,220),drag:1.4,grav:500,life:rnd(.5,.9),size:rnd(2,3.4),size1:.6,color:Math.random()<.5?'#e8d2a0':'#2a5a9a'});
+  addFx(new GRing({x,y,r0:6,r1:60,w:8,color:'#5fc8ff',life:.4}));if(typeof shake==='function')shake(1.6);}
+function jackal(e,x,y){const L=(window.VK_MONS||{})[e.mboss]||[],d=L.find(q=>/Jackal/.test(q.name))||L[0];if(!d||typeof vkMake!=='function')return;const m=vkMake(d,x,y);if(!enemies.includes(m))enemies.push(m);m.summon=1;m.mbOf=e;m.aggro=8;}
+/* the curse scroll: a slow homing orb that can be broken (a moving part) */
+function scroll(e){const p=M.part(e,{x:e.x,y:e.y-10,hp:Math.round(M.lvOf(e)*5),r:14,h:40,name:'Curse Scroll',th:'ม้วนคำสาป',kind:'scroll',fixed:0,ring:20,data:{t:0},
+  draw(p,x,y,t){const z=26+4*Math.sin(t*5);G.shadow(x,y+2,12,.3);G.glow(x,y-z,30,'#a24ae6',.5);ctx.save();ctx.translate(x,y-z);ctx.rotate(Math.sin(t*3)*.3);
+    ctx.fillStyle='#f0e0b8';ctx.strokeStyle='#5a3a10';ctx.lineWidth=2;ctx.fillRect(-12,-8,24,16);ctx.strokeRect(-12,-8,24,16);ctx.fillStyle='#2a5a9a';ctx.beginPath();ctx.ellipse(0,0,6,3.5,0,0,T2);ctx.fill();ctx.fillStyle='#ffe08a';ctx.beginPath();ctx.arc(0,0,1.6,0,T2);ctx.fill();ctx.restore();},
+  onBreak(p){addFx(new GRing({x:p.x,y:p.y,r0:4,r1:46,w:6,color:'#c890ff',life:.35}));}});
+  p.data.go=1;return p;}
+M.def('mummy',{R:470,see:300,spd:46,reach:150,hpMul:1.3,enrage:360,minH:100,
+  cry:'ผู้บุกรุกสุสาน…',intro:'มัมมี่อัครเสนาบดี — ทุบโถคาโนปิก 4 ใบก่อน ไม่งั้นมันฟื้นคืนชีพ',
+  cd0:{lash:2,scroll:5,heal:12,blood:18,swarm:8},phases:[.4],
+  setup(e,b){jars(e);M.hint(e,'ทุบโถคาโนปิก ◎ (สลับเป้า: คอม T / มือถือ 🎯) · โถฮีลและชุบชีวิตมัน');},
+  phase(e){M.banner('ฝูงด้วงสคารับ! เดินข้ามตรงช่องว่าง','red',2);},
+  cheat(e){const n=MB_left(e);if(!n)return false;e.hp=Math.round(e.maxHp*n/8);M.cancel(e);M.say(e,'ฟื้นคืนชีพ!','#7fd0ff',21);M.banner(`ฟื้นคืนชีพ! (โถเหลือ ${n}) ทุบโถก่อน`,'purple',2.2);
+    addFx(new GRing({x:e.x,y:e.y,r0:10,r1:150,w:14,color:'#5fc8ff',life:.6}));for(const p of M.parts(e,'jar'))beam(p,e,.8);return true;},
+  tick(e,dt){for(const p of M.parts(e,'scroll')){p.data.t+=dt;const a=Math.atan2(player.y-p.y,player.x-p.x),d=Math.hypot(player.x-p.x,player.y-p.y);p.x+=Math.cos(a)*72*dt;p.y+=Math.sin(a)*72*dt;
+      if(d<22){p.gone=1;p.dead=true;M.hit(e,1.8,{magic:1});M.pc('dark',4,{r:150});addFx(new GRing({x:p.x,y:p.y,r0:4,r1:70,w:8,color:'#a24ae6',life:.4}));}else if(p.data.t>3.4){p.gone=1;p.dead=true;}}},
+  think(e,dt,L){const b=e.mb;
+    if(M.ready(e,'heal')){M.cd(e,'heal',20);if(MB_left(e)){healCast(e);return true;}}
+    if(M.ready(e,'blood')&&L<480){M.cd(e,'blood',24);bloodToll(e);return true;}
+    if(b.phase>=2&&M.ready(e,'swarm')){M.cd(e,'swarm',14);swarm(e);}
+    if(M.ready(e,'scroll')&&L<520){M.cd(e,'scroll',9);pose(e,.7);M.act(e,{name:'ม้วนคำสาป',T:.8,end(e){hitPose(e);scroll(e);}});return true;}
+    if(M.ready(e,'lash')&&L<300){M.cd(e,'lash',6);const phi=M.angTo(e,player);pose(e,.9);
+      M.act(e,{T:1,start(e){M.strike(e,{shape:{k:'rect',x:e.x,y:e.y,phi,len:285,w:54,off:12},T:.9,mul:1.4,pc:['root',1.5],boomKind:'quiet',onFire(){hitPose(e);}});}});return true;}
+    return false;}});
+class Beam{constructor(o){Object.assign(this,{t:0,layer:'top'},o);}update(dt){this.t+=dt;return this.t<this.life&&!this.e.dead&&!this.p.dead;}
+  draw(){const [x0,y0]=P(this.p.x,this.p.y,30),[x1,y1]=P(this.e.x,this.e.y,50),a=Math.sin(Math.PI*Math.min(1,this.t/this.life));ctx.save();ctx.globalCompositeOperation='lighter';
+    for(const [w,c,al] of [[9,'#2a7bff',.35],[4,'#9fe0ff',.7],[1.6,'#ffffff',.9]]){ctx.globalAlpha=al*a;ctx.strokeStyle=c;ctx.lineWidth=w;ctx.beginPath();ctx.moveTo(x0,y0);ctx.quadraticCurveTo((x0+x1)/2,(y0+y1)/2-40,x1,y1);ctx.stroke();}ctx.restore();}}
+function beam(p,e,life){addFx(new Beam({p,e,life}));}
+const burning=e=>(e._gBurn&&e._gBurn.n>0)||(e._gFlat&&e._gFlat.n>0)||(e.st&&e.st.burn>0);
+function healCast(e){pose(e,0);M.say(e,'พันผ้าคืนร่าง…','#9fe0ff',17);M.hint(e,'มันกำลังฮีลจากโถ — ทุบโถ ◎ หรือเผาให้ติดไฟ (ฮีลไม่เข้า)');
+  M.act(e,{name:'🏺 พันผ้าคืนร่าง',T:3,heal:1,start(e,a){for(const p of M.parts(e,'jar'))beam(p,e,3);},
+    step(e,a){if(burning(e)&&!a.fire){a.fire=1;M.say(e,'ผ้าลุกไฟ!','#ff9a4a',19);M.window(e,3,'ผ้าลุกไฟ! ฮีลไม่เข้า');}},
+    end(e){const n=MB_left(e),h=n*M.lvOf(e)*MU.heal;if(h>0){e.hp=Math.min(e.maxHp,e.hp+h);addFx(new DText({x:e.x,y:e.y,z:110,text:'+'+h.toLocaleString(),color:'#7fe0ff',size:18,life:1.2}));M.fail(e,'มัมมี่ฮีลจากโถ');}
+      M.hint(e,'ทุบโถคาโนปิก ◎ (สลับเป้า: คอม T / มือถือ 🎯) · โถฮีลและชุบชีวิตมัน');}});}
+function bloodToll(e){pose(e,1.2);M.say(e,'จ่ายด้วยเลือด!','#ff6a7a',18);
+  M.act(e,{name:'🩸 คำสาปจ่ายด้วยเลือด',T:1.35,start(e){M.strike(e,{shape:{k:'circle',x:player.x,y:player.y,r:105},T:1.25,col:'purple',noHit:1,boomKind:'quiet',
+      onFire(h,w){hitPose(e);if(player.hp>0&&M.inShape(w.shape,player.x,player.y,10)){M.pc('blood',10);M.banner('จ่ายด้วยเลือด! สกิลใช้ HP แทน SP 10 วิ','purple',2);}}});}});}
+function swarm(e){const b=e.mb,c=b.home,vert=(M.count(e,'swarm')%2)===1,W=b.R*2,gap=95,off=rnd(-140,140);
+  const q=M.prop(e,{kind:'swarm',x:vert?c.x-b.R:c.x,y:vert?c.y:c.y-b.R*.8,layer:'ground',life:6.5,fadeT:.3,v:vert?[150,0]:[0,120],gapAt:off,hitT:0,
+    update(q,dt){q.x+=q.v[0]*dt;q.y+=q.v[1]*dt;q.hitT-=dt;const inBand=vert?Math.abs(player.x-q.x)<34:Math.abs(player.y-q.y)<30,inGap=vert?Math.abs(player.y-(c.y+off))<gap/2:Math.abs(player.x-(c.x+off))<gap/2;
+      if(inBand&&!inGap&&q.hitT<=0&&player.hp>0){q.hitT=.5;M.hit(e,.6,{});}},
+    draw(q,x,y,t){ctx.save();for(let i=-14;i<=14;i++){const along=i*W/28,px=vert?q.x:c.x+along,py=vert?c.y+along*.8:q.y;if(vert?Math.abs(along*.8-off)<gap/2:Math.abs(along-off)<gap/2)continue;
+        const [sx,sy]=P(px+Math.sin(t*9+i)*4,py);G.ell(sx,sy,9,6,'#2a2418','#c8a028',1.6);G.ell(sx,sy-2,3,2,'#e8c050');}ctx.restore();}});
+  M.say(e,'ด้วงศักดิ์สิทธิ์!','#ffd23a',16);}
 })();

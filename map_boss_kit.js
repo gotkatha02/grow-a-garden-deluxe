@@ -57,9 +57,14 @@ class Warn{constructor(o){Object.assign(this,{t:0,layer:'ground',life:1,col:'red
     if(!this.fired&&this.t>=this.life){this.fired=1;if(this.e&&(this.e.dead||!enemies.includes(this.e))){this.dead=1;return false;}if(this.fire)this.fire(this);}
     return !this.dead&&this.t<this.life+this.hold&&!(this.e&&this.e.dead);}
   draw(){const s=this.shape;if(!s)return;const c=COL[this.col]||this.col,fade=this.fired?Math.max(0,1-(this.t-this.life)/this.hold):Math.min(1,this.t/.07),k=Math.min(1,this.t/this.life),pu=.78+.22*Math.sin(gameTime*16);
-    if(this.col==='blue'){drawShape(s,q=>{ctx.globalAlpha=.2*fade;ctx.fillStyle=c;shapePath(q,1);ctx.fill();ctx.globalAlpha=.95*fade;ctx.lineWidth=3.2;ctx.strokeStyle='#bfe6ff';ctx.setLineDash([10,7]);ctx.lineDashOffset=-gameTime*30;shapePath(q,1);ctx.stroke();ctx.setLineDash([]);});ctx.globalAlpha=1;return;}
+    if(this.col==='blue'){drawShape(s,q=>{ctx.globalAlpha=.3*fade;ctx.fillStyle=c;shapePath(q,1);ctx.fill();ctx.globalAlpha=.85*fade;ctx.lineWidth=6.5;ctx.strokeStyle='#0b3f8a';shapePath(q,1);ctx.stroke();ctx.globalAlpha=.95*fade;ctx.lineWidth=3.2;ctx.strokeStyle='#cfeeff';ctx.setLineDash([10,7]);ctx.lineDashOffset=-gameTime*30;shapePath(q,1);ctx.stroke();ctx.setLineDash([]);});
+      if(!this.noTick)safeTick(s,fade);ctx.globalAlpha=1;return;}
     drawShape(s,q=>{ctx.globalAlpha=.15*fade;ctx.fillStyle=c;shapePath(q,1);ctx.fill();if(!this.fired){ctx.globalAlpha=.32*pu*fade;shapePath(q,k);ctx.fill();}
       ctx.globalAlpha=.92*pu*fade;ctx.lineWidth=3;ctx.strokeStyle=c;shapePath(q,1);ctx.stroke();});ctx.globalAlpha=1;}}
+/* a ✓ in the middle of a safe zone, upright (not squashed) */
+function safeTick(s,fade){let wx=s.x,wy=s.y;if(s.k==='rect'){const m=((s.off||0)+s.len)/2;wx+=Math.cos(s.phi)*m;wy+=Math.sin(s.phi)*m;}else if(s.k!=='circle')return;
+  const [x,y]=P(wx,wy),r=11+Math.sin(gameTime*5)*1.2;ctx.save();ctx.globalAlpha=.9*fade;ctx.fillStyle='#0b3f8a';ctx.beginPath();ctx.arc(x,y,r+2.5,0,T2);ctx.fill();ctx.fillStyle='#2f9bff';ctx.beginPath();ctx.arc(x,y,r,0,T2);ctx.fill();
+  ctx.strokeStyle='#fff';ctx.lineWidth=3;ctx.lineCap='round';ctx.lineJoin='round';ctx.beginPath();ctx.moveTo(x-5,y);ctx.lineTo(x-1.5,y+4);ctx.lineTo(x+5.5,y-4.5);ctx.stroke();ctx.restore();}
 MB.Warn=Warn;
 MB.warn=o=>addFx(new Warn(o));
 /* a safe zone (blue, ✓) that lives `life` seconds */
@@ -258,7 +263,7 @@ function drawUI(dt){ui();if(banT>0){banT-=dt;if(banT<=0)ban.className=ban.classN
 
 /* ---------------- engine hooks ---------------- */
 {const _ai=enemyAI;enemyAI=function(e,dt){if(e.mbPart){e.atk=0;return true;}return _ai(e,dt);};}
-{const _k=kill;kill=function(e){if(e&&e.mbPart){breakPart(e);return;}return _k(e);};}
+{const _k=kill;kill=function(e){if(e&&e.mbPart){breakPart(e);return;}if(e&&e.mb&&e.mb.D.cheat&&!e.dead&&e.mb.D.cheat(e)){e.hp=Math.max(1,e.hp);return;}return _k(e);};}   /* cheat: the boss refuses to die (Mummy's jars) */
 {const _dn=()=>{};let mute=0;
  const _h=hurt;hurt=function(e,mult,o){o=o||{};if(!e||e.dead)return 0;
   const B=e.mbOf&&e.mbOf.mb?e.mbOf:null;
@@ -271,11 +276,13 @@ function drawUI(dt){ui();if(banT>0){banT-=dt;if(banT<=0)ban.className=ban.classN
       try{dmgNum=_dn;trackCombo=_dn;e.hp=hp0+1e9;d=_h(e,mult,o);}finally{dmgNum=dn;trackCombo=tc;e.hp=hp0;}
       e.ko=ko0;e.koOut=kout;e.st.stun=stun;
       const left=Math.max(0,d-H.absorb);if(d>0){H.pool(left,d);dmgNum(e.x,e.y,(typeof MSPR_H==='function'?MSPR_H(e):60)+18,left,'taken',{scale:.85});}return 0;}}
-  const hp0=e.hp,d=_h(e,mult,o);
+  /* sand in the eyes (Sphinx's gust): the hero's physical hits on the boss and its parts get HIT − boss Lv while it lasts */
+  const blind=(e.mb||B)&&hasBuff('mbBlind'),fl=blind?e.m.flee:0;if(blind)e.m.flee=(fl||0)+lvOf(e.mb?e:B);
+  const hp0=e.hp;let d;try{d=_h(e,mult,o);}finally{if(blind)e.m.flee=fl;}
   if(B&&B.mb&&B.mb.D.partHurt&&d>0)B.mb.D.partHurt(B,e,d,o);
   if(e.mb&&d>0&&e.mb.D.hurtAfter)e.mb.D.hurtAfter(e,d,o,hp0);
   return d;};}
-{const _de=drawEnemy;drawEnemy=function(e){if((e.mboss||e.mbPart)&&e.hidden)return;if(e.mbPart&&!e.dead&&e.drawFn&&e.hp>=e.maxHp&&!(window.TL&&TL.e===e))return;
+{const _de=drawEnemy;drawEnemy=function(e){if((e.mboss||e.mbPart)&&e.hidden)return;if(e.mbPart&&!e.dead&&e.drawFn&&!e.noHide&&e.hp>=e.maxHp&&!(window.TL&&TL.e===e))return;
   if(e.mbLift>0){const z=e.z;e.z=(z||0)+e.mbLift;try{_de(e);}finally{e.z=z;}return;}return _de(e);};}
 if(typeof monsterCC==='function'){const _cc=monsterCC;monsterCC=function(e){if(e&&(e.mboss||e.mbOf))return;return _cc(e);};}
 if(typeof mapBlockedW==='function'){const _mb=mapBlockedW;mapBlockedW=function(x,y){return _mb(x,y)||solidAt(x,y);};}
@@ -284,6 +291,7 @@ if(typeof nearestEnemy==='function'){const _ne=nearestEnemy;nearestEnemy=functio
   let best=null,bd=maxD;for(const e of enemies){if(e.dead||e.mbNoAuto||e.hidden)continue;const d=Math.hypot(e.x-x,e.y-y);if(front!=null&&Math.abs(angDiff(Math.atan2(e.y-y,e.x-x),front))>1)continue;if(d<bd){bd=d;best=e;}}return best;};}
 {const _ue=updEnemies;updEnemies=function(dt){_ue(dt);const e=MB.boss;
   for(let i=enemies.length-1;i>=0;i--){const o=enemies[i];if(o.mbPart){if(o.dead||o.gone){enemies.splice(i,1);continue;}if(o.fixed){o.x=o.fixed.x;o.y=o.fixed.y;o.vx=o.vy=0;}}}
+  if(e&&e.mb){const L=e.mb.parts;for(let i=L.length-1;i>=0;i--)if(L[i].dead||L[i].gone)L.splice(i,1);}
   if(e&&e.mb&&e.mb.awake&&!e.dead&&curMap===e.mboss){const b=e.mb,R=b.R;
     for(const o of enemies){if(o===e||o.dead||o.mbOf||o.mbPart||o.mboss)continue;const dx=o.x-b.home.x,dy=o.y-b.home.y,d=Math.hypot(dx,dy);if(d<R&&d>1){o.x=b.home.x+dx/d*(R+4);o.y=b.home.y+dy/d*(R+4);o.aggro=0;o.tx=o.x;o.ty=o.y;}}}
   for(const k in DOTV)if(!hasBuff(k))delete DOTV[k];};}
@@ -324,7 +332,7 @@ if(typeof mapOverlay==='function'){const _mo=mapOverlay;let dk=null,dg=null;
       hole(player.x,player.y-20,d.r);for(const q of e.mb.props)if(q.light&&!q.dead)hole(q.x,q.y,q.light);
       ctx.save();ctx.setTransform(DPR,0,0,DPR,0,0);ctx.imageSmoothingEnabled=true;ctx.drawImage(dk,0,0,VW,VH);ctx.restore();}
     /* gold objects off screen → a small gold arrow at the edge */
-    if(e.mb.awake&&!e.dead){ctx.save();ctx.setTransform(DPR,0,0,DPR,0,0);for(const p of e.mb.parts){if(p.dead||p.gold===0)continue;const [sx,sy]=S(p.x,p.y-20);if(sx>20&&sx<VW-20&&sy>60&&sy<VH-20)continue;
+    if(e.mb.awake&&!e.dead){ctx.save();ctx.setTransform(DPR,0,0,DPR,0,0);for(const p of e.mb.parts.concat(e.mb.props.filter(q=>q.arrow&&!q.dead))){if(p.dead||p.gold===0)continue;const [sx,sy]=S(p.x,p.y-20);if(sx>20&&sx<VW-20&&sy>60&&sy<VH-20)continue;
       const cx=VW/2,cy=VH/2,a=Math.atan2(sy-cy,sx-cx),m=34,x=clamp(sx,m,VW-m),y=clamp(sy,m+50,VH-m);ctx.save();ctx.translate(x,y);ctx.rotate(a);ctx.fillStyle='#ffd23a';ctx.strokeStyle='#3a2408';ctx.lineWidth=2;
       ctx.beginPath();ctx.moveTo(12,0);ctx.lineTo(-7,-8);ctx.lineTo(-3,0);ctx.lineTo(-7,8);ctx.closePath();ctx.fill();ctx.stroke();ctx.restore();}ctx.restore();}};}
 /* UI + lock refresh on the game clock */

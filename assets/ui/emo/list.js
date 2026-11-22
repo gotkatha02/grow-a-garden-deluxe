@@ -1,3 +1,3 @@
 /* painted UI icons that replace emoji — rebuilt by `python3 tools/emo_icons.py list` (keys = assets/ui/emo/<key>.webp) */
-window.EMO_HAVE=[];
-window.EMO_V=1;
+window.EMO_HAVE=["alembic", "balance", "bell", "belloff", "bleed", "blind", "blueprint", "books", "broken", "build", "cgem", "chart", "chat", "compass", "crown", "dark", "dismantle", "fashion", "folder", "gem", "gift", "grab", "help", "herb", "hint", "key", "mailbox", "mute", "mutgem", "news", "note", "pages", "party", "paw", "pick", "poison", "relic", "rule", "scorpion", "sit", "skip", "skull", "sprout", "star", "supgem", "tap", "target", "trophy", "turtle", "warn", "web", "wrench"];
+window.EMO_V=6;
