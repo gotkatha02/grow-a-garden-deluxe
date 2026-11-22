@@ -56,7 +56,8 @@ function jxStrikePiece(key,i,last){
   return [JX_SHADOW(key)?'j13_shadowslash':'j01_slash',last?118:96];}
 function jxThrottle(e,k,dt){const n=gameTime;if(e['_jx'+k]>n)return false;e['_jx'+k]=n+dt;return true;}
 
-const JX_AT=(a,t,f)=>{a.events=a.events||[];a.events.push({t:Math.max(.01,t),f});};
+/* 2026-11-22: a picture timed after the action's end (short dashes such as Shadow Slip last .08 s) was never shown → run it on an fx timer */
+const JX_AT=(a,t,f)=>{t=Math.max(.01,t);const T=a.seq?seqTotal(a.seq):0;if(T&&t>T-.005){setFxTimer(t/(typeof ACTION_TEMPO==='number'&&ACTION_TEMPO>0?ACTION_TEMPO:.75),f);return;}a.events=a.events||[];a.events.push({t,f});};
 const JX_WIN=a=>Math.max(.05,a.windup||.2);
 const JX_TGT=(a,c)=>{const t=(c&&c.target&&!c.target.dead)?c.target:(a.hitList&&a.hitList[0])||nearestEnemy(player.x,player.y,260);return t;};
 const JXR={

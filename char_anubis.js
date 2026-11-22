@@ -75,7 +75,7 @@ const ANU_BAL={
 };
 const UK=ANU_BAL.sk;
 /* branch tuning from the bench: damage numbers of each branch are scaled here so the shown ATK×n stays true */
-const ANU_SCALE={A:0.836,B:2.05};   /* re-tuned at the Lv 60 cap 2026-11-22 (≈ 2,050 per branch, LEVEL_CAP_TH.md); older values in git */
+const ANU_SCALE={A:0.586,B:1.579};   /* re-tuned at the Lv 60 cap 2026-11-22 (≈ 2,050 per branch, LEVEL_CAP_TH.md); older values in git */
 (()=>{const r2=v=>Math.round(v*100)/100,sc=(o,f,m)=>{if(o[f]==null)return;o[f]=Array.isArray(o[f])?o[f].map(v=>r2(v*m)):r2(o[f]*m);};
   const colOf=k=>k.startsWith('aa')||['acTwin','acDevil','acTwinMeteor','acWrath'].includes(k)?'A':k.startsWith('ab')||['acBarbed','acBreaker','acPack','acVerdict'].includes(k)?'B':null;
   for(const k in UK){const c=colOf(k);if(!c)continue;for(const f of ['dmg','per'])sc(UK[k],f,ANU_SCALE[c]);}})();
@@ -379,7 +379,7 @@ function installAnubis(){
     if(uAvatar()&&o&&o.auto)b+=UK.acAvatar.atk;
     return b;};
   window.jgHit=()=>0;window.jgCrit=()=>0;window.jgCritDmg=()=>0;window.jgDmgTaken=()=>1;
-  window.jgDmgMul=(e,o)=>{const base=Math.max(1,D.patk);return (base+flat(e,o))/base;};
+  window.jgDmgMul=(e,o)=>{const base=Math.max(1,D.patk);return (base+Math.min(flat(e,o),base))/base;};   // 2026-11-22: a flat bonus adds at most the hit's own power (off-stat builds got ×10+ from it)
   window.jgPreHit=()=>{if(ANU.guard>0&&ANU.guardUntil>gameTime){ANU.guard--;addFx(new GRing({x:player.x,y:player.y,r0:30,r1:50,w:4,color:UC.gold,life:.25}));return 0;}return 1;};
   window.jgAbsorb=(d,e)=>{if(uL('anHide'))d-=uLv(UK.anHide.block,'anHide');
     if(uL('aaIron'))d-=ANU.mom*uLv(UK.aaIron.block,'aaIron');

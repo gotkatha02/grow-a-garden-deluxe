@@ -12,16 +12,19 @@
      Shadow Step       P2+  melts into shadow (can't be hit), reappears behind you + claw (vanish, played back reversed)
    At 60% and 30% HP he always howls once (phase change).
    KO gauge still works: a KO interrupts any skill except Howl and Shadow Step.
-   Respawn: 5 minutes after he dies (RO MVP style); leaving the floor resets him.
+   Respawn: 60 minutes after he dies in play mode, 5 in test mode (RO MVP style; world timer window.BOSS_T); leaving the floor resets him.
    ===================================================================== */
 (function(){
 if(typeof enemyAI!=='function'||!window.MSPR||!MSPR.Fenrir)return;
-const MAP='vikD2c',HOME={x:1800,y:1530},RESPAWN_MS=5*60*1000,LV=window.LVC?LVC.n(80):80;   /* design Lv 80 → 49 under the Lv 60 cap (level_cap.js) */
+/* respawn (owner 2026-11-22 18:44 → DROP_TABLE_TH.md §11): play mode 60 min (MVP), test mode 5 min · the timer is world state (window.BOSS_T,
+   map_bosses.js: shared by every hero of the save mode, kept over a reload — before, a reload brought him straight back) */
+const PLAYM=!!(window.BOSS_T&&BOSS_T.play),RESP_MIN=PLAYM?60:5;
+const MAP='vikD2c',HOME={x:1800,y:1530},RESPAWN_MS=RESP_MIN*60*1000,LV=window.LVC?LVC.n(80):80;   /* design Lv 80 → 49 under the Lv 60 cap (level_cap.js) */
 const NAME='Fenrir',CL=MSPR.Fenrir.clip;
 const BAL={hpMul:2.2,atkMul:1,claw:1.15,leap:1.6,breath:.42,orb:1.8,howl:.8,leash:1150,aggroR:420,maxHounds:4};
 const T=(k,f)=>(f+.5)/CL[k].fps;              // time of animation frame f
 const DUR=k=>CL[k].n/CL[k].fps;
-let boss=null,nextSpawn=0,bar=null;
+let boss=null,nextSpawn=window.BOSS_T?BOSS_T.get('fenrir'):0,bar=null;
 
 /* ---------------- helpers ---------------- */
 const angTo=(a,b)=>Math.atan2(b.y-a.y,b.x-a.x);
@@ -162,11 +165,13 @@ const _upd=updEnemies;updEnemies=function(dt){
   if(boss&&boss.dead&&!boss._paid)onBossDead(boss);
   for(let i=enemies.length-1;i>=0;i--){const o=enemies[i];if(o.gone&&o.dead&&o.deadT>(o.fen?MSPR_DEADLEN(o)+.5:3.4))enemies.splice(i,1);}
   if(boss&&!enemies.includes(boss))boss=null;};
-function onBossDead(e){if(e.cast&&e.cast.k==='howl')skyDarkT=0;e._paid=1;e.cast=null;e.clipA=null;e.hidden=0;nextSpawn=Date.now()+RESPAWN_MS;
+function onBossDead(e){if(e.cast&&e.cast.k==='howl')skyDarkT=0;e._paid=1;e.cast=null;e.clipA=null;e.hidden=0;nextSpawn=Date.now()+RESPAWN_MS;if(window.BOSS_T)BOSS_T.set('fenrir',nextSpawn);
   for(const o of enemies)if(o.summon&&!o.dead){o.hp=0;kill(o);}
-  shake(5);chatLog&&chatLog('sys','🏆 ล้ม <b style="color:#c9a8ff">เฟนเรียร์</b> ได้แล้ว! (เกิดใหม่ใน 5 นาที)');msg&&msg('MVP! ล้มเฟนเรียร์');
+  shake(5);chatLog&&chatLog('sys','🏆 ล้ม <b style="color:#c9a8ff">เฟนเรียร์</b> ได้แล้ว! (เกิดใหม่ใน '+RESP_MIN+' นาที)');msg&&msg('MVP! ล้มเฟนเรียร์');
   try{window.RELIC&&RELIC.bossKill('fenrir',e);}catch(err){}   /* boss relic: 1 shard every kill + the fang 1/800 (relics.js) */
-  const A=window.AFItems;if(A&&A.dropSetItem){const z=25000+Math.round(Math.random()*15000);A.zeny=A.zeny+z;
+  /* zeny 25–40k → 8–14k (owner 2026-11-22 'money must not inflate easily'): his loot (gems, parts, stones) now carries the value and is sold to
+     other players, which moves zeny instead of printing it */
+  const A=window.AFItems;if(A&&A.dropSetItem){const z=8000+Math.round(Math.random()*6000);A.zeny=A.zeny+z;
     const sl=['rhand','armor','top','shoes','acc'][Math.floor(Math.random()*5)],id=A.dropSetItem(8,sl);A.buyGear(id,0);
     chatLog&&chatLog('sys',`ได้รับ ${z.toLocaleString()}z + <b>${A.ITEMS[id].n}</b>`);}}
 function spawnBoss(){const h=mapHosts[MAP];if(h&&h.W){const k=h.W/3600;HOME.x=1800*k;HOME.y=1530*k;}   /* the den is laid out larger since 2026-11-20 */
@@ -177,7 +182,7 @@ function spawnBoss(){const h=mapHosts[MAP];if(h&&h.W){const k=h.W/3600;HOME.x=18
   e.maxHp=e.hp=Math.round(st.hp*BAL.hpMul);e.vdef={name:NAME,th:'เฟนเรียร์',base:'snowwolf',lv:[LV,LV],role:'boss',aggr:1};
   Object.assign(e,{fen:1,bossKey:'fenrir',boss:true,r:44,sc:1,face:-1,homeX:x,homeY:y,cd:{leap:3,breath:5,orb:4,howl:0,step:6},phase:1,bossName:'FENRIR · MVP',koMax:520,ko:520});
   boss=e;}
-/* spawn when the floor is ready (after its field monsters), respawn 5 min after death */
+/* spawn when the floor is ready (after its field monsters), respawn RESP_MIN after death (world timer BOSS_T) */
 (function tick(){requestAnimationFrame(tick);
   const here=curMap===MAP&&!mapFadeDir,h=mapHosts[MAP];
   if(here&&h&&h.ready&&enemies.length&&!boss&&Date.now()>=nextSpawn)spawnBoss();
@@ -188,11 +193,11 @@ function spawnBoss(){const h=mapHosts[MAP];if(h&&h.W){const k=h.W/3600;HOME.x=18
 /* ---------------- boss HP bar (top of the screen) ---------------- */
 function drawBar(here){
   if(!bar){bar=document.createElement('div');bar.id='fenBar';bar.innerHTML='<div class="fn"><b>เฟนเรียร์ · FENRIR</b><span>Lv'+LV+' MVP</span></div><div class="fb"><i></i><em></em></div><div class="fp"></div>';
-    const st=document.createElement('style');st.textContent='#fenBar{position:fixed;left:50%;top:34px;transform:translateX(-50%);width:min(440px,70vw);z-index:40;pointer-events:none;font-family:Cinzel,serif;color:#f1e6ff;text-shadow:0 1px 2px #000;display:none}#fenBar .fn{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;margin-bottom:3px}#fenBar .fn span{font-size:11px;color:#d8c27a}#fenBar .fb{position:relative;height:12px;background:rgba(10,6,20,.8);border:1px solid #8a72c8;border-radius:3px;overflow:hidden;box-shadow:0 0 10px rgba(110,80,220,.45)}#fenBar .fb i{position:absolute;inset:0;width:100%;background:linear-gradient(#a58cff,#5b3fc4 60%,#3a2690);transition:width .15s}#fenBar .fb em{position:absolute;inset:0;font-style:normal;font-size:10px;line-height:12px;text-align:center}#fenBar .fp{font-size:11px;margin-top:2px;color:#c9b6ff;text-align:center;min-height:13px}';
-    document.head.appendChild(st);document.body.appendChild(bar);}
-  const show=here&&boss&&!boss.dead&&boss.woke;bar.style.display=show?'block':'none';if(!show)return;
+    const st=document.createElement('style');st.textContent='#fenBar{position:fixed;left:50%;top:112px;transform:translateX(-50%);width:min(440px,70vw);z-index:40;pointer-events:none;font-family:Cinzel,serif;color:#f1e6ff;text-shadow:0 1px 2px #000;display:none}#fenBar .fn{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;margin-bottom:3px}#fenBar .fn span{font-size:11px;color:#d8c27a}#fenBar .fb{position:relative;height:12px;background:rgba(10,6,20,.8);border:1px solid #8a72c8;border-radius:3px;overflow:hidden;box-shadow:0 0 10px rgba(110,80,220,.45)}#fenBar .fb i{position:absolute;inset:0;width:100%;background:linear-gradient(#a58cff,#5b3fc4 60%,#3a2690);transition:width .15s}#fenBar .fb em{position:absolute;inset:0;font-style:normal;font-size:10px;line-height:12px;text-align:center}#fenBar .fp{font-size:11px;margin-top:2px;color:#c9b6ff;text-align:center;min-height:13px}';
+    st.textContent+='body.mob #fenBar{top:98px;width:min(260px,40vw)}body.mob #fenBar .fn{font-size:11px}body.mob #fenBar .fn span{display:none}';document.head.appendChild(st);document.body.appendChild(bar);}
+  const show=here&&boss&&!boss.dead&&boss.woke&&!(window.TL&&TL.e===boss&&document.body.classList.contains('mob'));   /* phone: the target frame shows the locked boss */bar.style.display=show?'block':'none';if(!show)return;
   const r=boss.hp/boss.maxHp;bar.querySelector('i').style.width=(r*100).toFixed(1)+'%';bar.querySelector('em').textContent=Math.ceil(r*100)+'%';
   bar.querySelector('.fp').textContent=boss.phase>=3?'⚠ คลั่ง — ท่าเร็วขึ้น':boss.rage>0?'⚠ หอนเรียกพลัง (ATK +25%)':boss.phase===2?'โซ่เกลปเนียร์เริ่มแตก':'';}
 
-window.AFFenrir={get boss(){return boss;},spawn:()=>{nextSpawn=0;},skill:k=>boss&&!boss.cast&&startSkill(boss,k),BAL};
+window.AFFenrir={get boss(){return boss;},spawn:()=>{nextSpawn=0;if(window.BOSS_T)BOSS_T.clear('fenrir');},lv:LV,respMin:RESP_MIN,skill:k=>boss&&!boss.cast&&startSkill(boss,k),BAL};
 })();

@@ -75,7 +75,7 @@ const KI_BAL={
 };
 const KB=KI_BAL.sk;
 /* branch tuning from the bench: damage numbers of each branch are scaled here so the shown MATK×n stays true */
-const KI_SCALE={A:1.807,B:1.131};   /* re-tuned at the Lv 60 cap 2026-11-22 (≈ 2,050 per branch, LEVEL_CAP_TH.md); older values in git */
+const KI_SCALE={A:1.723,B:1.18};   /* re-tuned at the Lv 60 cap 2026-11-22 (≈ 2,050 per branch, LEVEL_CAP_TH.md); older values in git */
 (()=>{const r2=v=>Math.round(v*100)/100,sc=(o,f,m)=>{if(o[f]==null)return;o[f]=Array.isArray(o[f])?o[f].map(v=>r2(v*m)):r2(o[f]*m);};
   const colOf=k=>k.startsWith('ka')||['kcSwarm','kcWheel','kcMeteor','kcTamamo'].includes(k)?'A':k.startsWith('kb')||['kcPrism','kcDisc','kcShower','kcTsukuyomi'].includes(k)?'B':null;
   for(const k in KB){const c=colOf(k);if(!c)continue;for(const f of ['dmg','per','split'])sc(KB[k],f,KI_SCALE[c]);}})();
@@ -295,7 +295,8 @@ function mkKaBurst(c){return kCast({key:'kaBurst',name:'Tail Burst',speed:1.6,f:
 function mkKaVeil(c){return kCast({key:'kaVeil',name:'Foxfire Veil',f:()=>{addBuff('kaVeil',KB.kaVeil.T);kFireBurst(player.x,player.y,KB.kaVeil.R);}});}
 function mkKaInferno(c){return buffAct({key:'kaInferno',name:'Nine-Tailed Inferno',speed:1.4,glow:KIC.fire,events:(tP,s)=>{const TT=seqTotal(s)-.02,sp=Math.min(.08,(TT-tP)/9);const ev=[{t:0,f:()=>kiV('infernoStart',tP)}];for(let i=0;i<9;i++)ev.push({t:tP+i*sp,f:()=>{const L=kNear(player.x,player.y,KB.kaInferno.R).sort((a,b)=>dist(a,player)-dist(b,player));if(!L.length)return;const e=L[i%L.length];
     addFx(new KiBeam({x:player.x,y:player.y,phi:angTo(e),L:dist(player,e),col:KIC.fire,w:8}));kHit(e,kLv(KB.kaInferno.dmg,'kaInferno'),'kaInferno',{big:true});kPow(e,true);}});
-    ev.push({t:TT,f:()=>{if(kL('kaCelestial')){KI.tails=KI_BAL.tails.cap;addBuff('kaCelestial',KB.kaCelestial.T);kiV('celestialOn');}}});return ev;}});}
+    ev.push({t:TT,f:()=>{if(kL('kaCelestial')){KI.tails=KI_BAL.tails.cap;addBuff('kaCelestial',KB.kaCelestial.T);kiV('celestialOn');}}});return ev;},
+    extra:{dur:1e9}});}   // 2026-11-22: the 9 beams run to the clip's end, past buffAct's dur (tP+.15) → a queued key press dropped the last beams + Celestial Fox; now the whole clip is the action
 
 /* ---------- B · Moon Mirror Priestess ---------- */
 function kBeamLine(x,y,phi,L,w,m,key,o={}){addFx(new KiBeam({x,y,phi,L,w:w/2,col:o.col||KIC.moon}));for(const e of kLine(x,y,phi,L,w))kHit(e,m,key,{big:o.big});
@@ -384,7 +385,7 @@ function installKitsune(){
     if(kAwake()&&o&&o.auto)b+=KB.kcAwaken.tal;
     return b;};
   window.jgHit=()=>0;window.jgCrit=()=>0;window.jgCritDmg=()=>0;window.jgDmgTaken=()=>1;
-  window.jgDmgMul=(e,o)=>{const base=Math.max(1,D.mag);return (base+flat(e,o))/base;};
+  window.jgDmgMul=(e,o)=>{const base=Math.max(1,D.mag);return (base+Math.min(flat(e,o),base))/base;};   // 2026-11-22: a flat bonus adds at most the hit's own power (off-stat builds got ×10+ from it)
   window.jgPreHit=()=>1;
   window.jgAbsorb=(d,e)=>{if(hasBuff('kbMoonlight'))return 0;
     if(kL('knFluff'))d=Math.max(1,d-kLv(KB.knFluff.block,'knFluff'));

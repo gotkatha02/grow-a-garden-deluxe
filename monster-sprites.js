@@ -162,7 +162,8 @@ function msLoad(m,walk){let s=MSLD[m.file];if(!s){s=MSLD[m.file]={ok:0,wok:0,img
 for(const k in MS){const m=MS[k];Object.defineProperties(m,{ok:{get:()=>msLoad(m,1).ok},wok:{get:()=>msLoad(m,1).wok},img:{get:()=>msLoad(m).img},wimg:{get:()=>msLoad(m,1).wimg}});}
 const def=e=>e&&(e.vdef&&MS[e.vdef.name]||e.spr&&MS[e.spr]);   /* e.spr: sprite name for monsters made outside the map tables (world boss) */
 window.MSPR_HAS=e=>{const m=def(e);return !!(m&&m.ok);};
-window.MSPR_H=e=>{const m=def(e);return m?m.h*(e.boss?1.5:1):54;};
+const BK=e=>e.boss?(e.bsc||1.5):1;   /* boss size: 1.5×, or e.bsc (map_bosses.js stand-ins 1.9×) */
+window.MSPR_H=e=>{const m=def(e);return m?m.h*BK(e):54;};
 function frame(e,m){const t=gameTime,ph=e.bob||0;
   if(e.dead)return [ROW.death,Math.min(4,Math.floor(e.deadT/.16))];
   if(e.st&&e.st.frozen>0)return [ROW.idle,0];
@@ -205,7 +206,7 @@ const FSH=new Map();function fsrc(img){const f=window.MSPR_FILTER;if(!f||!img||!
 function drawClip(e,m,x,y,al,cold,fl){const H=MSPR_H(e),k=H/m.ref;
   if(e._lx!==undefined&&!e.dead){const d=Math.hypot(e.x-e._lx,e.y-e._ly);if(d<60)e._wp=((e._wp||0)+d/(H*1.1))%1000;}e._lx=e.x;e._ly=e.y;
   const [ak,f]=cframe(e,m),a=m.clip[ak];
-  if(!(e.clipA&&e.clipA.noShadow)&&!e.dead){ctx.save();ctx.globalAlpha=al*.26;ctx.fillStyle='#14182a';ctx.beginPath();const sw=m.sw*(e.boss?1.5:1);ctx.ellipse(x,y+1+(e.z||0),sw,sw*.27,0,0,TAU);ctx.fill();ctx.restore();}
+  if(!(e.clipA&&e.clipA.noShadow)&&!e.dead){ctx.save();ctx.globalAlpha=al*.26;ctx.fillStyle='#14182a';ctx.beginPath();const sw=m.sw*BK(e);ctx.ellipse(x,y+1+(e.z||0),sw,sw*.27,0,0,TAU);ctx.fill();ctx.restore();}
   let src=fsrc(a.img),sx=(f%a.cols)*a.cw,sy=Math.floor(f/a.cols)*a.ch;
   if(fl>.02||cold>0){if(tintC.width!==a.cw||tintC.height!==a.ch){tintC.width=a.cw;tintC.height=a.ch;}
     tg.globalCompositeOperation='copy';tg.drawImage(src,sx,sy,a.cw,a.ch,0,0,a.cw,a.ch);tg.globalCompositeOperation='source-atop';
@@ -216,7 +217,7 @@ window.MSPR_DRAW=function(e,x,y,al,cold,fl){const m=def(e);if(!m||!m.ok)return f
   if(e._lx!==undefined&&!e.dead){const d=Math.hypot(e.x-e._lx,e.y-e._ly);if(d<40)e._wp=((e._wp||0)+d/(H*.9))%1000;}e._lx=e.x;e._ly=e.y;
   let bob=0,tilt=0;if(e._mv>0&&!e.dead&&!m.fly&&!m.wok&&!(e.st&&e.st.frozen>0)){const p=(e._wp||0)*Math.PI*2;bob=Math.abs(Math.sin(p))*H*.045;tilt=Math.sin(p)*.035;}
   /* ground shadow */
-  ctx.save();ctx.globalAlpha=al*(m.fly?.16:.24);ctx.fillStyle='#27324a';ctx.beginPath();const sw=m.sw*(e.boss?1.5:1)*(m.fly?.8:1);ctx.ellipse(x,y+1,sw,sw*.27,0,0,TAU);ctx.fill();ctx.restore();
+  ctx.save();ctx.globalAlpha=al*(m.fly?.16:.24);ctx.fillStyle='#27324a';ctx.beginPath();const sw=m.sw*BK(e)*(m.fly?.8:1);ctx.ellipse(x,y+1,sw,sw*.27,0,0,TAU);ctx.fill();ctx.restore();
   const [r,f]=frame(e,m);let src=fsrc(r==='W'?m.wimg:m.img),sx=f*m.cw,sy=r==='W'?0:r*m.ch;
   if(fl>.02||cold>0){if(tintC.width!==m.cw||tintC.height!==m.ch){tintC.width=m.cw;tintC.height=m.ch;}
     tg.globalCompositeOperation='copy';tg.drawImage(src,sx,sy,m.cw,m.ch,0,0,m.cw,m.ch);tg.globalCompositeOperation='source-atop';

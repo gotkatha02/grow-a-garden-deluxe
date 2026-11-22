@@ -25,12 +25,28 @@ async function benchOnce(opts={}){
   const mon0=typeof MON_LV0!=='undefined'?{frostling:MON.frostling,elder:MON.elder}:null;
   if(mon0&&LVB>=99){MON.frostling=Object.assign({},MON.frostling,monStats(MON_LV0.frostling));MON.elder=Object.assign({},MON.elder,monStats(MON_LV0.elder,'boss'));}
   try{return await benchRun(opts);}finally{window.__RFL_OFF=rfl0;if(mon0){MON.frostling=mon0.frostling;MON.elder=mon0.elder;}if(keep){PS.lv=keep.lv;Object.assign(PS,keep.ps);}applyStats();if(keep){player.hp=player.maxHp;player.mp=player.maxMp;}}}
+/* 2026-11-22 (owner 'แก้บัค'): every run starts from the same hero state. Before, gauges / stacks / marks / summons of the run before carried
+   over (a 20 s run took hippo fullness 0 → 120, kitsune tails 0 → 9, croc frenzy 0 → 10, bastet souls 3 → 6 …), so the group run and every
+   later run in a page started warm, and fx.length=0 also wiped the heroes' core tickers (layer 'none', which enterMap keeps: owl / hippo /
+   cat / wolf cores, the croc / axolotl / rhino keepers) — those heroes were benched without their gauges ticking. Now: the hero state objects
+   are snapshotted once per page (fresh) and restored at every reset, cores / keepers stay, and every *Ensure() re-adds its overlay. */
+const BENCH_ST='ANU AX BA CAT CR CRX DG HI HIP JGX JX KI LI OW RH RHX SHP SI UC KTI'.split(' ');
+const BENCH_LETS={warBanner:null,fenrir:null,decoy:null,unbrokenICD:0,jgMirrorObj:null,jgTotem:null,jgSpirit:null};
+function benchClone(v,d){if(v===null||typeof v!=='object')return v;if(d>4)return v;if(v instanceof Map)return new Map(v);if(v instanceof Set)return new Set(v);
+  if(Array.isArray(v))return v.map(x=>benchClone(x,d+1));if(Object.getPrototypeOf(v)!==Object.prototype)return v;const o={};for(const k in v)o[k]=benchClone(v[k],d+1);return o;}
+function benchSnap(){const S={};for(const n of BENCH_ST){let o;try{o=(0,eval)(n);}catch(_){continue;}if(o&&typeof o==='object'&&!Array.isArray(o))S[n]={o,v:benchClone(o,0)};}return S;}
+function benchRestore(S){for(const n in S){const {o,v}=S[n];for(const k of Object.keys(o))if(!(k in v))delete o[k];for(const k in v)o[k]=benchClone(v[k],0);}
+  for(const k in BENCH_LETS){try{(0,eval)(k+'='+JSON.stringify(BENCH_LETS[k]));}catch(_){}}}
+function benchEnsure(){for(const k of ['axEnsure','bEnsure','crEnsure','dEnsure','kEnsure','lEnsure','rhEnsure','sEnsure','uEnsure'])if(typeof window[k]==='function')try{window[k]();}catch(_){}}   // each returns at once for another hero
 async function benchRun(opts={}){
+  if(!window.__BENCH_SNAP)window.__BENCH_SNAP=benchSnap();
   const SIM=opts.sim||40, DT=1/60;
   const follows=new Set(Object.values(SKILLS).map(s=>s.follow).filter(Boolean));
   const skills=Object.keys(SKILLS).filter(k=>{const s=SKILLS[k];return s.make&&!s.passive&&LV[k]>0&&!follows.has(k)&&!/Tent|Lantern|Stride|Hop|Step/.test(s.name||'')&&!(window.__BENCH_AVOID&&typeof skDT==='function'&&skDT(k)===window.__BENCH_AVOID)&&!(window.__BENCH_SKIP&&window.__BENCH_SKIP(k));});
   timeScale=0;
-  const reset=()=>{for(const k in player.cd)player.cd[k]=0;player.buffs={};player.action=null;player.casting=null;player.combo=null;player.pending=null;player.attackTarget=null;player.moveT=null;player.queue=null;player.x=0;player.y=0;player.z=0;player.mp=player.maxMp;player.hp=player.maxHp;fx.length=0;};
+  const reset=()=>{for(const k in player.cd)player.cd[k]=0;player.buffs={};player.action=null;player.casting=null;player.combo=null;player.pending=null;player.attackTarget=null;player.moveT=null;player.queue=null;player.x=0;player.y=0;player.z=0;player.mp=player.maxMp;player.hp=player.maxHp;
+    const keep=fx.filter(f=>f&&f.layer==='none'&&/(Core|Keeper)$/.test((f.constructor&&f.constructor.name)||''));fx.length=0;fx.push(...keep);
+    if(!window.__BENCH_WARM){benchRestore(window.__BENCH_SNAP);}benchEnsure();};
   const place=(list)=>{enemies.length=0;for(const [x,y,b] of list){const e=spawnEnemy(x,y,b);e.x=x;e.y=y;e.hp=e.maxHp=1e9;}};
   const step=()=>{gameTime+=DT;if(hitStop>0){hitStop-=DT;}updatePlayer(DT);updEnemies(DT);updPrisons(DT);updParticles(DT);for(let i=fx.length-1;i>=0;i--)if(!fx[i].update(DT))fx.splice(i,1);};
   const brain=()=>{if(busy()||player.pending)return;

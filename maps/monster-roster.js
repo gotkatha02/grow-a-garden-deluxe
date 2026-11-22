@@ -7,7 +7,7 @@
        brute    slow, more HP / DEF, fewer of them
        swift    fast, high FLEE, low HP
        aggr:1   attacks the player on sight (RO "aggressive" monster)
-     Bosses / MVPs: boss_fenrir.js (Fenrir · vikD2c). Others not added yet.
+     Bosses / MVPs: boss_fenrir.js (Fenrir · vikD2c) + map_bosses.js (stand-in map bosses on every D1b / H1 / H2). Others not added yet.
    • New monsters take their level from the map band (MAP_ZONE) — lvf = fraction of the band.
    Sprites: the frostling (2-legged) / snow-wolf (4-legged) models recoloured, until each
    monster gets its own sprite sheet.

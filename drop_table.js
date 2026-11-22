@@ -14,7 +14,8 @@
    • BOSSES (map boss / MVP / main boss = relics.js slot tier): the gems (mutation + support, no longer from normal monsters), totem stones,
      essence, Star Ore, a few refine stones and their own BOSS PART (bm_<boss>, the 'boss junk'). Boss parts will be exchanged for
      rune skill gems when the rune roots are built (RUNE_SYSTEM_TH.md §2) and craft the boss sets (BOSS_SET_ICON_PROMPTS_TH.md).
-   A boss module marks its monster with e.bossKey = relics.js key (boss_fenrir.js: 'fenrir'). New live boss: live:1 in BOSSES below too.
+   A boss module marks its monster with e.bossKey = relics.js key (boss_fenrir.js: 'fenrir', map_bosses.js: the 15 map bosses).
+   New live boss: live:1 in BOSSES below too.
    ===================================================================== */
 (function(){
 'use strict';
@@ -116,25 +117,27 @@ const RATE={w:.06,a:.08,o:.025};          // per kill
 const ROLE_MUL={brute:2,critter:.5};      // spawn shares are critter 3 · normal / swift 2 · brute 1 (maps/monster-roster.js) → same yield per map share
 /* boss loot by relics.js slot tier: n = count (a fraction is the chance of one more) · part = [min, max] boss parts · stone = totem stones
    of the boss's tier · ess = totem essence · sore = Star Ore · ref = refine stones of its tier (40 % weapon / 60 % armour) */
-const BOSS={map:{th:'บอสประจำแมพ',mut:.35,sup:1,part:[1,2],stone:2,ess:6,sore:1,ref:2},
+/* owner 2026-11-22 18:44 ('decide — players should farm and trade, no item / money inflation'): map bosses respawn every 15 / 30 min
+   (map_bosses.js), so their loot is smaller than the MVP's (respawn 60 min) — DROP_TABLE_TH.md §11 */
+const BOSS={map:{th:'บอสประจำแมพ',mut:.25,sup:.6,part:[1,2],stone:1,ess:4,sore:.3,ref:1},
             mvp:{th:'MVP',mut:1,sup:2,part:[2,3],stone:3,ess:10,sore:2,ref:3},
             main:{th:'บอสใหญ่',mut:1.5,sup:2,part:[3,4],stone:4,ess:15,sore:3,ref:4}};
 /* the 30 bosses (relics.js keys) and their boss part: [land, map slot, boss (th), part (en), part (th), live] — names from BOSS_SET_ICON_PROMPTS_TH.md */
 const BOSSES={
-  draugr:['vik','D1b','ดรอกร์ช่างหลอม','Deathforge Slag','ก้อนตะกรันเตาหลอม'],huldra:['vik','H1','ฮุลดรา','Glowcap Mushrooms','เห็ดเรืองแสงบนเปลือกไม้'],
-  jotun:['vik','H2','ยักษ์โยตุน','Jotun Tusk','งาโยตุน'],fenrir:['vik','D2c','เฟนเรียร์','Gleipnir Fragment','เศษโซ่เกลปนีร์',1],
+  draugr:['vik','D1b','ดรอกร์ช่างหลอม','Deathforge Slag','ก้อนตะกรันเตาหลอม',1],huldra:['vik','H1','ฮุลดรา','Glowcap Mushrooms','เห็ดเรืองแสงบนเปลือกไม้',1],
+  jotun:['vik','H2','ยักษ์โยตุน','Jotun Tusk','งาโยตุน',1],fenrir:['vik','D2c','เฟนเรียร์','Gleipnir Fragment','เศษโซ่เกลปนีร์',1],
   nidhogg:['vik','E1','นิดฮ็อกก์','Gnawed World-Root','รากต้นไม้โลกที่โดนแทะ'],ymir:['vik','E2','ยมีร์','Frost King\'s Beard Braid','เปียเคราราชายักษ์'],
-  polyphemus:['grk','D1b','โพลีฟีมัส','Giant Fleece','มัดขนแกะยักษ์'],hecate:['grk','H1','เฮคาที','Moonmoth','ผีเสื้อกลางคืนจันทรา'],
-  trojan:['grk','H2','ยักษ์ทรอย','Siege Timber','ไม้ซุงม้าศึก'],minotaur:['grk','D2c','มิโนทอร์','Labyrinth Keystone','หินกลางเขาวงกต'],
+  polyphemus:['grk','D1b','โพลีฟีมัส','Giant Fleece','มัดขนแกะยักษ์',1],hecate:['grk','H1','เฮคาที','Moonmoth','ผีเสื้อกลางคืนจันทรา',1],
+  trojan:['grk','H2','ยักษ์ทรอย','Siege Timber','ไม้ซุงม้าศึก',1],minotaur:['grk','D2c','มิโนทอร์','Labyrinth Keystone','หินกลางเขาวงกต'],
   cerberus:['grk','E1','เซอร์เบอรัส','Ember of the Styx','ถ่านไฟผีแม่น้ำสติกซ์'],typhon:['grk','E2','ไทฟอน','Storm Feather','ขนปีกพายุสายฟ้าทอง'],
-  mummy:['egy','D1b','มัมมี่อัครเสนาบดี','Canopic Jar','โถคาโนปิก'],sphinx:['egy','H1','สฟิงซ์ผู้พิทักษ์','Riddle Tablet','แผ่นศิลาปริศนา'],
-  scorpion:['egy','H2','ราชาแมงป่องเกลือ','Rose Salt Crystal','ผลึกเกลือชมพู'],pharaoh:['egy','D2c','ฟาโรห์อมตะ','Sarcophagus Gold Shard','เศษโลงทองฟาโรห์'],
+  mummy:['egy','D1b','มัมมี่อัครเสนาบดี','Canopic Jar','โถคาโนปิก',1],sphinx:['egy','H1','สฟิงซ์ผู้พิทักษ์','Riddle Tablet','แผ่นศิลาปริศนา',1],
+  scorpion:['egy','H2','ราชาแมงป่องเกลือ','Rose Salt Crystal','ผลึกเกลือชมพู',1],pharaoh:['egy','D2c','ฟาโรห์อมตะ','Sarcophagus Gold Shard','เศษโลงทองฟาโรห์'],
   set:['egy','E1','เซ็ต','Storm Glass','แก้วสายฟ้าทรายแดง'],apep:['egy','E2','อาเปป','Apep\'s Venom Vial','ขวดพิษอาเปป'],
-  tanuki:['jpn','D1b','โจนินเงา ทานูกิ','Tanuki Smoke Bomb','ระเบิดควันทานูกิ'],jorogumo:['jpn','H1','โจโรกุโมะ','Spider-Silk Cocoon','รังไหมแมงมุม'],
-  gashadokuro:['jpn','H2','กาชาโดคุโระ','Cursed Bone','กระดูกต้องสาป'],shogun:['jpn','D2c','โชกุนผี','Ghostfire Lantern','โคมไฟผี'],
+  tanuki:['jpn','D1b','โจนินเงา ทานูกิ','Tanuki Smoke Bomb','ระเบิดควันทานูกิ',1],jorogumo:['jpn','H1','โจโรกุโมะ','Spider-Silk Cocoon','รังไหมแมงมุม',1],
+  gashadokuro:['jpn','H2','กาชาโดคุโระ','Cursed Bone','กระดูกต้องสาป',1],shogun:['jpn','D2c','โชกุนผี','Ghostfire Lantern','โคมไฟผี'],
   shuten:['jpn','E1','ชูเท็นโดจิ','Oni Horn','เขาอสูรหัก'],orochi:['jpn','E2','ยามาตะโนะโอโรจิ','Orochi Scale','เกล็ดโอโรจิ'],
-  camazotz:['azt','D1b','คามาซอตซ์','Golden Bat Idol','รูปเคารพค้างคาวทอง'],ahuizotl:['azt','H1','อาฮุยซอตล์','Lake-Spirit Pearl','ไข่มุกวิญญาณทะเลสาบ'],
-  eagle:['azt','H2','จอมทัพอินทรี','Eagle Talon','กรงเล็บอินทรี'],tzitzimitl:['azt','D2c','ทซิทซิมิทล์','Eclipse Shard','เศษสุริยคราส'],
+  camazotz:['azt','D1b','คามาซอตซ์','Golden Bat Idol','รูปเคารพค้างคาวทอง',1],ahuizotl:['azt','H1','อาฮุยซอตล์','Lake-Spirit Pearl','ไข่มุกวิญญาณทะเลสาบ',1],
+  eagle:['azt','H2','จอมทัพอินทรี','Eagle Talon','กรงเล็บอินทรี',1],tzitzimitl:['azt','D2c','ทซิทซิมิทล์','Eclipse Shard','เศษสุริยคราส'],
   mictlan:['azt','E1','มิกตลันเตกูตลี','Marigold of the Dead','ช่อดาวเรืองคนตาย'],quetzal:['azt','E2','เควตซัลโคอาทล์','Sun Serpent Scale','เกล็ดงูสุริยะ']};
 const SLOT_TIER={D1b:'map',H1:'map',H2:'map',D2c:'mvp',E1:'mvp',E2:'main'};
 const KIND_TH={w:'หินตีบวกอาวุธ',a:'หินตีบวกชุดเกราะ',o:'หินออฟ'};
@@ -153,9 +156,9 @@ const DT=window.DROPTAB={MON,RATE,ROLE_MUL,BOSS,BOSSES,SLOT_TIER,KIND_TH,STAT_EN
     if(GD.MUT.length)for(let i=0,n=count(T.mut);i<n;i++)out.push('gmut_'+pick(GD.MUT)[0]);
     if(GD.SUP.length)for(let i=0,n=count(T.sup);i<n;i++)out.push('gsup_'+pick(GD.SUP)[0]);
     if(BOSSES[key])for(let i=0,n=T.part[0]+Math.floor(rnd()*(T.part[1]-T.part[0]+1));i<n;i++)out.push('bm_'+key);
-    for(let i=0;i<T.stone;i++)out.push('tstone'+t);
-    for(let i=0;i<T.ess;i++)out.push('tess');
-    for(let i=0;i<T.sore;i++)out.push('sore');
-    for(let i=0;i<T.ref;i++)out.push((rnd()<.4?'wore':'ore')+t);
+    for(let i=0,n=count(T.stone);i<n;i++)out.push('tstone'+t);
+    for(let i=0,n=count(T.ess);i<n;i++)out.push('tess');
+    for(let i=0,n=count(T.sore);i<n;i++)out.push('sore');
+    for(let i=0,n=count(T.ref);i<n;i++)out.push((rnd()<.4?'wore':'ore')+t);
     return out;}};
 })();

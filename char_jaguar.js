@@ -51,7 +51,9 @@ function installJaguarRework(){if(CHAR!=='jaguar')return;
     const behind=(player.x-e.x)*(e.face||1)<-4||e.jgBlind>0;if(behind){f+=o.auto?JX.atk.backAuto:JX.atk.backSkill;if(gameTime-bsT>.2){bsT=gameTime;addFx(new BackTick({e}));}}
     if(hasBuff('jgRiposte')){f+=JX.atk.riposte;delete player.buffs.jgRiposte;}
     if(!o.auto&&hasBuff('jgRhythm')){f+=JX.atk.rhythm;delete player.buffs.jgRhythm;}
-    const base=Math.max(1,o&&o.magic?D.mag:D.patk);return (base+f)/base;};
+    /* 2026-11-22: the flat bonus adds at most the hit's own power (×2). With branch B = MATK only, an AGI / VIT build (MATK ≈ 10)
+       got ×13 on every Eclipse skill from these flat +60…+140 bonuses and benched 4,500 on the MATK branch (INT 2,060). */
+    const base=Math.max(1,o&&o.magic?D.mag:D.patk);return (base+Math.min(f,base))/base;};
   window.jgPreHit=(e)=>{const a=player.action;JGX.block=0;
     if(a&&a.key==='jgCountercut'&&!a.ended&&!a.cc){countercut(a,e);return 0;}if(a&&a.key==='jgCountercut'&&a.cc)return 0;
     if(a&&a.key==='jgParry'&&!a.ended){a.blocked=true;a.attacker=e;a.hitList=[e];parryFx(e,true);return 0;}

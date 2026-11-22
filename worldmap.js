@@ -170,6 +170,8 @@ function info(id){const box=W.querySelector('#wm-info');if(!id){box.innerHTML='<
   const ex=exitsOf(id).map(t=>`<div class="wm-row"><span class="wm-link" data-id="${t}">→ ${nameOf(t)}</span><span>${lvOf(t)?'Lv '+lvOf(t).join('–'):'เมือง'}</span></div>`).join('');
   const sp=m=>{const d=window.AFItems&&AFItems.spDrop&&AFItems.spDrop(m,15);return d?`<br><span class="wm-sp" title="${d.tip}" style="display:inline-flex;align-items:center;gap:3px;font-size:10.5px;color:#7a4a21;white-space:nowrap">${d.icon}ดรอป ${d.sh} ${d.tt}</span>`:'';};   /* special drop (drop_table.js): refine stone / orb icon */
   const ms=mons.length?mons.map(m=>`<div class="wm-row"><span>${m.th||m.name}${m.aggr?' <b style="color:#c0392b" title="ตีก่อน">⚔</b>':''}${m._t&&window.AFMonsters?` <small style="color:${AFMonsters.EL_COL[m._t.el]};-webkit-text-stroke:.2px #3a2a1f" title="ธาตุ / เผ่า">${AFMonsters.EL_TH[m._t.el]}·${AFMonsters.RACE_TH[m._t.race]}</small>${m._t.atype!=='melee'?(m._t.atype==='ranged'?' 🏹':' ✨'):''}${m._t.healer?' 💚':''}`:''}${sp(m)}</span><span>Lv ${m.lv[0]}–${m.lv[1]}</span></div>`).join(''):'<div style="font-size:11.5px">ไม่มีมอนสเตอร์</div>';
+  /* map boss / MVP of this map (map_bosses.js, boss_fenrir.js) */
+  const bi=window.MBOSS&&MBOSS.info(id),boss=bi?`<div style="margin-top:6px;font-weight:700">บอส</div><div class="wm-row"><span>👑 ${bi.th} <small>(${bi.tier})</small> ${bi.left>0?`<small style="color:#c0392b">เกิดใหม่ใน ${Math.ceil(bi.left/60000)} นาที</small>`:'<small style="color:#2e8b3a">พร้อม</small>'}<br><span style="font-size:10.5px;color:#7a4a21">ดรอปเจมแปรสภาพ / เสริม · ชิ้นส่วนบอส · หินโทเท็ม · เกิดใหม่ทุก ${bi.min} นาที</span></span><span>Lv ${bi.lv}</span></div>`:'';
   const home=k==='town'?Object.entries(towns()).filter(([h,t])=>t===id).map(([h])=>h).join(', '):'';const th=thumbOf(id);
   box.innerHTML=`${th?`<img src="${th}" style="width:100%;border-radius:8px;border:2px solid #3a2a1f;margin-bottom:6px">`:''}<h4>${nameOf(id)}</h4>
     <span class="wm-tag" style="background:${FIT[ft].c}">${FIT[ft].t}</span><span class="wm-tag" style="background:#7a4a21">${KIND[k]}</span>
@@ -177,7 +179,7 @@ function info(id){const box=W.querySelector('#wm-info');if(!id){box.innerHTML='<
     ${home?`<div class="wm-row"><span>จุดเกิดของ</span><span>${home}</span></div>`:''}
     ${k==='end'?'<div style="font-size:11px;color:#7a4a21">เอนเกม: ฟามของดรอปสายของภูมิภาคนี้ (กำลังออกแบบ)</div>':''}
     ${id===here()?'<div style="font-size:11px;color:#e2574c;font-weight:700">● คุณอยู่ที่นี่</div>':''}
-    <div style="margin-top:6px;font-weight:700">มอนสเตอร์</div>${ms}${mons.some(m=>window.DROPTAB&&DROPTAB.code(m.name))?'<div style="font-size:10.5px;color:#7a4a21;margin-top:2px">ดรอป = ของดรอปพิเศษของมอนตัวนั้น (ไม่ใช่ทุกตัวที่มี) · ขั้นตามเลเวลมอน</div>':''}
+    ${boss}<div style="margin-top:6px;font-weight:700">มอนสเตอร์</div>${ms}${mons.some(m=>window.DROPTAB&&DROPTAB.code(m.name))?'<div style="font-size:10.5px;color:#7a4a21;margin-top:2px">ดรอป = ของดรอปพิเศษของมอนตัวนั้น (ไม่ใช่ทุกตัวที่มี) · ขั้นตามเลเวลมอน</div>':''}
     <div style="margin-top:6px;font-weight:700">ทางออก</div>${ex||'<div style="font-size:11.5px">—</div>'}`;
   box.querySelectorAll('.wm-link').forEach(a=>a.onclick=()=>{sel=a.dataset.id;draw();info(sel);});}
 function suggest(){const L=myLv(),box=W.querySelector('#wm-sug');

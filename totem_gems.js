@@ -386,6 +386,23 @@ const css=document.createElement('style');css.textContent=`
 #tgWs .gc{display:flex;gap:6px;align-items:center;padding:6px;border-radius:10px;background:rgba(255,248,230,.08);font:500 11px/1.35 Mitr,sans-serif;color:#fff3c8}
 #tgWs .gc img{width:40px;height:40px;flex:none}#tgWs .gc button{margin-left:auto}
 @keyframes tgPop{0%{transform:scale(.3);opacity:0}60%{transform:scale(1.25);opacity:1}100%{transform:scale(1)}}#tgWs .res .pop{animation:tgPop .5s ease-out}
+/* gem fusion 3→1 (owner 2026-11-22 18:44) */
+#tgWs .fz{display:flex;flex-direction:column;gap:8px}
+#tgWs .ftg{display:flex;gap:6px}#tgWs .ftg button{flex:1;padding:5px;border-radius:10px;border:2px solid #5a2e16;background:#4a2e1a;color:#fff3c8;font:700 12px Mitr,sans-serif;cursor:pointer}
+#tgWs .ftg button.on{background:linear-gradient(#9fdcff,#4a90d8);color:#10243a}
+#tgWs .frow{display:flex;align-items:center;justify-content:center;gap:6px;padding:8px;border-radius:12px;background:rgba(0,0,0,.3)}
+#tgWs .fs{position:relative;width:54px;height:54px;border-radius:14px;border:2px dashed rgba(255,233,168,.45);background:rgba(255,248,230,.06);cursor:pointer;flex:none}
+#tgWs .fs.on{border-style:solid;border-color:#e9b44c}#tgWs .fs .tgSg{inset:7px}
+#tgWs .fs.tgt{width:64px;height:64px;border-style:solid;border-color:#ffd77a;box-shadow:0 0 14px rgba(255,215,122,.35);cursor:default}
+#tgWs .fs i{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:700 22px Mitr,sans-serif;color:#ffe9a8;opacity:.55;font-style:normal}
+#tgWs .frow .pl,#tgWs .frow .ar{font:700 18px Mitr,sans-serif;color:#ffe9a8}
+#tgWs .fcost{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center}
+#tgWs .fgl{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:5px}
+#tgWs .fg{display:flex;align-items:center;gap:6px;padding:4px 6px;border-radius:10px;border:2px solid transparent;background:rgba(255,248,230,.08);color:#fff3c8;font:600 11px/1.2 Mitr,sans-serif;cursor:pointer;text-align:left}
+#tgWs .fg .gi{position:relative;width:30px;height:30px;flex:none}#tgWs .fg .gi .tgSg{inset:0;font-size:10px}
+#tgWs .fg em{margin-left:auto;font-style:normal;color:#ffe9a8}
+#tgWs .fg.sel{border-color:#ffd77a;background:rgba(255,215,122,.2)}#tgWs .fg:disabled{opacity:.38;cursor:default}
+#tgWs h5{margin:2px 0 0;font:700 12px Mitr,sans-serif;color:#ffe9a8}
 /* skill stars (silver inner ring) */
 .tgN.ss>img.sk{filter:drop-shadow(0 0 5px rgba(150,205,255,.5)) drop-shadow(0 3px 3px rgba(0,0,0,.55))}
 .tgN.ss.lock>img.sk{opacity:.45;filter:grayscale(.4) brightness(.85)}
@@ -1103,6 +1120,38 @@ const oddsTxt=()=>QUAL.map(Q=>`<span style="color:${Q.c}">${Q.n} ${+(Q.p*100).to
 function resHtml(k,q,how){const S=G('SKILLS')[k],o=D.own[k];return `<span class="pop rgem">${cgemHtml(k,q)}</span><div style="flex:1">${qTag(q)} <b style="color:${QUAL[q].c}">${S.name}</b><br><small>${how==='new'?'ได้เจมใหม่! สเตตัสพิเศษ: '+o.lines.map(l=>lnTxt(l,o.q,o.lv)).join(' · '):how==='cand'?'ระดับสูงกว่าเม็ดเดิม! เลือกเก็บอันไหนก็ได้ (เลเวลเดิมอยู่ · อีกเม็ดเป็นเจมซ้ำ)':'ได้เจมซ้ำ +1 (ใช้ทะลุขีด / ย่อยเป็นชิ้นส่วน)'}</small>${how==='cand'?candHtml(o):''}</div>`;}
 const tierKeys=t=>cKeys().filter(k=>G('SKILLS')[k].tier===t);
 const icn=(id,need)=>{const a=AF(),h=a&&a.ui?a.ui.etcIcon(id,22):'',have=bagN(id);return `<span class="ic ${have<need?'no':''}" title="${a?a.ui.etcName(id):id}">${h}${fmtN(have)}/${need}</span>`;};
+/* gem fusion 3→1 (owner 2026-11-22 18:44 'farming + trading, no item / money inflation' → DROP_TABLE_TH.md §11): 3 mutation / support gems of
+   ANY kinds + boss parts + zeny = 1 gem of the kind you choose. Fuel comes from the bag only (socketed gems: take them out first).
+   Costs GD.FUSE; boss parts are used cheapest first (map boss → MVP → main boss), the most plentiful kind first. */
+let fu={k:'mut',f:[],t:null};
+const FZ=()=>((GD&&GD.FUSE)||{mut:{n:3,part:2,z:20000},sup:{n:3,part:1,z:8000}})[fu.k],fzPre=k=>k==='mut'?'gmut_':'gsup_',fzD=k=>k==='mut'?MUTD:SUPD,fzIn=id=>fu.f.filter(x=>x===id).length;
+const bossParts=()=>{const a=AF();if(!a||!a.ETC)return [];const T={map:0,mvp:1,main:2};
+  return Object.keys(a.BAG).filter(k=>/^bm_/.test(k)&&a.BAG[k]>0&&a.ETC[k]).sort((x,y)=>(T[a.ETC[x].btier]||0)-(T[a.ETC[y].btier]||0)||a.BAG[y]-a.BAG[x]);};
+const partsN=()=>bossParts().reduce((s,k)=>s+bagN(k),0);
+function fzBody(){const F=FZ(),kind=fu.k,pre=fzPre(kind),D2=fzD(kind),L=kind==='mut'?MUT:SUP,pn=partsN(),pk=bossParts(),a=AF();
+  const slot=(id,i)=>`<span class="fs${id?' on':''}" data-fsl="${i}" title="${id?D2[id][1]+' — แตะเพื่อเอาออก':'ช่องวัตถุดิบ — แตะเจมในกระเป๋าด้านล่าง'}">${id?sg(id,kind):''}</span>`;
+  const same=fu.f.length===F.n&&fu.t&&fu.f.every(x=>x===fu.t),ok=fu.f.length===F.n&&fu.t&&!same&&pn>=F.part&&zeny()>=F.z;
+  const pIco=a&&a.ui?a.ui.etcIcon(pk[0]||'bm_draugr',22):'';
+  const own=L.filter(m=>bagN(pre+m[0])>0);
+  return `<div class="fz">
+    <div class="ftg">${[['mut','💠 เจมแปรสภาพ'],['sup','🔹 เจมเสริม']].map(([k,n])=>`<button data-fk="${k}" class="${kind===k?'on':''}">${n}</button>`).join('')}</div>
+    <div class="frow">${[0,1,2].map(i=>slot(fu.f[i],i)).join('<b class="pl">+</b>')}<b class="ar">➜</b><span class="fs tgt${fu.t?' on':''}" title="เจมที่จะได้ — เลือกจากรายการด้านล่าง">${fu.t?sg(fu.t,kind):'<i>?</i>'}</span></div>
+    <div class="fcost"><span class="ic ${pn<F.part?'no':''}" title="ชิ้นส่วนบอส (ของบอสตัวไหนก็ได้)">${pIco}ชิ้นส่วนบอส ${fmtN(pn)}/${F.part}</span><span class="ic ${zeny()<F.z?'no':''}">${fmtN(F.z)}z</span>
+      <button class="go" data-fuse ${ok?'':'disabled'}>🔮 หลอม 3 → 1</button></div>
+    ${same?'<div class="note" style="color:#ff9a8a">วัตถุดิบ 3 เม็ดเป็นชนิดเดียวกับเม็ดที่จะได้ — เลือกชนิดอื่น</div>':''}
+    <h5>เจมในกระเป๋า — แตะเพื่อใส่เป็นวัตถุดิบ (${fu.f.length}/${F.n})</h5>
+    <div class="fgl">${own.length?own.map(m=>{const id=m[0],av=bagN(pre+id)-fzIn(id);return `<button class="fg" data-fadd="${id}" ${av>0&&fu.f.length<F.n?'':'disabled'} title="${m[1]}"><span class="gi">${sg(id,kind)}</span><b>${m[1]}</b><em>×${av}</em></button>`;}).join(''):'<span class="note">ยังไม่มีเจมชนิดนี้ในกระเป๋า (เจมที่อยู่บนแท่นไม่นับ — ถอดออกก่อน)</span>'}</div>
+    <h5>เลือกเจมที่อยากได้</h5>
+    <div class="fgl">${L.map(m=>`<button class="fg${fu.t===m[0]?' sel':''}" data-ft="${m[0]}" title="${m[1]}${kind==='mut'?' — ได้: '+m[4]+' · เสีย: '+m[5]:' — '+m[4]}"><span class="gi">${sg(m[0],kind)}</span><b>${m[1]}</b></button>`).join('')}</div>
+    <div class="note">หลอม = เจม 3 เม็ด (ชนิดไหนก็ได้) + ชิ้นส่วนบอส ${F.part} + ${fmtN(F.z)}z → เจมชนิดที่เลือก 1 เม็ด · เจมแปรสภาพ / เสริมดรอปจากบอสเท่านั้น (บอสประจำแมพ 15 ตัว · เฟนเรียร์) หรือซื้อในตลาดกลาง · ใช้ชิ้นส่วนของบอสประจำแมพก่อน (ถูกสุด) แล้วค่อย MVP / บอสใหญ่</div></div>`;}
+function doFuse(){const F=FZ(),kind=fu.k,pre=fzPre(kind),D2=fzD(kind);if(fu.f.length!==F.n||!fu.t||fu.f.every(x=>x===fu.t))return;
+  for(const id of new Set(fu.f))if(bagN(pre+id)<fzIn(id))return;
+  if(partsN()<F.part||zeny()<F.z||!payZ(F.z))return;
+  for(const id of fu.f)bagAdd(pre+id,-1);
+  let need=F.part;for(const k of bossParts()){const n=Math.min(need,bagN(k));if(n>0){bagAdd(k,-n);need-=n;}if(need<=0)break;}
+  bagAdd(pre+fu.t,1);bagSave();
+  wsRes=`<span class="pop" style="position:relative;display:inline-block;width:48px;height:48px;flex:none">${sg(fu.t,kind)}</span><div>🔮 หลอมสำเร็จ! ได้ <b>${D2[fu.t][1]}</b> 1 เม็ด<br><small>ใช้ ${fu.f.map(x=>D2[x][1]).join(' + ')} · ชิ้นส่วนบอส ${F.part} · ${fmtN(F.z)}z</small></div>`;
+  fu.f=[];try{render();}catch(e){}wsBuild();}
 function giftBuild(){const n=giftN();
   wsEl.innerHTML=`<div style="display:flex;align-items:center;gap:8px"><h4>🎁 ของขวัญดาวสกิล</h4><span class="note" style="margin-left:auto">เลือกได้อีก ${n} เม็ด</span><button class="go" id="wsX">${n?'ไว้ทีหลัง':'✕ กลับแผง'}</button></div>
     <div class="note">ดาวสกิลเปิด 1 ดวง = เลือกเจมแปรสภาพฟรี 1 เม็ด · ทุกเม็ด "ได้อย่าง เสียอย่าง" — สกิลเดียวกันใส่คนละเม็ด เล่นไม่เหมือนกัน · ถอดได้ตลอด กลับเข้ากระเป๋า · เม็ดต่อไปได้จากดันเจี้ยน บอส มอนสนาม (หายาก) หรือตลาดกลาง</div>
@@ -1120,15 +1169,21 @@ function wsBuild(){if(!wsEl.classList.contains('open'))return;if(wsTab==='gift')
   else if(wsTab==='craft'){body=`<div class="gg">${cKeys().map(k=>{const t=S[k].tier,z=C.craftZ(t),ok=bagN('tfrag'+t)>=C.craftFrag&&zeny()>=z;
       return `<div class="gc"><span class="gem">${cgemHtml(k)}</span><div><b>${S[k].name}</b><br>ขั้น ${t} · ${icn('tfrag'+t,C.craftFrag)} · ${fmtN(z)}z</div><button class="go" data-craft="${k}" ${ok?'':'disabled'}>คราฟต์</button></div>`;}).join('')}</div>
       <div class="note">เลือกชนิดเจมเองได้ (ระดับยังสุ่ม นับรวมแต้มนำโชค · ${pityTxt()}) · ชิ้นส่วนได้จากการย่อยเจมซ้ำ หรือซื้อที่ตลาดกลาง</div>`;}
+  else if(wsTab==='fuse')body=fzBody();
   else{const ks=cKeys().filter(k=>D.own[k]&&D.own[k].dup>0);body=ks.length?`<div class="gg">${ks.map(k=>{const t=S[k].tier;
       return `<div class="gc"><span class="gem">${cgemHtml(k)}</span><div><b>${S[k].name}</b><br>เจมซ้ำ ×${D.own[k].dup} → ชิ้นส่วนขั้น ${t} ${C.dismFrag} + แก่น ${C.dismEss}</div><button class="go" data-dism="${k}">ย่อย 1</button></div>`;}).join('')}</div>`:'<div class="note">ยังไม่มีเจมซ้ำ</div>';
     body+=`<div class="note">เก็บเจมซ้ำไว้ใช้ทะลุขีดเลเวล 10 / 20 / 30 / 40 (ใช้ 1 / 1 / 2 / 2 เม็ด) — ย่อยเฉพาะที่เหลือ</div>`;}
   wsEl.innerHTML=`<div style="display:flex;align-items:center;gap:8px"><h4>⛏ ศาลโทเท็ม</h4><span class="note" style="margin-left:auto">แก่น ${fmtN(bagN('tess'))} · ${fmtN(zeny())}z</span><button class="go" id="wsX">✕ กลับแผง</button></div>
-    <div class="tabs">${[['carve','⛏ แกะหิน (สุ่ม)'],['craft','🔨 คราฟต์จากชิ้นส่วน (เลือกได้)'],['dism','♻ ย่อยเจมซ้ำ']].map(([k,n])=>`<button data-wt="${k}" class="${wsTab===k?'on':''}">${n}</button>`).join('')}</div>
+    <div class="tabs">${[['carve','⛏ แกะหิน (สุ่ม)'],['craft','🔨 คราฟต์จากชิ้นส่วน (เลือกได้)'],['dism','♻ ย่อยเจมซ้ำ'],['fuse','🔮 หลอมเจม 3→1']].map(([k,n])=>`<button data-wt="${k}" class="${wsTab===k?'on':''}">${n}</button>`).join('')}</div>
     <div class="res">${wsRes||'<span class="note">ผลการแกะ / คราฟต์จะแสดงที่นี่</span>'}</div>${body}`;
   wsEl.querySelector('#wsX').onclick=()=>{wsEl.classList.remove('open');render();};
   wsEl.querySelectorAll('[data-wt]').forEach(b=>b.onclick=()=>{wsTab=b.dataset.wt;wsRes='';wsBuild();});
   {const o=wsKey&&D.own[wsKey],r=wsEl.querySelector('.res');if(o&&o.cand&&r)bindCand(r,o,yes=>{const k=wsKey;wsRes=`<span class="pop rgem">${cgemHtml(k)}</span><div>${yes?`✔ ใช้ <b>${G('SKILLS')[k].name}</b> ระดับ ${qTag(o.q)} แล้ว — เม็ดเดิมเป็นเจมซ้ำ`:`เก็บ <b>${G('SKILLS')[k].name}</b> อันเดิมไว้ — เม็ดใหม่เป็นเจมซ้ำ`}</div>`;wsBuild();});}
+  wsEl.querySelectorAll('[data-fk]').forEach(b=>b.onclick=()=>{if(fu.k!==b.dataset.fk)fu={k:b.dataset.fk,f:[],t:null};wsRes='';wsBuild();});
+  wsEl.querySelectorAll('[data-fadd]').forEach(b=>b.onclick=()=>{const id=b.dataset.fadd;if(fu.f.length<FZ().n&&bagN(fzPre(fu.k)+id)>fzIn(id)){fu.f.push(id);wsBuild();}});
+  wsEl.querySelectorAll('[data-fsl]').forEach(b=>b.onclick=()=>{const i=+b.dataset.fsl;if(fu.f[i]){fu.f.splice(i,1);wsBuild();}});
+  wsEl.querySelectorAll('[data-ft]').forEach(b=>b.onclick=()=>{fu.t=b.dataset.ft;wsBuild();});
+  {const fb=wsEl.querySelector('[data-fuse]');if(fb)fb.onclick=doFuse;}
   wsEl.querySelectorAll('[data-carve]').forEach(b=>b.onclick=()=>{const t=+b.dataset.carve,ks=tierKeys(t),z=C.carveZ(t);if(bagN('tstone'+t)<C.carveStones||!ks.length||!payZ(z))return;
     bagAdd('tstone'+t,-C.carveStones);bagSave();const k=ks[Math.floor(Math.random()*ks.length)],q=rollQ(),how=gain(k,q);save();wsRes=resHtml(k,q,how);wsKey=k;wsBuild();});
   wsEl.querySelectorAll('[data-craft]').forEach(b=>b.onclick=()=>{const k=b.dataset.craft,t=G('SKILLS')[k].tier,z=C.craftZ(t);if(bagN('tfrag'+t)<C.craftFrag||!payZ(z))return;

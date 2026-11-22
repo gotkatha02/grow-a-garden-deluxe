@@ -422,7 +422,9 @@ function mkKaReturn(c){const t=(c.action&&c.action.hitList||[]).find(e=>!e.dead)
     after:(a,hit)=>{ktAddFlow(KB.kaReturn.flow);ktV('returnAfter',sx,sy,dx,dy,phi);addFx(new KtGhost({x:sx,y:sy,life:.5}));ktLater(.18,()=>{for(const e of ktNear(sx,sy,90)){ktHit(e,KB.kaReturn.ghost,'kaReturn',{ktEcho:1});addFx(new KtArc({x:e.x,y:e.y,phi:angTo(e),col:KTC.sakura}));}});}});}
 function mkKaMirage(c){const near=nearestEnemy(player.x,player.y,220),phi=near?Math.atan2(player.y-near.y,player.x-near.x):(c&&c.phi!=null?c.phi:player.phi),sx=player.x,sy=player.y;
   addFx(new KtGhost({x:sx,y:sy,st:'idle',f:0,life:.6,a0:.6}));
-  return ktDash('kaMirage','Mirage Step',phi,KB.kaMirage.dist,.2,ktLv(KB.kaMirage.iframe,'kaMirage'),{extra:{events:[{t:.3,f:()=>{for(const e of ktNear(sx,sy,80)){ktHit(e,KB.kaMirage.ghost,'kaMirage',{ktEcho:1});addFx(new KtArc({x:e.x,y:e.y,phi:rnd(0,TAU),col:KTC.sakura}));}if(!ktV('mirageBurst',sx,sy))ktPetals(sx,sy,24,8,120);}}]}});}
+  /* 2026-11-22: the ghost burst sat at .3 s, after dur (.28) → a queued key press dropped the hit; now just before dur */
+  return ktMirFix(ktDash('kaMirage','Mirage Step',phi,KB.kaMirage.dist,.2,ktLv(KB.kaMirage.iframe,'kaMirage'),{extra:{events:[{t:.3,f:()=>{for(const e of ktNear(sx,sy,80)){ktHit(e,KB.kaMirage.ghost,'kaMirage',{ktEcho:1});addFx(new KtArc({x:e.x,y:e.y,phi:rnd(0,TAU),col:KTC.sakura}));}if(!ktV('mirageBurst',sx,sy))ktPetals(sx,sy,24,8,120);}}]}}));}
+function ktMirFix(A){if(A&&A.events)for(const e of A.events)if(e.t>A.dur-.005)e.t=Math.max(.01,A.dur-.005);return A;}
 function mkKaSakura(c){return buffAct({key:'kaSakura',name:'Sakura Dance',speed:2,glow:KTC.sakura,events:tP=>[{t:tP,f:()=>{addBuff('kaSakura',KB.kaSakura.dur);if(ktV('sakuraOn'))return;ktPetals(player.x,player.y,40,24,180);addFx(new GRing({x:player.x,y:player.y,r0:10,r1:90,w:6,color:KTC.sakura,life:.4}));}}]});}
 function mkKaCrescent(c){const t=ktTgt(c,KB.kaCrescent.range);const phi=ktPhi(c,t);
   return ktStrike({key:'kaCrescent',name:'Crescent Wind',phi,lastSpeed:1.4,hits:()=>[],each:()=>{},

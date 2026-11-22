@@ -46,7 +46,7 @@ function installRhinoRework(){if(CHAR!=='rhino')return;
     if(hasBuff('rhPact'))f+=Math.min(RX.atk.pactCap,Math.round(ARMOR.def*RX.atk.pactPerDef));
     if(o.rhHeavy&&RHX.brutal)f+=Math.min(RH.mom,5)*RX.atk.rhBrutal[RHX.brutal-1];
     if(!o.dot&&o.counter&&hasBuff('rhRebound')){f+=RX.atk.rebound;delete player.buffs.rhRebound;}
-    const base=Math.max(1,o&&o.magic?D.mag:D.patk);return (base+f)/base;};
+    const base=Math.max(1,o&&o.magic?D.mag:D.patk);return (base+Math.min(f,base))/base;};   // 2026-11-22: flat bonus ≤ the hit's own power
   /* stagger: flat bonus instead of percent */
   rhStg=function(e,amt){if(!e||e.dead||!amt||e.stgImm>0)return;if(hasBuff('rhFury'))amt+=rxL(RX.stg.rhFury,'rhFury');
     e.stg=(e.stg||0)+amt;e.stgLast=0;const max=e.boss?RH_BAL.stgMaxBoss:RH_BAL.stgMax;

@@ -3,7 +3,8 @@
    ---------------------------------------------------------------------
    • Physical ('p') damage scales with ATK (โจมตี), magic ('m') with MATK (เวท), heals ('h') with MATK.
      Magic hits show BLUE numbers and cannot crit; physical hits can crit.
-   • Branch rule: Wolf / Jaguar / Owl → class A physical, class B magic.
+   • Branch rule (two-way heroes wolf / jaguar / owl / hippo / dragon / lion): class A physical (ATK only), class B magic (MATK only),
+     Basic branch = the higher of the two (owner 2026-11-22; before, A used ATK 30 % + MATK 70 %).
      Rhino and Croc are pure physical classes; Axolotl is a pure water-magic class (class B heals).
      SK_DT below overrides single skills (C skills, special cases).
    • KO gauge (SK_KO): every hit drains it; empty = 1.5 s stun, then it refills. Skills no longer stun directly.
@@ -89,9 +90,12 @@ const KO_LV=v=>v>=3.5?['สูงมาก','#ff6a4a']:v>=2.4?['สูง','#ffa
    so an ATK build and a MATK build both keep a working basic kit. */
 function skCol(k){try{for(const L of [typeof HP_DEFS!=='undefined'&&HP_DEFS,typeof KT_DEFS!=='undefined'&&KT_DEFS,typeof SP_DEFS!=='undefined'&&SP_DEFS,typeof DG_DEFS!=='undefined'&&DG_DEFS,typeof LI_DEFS!=='undefined'&&LI_DEFS,typeof KI_DEFS!=='undefined'&&KI_DEFS,typeof BA_DEFS!=='undefined'&&BA_DEFS,typeof ANU_DEFS!=='undefined'&&ANU_DEFS,typeof CRX_DEFS!=='undefined'&&CRX_DEFS]){if(!L)continue;const d=L.find(x=>x.key===k);if(d&&d.col)return d.col;}}catch(_){}return null;}
 /* owner 2026-11-19 (two-way heroes): normal attack = ATK only · magic-looking skills = MATK only ·
-   physical-looking skills ('x') = ATK 30% + MATK power 70% (MIX below) · Basic-branch 'b' = the higher of the two */
+   physical-looking skills ('x') = ATK 30% + MATK power 70% (MIX below) · Basic-branch 'b' = the higher of the two.
+   owner 2026-11-22 ('แก้บัค 4', RO style): the mix is gone — branch A = ATK only, branch B = MATK only, Basic branch 'b' = the higher,
+   C nodes follow their column. An ATK build plays A, a MATK build plays B (the 70 % MATK in A made STR builds bench 33–44 % under INT).
+   MIX / 'x' stay defined so old code paths keep working, nothing returns 'x' any more. */
 const MIX={atk:.3,tal:.7};
-function skDT(k){const t=skDT0(k),r=DT_CHAR[CHAR]||'p';return r==='AB'&&t==='p'&&k&&k!=='basic'?'x':t;}
+function skDT(k){return skDT0(k);}
 function skDT0(k){
   const r=DT_CHAR[CHAR]||'p';
   if(!k||k==='basic')return r==='AB'?'p':r==='m'?'m':'p';
@@ -103,9 +107,7 @@ function skDT0(k){
   if(s.br==='C'){const col=s.col||skCol(k);if(col)return col==='B'?'m':col==='A'?'p':'b';const n=(s.name||'')+' '+(s.th||'');return /frost|ice|rune|thunder|storm|lightning|blizzard|snow|shadow|venom|eclipse|moon|น้ำแข็ง|สายฟ้า|เงา|พิษ/i.test(n)?'m':'p';}
   return 'p';}
 /* damage type from a hurt() call: explicit magic flag > the skill behind the hit > its branch */
-function hitType(o){const t=hitType0(o),r=DT_CHAR[CHAR]||'p';
-  if(r==='AB'&&t==='p'&&!o.auto){const k=o.skill||(o.owShot&&o.owShot.key)||window.SKCTX;if(k&&k!=='basic')return 'x';if(!k&&o.br&&o.br!=='basic')return 'x';}
-  return t;}
+function hitType(o){return hitType0(o);}   // 2026-11-22: no more 'x' (see skDT)
 function hitType0(o){
   if(o.magic!==undefined)return o.magic?'m':'p';
   const k=o.skill||(o.owShot&&o.owShot.key)||window.SKCTX;
@@ -126,7 +128,8 @@ function skTypeHTML(k){const s=SKILLS[k];if(!s)return '';const t=skDT(k),cc=SK_C
     :t==='h'?`<span style="color:#8dff7a;font-weight:700">ฮีล</span> · ฮีลมากขึ้นตาม <b style="color:#8dff7a">MATK</b>`
     :`<span style="color:#ffb36a;font-weight:700">ดาเมจกายภาพ</span> · แรงขึ้นตาม <b style="color:#ffb36a">ATK</b>`;
   const s2=SKILLS[k],kv=skKO(k),[kn,kc]=KO_LV(kv),KO=(s2.passive&&!s2.make)?'':` · KO: <b style="color:${kc}">${kn}</b>`;
-  return `<div class="tl" style="margin:3px 0">${T}${KO}${cc?` · สถานะ: <b style="color:#ffe066">${CCLINE(cc)}</b>`:''}</div>`;}
+  const SPC=window.SP_RULE&&SP_RULE.base[k]?` · <span style="color:#7ec8ff">สกิลกายภาพ ใช้ SP −40% (${SP_RULE.base[k]} → ${s2.mp})</span>`:'';
+  return `<div class="tl" style="margin:3px 0">${T}${KO}${cc?` · สถานะ: <b style="color:#ffe066">${CCLINE(cc)}</b>`:''}${SPC}</div>`;}
 function skTypeText(k){const t=skDT(k),cc=SK_CC[k];return (t==='x'?'ดาเมจกายภาพผสม (ATK 30% + MATK 70%) · พลาดได้ (HIT)':t==='b'?'ดาเมจตามสายที่บิ้ว (ATK หรือ MATK ที่สูงกว่า)':t==='m'?'ดาเมจเวท (อัป INT) · โดนเสมอ':t==='h'?'ฮีล (อัป INT)':'ดาเมจกายภาพ (อัป STR) · พลาดได้ (HIT)')+(t!=='h'?' · KO '+KO_LV(skKO(k))[0]:'')+(cc?' · สถานะ: '+CCLINE(cc):'');}
 Object.assign(window,{MIX,SK_KO,skKO,KO_LV,SK_DT,SK_CC,skDT,hitType,skCol,hitIsMagic,hitCC,CCTXT,skTypeHTML,skTypeText});
 window.SKCTX=null;

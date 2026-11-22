@@ -464,7 +464,7 @@ function installHippo(){
     if(br==='B'&&e){if(hL('hbInund')&&hInPool(e.x,e.y))b+=hLv(HB.hbInund.tal,'hbInund');if(hL('hbFlood'))b+=Math.min(5,HIP.pools.filter(p=>!p.sea).length)*hLv(HB.hbFlood.per,'hbFlood');}
     return b;};
   window.jgHit=()=>0;window.jgCrit=()=>0;window.jgCritDmg=()=>0;window.jgDmgTaken=()=>1;
-  window.jgDmgMul=(e,o)=>{const base=Math.max(1,o&&o.magic?D.mag:D.patk);return (base+flat(e,o))/base;};
+  window.jgDmgMul=(e,o)=>{const base=Math.max(1,o&&o.magic?D.mag:D.patk);return (base+Math.min(flat(e,o),base))/base;};   // 2026-11-22: a flat bonus adds at most the hit's own power (off-stat builds got ×10+ from it)
   window.jgAbsorb=(d,e)=>{HIP.lastCombat=gameTime;let r=0;if(hasBuff('haWard'))r+=hLv(HB.haWard.block,'haWard');if(hL('haLast')&&player.hp<player.maxHp*.3)r+=hLv(HB.haLast.block,'haLast');
     if(hasBuff('haBehemoth'))r+=HB.haBehemoth.block;if(hInPool(player.x,player.y)&&HIP.pools.some(p=>p.r>=HB.hbWallow.R&&Math.hypot(p.x-player.x,(p.y-player.y)*1.25)<=p.r))r+=HB.hbWallow.block;
     d=Math.max(1,d-r);if(HIP.shield>0){const s=Math.min(HIP.shield,d-1);HIP.shield-=s;d-=s;}

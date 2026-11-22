@@ -75,7 +75,7 @@ const BA_BAL={
 };
 const BB=BA_BAL.sk;
 /* branch tuning from the bench: damage numbers of each branch are scaled here so the shown MATK×n stays true */
-const BA_SCALE={A:1.38,B:0.802};   /* re-tuned at the Lv 60 cap 2026-11-22 (≈ 2,050 per branch, LEVEL_CAP_TH.md); older values in git */
+const BA_SCALE={A:1.356,B:0.82};   /* re-tuned at the Lv 60 cap 2026-11-22 (≈ 2,050 per branch, LEVEL_CAP_TH.md); older values in git */
 (()=>{const r2=v=>Math.round(v*100)/100,sc=(o,f,m)=>{if(o[f]==null)return;o[f]=Array.isArray(o[f])?o[f].map(v=>r2(v*m)):r2(o[f]*m);};
   const colOf=k=>k.startsWith('ba')||['bcTriple','bcStorm','bcApep','bcSekhmet'].includes(k)?'A':k.startsWith('bb')||['bcTether','bcLord','bcPack','bcOsiris'].includes(k)?'B':null;
   for(const k in BB){const c=colOf(k);if(!c)continue;for(const f of ['dmg','per','dot'])sc(BB[k],f,BA_SCALE[c]);}
@@ -414,7 +414,7 @@ function installBastet(){
     if(bAvatar()&&o&&o.auto)b+=BB.bcAvatar.tal;
     return b;};
   window.jgHit=()=>0;window.jgCrit=()=>0;window.jgCritDmg=()=>0;window.jgDmgTaken=()=>1;
-  window.jgDmgMul=(e,o)=>{const base=Math.max(1,D.mag);return (base+flat(e,o))/base;};
+  window.jgDmgMul=(e,o)=>{const base=Math.max(1,D.mag);return (base+Math.min(flat(e,o),base))/base;};   // 2026-11-22: a flat bonus adds at most the hit's own power (off-stat builds got ×10+ from it)
   /* taunted enemies strike the servant instead of Bastet */
   window.jgPreHit=e=>{if(e&&e.bTaunt>gameTime&&e.bTauntBy&&!e.bTauntBy.dead){const m=e.bTauntBy;m.flash=1;dustPuff(m.x,m.y,4,'#e8d3a0',40,6);return 0;}return 1;};
   window.jgAbsorb=(d,e)=>{if(bL('bnSistrum'))d-=bLv(BB.bnSistrum.block,'bnSistrum');

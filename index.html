@@ -695,7 +695,7 @@ document.write('<script src="vfx_layer.js"><\/script>');if(c==='jaguar')document
 <script src="level_cap.js?v=1"></script>
 <script src="maps/level-zones.js?v=2"></script>
 <script src="maps/monster-roster.js"></script>
-<script src="skill_rules.js?v=4"></script>
+<script src="skill_rules.js?v=5"></script>
 <script src="skill_enh.js"></script>
 <script src="dmg_glyphs.js?v=5"></script>
 <script>
@@ -1137,7 +1137,7 @@ const SPRITE={img:{},ready:0};for(const st in SPR_ATLAS){const im=new Image();im
 const DIR8=['E','SE','S','SW','W','NW','N','NE'];
 const dirOf=phi=>DIR8[((Math.round(phi/(Math.PI/4))%8)+8)%8];
 const srcDir=d=>SPR_META.mirror[d]||d,isMir=d=>!!SPR_META.mirror[d];
-const durs=(st,d)=>SPR_META.states[st].dirs[srcDir(d)].dur;
+const durs=(st,d)=>{const D=SPR_META.states[st].dirs;return (D[srcDir(d)]||D.S||D[Object.keys(D)[0]]).dur;};   // unknown direction → S (never throw inside the game loop)
 function seq(st,d,from=0,to=null,speed=1){const D=durs(st,d);to=Math.min(to??D.length-1,D.length-1);from=clamp(from,0,to);const o=[];for(let f=from;f<=to;f++)o.push({st,d,f,ms:D[f]/speed});return o;}
 const hold=(st,d,f,ms)=>[{st,d,f,ms}];
 const seqTotal=s=>s.reduce((a,e)=>a+e.ms,0)/1000;
@@ -1191,7 +1191,7 @@ function act(o){const T=seqTotal(o.seq);o.dur=Math.min(T,o.dur??T);o.recover=Mat
 
 const player={x:0,y:40,phi:.4,dir:'SE',animT:0,wasMoving:false,speed:165,hp:2400,maxHp:2400,mp:320,maxMp:320,state:'IDLE',action:null,moveT:null,attackTarget:null,pending:null,queue:null,combo:null,
   basicIdx:0,basicLast:-9,wiN:0,glow:null,axeIce:0,moving:false,cd:{},trail:null,socket:null};
-function faceTo(phi){player.phi=phi;player.dir=dirOf(phi);}
+function faceTo(phi){if(!Number.isFinite(phi))return;player.phi=phi;player.dir=dirOf(phi);}   // 2026-11-22: a NaN angle (target at a missing point) made player.dir undefined → the next seq() threw (rare bench crash on hippo A)
 function playerFrame(){const a=player.action;if(a&&a.seq)return seqAt(a.seq,a.t).e;if(player.casting)return {st:'buff',d:player.dir,f:Math.min(2,Math.floor(player.casting.t*8))};const st=player.moving?'walk':'idle',D=durs(st,player.dir),T=D.reduce((x,y)=>x+y,0);
   let ms=(player.animT*1000)%T,f=0;while(f<D.length-1&&ms>=D[f]){ms-=D[f];f++;}return {st,d:player.dir,f};}
 function drawPlayer(){const [x,y]=P(player.x,player.y,player.z||0);const mf=curMap&&mapHost()&&mapHost().charFilter,FG=typeof drawGear==='function',pf=[CHAR_FILTER,mf,FG?armorFilter():'',FG?sceneFilter():''].filter(Boolean).join(' ');ctx.save();if(CHAR_SCALE!==1){const q=JH('jgSquash')?jgSquash():[1,1];ctx.translate(x,y);ctx.scale(CHAR_SCALE*q[0],CHAR_SCALE*q[1]);ctx.translate(-x,-y);}
@@ -1378,7 +1378,7 @@ function defAdjust(d,def){const N=clamp(def,1,512),light=Math.max(Math.trunc(d-.
 const lckRoll=()=>0;   // RO: no luck roll on every hit (LUK gives CRIT / perfect dodge / small ATK instead)
 /* visible coefficient scale per hero / branch: every "ATK×n" / "MATK×n" in a skill text is already multiplied by this.
    Re-tuned 2026-11-22 for the RO stats (RO_STATS_TH.md §10): every branch benches ≈ 2,050 at Lv 60 (tank rhino ≈ 1,880); the 12 Tails values are in git */
-const CHAR_COEF={wolf:{A:1.763,B:2.499,basic:1.0,all:1.0},jaguar:{A:0.592,B:1.502,basic:.95,all:.95},owl:{A:1,B:0.699,basic:1.22,all:1.4},hippo:{A:1.52,B:0.98,basic:1.67,all:1.67},dragon:{A:0.78,B:0.981,basic:1.4,all:1.4},lion:{A:1.714,B:0.92,basic:1.4,all:1.4},rhino:4.283,croc:2.365,cat:0.658,sheep:2.01,axolotl:1.315,kitsune:0.331,bastet:0.368,anubis:1.5};
+const CHAR_COEF={wolf:{A:0.787,B:2.584,basic:1,all:1.0},jaguar:{A:0.258,B:1.436,basic:0.95,all:.95},owl:{A:1.55,B:1.584,basic:0.5,all:1.4},hippo:{A:1.685,B:0.72,basic:1.67,all:1.67},dragon:{A:0.98,B:1.021,basic:1.4,all:1.4},lion:{A:2.348,B:0.856,basic:1.68,all:1.4},rhino:2.667,croc:1.747,cat:0.489,sheep:2.01,axolotl:1.338,kitsune:0.331,bastet:0.368,anubis:1.5};
 const coefOf=br=>{const c=CHAR_COEF[CHAR];if(c==null)return 1;return typeof c==='number'?c:(c[br]??c.all??1);};
 function derive(){gearCalc();const s={},lv=PS.lv;for(const k of STATK)s[k]=Math.max(1,PS[k]+growStat(k,lv)+(BON[k]||0));   // total = points + hero bonus + items / buffs
   const f5=v=>Math.floor(v/5),sq=v=>Math.floor(v/10)**2;
@@ -2035,14 +2035,16 @@ function mkRevengeBreaker(c){const att=c.action.attacker,t=(att&&!att.dead)?att:
 function mkVampiricAxe(c){const lv=LV.vampiricAxe,t=tgtOr(c,240),phi=t?angTo(t):player.phi;faceTo(phi);const d=atkDir(player.dir),ct=CT(d),sx=player.x,sy=player.y;
   const dd=t?Math.max(0,dist(player,t)-t.r-22):60,[dx,dy]=clampPt(sx+Math.cos(phi)*dd,sy+Math.sin(phi)*dd);
   const vpath=curvePath(sx,sy,dx,dy,(Math.random()<.5?-1:1)*Math.min(46,dd*.35));const s=[...seq('attack',d,0,ct-1,1.4),...hold('attack',d,ct,200),...seq('attack',d,ct+1,null,1.3)],kH=seqIndex(s,'attack',ct),tH=seqTimeAt(s,kH),tI=tH+.2;
-  return act({key:'vampiricAxe',name:'Vampiric Axe',seq:s,windup:tH,dur:seqTimeAt(s,kH+2),trailWin:[tH-.05,tI+.05],trail:{color:'#ff3a7a',core:'#ffd8ec'},hitList:[],
+  const dV=seqTimeAt(s,kH+2);
+  return act({key:'vampiricAxe',name:'Vampiric Axe',seq:s,windup:tH,dur:dV,trailWin:[tH-.05,tI+.05],trail:{color:'#ff3a7a',core:'#ffd8ec'},hitList:[],
     update:(a,dt)=>{player.glow={color:'#c0206a',k:a.t<tI?1:Math.max(0,1-(a.t-tI)/.3)};pathUpd(a,dt,tH,tI,vpath,'#c0206a');if(a.t>=tH&&a.t<tI&&Math.random()<Q.p)mist(player.x,player.y,16,1,'#ff3a8a',14,10);},
     events:[{t:seqTimeAt(s,kH-1),f:a=>slashAt(a,kH,{W:26,colors:VAMP,hold:.06,fade:.24,dissolve:'#ff3a7a',rs:1.25})},
       {t:tI,f:a=>{const hit=enemiesInCone(player.x,player.y,phi,100,.9);dbgCone(player.x,player.y,phi,100,.9);let tot=0;
         for(const e of hit){tot+=hurt(e,1.8+.4*lv,{color:'#ffb0d0',knock:[phi,80]});if(e.dead)a.killed=true;addFx(new Impact({pos:[e.x,e.y,22],size:40,color:'#c0206a',core:'#ffd8ec',rays:7,life:.22}));addFx(new Drain({from:{x:e.x,y:e.y}}));}
         if(hit.length){a.hitConfirmed=true;a.heal=Math.round(PS.lv*(1+.5*lv));shake(3);stop(70);}}},
-      /* bug fix 2026-11-20: the heal sat at tI+.6, after the action had already ended, so it never fired (no HP, no number) */
-      {t:Math.min(tI+.25,seqTotal(s)-.03),f:a=>{if(a.heal){player.hp=Math.min(player.maxHp,player.hp+a.heal);dmgNum(player.x,player.y,74,'+'+a.heal,'heal');addFx(new GLight({x:player.x,y:player.y,r:50,color:'#ff3a6a',life:.5,a:.5}));}}}]});}
+      /* bug fix 2026-11-20: the heal sat at tI+.6, after the action had already ended, so it never fired (no HP, no number);
+         2026-11-22: it still sat after dur, so a queued key press (which ends the action at dur) dropped it → now just before dur */
+      {t:Math.max(tI+.005,Math.min(tI+.25,dV-.005)),f:a=>{if(a.heal){player.hp=Math.min(player.maxHp,player.hp+a.heal);dmgNum(player.x,player.y,74,'+'+a.heal,'heal');addFx(new GLight({x:player.x,y:player.y,r:50,color:'#ff3a6a',life:.5,a:.5}));}}}]});}
 function mkBloodRush(c){const lv=LV.bloodRush,t=enemies.filter(e=>!e.dead&&dist(player,e)<340).sort((a,b)=>dist(player,a)-dist(player,b))[0];const phi=t?angTo(t):player.phi;faceTo(phi);
   const d=atkDir(player.dir),ct=CT(d),sx=player.x,sy=player.y,dd=t?Math.max(0,dist(player,t)-t.r-20):140,[dx,dy]=clampPt(sx+Math.cos(phi)*dd,sy+Math.sin(phi)*dd);
   const s=[...seq('attack',d,Math.max(0,ct-2),ct-1,2),...hold('attack',d,ct,200),...seq('attack',d,ct+1,null,1.4)],kH=seqIndex(s,'attack',ct),tH=seqTimeAt(s,kH),tI=tH+.2;
@@ -2455,8 +2457,8 @@ function mkWarBanner(c){const gx=c.gx,gy=c.gy;
     {t:.02,f:()=>{if(warBanner){warBanner.life=Math.min(warBanner.life,warBanner.t+.5);}addFx(new RuneCircle({x:gx,y:gy,r:34,color:FEN.gold,color2:FEN.white,life:.9,fadeIn:.12,n:8,spin:2.5}));}},
     {t:.2,f:()=>{addFx(new LightPillar({x:gx,y:gy,r:22,h:300,color:FEN.gold,life:.5}));addFx(new LightPillar({x:gx,y:gy,r:12,h:300,color:FEN.ice,life:.45}));
       warBanner=addFx(new BannerObj({x:gx,y:gy}));}},
-    {t:.45,f:()=>{dustPuff(gx,gy,10,'#c9c2b0',110,10);rocks(gx,gy,8,160);addFx(new Crack({x:gx,y:gy,r:34,color:FEN.gold}));addFx(new GRing({x:gx,y:gy,r0:6,r1:60,w:10,color:FEN.gold,life:.35}));shake(3);stop(50);}},
-    {t:.55,f:()=>{warBanner.sigil=addFx(new RuneCircle({x:gx,y:gy,r:BANNER_R,color:hexToDim(FEN.gold),color2:FEN.cyan,life:12.3,fadeIn:.35,fadeOut:.5,n:28,spin:.15}));
+    {t:Math.min(.45,tP+.12),f:()=>{dustPuff(gx,gy,10,'#c9c2b0',110,10);rocks(gx,gy,8,160);addFx(new Crack({x:gx,y:gy,r:34,color:FEN.gold}));addFx(new GRing({x:gx,y:gy,r0:6,r1:60,w:10,color:FEN.gold,life:.35}));shake(3);stop(50);}},
+    {t:Math.min(.55,tP+.14),f:()=>{if(!warBanner)return;warBanner.sigil=addFx(new RuneCircle({x:gx,y:gy,r:BANNER_R,color:hexToDim(FEN.gold),color2:FEN.cyan,life:12.3,fadeIn:.35,fadeOut:.5,n:28,spin:.15}));
       addFx(new GRing({x:gx,y:gy,r0:20,r1:BANNER_R*1.05,w:14,color:FEN.gold,life:.6}));addFx(new GRing({x:gx,y:gy,r0:20,r1:BANNER_R,w:6,color:FEN.cyan,life:.5,delay:.08}));
       addFx(new DText({x:gx,y:gy,z:150,text:'ATK +10% · DMG −8%',color:FEN.gold,size:12,life:1.4}));}}]});}
 const hexToDim=h=>'#b8862e';
@@ -2541,7 +2543,7 @@ function mkRavenousLeap(c){const t=tgtOr(c,320),phi=t?angTo(t):player.phi;faceTo
         if(a.hitList.length)a.hitConfirmed=true;
         if(bleeding&&main){const heal=Math.round(PS.lv*2);addFx(new Drain({from:{x:t.x,y:t.y},color:'#c0306a'}));setFxTimer(.6,()=>{player.hp=Math.min(player.maxHp,player.hp+heal);addFx(new DText({x:player.x,y:player.y,z:72,text:'+'+heal,color:'#6dff8a',size:17,life:1}));});}
         screenFlash(.35,'#dff8ff');shake(9);stop(70);}},
-      {t:tI+.62,f:()=>{if(axe&&!axe.dead)axe.shatter();}}]});}
+      {t:tI+.24,f:()=>{if(axe&&!axe.dead)axe.shatter();}}]});}   // was tI+.62 = after the action's end (never fired)
 
 /* tiny timer helper (pauses with hit-stop because it runs inside fx update) */
 function setFxTimer(sec,fn){addFx(new Ticker({life:sec,tick:(T)=>{if(T.t>=sec-.001&&!T.done){T.done=true;fn();}}}));}
@@ -3432,7 +3434,12 @@ function rTex(){if(RTEX.ready)return RTEX;
   RTEX.ready=true;return RTEX;}
 
 /* ---------- VFX objects ---------- */
-let rhOverlay=null;
+let rhOverlay=null,rhKeeper=null;
+/* bug fix 2026-11-22: RhOverlay (momentum decay, shield expiry, proc cooldowns, the gauges + shield dome) was made once at load and the
+   first enterMap (it clears fx) removed it → shields never expired, momentum never decayed, ICD procs worked once. The keeper (layer 'none',
+   survives enterMap) re-adds it; every rhino maker / basic calls rhEnsure() too (the bench clears fx). */
+class RhKeeper{constructor(){this.layer='none';}update(){rhEnsure();return CHAR==='rhino';}draw(){}}
+function rhEnsure(){if(CHAR!=='rhino')return;if(!rhOverlay||!fx.includes(rhOverlay))rhOverlay=addFx(new RhOverlay());if(!rhKeeper||!fx.includes(rhKeeper))rhKeeper=addFx(new RhKeeper());}
 class RhOverlay{constructor(){this.t=0;this.layer='top';this.momFlash=0;this.domeT=0;}
   update(dt){this.t+=dt;this.momFlash=Math.max(0,this.momFlash-dt);this.domeT+=dt;
     if(RH.momT>0)RH.momT-=dt;else if(RH.mom>0){RH.momDecayT-=dt;if(RH.momDecayT<=0){RH.mom--;RH.momDecayT=RH_BAL.momDecayStep;}}
@@ -3845,7 +3852,8 @@ if(CHAR==='rhino'){
   ITEMS.titanKnuckles={n:'Titan Breaker Knuckles',slot:'rhand',two:1,kind:'Knuckle',atk:170,wlv:4,aspd:142,ref:4,cards:1,w:240,b:{str:3},size:{small:1,medium:1,large:.75},d:'สนับมือไททัน STR +3'};
   EQ.rhand='ironGauntlets';INV.length=0;INV.push('titanKnuckles','vikinghelm','ringPrec','clipLuck');
   Object.assign(PS,{lv:LV_CAP,str:85,agi:40,vit:80,int:1,dex:40,luk:20});
-  mkBasic=mkRhBasic;rhOverlay=addFx(new RhOverlay());
+  mkBasic=function(tgt){rhEnsure();return mkRhBasic(tgt);};rhEnsure();
+  for(const k in SKILLS){const sk=SKILLS[k];if(!sk||!sk.make||sk._rhE)continue;const mk=sk.make;sk.make=function(){rhEnsure();return mk.apply(this,arguments);};sk._rhE=1;}
   window.RH=RH;window.RH_BAL=RH_BAL;
 }
 /* =========================================================================
@@ -4361,7 +4369,7 @@ window.jgCrit=()=>0;window.jgHit=()=>0;window.jgCritDmg=()=>0;window.jgAspd=()=>
 window.jgPlayerAlpha=()=>{if(player.jgHide&&!AX.cocoon&&!(player.action&&player.action.key==='acBlink'))player.jgHide=false;return player.jgHide?0:1;};
 window.jgNoInterrupt=()=>!!LV.acFluid&&(AX.fluidN=(AX.fluidN||0)+1)%4!==0;   /* only every 4th interruption gets through */
 window.jgMove=()=>(hasBuff('axHarmony')?(player.speed+30)/player.speed:1);
-window.jgDmgMul=(e,o)=>{let b=0;const br=o&&o.br||((player.action&&player.action.skill&&SKILLS[player.action.skill])?SKILLS[player.action.skill].br:'basic');if(br==='A')b+=15*(LV.axMastery||0);if(LV.axDeep&&(e.st.slow>0||e.st.stagger>0))b+=20*LV.axDeep;const base=Math.max(1,D.mag);return (base+b)/base;};   /* flat MATK, no percents */
+window.jgDmgMul=(e,o)=>{let b=0;const br=o&&o.br||((player.action&&player.action.skill&&SKILLS[player.action.skill])?SKILLS[player.action.skill].br:'basic');if(br==='A')b+=15*(LV.axMastery||0);if(LV.axDeep&&(e.st.slow>0||e.st.stagger>0))b+=20*LV.axDeep;const base=Math.max(1,D.mag);return (base+Math.min(b,base))/base;};   /* flat MATK, no percents (≤ the hit's own power, 2026-11-22) */
 window.jgDmgTaken=()=>1;
 window.jgEnemyTick=(e,dt)=>{if(e.axFloat>0){e.axFloat-=dt;e.z=24+Math.sin(gameTime*3+e.id)*4;e.vz=0;e.vx*=.8;e.vy*=.8;e.st.stagger=Math.max(e.st.stagger,.1);if(e.axFloat<=0){e.vz=-120;}}return false;};
 window.jgAfterHurt=()=>{};window.jgOnSkillHit=()=>{};
@@ -4782,7 +4790,7 @@ function mkCbJaw(c){const t=ctgt(c,90),lv=LV.cbJaw;return bite({key:'cbJaw',name
 function mkCbLock(c){const t=ctgt(c,90);if(!t)return null;const lv=LV.cbLock;return bite({key:'cbLock',name:'Jaw Lock',t,sc:1.1,speed:1.3,each:(a,e)=>{cr(e,1.2+.25*lv,{kind:'maw'});
   if(crGrabStart(e,CR_BAL.grabDur+.3*lv)){a.grabbed=true;addFx(new DText({x:e.x,y:e.y,z:66,text:'LOCK',color:CRC.amber,size:13,life:.7}));if(LV.ccDragFang){const sx=e.x,sy=e.y,[nx,ny]=clampPt(player.x-Math.cos(player.phi)*40,player.y-Math.sin(player.phi)*40);player.x=nx;player.y=ny;addFx(new DragMarks({ax:sx,ay:sy,bx:nx,by:ny}));}}
   else{a.bossAlt=true;crOff(e,1);cr(e,.8,{kind:'maw',quiet:true});}}});}
-function mkCbShake(c){const t=CR.grab?CR.grab.e:(c.action&&c.action.hitList||[]).find(e=>!e.dead)||ctgt(c,90);if(!t)return null;const held=!!CR.grab;const s=[];const d0=player.dir,i0=DIR8.indexOf(d0);for(let i=0;i<6;i++)s.push(...hold('attack',atkDir(DIR8[(i0+(i%2?1:7))%8]),CT('E'),70));
+function mkCbShake(c){const t=CR.grab?CR.grab.e:(c.action&&c.action.hitList||[]).find(e=>!e.dead)||ctgt(c,90);if(!t)return null;const held=!!CR.grab;const s=[];const d0=player.dir,i0=DIR8.indexOf(d0);for(let i=0;i<6;i++)s.push(...hold('attack',atkDir(DIR8[(i0+(i%2?1:7))%8]),CT('E'),70));s.push(...hold('attack',atkDir(d0),CT('E'),180));   // 2026-11-22: +.18 s so the throw at .52 happens (the 6 shakes end at .42)
   const ev=[];for(let i=0;i<3;i++)ev.push({t:.1+i*.14,f:a=>{if(t.dead)return;cr(t,.9,{kind:'maw',knock:held?null:[angTo(t),10]});mudSplash(t.x,t.y,5,110);addFx(new JawSnap({e:t,sc:.7,life:.25,close:.05}));shake(1.5);a.hitConfirmed=true;}});
   ev.push({t:.52,f:()=>{if(held)crGrabEnd(player.phi,280);}});return act({key:'cbShake',name:'Violent Shake',seq:s,windup:.1,dur:.6,hitList:[t],events:ev});}
 function mkCbTailBreaker(c){const lv=LV.cbTailBreaker;return mkCrTail(c,{key:'cbTailBreaker',name:'Tail Breaker',R:100,m:1.7+.3*lv,kn:220,big:true,offDur:1.4,w:22,speed:1.8});}
@@ -5116,7 +5124,7 @@ if(CHAR==='jaguar'){
   const zig=(sx,sy,dx,dy,col)=>addFx(new ZigzagDash({ax:sx,ay:sy,bx:dx,by:dy,col}));
   for(const [k,col] of [['jgStep','#38e0d0'],['jgSlip','#b48aff'],['jgSpiral','#ff5a8a'],['jgBloodChase','#ff4a5a'],['jgReprisal','#ff4a5a']]){const sk=SKILLS[k];if(!sk||!sk.make)continue;const mk=sk.make;
     sk.make=function(c){const sx=player.x,sy=player.y,a=mk(c);if(a){const ev=a.events||(a.events=[]);ev.push({t:.001,f:()=>{setFxTimer(.05,()=>{if(Math.hypot(player.x-sx,player.y-sy)>30)zig(sx,sy,player.x,player.y,col);});}});
-      if(k==='jgSlip'||k==='jgReprisal'){ev.push({t:.08,f:()=>frontArc({R:46,w:15,dir:1,mid:col,deep:'#1a0a2a',life:.4,off:10})});}}return a;};}
+      if(k==='jgSlip'||k==='jgReprisal'){const fa=()=>frontArc({R:46,w:15,dir:1,mid:col,deep:'#1a0a2a',life:.4,off:10});if(seqTotal(a.seq)>.09)ev.push({t:.08,f:fa});else setFxTimer(.08/ACTION_TEMPO,fa);}}return a;};}
   /* assassinate-style finisher burst for Throne of Claws & Predator Drop */
   for(const k of ['jgThrone','jgDrop','jgEBackstab']){const sk=SKILLS[k];const mk=sk.make;sk.make=function(c){const a=mk(c);if(a){const t=tgtOf(c,260);const T=k==='jgThrone'?a.dur-.5:a.windup+.02;if(t)a.events.push({t:T,f:()=>{if(t.dead)return;addFx(new BrushArc({x:t.x,y:t.y,z:30,R:70,w:26,ang0:-2.4,span:2.6,tilt:-.3,squash:.8,mid:'#ff6ab0',deep:'#4a0a2a',life:.6,sweep:.1}));addFx(new StarCut({x:t.x,y:t.y,n:6,R:40,mid:'#ff8ad0'}));puff(t.x,t.y,3);}});}return a;};}
 }
@@ -5652,7 +5660,7 @@ function buildStatus(){const w=document.getElementById('stw');if(!w||!w.classLis
     ${kv('CRIT',D.crit,'1 + LUK × 0.3 + ไอเทม (%) · คริไม่พลาด ไม่สนใจ DEF ดาเมจ ×1.4 · ตีปกติคริได้')}
     ${kv('ASPD',Math.floor(D.aspd),'ความเร็วตีปกติ (RO): 200 − (200 − ฐานฮีโร่) × (1 − AGI/250 − DEX/1000) × (1 − ASPD% ไอเทม) · ตีได้ '+D.aps.toFixed(2)+' ครั้ง/วิ')}</div>`;
   const side=`<div style="display:flex;flex-direction:column;gap:4px">${statRadar(Object.fromEntries(STATK.map(k=>[k,tot(k)])),null,Math.max(60,...STATK.map(tot)),140)}
-    ${kv('ตี/วิ',D.aps.toFixed(2),'ตีปกติกี่ครั้งต่อวินาที (ASPD)')}${kv('ร่าย',`×${D.castMul.toFixed(2)}`,'เวลาร่าย × (1 − DEX/150)')}${kv('HP / SP',`${player.maxHp} / ${player.maxMp}`,'MaxHP +1% ต่อ VIT · MaxSP +1% ต่อ INT')}<div class="k sp" title="แต้มที่เหลือ · Lv x → x+1 ได้ floor(x/5)+3 · ค่าอัปแพงขึ้นทุก 10"><span>Point</span><i>${left}</i></div></div>`;
+    ${kv('ตี/วิ',D.aps.toFixed(2),'ตีปกติกี่ครั้งต่อวินาที (ASPD)')}${kv('ร่าย',`×${D.castMul.toFixed(2)}`,'เวลาร่าย × (1 − DEX/150)')}${kv('HP / SP',`${player.maxHp} / ${player.maxMp}`,'MaxHP +1% ต่อ VIT · MaxSP +1% ต่อ INT')}<div class="k sp" title="แต้มที่เหลือ · Lv x → x+1 ได้ floor(x/5)+3 · ค่าอัปแพงขึ้นทุก 10"><span>Point</span><i>${left}</i></div>${window.STH?STH.html():''}</div>`;
   let x='';if(stOpenX){x=`<div class="ro-x"><b>${JOB.name}</b> · Base Lv <b>${PS.lv}</b> · ฟื้น HP ${D.hpReg}/6s · SP ${D.spReg}/8s · ตีปกติ ${D.aps.toFixed(2)} ครั้ง/วิ<br>
     อาวุธ <b>${WEAPON.refine?'+'+WEAPON.refine+' ':''}${WEAPON.name}</b> (${WEAPON.type}) · ${WEAPON.magic?'MATK':'ATK'} อาวุธ ${WEAPON.magic?WEAPON.matk:WEAPON.atk} + ตีบวก ${WEAPON.refAtk}<br>
     โบนัสฮีโร่ (สุ่มตอนสร้างตัว): ${STATK.map(k=>STLAB[k]+' '+baseStat(k)).join(' · ')}</div>`;
@@ -5662,6 +5670,7 @@ function buildStatus(){const w=document.getElementById('stw');if(!w||!w.classLis
     x+=`<div class="ro-x">${Object.keys(PRESETS).map(n=>`<button class="rob" data-p="${n}">${n}</button>`).join(' ')} <button class="rob" data-p="reset">Reset</button>${testMode?' <button class="rob" id="rerollBase" title="ทดสอบหน้าสร้างตัว">🎲 สุ่มโบนัสฮีโร่</button>':''}<br><label><input type="checkbox" id="fastreg" ${fastRegen?'checked':''}> เร่งฟื้น HP/SP ×6 (ทดสอบ)</label></div>`;}
   roWin('stw','Status',`<div class="ro-st" style="grid-template-columns:1fr 150px"><div style="display:flex;flex-direction:column;gap:3px">${c1}${der}</div>${side}</div>${x}`,
     `<span>Base Lv</span><button class="rob" data-l="-10">«</button><button class="rob" data-l="-1">-</button><b style="min-width:18px;text-align:center">${PS.lv}</b><button class="rob" data-l="1">+</button><button class="rob" data-l="10">»</button><button class="rob" id="lutest" title="ทดสอบเอฟเฟคเลเวลอัพ">LvUP ✦</button><span style="margin-left:auto"></span><button class="rob" id="stx2">${stOpenX?'▲ ย่อ':'▼ รายละเอียด'}</button>`);
+  if(window.STH)STH.bind(w);
   w.querySelectorAll('[data-s]').forEach(b=>b.onclick=ev=>{const k=b.dataset.s,d=+b.dataset.d*(ev.shiftKey?10:1);
     if(d>0){for(let i=0;i<d&&PS[k]<SYS.max&&statCost(PS[k])<=pointsLeft();i++)PS[k]++;}else PS[k]=Math.max(1,PS[k]+d);applyStats();});
   {const rb=w.querySelector('#rerollBase');if(rb)rb.onclick=()=>openRollWin(()=>buildStatus());}
@@ -6055,22 +6064,24 @@ window.AF={levelUp:()=>{if(PS.lv<LV_CAP){PS.lv++;applyStats();player.hp=player.m
 <script src="svg_vfx.js"></script>
 <script src="vfx_rework.js?v=2"></script>
 <script src="croc_vfx.js?v=2"></script>
-<script src="worldmap.js"></script>
-<script src="gem_data.js?v=7"></script>
-<script src="drop_table.js?v=1"></script>
-<script src="items.js?v=25"></script>
+<script src="worldmap.js?v=2"></script>
+<script src="gem_data.js?v=8"></script>
+<script src="drop_table.js?v=2"></script>
+<script src="items.js?v=27"></script>
 <script src="market.js?v=3"></script>
 <script src="npcs.js?v=10"></script>
 <script src="monsters.js?v=2"></script>
-<script src="monster-sprites.js?v=3"></script>
+<script src="monster-sprites.js?v=4"></script>
 <script src="monster-catalog.js"></script>
-<script src="boss_fenrir.js?v=6"></script>
+<script src="map_bosses.js?v=6"></script>
+<script src="boss_fenrir.js?v=8"></script>
 <script src="progress.js?v=2"></script>
 <script src="char_create.js?v=2"></script>
 <script src="skill_shapes.js?v=1"></script>
 <script src="mobile.js?v=6"></script>
 <script src="target_lock.js?v=2"></script>
-<script src="totem_gems.js?v=35"></script>
+<script src="sp_rules.js?v=1"></script>
+<script src="totem_gems.js?v=36"></script>
 <script src="seals.js?v=1"></script>
 <script src="relics.js?v=3"></script>
 <script src="gem_fx.js?v=3"></script>
@@ -6079,6 +6090,7 @@ window.AF={levelUp:()=>{if(PS.lv<LV_CAP){PS.lv++;applyStats();player.hp=player.m
 <script src="gem_btn.js?v=1"></script>
 <script src="feel_hits.js?v=1"></script>
 <script src="milestones.js?v=1"></script>
+<script src="stat_help.js?v=1"></script>
 <script src="wolf_vfx3.js?v=70"></script>
 <script src="cat_art.js?v=1"></script>
 <script src="kitsune_art.js?v=1"></script>
@@ -6101,6 +6113,7 @@ window.AF={levelUp:()=>{if(PS.lv<LV_CAP){PS.lv++;applyStats();player.hp=player.m
 <script src="fx_manifest.js?v=1"></script>
 <script src="fx_cfg.js?v=1"></script>
 <script src="testroom.js?v=2"></script>
+<script src="guide.js?v=7"></script>
 <script>/* offline cache (sw.js): pictures are kept on the device, so later visits barely download anything; ?nosw=1 removes it */
 if('serviceWorker' in navigator&&location.protocol==='https:'){if(/[?&]nosw=1/.test(location.search))navigator.serviceWorker.getRegistrations().then(a=>a.forEach(r=>r.unregister()));else window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));}</script>
 <script>/* fashion system: wolf sprite only for now */if(CHAR==='wolf')document.write('<script src="assets_fashion.js"><\/script><script src="assets_fur.js"><\/script><script src="assets_skin.js"><\/script><script src="pwing_data.js?v=1"><\/script><script src="fashion.js?v=7"><\/script>');</script>

@@ -399,7 +399,7 @@ function installDragon(){
     else{if(o&&o.still)b+=dLv(DB.dkStill.tal,'dkStill');}
     return b;};
   window.jgHit=()=>0;window.jgCrit=()=>0;window.jgCritDmg=()=>0;window.jgDmgTaken=()=>1;
-  window.jgDmgMul=(e,o)=>{const base=Math.max(1,o&&o.magic?D.mag:D.patk);return (base+flat(e,o))/base;};
+  window.jgDmgMul=(e,o)=>{const base=Math.max(1,o&&o.magic?D.mag:D.patk);return (base+Math.min(flat(e,o),base))/base;};   // 2026-11-22: a flat bonus adds at most the hit's own power (off-stat builds got ×10+ from it)
   window.jgPreHit=()=>1;
   window.jgAbsorb=(d,e)=>{
     /* Komainu Guard: the first hit inside the guard is fully blocked */

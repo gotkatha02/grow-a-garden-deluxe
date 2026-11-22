@@ -166,6 +166,11 @@ const EXTRACT=[ // [skill learnable up to this level, cost]
    Re-extracting (สกัดใหม่) costs the extraction price again, rolls a new rarity + lines (level kept) and the player keeps either one. */
 const SGEM={lvEss:lv=>Math.round(3+1.2*lv),lvZ:lv=>200*lv,
   brk:{10:[['tstone1',2]],20:[['tstone2',2]],30:[['tstone3',2],['sore',1]],40:[['tstone4',2],['sore',2]]}};
-window.GEMDATA={MUT,SUP,RESO,BAL_N,LINES,QUAL,RANK_P,GEM_CAP,BREAK,COST,gemPow,DROPS,R,CARVE,EXTRACT,SGEM,SLINE,SLINE_MUL,POOL,SLOT_LV,lvMul,nSlots,lineV,statN,
+/* gem fusion (owner 2026-11-22 18:44 → DROP_TABLE_TH.md §11): 3 mutation / support gems of ANY kinds + boss parts + zeny = 1 of the kind you
+   choose (totem shrine tab 🔮). A sink for the durable gems (they come back to the bag when unsocketed, so without it they only pile up),
+   a floor under the price of unwanted kinds (they are fusion fuel) and a ceiling over the wanted ones (≈ 3 cheap + fee). Parts: map-boss
+   parts are used first (cheapest), then MVP, then main-boss parts. */
+const FUSE={mut:{n:3,part:2,z:20000},sup:{n:3,part:1,z:8000}};
+window.GEMDATA={MUT,SUP,RESO,BAL_N,LINES,QUAL,RANK_P,GEM_CAP,BREAK,COST,gemPow,DROPS,R,CARVE,EXTRACT,SGEM,SLINE,SLINE_MUL,POOL,SLOT_LV,lvMul,nSlots,lineV,statN,FUSE,
   MUTD:Object.fromEntries(MUT.map(s=>[s[0],s])),SUPD:Object.fromEntries(SUP.map(s=>[s[0],s])),LND:Object.fromEntries(LINES.map(s=>[s[0],s]))};
 })();
