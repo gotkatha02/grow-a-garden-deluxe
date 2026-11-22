@@ -48,7 +48,7 @@ function shapePath(s,k){ctx.beginPath();
     case 'wedge':{let a1=s.a1;while(a1<s.a0)a1+=T2;ctx.moveTo(0,0);ctx.arc(0,0,Math.max(.5,s.r*k),s.a0,a1);ctx.closePath();break;}
     case 'rect':{const c=Math.cos(s.phi),n=Math.sin(s.phi),o=s.off||0,L=o+(s.len-o)*k,h=s.w/2;
       ctx.moveTo(c*o-n*h,n*o+c*h);ctx.lineTo(c*L-n*h,n*L+c*h);ctx.lineTo(c*L+n*h,n*L-c*h);ctx.lineTo(c*o+n*h,n*o-c*h);ctx.closePath();break;}}}
-const COL={red:'#ff3a2a',blue:'#2f9bff',gold:'#ffc83a',purple:'#a24ae6',pink:'#ff5aa0',white:'#e8f4ff'};
+const COL={red:'#ff3a2a',blue:'#2f9bff',gold:'#ffc83a',purple:'#c070ff',pink:'#ff5aa0',white:'#e8f4ff'};
 MB.COL=COL;
 function drawShape(s,fn){if(s.k==='multi'){for(const q of s.list)drawShape(q,fn);return;}const [x,y]=P(s.x,s.y);ctx.save();ctx.translate(x,y);ctx.scale(1,K);fn(s);ctx.restore();}
 /* a telegraph: fills until t = life, then fire() runs once. col red / gold / purple / pink = danger, blue = safe ✓ */
@@ -198,7 +198,7 @@ MB.breakPart=breakPart;
 
 /* ---------------- props (not enemies): covers, pools, glyphs … ---------------- */
 class PropFx{constructor(q){this.q=q;this.layer=q.layer||'ground';this.t=0;this.sy=q.y;}
-  update(dt){const q=this.q;this.t+=dt;q.t=(q.t||0)+dt;this.sy=q.y+(q.sortOff||0);if(q.update)q.update(q,dt);if(q.life!=null&&q.t>=q.life){if(!q.dead&&q.onEnd)q.onEnd(q);q.dead=1;}
+  update(dt){const q=this.q;this.t+=dt;q.t=(q.t||0)+dt;if(q.update)q.update(q,dt);this.sy=q.y+(q.sortOff||0);if(q.life!=null&&q.t>=q.life){if(!q.dead&&q.onEnd)q.onEnd(q);q.dead=1;}
     if(q.dead){this.d=(this.d||0)+dt;return this.d<(q.fadeT||.4);}return true;}
   draw(){const q=this.q;if(!q.draw)return;const al=q.dead?Math.max(0,1-(this.d||0)/(q.fadeT||.4)):1;const [x,y]=P(q.x,q.y);ctx.save();ctx.globalAlpha=al;try{q.draw(q,x,y,this.t,al);}catch(err){}ctx.restore();ctx.globalAlpha=1;}}
 MB.prop=function(e,q){q.t=0;q.e=e;if(e&&e.mb)e.mb.props.push(q);addFx(new PropFx(q));if(q.layer2){const q2=Object.assign({},q,{layer:q.layer2,draw:q.draw2,update:null});q.twin=q2;addFx(new PropFx(Object.assign(q2,{_src:q})));}return q;};
@@ -284,6 +284,9 @@ function drawUI(dt){ui();if(banT>0){banT-=dt;if(banT<=0)ban.className=ban.classN
   return d;};}
 {const _de=drawEnemy;drawEnemy=function(e){if((e.mboss||e.mbPart)&&e.hidden)return;if(e.mbPart&&!e.dead&&e.drawFn&&!e.noHide&&e.hp>=e.maxHp&&!(window.TL&&TL.e===e))return;
   if(e.mbLift>0){const z=e.z;e.z=(z||0)+e.mbLift;try{_de(e);}finally{e.z=z;}return;}return _de(e);};}
+/* e.mbTilt (radians): the boss sprite leans / topples round its feet (Trojan cart, drunk Polyphemus) — only the body, not its bars */
+if(typeof window.MSPR_DRAW==='function'){const _md=window.MSPR_DRAW;window.MSPR_DRAW=function(e,x,y){const t=e&&e.mbTilt;if(!t)return _md.apply(this,arguments);
+  ctx.save();ctx.translate(x,y);ctx.rotate(t);ctx.translate(-x,-y);try{return _md.apply(this,arguments);}finally{ctx.restore();}};}
 if(typeof monsterCC==='function'){const _cc=monsterCC;monsterCC=function(e){if(e&&(e.mboss||e.mbOf))return;return _cc(e);};}
 if(typeof mapBlockedW==='function'){const _mb=mapBlockedW;mapBlockedW=function(x,y){return _mb(x,y)||solidAt(x,y);};}
 if(typeof nearestEnemy==='function'){const _ne=nearestEnemy;nearestEnemy=function(x,y,maxD,front){
