@@ -67,9 +67,9 @@ KIND = {
     'flee': ('FLEE +{v}', 3, 8, 'FLE', '#9fe8c8', 'def'), 'pd': ('หลบเด็ดขาด +{v}', 1, 2, 'PD', '#fff0a0', 'def'),
     'res': ('ติดสถานะสั้นลง {v}%', 2, 5, 'RES', '#6fdc7a', 'def'), 'pred': ('รับดาเมจกายภาพ −{v}%', 1, 2, 'PRD', '#6fa2ef', 'def'),
     'mred': ('รับดาเมจเวท −{v}%', 1, 2, 'MRD', '#a48cef', 'def'), 'xel': ('ต้านธาตุ{q} +{v}%', 2, 5, 'ต้าน', '#a0c8ff', 'def'),
-    'heal': ('ฮีลแรงขึ้น +{v}%', 2, 5, 'HEL', '#8dff7a', 'util'), 'spc': ('ใช้ SP −{v}%', 1, 3, 'SPC', '#7ec8ff', 'util'),
+    'spm': ('SP สูงสุด +{v}%', 2, 5, 'MSP', '#8dff7a', 'util'), 'spc': ('ใช้ SP −{v}%', 1, 3, 'SPC', '#7ec8ff', 'util'),
     'spr': ('ฟื้น SP ต่อรอบ +{v}', 1, 3, 'SPR', '#5ab0ff', 'util'), 'move': ('เดินเร็วขึ้น {v}%', 1, 3, 'MOV', '#9fe8a0', 'util'),
-    'wt': ('แบกของ +{v}', 50, 150, 'WT', '#c8a060', 'util'),
+    'exp': ('EXP ล่ามอน +{v}%', 1, 3, 'EXP', '#c8a060', 'util'),
     'skcd': ('{sk}: คูลดาวน์ −{v} วิ', .5, 1, 'CD', '#ffd36a', 'skill'), 'sksp': ('{sk}: ใช้ SP −{v}', 3, 6, 'SP', '#ffd36a', 'skill'),
 }
 FAM = {'stat': 'สเตตัส', 'off': 'โจมตี', 'slay': 'เผ่า / ธาตุ', 'def': 'ป้องกัน', 'util': 'ใช้งาน', 'skill': 'สกิล C'}
@@ -80,17 +80,17 @@ ELS = [('Water', 'น้ำ'), ('Earth', 'ดิน'), ('Fire', 'ไฟ'), ('Win
 # small-node pool per region (the region = the nearest C knot's branch): (kind, weight, first band, last band)
 POOL = {'A': [('str', 13, 1, 4), ('agi', 8, 1, 4), ('dex', 7, 1, 4), ('luk', 4, 1, 4), ('vit', 3, 1, 4), ('atk', 12, 1, 4), ('hit', 7, 1, 4),
               ('crit', 6, 1, 4), ('flee', 3, 1, 4), ('def', 2, 1, 4), ('critd', 4, 2, 4), ('atkp', 4, 2, 4), ('aspd', 4, 2, 4),
-              ('ign', 3, 3, 4), ('race', 4, 3, 4), ('el', 3, 3, 4), ('pd', 1, 3, 4), ('boss', 2, 4, 4), ('wt', 2, 1, 2)],
+              ('ign', 3, 3, 4), ('race', 4, 3, 4), ('el', 3, 3, 4), ('pd', 1, 3, 4), ('boss', 2, 4, 4), ('exp', 2, 1, 2)],
         'basic': [('vit', 12, 1, 4), ('agi', 6, 1, 4), ('luk', 6, 1, 4), ('dex', 6, 1, 4), ('str', 3, 1, 4), ('int', 3, 1, 4), ('def', 9, 1, 4),
-                  ('mdef', 7, 1, 4), ('flee', 7, 1, 4), ('hit', 3, 1, 4), ('crit', 2, 1, 4), ('spr', 3, 1, 4), ('wt', 3, 1, 2), ('res', 4, 2, 4),
+                  ('mdef', 7, 1, 4), ('flee', 7, 1, 4), ('hit', 3, 1, 4), ('crit', 2, 1, 4), ('spr', 3, 1, 4), ('exp', 3, 1, 2), ('res', 4, 2, 4),
                   ('move', 2, 2, 4), ('pred', 3, 3, 4), ('mred', 3, 3, 4), ('pd', 2, 3, 4), ('xel', 4, 3, 4), ('boss', 1, 4, 4)],
         'B': [('int', 13, 1, 4), ('dex', 8, 1, 4), ('vit', 4, 1, 4), ('luk', 4, 1, 4), ('agi', 2, 1, 4), ('matk', 12, 1, 4), ('mdef', 6, 1, 4),
-              ('flee', 2, 1, 4), ('spr', 4, 1, 4), ('cast', 4, 2, 4), ('matkp', 4, 2, 4), ('spc', 3, 2, 4), ('heal', 3, 2, 4),
-              ('mign', 3, 3, 4), ('el', 4, 3, 4), ('race', 3, 3, 4), ('boss', 1, 4, 4), ('wt', 2, 1, 2)]}
+              ('flee', 2, 1, 4), ('spr', 4, 1, 4), ('cast', 4, 2, 4), ('matkp', 4, 2, 4), ('spc', 3, 2, 4), ('spm', 3, 2, 4),
+              ('mign', 3, 3, 4), ('el', 4, 3, 4), ('race', 3, 3, 4), ('boss', 1, 4, 4), ('exp', 2, 1, 2)]}
 # notable (big) nodes per region, in turn
 BIG = {'A': ['str', 'atkp', 'critd', 'aspd', 'ign', 'hit', 'race', 'agi'],
        'basic': ['vit', 'def', 'flee', 'res', 'pred', 'luk', 'xel', 'mdef'],
-       'B': ['int', 'matkp', 'cast', 'mign', 'heal', 'dex', 'el', 'spc']}
+       'B': ['int', 'matkp', 'cast', 'mign', 'spm', 'dex', 'el', 'spc']}
 
 
 def node_text(n):
@@ -144,7 +144,7 @@ BRANCH = {('A', 2): 'สาย A · ใช้สกิลครั้งที�
 
 # ---------------------------------------------------------------- prices by band (draft — tuned with `sim`)
 # goods: pt rune points · sap ยางวิญญาณ · ma / mb monster mats of the band (common / rare) · medal เหรียญโทเท็มทอง
-#        core แก่นผู้พิทักษ์ · z zeny
+#        rg เจมสกิลราก (1 of the C tier) · z zeny
 COST = {
     ('m', 1): dict(pt=1, sap=6, z=1500),
     ('n', 1): dict(pt=2, sap=20, ma=4, z=4000),
@@ -154,10 +154,10 @@ COST = {
     ('n', 3): dict(pt=2, sap=45, ma=10, mb=3, medal=1, z=15000),
     ('m', 4): dict(pt=1, sap=24, ma=5, mb=1, z=10000),
     ('n', 4): dict(pt=2, sap=60, ma=12, mb=4, medal=2, z=22000),
-    ('c', 1): dict(pt=3, sap=120, mb=8, medal=3, core=1, z=40000),
-    ('c', 2): dict(pt=3, sap=150, mb=10, medal=4, core=1, z=55000),
-    ('c', 3): dict(pt=3, sap=220, mb=14, medal=5, core=2, z=90000),
-    ('c', 4): dict(pt=3, sap=280, mb=18, medal=6, core=3, z=130000),
+    ('c', 1): dict(pt=3, sap=120, mb=8, medal=3, rg=1, z=40000),
+    ('c', 2): dict(pt=3, sap=150, mb=10, medal=4, rg=1, z=55000),
+    ('c', 3): dict(pt=3, sap=220, mb=14, medal=5, rg=1, z=90000),
+    ('c', 4): dict(pt=3, sap=280, mb=18, medal=6, rg=1, z=130000),
 }
 CORE_CRAFT = dict(medal=15, mb=6, z=30000)    # แก่นผู้พิทักษ์ at the shaman (MVP / main bosses also drop it)
 
@@ -416,7 +416,7 @@ def hours(goods, lvd, bag=None):
     """Farming hours for a bag of goods at design level lvd (KPH 700, rates as tools/longterm_sim.py)."""
     KPH = 700
     need = dict(goods)
-    core = need.pop('core', 0)
+    core = need.pop('rg', 0)
     for k, v in CORE_CRAFT.items():
         need[k] = need.get(k, 0) + v * core
     if bag:
@@ -468,7 +468,7 @@ def sim():
         if n['k'] == 'm':
             bands[n['band']] = bands.get(n['band'], 0) + 1
     print('  small nodes by band:', ' · '.join(f'band {b} (Lv {BAND_LV[b]}+) {c}' for b, c in sorted(bands.items())))
-    print(f"  whole web costs {tot['pt']} rune points · sap {tot['sap']:,} · medals {tot['medal']} · cores {tot['core']} · {tot['z']:,}z")
+    print(f"  whole web costs {tot['pt']} rune points · sap {tot['sap']:,} · medals {tot['medal']} · root gems {tot['rg']} · {tot['z']:,}z")
     print(f"  rune points: 4 a level from Lv 31 → Lv 51 {PTS(51)} · Lv 55 {PTS(55)} · Lv 60 {PTS(60)} → {PTS(60) / tot['pt']:.0%} of the web at Lv 60")
     cs = [i for i in N if N[i]['k'] == 'c']
     dmin = []
@@ -515,7 +515,7 @@ def sim():
             used = sum(N[j]['cost'].get('pt', 0) for j in lit)
             smalls = sum(1 for j in order if N[j]['k'] == 'm')
             print(f"  + {N[cid]['nm']:17s} (C tier {N[cid]['tier']}): +{len(order):2d} nodes ({smalls} small) · points used {used:3d} · "
-                  f"sap {g['sap']:4d} · medals {g.get('medal', 0):2d} · cores {g.get('core', 0)} · {g['z']:,}z → ~{h2:.0f} h{extra}")
+                  f"sap {g['sap']:4d} · medals {g.get('medal', 0):2d} · root gems {g.get('rg', 0)} · {g['z']:,}z → ~{h2:.0f} h{extra}")
             if k == 0:
                 print('    gives: ' + ' · '.join(totals(N, lit)))
         ht, _ = hours(run, 94)
@@ -539,6 +539,27 @@ if __name__ == '__main__':
     args = sys.argv[1:] or ['sim']
     if 'sim' in args:
         sim()
+    if 'game' in args:
+        N, E = build()
+        out = os.path.join(os.path.dirname(__file__), '..', '..', 'rune_roots_data.js')
+        NN = []
+        for n in N.values():
+            o = dict(id=n['id'], x=round(n['x'], 1), y=round(n['y'], 1), k=n['k'], b=n['band'], c=n['col'])
+            for a, b2 in (('st', 's'), ('v', 'v'), ('q', 'q'), ('lv', 'lv'), ('need', 'n'), ('tier', 't'), ('knot', 'r'), ('cost', '$')):
+                if a in n and n[a] not in (None, {}, ''):
+                    o[b2] = n[a]
+            if n['k'] == 'b':
+                o['tx'] = BRANCH.get((n['col'], int(n['id'][-1])), '')
+                o['bb'] = n['col'] + n['id'][-1]   # A2 A3 basic2 basic3 B2 B3
+            NN.append(o)
+        data = dict(N=NN, E=E, K={k: dict(t=v[0], s=v[3], c=v[4], f=v[5]) for k, v in KIND.items()}, FAM=FAM, BAND_LV=BAND_LV, C_LV=C_LV,
+                    C_NEED=C_NEED, RX=RX, RY=RY, BANDS=[b[0] for b in BANDS[:3]])
+        js = ('/* Totem Roots web (รากโทเท็ม) — GENERATED by tools/rune/roots_gen.py game (one template for every hero, seed %d).\n'
+              '   N: id x y k(h heart · m small · n big · b branch bonus · c C-skill knot) b(band 1-4) c(column) s(kind) v(value) q(race / element)\n'
+              '   lv(band level) n(nodes lit before this C) t(C tier) r(the knot\'s 6 ring nodes) $(cost) tx(branch bonus text) · E: [a, b, root|ring|spoke] */\n'
+              'window.ROOTS_DATA=' % SEED + json.dumps(data, ensure_ascii=False, separators=(',', ':')) + ';\n')
+        open(out, 'w', encoding='utf-8').write(js)
+        print('wrote', os.path.normpath(out), len(NN), 'nodes', len(E), 'edges', len(js), 'bytes')
     if 'js' in args:
         N, E = build()
         A = adj_map(N, E)

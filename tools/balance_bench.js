@@ -18,13 +18,14 @@
    ========================================================================= */
 async function benchOnce(opts={}){
   /* refine lines (milestones.js) follow the test kit's uneven refine levels (+4 … +7) → kept out of the bench; stat tiers stay in (the presets set them) */
-  const rfl0=window.__RFL_OFF;window.__RFL_OFF=1;if(typeof applyStats==='function')applyStats();
+  /* Totem Roots / Ring of Totem Shards (2026-11-23): their node and rune effects stay out of the standard bench (C skills stay as lit) */
+  const rfl0=window.__RFL_OFF,rt0=window.__ROOTS_OFF,rg0=window.__RING_OFF;window.__RFL_OFF=1;if(!window.__BENCH_RUNES){window.__ROOTS_OFF=1;window.__RING_OFF=1;}   /* __BENCH_RUNES=1: bench WITH the roots + ring (rune balance checks) */if(typeof applyStats==='function')applyStats();
   const LVB=opts.lv||window.__BENCH_LV||60,keep=PS.lv!==LVB&&typeof presetAt==='function'?{lv:PS.lv,ps:Object.fromEntries(STATK.map(k=>[k,PS[k]]))}:null;
   if(keep){PS.lv=LVB;Object.assign(PS,presetAt(PS._pre||(typeof CHAR_PRESET!=='undefined'&&CHAR_PRESET[CHAR])||'ตีแรง',LVB));applyStats();}
   /* dummies: Lv 99 reference = their design levels (Frostling 62, Elder 85 boss) as always; any other bench level = the levels the game uses now */
   const mon0=typeof MON_LV0!=='undefined'?{frostling:MON.frostling,elder:MON.elder}:null;
   if(mon0&&LVB>=99){MON.frostling=Object.assign({},MON.frostling,monStats(MON_LV0.frostling));MON.elder=Object.assign({},MON.elder,monStats(MON_LV0.elder,'boss'));}
-  try{return await benchRun(opts);}finally{window.__RFL_OFF=rfl0;if(mon0){MON.frostling=mon0.frostling;MON.elder=mon0.elder;}if(keep){PS.lv=keep.lv;Object.assign(PS,keep.ps);}applyStats();if(keep){player.hp=player.maxHp;player.mp=player.maxMp;}}}
+  try{return await benchRun(opts);}finally{window.__RFL_OFF=rfl0;window.__ROOTS_OFF=rt0;window.__RING_OFF=rg0;if(mon0){MON.frostling=mon0.frostling;MON.elder=mon0.elder;}if(keep){PS.lv=keep.lv;Object.assign(PS,keep.ps);}applyStats();if(keep){player.hp=player.maxHp;player.mp=player.maxMp;}}}
 /* 2026-11-22 (owner 'แก้บัค'): every run starts from the same hero state. Before, gauges / stacks / marks / summons of the run before carried
    over (a 20 s run took hippo fullness 0 → 120, kitsune tails 0 → 9, croc frenzy 0 → 10, bastet souls 3 → 6 …), so the group run and every
    later run in a page started warm, and fx.length=0 also wiped the heroes' core tickers (layer 'none', which enterMap keeps: owl / hippo /

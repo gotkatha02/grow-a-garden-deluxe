@@ -640,7 +640,7 @@ const win=document.createElement('div');win.id='totemWin';if(HERO!=='wolf')win.c
 win.innerHTML=`<div id="tgBox"><h2>ศาลวิญญาณโทเท็ม</h2><button id="tgX">✕</button>
 <div id="tgLeft"><div id="tgPg">${[0,1,2].map(i=>`<button data-pg="${i}"></button>`).join('')}</div><div id="tgSel"></div><div id="tgInfo"></div><div id="tgBtns"><button id="tgOut">ถอดออก</button><button id="tgUp">อัปเลเวล</button></div></div>
 <div id="tgMid"><div id="tgScr"><div id="tgZoom"><div id="tgBoard"><img id="tgSky" src="${PG}sky.webp" alt="">${TL?`<img id="tgBaseI" src="${PG}${TOT.base.src}.webp" alt=""><div id="tgPole">${[0,1,2,3,4].map(i=>`<img class="tgT" data-t="${i}" src="${PG}${TOT.pole.src}.webp" alt="" style="clip-path:inset(${i<4?TL.ct[i]-.5:0}px 0 ${i?TL.ph-TL.ct[i-1]-.5:0}px 0)">`).join('')}</div>`:''}<canvas id="tgLines" width="${BS*2}" height="${BS*2}"></canvas><canvas id="tgRing" width="${BS*2}" height="${BS*2}"></canvas><img id="tgFrame" src="${PG}ring.webp" alt=""></div></div></div><div id="tgRes"><button class="rh" title="เรโซแนนซ์ / สมดุล ของเจมแปรสภาพ">🔗</button><div class="rl"></div></div><div id="tgWs"></div></div>
-<div id="tgRight"><div class="tgAct"><button id="tgGiftB" style="display:none"></button><button id="tgWsB">⛏ แกะ · คราฟต์ · ย่อยเจม</button></div>
+<div id="tgRight"><div class="tgAct"><button id="tgGiftB" style="display:none"></button><button id="tgWsB">⛏ ศาล: สกัด · ย่อย · หลอมเจม</button></div>
 <div class="tgTabs"><button data-tab="sk">⭐ สกิล<small></small></button><button data-tab="gem">💠 เจม C<small></small></button><button data-tab="mut">🔶 แปรสภาพ<small></small></button><button data-tab="sup">🔹 เสริม<small></small></button></div>
 <div class="tgPane" data-pane="sk"><div class="tgHint">${TL?'สกิลที่เรียนแล้ว → ⚗ สกัดเป็นเจม (ครั้งแรกฟรี) → วางในหลุมบนแท่นหิน (Lv '+SS_LV.join(' / ')+')':'สกิลที่เรียนแล้ว → วางบนดาวเงินวงใน (เปิด Lv '+SS_LV.join(' / ')+')'}</div><div class="tgInv" id="tgSkills"></div></div>
 <div class="tgPane" data-pane="gem"><div class="tgHint">${TL?'เจมหลัก = สกิล C → หลุมใหญ่กลางชั้นเสา (ชั้นเปิด Lv '+SOCK_LV.join(' / ')+')':'เจมหลัก = สกิล C → ดาวทองวงนอก (เปิด Lv '+SOCK_LV[0]+'–'+SOCK_LV[NS-1]+')'}</div><div class="tgInv" id="tgGems"></div></div>
@@ -758,7 +758,7 @@ function preview(){const e=win.querySelector('#tgSel');if(!e)return;const S=G('S
 function lvNeed(o){const l=o.lv||1;return {ess:C.lvEss?C.lvEss(l):0,z:C.lvZ?C.lvZ(l):0,dup:BRK[l]||0};}
 function gemInfo(k){const S=G('SKILLS')[k],o=D.own[k],LD=GD?GD.LND:{};
   let h=`<b>${S.name}</b> · เจมขั้น ${S.tier} · สาย ${colName(k)}<br>${S.th||''}<br><span style="opacity:.75">ใส่ได้ตั้งแต่ Lv ${TIER_LV[S.tier]} · เงื่อนไขสกิล: ${S.rq||'-'}</span><br><span style="color:#2a5a8a">แปรสภาพ/เจมเสริม/บรรทัด มีผลกับ: ${tgtName(targetOf(k))} · พลังท่านั้น ×${(1+gemPowOf(o&&o.lv)).toFixed(3)} (เลเวลเจม)</span>`;
-  if(!o)return h+'<br><i>ยังไม่มีเจมนี้ — แกะหินโทเท็มขั้น '+S.tier+' (สุ่มชนิด) หรือคราฟต์จากชิ้นส่วนที่ศาลโทเท็ม</i>';
+  if(!o)return h+(window.ROOTS&&ROOTS.ready?`<br><i>ยังไม่มีเจมนี้ — ${ROOTS.cOn(k)?'สกัดที่ศาลโทเท็ม (⚗ สกัดเจม C) จากสกิล C ที่ปลดแล้ว':'ปลดสกิล C นี้ที่รากโทเท็มก่อน (U) แล้วสกัดเป็นเจมที่ศาลโทเท็ม'}</i>`:'<br><i>ยังไม่มีเจมนี้ — แกะหินโทเท็มขั้น '+S.tier+' (สุ่มชนิด) หรือคราฟต์จากชิ้นส่วนที่ศาลโทเท็ม</i>');
   const nd=lvNeed(o),max=o.lv>=CAP;
   h+=`<br>${qTag(o.q)} เลเวลเจม <b>${o.lv}/${CAP}</b> · เจมซ้ำ ${o.dup||0} · ${o.lv>=CAP?'หลุมแปรสภาพที่ 2 เปิดแล้ว':`หลุมแปรสภาพที่ 2 เปิดที่ Lv ${CAP}`}`;
   h+=max?'<br><span class="g">เลเวลตันแล้ว (อัปเดตหน้าจะเพิ่มเลเวลตัน)</span>':`<br>อัปเลเวลถัดไป: แก่นโทเท็ม ${nd.ess} (มี ${fmtN(bagN('tess'))}) · ${fmtN(nd.z)}z${nd.dup?` · <b class="c">ทะลุขีด: ใช้เจมซ้ำ ${nd.dup} (มี ${o.dup||0})</b>`:''}`;
@@ -1163,7 +1163,11 @@ function giftBuild(){const n=giftN();
     if(giftN()>0)giftBuild();else{wsEl.classList.remove('open');wsTab='carve';sel=null;setTab('sk');render();info(`✔ ได้ <b>${MUTD[id][1]}</b> แล้ว · ต่อไป: แตะสกิลในแท็บ "สกิล" → ${TL?'กด ⚗ สกัดเป็นเจม (ครั้งแรกฟรี) → แตะหลุมสกิลบนแท่นหินที่เปิดแล้ว':'แตะดาวเงินวงในที่เปิดแล้ว'} → กดปุ่ม "${MUTD[id][1]}" ที่ขึ้นตรงนี้`);}});}
 function openGift(){wsTab='gift';wsRes='';wsEl.classList.add('open');giftBuild();}
 function wsBuild(){if(!wsEl.classList.contains('open'))return;if(wsTab==='gift'){giftBuild();return;}const S=G('SKILLS');let body='';
-  if(wsTab==='carve'){body=[1,2,3,4].map(t=>{const ks=tierKeys(t),z=C.carveZ(t),ok=bagN('tstone'+t)>=C.carveStones&&zeny()>=z&&ks.length;
+  if(window.ROOTS&&ROOTS.ready&&(wsTab==='carve'||wsTab==='craft'))wsTab='cex';
+  if(wsTab==='cex'){body=`<div class="gg">${cKeys().map(k=>{const t=S[k].tier,z=C.carveZ(t),lit=!!ROOTS.cOn(k),ok=lit&&bagN('tstone'+t)>=C.carveStones&&zeny()>=z,o=D.own[k];
+      return `<div class="gc"><span class="gem">${cgemHtml(k)}</span><div><b>${S[k].name}</b> <small style="opacity:.7">${o?'มีแล้ว '+qTag(o.q)+(o.dup?' · ซ้ำ ×'+o.dup:''):''}</small><br>ขั้น ${t} · ${lit?`${icn('tstone'+t,C.carveStones)} · ${fmtN(z)}z`:'<span style="color:#c0392b">ยังไม่ปลดในรากโทเท็ม</span>'}</div>${lit?`<button class="go" data-cex="${k}" ${ok?'':'disabled'}>⚗ สกัด</button>`:`<button class="go" data-croot="${k}">🌳 ราก</button>`}</div>`;}).join('')}</div>
+      <div class="note">สกิล C ปลดที่<b>รากโทเท็ม (U)</b> — ปลดแล้วใช้ได้ทันที ไม่ต้องมีเจม · สกัดสกิล C ที่ปลดแล้วเป็น<b>เจม C</b> (เลือกท่าเองได้ · ระดับสุ่ม ${oddsTxt()} · ${pityTxt()}) แล้วใส่หลุมใหญ่บนเสาเพื่อแต่งท่าด้วยแปรสภาพ / เจมเสริม / เลเวล / บรรทัดพิเศษ · สกัดซ้ำ = เจมซ้ำ (ใช้ทะลุขีดเลเวล) · หินโทเท็มดิบดรอปจากมอนตามช่วงเลเวล</div>`;}
+  else if(wsTab==='carve'){body=[1,2,3,4].map(t=>{const ks=tierKeys(t),z=C.carveZ(t),ok=bagN('tstone'+t)>=C.carveStones&&zeny()>=z&&ks.length;
       return `<div class="row"><div class="nm"><b>หินโทเท็มขั้น ${t}</b> → เจมขั้น ${t} (สุ่ม 1 ใน ${ks.length}: ${ks.map(k=>S[k].name).join(' · ')})</div>${icn('tstone'+t,C.carveStones)}<span class="ic">${fmtN(z)}z</span><button class="go" data-carve="${t}" ${ok?'':'disabled'}>⛏ แกะ</button></div>`;}).join('')
       +`<div class="note">ระดับสุ่ม: ${oddsTxt()} · เลเวลเจม 10 / 20 / 30 / 40 เปิดช่องสเตตัสพิเศษเพิ่มทีละ 1 · ${pityTxt()} (นับรวมการสกัดเจมสกิล) · หินขั้น 1 ดรอปจากมอน Lv 1–29, ขั้น 2 Lv 30–59, ขั้น 3 Lv 60–89, ขั้น 4 Lv 90+ · หาเพิ่มที่ตลาดกลาง (หมวดเจม/โทเท็ม)</div>`;}
   else if(wsTab==='craft'){body=`<div class="gg">${cKeys().map(k=>{const t=S[k].tier,z=C.craftZ(t),ok=bagN('tfrag'+t)>=C.craftFrag&&zeny()>=z;
@@ -1174,7 +1178,7 @@ function wsBuild(){if(!wsEl.classList.contains('open'))return;if(wsTab==='gift')
       return `<div class="gc"><span class="gem">${cgemHtml(k)}</span><div><b>${S[k].name}</b><br>เจมซ้ำ ×${D.own[k].dup} → ชิ้นส่วนขั้น ${t} ${C.dismFrag} + แก่น ${C.dismEss}</div><button class="go" data-dism="${k}">ย่อย 1</button></div>`;}).join('')}</div>`:'<div class="note">ยังไม่มีเจมซ้ำ</div>';
     body+=`<div class="note">เก็บเจมซ้ำไว้ใช้ทะลุขีดเลเวล 10 / 20 / 30 / 40 (ใช้ 1 / 1 / 2 / 2 เม็ด) — ย่อยเฉพาะที่เหลือ</div>`;}
   wsEl.innerHTML=`<div style="display:flex;align-items:center;gap:8px"><h4>⛏ ศาลโทเท็ม</h4><span class="note" style="margin-left:auto">แก่น ${fmtN(bagN('tess'))} · ${fmtN(zeny())}z</span><button class="go" id="wsX">✕ กลับแผง</button></div>
-    <div class="tabs">${[['carve','⛏ แกะหิน (สุ่ม)'],['craft','🔨 คราฟต์จากชิ้นส่วน (เลือกได้)'],['dism','♻ ย่อยเจมซ้ำ'],['fuse','🔮 หลอมเจม 3→1']].map(([k,n])=>`<button data-wt="${k}" class="${wsTab===k?'on':''}">${n}</button>`).join('')}</div>
+    <div class="tabs">${(window.ROOTS&&ROOTS.ready?[['cex','⚗ สกัดเจม C']]:[['carve','⛏ แกะหิน (สุ่ม)'],['craft','🔨 คราฟต์จากชิ้นส่วน (เลือกได้)']]).concat([['dism','♻ ย่อยเจมซ้ำ'],['fuse','🔮 หลอมเจม 3→1']]).map(([k,n])=>`<button data-wt="${k}" class="${wsTab===k?'on':''}">${n}</button>`).join('')}</div>
     <div class="res">${wsRes||'<span class="note">ผลการแกะ / คราฟต์จะแสดงที่นี่</span>'}</div>${body}`;
   wsEl.querySelector('#wsX').onclick=()=>{wsEl.classList.remove('open');render();};
   wsEl.querySelectorAll('[data-wt]').forEach(b=>b.onclick=()=>{wsTab=b.dataset.wt;wsRes='';wsBuild();});
@@ -1186,6 +1190,9 @@ function wsBuild(){if(!wsEl.classList.contains('open'))return;if(wsTab==='gift')
   {const fb=wsEl.querySelector('[data-fuse]');if(fb)fb.onclick=doFuse;}
   wsEl.querySelectorAll('[data-carve]').forEach(b=>b.onclick=()=>{const t=+b.dataset.carve,ks=tierKeys(t),z=C.carveZ(t);if(bagN('tstone'+t)<C.carveStones||!ks.length||!payZ(z))return;
     bagAdd('tstone'+t,-C.carveStones);bagSave();const k=ks[Math.floor(Math.random()*ks.length)],q=rollQ(),how=gain(k,q);save();wsRes=resHtml(k,q,how);wsKey=k;wsBuild();});
+  wsEl.querySelectorAll('[data-cex]').forEach(b=>b.onclick=()=>{const k=b.dataset.cex,t=G('SKILLS')[k].tier,z=C.carveZ(t);if(!(window.ROOTS&&ROOTS.cOn(k))||bagN('tstone'+t)<C.carveStones||!payZ(z))return;
+    bagAdd('tstone'+t,-C.carveStones);bagSave();const q=rollQ(),how=gain(k,q);save();wsRes=resHtml(k,q,how);wsKey=k;wsBuild();});
+  wsEl.querySelectorAll('[data-croot]').forEach(b=>b.onclick=()=>{const k=b.dataset.croot;close();try{ROOTS.open(k);}catch(e){}});
   wsEl.querySelectorAll('[data-craft]').forEach(b=>b.onclick=()=>{const k=b.dataset.craft,t=G('SKILLS')[k].tier,z=C.craftZ(t);if(bagN('tfrag'+t)<C.craftFrag||!payZ(z))return;
     bagAdd('tfrag'+t,-C.craftFrag);bagSave();const q=rollQ(),how=gain(k,q);save();wsRes=resHtml(k,q,how);wsKey=k;wsBuild();});
   wsEl.querySelectorAll('[data-dism]').forEach(b=>b.onclick=()=>{const k=b.dataset.dism,o=D.own[k];if(!o||!(o.dup>0))return;const t=G('SKILLS')[k].tier;o.dup--;bagAdd('tfrag'+t,C.dismFrag);bagAdd('tess',C.dismEss);bagSave();save();
@@ -1201,7 +1208,7 @@ function fit(){for(const id of ['#tgLeft','#tgRight']){const p=win.querySelector
       board.style.transform=`translate(${-(HX-TL.cw/2)*s}px,0) scale(${s})`;if(!was)sc.scrollTop=sc.scrollHeight;return;}}
   sc.classList.remove('scr');zm.style.width=zm.style.height='';
   const s=Math.max(.3,Math.min(m.clientWidth,m.clientHeight)/BS);board.style.transform=`scale(${s})`;}
-const DEF_INFO=TL?'<b>เสาโทเท็มของคุณ</b> — สลักขึ้นใหม่จากเศษโทเท็มใหญ่ ทีละชั้นตามเลเวล<br><b>⛏ หลุมที่มีฝาปิด</b> ต้องส่งของสลักเปิดก่อน — แตะหลุมเพื่อดูว่าต้องใช้อะไร (หลุมสกิลแรกเปิดฟรีให้ลอง)<br><b>แท่นหินฐานเสา = ดาวสกิล</b> (เปิด Lv '+SS_LV.join(' / ')+'): สกัดสกิลที่เรียนแล้วเป็นเจม (แท็บ "สกิล" → ⚗ สกัด · ครั้งแรกฟรี) แล้วใส่ในหลุม แล้วใส่เจมแปรสภาพในหลุมเล็ก'+(SSU.length?' (ขอบทอง) และเจมเสริมในหลุมขอบเขียว 2 หลุม (ผลครึ่งหนึ่ง)':'ข้างๆ')+' — สกิลจะเปลี่ยนไปจริงตามเจม<br><b>ชั้นเสา 5 ชั้น = เจม C</b> (หมี Lv 60 · นกฮูก 70 · หมาป่า 80 · อินทรี 90 · นกสายฟ้า 99): หลุมใหญ่กลางชั้น = เจมหลัก · หลุมด้านในปีก = แปรสภาพ (ข้างขวาเปิดเมื่อเจมเลเวลตัน) · หลุมด้านนอกปีก = เจมเสริม':'<b>ดาวเงินวงใน = ดาวสกิล</b> (เปิด Lv '+SS_LV.join(' / ')+'): เลือกสกิลที่เรียนแล้วในแท็บ "สกิล" วางบนดาว แล้วใส่เจมแปรสภาพ — สกิลจะเปลี่ยนไปจริงตามเจม<br><b>ดาวทองวงนอก = เจม C</b> (Lv 60–99): ดาวใหญ่ = เจมหลัก · ดาวขอบรูน = แปรสภาพ · ดาวเล็ก = เจมเสริม · เส้นทางดาวเปิดเพิ่มทุก 10 เลเวล';
+const DEF_INFO=TL?'<b>เสาโทเท็มของคุณ</b> — สลักขึ้นใหม่จากเศษโทเท็มใหญ่ ทีละชั้นตามเลเวล<br><b>⛏ หลุมที่มีฝาปิด</b> ต้องส่งของสลักเปิดก่อน — แตะหลุมเพื่อดูว่าต้องใช้อะไร (หลุมสกิลแรกเปิดฟรีให้ลอง)<br><b>แท่นหินฐานเสา = ดาวสกิล</b> (เปิด Lv '+SS_LV.join(' / ')+'): สกัดสกิลที่เรียนแล้วเป็นเจม (แท็บ "สกิล" → ⚗ สกัด · ครั้งแรกฟรี) แล้วใส่ในหลุม แล้วใส่เจมแปรสภาพในหลุมเล็ก'+(SSU.length?' (ขอบทอง) และเจมเสริมในหลุมขอบเขียว 2 หลุม (ผลครึ่งหนึ่ง)':'ข้างๆ')+' — สกิลจะเปลี่ยนไปจริงตามเจม<br><b>ชั้นเสา 5 ชั้น = เจม C</b> (หมี · นกฮูก · หมาป่า · อินทรี · นกสายฟ้า — เปิดตามเลเวล): สกิล C <b>ปลดที่รากโทเท็ม (U)</b> · บนเสาไว้แต่งท่า: หลุมใหญ่กลางชั้น = เจม C ที่สกัดจากสกิล C ที่ปลดแล้ว · หลุมด้านในปีก = แปรสภาพ (ข้างขวาเปิดเมื่อเจมเลเวลตัน) · หลุมด้านนอกปีก = เจมเสริม':'<b>ดาวเงินวงใน = ดาวสกิล</b> (เปิด Lv '+SS_LV.join(' / ')+'): เลือกสกิลที่เรียนแล้วในแท็บ "สกิล" วางบนดาว แล้วใส่เจมแปรสภาพ — สกิลจะเปลี่ยนไปจริงตามเจม<br><b>ดาวทองวงนอก = เจม C</b> (Lv 60–99): ดาวใหญ่ = เจมหลัก · ดาวขอบรูน = แปรสภาพ · ดาวเล็ก = เจมเสริม · เส้นทางดาวเปิดเพิ่มทุก 10 เลเวล';
 let giftSeen=false;
 const DEF_MORE=()=>`<br><b>📑 หน้า 1–3</b> (แท็บบนสุดของช่องนี้): จัดเสาไว้ 3 แบบ เช่น ฟาร์ม / บอส / ปาร์ตี้ — สลับได้ฟรี<br><b>🔗 เรโซแนนซ์ / ⚖ สมดุล</b>: เจมแปรสภาพแบบเดียวกัน 2 เม็ด = ข้อดีแรงขึ้น · ไม่ซ้ำกันครบ ${BAL_N} แบบ = ข้อเสียเบาลง — แตะปุ่ม 🔗 มุมขวาบนของเสา`+resLine();
 function open(){D=load();sel=null;win.classList.add('open');setTab(tab);fit();try{apply();}catch(e){}render();info(DEF_INFO+DEF_MORE());win.classList.add('open');last=performance.now();cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);
@@ -1238,14 +1245,15 @@ function setGST(g){if(JSON.stringify(g)===JSON.stringify(GST))return;GST=g;try{c
 {const _gc=G('gearCalc');if(typeof _gc==='function'){gearCalc=function(){const r=_gc.apply(this,arguments);const B=G('BON');if(B)for(const k in GST)B[k]=(B[k]||0)+GST[k];return r;};window.gearCalc=gearCalc;}}
 window.gemStats=()=>Object.assign({},GST);
 function apply(){const S=G('SKILLS'),LV=G('LV');if(!S||!LV)return;let chg=false;
-  if(!window.__GEMS_ALL)for(const k of cKeys()){const i=D.sock.indexOf(k),on=i>=0&&sockOpen(i)&&tierOK(k)&&!!D.own[k],w=on?1:0;if((LV[k]||0)!==w){LV[k]=w;chg=true;}}
-  const sig=JSON.stringify([D.sock,D.mods,D.own,cKeys().map(k=>LV[k]),D.ss,D.sm,D.ssu,D.ss.map((k,i)=>ssAct(i)?1:0),D.cv,D.sx,test(),!!window.__RESO_OFF]);if(sig===lastSig&&!chg)return;lastSig=sig;   /* rebuild only on change: ACT keeps its hit / cast counters */
+  const RT=window.ROOTS&&ROOTS.ready?ROOTS:null;   /* owner 2026-11-23: C skills are lit in the Totem Roots (U); the pole only customises them */
+  if(!window.__GEMS_ALL)for(const k of cKeys()){const i=D.sock.indexOf(k),on=RT?RT.cOn(k):(i>=0&&sockOpen(i)&&tierOK(k)&&!!D.own[k]),w=on?1:0;if((LV[k]||0)!==w){LV[k]=w;chg=true;}}
+  const sig=JSON.stringify([RT?RT.sig():0,D.sock,D.mods,D.own,cKeys().map(k=>LV[k]),D.ss,D.sm,D.ssu,D.ss.map((k,i)=>ssAct(i)?1:0),D.cv,D.sx,test(),!!window.__RESO_OFF]);if(sig===lastSig&&!chg)return;lastSig=sig;   /* rebuild only on change: ACT keeps its hit / cast counters */
   for(const k in S){const s=S[k];if(s._gb){s.mp=s._gb.mp;s.cd=s._gb.cd;delete s._gb;}}
   ACT={};
-  const tgt=D.sock.map(k=>k&&LV[k]&&D.own[k]?targetOf(k):null);
+  const tgt=D.sock.map((k,i)=>k&&LV[k]&&D.own[k]&&(!RT||sockOpen(i))?targetOf(k):null);
   const GS={},addS=(l,q,lv)=>{const st=SLINE[l[0]];if(!st)return false;GS[st]=(GS[st]||0)+statN(LV_V(l[1],q,lv))*((GD&&GD.SLINE_MUL&&GD.SLINE_MUL[st])||1);return true;};   /* stat lines → character stats */
   const MC={};   /* working mutation gems per kind (resonance / balance) */
-  D.sock.forEach((k,i)=>{if(!k||!LV[k]||!D.own[k])return;const t=targetOf(k);if(t!=='@auto'&&!S[t])return;const m=D.mods[k]||[];
+  D.sock.forEach((k,i)=>{if(!k||!LV[k]||!D.own[k]||(RT&&!sockOpen(i)))return;const t=targetOf(k);if(t!=='@auto'&&!S[t])return;const m=D.mods[k]||[];
     const A=ACT[t]||(ACT[t]={gems:[],lv:1,mut:[],sup:[],n:0,casts:0,ln:{},elem:0,next:null,socks:[]});A.gems.push(k);A.lv=Math.max(A.lv,D.own[k].lv||1);A.socks.push(i);
     m.forEach((id,j)=>{if(id&&modOpen(i,j)){(isMutJ(j)?A.mut:A.sup).push(id);if(isMutJ(j)&&MUTD[id])MC[id]=(MC[id]||0)+1;}});
     /* random lines (gem farming v2): ranks add up per line kind on the target skill */

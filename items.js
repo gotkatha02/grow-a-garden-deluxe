@@ -93,11 +93,15 @@ ETC.guard={n:'Guard Stone',th:'หินกันแตก',price:50000,kind:'to
 ETC.sore={n:'Star Ore',th:'แร่ดาวตก',price:50000,kind:'ore',tier:5,col:'#ff7ad8',d:'ตีบวก +11 ถึง +15 · ใช้ครั้งละ 1/2/3/4/5 ก้อน (ไป +11/+12/+13/+14/+15) · ดรอปจากมอน Lv '+LC.nc(70)+'+ (ดันเจี้ยนบ่อยกว่า) และบอส'};
 /* totem gem goods (owner 2026-11-21): all tradable in the central market — the way to the gem you want */
 {const GD=window.GEMDATA||{MUT:[],SUP:[]},SC=['#c9b48a','#8fd0c8','#c08aff','#ffcf5a'],LB=[0,1,2,3].map(i=>`Lv ${ORE_LV[i]}${i<3?'–'+(ORE_LV[i+1]-1):'+'}`);
-  [2000,6000,15000,40000].forEach((p,i)=>ETC['tstone'+(i+1)]={n:`Totem Stone T${i+1}`,th:`หินโทเท็มดิบ ขั้น ${i+1}`,price:p,kind:'tstone',tier:i+1,col:SC[i],d:`แกะ 3 ก้อน = เจมหลักขั้น ${i+1} 1 เม็ด (สุ่มชนิด สุ่มคุณภาพ) ที่แผงกลุ่มดาว (G) · ดรอปจากมอน ${LB[i]} (ดันเจี้ยนบ่อยกว่า) และบอส`});
-  [800,2400,6000,16000].forEach((p,i)=>ETC['tfrag'+(i+1)]={n:`Gem Shard T${i+1}`,th:`ชิ้นส่วนเจม ขั้น ${i+1}`,price:p,kind:'tfrag',tier:i+1,col:SC[i],d:`40 ชิ้น = คราฟต์เจมหลักขั้น ${i+1} ชนิดที่เลือกเองได้ (สุ่มคุณภาพ) · ได้จากการย่อยเจมซ้ำ`});
+  [2000,6000,15000,40000].forEach((p,i)=>ETC['tstone'+(i+1)]={n:`Totem Stone T${i+1}`,th:`หินโทเท็มดิบ ขั้น ${i+1}`,price:p,kind:'tstone',tier:i+1,col:SC[i],d:`3 ก้อน = สกัดเจม C ขั้น ${i+1} จากสกิล C ที่ปลดในรากโทเท็มแล้ว (G → ⛏ ศาล) · สลักหลุมบนเสา / สกัดเจมสกิล · ดรอปจากมอน ${LB[i]} (ดันเจี้ยนบ่อยกว่า) และบอส`});
+  [800,2400,6000,16000].forEach((p,i)=>ETC['tfrag'+(i+1)]={n:`Gem Shard T${i+1}`,th:`ชิ้นส่วนเจม ขั้น ${i+1}`,price:p,kind:'tfrag',tier:i+1,col:SC[i],d:`ใช้สลักหลุมบนเสาโทเท็ม · ได้จากการย่อยเจมซ้ำ (เจม C เลือกชนิดเองได้แล้วตอนสกัด — 2026-11-23 รากโทเท็ม)`});
   ETC.tess={n:'Totem Essence',th:'แก่นโทเท็ม',price:2500,kind:'tess',col:'#ffb84a',d:'อัปเลเวลเจม · อัปขั้น/ล้างบรรทัดเจม · ดรอปจากมอนทั่วไป และได้จากการย่อยเจมซ้ำ'};
   for(const m of GD.MUT)ETC['gmut_'+m[0]]={n:`${m[6]} Mutation Gem`,th:`เจมแปรสภาพ ${m[1]}`,price:25000,kind:'gmut',gem:m[0],col:m[3],d:`ได้: ${m[4]} · เสีย: ${m[5]} · ใส่ที่ดาวกลางข้างเจมหลัก (G) · ใช้ได้ทุกฮีโร่`};
   for(const m of GD.SUP)ETC['gsup_'+m[0]]={n:`${m[5]} Support Gem`,th:`เจมเสริม ${m[1]}`,price:12000,kind:'gsup',gem:m[0],col:m[3],d:`${m[4]} · ใส่ที่ดาวเล็กข้างเจมหลัก (G) · ใช้ได้ทุกฮีโร่`};}
+/* rune goods (owner 2026-11-23, rune_data.js): Totem Roots (sap, medals, root skill gems, dew) + Ring of Totem Shards (raw rune stones,
+   shaman feathers, carved-rune pouches, spirit dust, spirit runes 18 × B/A/S, carved runes 18). Spirit / carved runes stay in the bag
+   (so the market can trade them) but sit in the ring's own pouch view and do not count against the bag's 60 kinds. */
+{const RD=window.RUNEDATA;if(RD)for(const id in RD.GOODS)ETC[id]=RD.GOODS[id];}
 /* totem seals (2026-11-21, seals.js): every big piece carries one land's seal; the old trait crystals unlock seal powers now (same ids → bags and market keep working) */
 const SEAL_N={vik:'กา',azt:'งูขนนก',grk:'ม้าบิน',egy:'สคารับ',jpn:'กระเรียน'},SEAL_SL=['rhand','top','armor','shoes'];
 for(const r in TOWNS)ETC['trait_'+r]={n:`Seal Crystal (${TOWNS[r].name})`,th:`ผลึกตรา${SEAL_N[r]}`,price:20000,kind:'crystal',reg:r,col:TOWNS[r].col,d:`ปลดพลัง 4 ตรา${SEAL_N[r]} แบบที่ 2–3 (หน้าอุปกรณ์ › ตราโทเท็ม) · แบบแรกเลือกได้ฟรี · ดรอปจากมอนแดนนี้ (ดันเจี้ยนบ่อยกว่า)`};
@@ -258,8 +262,9 @@ function load(){let s=null;try{s=JSON.parse(localStorage.getItem(SKEY)||'null');
 function mkFromBase(b){const T=ITEM12[b]||{},lv=T.lv||1;return newInst(b,{orbs:(T.orbs||[]).map(o=>({...o})),sockets:T.sockets||0,tier:tierOfLv(lv),lvReq:lv});}
 /* bag limits: 40 equipment pieces · 60 different Etc/consumable kinds · 999 per stack (storage holds the rest) */
 const BAG_EQ_MAX=40,BAG_KINDS=60,STACK_MAX=999;
-const bagKinds=()=>Object.keys(BAG).length;
-function add(id,n=1){if(n>0){if(!BAG[id]&&bagKinds()>=BAG_KINDS)return 0;const room=STACK_MAX-(BAG[id]||0);n=Math.min(n,room);if(n<=0)return 0;}
+const POUCHK=(window.RUNEDATA&&RUNEDATA.POUCH)||new Set();
+const bagKinds=()=>Object.keys(BAG).filter(k=>!(ETC[k]&&POUCHK.has(ETC[k].kind))).length;   /* spirit / carved runes: own pouch (totem_ring.js) */
+function add(id,n=1){if(n>0){if(!BAG[id]&&!(ETC[id]&&POUCHK.has(ETC[id].kind))&&bagKinds()>=BAG_KINDS)return 0;const room=STACK_MAX-(BAG[id]||0);n=Math.min(n,room);if(n<=0)return 0;}
   BAG[id]=(BAG[id]||0)+n;if(BAG[id]<=0)delete BAG[id];return n;}
 const eqFull=()=>INV.length>=BAG_EQ_MAX;
 const has=(id,n=1)=>(BAG[id]||0)>=n;
@@ -361,6 +366,10 @@ function dropFor(e){const m=e.m||{},L=m.lv||1,t=tierOfLv(L),g=gradeOfLv(L),R=Loo
     if(L0>=D2.soreLv&&ch(dun?D2.soreDun:D2.soreField))got.push('sore');
     if(ch(dun?D2.mutDun:(D2.mutField||0)))got.push('gmut_'+GD.MUT[Math.floor(Math.random()*GD.MUT.length)][0]);   /* field: rare, since skill stars open at Lv 10 */
     if(ch(dun?D2.supDun:D2.supField))got.push('gsup_'+GD.SUP[Math.floor(Math.random()*GD.SUP.length)][0]);
+    /* rune goods (rune_data.js DROPS): spirit sap, golden medals, raw rune stones, carved-rune pouches from Lv 28 (game level) */
+    {const RD=window.RUNEDATA&&RUNEDATA.DROPS;if(RD&&L>=RD.minLv&&!boss){const dk=dun?RD.dun:1;
+      if(ch(RD.sap*crit))got.push('rsap');if(ch(RD.medal*tough*dk))got.push('rmedal');if(ch(RD.bag*dk))got.push('rbag');
+      for(let g=2;g>=0;g--)if(ch(RD.stone[g]*tough*dk)){got.push('rstone'+g);break;}}}
     if(boss&&DT&&DT.bossLoot)got.push(...DT.bossLoot(e.bossKey||(e.fen?'fenrir':''),t));   /* gems, boss part, stones … by boss tier (drop_table.js BOSS) */
     else if(boss){const B2=D2.boss;for(let i=0;i<B2.stones;i++)got.push('tstone'+t);for(let i=0;i<B2.ess;i++)got.push('tess');for(let i=0;i<B2.sore;i++)got.push('sore');
       for(let i=0;i<B2.sup;i++)got.push('gsup_'+GD.SUP[Math.floor(Math.random()*GD.SUP.length)][0]);if(Math.random()<B2.mutChance)got.push('gmut_'+GD.MUT[Math.floor(Math.random()*GD.MUT.length)][0]);}}}
@@ -435,6 +444,8 @@ function etcIcon(id,sz=26){const E=ETC[id]||{},c=E.col||'#c9a46a';
   if(window.PETDATA&&PETDATA.KINDS[E.kind])return PETDATA.icon(id,E,sz);   /* pet goods (pet_data.js) */
   if(E.kind==='ore'&&E.part&&!ICONS.has('wore'+E.tier))return oreBadge(ICONS.has('ore'+E.tier)?img('ore'+E.tier,sz):`<svg width="${sz}" height="${sz}" viewBox="0 0 24 24"><path d="M5 15 L9 6 L17 5 L20 13 L14 20 Z" fill="${c}" stroke="#3a2a1f" stroke-width="1.6"/></svg>`,E.part,sz);
   if(ICONS.has(id))return img(id,sz);
+  if(E.big)return E.big.replace('<svg ',`<svg width="${sz}" height="${sz}" style="display:block" `);   /* rune_data.js: spirit / carved rune stones */
+  if(E.svg)return `<svg width="${sz}" height="${sz}" viewBox="0 0 24 24">${E.svg}</svg>`;
   if(E.kind==='orb'&&ICONS.has('ro_orb_'+E.stat))return img('ro_orb_'+E.stat,sz);   /* new orb pictures (REFINE_STONE_ICON_PROMPTS_TH.md sheet 2) win once they are in icons.json */
   if(E.kind==='orb'&&ICONS.has(ORB_PIC[E.stat]||'orb_'+E.stat))return img(ORB_PIC[E.stat]||'orb_'+E.stat,sz);   // no tier number on the picture (tier shows in the name / tooltip)   // one picture per orb stat is enough
   let g;
@@ -465,7 +476,7 @@ buildItems=function(){const w=$('#itw');if(!w||!w.classList.contains('open'))ret
     roWin('itw','Items',`<div class="ro-tabs">${[['item','Item'],['equip','Equip'],['etc','Etc']].map(([k,n])=>`<button data-t="${k}" class="${itTab===k?'on':''}">${n}</button>`).join('')}</div><div class="ro-grid">${cells}</div>${bl?`<div class="ix-note" style="margin-top:4px">✦ ${bl}</div>`:''}`,
       `<span>ดับเบิลคลิกเพื่อใช้ · F ยา HP · V ยา SP</span><span style="margin-left:auto">Zeny : ${fmt(ZENY)}</span>`);
     w.querySelectorAll('.ro-tabs button').forEach(b=>b.onclick=()=>{itTab=b.dataset.t;buildItems();});w.querySelectorAll('[data-use]').forEach(c=>c.ondblclick=()=>useItem(c.dataset.use));addFootBtns(w);return;}
-  const order={mat:0,ore:1,orb:2,crystal:3,tool:4},ids=Object.keys(BAG).filter(k=>ETC[k]&&ETC[k].kind!=='use').sort((a,b)=>order[ETC[a].kind]-order[ETC[b].kind]||(ETC[a].grade??0)-(ETC[b].grade??0)||(a>b?1:-1));let cells='';
+  const order={mat:0,ore:1,orb:2,crystal:3,tool:4},ids=Object.keys(BAG).filter(k=>ETC[k]&&ETC[k].kind!=='use'&&!POUCHK.has(ETC[k].kind)).sort((a,b)=>order[ETC[a].kind]-order[ETC[b].kind]||(ETC[a].grade??0)-(ETC[b].grade??0)||(a>b?1:-1));let cells='';
   for(const id of ids)cells+=`<div class="c" data-etc="${id}" title="${ETC[id].th} ×${BAG[id]}${ETC[id].d?' — '+ETC[id].d:''} · ราคา ${fmt(ETC[id].price)}z">${etcIcon(id)}<em>${BAG[id]}</em></div>`;
   for(let i=ids.length;i<35;i++)cells+=`<div class="c" style="cursor:default"></div>`;
   roWin('itw','Items',`<div class="ro-tabs">${[['item','Item'],['equip','Equip'],['etc','Etc']].map(([k,n])=>`<button data-t="${k}" class="${itTab===k?'on':''}">${n}</button>`).join('')}</div><div class="ro-grid">${cells}</div>`,

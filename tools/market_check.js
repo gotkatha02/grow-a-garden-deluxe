@@ -96,6 +96,8 @@ for(let s=1;s<=3;s++){const {h}=run(Object.assign({V:100,P0:100,shock:[120,2]},C
   /* 2026-11-22 pets (pet_data.js is node-loadable): eggs, bond charms, spirit fluff, personality treat */
   try{require('../pet_data.js');globalThis.PETDATA.goods(ETC);}catch(e){console.log('pet_data.js not loaded: '+e.message);}
   ETC.bm_fenrir={price:8000,kind:'bpart',btier:'mvp',live:true};ETC.bm_ymir={price:15000,kind:'bpart',btier:'main'};   /* 2026-11-22 boss parts: only live bosses trade */
+  /* 2026-11-23: rune goods (rune_data.js — roots: sap, medals, root skill gems · ring: raw stones, pouches, dust, spirit / carved runes; feathers + dew stay NPC-only) */
+  {global.window=global.window||{};require('../rune_data.js');const RG=window.RUNEDATA.GOODS;for(const id in RG)ETC[id]={price:RG[id].price,kind:RG[id].kind,tier:RG[id].tier,grade:RG[id].grade};}
   const NPC=new Set(['hp1','hp2','hp3','hp4','sp1','sp2','sp3','food_atk','food_def','food_vit','food_agi','food_tal','food_cha','manual','ret','capscroll','wing','wore1','ore1','wore2','ore2','drill','pliers','guard']);   /* 2026-11-22: refine stones tiers 3–4 no longer sold */
   const defs={};for(const id in ETC){const d=crowdDef(id,ETC[id],NPC.has(id));if(d)defs[id]=d;}
   const W={},M=makeMarket(defs,W,{rand:rng(4242),news:NEWS,K:KA});let t0=Date.now();M.advance(T0);const warm=Date.now()-t0;

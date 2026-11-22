@@ -160,5 +160,12 @@ const DT=window.DROPTAB={MON,RATE,ROLE_MUL,BOSS,BOSSES,SLOT_TIER,KIND_TH,STAT_EN
     for(let i=0,n=count(T.ess);i<n;i++)out.push('tess');
     for(let i=0,n=count(T.sore);i<n;i++)out.push('sore');
     for(let i=0,n=count(T.ref);i<n;i++)out.push((rnd()<.4?'wore':'ore')+t);
+    /* rune goods (owner 2026-11-23, rune_data.js DROPS.boss): golden medals, root skill gems (map 15 % T1 · MVP T2/T3 · main T3/T4),
+       raw rune stones (always), carved-rune pouches */
+    {const RB=window.RUNEDATA&&RUNEDATA.DROPS.boss[this.bossTier(key)];if(RB){
+      for(let i=0,n=RB.medal[0]+Math.floor(rnd()*(RB.medal[1]-RB.medal[0]+1));i<n;i++)out.push('rmedal');
+      for(const [g,c] of RB.rg)if(rnd()<c)out.push('rg'+g);
+      for(const [g,n] of RB.stone)for(let i=0;i<n;i++)out.push('rstone'+g);
+      for(let i=0;i<RB.bag;i++)out.push('rbag');}}
     return out;}};
 })();
