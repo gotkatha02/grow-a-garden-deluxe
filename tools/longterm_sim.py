@@ -226,8 +226,69 @@ def orbs_part():
         print(f'       boss set: weapon 4 holes (race 2 + element 2 of the boss) damage {pc((1+2*r)**2-1)} (one race ×4 {pc(4*r)})'
               f' · armour / helm / shoes 8 holes (race 4 + element 4) damage taken {pc(max(.5,(1-4*r)**2)-1)}')
 
+def miles_part():
+    """PROPOSAL (MILESTONES_TH.md, owner 2026-11-22 17:00): RO-style refine lines per slot at +7 / +10 / +15 ('When refined to
+    +7 or higher …') and stat milestones at 30 / 60 / 90 / 120 total. Same Lv 60 model and game formulas as orbs_part.
+    Keep RB / the milestone list in step with the doc."""
+    import math
+    fl=math.floor
+    def defAdj(d,N):
+        N=max(1,min(512,N));return math.ceil(.35*max(int(d-.5*N),1)+.65*max(int(d*(1-N/(N+64))),1))
+    LV=60;M=dict(d=39,md=20,luk=8,flee=80,hit=84,atk=240)
+    REF=lambda r:[0,2,3,5,7][4]*r            # weapon level 4: +7 ATK / MATK per +1
+    def aps(s,o):
+        am=(200-160)*max(.05,1-s['agi']/250-s['dex']/1000)*(1-min(.5,o.get('aspd',0)/100));return 50/max(10,am)
+    def phys(o,r):
+        s=dict(str=80,agi=25,vit=22,int=1,dex=33,luk=3)
+        for k in s:s[k]+=o.get('all',0)
+        A=(s['str']+fl(s['str']/10)**2+fl(s['dex']/5)+fl(s['luk']/5)+220+REF(r)+o.get('patk',0)*fl(s['str']/10))*(1+o.get('apct',0)/100)
+        h=min(95,max(5,80+LV+s['dex']+fl(s['luk']/3)+o.get('hit',0)-M['flee']))/100
+        c=max(0,1+fl(s['luk']*.3)+o.get('crit',0)+o.get('lcrit',0)*fl(s['luk']/10)-fl(M['luk']/5))/100
+        sk=h*defAdj(A*3,M['d'])*(1+o.get('skd',0)/100)
+        nb=(1-c)*h*defAdj(A,M['d'])+c*1.4*A
+        if o.get('pierce5'):nb=(4*nb+((1-c)*h*A+c*1.4*A))/5          # STR 60: every 5th basic ignores DEF
+        if o.get('crit8'):nb=(7*nb+1.4*A)/8                          # LUK 60: every 8th basic is a crit
+        o2=dict(o);o2['aspd']=o.get('aspd',0)+o.get('aagi',0)*fl(s['agi']/10)
+        return sk,aps(s,o2)*nb
+    def magic(o,r):
+        s=dict(str=1,agi=1,vit=17,int=82,dex=38,luk=3)
+        for k in s:s[k]+=o.get('all',0)
+        A=(s['int']+fl(s['int']/7)**2+fl(s['dex']/5)+fl(s['luk']/5)+220+REF(r)+o.get('patk',0)*fl(s['int']/10))*(1+o.get('mpct',0)/100)
+        sk=defAdj(A*3,M['md'])*(1+o.get('skd',0)/100)
+        if o.get('mpierce5'):sk=(4*sk+A*3*(1+o.get('skd',0)/100))/5  # INT 60: every 5th magic cast ignores MDEF
+        return sk,aps(s,o)*defAdj(A,M['md'])
+    def gain(f,o,sh,r,r0):
+        s0,b0=f({},r0);s1,b1=f(o,r);return (1-sh)*s1/s0+sh*b1/b0-1
+    def ehp(o):
+        s=dict(str=50,agi=1,vit=70,int=1,dex=10,luk=1)
+        for k in s:s[k]+=o.get('all',0)
+        hp=fl((300+14*LV)*(1+s['vit']/100)*(1+o.get('hp',0)/100));D=38+o.get('vdef',0)*fl(s['vit']/10)+fl(s['vit']/2)+fl(s['agi']/5)
+        h=min(95,max(5,80+M['hit']-(LV+s['agi']+fl(s['luk']/5)+o.get('flee',0))))/100;pd=(1+fl(s['luk']/10))/100
+        return hp/(h*(1-pd)*defAdj(M['atk'],D)*(1-o.get('red',0)/100))
+    RB={7:dict(apct=3,mpct=3,hp=4,flee=5,all=1),
+        10:dict(patk=2,vdef=1,aagi=1,lcrit=1),
+        12:dict(all=1),
+        15:dict(skd=5,red=4,apct=2,mpct=2,hp=4,all=2)}
+    def upto(r):
+        o={}
+        for k,v in RB.items():
+            if r>=k:
+                for a,b in v.items():o[a]=o.get(a,0)+b
+        return o
+    pc=lambda x:f'{x*100:+.0f} %'
+    print('  REFINE LINES — whole set (weapon, armour, helm, shoes, accessory) at the same refine; Lv 60 vs a Lv 60 monster:')
+    for r in (7,10,12,15):
+        o=upto(r)
+        print(f'    +{r}: weapon refine alone physical {pc(gain(phys,{},.4,r,0))} / magic {pc(gain(magic,{},.3,r,0))}'
+              f' · the new lines on top: physical {pc(gain(phys,o,.4,r,r))} / magic {pc(gain(magic,o,.3,r,r))} · tank effective HP {pc(ehp(o)/ehp({})-1)}')
+    print('  STAT MILESTONES (rough damage of the counter perks, same model):')
+    print(f'    STR 60 every 5th basic ignores DEF: physical {pc(gain(phys,{"pierce5":1},.4,10,10))}')
+    print(f'    LUK 60 every 8th basic is a crit (non-LUK build): physical {pc(gain(phys,{"crit8":1},.4,10,10))}')
+    print(f'    INT 60 every 5th magic cast ignores MDEF: magic {pc(gain(magic,{"mpierce5":1},.3,10,10))}')
+
 a=sys.argv[1:] or ['refine','gems']
 if 'carve' in a: carve_part()
+if 'miles' in a: print('MILESTONES PROPOSAL (refine lines +7/+10/+15 per slot, stat milestones 30/60/90/120)');miles_part()
 if 'orbs' in a: print('ORBS v2 PROPOSAL (5 tiers, 38 kinds, rolled at drop; values = ORB_SYSTEM_TH.md)');orbs_part()
 if 'refine' in a: print('REFINE v2 (−1 + break below +10 · break only above · pity +1 %/fail cap 10 % above +10 · Star Ore 1…5 per try)');refine_part()
 if 'gems' in a: print('GEMS v3 (one hero, 5 chosen C gems + 5 skill gems, 1.5 h a day at Lv 90+; 5 rarities, pity 20 / 50)');gems_part()

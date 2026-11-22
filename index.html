@@ -1540,7 +1540,7 @@ function drawEnemy(e){
     ctx.strokeStyle='rgba(255,255,255,.7)';ctx.beginPath();ctx.moveTo(x-14,y-4);ctx.lineTo(x-10,y-36);ctx.moveTo(x+12,y-6);ctx.lineTo(x+16,y-28);ctx.stroke();ctx.restore();}
   ctx.globalAlpha=al;const top=y-(spr?MSPR_H(e)+8:54*e.sc);
   if(e.atk>0&&!e.dead){ctx.fillStyle='#ff4a3a';ctx.font='900 16px Cinzel, serif';ctx.textAlign='center';ctx.fillText('!',x,top-14);ctx.textAlign='start';ctx.globalCompositeOperation='lighter';ctx.globalAlpha=.25+.2*Math.sin(gameTime*30);ctx.fillStyle='#ff3a2a';ctx.beginPath();ctx.ellipse(x,y-16*e.sc,20*e.sc,17*e.sc,0,0,TAU);ctx.fill();ctx.globalAlpha=al;ctx.globalCompositeOperation='source-over';}
-  if(!e.dead&&(e.hp<e.maxHp||player.attackTarget===e||e.boss)){const w=e.boss?60:38;ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(x-w/2,top,w,5);ctx.fillStyle=e.hp/e.maxHp>.3?'#5ee06a':'#ff5a4a';ctx.fillRect(x-w/2+1,top+1,(w-2)*e.hp/e.maxHp,3);if(e.koMax){const r=e.koOut?1-(e.st.stun||0)/KO_STUN:e.ko/e.koMax;ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(x-w/2,top+5,w,4);ctx.fillStyle=e.koOut?'#8a94a8':r<.3?'#ff8a2a':'#ffd23a';ctx.fillRect(x-w/2+1,top+6,(w-2)*r,2);}if(e.boss){ctx.fillStyle='#ffd27a';ctx.font='700 10px Cinzel, serif';ctx.textAlign='center';ctx.fillText(e.bossName||'ELDER FROSTLING · BOSS',x,top-4);ctx.textAlign='start';}}
+  if(!e.dead&&(e.hp<e.maxHp||player.attackTarget===e||window.TL&&TL.e===e||e.boss)){const w=e.boss?60:38;ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(x-w/2,top,w,5);ctx.fillStyle=e.hp/e.maxHp>.3?'#5ee06a':'#ff5a4a';ctx.fillRect(x-w/2+1,top+1,(w-2)*e.hp/e.maxHp,3);if(e.koMax){const r=e.koOut?1-(e.st.stun||0)/KO_STUN:e.ko/e.koMax;ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(x-w/2,top+5,w,4);ctx.fillStyle=e.koOut?'#8a94a8':r<.3?'#ff8a2a':'#ffd23a';ctx.fillRect(x-w/2+1,top+6,(w-2)*r,2);}if(e.boss){ctx.fillStyle='#ffd27a';ctx.font='700 10px Cinzel, serif';ctx.textAlign='center';ctx.fillText(e.bossName||'ELDER FROSTLING · BOSS',x,top-4);ctx.textAlign='start';}}
   let ix=x-18;const iy=top-8;for(const [k,c] of [['bleed','#ff3a4a'],['slow','#7fdcff'],['frozen','#e6f8ff'],['stagger','#ffd23a'],['armor','#d8b45a']]){if(e.st[k]>0&&!e.dead){ctx.fillStyle=c;ctx.beginPath();ctx.moveTo(ix+3,iy-3);ctx.lineTo(ix+6,iy);ctx.lineTo(ix+3,iy+3);ctx.lineTo(ix,iy);ctx.fill();ix+=8;}}
   ctx.globalAlpha=1;}
 
@@ -5236,7 +5236,9 @@ function useSkill(key){const sk=SKILLS[key];if(!sk||sk.passive)return;if(player.
   if(sk.type==='ground'){targeting={key};return;}
   if(sk.type==='self'){endAction();player.pending=null;castSkill(key,{phi:player.phi});return;}
   let tgt=(player.attackTarget&&!player.attackTarget.dead)?player.attackTarget:null;
+  if(!tgt&&window.TL)tgt=TL.forSkill(sk);   /* the locked target (target_lock.js) */
   if(!tgt)tgt=nearestEnemy(mouse.wx,mouse.wy,140)||nearestEnemy(player.x,player.y,Math.max(240,sk.range||0));
+  if(tgt&&window.TL)TL.set(tgt,{sync:1});
   /* walk up to the target first — only for skills that say how close they must be. A melee skill WITHOUT a range (Jackal Lunge, Dragon's Breath, Abyssal Torrent, Titan Toss)
      used to be queued here too and then never fired: 'distance <= undefined' is never true, so the hero just walked into the enemy and stood there (2026-11-21). */
   if(sk.type==='melee'&&tgt&&sk.range>0){player.pending={key,target:tgt};player.attackTarget=tgt;player.moveT=null;if(player.action)endAction();return;}
@@ -5291,7 +5293,7 @@ function updatePlayer(dt){
 
 /* ---- pointer / keys ---- */
 function toWorld(sx,sy){return [(sx-ox)/Z,(sy-oy)/(Z*K)];}
-function enemyAt(sx,sy){let best=null,bd=30*Z;for(const e of enemies){if(e.dead)continue;const q=P(e.x,e.y,16);const d=Math.hypot(q[0]*Z+ox-sx,q[1]*Z+oy-sy);if(d<bd){bd=d;best=e;}}return best;}
+function enemyAt(sx,sy){if(window.TL&&TL.pick)return TL.pick(sx,sy);let best=null,bd=30*Z;for(const e of enemies){if(e.dead)continue;const q=P(e.x,e.y,16);const d=Math.hypot(q[0]*Z+ox-sx,q[1]*Z+oy-sy);if(d<bd){bd=d;best=e;}}return best;}
 cvs.addEventListener('contextmenu',e=>e.preventDefault());
 cvs.addEventListener('pointermove',e=>{mouse.sx=e.clientX;mouse.sy=e.clientY;});
 cvs.addEventListener('pointerdown',e=>{mouse.sx=e.clientX;mouse.sy=e.clientY;const [wx,wy]=toWorld(e.clientX,e.clientY);mouse.wx=wx;mouse.wy=wy;
@@ -5562,7 +5564,7 @@ function levelUpFx(from,to){const cx=player.x,cy=player.y;
   el.classList.remove('on');void el.offsetWidth;el.classList.add('on');clearTimeout(lvupTimer);lvupTimer=setTimeout(()=>el.classList.remove('on'),3200);}
 function toggleAuto(){autoMode=!autoMode;document.getElementById('autob').classList.toggle('on',autoMode);msg(autoMode?'AUTO: เปิด':'AUTO: ปิด');}
 document.getElementById('autob').onclick=toggleAuto;
-function autoTick(){if(CHAR==='owl'&&autoMode&&window.owAutoTick&&owAutoTick())return;if(CHAR==='cat'&&autoMode&&window.catAutoTick&&catAutoTick())return;if(CHAR==='hippo'&&autoMode&&window.hippoAutoTick&&hippoAutoTick())return;if(CHAR==='sheep'&&autoMode&&window.sheepAutoTick&&sheepAutoTick())return;if(CHAR==='dragon'&&autoMode&&window.dragonAutoTick&&dragonAutoTick())return;if(CHAR==='lion'&&autoMode&&window.lionAutoTick&&lionAutoTick())return;if(CHAR==='kitsune'&&autoMode&&window.kitsuneAutoTick&&kitsuneAutoTick())return;if(CHAR==='bastet'&&autoMode&&window.bastetAutoTick&&bastetAutoTick())return;if(CHAR==='anubis'&&autoMode&&window.anubisAutoTick&&anubisAutoTick())return;if(CHAR==='croc'&&autoMode&&window.crocAutoTick&&crocAutoTick())return;if(!autoMode||busy()||player.attackTarget||player.moveT||player.pending||targeting||player.casting)return;const t=nearestEnemy(player.x,player.y,460);if(t)command({kind:'attack',e:t});}
+function autoTick(){if(autoMode&&window.TL)TL.autoPrime();if(CHAR==='owl'&&autoMode&&window.owAutoTick&&owAutoTick())return;if(CHAR==='cat'&&autoMode&&window.catAutoTick&&catAutoTick())return;if(CHAR==='hippo'&&autoMode&&window.hippoAutoTick&&hippoAutoTick())return;if(CHAR==='sheep'&&autoMode&&window.sheepAutoTick&&sheepAutoTick())return;if(CHAR==='dragon'&&autoMode&&window.dragonAutoTick&&dragonAutoTick())return;if(CHAR==='lion'&&autoMode&&window.lionAutoTick&&lionAutoTick())return;if(CHAR==='kitsune'&&autoMode&&window.kitsuneAutoTick&&kitsuneAutoTick())return;if(CHAR==='bastet'&&autoMode&&window.bastetAutoTick&&bastetAutoTick())return;if(CHAR==='anubis'&&autoMode&&window.anubisAutoTick&&anubisAutoTick())return;if(CHAR==='croc'&&autoMode&&window.crocAutoTick&&crocAutoTick())return;if(!autoMode||busy()||player.attackTarget||player.moveT||player.pending||targeting||player.casting)return;const t=(window.TL&&TL.autoPick(460))||nearestEnemy(player.x,player.y,460);if(t)command({kind:'attack',e:t});}
 setInterval(autoTick,250);
 /* minimap */
 const mmc=document.getElementById('mmc'),mmg=mmc.getContext('2d');
@@ -5762,7 +5764,7 @@ function render(){
   if(player.glow&&player.glow.k>.05){const [x,y]=P(player.x,player.y);ctx.save();ctx.translate(x,y);ctx.scale(1,K);ctx.globalCompositeOperation='lighter';const g=ctx.createRadialGradient(0,0,0,0,0,60);g.addColorStop(0,hexA(player.glow.color,.4*player.glow.k));g.addColorStop(1,hexA(player.glow.color,0));ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,60,0,TAU);ctx.fill();ctx.restore();}
   // hover / target rings & shadows
   const ring=(e,c)=>{const [x,y]=P(e.x,e.y);ctx.save();ctx.translate(x,y);ctx.scale(1,K);ctx.strokeStyle=c;ctx.lineWidth=2;ctx.setLineDash([6,4]);ctx.lineDashOffset=-gameTime*20;ctx.beginPath();ctx.arc(0,0,e.r+8,0,TAU);ctx.stroke();ctx.restore();};
-  if(mouse.over&&!mouse.over.dead)ring(mouse.over,'rgba(255,110,90,.85)');if(player.attackTarget&&!player.attackTarget.dead)ring(player.attackTarget,'rgba(255,210,90,.9)');
+  if(window.TL&&TL.ground)TL.ground();else{if(mouse.over&&!mouse.over.dead)ring(mouse.over,'rgba(255,110,90,.85)');if(player.attackTarget&&!player.attackTarget.dead)ring(player.attackTarget,'rgba(255,210,90,.9)');}   /* target lock: target_lock.js */
   if(curMap){/* on maps: soft occlusion pools like the scenery's, not hard discs; footstep dust sits on the ground under everyone */
     drawDust();for(const e of enemies)if(!e.dead){const [x,y]=P(e.x,e.y),sx=x*Z+ox,sy=y*Z+oy;if(sx<-80||sx>VW+80||sy<-80||sy>VH+80)continue;softShadow(x,y,17*e.sc,6*e.sc,1);}
     {const [x,y]=P(player.x,player.y),zs=MAP_CHAR/(1+(player.z||0)/60);softShadow(x,y,17*zs,6*zs,(player.z||0)>2?.65:1);}}
@@ -5785,7 +5787,7 @@ function render(){
   drawParticles(false);if(topBusy){if(layerDirty&&FXB.cut>0)fxCutPlayer(FXB.cut);endLayer(.85);}
   for(const f of fx)if(f instanceof DText)f.draw();
   if(debug)drawDebug();
-  ctx.setTransform(DPR,0,0,DPR,0,0);ctx.drawImage(vignette,0,0,VW,VH);mapOverlay();
+  ctx.setTransform(DPR,0,0,DPR,0,0);ctx.drawImage(vignette,0,0,VW,VH);mapOverlay();if(window.TL&&TL.draw)TL.draw();
   if(flash.a>0){ctx.globalCompositeOperation='lighter';ctx.globalAlpha=flash.a;ctx.fillStyle=flash.c;ctx.fillRect(0,0,VW,VH);ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';}
   if(hitStop>0&&debug){ctx.fillStyle='#ffd36a';ctx.font='700 11px monospace';ctx.fillText('HIT-STOP',VW/2-28,70);}
 }
@@ -6065,7 +6067,8 @@ window.AF={levelUp:()=>{if(PS.lv<LV_CAP){PS.lv++;applyStats();player.hp=player.m
 <script src="progress.js?v=2"></script>
 <script src="char_create.js?v=2"></script>
 <script src="skill_shapes.js?v=1"></script>
-<script src="mobile.js?v=5"></script>
+<script src="mobile.js?v=6"></script>
+<script src="target_lock.js?v=1"></script>
 <script src="totem_gems.js?v=35"></script>
 <script src="seals.js?v=1"></script>
 <script src="relics.js?v=3"></script>

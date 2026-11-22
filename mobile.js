@@ -3,7 +3,7 @@
    - Virtual joystick (เดิน), attack button, AUTO button
    - RoV-style skill wheel (2026-11-19): big attack button bottom-right, skills in two arcs around it.
      Tap = cast on the auto target · drag = aim (direction / ground spot) · drag onto ✕ = cancel.
-   - Hold attack = keep attacking · 🎯 = cycle target (boss first) · floating joystick (touch anywhere on the left)
+   - Hold attack = keep attacking · 🎯 tap = next target / hold = release (target_lock.js) · floating joystick (touch anywhere on the left)
    - Long-press a skill in ✎ mode = skill info (potions are used automatically: items.js auto-potion)
    - Settings: button size S/M/L and opacity ('af_mob_sz', 'af_mob_op')
    - Landscape phone layout (ย่อ HUD)
@@ -208,6 +208,7 @@ const atk=document.getElementById('mobAtk');
 /* hold = keep attacking: while held, a dead / missing target is replaced by the nearest enemy (the locked 🎯 target stays first) */
 let atkHeld=null;
 function atkPulse(first){try{let t=player.attackTarget&&!player.attackTarget.dead?player.attackTarget:null;
+  if(!t&&window.TL){const lk=TL.near(640);if(lk){command({kind:'attack',e:lk});return;}}   /* the locked target (target_lock.js) */
   if(!t){t=nearestEnemy(player.x,player.y,520);if(t)command({kind:'attack',e:t});else if(first&&typeof msg==='function')msg('ไม่มีศัตรูอยู่ใกล้ ๆ');}
   else if(first)command({kind:'attack',e:t});}catch(err){}}
 atk.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();atk.classList.add('pr');try{atk.setPointerCapture(e.pointerId);}catch(_){}
@@ -243,13 +244,14 @@ function layout(){const vh=innerHeight,vw=innerWidth;let sc=Math.max(.62,Math.mi
   const op=+uiPref('af_mob_op','1');ui.classList.toggle('op',op<1);ui.style.setProperty('--mop',op);
   btns.forEach(placeBtn);}
 const atk_el=document.getElementById('mobAtk'),tgt=document.getElementById('mobTgt'),info=document.getElementById('mobInfo');
-/* 🎯 target: first tap = nearest boss (else nearest enemy), next taps cycle outward by distance */
-let tgtList=[],tgtI=-1,tgtT=0;
-tgt.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();tgt.classList.add('pr');setTimeout(()=>tgt.classList.remove('pr'),120);buzz(6);
-  try{const now=performance.now();const near=enemies.filter(x=>!x.dead&&Math.hypot(x.x-player.x,x.y-player.y)<560).sort((a,b)=>(b.boss?1:0)-(a.boss?1:0)||Math.hypot(a.x-player.x,a.y-player.y)-Math.hypot(b.x-player.x,b.y-player.y));
-    if(!near.length){msg('ไม่มีศัตรูอยู่ใกล้ ๆ');return;}
-    if(now-tgtT>2500||!tgtList.length||tgtList.some(x=>x.dead)){tgtList=near;tgtI=0;}else{tgtList=near;tgtI=(near.indexOf(player.attackTarget)+1)%near.length;}
-    tgtT=now;const t=tgtList[tgtI];player.attackTarget=t;player.pending=null;command({kind:'attack',e:t});}catch(err){}});
+/* 🎯 target (target_lock.js, 12 Tails style lock): tap = next target (bosses first, then by distance; repeated taps walk
+   the whole list instead of bouncing between the two nearest) · hold = release. Only locks — the hero keeps doing what it
+   does (if it is attacking, the attack moves to the new target); the attack button / skills then go to the lock. */
+let tgtHold=null,tgtLong=false;
+tgt.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();tgt.classList.add('pr');buzz(6);tgtLong=false;try{tgt.setPointerCapture(e.pointerId);}catch(_){}
+  clearTimeout(tgtHold);tgtHold=setTimeout(()=>{tgtLong=true;tgt.classList.remove('pr');if(window.TL&&TL.e){TL.release();buzz(18);}},450);});
+['pointerup','pointercancel'].forEach(ev=>tgt.addEventListener(ev,e=>{e.preventDefault();e.stopPropagation();clearTimeout(tgtHold);tgt.classList.remove('pr');
+  if(ev==='pointerup'&&!tgtLong){try{if(window.TL)TL.cycle(1);}catch(err){}}tgtLong=true;}));
 /* skill info (long-press in ✎ mode or in the picker) */
 function showInfo(k){let h='';try{h=typeof skTip==='function'?skTip(k,(G('LV')||{})[k]||1):G('SKILLS')[k].name;}catch(e){h=G('SKILLS')[k].name;}
   info.innerHTML='<button class="x">ปิด ✕</button>'+h;info.querySelectorAll('*').forEach(n=>{if(!n.children.length&&/^\s*คลิก/.test(n.textContent))n.remove();});
@@ -338,13 +340,13 @@ function fire(k,aim){const sk=G('SKILLS')[k];
   if(aim&&canDirect(k)){
     if(sk.type==='ground'){player.pending={key:k,gx:aim.x,gy:aim.y};player.attackTarget=null;player.moveT=null;if(player.action&&player.action.ended)endAction();return;}
     if(sk.type==='self'){useSkill(k);return;}
-    const t=nearestEnemy(aim.x,aim.y,140)||nearestEnemy(player.x,player.y,aim.R+40,aim.phi);
+    const t=nearestEnemy(aim.x,aim.y,140)||nearestEnemy(player.x,player.y,aim.R+40,aim.phi);if(t&&window.TL)TL.set(t,{sync:1});
     if(sk.type==='melee'&&t){player.attackTarget=null;mouse.wx=t.x;mouse.wy=t.y;useSkill(k);return;}
     endAction();player.pending=null;player.attackTarget=null;castSkill(k,{target:t||null,phi:t?Math.atan2(t.y-player.y,t.x-player.x):aim.phi,gx:aim.x,gy:aim.y});return;}
   /* tap (or aim while busy → queued like the PC hotbar) */
   useSkill(k);
   if(G('targeting')&&G('targeting').key===k){   // ground skill: land it on the target / nearest enemy, else in front
-    const R=sk.range||300;let t=(player.attackTarget&&!player.attackTarget.dead)?player.attackTarget:nearestEnemy(player.x,player.y,R+60);
+    const R=sk.range||300;let t=(player.attackTarget&&!player.attackTarget.dead)?player.attackTarget:(window.TL&&TL.near(R+60+120))||nearestEnemy(player.x,player.y,R+60);
     let gx,gy;if(aim){gx=aim.x;gy=aim.y;}else if(t){gx=t.x;gy=t.y;}else{const ph=player.phi||0;gx=player.x+Math.cos(ph)*R*.5;gy=player.y+Math.sin(ph)*R*.5;}
     groundClick(gx,gy);}}
 
@@ -365,7 +367,7 @@ function wheelTick(){requestAnimationFrame(wheelTick);if(!document.body.classLis
 /* where the skill will go: dragged → the drag direction; just pressed → the auto target (like a tap cast) */
 function aimNow(o){const sk=G('SKILLS')[o.k];if(A&&A.moved)return aimWorld(o);
   const R=sk.type==='ground'?(sk.range||300):Math.max(sk.range||0,140);
-  const t=(player.attackTarget&&!player.attackTarget.dead)?player.attackTarget:nearestEnemy(player.x,player.y,Math.max(240,R+60));
+  const t=(player.attackTarget&&!player.attackTarget.dead)?player.attackTarget:(window.TL&&TL.forSkill(sk))||nearestEnemy(player.x,player.y,Math.max(240,R+60));
   const phi=t?Math.atan2(t.y-player.y,t.x-player.x):(player.phi||0);
   if(sk.type==='ground'){const d=t?Math.min(R,Math.hypot(t.x-player.x,t.y-player.y)):R*.5;return {x:player.x+Math.cos(phi)*d,y:player.y+Math.sin(phi)*d,R,phi,t};}
   return {x:player.x+Math.cos(phi)*R,y:player.y+Math.sin(phi)*R,R,phi,t};}
