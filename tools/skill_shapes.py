@@ -7,7 +7,7 @@ radius from the skill's own radius()) · target {k} (single target) · none (buf
 import asyncio, json, math, os, re, sys
 from playwright.async_api import async_playwright
 ROOT=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-HEROES=['wolf','rhino','owl','jaguar','croc','axolotl','cat','hippo','sheep','dragon','lion','kitsune','bastet','anubis']
+HEROES=['wolf','rhino','owl','jaguar','croc','axolotl','cat','hippo','sheep','dragon','lion','kitsune','bastet','anubis','raven']
 TGT=(70,0)
 
 def fit(v):

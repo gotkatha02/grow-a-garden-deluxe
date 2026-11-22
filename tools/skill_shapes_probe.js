@@ -16,6 +16,7 @@ async function probeSkillShapes(opts={}){
     for(const c in player.cd)player.cd[k]=0;for(const c in player.cd)player.cd[c]=0;player.buffs={};player.action=null;player.casting=null;player.combo=null;player.pending=null;player.attackTarget=null;
     player.moveT=null;player.queue=null;player.x=0;player.y=0;player.z=0;player.phi=0;player.face=1;player.hp=player.maxHp;player.mp=player.maxMp;player.ccT=0;
     fx.length=0;fx.push(...base);for(const n of ENS)try{window[n]();}catch(e){}   /* hero core tickers (uEnsure, kEnsure, bEnsure …) */
+    if(typeof window.heroShapeReset==='function')try{window.heroShapeReset();}catch(e){}   /* a hero's lasting state from the previous cast (raven: Huginn's perch, storm, memory …) */
     enemies.length=0;for(const [x,y] of pts){const e=spawnEnemy(x,y,false);e.x=x;e.y=y;e.hp=e.maxHp=1e9;e.aggro=0;e.atkCd=1e9;e._px=x;e._py=y;}
     const T=enemies[0];let ok=true;
     try{ok=castSkill(k,{target:T,phi:0,gx:GND.x,gy:GND.y})!==false;}catch(e){ok=false;}

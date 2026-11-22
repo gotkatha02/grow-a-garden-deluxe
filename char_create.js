@@ -10,6 +10,7 @@ const HEROES=[
  {k:'wolf',n:'White Wolf',r:'Warrior',land:'นอร์ส',home:'frostheim',d:'นักรบขวานแห่งแดนหิมะ ฟันใกล้ตัวแรงและทน ใช้ได้ทั้งพลังขวานและเวทรูนน้ำแข็ง',A:'Berserker · ขวานคลั่ง ฟันรัว ดูดเลือด',B:'Runic · เวทรูน น้ำแข็ง สายฟ้า'},
  {k:'rhino',n:'Woolly Rhino',r:'Guardian',land:'นอร์ส',home:'frostheim',d:'แท้งก์ร่างยักษ์ ยืนรับดาเมจแทนเพื่อน ต่อยหนักจนศัตรูกระเด็น',A:'Iron Juggernaut · กำแพงเหล็ก ป้องกัน สวนกลับ',B:'Titan Breaker · หมัดยักษ์ ทุบพื้น'},
  {k:'owl',n:'Snowy Owl',r:'Marksman',land:'นอร์ส',home:'frostheim',d:'นักยิงหน้าไม้จากระยะไกล เล็งแม่น ซ่อนตัวในพายุหิมะ',A:'Moonlit Marksman · ยิงแม่น จุดอ่อน',B:'Snowstorm Trickster · หิมะ กับดัก ล่องหน'},
+ {k:'raven',n:"Odin's Raven",r:'Rune Lancer',land:'นอร์ส',home:'frostheim',d:'อีกาของโอดินถือหอกรูน มีร่างแยก 2 ร่าง มูนินตีซ้ำตามจังหวะเรา ฮูกินเป็นจุดร่ายที่สอง',A:'Muninn · เก็บท่าลงความทรงจำ แล้วปล่อยซ้ำรวดเดียว',B:'Huginn · ส่งฮูกินไปร่ายรูนอีกมุม รูนครบระเบิดเอง'},
  {k:'jaguar',n:'Black Jaguar',r:'Assassin',land:'แอซเท็ก',home:'aztT',d:'นักฆ่ามีดคู่ออบซิเดียน เร็ว คริแรง ล่าเหยื่อในเงามืด',A:'Jaguar Fang · มีดคู่ เลือดไหล',B:'Eclipse Ritual · เวทสุริยคราส เงา พิษ'},
  {k:'axolotl',n:'Axolotl',r:'Tide Priest',land:'แอซเท็ก',home:'aztT',d:'นักบวชสายน้ำ ฮีลเก่ง ยิงลำน้ำแรงดันสูงจากระยะกลาง',A:'Pressure Weaver · เวทน้ำโจมตี',B:'Springkeeper · ฮีล โล่น้ำ'},
  {k:'croc',n:'Crocodile',r:'Lancer',land:'แอซเท็ก',home:'aztT',d:'นักรบหอกแห่งวิหาร แทงไกล ล็อกเหยื่อแล้วงับไม่ปล่อย',A:'Temple Lancer · หอกยาว ระยะ',B:'River Predator · งับ ม้วนตัว ลากลงน้ำ'},

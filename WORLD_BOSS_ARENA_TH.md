@@ -1,7 +1,7 @@
 # ลานบอสโลก 7 ลาน — แมพเฉพาะของแต่ละตัว (2026-11-22)
 
 เจ้าของ: *"ต่อไปอยากได้แมพเฉพาะสำหรับสู้กับบอสแต่ละตัวเข้าธีมกัน ขอพร้อมสร้างรูปมาทำแมพ"*
-สถานะ: **พรอมต์รูปพร้อม · ยังไม่ได้สร้างแมพ**
+สถานะ: **สร้างแมพแล้วทั้ง 8 แมพ (2026-11-22)** · เข้าชมได้จากกิลด์มาสเตอร์ในเมืองหลวง (บอสยืนให้ดูเฉยๆ ยังไม่สู้) · รายละเอียดข้อ 7
 - แทน "แอ่งเดียวเปลี่ยนของตกแต่งตามวัน" ใน WORLD_BOSS_WEEK_TH.md ข้อ 2 → บอสแต่ละตัวมีลานของตัวเอง (ตอบคำถามข้อ 12.2 แล้ว)
 - ร่างปกติกับร่างแอดวานซ์ใช้ลานเดียวกัน (ร่างแอดวานซ์เพิ่มแค่ VFX ของกลไกเพิ่ม)
 
@@ -26,7 +26,7 @@
 | อาทิตย์ | เคปรา | ลานนาฬิกาแดดกลางทะเลทราย | ลานหินทรายนาฬิกาแดด · ฐานเสา 6 ฐาน · รอยไหม้ลูกอาทิตย์กลิ้ง | โอเบลิสก์ · โอเบลิสก์หัก · รูปปั้นด้วง · ซากเสาคู่ · หินโผล่ทราย · ธงจานสุริยะ | กลางวันจ้า |
 | จันทร์ | ปุยจันทรา | ลานหินจันทร์ลอยฟ้า | ลานหินขาว · ข้างขึ้นข้างแรม 8 ช่องพร้อมฐานโคม · ลายสลักกระต่ายตำครก · ห้วงดาวรอบนอก | โคมจันทร์ติด / ดับ · พงหญ้าสุสุกิเงิน · ชั้นวางดังโงะ · หินจันทร์ผลึกเรือง · ซุ้มประตูจันทร์เสี้ยว | กลางคืน |
 | อังคาร | บุรุมบา | สมรภูมิกลองศึก | ดินสมรภูมิ · ลายก้นหอยชมพูกลางลาน · รอยเท้าช้าง · ตอกำแพงเป็นวง ช่องเข้า 4 ทิศ | กำแพงไม้แหลม · หอระวังพัง · ประตูทัพวิญญาณ (จุดเกิดทัพผี) · ธงศึก · เครื่องกีดขวางหนาม · ชั้นวางอาวุธ | เย็นฝุ่นตลบ |
-| พุธ | มายาวี | สวนวัดร้างหลากสี | ลานวัดมีมอส · สีสาด · แปลงดอก 8 แปลง · บ่อบัว · รอยเท้ากิ้งก่า | ดอกตูม ปิด / แตกสาดสี / เหี่ยวหลังแตก · เสาวัดพันเถาวัลย์ · รูปปั้นกิ้งก่าเฝ้าวัด · กอเฟิร์น (ขอบ) | กลางวันชื้น |
+| พุธ | มายาวี | สวนวัดร้างหลากสี | ลานวัดมีมอส · สีสาด · แปลงดอก 7 แปลง (เว้นทางเข้าด้านล่าง) · บ่อบัว · รอยเท้ากิ้งก่า | ดอกตูม ปิด / แตกสาดสี / เหี่ยวหลังแตก · เสาวัดพันเถาวัลย์ · รูปปั้นกิ้งก่าเฝ้าวัด · กอเฟิร์น (ขอบ) | กลางวันชื้น |
 | พฤหัส | บรอนทารา | ยอดผาอัสนี | ที่ราบบนยอดผา · ภาพสลักนกอัสนีเรืองฟ้า · รอยฟ้าผ่า · หลุมเสียบเสา 5 หลุมรอบขอบ · เมฆพายุรอบนอก | เสาล่อฟ้า หลับ / ตื่น / เต็ม · ยอดหินแหลม · ต้นไม้ตายลู่ลม · แนวเมฆพายุ (วางตามขอบผา) | พายุ |
 | ศุกร์ | ลูมินา | สะพานหินกลางทะเลเมฆ (+ ห้องในท้องวาฬ) | ลานหินขาวลอย · ดาวรุ่งทองกลางลาน · สะพาน 3 สายไปลานเล็ก · ทะเลเมฆรุ่งเช้า | โคมศาลเจ้า · ซุ้มหินหัก · เสายอดดาว · ก้อนเมฆรุ่งเช้า · เศษหัวใจดาว ปกติ / ร้าว | รุ่งเช้า |
 | เสาร์ | เออร์ทอค | แอ่งโทเท็มแตก | แอ่งหินม่วงเทา · รอยรากโทเท็มกลางแอ่ง · 5 เขตสีตามแดน (ทิศตามแผนที่โลก) · ลานค่ายกิลด์ขอบล่าง | ซากโทเท็มหน้าหมี · ซากหน้านกฮูก + หมาป่า · หินขอบแอ่ง · เต็นท์กิลด์ · ธงกิลด์ + หินจุดเกิด · ลังเสบียง + แผงยา | พลบค่ำ |
@@ -85,7 +85,7 @@ PROPS — WAR-DRUM BATTLEFIELD, 6 objects: (1) a straight segment of a broken wo
 
 **7 — พื้น พุธ มายาวี**
 ```
-FLOOR — GARDEN OF A THOUSAND HUES, the arena of Mayawee the chameleon. A round courtyard of an overgrown jungle temple, about 80% of the image wide: mossy grey-gold stone tiles, roots creeping across the stones, bright paint splashes in red, orange, yellow, turquoise and blue, and drifts of colourful petals. Eight round soil flower beds spaced evenly around the courtyard rim (empty: I place giant flower buds in them later). A shallow lotus pond curves along one side. Small chameleon footprints wander across the tiles. Lush jungle floor (ferns and big leaves lying flat) fills the image outside the courtyard to every edge. A flat tiled landing at the bottom centre (the arrival camp).
+FLOOR — GARDEN OF A THOUSAND HUES, the arena of Mayawee the chameleon. A round courtyard of an overgrown jungle temple, about 80% of the image wide: mossy grey-gold stone tiles, roots creeping across the stones, bright paint splashes in red, orange, yellow, turquoise and blue, and drifts of colourful petals. Seven round soil flower beds spaced evenly around the courtyard rim, leaving the bottom open for the entrance path (empty: I place giant flower buds in them later). A shallow lotus pond curves along one side. Small chameleon footprints wander across the tiles. Lush jungle floor (ferns and big leaves lying flat) fills the image outside the courtyard to every edge. A flat tiled landing at the bottom centre (the arrival camp).
 ```
 
 **8 — ของตั้ง พุธ มายาวี** (พื้นแดงม่วง เพราะของเป็นสีเขียว)
@@ -128,11 +128,33 @@ FLOOR — TOTEM CRATER, the arena of Urtok the totem-bearing tortoise. A huge ro
 PROPS — TOTEM CRATER and the GUILD CAMP, 6 objects: (1) a huge fallen chunk of the Great Totem: carved brown wood with a roaring bear face, its broken ends glowing gold; (2) another fallen chunk with an owl face and a wolf face; (3) a pile of crater-rim boulders in violet-grey stone; (4) a big guild camp tent of red and gold canvas with an open front; (5) a tall guild banner pole beside a round respawn totem stone glowing teal; (6) supply crates, barrels and a small potion stall with coloured bottles. Green background, no green on the objects.
 ```
 
-## 5. ขั้นต่อไป (เมื่อรูปมาครบ หรือมาทีละลานก็ได้)
+## 5. ขั้นตอนสร้าง (ทำแล้ว 2026-11-22 — ผลอยู่ข้อ 7)
 1. เก็บรูปดิบที่ assets/bosses/world/arena/<ชื่อลาน>_floor.png + _props.png · ตัดของตั้งเป็นชิ้น (cut2.py + แบ่งช่อง 3×2)
 2. สร้างแมพ (fieldmap.js host แบบเมืองหลวง: groundImg = รูปพื้น ×1.5 · land = ของตั้งบนตำแหน่งที่วัดจากรูป · ช่องห้ามเดินจากรูป · mood ต่อลาน)
 3. วางบอสกลางลาน + ฮีโร่เทียบขนาด → ส่งภาพให้ดูทีละลาน
 4. ทางเข้า: กิลด์มาสเตอร์ในเมืองหลวง (แทนประตูบอสโลกเดิม Aether Wyrm)
 
 ## 6. คำถามถึงเจ้าของ
-1. ลานขนาด r ≈ 900–1,000 (เล็กกว่าร่างแรกของเออร์ทอคเล็กน้อย เพื่อให้รูปพื้นไม่เบลอ) โอเคไหม
+1. ~~ลานขนาด r ≈ 900–1,000 (เล็กกว่าร่างแรกของเออร์ทอคเล็กน้อย เพื่อให้รูปพื้นไม่เบลอ) โอเคไหม~~ → **ตอบแล้ว (2026-11-22 23:50): ขนาดโอเค**
+2. ~~ดอกตูมของมายาวี: รูปพื้นวาดแปลงดอกมา 7 แปลง (ไม่ใช่ 8) → ใช้ 7 ดอก หรือจะให้เจนรูปพื้นใหม่ที่มี 8 แปลง~~ → **ตอบแล้ว (2026-11-22 23:49): ใช้ 7 ดอก** (แก้ในเอกสารบอสสัปดาห์และพรอมต์รูปพื้นแล้ว)
+
+## 7. สร้างแล้ว (2026-11-22)
+| แมพ (id) | ลาน | mood | ของตั้งที่วาง |
+|---|---|---|---|
+| wbKhepra | ลานนาฬิกาแดด | desert | โอเบลิสก์ 4 + หัก 2 บนฐาน 6 ฐาน · ธงจานสุริยะ 2 (ประตูเข้าลาน) · หิน 4 · ซากเสาคู่ 2 · รูปปั้นด้วง 2 · ค่ายกิลด์ |
+| wbPuijantra | ลานหินจันทร์ | moon | โคมจันทร์ติด 6 + ดับ 2 (ใกล้จันทร์ดับ) บนฐานโคมในรูป · ซุ้มจันทร์เสี้ยวคร่อมทางเข้า · ดังโงะ · หินจันทร์ 2 · หญ้าสุสุกิ 4 · หินจุดเกิด |
+| wbBurumba | สมรภูมิกลองศึก | dusk (ใหม่) | ตอกำแพงเป็นแนวกั้น ช่องเข้า 4 ทิศ · กำแพงไม้ 3 · ประตูทัพวิญญาณ 2 (ช่องซ้าย/ขวา) · เครื่องกีดขวางช่องบน 2 · ธงศึก 2 · หอระวัง 2 · ชั้นอาวุธ 2 · ค่ายกิลด์ |
+| wbMayawee | สวนวัดร้างหลากสี | jungle | ดอกตูม 7 ในแปลง 7 แปลง · เสาวัด 4 มุม · รูปปั้นกิ้งก่า 2 (ประตู) · กอเฟิร์น 4 · บ่อบัว/แปลงดอกเดินไม่ได้ · หินจุดเกิด + ร้านยา |
+| wbBrontara | ยอดผาอัสนี | dragon (ฝน พายุ) | เสาล่อฟ้า (หลับ) 5 ในหลุม 5 หลุม · ยอดหิน 2 · ต้นไม้ตาย 2 · เมฆพายุ 4 รอบหน้าผา · ค่ายกิลด์ · นกลอยเหนือเงา |
+| wbLumina | สะพานทะเลเมฆ | sun | เสายอดดาวบนลานข้าง 2 · โคมศาลเจ้า 2 · ซุ้มหักคร่อมสะพานล่าง · ก้อนเมฆ 4 · หินจุดเกิดบนลานล่าง · วาฬลอยเหนือเงา |
+| wbLuminaIn | ในท้องลูมินา | dream (ใหม่) | เศษหัวใจดาว (สูง 400) กลางหลุม · ของที่ถูกกลืนในรูปเดินชนได้ · ทางออก → สะพานของลูมินา |
+| wbUrtok | แอ่งโทเท็มแตก | dusk (ใหม่) | ซากโทเท็มหน้าหมี + หน้านกฮูก/หมาป่า ริมแอ่ง · เสา / โคม / ศิลาที่วาดในรูปเดินชนได้ · ค่ายกิลด์ |
+
+- **ไฟล์**: รูปดิบแผ่นของตั้ง assets/bosses/world/arena/<ลาน>_props.png · รูปพื้น + ชิ้นที่ตัดแล้ว maps/wboss/*.webp · แมพ maps/wboss-arenas.js (สร้างจาก **tools/wboss_arenas.py** — แก้ตำแหน่งในไฟล์นั้นแล้วรันใหม่ อย่าแก้ .js ตรงๆ) · `python3 -I tools/wboss_arenas.py preview` = ภาพเช็คเลย์เอาต์ที่ /tmp/wboss_pv
+- **ขนาด**: แมพ 2,304 × 1,536 map px (รูปพื้น ×1.5) · กล้องถอยในลาน ×0.8 (มือถือ ×0.7, cfg.camZoom / camZoomMob) · บอส 400 px กว้าง · นอกขอบแมพวาดรูปพื้นแบบกระจกสะท้อนเข้มลง (cfg.mirror) แทนพื้นว่างเทาๆ ใต้ค่ายกิลด์
+- **เดินได้**: cfg.walk (วงรี / รูปหลายเหลี่ยม) ลบ cfg.block ลบ cfg.blockLines (เส้นหนา เช่น แนวตอไม้บุรุมบา) · ช่องที่หลุดจากพื้นที่หลักถูกถมทิ้ง ไม่เจาะทาง
+- **ทางกลับ**: วาร์ป "กลับเมืองหลวง" บนวงเรืองแสงหน้าหินจุดเกิด (ไปประตูใต้เมืองหลวง) · ห้องในท้องวาฬ → ออกไปสะพานของลูมินา
+- **บอส**: ตอนนี้เป็นรูปต้นแบบยืนนิ่งกลางลาน (land preview:1) — พอสร้างการต่อสู้จริงให้ลบออกจาก tools/wboss_arenas.py
+- **ทางเข้า**: กิลด์มาสเตอร์ลีโอนาร์ด → "🗺 ลานบอสโลก 7 ลาน" (ทดสอบ: ?map=wbKhepra … wbUrtok, wbLuminaIn) · ประตูบอสโลกเดิม Aether Wyrm ยังอยู่จนกว่าจะสร้างบอสจริง
+- **ยังไม่ทำ**: กลไกบอส / ของที่เปลี่ยนสถานะ (ดอกตูมแตก เสาล่อฟ้าตื่น โคมดับ เศษหัวใจร้าว — รูปพร้อมแล้วใน VK_CAT: wbMaBudBurst/Drained · wbBrRod1/2 · wbPuToroDark · wbLuShardCrack) · ร่างแอดวานซ์ใช้ลานเดียวกัน
+

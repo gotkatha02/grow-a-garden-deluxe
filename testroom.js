@@ -7,7 +7,7 @@
 (function(){
 if(!/[?&]testroom=1/.test(location.search))return;
 window.__GEMS_ALL=1;   /* every Class C skill on (normally they need a socketed Totem Gem) */
-const HEROES=[['wolf','หมาป่า'],['dragon','มังกร'],['kitsune','คิตสึเนะ'],['anubis','อานูบิส'],['lion','สิงโต'],['cat','แมว'],['hippo','ฮิปโป'],['croc','จระเข้'],['jaguar','จากัวร์'],['owl','นกฮูก'],['rhino','แรด'],['bastet','บาสเตท'],['axolotl','แอกโซลอเติล'],['sheep','แกะ']];
+const HEROES=[['wolf','หมาป่า'],['dragon','มังกร'],['kitsune','คิตสึเนะ'],['anubis','อานูบิส'],['raven','อีกา'],['lion','สิงโต'],['cat','แมว'],['hippo','ฮิปโป'],['croc','จระเข้'],['jaguar','จากัวร์'],['owl','นกฮูก'],['rhino','แรด'],['bastet','บาสเตท'],['axolotl','แอกโซลอเติล'],['sheep','แกะ']];
 let mode='one',noCd=true,dummies=[],dmg=[],el=null;
 function layout(m){mode=m;try{enemies.length=0;}catch(e){return;}dummies=[];
   const P=[];if(m==='one')P.push([150,0,false]);else if(m==='boss')P.push([170,0,true]);

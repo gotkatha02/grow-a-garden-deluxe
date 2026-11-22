@@ -32,7 +32,7 @@ const TOWNS={
 {const TS={vik:['Fjord Fisher','Longship Raider','Bear Berserker'],azt:['Maize Farmer','Jaguar Warrior','Turquoise Serpent'],
   grk:['Olive Shepherd','Hoplite','Tide Guardian'],egy:['Nile Reed','Sand Scorpion','Jackal Guard'],jpn:['Wandering Ronin','Shinobi','Oni Lord']};
  for(const r in TS)TS[r].forEach((n,i)=>TOWNS[r].pre[3+2*i]=n);}
-const HOME={wolf:'vik',rhino:'vik',owl:'vik',jaguar:'azt',croc:'azt',axolotl:'azt',cat:'jpn',dragon:'jpn',kitsune:'jpn',hippo:'egy',bastet:'egy',anubis:'egy',sheep:'grk',lion:'grk'};   // = char_create.js home (the 8 newer heroes fell back to Frostheim: starter kit, return scroll, smith town)
+const HOME={wolf:'vik',rhino:'vik',owl:'vik',jaguar:'azt',croc:'azt',axolotl:'azt',cat:'jpn',dragon:'jpn',kitsune:'jpn',hippo:'egy',bastet:'egy',anubis:'egy',sheep:'grk',lion:'grk',raven:'vik'};   // = char_create.js home (the 8 newer heroes fell back to Frostheim: starter kit, return scroll, smith town)
 const regionOf=id=>!id?HOME[CHAR]||'vik':id==='frostheim'||id==='snowpine'?'vik':/^(capT|c[A-Z]|cata|rift)/.test(id)?'cap':id.slice(0,3);
 const townHere=()=>{const m=(window.AF_ROOM_TOWN&&AF_ROOM_TOWN[curMap])||curMap;for(const r in TOWNS)if(TOWNS[r].map===m)return r;return m==='capT'?'cap':null;};   // a craft hall room counts as its town
 /* LEVEL CAP 60 (owner 2026-11-22, level_cap.js): grades / ore tiers keep their old 1–99 design bands; a level of the game is read
@@ -84,6 +84,8 @@ const refOre=(it,t)=>((it&&(it.cslot||it.slot))==='rhand'?'wore':'ore')+t;
 {const DT=window.DROPTAB;if(DT)for(const k in DT.BOSSES){const [land,slot,boss,en,th,live]=DT.BOSSES[k],bt=DT.SLOT_TIER[slot];
   ETC['bm_'+k]={n:en,th,price:{map:3000,mvp:8000,main:15000}[bt],kind:'bpart',boss:k,btier:bt,live:!!live,col:(TOWNS[land]||{}).col||'#c9a46a',
     d:`ชิ้นส่วนบอส · ดรอปจาก${boss} (${DT.BOSS[bt].th}) · ใช้หลอมเจมแปรสภาพ / เจมเสริม 3→1 ที่ศาลโทเท็ม (G → ⛏ ศาล) · ต่อไปใช้แลกเจมสกิลราก (ระบบรากโทเท็ม) และคราฟต์ชุดบอส · ขายร้าน NPC ไม่ได้ ซื้อขายกับผู้เล่นในตลาดกลาง`};}}
+/* pets (pet_data.js, owner 2026-11-22): eggs per species, bond charms per land × tier, spirit fluff, personality treat */
+{const PD=window.PETDATA;if(PD)PD.goods(ETC);}
 ETC.drill={n:'Drill',th:'สว่านเจาะรู',price:3000,kind:'tool',col:'#c9a46a',d:'เจาะรูอุปกรณ์ สุ่ม 1–4 รู (เจาะใหม่ หินเดิมหายหมด)'};
 ETC.pliers={n:'Orb Pliers',th:'คีมถอดหิน',price:2000,kind:'tool',col:'#8a96a8',d:'ถอดหินออฟออกมาโดยหินไม่หาย'};
 ETC.guard={n:'Guard Stone',th:'หินกันแตก',price:50000,kind:'tool',col:'#5fd0ff',d:'ตีบวกพลาด ของไม่แตก (ที่ +6–+10 ยังลดบวก 1) · +11 ขึ้นไปใช้ครั้งละ (บวก − 9) ก้อน'};
@@ -158,7 +160,7 @@ const PAIR=g=>[3+1.7*g,2+1.33*g,1+.78*g];
    before, a crafted weapon gave only ATK (or only MATK), so a two-way hero lost ~120 MATK by 'upgrading'. W0 = the starting weapon (EQ.rhand before the save loads). */
 const W0=(()=>{const w=ITEMS[EQ.rhand]||{};return {atk:w.atk||0,matk:w.matk||0};})();
 const wPut=(put,magic,m)=>{if(W0.atk>0&&W0.matk>0){const hi=W0.matk>W0.atk?'matk':'atk',lo=hi==='atk'?'matk':'atk';put(hi,m);put(lo,m*W0[lo]/W0[hi]);}else put(magic?'matk':'atk',m);};                                        // town pair stat 1 / 2 / third stat
-const W_NOUN={wolf:'Greataxe',rhino:'Knuckles',owl:'Crossbow',jaguar:'Fang Daggers',croc:'Spear',axolotl:'Bracelets',cat:'Katana',kitsune:'Staff',bastet:'Tome',anubis:'Flail',dragon:'Knuckles',lion:'Cestus',hippo:'Scepter',sheep:'Crook'};   // crafted / dropped weapon noun per hero (was 'Weapon' for the 8 newer heroes)
+const W_NOUN={wolf:'Greataxe',rhino:'Knuckles',owl:'Crossbow',jaguar:'Fang Daggers',croc:'Spear',axolotl:'Bracelets',cat:'Katana',kitsune:'Staff',bastet:'Tome',anubis:'Flail',dragon:'Knuckles',lion:'Cestus',hippo:'Scepter',sheep:'Crook',raven:'Rune Spear'};   // crafted / dropped weapon noun per hero (was 'Weapon' for the 8 newer heroes)
 
 /* ---------------- special stats (rolled on every craft) ----------------
    value = max × (0.4 + 0.6·grade/9) × random(0.3…1) · count 1 (60%) / 2 (30%) / 3 (10%) · each stat once per item
@@ -430,6 +432,7 @@ const ORE_BADGE={w:['#d8483a','<path d="M7 17 L15.5 8.5 L17 5.5 L14 7 L5.5 15.5 
 function oreBadge(pic,part,sz){const b=Math.max(9,Math.round(sz*.46)),B=ORE_BADGE[part];
   return `<span style="position:relative;display:inline-block;width:${sz}px;height:${sz}px;vertical-align:middle">${pic}<svg width="${b}" height="${b}" viewBox="0 0 24 24" style="position:absolute;left:-1px;top:-1px"><circle cx="12" cy="12" r="10.5" fill="${B[0]}" stroke="#3a2a1f" stroke-width="2"/>${B[1]}</svg></span>`;}
 function etcIcon(id,sz=26){const E=ETC[id]||{},c=E.col||'#c9a46a';
+  if(window.PETDATA&&PETDATA.KINDS[E.kind])return PETDATA.icon(id,E,sz);   /* pet goods (pet_data.js) */
   if(E.kind==='ore'&&E.part&&!ICONS.has('wore'+E.tier))return oreBadge(ICONS.has('ore'+E.tier)?img('ore'+E.tier,sz):`<svg width="${sz}" height="${sz}" viewBox="0 0 24 24"><path d="M5 15 L9 6 L17 5 L20 13 L14 20 Z" fill="${c}" stroke="#3a2a1f" stroke-width="1.6"/></svg>`,E.part,sz);
   if(ICONS.has(id))return img(id,sz);
   if(E.kind==='orb'&&ICONS.has('ro_orb_'+E.stat))return img('ro_orb_'+E.stat,sz);   /* new orb pictures (REFINE_STONE_ICON_PROMPTS_TH.md sheet 2) win once they are in icons.json */
@@ -574,11 +577,11 @@ function doMerge(t){const L=Object.keys(BAG).filter(k=>ETC[k]&&ETC[k].kind==='or
 /* ---------------- Shop ---------------- */
 let shTab='buy';
 const FOODS=['food_atk','food_def','food_vit','food_agi','food_tal','food_cha'];
-const SHOP_FULL=['hp1','hp2','hp3','hp4','sp1','sp2','sp3',...FOODS,'manual','ret','capscroll','wing','wore1','ore1','wore2','ore2','drill','pliers','guard'],
+const SHOP_FULL=['hp1','hp2','hp3','hp4','sp1','sp2','sp3',...FOODS,'manual','ret','capscroll','wing','wore1','ore1','wore2','ore2','drill','pliers','guard',...((window.PETDATA&&PETDATA.shop)||[])],
       SHOP_BASIC=['hp1','hp2','sp1','sp2',...FOODS,'ret','capscroll','wing','wore1','ore1','wore2','ore2','drill'];
 function openShop(){const w=$('#shw');w.classList.add('open');document.querySelectorAll('.ro').forEach(o=>o.style.zIndex=30);w.style.zIndex=37;buildShop();}
 function buildShop(){const w=$('#shw');if(!w.classList.contains('open'))return;const here=townHere(),cap=here==='cap',test=!here;
-  const list=cap||test?SHOP_FULL:SHOP_BASIC,sellMul=cap?1.2:1;
+  const list=cap||test?SHOP_FULL:SHOP_BASIC.concat(['pch_'+here+'1','pch_'+here+'2'].filter(id=>ETC[id])),sellMul=cap?1.2:1;   /* a land town also sells its own bond charms (pets) */
   let body='';if(shTab==='buy')body=list.map(id=>`<div class="ix-row"><div class="ic">${etcIcon(id)}</div><div class="mid"><b>${ETC[id].th}</b><small>${ETC[id].d||ETC[id].n}</small></div><b>${fmt(ETC[id].price)}z</b>
       <button class="rob" data-buy="${id}" data-n="1" ${ZENY>=ETC[id].price?'':'disabled'}>×1</button><button class="rob" data-buy="${id}" data-n="10" ${ZENY>=ETC[id].price*10?'':'disabled'}>×10</button></div>`).join('');
   else{const L=Object.keys(BAG).filter(k=>ETC[k]&&(ETC[k].kind==='mat'||ETC[k].kind==='orb'));

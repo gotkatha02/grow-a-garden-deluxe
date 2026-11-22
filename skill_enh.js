@@ -73,6 +73,10 @@ const HERO={
  lion:[
   T('lnHide','Golden Fleece Hide','shield',[4]),T('lnPounce','Mane Crash','cc',[.8],{cc:'stun'}),T('lnRest','Ambrosia','heal',[1,2]),T('lnRoar','King of Beasts','buff',[40],{T:6}),
   T('laSpin','Crowd Roar','splash',[.5],{R:90}),T('laCounter','Iron Grip','buff',[30,55],{T:5}),T('lbCloud','Thunderhead','cc',[1],{cc:'stun'}),T('lbOver','Static Surge','sp',[20]),T('lbAegis','Aegis Bolt','shield',[3,5])],
+ raven:[
+  T('vnCloak','Night Plumage','shield',[4]),T('vnDive','Talon Strike','cc',[.8],{cc:'stun'}),T('vnNights','Runes Learned','sp',[10,20]),T('vnEye','Hlidskjalf','buff',[30],{T:6}),
+  T('vaSwap','Shadow Twin','echo',[.6]),T('vaParry','Raven Riposte','buff',[30,55],{T:5}),T('vaValhalla','Einherjar Roar','cc',[1.5],{cc:'stun'}),
+  T('vbStorm','Hail of Thought','cc',[1],{cc:'slow'}),T('vbTether','Thread of Wyrd','sp',[15]),T('vbWard','Algiz Rampart','shield',[3,5]),T('vbRunes','Galdr','cc',[1.5],{cc:'stun'})],
  kitsune:[
   T('knStep','Fox Fire Step','res',[1],{res:'kiTail',th:'หาง +1'}),T('knWard','Fox Charm','sp',[15]),T('knBless','Inari Rice','shield',[2,4]),T('knTorii','Thousand Gates','cdr',[2]),
   T('kaRain','Ember Bloom','res',[1],{res:'kiTail',th:'หาง +1 เพิ่ม'}),T('kaVeil','Fox Mirage','res',[1,2],{res:'kiTail',th:'หาง +1 / +2'}),
@@ -111,7 +115,7 @@ function install(){const L=HERO[CHAR];if(!L||typeof SKILLS==='undefined')return;
     const sk={id:(m.id||'X')+'+',name:d.name,br:m.br,row:m.row,max,passive:1,enh:d.main,icon:Array.isArray(m.icon)?[m.icon[0],'#ffe9a8',m.icon[2]||'#2a1a10']:m.icon,th:line(d,1).slice(0,40),xtra:1};
     if(m.col)sk.col=m.col;SKILLS[key]=sk;LV[key]=max;
     /* painted icon if one exists: assets/icons/<hero>/ex_<main>.webp */
-    if(typeof SKILL_ICON_ART!=='undefined'){const im=new Image(),src='assets/icons/'+CHAR+'/'+key+'.webp';im.onload=()=>{SKILL_ICON_ART[d.name]=src;if(typeof buildSkillWin==='function')try{buildSkillWin();}catch(_){}};im.src=src;}
+    if(typeof SKILL_ICON_ART!=='undefined'&&!(window.EX_ICON_SKIP||{})[CHAR]){const im=new Image(),src='assets/icons/'+CHAR+'/'+key+'.webp';im.onload=()=>{SKILL_ICON_ART[d.name]=src;if(typeof buildSkillWin==='function')try{buildSkillWin();}catch(_){}};im.src=src;}
     try{SK_DT[key]=skDT(d.main);}catch(e){}
     const desc={d:`(ต่อยอด ${m.name}) `+({echo:'ฟันซ้ำ',splash:'กระแทกรอบเป้า',flat:'แรงขึ้น',vs:'แรงขึ้นกับศัตรูที่ติดสถานะ',cc:'ติดสถานะ',sp:'คืน SP',heal:'ฟื้นเลือด',shield:'ได้โล่',cdr:'เร่งคูลดาวน์',buff:'เสริมพลัง',res:'เพิ่มพลังประจำสาย'}[d.kind]||''),lv:{}};
     for(let l=1;l<=max;l++)desc.lv[l]=[line(d,l)];

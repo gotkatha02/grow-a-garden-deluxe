@@ -143,12 +143,16 @@ function crowdDef(id,E,npc){const g=E.grade||0,f=Math.pow(.86,g);let sup,q,m;
     case 'crystal':sup=.3;q=[1,1];m=[1,1.8];break;
     case 'bpart':if(!E.live)return null;sup=[.3,.12,.06][{map:0,mvp:1,main:2}[E.btier]||1];q=[1,2];m=[1,1.6];break;   /* boss parts (drop_table.js) — only bosses in the game */
     case 'tool':sup=id==='guard'?.25:.5;q=[1,2];break;
+    case 'pcharm':if((E.tier||1)>2)return null;sup=[2,1.2][(E.tier||1)-1];q=[2,8];break;            /* pets (pet_data.js): bond charms — tiers 3–4 have no monsters yet */
+    case 'pegg':sup={1:.5,2:.25}[E.tier]||.15;q=[1,2];m=[1,1.5];break;                               /* eggs: tamed by players, rarer when the charm tier is higher */
+    case 'pfluff':sup=.4;q=[1,4];break;
+    case 'ptreat':sup=.12;q=[1,1];m=[1,1.4];break;
     case 'use':if(E.hp||E.sp){sup=3.2-.5*(+id.slice(-1)||1);q=[3,15];}else if(E.full){sup=.2;q=[1,1];m=[1,1.6];}else if(E.buff){sup=.8;q=[1,4];}else if(E.exp){sup=.3;q=[1,1];}else{sup=1.5;q=[1,6];}break;
     default:return null;}
   return {id,base:E.price,cap:!!npc,sup,dem:sup,qs:q,qb:q,m,kind:E.kind,reg:E.reg,rare:!!E.rare};}
 /* market news: for some hours one group of goods is wanted more (dem) or brought in more (sup) → rounds get crowded, prices move */
 const NEWS=[{k:'refine',dem:2,f:d=>d.kind==='ore'||d.id==='guard'},{k:'totem',dem:2.2,f:d=>d.kind==='tstone'||d.kind==='tfrag'||d.kind==='tess'},{k:'gem',dem:2.5,f:d=>d.kind==='gmut'||d.kind==='gsup'||d.kind==='bpart'},{k:'orb',dem:3,f:d=>d.kind==='orb'},{k:'crystal',dem:4,f:d=>d.kind==='crystal'},
-  {k:'rare',dem:2.2,f:d=>d.kind==='mat'&&d.rare},{k:'potion',sup:1.8,f:d=>d.kind==='use'&&d.cap}];
+  {k:'rare',dem:2.2,f:d=>d.kind==='mat'&&d.rare},{k:'pet',dem:2,f:d=>d.kind==='pegg'||d.kind==='ptreat'},{k:'potion',sup:1.8,f:d=>d.kind==='use'&&d.cap}];
 for(const r of ['vik','azt','grk','egy','jpn']){NEWS.push({k:'want_'+r,reg:r,dem:1.7,f:d=>d.kind==='mat'&&d.reg===r});NEWS.push({k:'glut_'+r,reg:r,sup:1.7,f:d=>d.kind==='mat'&&d.reg===r});}
 const API={makeMarket,K,px,crowdDef,NEWS};
 if(typeof module!=='undefined'&&module.exports)module.exports=API;else root.MKT_ENGINE=API;
@@ -175,7 +179,7 @@ const pct=x=>{const p=Math.round(x*1000)/10;return p>0?`<span class="up">▲ +${
 const logLine=t=>{const P=me();P.log.unshift(hhmm(now())+' · '+t);P.log=P.log.slice(0,40);};
 const ERR={slots:`ลงขายได้พร้อมกัน ${K.SLOTS} รายการ`,lock:'เพิ่งได้ของชนิดนี้จากรอบจอง ยังลงขายต่อไม่ได้',reserved:'คุณจองของในรอบนี้อยู่ จึงลงขายในรอบเดียวกันไม่ได้',round:'ของอยู่ในรอบจอง',stock:'ของในตลาดไม่พอ',
   own:'คุณมีของในรอบนี้ จึงจองไม่ได้',twice:'จองได้ 1 ครั้งต่อรอบ',max:`จองค้างได้พร้อมกัน ${K.RES_MAX} รอบ`,units:'จองได้ไม่เกินจำนวนของในรอบ',late:'ยกเลิกไม่ได้ในช่วง 5 นาทีสุดท้าย',none:'ไม่พบรายการ',bad:'ทำรายการไม่ได้'};
-const NEWS_T={refine:'ช่างทั่วแผ่นดินแห่ตีบวก — หินตีบวกและหินกันแตกเป็นที่ต้องการ',totem:'ศาลโทเท็มคึกคัก — หินโทเท็ม ชิ้นส่วนเจม และแก่นโทเท็มเป็นที่ต้องการ',gem:'นักแกะเจมทั่วแผ่นดินตามหาเจมแปรสภาพและเจมเสริม',orb:'นักผจญภัยแห่อัดหินออฟ — หินออฟเป็นที่ต้องการ',crystal:'ช่างฝีมือตามหาผลึกนิสัย — ผลึกเป็นที่ต้องการมาก',
+const NEWS_T={pet:'กระแสเลี้ยงสัตว์มาแรง — ไข่สัตว์เลี้ยงและขนมเปลี่ยนนิสัยเป็นที่ต้องการ',refine:'ช่างทั่วแผ่นดินแห่ตีบวก — หินตีบวกและหินกันแตกเป็นที่ต้องการ',totem:'ศาลโทเท็มคึกคัก — หินโทเท็ม ชิ้นส่วนเจม และแก่นโทเท็มเป็นที่ต้องการ',gem:'นักแกะเจมทั่วแผ่นดินตามหาเจมแปรสภาพและเจมเสริม',orb:'นักผจญภัยแห่อัดหินออฟ — หินออฟเป็นที่ต้องการ',crystal:'ช่างฝีมือตามหาผลึกนิสัย — ผลึกเป็นที่ต้องการมาก',
   rare:'งานคราฟต์ชิ้นใหญ่ทั่วแผ่นดิน — วัตถุดิบหายากเป็นที่ต้องการ',potion:'นักเล่นแร่แปรธาตุเทของ — ยาเข้าตลาดเยอะ ราคาอ่อนตัว'};
 function newsText(){const n=M.news();if(!n||W.news.u<=now())return '';const tn=n.reg&&A.TOWNS[n.reg]?A.TOWNS[n.reg].name:'';
   return NEWS_T[n.k]||(n.k.indexOf('want_')===0?`คาราวานมุ่งหน้าสู่${tn} — วัตถุดิบ${tn}เป็นที่ต้องการ`:`นักล่ากลับจาก${tn} — วัตถุดิบ${tn}เข้าตลาดเยอะ ราคาอ่อนตัว`);}
@@ -266,8 +270,8 @@ const css=document.createElement('style');css.textContent=`
   #mkx .tbar{margin-top:5px;padding:3px 8px}#mkx .sum{margin:4px 0;padding:4px 8px;line-height:1.55}#mkx .tttab{margin-bottom:6px}#mkx .tttab button{padding:5px 4px}}`;
 document.head.appendChild(css);
 
-const CATS=[['all','ทั้งหมด','🗂'],['round','รอบจอง','⏳'],['mat','วัตถุดิบ','🌿'],['ore','หินตีบวก','⛏'],['orb','หินออฟ','💎'],['use','ยา/อาหาร','🧪'],['tool','ของใช้/ผลึก','🧰'],['gem','เจม/โทเท็ม','🔮']];
-const GEMK={tstone:1,tfrag:1,tess:1,gmut:1,gsup:1,bpart:1},catOf=id=>defs[id].kind==='crystal'?'tool':GEMK[defs[id].kind]?'gem':defs[id].kind,IDS=Object.keys(defs);
+const CATS=[['all','ทั้งหมด','🗂'],['round','รอบจอง','⏳'],['mat','วัตถุดิบ','🌿'],['ore','หินตีบวก','⛏'],['orb','หินออฟ','💎'],['use','ยา/อาหาร','🧪'],['tool','ของใช้/ผลึก','🧰'],['gem','เจม/โทเท็ม','🔮'],['pet','สัตว์เลี้ยง','🐾']];
+const GEMK={tstone:1,tfrag:1,tess:1,gmut:1,gsup:1,bpart:1},PETK={pegg:1,pcharm:1,pfluff:1,ptreat:1},catOf=id=>defs[id].kind==='crystal'?'tool':GEMK[defs[id].kind]?'gem':PETK[defs[id].kind]?'pet':defs[id].kind,IDS=Object.keys(defs);
 let tab='buy',cat='all',reg='',qy='',sort='def',pick=null,qty=1,popId=null,popN=1,lastRev=-1,lastDraw=0;
 const win=()=>document.getElementById('mkx'),isOpen=()=>{const w=win();return !!(w&&w.classList.contains('open'));};
 const badge=v=>v.mode==='round'?`<span class="bd r">⏳ <span data-cd="${v.rd.e}">${cd(v.rd.e-now())}</span> · จอง ${v.rd.n} คน</span>`:v.mode==='normal'?`<span class="bd n">มีของ ×${fmt(v.stock)}</span>`:`<span class="bd e">ขาดตลาด${v.w>=1?' · รอ '+v.w+' คน':''}</span>`;

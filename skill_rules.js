@@ -13,7 +13,7 @@
      a normal hit never does. Bosses: stun is halved, knock-up becomes a flinch.
    ===================================================================== */
 (function(){
-const DT_CHAR={wolf:'AB',jaguar:'AB',owl:'AB',rhino:'p',croc:'p',axolotl:'m',cat:'p',hippo:'AB',sheep:'m',dragon:'AB',lion:'AB',kitsune:'m',bastet:'m',anubis:'p'};
+const DT_CHAR={wolf:'AB',jaguar:'AB',owl:'AB',rhino:'p',croc:'p',axolotl:'m',cat:'p',hippo:'AB',sheep:'m',dragon:'AB',lion:'AB',kitsune:'m',bastet:'m',anubis:'p',raven:'AB'};
 /* single-skill overrides */
 const SK_DT={
   // wolf C (enhancements / new actives follow the element they belong to)
@@ -88,7 +88,7 @@ const KO_LV=v=>v>=3.5?['สูงมาก','#ff6a4a']:v>=2.4?['สูง','#ffa
 /* 12 Tails rule: a build goes one way. Pure classes use one stat for everything (ATK or MATK).
    Two-way classes (A = ATK, B = MATK): the normal attack and Basic-branch skills use whichever power is higher ('b'),
    so an ATK build and a MATK build both keep a working basic kit. */
-function skCol(k){try{for(const L of [typeof HP_DEFS!=='undefined'&&HP_DEFS,typeof KT_DEFS!=='undefined'&&KT_DEFS,typeof SP_DEFS!=='undefined'&&SP_DEFS,typeof DG_DEFS!=='undefined'&&DG_DEFS,typeof LI_DEFS!=='undefined'&&LI_DEFS,typeof KI_DEFS!=='undefined'&&KI_DEFS,typeof BA_DEFS!=='undefined'&&BA_DEFS,typeof ANU_DEFS!=='undefined'&&ANU_DEFS,typeof CRX_DEFS!=='undefined'&&CRX_DEFS]){if(!L)continue;const d=L.find(x=>x.key===k);if(d&&d.col)return d.col;}}catch(_){}return null;}
+function skCol(k){try{for(const L of [typeof HP_DEFS!=='undefined'&&HP_DEFS,typeof KT_DEFS!=='undefined'&&KT_DEFS,typeof SP_DEFS!=='undefined'&&SP_DEFS,typeof DG_DEFS!=='undefined'&&DG_DEFS,typeof LI_DEFS!=='undefined'&&LI_DEFS,typeof KI_DEFS!=='undefined'&&KI_DEFS,typeof BA_DEFS!=='undefined'&&BA_DEFS,typeof ANU_DEFS!=='undefined'&&ANU_DEFS,typeof CRX_DEFS!=='undefined'&&CRX_DEFS,typeof RV_DEFS!=='undefined'&&RV_DEFS]){if(!L)continue;const d=L.find(x=>x.key===k);if(d&&d.col)return d.col;}}catch(_){}return null;}
 /* owner 2026-11-19 (two-way heroes): normal attack = ATK only · magic-looking skills = MATK only ·
    physical-looking skills ('x') = ATK 30% + MATK power 70% (MIX below) · Basic-branch 'b' = the higher of the two.
    owner 2026-11-22 ('แก้บัค 4', RO style): the mix is gone — branch A = ATK only, branch B = MATK only, Basic branch 'b' = the higher,

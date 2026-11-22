@@ -8,7 +8,7 @@ from playwright.async_api import async_playwright
 RUNS=int(sys.argv[1]) if len(sys.argv)>1 else 4
 BENCH=os.path.join(os.path.dirname(os.path.abspath(__file__)),'..','balance_bench.js')
 GEN="(k=>{const s=SKILLS[k];return s&&s.br})"
-H=[('wolf','A,B',GEN),('jaguar','A,B',GEN),('owl','A,B',GEN),('hippo','A,B',GEN),('dragon','A,B','dCol'),('lion','A,B','lCol'),
+H=[('wolf','A,B',GEN),('jaguar','A,B',GEN),('owl','A,B',GEN),('hippo','A,B',GEN),('dragon','A,B','dCol'),('lion','A,B','lCol'),('raven','A,B','vCol'),
    ('kitsune','A,B',GEN),('bastet','A,B',GEN),('anubis','A,B',GEN),('sheep','A,B',GEN),('croc','all',GEN),('cat','all',GEN),('rhino','all',GEN),('axolotl','all',GEN)]
 only=os.environ.get('ONLY')
 if only:H=[h for h in H if h[0] in only.split(',')]

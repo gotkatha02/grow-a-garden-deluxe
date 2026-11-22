@@ -4,7 +4,7 @@ event time with the action's length.  python3 tools/qa/lostev.py [hero…]   LOS
 (lost when the player has already queued the next input).  Serve the repo on 8765 first."""
 import asyncio,sys,json,time
 from playwright.async_api import async_playwright
-HEROES=sys.argv[1:] or ['wolf','cat','kitsune','bastet','anubis','dragon','lion','axolotl','sheep','hippo','croc','jaguar','owl','rhino']
+HEROES=sys.argv[1:] or ['wolf','cat','kitsune','bastet','anubis','dragon','lion','axolotl','sheep','hippo','croc','jaguar','owl','rhino','raven']
 PROBE="""()=>{const out=[];const e=enemies.find(q=>!q.dead);if(!e)return ['no dummy'];
  const keys=Object.keys(SKILLS).filter(k=>SKILLS[k].make);keys.push('basic');
  for(const k of keys){try{player.action=null;player.casting=null;player.x=e.x-80;player.y=e.y;faceTo(0);player.mp=player.maxMp;

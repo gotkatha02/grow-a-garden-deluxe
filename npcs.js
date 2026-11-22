@@ -478,7 +478,14 @@ let wbPend=false,wbBoss=null;
 function guildMenu(n){const left=wbLeft(),mm=Math.ceil(left/60000);
   hlShow(n,'กิลด์มาสเตอร์ · กิลด์นักผจญภัย',`${n.hello}<br><small>บอสโลก <b>Aether Wyrm</b> รออยู่ในรังชั้นลึกสุดของรอยแยกเอเธอร์ · แนะนำ Lv ${window.LVC?LVC.n(85):85}+ · ลงได้ทุก 20 นาที</small>`,
     [{html:`<span>⚔ ลงบอสโลก: Aether Wyrm</span><em>${left?`อีก ${mm} นาที`:'พร้อม'}</em>`,dis:!!left,fn:()=>{hlClose();try{localStorage.setItem(wbKey(),Date.now());}catch(e){}wbPend=true;chatLog('sys','กิลด์ส่งคุณไปยัง <b>รังเอเธอร์เวิร์ม</b>… ระวังตัว!');mapTravel('rift3',null);}},
+     {html:'<span>🗺 ลานบอสโลก 7 ลาน</span><em>ชมลาน</em>',dis:!(window.WB_ARENAS||[]).length,fn:()=>wbArenaMenu(n)},
      {html:'<span>📜 รางวัลบอสโลก</span><em>ดู</em>',fn:()=>guildInfo(n)}]);}
+/* world-boss arenas (maps/wboss-arenas.js): walk round each themed arena with its boss standing in the middle (a preview —
+   the fights themselves are not built yet, WORLD_BOSS_WEEK_TH.md) */
+function wbArenaMenu(n){const DAY={wbKhepra:'อาทิตย์',wbPuijantra:'จันทร์',wbBurumba:'อังคาร',wbMayawee:'พุธ',wbBrontara:'พฤหัส',wbLumina:'ศุกร์',wbLuminaIn:'ศุกร์',wbUrtok:'เสาร์'};
+  hlShow(n,'กิลด์มาสเตอร์ · ลานบอสโลก','ลานของบอสโลกทั้ง 7 วัน · ตอนนี้เข้าไปชมลานได้ (บอสยืนให้ดูเฉยๆ ยังไม่สู้)<br><small>ทางกลับ = วงเรืองแสงหน้าหินจุดเกิดในค่ายกิลด์</small>',
+    [...(window.WB_ARENAS||[]).map(id=>({html:`<span>${DAY[id]?DAY[id]+' · ':''}${(VK_MAPS[id]||{}).name||id}</span><em>ไป</em>`,fn:()=>{hlClose();chatLog('sys','กิลด์พาคุณไปยัง <b>'+((VK_MAPS[id]||{}).name||id)+'</b>');mapTravel(id,null);}})),
+     {html:'<span>← กลับ</span>',fn:()=>guildMenu(n)}]);}
 function guildInfo(n){hlShow(n,'กิลด์มาสเตอร์ · กิลด์นักผจญภัย','ล้มบอสโลกได้: <b>Zeny ก้อนใหญ่</b> + <b>ของเซ็ทดรอปโบราณ (Lv90)</b> 1 ชิ้นแน่นอน<br><small>บอสหลอด KO หนามาก ใช้ท่าทุบ/กระโดดเพื่อ KO มัน</small>',[{html:'<span>← กลับ</span>',fn:()=>guildMenu(n)}]);}
 (function wbTick(){requestAnimationFrame(wbTick);
   if(wbPend&&curMap==='rift3'&&!mapFadeDir){const h=mapHosts.rift3;if(h&&h.ready){wbPend=false;const [x,y]=M2W({x:1800,y:1380});const e=spawnEnemy(x,y,true);if(!enemies.includes(e))enemies.push(e);

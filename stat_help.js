@@ -14,7 +14,7 @@ if(typeof PS==='undefined'||typeof pointsLeft!=='function')return;
    [branch ('' = any), preset, label]; the first option of a one-branch hero = CHAR_PRESET, the build the new-player guide (guide.js) teaches.
    The rhino gets two: tank (VIT) and damage (STR, ~35 % more damage, less HP); the cat AGI and STR (STR ~7 % more damage, AGI faster / dodges). */
 const REC={wolf:[['A','STR'],['B','INT']],jaguar:[['A','AGI'],['B','INT']],owl:[['A','DEX'],['B','INT']],hippo:[['A','STR'],['B','INT']],
-  dragon:[['A','STR'],['B','INT']],lion:[['A','STR'],['B','INT']],kitsune:[['','INT']],bastet:[['','INT']],sheep:[['','INT']],axolotl:[['','INT']],
+  dragon:[['A','STR'],['B','INT']],lion:[['A','STR'],['B','INT']],raven:[['A','STR'],['B','INT']],kitsune:[['','INT']],bastet:[['','INT']],sheep:[['','INT']],axolotl:[['','INT']],
   anubis:[['','STR']],croc:[['','STR']],cat:[['','AGI'],['','STR']],rhino:[['','VIT','ถึก (แทงก์)'],['','STR']]};
 const BNAME={STR:'ตีแรง',AGI:'ว่องไว',INT:'เวท',VIT:'ถึก',DEX:'แม่น',LUK:'ดวง',INTDEX:'เวทแม่น'};
 const PRE=n=>PRESETS[n]?n:(n==='INTDEX'?'INT':'STR');

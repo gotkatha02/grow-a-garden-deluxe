@@ -93,6 +93,8 @@ for(let s=1;s<=3;s++){const {h}=run(Object.assign({V:100,P0:100,shock:[120,2]},C
   ETC.tess={price:2500,kind:'tess'};
   for(const g of ['focus','spread','heavy','rapid','stack','fire','ice','volt','guard','rage','siphon','totem'])ETC['gmut_'+g]={price:25000,kind:'gmut'};
   for(const g of ['echo','third','force','splash','chain','quick','thrift','burn','frost','pierce','leech','impact'])ETC['gsup_'+g]={price:12000,kind:'gsup'};
+  /* 2026-11-22 pets (pet_data.js is node-loadable): eggs, bond charms, spirit fluff, personality treat */
+  try{require('../pet_data.js');globalThis.PETDATA.goods(ETC);}catch(e){console.log('pet_data.js not loaded: '+e.message);}
   ETC.bm_fenrir={price:8000,kind:'bpart',btier:'mvp',live:true};ETC.bm_ymir={price:15000,kind:'bpart',btier:'main'};   /* 2026-11-22 boss parts: only live bosses trade */
   const NPC=new Set(['hp1','hp2','hp3','hp4','sp1','sp2','sp3','food_atk','food_def','food_vit','food_agi','food_tal','food_cha','manual','ret','capscroll','wing','wore1','ore1','wore2','ore2','drill','pliers','guard']);   /* 2026-11-22: refine stones tiers 3–4 no longer sold */
   const defs={};for(const id in ETC){const d=crowdDef(id,ETC[id],NPC.has(id));if(d)defs[id]=d;}
