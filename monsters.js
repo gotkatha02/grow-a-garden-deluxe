@@ -61,8 +61,10 @@ const DOT={dbPoison:1.2,dbBurn:1,dbBleed:.8};                                   
 const DBV={dbArmor:.5,dbWeak:.3};                                               // damage taken +lv×n per hit · ATK/MATK −lv×n
 const DEBV={};
 const DEB={poison:['dbPoison',4],burn:['dbBurn',3],bleed:['dbBleed',4],slow:['dbSlow',3],armor:['dbArmor',4],weak:['dbWeak',4]};
-function debuff(k,dur){dur*=(typeof resMul==='function'?resMul(k==='dbWeak'?'weaken':k):1);const b=player.buffs[k];if(!b||b.t<dur)player.buffs[k]={t:dur,total:dur};}
+function debuff(k,dur){if(window.MSF){dur=MSF.debuffT(k,dur);if(!dur)return;}   /* stat tiers: VIT / INT 90 immune, VIT 60 / LUK 90 halve (milestones.js) */
+  dur*=(typeof resMul==='function'?resMul(k==='dbWeak'?'weaken':k):1);const b=player.buffs[k];if(!b||b.t<dur)player.buffs[k]={t:dur,total:dur};}
 function applyAbility(e,every){const t=e.vdef&&e.vdef._t;if(!t||!t.ab||player.iframes>0)return;e._abN=(e._abN||0)+1;if(e._abN%every)return;   /* every 4th hit that lands, no chance roll */
+  if(window.MSF&&MSF.immuneAb(t.ab))return;   /* stat tiers: STR 30 no knock-back, VIT 90 physical statuses, INT 90 weaken + SP drain (milestones.js) */
   const mlv=(e.m&&e.m.lv)||PS.lv;
   if(t.ab==='knock'){const a=Math.atan2(player.y-e.y,player.x-e.x);player.x+=Math.cos(a)*40;player.y+=Math.sin(a)*40;return;}
   if(t.ab==='drain'){const d=Math.round(mlv*.4);player.mp=Math.max(0,player.mp-d);addFx(new DText({x:player.x,y:player.y,z:84,text:`-${d} SP`,color:'#c8d8ff',size:12,life:.8}));return;}

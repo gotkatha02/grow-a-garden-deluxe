@@ -82,7 +82,7 @@ for(let s=1;s<=3;s++){const {h}=run(Object.assign({V:100,P0:100,shock:[120,2]},C
 /* ---------- 3. the whole market as the game builds it (same item table as items.js, 7 days warm-up + 30 days) ---------- */
 (function whole(){const ETC={},REG=['vik','azt','grk','egy','jpn'];
   for(const r of REG)for(let g=0;g<10;g++){ETC[`m_${r}_${g}_a`]={price:8+6*g,kind:'mat',reg:r,grade:g};ETC[`m_${r}_${g}_b`]={price:30+25*g,kind:'mat',reg:r,grade:g,rare:1};}
-  [100,400,1500,5000].forEach((p,i)=>ETC['ore'+(i+1)]={price:p,kind:'ore',tier:i+1});ETC.drill={price:3000,kind:'tool'};ETC.pliers={price:2000,kind:'tool'};ETC.guard={price:50000,kind:'tool'};
+  [100,400,1500,5000].forEach((p,i)=>{ETC['ore'+(i+1)]={price:p,kind:'ore',tier:i+1};ETC['wore'+(i+1)]={price:p,kind:'ore',tier:i+1};});   /* 2026-11-22: armour (ore) + weapon (wore) refine stones */ETC.drill={price:3000,kind:'tool'};ETC.pliers={price:2000,kind:'tool'};ETC.guard={price:50000,kind:'tool'};
   for(const r of REG)ETC['trait_'+r]={price:20000,kind:'crystal',reg:r};
   const U={hp1:[25,'hp'],hp2:[120,'hp'],hp3:[450,'hp'],hp4:[1100,'hp'],sp1:[60,'sp'],sp2:[300,'sp'],sp3:[900,'sp'],elixir:[15000,'full'],manual:[20000,'exp'],ret:[300,'warp'],capscroll:[800,'warp'],wing:[60,'warp']};
   for(const k in U)ETC[k]={price:U[k][0],kind:'use',[U[k][1]]:1};for(const f of ['atk','def','vit','agi','tal','cha'])ETC['food_'+f]={price:1500,kind:'use',buff:f};
@@ -93,7 +93,8 @@ for(let s=1;s<=3;s++){const {h}=run(Object.assign({V:100,P0:100,shock:[120,2]},C
   ETC.tess={price:2500,kind:'tess'};
   for(const g of ['focus','spread','heavy','rapid','stack','fire','ice','volt','guard','rage','siphon','totem'])ETC['gmut_'+g]={price:25000,kind:'gmut'};
   for(const g of ['echo','third','force','splash','chain','quick','thrift','burn','frost','pierce','leech','impact'])ETC['gsup_'+g]={price:12000,kind:'gsup'};
-  const NPC=new Set(['hp1','hp2','hp3','hp4','sp1','sp2','sp3','food_atk','food_def','food_vit','food_agi','food_tal','food_cha','manual','ret','capscroll','wing','ore1','ore2','ore3','ore4','drill','pliers','guard']);
+  ETC.bm_fenrir={price:8000,kind:'bpart',btier:'mvp',live:true};ETC.bm_ymir={price:15000,kind:'bpart',btier:'main'};   /* 2026-11-22 boss parts: only live bosses trade */
+  const NPC=new Set(['hp1','hp2','hp3','hp4','sp1','sp2','sp3','food_atk','food_def','food_vit','food_agi','food_tal','food_cha','manual','ret','capscroll','wing','wore1','ore1','wore2','ore2','drill','pliers','guard']);   /* 2026-11-22: refine stones tiers 3–4 no longer sold */
   const defs={};for(const id in ETC){const d=crowdDef(id,ETC[id],NPC.has(id));if(d)defs[id]=d;}
   const W={},M=makeMarket(defs,W,{rand:rng(4242),news:NEWS,K:KA});let t0=Date.now();M.advance(T0);const warm=Date.now()-t0;
   const st={rounds:0,r0:0,r1:0,lot:0,big:0,empty:0,inround:0,samples:0,news:{}},seen=new Map();t0=Date.now();const day={},prev={};

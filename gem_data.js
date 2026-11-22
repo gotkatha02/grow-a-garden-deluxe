@@ -114,7 +114,9 @@ const COST={
 const gemPow=lv=>.03*(Math.min(lv,5)-1)+.004*Math.max(0,lv-5);
 /* drops (items.js dropFor): stone tier = ore tier of the monster's level band. soreLv is a DESIGN level: dropFor compares the monster's
    design level (LVC.o, level cap 60) → Star Ore from monsters Lv 43+ */
-const DROPS={stoneField:.002,stoneDun:.005,ess:.015,essN:[1,3],soreLv:70,soreField:.0005,soreDun:.0015,mutDun:.0003,mutField:.0001,supDun:.0006,supField:.00015,
+/* owner 2026-11-22 17:42 'พวกเจมต่างๆก็ดรอปจากบอส': mutation / support gems no longer drop from normal monsters (were mutDun .0003 · mutField .0001 ·
+   supDun .0006 · supField .00015) — bosses drop them (drop_table.js BOSS, which also replaces DROPS.boss below) + the central market */
+const DROPS={stoneField:.002,stoneDun:.005,ess:.015,essN:[1,3],soreLv:70,soreField:.0005,soreDun:.0015,mutDun:0,mutField:0,supDun:0,supField:0,
   boss:{stones:3,ess:10,sore:2,sup:1,mutChance:.3}};
 /* carving the totem's holes open (owner 2026-11-21: 'turn in goods to unlock each hole, not very easy; only the first skill hole is free
    so players can try it'). Every hole of the totem starts sealed by a plug; tap it on the board → the goods below → ⛏ สลักเปิด.

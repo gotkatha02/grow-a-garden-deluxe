@@ -15,7 +15,7 @@
      glides (and turns 90°) to a new target, tightens on every hit, bursts on death; boss = gold-tipped darts + gold ring;
      thin ring at the feet; arrow at the screen edge when the target is off screen.
      Target frame at the top: portrait (cut from the monster's own sheet), level pill coloured by the level gap,
-     Thai + English name, HP with a damage trail, boss break gauge, status chips, aggressive mark, ✕.
+     Thai + English name, its special drop (refine stone / orb icon, drop_table.js), HP with a damage trail, boss break gauge, status chips, aggressive mark, ✕.
    Hooks in index.html: enemyAt → TL.pick · render → TL.ground / TL.draw · useSkill / autoTick → TL.forSkill / TL.autoPrime ·
    command(attack) → TL.set · overhead HP bar also for TL.e. mobile.js: 🎯, attack button, aim preview, drag-aim, ground tap.
    ===================================================================== */
@@ -193,6 +193,7 @@ const css=`
 #tlf .nm b{font:600 13.5px/1.2 'Mitr',Mali,sans-serif;color:#4a2a16;overflow:hidden;text-overflow:ellipsis;min-width:0}
 #tlf .nm small{font:400 10.5px/1.2 'Prompt',Sarabun,sans-serif;color:#8a5a36;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1}
 #tlf .tg{display:flex;gap:3px;align-items:center;flex:none}
+#tlf .dr{flex:none;display:flex;align-items:center;pointer-events:auto}#tlf .dr:empty{display:none}
 #tlf .tg i{width:9px;height:9px;transform:rotate(45deg);background:var(--c);border:1px solid rgba(40,10,0,.65);border-radius:2px;display:block}
 #tlf .tg .ag,#tlf .tg .bs{font:600 9px/1 'Mitr',sans-serif;color:#fff;background:#c8463c;border-radius:5px;padding:2px 4px;border:1px solid #6a1a12}
 #tlf .tg .bs{background:linear-gradient(#ffd86a,#e8a020);color:#4a1a00;border-color:#8a5a10}
@@ -219,9 +220,9 @@ const css=`
 `;
 const st=document.createElement('style');st.textContent=css;document.head.appendChild(st);
 const F=document.createElement('div');F.id='tlf';
-F.innerHTML='<div class="pt"><canvas width="96" height="96"></canvas></div><div class="bd"><div class="nm"><span class="lv"></span><b></b><small></small><span class="tg"></span></div><div class="hp"><i class="tr"></i><i class="fl"></i><b></b></div><div class="ko"><i></i></div><button class="x" title="ปลดเป้า (Esc)" aria-label="ปลดเป้า">✕</button></div>';
+F.innerHTML='<div class="pt"><canvas width="96" height="96"></canvas></div><div class="bd"><div class="nm"><span class="lv"></span><b></b><small></small><span class="dr"></span><span class="tg"></span></div><div class="hp"><i class="tr"></i><i class="fl"></i><b></b></div><div class="ko"><i></i></div><button class="x" title="ปลดเป้า (Esc)" aria-label="ปลดเป้า">✕</button></div>';
 document.body.appendChild(F);
-const fe={pc:F.querySelector('canvas'),lv:F.querySelector('.lv'),nm:F.querySelector('.nm b'),en:F.querySelector('.nm small'),tg:F.querySelector('.tg'),
+const fe={pc:F.querySelector('canvas'),lv:F.querySelector('.lv'),nm:F.querySelector('.nm b'),en:F.querySelector('.nm small'),tg:F.querySelector('.tg'),dr:F.querySelector('.dr'),
   tr:F.querySelector('.hp .tr'),fl:F.querySelector('.hp .fl'),ht:F.querySelector('.hp b'),ko:F.querySelector('.ko'),koI:F.querySelector('.ko i'),x:F.querySelector('.x')};
 ['pointerdown','mousedown','touchstart','click'].forEach(ev=>F.addEventListener(ev,e=>e.stopPropagation()));
 fe.x.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();release('rel',true);});
@@ -233,6 +234,7 @@ function frameSet(e){FS.e=e;const mt=document.getElementById('mobTgt');if(mt)mt.
   fe.nm.textContent=n.th;fe.en.textContent=n.en;fe.lv.textContent=lv?'Lv.'+lv:'Lv.?';F.style.setProperty('--lc',e.boss?'#ffd86a':lvCol(lv-pl));
   fe.lv.title=lv?(lv-pl>6?'เลเวลสูงกว่ามาก — อันตราย':lv-pl>3?'เลเวลสูงกว่า':lv-pl<=-10?'เลเวลต่ำกว่ามาก':lv-pl<=-4?'เลเวลต่ำกว่า':'เลเวลใกล้เคียง'):'';
   F.classList.toggle('boss',!!e.boss);F.classList.toggle('hasko',!!e.koMax);
+  {const d=window.AFItems&&AFItems.spDrop&&AFItems.spDrop(e,15);fe.dr.innerHTML=d?d.icon:'';fe.dr.title=d?d.tip:'';}   /* special drop (drop_table.js) */
   FS.hp=-1;FS.max=-1;FS.sig=null;FS.ko=-1;fe.tg.innerHTML='';const r=e.maxHp?clamp(e.hp/e.maxHp,0,1):1;FS.fr=r;FS.tr=r;FS.hold=0;FS.seenHp=e.hp;
   fe.fl.style.transform=fe.tr.style.transform='scaleX('+r+')';FS.w1=FS.w2='';
   portrait(e);F.classList.add('on');place();}

@@ -71,7 +71,19 @@ const ETC={};
 for(const r in MATS)MATS[r].forEach((m,g)=>{const lv=bandTxt(g);
   ETC[matA(r,g)]={n:m[0],th:m[1],price:8+6*g,kind:'mat',reg:r,grade:g,col:TOWNS[r].col,d:`วัตถุดิบ${TOWNS[r].name} ระดับ ${g+1} (มอน ${lv}) · ใช้คราฟต์ของ Lv${gradeLv(g)}`};
   ETC[matB(r,g)]={n:m[2],th:m[3],price:30+25*g,kind:'mat',reg:r,grade:g,rare:1,col:TOWNS[r].col,d:`วัตถุดิบหายาก${TOWNS[r].name} ระดับ ${g+1} (มอน ${lv}) · ใช้คราฟต์ของ Lv${gradeLv(g)}`};});
-[100,400,1500,5000].forEach((p,i)=>ETC['ore'+(i+1)]={n:`Refine Ore T${i+1}`,th:`แร่ตีบวก ขั้น ${i+1}`,price:p,kind:'ore',tier:i+1,col:['#b0b8c8','#7fd0ff','#c08aff','#ffd36a'][i],d:`ตีบวกของ Lv${ORE_LV[i]}–${i<3?ORE_LV[i+1]-1:LC.CAP}`});
+/* refine stones (owner 2026-11-22 17:42): WEAPON stones (wore1–4) refine the weapon, ARMOUR stones (ore1–4 — the old 'Refine Ore' ids, so bags,
+   storage and the market keep them) refine helm / armour / shoes / accessory. Tier = the piece's level band. Tiers 1–2 are sold in shops,
+   3–4 only drop — from the monsters drop_table.js names (not every monster) — or come from the central market / bosses. */
+const ORE_SRC=i=>(i<2?'มีขายที่ร้าน · ':'')+'ดรอปจากมอนบางชนิด (ไอคอนข้างชื่อมอนในแผนที่โลก ปุ่ม W) · บอส · ตลาดกลาง';
+[100,400,1500,5000].forEach((p,i)=>ETC['ore'+(i+1)]={n:`Armor Refine Stone T${i+1}`,th:`หินตีบวกชุดเกราะ ขั้น ${i+1}`,price:p,kind:'ore',part:'a',tier:i+1,col:['#b0b8c8','#7fd0ff','#c08aff','#ffd36a'][i],d:`ตีบวกหมวก เกราะ รองเท้า เครื่องประดับ Lv${ORE_LV[i]}–${i<3?ORE_LV[i+1]-1:LC.CAP} · ${ORE_SRC(i)}`});
+[100,400,1500,5000].forEach((p,i)=>ETC['wore'+(i+1)]={n:`Weapon Refine Stone T${i+1}`,th:`หินตีบวกอาวุธ ขั้น ${i+1}`,price:p,kind:'ore',part:'w',tier:i+1,col:['#b0b8c8','#7fd0ff','#c08aff','#ffd36a'][i],d:`ตีบวกอาวุธ Lv${ORE_LV[i]}–${i<3?ORE_LV[i+1]-1:LC.CAP} · ${ORE_SRC(i)}`});
+/* the piece's refine stone: weapons take weapon stones, every other piece armour stones */
+const refOre=(it,t)=>((it&&(it.cslot||it.slot))==='rhand'?'wore':'ore')+t;
+/* boss parts = the 'boss junk' (owner 2026-11-22 17:42): every boss drops its own (drop_table.js BOSSES) · later exchanged for rune skill gems
+   (RUNE_SYSTEM_TH.md §2) and used to craft its boss set · only parts of bosses that are in the game trade in the central market */
+{const DT=window.DROPTAB;if(DT)for(const k in DT.BOSSES){const [land,slot,boss,en,th,live]=DT.BOSSES[k],bt=DT.SLOT_TIER[slot];
+  ETC['bm_'+k]={n:en,th,price:{map:3000,mvp:8000,main:15000}[bt],kind:'bpart',boss:k,btier:bt,live:!!live,col:(TOWNS[land]||{}).col||'#c9a46a',
+    d:`ชิ้นส่วนบอส · ดรอปจาก${boss} (${DT.BOSS[bt].th}) · เก็บไว้แลกเจมสกิลราก (เมื่อเปิดระบบรากโทเท็ม) และคราฟต์ชุดบอส · ซื้อขายในตลาดกลางได้`};}}
 ETC.drill={n:'Drill',th:'สว่านเจาะรู',price:3000,kind:'tool',col:'#c9a46a',d:'เจาะรูอุปกรณ์ สุ่ม 1–4 รู (เจาะใหม่ หินเดิมหายหมด)'};
 ETC.pliers={n:'Orb Pliers',th:'คีมถอดหิน',price:2000,kind:'tool',col:'#8a96a8',d:'ถอดหินออฟออกมาโดยหินไม่หาย'};
 ETC.guard={n:'Guard Stone',th:'หินกันแตก',price:50000,kind:'tool',col:'#5fd0ff',d:'ตีบวกพลาด ของไม่แตก (ที่ +6–+10 ยังลดบวก 1) · +11 ขึ้นไปใช้ครั้งละ (บวก − 9) ก้อน'};
@@ -127,7 +139,7 @@ const REF_MAX=15,REF_PITY=.01,REF_PITY_CAP=.10;
 const refStar=r=>r>=10?r-9:0;                                                     // Star Ore per try at +11 … +15
 const refGuardN=r=>r>=10?r-9:1;                                                   // Guard Stones that keep it from breaking
 const refChance=(it,r)=>r<10?REFINE_CHANCE[r]:Math.min(1,REFINE_CHANCE[r]+Math.min(REF_PITY_CAP,REF_PITY*((it&&it.rp)||0)));
-const refCost=(it,r)=>{const t=Math.max(1,Math.min(4,it.tier||it.wlv||1)),c=[['ore'+t,1]];if(refStar(r))c.push(['sore',refStar(r)]);return c;};
+const refCost=(it,r)=>{const t=Math.max(1,Math.min(4,it.tier||it.wlv||1)),c=[[refOre(it,t),1]];if(refStar(r))c.push(['sore',refStar(r)]);return c;};
 const COST={craftA:8,craftB:2,craftZ:g=>300*(g+1),traitZ:5000,refineZ:(t,r)=>100*t*t*(r+1),moveZ:(g,r)=>500*(g+1)*r,mergeZ:t=>1000*t};
 const DRILL_W=[[1,45],[2,30],[3,18],[4,7]];
 /* max holes by slot: weapon & body armour 4, everything else 2 */
@@ -204,7 +216,7 @@ const BUFF={food:null,manual:0};                                                
 const isInst=id=>/^i\d+$/.test(id);
 function newInst(base,data){const id='i'+(++SEQ);ITEMS[id]=Object.assign({},ITEMS[base]||{},data||{},{base:data&&data.base!==undefined?data.base:base});return id;}
 function ownedIds(){return [...Object.values(EQ).filter(Boolean),...INV];}
-function save(){try{const inst={};for(const id of ownedIds())inst[id]=ITEMS[id];localStorage.setItem(SKEY,JSON.stringify({v:1,ro:1,zeny:ZENY,seq:SEQ,bag:BAG,buff:BUFF,inst,inv:INV.slice(),eq:{...EQ}}));}catch(e){}}
+function save(){try{const inst={};for(const id of ownedIds())inst[id]=ITEMS[id];localStorage.setItem(SKEY,JSON.stringify({v:1,ro:1,ws:1,zeny:ZENY,seq:SEQ,bag:BAG,buff:BUFF,inst,inv:INV.slice(),eq:{...EQ}}));}catch(e){}}
 let FRESH=false;                                                                // no item save yet = a brand-new hero (market.js clears that hero's market record)
 /* level cap 60 (owner 2026-11-22): an item's level requirement is re-read from its grade / base item on the new scale, so saves
    from before (grade 9 = Lv 90) open as Lv 55 pieces; a replicated look keeps its source's level, converted once (rep.lc) */
@@ -212,13 +224,17 @@ function lvFix(it){if(!it||typeof it!=='object')return it;
   if(it.grade!=null){it.lvReq=gradeLv(it.grade);if(it.crafted&&typeof it.d==='string')it.d=it.d.replace(/Lv\d+$/,'Lv'+it.lvReq);}
   else{const T=typeof ITEM12!=='undefined'&&ITEM12[it.base];if(T&&T.lv)it.lvReq=T.lv;}
   if(it.rep&&it.rep.lv&&!it.rep.lc){it.rep.lv=LC.nc(it.rep.lv);it.rep.lc=1;}return it;}
+/* weapon / armour stones (2026-11-22): an old stack of refine ore splits once — a fifth (rounded up) becomes weapon stones, the rest
+   stay armour stones (one weapon against four helm / armour / shoes / accessory pieces) */
+function oreSplit(bag){for(let t=1;t<=4;t++){const n=bag['ore'+t]||0;if(n<=0)continue;const w=Math.ceil(n/5);bag['wore'+t]=(bag['wore'+t]||0)+w;bag['ore'+t]=n-w;if(!bag['ore'+t])delete bag['ore'+t];}}
 function load(){let s=null;try{s=JSON.parse(localStorage.getItem(SKEY)||'null');}catch(e){}
   if(s&&s.v===1){ZENY=s.zeny||0;SEQ=s.seq||0;Object.assign(BUFF,s.buff||{});
     /* RO stats (2026-11-22): an old save's orbs / food buff move to the new stats once (old INT orbs = SP / cast → DEX) */
     if(!s.ro){const B0=s.bag||{};s.bag={};for(const k in B0){const m=/^orb_(\w+)_(\d)$/.exec(k),n=m?`orb_${({...ORB_OLD,int:'dex'})[m[1]]||m[1]}_${m[2]}`:k;s.bag[n]=(s.bag[n]||0)+B0[k];}
       if(BUFF.food&&K12[BUFF.food.stat])BUFF.food.stat=K12[BUFF.food.stat];}
     for(const k in s.bag||{}){const m=/^orb_(atk|tal|cha|lck)_(\d)$/.exec(k);if(m){const n=`orb_${ORB_OLD[m[1]]}_${m[2]}`;s.bag[n]=(s.bag[n]||0)+s.bag[k];delete s.bag[k];}}   // stray old orbs (market box)
-    for(const k in s.bag||{}){const m=/^m_(\w+)_(\d)_([ab])$/.exec(k);if(m&&!ETC[k])continue;BAG[k]=s.bag[k];}   // drop materials from the old 4-tier table
+    for(const k in s.bag||{}){const m=/^m_(\w+)_(\d)_([ab])$/.exec(k);if(m&&!ETC[k])continue;BAG[k]=s.bag[k];}
+    if(!s.ws)oreSplit(BAG);   /* weapon / armour stones (2026-11-22): an old save's refine ore is shared out once */   // drop materials from the old 4-tier table
     for(const id in s.inst||{}){const it=ITEMS[id]=s.inst[id];if(it.crafted&&it.grade===undefined){it.grade=[0,3,6,9][(it.tier||1)-1];restat(id);}
       if(it.crafted&&![3,5,7,9].includes(it.grade)){it.grade=[3,3,3,3,3,5,5,7,7,9][it.grade]??3;restat(id);}
       if(it.crafted&&!it.renamed)it.n=craftName(it.town,it.cslot,it.grade);   /* crafting now has 4 tiers (Lv30/50/70/90): older pieces move to the nearest */
@@ -236,7 +252,7 @@ function load(){let s=null;try{s=JSON.parse(localStorage.getItem(SKEY)||'null');
   ZENY=50000;for(const sl in EQ)if(EQ[sl]&&!isInst(EQ[sl]))EQ[sl]=mkFromBase(EQ[sl]);
   for(let i=0;i<INV.length;i++)if(!isInst(INV[i]))INV[i]=mkFromBase(INV[i]);
   const home=HOME[CHAR]||'vik';INV.push(craftItem(home,'rhand',0),craftItem(home,'armor',0));
-  add('drill',1);add('ore1',3);add('hp1',20);add('sp1',10);add('ret',2);add('wing',5);}
+  add('drill',1);add('wore1',2);add('ore1',3);add('hp1',20);add('sp1',10);add('ret',2);add('wing',5);}
 function mkFromBase(b){const T=ITEM12[b]||{},lv=T.lv||1;return newInst(b,{orbs:(T.orbs||[]).map(o=>({...o})),sockets:T.sockets||0,tier:tierOfLv(lv),lvReq:lv});}
 /* bag limits: 40 equipment pieces · 60 different Etc/consumable kinds · 999 per stack (storage holds the rest) */
 const BAG_EQ_MAX=40,BAG_KINDS=60,STACK_MAX=999;
@@ -328,10 +344,11 @@ function dropFor(e){const m=e.m||{},L=m.lv||1,t=tierOfLv(L),g=gradeOfLv(L),R=Loo
   const crit=m.role==='critter'?.5:1,L0=LC.o(L),z=Math.round((DROP.zenyBase+L0*DROP.zenyLv)*rnd(.8,1.2)*crit*(m.boss?10:1)*(1+B('zeny')));ZENY+=z;
   const dm=1+B('drop');
   if(ch(DROP.matA*dm))got.push(matA(r,g));if(ch(DROP.matB*dm))got.push(matB(r,g));
-  if(ch(DROP.ore))got.push('ore'+t);
+  /* special drop (owner 2026-11-22 17:42 — drop_table.js / DROP_TABLE_TH.md): a refine stone OR an orb with the monster's own stat,
+     only from the monsters the table names (every monster used to drop refine ore 3 % and a random orb 1.2 %) */
+  const DT=window.DROPTAB,sp=DT?DT.of(e):'';if(sp&&ch(DT.rate(sp,m.role||(e.vdef&&e.vdef.role))*dm))got.push(DT.item(sp,t));
   if(ch(DROP.hpPot))got.push(L0<20?'hp1':L0<45?'hp2':L0<70?'hp3':'hp4');if(ch(DROP.spPot))got.push(L0<30?'sp1':L0<60?'sp2':'sp3');   /* zeny / potions follow the design level (level cap 60) */
   if(ch(DROP.food))got.push(['food_atk','food_def','food_vit','food_agi','food_tal','food_cha'][Math.floor(Math.random()*6)]);
-  if(ch(DROP.orb))got.push(`orb_${ORB_K[Math.floor(Math.random()*ORB_K.length)]}_${t}`);
   const dun=/D\d|H\d|E\d|cata|rift/.test(curMap||'');
   if(ch(dun?DROP.crystalDun:DROP.crystalField))got.push('trait_'+r);
   if(dun&&ch(DROP.elixir))got.push('elixir');
@@ -342,7 +359,8 @@ function dropFor(e){const m=e.m||{},L=m.lv||1,t=tierOfLv(L),g=gradeOfLv(L),R=Loo
     if(L0>=D2.soreLv&&ch(dun?D2.soreDun:D2.soreField))got.push('sore');
     if(ch(dun?D2.mutDun:(D2.mutField||0)))got.push('gmut_'+GD.MUT[Math.floor(Math.random()*GD.MUT.length)][0]);   /* field: rare, since skill stars open at Lv 10 */
     if(ch(dun?D2.supDun:D2.supField))got.push('gsup_'+GD.SUP[Math.floor(Math.random()*GD.SUP.length)][0]);
-    if(boss){const B2=D2.boss;for(let i=0;i<B2.stones;i++)got.push('tstone'+t);for(let i=0;i<B2.ess;i++)got.push('tess');for(let i=0;i<B2.sore;i++)got.push('sore');
+    if(boss&&DT&&DT.bossLoot)got.push(...DT.bossLoot(e.bossKey||(e.fen?'fenrir':''),t));   /* gems, boss part, stones … by boss tier (drop_table.js BOSS) */
+    else if(boss){const B2=D2.boss;for(let i=0;i<B2.stones;i++)got.push('tstone'+t);for(let i=0;i<B2.ess;i++)got.push('tess');for(let i=0;i<B2.sore;i++)got.push('sore');
       for(let i=0;i<B2.sup;i++)got.push('gsup_'+GD.SUP[Math.floor(Math.random()*GD.SUP.length)][0]);if(Math.random()<B2.mutChance)got.push('gmut_'+GD.MUT[Math.floor(Math.random()*GD.MUT.length)][0]);}}}
   /* drop-set gear for this level band (boss: 10×) */
   if(Math.random()<Math.min(1,DROP.dset*R*dm*(m.boss?10:1))){if(eqFull())chatLog('sys','<span style="color:#e2574c">กระเป๋าอุปกรณ์เต็ม</span> — อุปกรณ์ดรอปหายไป');
@@ -351,8 +369,9 @@ function dropFor(e){const m=e.m||{},L=m.lv||1,t=tierOfLv(L),g=gradeOfLv(L),R=Loo
       if($('#itw')&&$('#itw').classList.contains('open')&&itTab==='equip')buildItems();}}
   const lost=got.filter(id=>!add(id,1));if(lost.length){chatLog('sys',`<span style="color:#e2574c">กระเป๋าเต็ม</span> — ทิ้ง ${lost.map(etcName).join(', ')} (ฝากของในคลัง: กด H ในเมือง)`);}
   got.splice(0,got.length,...got.filter(id=>!lost.includes(id)));
-  got.forEach((id,i)=>{const E=ETC[id],rare=E.kind!=='mat'||E.rare;addFx(new DText({x:e.x,y:e.y,z:44+i*13,text:'+ '+E.th,color:E.kind==='orb'?'#c8a8ff':E.kind==='crystal'?'#ffd36a':rare?'#9fe0ff':'#fff6df',size:rare?12:11,life:1.5}));});
-  if(got.length)chatLog('bat',`ได้รับ ${got.map(id=>`<b style="color:${ETC[id].kind==='crystal'?'#e0a020':ETC[id].kind==='orb'?'#9a6ae0':'inherit'}">${etcName(id)}</b>`).join(', ')} · ${z}z`);
+  const grp=[];for(const id of got){const q=grp.find(x=>x.id===id);if(q)q.n++;else grp.push({id,n:1});}   /* boss loot: one line per kind (×n) */
+  grp.forEach(({id,n},i)=>{const E=ETC[id],rare=E.kind!=='mat'||E.rare,gold=E.kind==='crystal'||E.kind==='bpart';addFx(new DText({x:e.x,y:e.y,z:44+i*13,text:'+ '+E.th+(n>1?' ×'+n:''),color:E.kind==='orb'?'#c8a8ff':gold?'#ffd36a':rare?'#9fe0ff':'#fff6df',size:rare?12:11,life:1.5}));});
+  if(got.length)chatLog('bat',`ได้รับ ${grp.map(({id,n})=>`<b style="color:${ETC[id].kind==='crystal'||ETC[id].kind==='bpart'?'#e0a020':ETC[id].kind==='orb'?'#9a6ae0':'inherit'}">${etcName(id)}${n>1?' ×'+n:''}</b>`).join(', ')} · ${z}z`);
   save();if($('#itw')&&$('#itw').classList.contains('open')&&itTab==='etc')buildItems();}
 
 /* ---------------- item card extra info + equip/unequip save ---------------- */
@@ -404,8 +423,16 @@ itemIcon=function(it,sz=24){const k=it&&gearKey(it),h=k&&ICONS.has(k)?img(k,sz):
   return it&&it.broken?`<span class="itbrk" style="position:relative;display:inline-block;width:${sz}px;height:${sz}px;line-height:0;vertical-align:middle">${h}<svg width="${sz}" height="${sz}" viewBox="0 0 24 24" style="position:absolute;left:0;top:0;pointer-events:none"><rect x="0" y="0" width="24" height="24" rx="4" fill="#c0202a" opacity=".22"/><path d="M13 1 L10 8 L14 11 L9 17 L12 23" fill="none" stroke="#2a0a0a" stroke-width="2.4" stroke-linejoin="round"/><path d="M13 1 L10 8 L14 11 L9 17 L12 23" fill="none" stroke="#ff6a5a" stroke-width="1" stroke-linejoin="round"/></svg></span>`:h;};
 
 /* ---------------- Items window: Item + Etc tabs + real Zeny ---------------- */
+/* weapon / armour refine stones (2026-11-22): until their own pictures exist (assets/items/wore1–4.png + new ore1–4.png,
+   REFINE_STONE_ICON_PROMPTS_TH.md) both use the old ore crystal of their tier with a badge top-left (counts sit bottom-right): red sword = weapon, blue shield = armour */
+const ORE_BADGE={w:['#d8483a','<path d="M7 17 L15.5 8.5 L17 5.5 L14 7 L5.5 15.5 Z" fill="#fff"/><path d="M5 13.5 L9 17.5 M4.6 18.6 L6.6 16.6" stroke="#fff" stroke-width="2" stroke-linecap="round"/>'],
+  a:['#3a78d8','<path d="M12 4.5 L18 6.8 L17.4 12.5 C16.9 15.6 14.8 17.6 12 19.2 C9.2 17.6 7.1 15.6 6.6 12.5 L6 6.8 Z" fill="#fff"/><path d="M12 7 V16.6" stroke="#3a78d8" stroke-width="1.4"/>']};
+function oreBadge(pic,part,sz){const b=Math.max(9,Math.round(sz*.46)),B=ORE_BADGE[part];
+  return `<span style="position:relative;display:inline-block;width:${sz}px;height:${sz}px;vertical-align:middle">${pic}<svg width="${b}" height="${b}" viewBox="0 0 24 24" style="position:absolute;left:-1px;top:-1px"><circle cx="12" cy="12" r="10.5" fill="${B[0]}" stroke="#3a2a1f" stroke-width="2"/>${B[1]}</svg></span>`;}
 function etcIcon(id,sz=26){const E=ETC[id]||{},c=E.col||'#c9a46a';
+  if(E.kind==='ore'&&E.part&&!ICONS.has('wore'+E.tier))return oreBadge(ICONS.has('ore'+E.tier)?img('ore'+E.tier,sz):`<svg width="${sz}" height="${sz}" viewBox="0 0 24 24"><path d="M5 15 L9 6 L17 5 L20 13 L14 20 Z" fill="${c}" stroke="#3a2a1f" stroke-width="1.6"/></svg>`,E.part,sz);
   if(ICONS.has(id))return img(id,sz);
+  if(E.kind==='orb'&&ICONS.has('ro_orb_'+E.stat))return img('ro_orb_'+E.stat,sz);   /* new orb pictures (REFINE_STONE_ICON_PROMPTS_TH.md sheet 2) win once they are in icons.json */
   if(E.kind==='orb'&&ICONS.has(ORB_PIC[E.stat]||'orb_'+E.stat))return img(ORB_PIC[E.stat]||'orb_'+E.stat,sz);   // no tier number on the picture (tier shows in the name / tooltip)   // one picture per orb stat is enough
   let g;
   if(E.kind==='use')g=E.warp?`<path d="M5 6 H19 V18 H5 Z" fill="${c}" stroke="#3a2a1f" stroke-width="1.6"/><path d="M8 10 H16 M8 13 H14" stroke="#7a4a21" stroke-width="1.2"/>`
@@ -417,6 +444,7 @@ function etcIcon(id,sz=26){const E=ETC[id]||{},c=E.col||'#c9a46a';
   else if(E.kind==='tstone')g=`<path d="M4 16 L7 7 L13 4 L19 7 L21 14 L15 21 L8 20 Z" fill="#7a6a58" stroke="#3a2a1f" stroke-width="1.5"/><path d="M9 9 L13 6 L17 9 L15 15 L10 15 Z" fill="${c}" stroke="#3a2a1f" stroke-width="1"/><path d="M10 10 L13 8" stroke="#fff" opacity=".7"/><text x="18.5" y="20.5" text-anchor="middle" font-size="7" font-weight="900" fill="#fff" stroke="#3a2a1f" stroke-width=".6">${E.tier}</text>`;
   else if(E.kind==='tfrag')g=`<path d="M5 13 L9 5 L12 12 Z M11 20 L14 9 L18 15 Z M15 7 L20 4 L19 10 Z" fill="${c}" stroke="#3a2a1f" stroke-width="1.3"/><path d="M8 8 L9.5 11 M14.5 11 L15 15" stroke="#fff" opacity=".7"/><text x="6.5" y="21" text-anchor="middle" font-size="7" font-weight="900" fill="#fff" stroke="#3a2a1f" stroke-width=".6">${E.tier}</text>`;
   else if(E.kind==='tess')g=`<circle cx="12" cy="13" r="8" fill="#ffd77a" opacity=".35"/><path d="M12 3 C15 8 18 11 18 15 A6 6 0 0 1 6 15 C6 11 9 8 12 3 Z" fill="${c}" stroke="#3a2a1f" stroke-width="1.5"/><path d="M10 13 Q12 10 13 8" stroke="#fff" opacity=".8" fill="none"/>`;
+  else if(E.kind==='bpart')g=`<path d="M4 15 L7 6 L12 3 L18 6 L20 14 L14 21 L8 20 Z" fill="${c}" stroke="#3a2a1f" stroke-width="1.5"/><path d="M7.5 13 L9.5 8.5 L12 11.5 L14.5 8.5 L16.5 13 Z" fill="#ffd36a" stroke="#3a2a1f" stroke-width=".9"/><path d="M8 16 H16" stroke="#3a2a1f" stroke-width="1" opacity=".5"/><path d="M9 7 L12 5" stroke="#fff" opacity=".7"/>`;
   else if(id==='sore')g=`<path d="M5 15 L9 6 L17 5 L20 13 L14 20 Z" fill="#4a3a6a" stroke="#3a2a1f" stroke-width="1.6"/><path d="M12.5 7 L14 11 L18 11 L15 13.5 L16 17.5 L12.5 15 L9 17.5 L10 13.5 L7 11 L11 11 Z" fill="${c}" stroke="#fff" stroke-width=".6"/>`;
   else if(E.kind==='crystal')g=`<path d="M12 2 L18 9 L12 22 L6 9 Z" fill="${c}" stroke="#3a2a1f" stroke-width="1.6"/><path d="M6 9 H18 M12 2 V22" stroke="#fff" opacity=".55"/>`;
   else if(id==='drill')g=`<path d="M4 20 L13 11" stroke="#7a4a21" stroke-width="3"/><path d="M12 12 L20 4 L21 7 L15 13 Z" fill="#b0b8c8" stroke="#3a2a1f" stroke-width="1.4"/>`;
@@ -494,7 +522,7 @@ function buildSmithOld(){const w=$('#smw');if(!w.classList.contains('open'))retu
   else if(smTab==='refine'){const g=has('guard');
     body=`<div class="ix-note">+1 ถึง +5 สำเร็จเสมอ · ตั้งแต่ +6 พลาดแล้ว<b class="ix-warn">ของแตก</b> · ${g?`<label><input type="checkbox" id="useGuard"> ใช้หินกันแตก (มี ${BAG.guard}) — พลาดแล้วลดบวก 1 แทน</label>`:'หินกันแตกซื้อได้ที่ร้านเมืองหลวง'}</div>`+
       owned.map(id=>{const it=ITEMS[id],r=it.ref||0,t=Math.max(1,Math.min(4,it.tier||it.wlv||1));if(r>=10)return itemRow(id,'<small>ตีบวกสูงสุดแล้ว (+10)</small>');
-        const cost=[['ore'+t,1]],z=COST.refineZ(t,r),gain=it.slot==='rhand'?`พลังโจมตี/เวท +${REF_ATK[Math.min(4,it.wlv||t)]}`:`DEF รวม +${armorRefDef({ref:r+1,tier:it.tier||1})}`;
+        const cost=[[refOre(it,t),1]],z=COST.refineZ(t,r),gain=it.slot==='rhand'?`พลังโจมตี/เวท +${REF_ATK[Math.min(4,it.wlv||t)]}`:`DEF รวม +${armorRefDef({ref:r+1,tier:it.tier||1})}`;
         return itemRow(id,`<small>+${r} → +${r+1} · โอกาส <b>${Math.round(REFINE_CHANCE[r]*100)}%</b> · ${gain}</small><div class="ix-cost">${costHtml(cost,z)}</div><button class="rob" data-ref="${id}" ${canPay(cost,z)?'':'disabled'}>ตีบวก</button>`);}).join('');}
   else if(smTab==='move'){const src=owned.filter(id=>(ITEMS[id].ref||0)>0&&!ITEMS[id].broken);if(!src.includes(smFrom))smFrom=src[0]||null;const f=ITEMS[smFrom];
     body=`<div class="ix-note">ย้ายระดับบวกจากของเก่าไปของใหม่ช่องเดียวกัน · ของใหม่ได้บวก <b>−1</b> จากของเดิม · ของเก่าเหลือ +0 · ใช้ Zeny เท่านั้น</div>`+
@@ -526,7 +554,7 @@ function buildSmithOld(){const w=$('#smw');if(!w.classList.contains('open'))retu
   q('[data-drill]',()=>doDrill(smPick));q('[data-sock]',b=>doSocket(smPick,b.dataset.sock));q('[data-unsock]',b=>doUnsocket(smPick,+b.dataset.unsock));
   q('[data-merge]',b=>doMerge(+b.dataset.merge));}
 function rollTrait(town,not){const L=Object.keys(TRAITS).filter(k=>TRAITS[k].town===town&&k!==not);return L[Math.floor(Math.random()*L.length)];}
-function doRefine(id){const it=ITEMS[id];if(!it)return;const r=it.ref||0,t=Math.max(1,Math.min(4,it.tier||it.wlv||1)),cost=[['ore'+t,1]],z=COST.refineZ(t,r);if(r>=10||!canPay(cost,z))return;
+function doRefine(id){const it=ITEMS[id];if(!it)return;const r=it.ref||0,t=Math.max(1,Math.min(4,it.tier||it.wlv||1)),cost=[[refOre(it,t),1]],z=COST.refineZ(t,r);if(r>=10||!canPay(cost,z))return;
   const g=$('#useGuard')&&$('#useGuard').checked&&has('guard');pay(cost,z);if(g&&r>=5)add('guard',-1);
   if(Math.random()<REFINE_CHANCE[r]){it.ref=r+1;done(`ตีบวกสำเร็จ! ${it.n} +${it.ref}`);addFx(new DText({x:player.x,y:player.y,z:90,text:'+'+it.ref+' SUCCESS',color:'#ffd36a',size:15,life:1.2}));}
   else if(g){it.ref=Math.max(0,r-1);done(`ตีบวกพลาด — หินกันแตกช่วยไว้ ${it.n} เหลือ +${it.ref}`);}
@@ -546,8 +574,8 @@ function doMerge(t){const L=Object.keys(BAG).filter(k=>ETC[k]&&ETC[k].kind==='or
 /* ---------------- Shop ---------------- */
 let shTab='buy';
 const FOODS=['food_atk','food_def','food_vit','food_agi','food_tal','food_cha'];
-const SHOP_FULL=['hp1','hp2','hp3','hp4','sp1','sp2','sp3',...FOODS,'manual','ret','capscroll','wing','ore1','ore2','ore3','ore4','drill','pliers','guard'],
-      SHOP_BASIC=['hp1','hp2','sp1','sp2',...FOODS,'ret','capscroll','wing','ore1','ore2','drill'];
+const SHOP_FULL=['hp1','hp2','hp3','hp4','sp1','sp2','sp3',...FOODS,'manual','ret','capscroll','wing','wore1','ore1','wore2','ore2','drill','pliers','guard'],
+      SHOP_BASIC=['hp1','hp2','sp1','sp2',...FOODS,'ret','capscroll','wing','wore1','ore1','wore2','ore2','drill'];
 function openShop(){const w=$('#shw');w.classList.add('open');document.querySelectorAll('.ro').forEach(o=>o.style.zIndex=30);w.style.zIndex=37;buildShop();}
 function buildShop(){const w=$('#shw');if(!w.classList.contains('open'))return;const here=townHere(),cap=here==='cap',test=!here;
   const list=cap||test?SHOP_FULL:SHOP_BASIC,sellMul=cap?1.2:1;
@@ -566,6 +594,7 @@ function buildShop(){const w=$('#shw');if(!w.classList.contains('open'))return;c
 const STKEY='af_storage_v1',STO={equip:{},etc:{}},STO_EQ_MAX=300;
 try{Object.assign(STO,JSON.parse(localStorage.getItem(STKEY)||'{}'));}catch(e){}
 for(const k in STO.equip)lvFix(STO.equip[k]);   /* level cap 60: stored pieces read their level on the new scale */
+if(!STO.ws){oreSplit(STO.etc||(STO.etc={}));STO.ws=1;try{localStorage.setItem(STKEY,JSON.stringify(STO));}catch(e){}}   /* weapon / armour stones (2026-11-22) */
 const saveSto=()=>{try{localStorage.setItem(STKEY,JSON.stringify(STO));}catch(e){}};
 let kfTab='equip';
 function openStorage(){const w=$('#kfw');if(!townHere()&&!(window.AFProgress&&AFProgress.mode==='test')){msg('คลังใช้ได้ในเมืองเท่านั้น');return;}
@@ -725,13 +754,13 @@ function buildRefine(){const w=document.getElementById('rfw');if(!w||!w.classLis
       <div class="ttnote" style="margin-top:6px">ของแตกไม่ให้ค่าพลังและตีบวกต่อไม่ได้ · ซ่อมด้วย<b>ของชนิดเดียวกัน 1 ชิ้น</b> (ช่องเดียวกัน ระดับเดียวกัน — บวกและหินของชิ้นนั้นหายไป) หรือจ่ายเงิน</div>
       ${mates.length?`<div class="inv" style="margin-top:6px;grid-template-columns:repeat(auto-fill,minmax(40px,1fr))">${mates.map(o=>{const m=ITEMS[o];return `<div class="tts" data-rpby="${o}" title="ใช้ ${m.n}${m.ref?' +'+m.ref:''} ซ่อม">${itemIcon(m,30)}${m.ref?`<em style="color:${refCol(m.ref)}">+${m.ref}</em>`:''}</div>`;}).join('')}</div><div class="ttnote">แตะชิ้นที่จะใช้ซ่อม</div>`:'<div class="ttnote" style="margin-top:6px">ไม่มีของชนิดเดียวกันในกระเป๋า — คราฟต์ชิ้นช่องเดียวกัน ระดับเดียวกัน หรือซื้อที่ตลาดอุปกรณ์</div>'}
       <div style="display:flex;align-items:center;gap:8px;margin-top:8px"><div class="ttnote" style="flex:1">ซ่อมด้วยเงิน <b style="color:${ZENY>=z?'#b8740c':'#d23a2a'}">${fmt(z)}z</b> · มี ${fmt(ZENY)}z</div><button class="ttb" id="rfz" ${ZENY>=z?'':'disabled'}>🔧 ซ่อมด้วยเงิน</button></div>`;}
-  else{const r=it.ref||0,t=tierOf(it),max=r>=REF_MAX,ore='ore'+t,z=COST.refineZ(t,r),ch=max?0:refChance(it,r),base=max?0:REFINE_CHANCE[r],risky=r>=5,gn=refGuardN(r),gHave=(BAG.guard||0)>=gn,g=rfGuard&&gHave,st=refStar(r),ok=!max&&canPay(refCost(it,r),z);
-    const a=refGain(it,r),bb=refGain(it,r+1),col=ch>=.8?'#2a9a28':ch>=.4?'#e0a020':'#d23a2a',ms=r+1===12?' · ได้รูหินเพิ่ม 1':r+1===15?' · สถานะพิเศษของชิ้นนี้ ×1.2':'';
+  else{const r=it.ref||0,t=tierOf(it),max=r>=REF_MAX,ore=refOre(it,t),z=COST.refineZ(t,r),ch=max?0:refChance(it,r),base=max?0:REFINE_CHANCE[r],risky=r>=5,gn=refGuardN(r),gHave=(BAG.guard||0)>=gn,g=rfGuard&&gHave,st=refStar(r),ok=!max&&canPay(refCost(it,r),z);
+    const a=refGain(it,r),bb=refGain(it,r+1),col=ch>=.8?'#2a9a28':ch>=.4?'#e0a020':'#d23a2a',ms=window.RFL&&RFL.next(it,r+1)||(r+1===12?' · ได้รูหินเพิ่ม 1':r+1===15?' · สถานะพิเศษของชิ้นนี้ ×1.2':'');   /* RFL: refine lines +7 / +10 / +12 / +15 (milestones.js) */
     right=`<div class="stage">${HAMMER}<div class="lv">${it.n} <span style="color:${refCol(r)}">+${r}</span>${max?'':` ➜ <span style="color:${refCol(r+1)}">+${r+1}</span>`}</div>
         <div class="big">${itemIcon(it,58)}</div>${ANVIL}<div class="res"></div></div><div class="prog"><div></div></div>
       <div class="stat"><span>${a.lab}</span><span>+${a.v}${max?'':` ➜ <b class="ttgood">+${bb.v}</b>${ms}`}</span></div>
       ${max?`<div class="ttnote" style="margin-top:8px;text-align:center">ตีบวกสูงสุดแล้ว (+${REF_MAX})</div>`:`
-      <div class="mats"><div><div class="tts" style="cursor:default" title="${etcName(ore)}">${etcIcon(ore,28)}<em class="${has(ore)?'':'ttwarn'}">${BAG[ore]||0}/1</em></div><div class="lab">แร่ขั้น ${t}</div></div>
+      <div class="mats"><div><div class="tts" style="cursor:default" title="${etcName(ore)}">${etcIcon(ore,28)}<em class="${has(ore)?'':'ttwarn'}">${BAG[ore]||0}/1</em></div><div class="lab">${ore[0]==='w'?'หินอาวุธ':'หินชุด'} ขั้น ${t}</div></div>
         ${st?`<div><div class="tts" style="cursor:default" title="${etcName('sore')}">${etcIcon('sore',28)}<em class="${has('sore',st)?'':'ttwarn'}">${BAG.sore||0}/${st}</em></div><div class="lab">แร่ดาวตก</div></div>`:''}
         <div><div class="tts ${g&&risky?'sel':''}" data-guard title="หินกันแตก — พลาดแล้วของไม่แตก${r>=10?' (ใช้ '+gn+' ก้อน)':''}" style="${gHave?'':'opacity:.5'}">${etcIcon('guard',28)}<em>${BAG.guard||0}${risky&&gn>1?'/'+gn:''}</em></div><div class="lab">กันแตก${risky?(g?' ✔':''):' (ไม่ต้อง)'}</div></div>
         <div style="flex:1;padding-left:4px"><div class="ttnote">โอกาสสำเร็จ${ch>base?` <span style="color:#2a9a28">(+${Math.round((ch-base)*100)}% แต้มช่าง)</span>`:''}</div><div class="rate" style="color:${col}">${Math.round(ch*100)}%</div><div class="bar"><div style="width:${ch*100}%;background:${col}"></div></div>
@@ -739,7 +768,7 @@ function buildRefine(){const w=document.getElementById('rfw');if(!w||!w.classLis
       <div style="display:flex;align-items:center;gap:8px;margin-top:8px"><div class="ttnote" style="flex:1">ค่าตีบวก <b style="color:${ZENY>=z?'#b8740c':'#d23a2a'}">${fmt(z)}z</b> · มี ${fmt(ZENY)}z</div>
         <button class="ttb" id="rfgo" ${ok?'':'disabled'}>⚒ ตีบวก</button></div>`}`;}
   b.innerHTML=`<div class="rfgrid"><div class="ttp"><h4>🎒 อุปกรณ์ของฉัน</h4><div class="inv">${inv}</div><div class="ttnote" style="margin-top:6px">E = สวมอยู่ · 💔 = แตก ต้องซ่อม · คลิกเพื่อวางบนทั่ง</div></div><div class="ttp">${right}</div></div>
-    <div style="display:flex;justify-content:space-between;margin-top:8px"><button class="ttb blue sm" id="rfback">← หน้าช่าง (คราฟ/เจาะรู)</button><span class="ttnote" style="color:#cfe0ff;align-self:center">หินกันแตก & แร่ ซื้อได้ที่ร้านเมืองหลวง · แร่ดาวตก ดรอปจากมอน Lv 70+ / ตลาดกลาง</span></div>`;
+    <div style="display:flex;justify-content:space-between;margin-top:8px"><button class="ttb blue sm" id="rfback">← หน้าช่าง (คราฟ/เจาะรู)</button><span class="ttnote" style="color:#cfe0ff;align-self:center">หินตีบวกขั้น 1–2 มีขายที่ร้าน · ขั้น 3–4 ดรอปจากมอนบางชนิด (ไอคอนในแผนที่โลก) / ตลาดกลาง · หินกันแตก ร้านเมืองหลวง · แร่ดาวตก มอน Lv ${LC.nc(70)}+ / บอส</span></div>`;
   b.querySelectorAll('[data-rf]').forEach(e=>e.onclick=()=>{rfSel=e.dataset.rf;buildRefine();});
   const gd=b.querySelector('[data-guard]');if(gd)gd.onclick=()=>{rfGuard=!rfGuard;buildRefine();};
   b.querySelectorAll('[data-rpby]').forEach(e=>e.onclick=()=>{const m=ITEMS[e.dataset.rpby],nm=ITEMS[rfSel]&&ITEMS[rfSel].n;if(m&&((m.ref||0)>0||(m.orbs||[]).length)&&!confirm(`ใช้ ${m.n}${m.ref?' +'+m.ref:''} ซ่อม? บวกและหินของชิ้นนั้นจะหายไป`))return;
@@ -1043,7 +1072,12 @@ setInterval(()=>{try{if(typeof player==='undefined'||player.hp<=0||player.dead)r
     const sy=()=>g.querySelectorAll('button').forEach(b=>b.classList.toggle('on',+b.dataset.v===apGet(k)));
     g.querySelectorAll('button').forEach(b=>b.onclick=e=>{e.stopPropagation();try{localStorage.setItem('af_autopot_'+k,b.dataset.v);}catch(_){}sy();});sy();
     p.insertBefore(g,p.firstChild);p.insertBefore(h,g);}})();
-window.AFItems={buyGear(id,price){if(ZENY<price)return false;ZENY-=price;INV.push(id);save();try{buildItems();buildEquip();}catch(e){}return true;},dropItem(id){delete ITEMS[id];},get ITEMS(){return ITEMS;},eqFair:(g,r)=>Math.round(1500*Math.pow(g+1,1.6)*(1+(r||0)*.35)),dropSetItem,DSET,DROP,openRefine,openMarket,BAG,ETC,CONS,TRAITS,TOWNS,AFF,MATS,SLOTS,W_NOUN,useItem,BUFF,newGame,openStorage,STO,townHere,HOME,get zeny(){return ZENY;},set zeny(v){ZENY=v;save();},add:(id,n)=>{add(id,n);save();},craftItem,rollAffixes,openSmith,openShop,save,
+/* the special drop of a monster (drop_table.js) for the UI: x = a monster on the field or a VK_MONS def (lv range) · {code,id,th,icon,tip} */
+function spDrop(x,sz=16){const DT=window.DROPTAB;if(!DT||!x)return null;const live=!!x.vdef,c=live?DT.of(x):DT.code(x.name);if(!c)return null;
+  const lv=live?((x.m&&x.m.lv)||1):[].concat(x.lv||[1]),t0=tierOfLv(live?lv:lv[0]),t1=tierOfLv(live?lv:lv[lv.length-1]),id=DT.item(c,t1),E=ETC[id];if(!E)return null;
+  const role=live?((x.m&&x.m.role)||(x.vdef&&x.vdef.role)):x.role,p=DT.rate(c,role)*100,tt=t0===t1?`ขั้น ${t1}`:`ขั้น ${t0}–${t1}`;
+  return {code:c,id,th:E.th,icon:etcIcon(id,sz),tt,sh:c==='w'?'หินอาวุธ':c==='a'?'หินชุด':'หิน '+(DT.STAT_EN[c.slice(2)]||''),tip:`ดรอปพิเศษ: ${DT.label(c)} ${tt} · โอกาส ${p<1?p.toFixed(1):Math.round(p*10)/10}% ต่อตัว`};}
+window.AFItems={spDrop,buyGear(id,price){if(ZENY<price)return false;ZENY-=price;INV.push(id);save();try{buildItems();buildEquip();}catch(e){}return true;},dropItem(id){delete ITEMS[id];},get ITEMS(){return ITEMS;},eqFair:(g,r)=>Math.round(1500*Math.pow(g+1,1.6)*(1+(r||0)*.35)),dropSetItem,DSET,DROP,openRefine,openMarket,BAG,ETC,CONS,TRAITS,TOWNS,AFF,MATS,SLOTS,W_NOUN,useItem,BUFF,newGame,openStorage,STO,townHere,HOME,get zeny(){return ZENY;},set zeny(v){ZENY=v;save();},add:(id,n)=>{add(id,n);save();},craftItem,rollAffixes,openSmith,openShop,save,
   ui:{ttWin,etcIcon,etcName,fmt,done},bagAdd:add,MODE,SEAL_N,SEAL_SL,has,SHOP_FULL,oldMarket:{MK,mkSave},openGearMarket,get fresh(){return FRESH;},
   mkInst:d=>newInst(null,d),craftStats,affLabel,gradeOfLv,gradeLv,gradeTier,iconHas:k=>ICONS.has(k),          // for relics.js (boss relics)
             // for market.js

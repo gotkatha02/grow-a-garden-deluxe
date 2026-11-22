@@ -1436,19 +1436,19 @@ function resetEnemies(){enemies.length=0;}
 const hitChance=m=>clamp(80+(D.hit||0)-((m&&m.flee)||0),5,95);
 /* Hunter's Rhythm: every 6th / 4th normal-attack hit is a sure crit (counter, no chance) */
 const wolfRhythm=o=>{if(CHAR!=='wolf'||!o.auto||!LV.huntersRhythm)return false;player.hrN=(player.hrN||0)+1;if(player.hrN>=[0,6,4][LV.huntersRhythm]){player.hrN=0;return true;}return false;};
-const critChance=m=>Math.max(0,D.crit-Math.floor(((m&&m.luk)||0)/5)+5*(LV.wolfInstinct||0));   // RO: the target's LUK/5 shields against crits
+const critChance=(m,o)=>Math.max(0,D.crit-(o&&o._msNoSh?0:Math.floor(((m&&m.luk)||0)/5))+5*(LV.wolfInstinct||0));   // RO: the target's LUK/5 shields against crits (o._msNoSh: LUK 99 stat tier, milestones.js)
 const defMul=def=>100/(100+Math.max(0,def));                                    // DEF never reaches immunity
 const chaMul=e=>Math.max(.5,1+((D.dex||0)-Math.floor(((e.m&&e.m.vit)||0)/2))/100);   /* RO stats (CHA is gone): statuses we put on a monster last longer by our DEX against half its VIT, no upper cap */ //   /* owner 2026-11-19: no upper cap — the more CHA, the longer our statuses last on monsters */
 function statusProxy(e,st){return new Proxy(st,{set(t,k,v){const o=t[k]||0;if(e.koFix&&k==='stun')t[k]=v;else t[k]=v>o&&o>=0?o+(v-o)*chaMul(e):v;if(v>o&&window.ST_HOOK)ST_HOOK(e,k,t[k],o);return true;}});}   /* ST_HOOK: a status was put on (totem seals, seals.js) */
 function missFx(x,y,txt,col){dmgNum(x,y,52,txt||'MISS','miss');}
 function hurt(e,mult,o={}){if(e.dead)return 0;const m=e.m||MON.frostling;const HT=hitType(o);o.magic=HT==='m'||(HT==='b'&&D.mag>D.patk);
-  const crit=(!o.magic||!!o.owShot)&&(!!o.auto||!!o.critOK)&&(wolfRhythm(o)||Math.random()*100<critChance(m))+(JH('jgCrit')?jgCrit(e,o):0);
+  const crit=(!o.magic||!!o.owShot)&&(!!o.auto||!!o.critOK)&&(wolfRhythm(o)||!!o._msCrit||Math.random()*100<critChance(m,o))+(JH('jgCrit')?jgCrit(e,o):0);   /* o._msCrit: a counter crit from the stat tiers (milestones.js) */
   /* RO stats: raw = coefficient × ATK (physical) or coefficient × MATK (magic) → HIT vs FLEE (physical) → target DEF / MDEF (35/65); crits skip DEF and FLEE */
   const br=o.br||(player.action&&player.action.skill&&SKILLS[player.action.skill]?SKILLS[player.action.skill].br:'basic');
-  o._defCut=0;const hm=JH('jgDmgMul')?jgDmgMul(e,o):1;
+  o._defCut=o._msCut||0;const hm=JH('jgDmgMul')?jgDmgMul(e,o):1;   /* o._msCut: DEF / MDEF ignored by the stat tiers (milestones.js) */
   let dmg=(o.magic?D.mag+ENH_FLAT():HT==='x'?MIX.atk*(D.patk+wolfAtkFlat())+MIX.tal*D.mag+ENH_FLAT():D.patk+wolfAtkFlat()+ENH_FLAT())*mult*coefOf(br)*atkMul()*hm*(o.lck||o.dot?D.lckMul:1);
   /* RO HIT vs FLEE: a physical hit that is not a crit can MISS (o.sure = always hits) */
-  if(!crit&&!o.magic&&!o.dot&&!o.sure&&Math.random()*100>=hitChance(m)){missFx(e.x,e.y);e.aggro=Math.max(e.aggro||0,8);o._miss=1;return 0;}
+  if(!crit&&!o.magic&&!o.dot&&!o.sure&&!o._msSure&&Math.random()*100>=hitChance(m)){missFx(e.x,e.y);e.aggro=Math.max(e.aggro||0,8);o._miss=1;return 0;}
   const effDef=o.magic?Math.max(0,(m.mdef||0)-(o._defCut||0)):Math.max(0,(m.def||0)-(e.st.armor>0?30:0)-(e.st.defdown>0?15:0)-(o._defCut||0));
   if(crit)dmg*=SYS.critMul+(JH('jgCritDmg')?jgCritDmg(e,o):0);else dmg=defAdjust(dmg,effDef);
   dmg=Math.max(1,Math.round(dmg*itemFx.dmgMul(e,o,crit)));e.hp-=dmg;e.flash=1;e.aggro=8;e._hurtT=gameTime;
@@ -1759,9 +1759,9 @@ function hitPlayer(e,o={}){const m=e.m||MON.frostling;const a=player.action;cons
   if(LV.wolfInstinct&&CHAR==='wolf'&&++player.wiN>=[0,20,12][LV.wolfInstinct]){player.wiN=0;addFx(new DText({x:player.x,y:player.y,z:70,text:'EVADE',color:'#ffe08a',size:14,life:.7}));return;}   // skill dodge only — no stat MISS
   if(itemFx.dodge(e)){addFx(new DText({x:player.x,y:player.y,z:70,text:'EVADE',color:'#c8d0ff',size:14,life:.7}));return;}
   /* RO: perfect dodge (LUK) and FLEE vs the monster's HIT — magic always hits. Every attacker after the 2nd takes 10 % off our FLEE */
-  if(!mag){if(Math.random()*100<(D.pd||0)){addFx(new DText({x:player.x,y:player.y,z:70,text:'LUCKY',color:'#ffe08a',size:14,life:.7}));return;}
+  if(!mag){if(Math.random()*100<(D.pd||0)){addFx(new DText({x:player.x,y:player.y,z:70,text:'LUCKY',color:'#ffe08a',size:14,life:.7}));if(window.MSF)MSF.dodge(1,e);return;}
     let n=0;for(const q of enemies)if(!q.dead&&q.aggro>0&&Math.abs(q.x-player.x)<110&&Math.abs(q.y-player.y)<110&&Math.hypot(q.x-player.x,q.y-player.y)<(q.r||18)+70)n++;
-    const fl=(D.flee||0)*Math.max(.1,1-.1*Math.max(0,n-2));if(Math.random()*100>=clamp(80+((m.hit!=null?m.hit:m.lv||1))-fl,5,95)){dmgNum(player.x,player.y,70,'MISS','miss');return;}}
+    const fl=(D.flee||0)*(window.MSF&&MSF.noMob()?1:Math.max(.1,1-.1*Math.max(0,n-2)));if(Math.random()*100>=clamp(80+((m.hit!=null?m.hit:m.lv||1))-fl,5,95)){dmgNum(player.x,player.y,70,'MISS','miss');if(window.MSF)MSF.dodge(0,e);return;}}   /* MSF: stat tiers (milestones.js) — AGI 90 keeps FLEE when mobbed, dodges feed AGI / LUK tiers */
   let d=Math.max(1,Math.round(defAdjust(rnd(m.atk[0],m.atk[1]),mag?D.mdef:D.def)*dmgTaken()*jgMul*itemFx.takenMul(e)));if(CHAR==='wolf')d=Math.max(1,d+wolfTakenFlat());d=ENH_ABSORB(d);if(d<=0)return;if(JH('jgAbsorb')){d=jgAbsorb(d,e);if(d<=0)return;}player.hp-=d;dmgNum(player.x,player.y,64,d,'taken',{who:player});shake(1.6);
   if(hasBuff('runeGuard')&&runeShield){runeShield.flash=1;}
   if(LV.unbrokenWill&&player.hp>0&&player.hp<player.maxHp*.3&&unbrokenICD<=0)triggerUnbroken();
@@ -5212,7 +5212,7 @@ class CastBar{constructor(o){Object.assign(this,{t:0,life:99,layer:'top'},o);}up
   draw(){const c=this.c,[x,y]=P(player.x,player.y,(player.z||0)+112),w=56,k=Math.min(1,c.t/c.T);ctx.fillStyle='rgba(8,12,20,.85)';ctx.fillRect(x-w/2-1,y-1,w+2,7);
     const g=ctx.createLinearGradient(x-w/2,0,x+w/2,0);g.addColorStop(0,'#3a9cff');g.addColorStop(1,'#bff0ff');ctx.fillStyle=g;ctx.fillRect(x-w/2,y,w*k,5);ctx.strokeStyle='#d9b56a';ctx.lineWidth=1;ctx.strokeRect(x-w/2-1,y-1,w+2,7);}}
 function cancelCast(why){const c=player.casting;if(!c)return;player.casting=null;if(c.fx)c.fx.life=0;if(c.rc)c.rc.kill&&c.rc.kill();msg(why);}
-function castSkill(key,c){const sk=SKILLS[key],T=(CAST[key]||0)*D.castMul;
+function castSkill(key,c){const sk=SKILLS[key],T0=(CAST[key]||0)*D.castMul,T=window.MSF?MSF.castT(T0):T0;   /* DEX 30 / 90 stat tiers (milestones.js) */
   if(T>.05&&!(c&&c.noCast)){if(player.mp<(sk.mp||0)){msg('SP ไม่พอ');return false;}const cc={key,c,t:0,T};player.casting=cc;player.moveT=null;
     cc.fx=addFx(new CastBar({c:cc}));cc.rc=addFx(new RuneCircle({x:player.x,y:player.y,r:46,color:'#6fc8ff',color2:'#ffffff',life:T+.15,fadeIn:.15,n:10,spin:1.6}));
     if(c&&c.gx!=null)faceTo(Math.atan2(c.gy-player.y,c.gx-player.x));return true;}
@@ -5658,7 +5658,7 @@ function buildStatus(){const w=document.getElementById('stw');if(!w||!w.classLis
     โบนัสฮีโร่ (สุ่มตอนสร้างตัว): ${STATK.map(k=>STLAB[k]+' '+baseStat(k)).join(' · ')}</div>`;
     if(m){const hc=hitChance(m),mh=clamp(80+(m.hit!=null?m.hit:m.lv||1)-D.flee,5,95);
       x+=`<div class="ro-x"><b>${m.name}</b> Lv${m.lv}${m.role?' · '+m.role:''}${m.el?' · ธาตุ'+m.el:''}${m.race?' · '+m.race:''}${m.atype&&m.atype!=='melee'?' · '+(m.atype==='ranged'?'ตีไกล':'ร่ายเวท'):''}${m.healer?' · ฮีลเพื่อน':''}${m.boss?' · <span style="color:#c0392b">BOSS</span>':''}<br>HP ${m.hp} · ATK ${m.atk[0]}~${m.atk[1]} · DEF ${m.def} · MDEF ${m.mdef||0} · HIT ${m.hit||0} · FLEE ${m.flee||0}<br>
-        เราตีโดน <b>${hc}%</b> · ATK×1 เข้า <b>${defAdjust(D.patk,m.def)}</b> (MATK×1 เข้า <b>${defAdjust(D.mag,m.mdef||0)}</b>) · มันตีโดนเรา <b>${mh}%</b> ~<b>${defAdjust(Math.round((m.atk[0]+m.atk[1])/2),D.def)}</b> · สถานะที่เราใส่ติดนาน <b>×${chaMul(t).toFixed(2)}</b></div>`;}
+        เราตีโดน <b>${hc}%</b> · ATK×1 เข้า <b>${defAdjust(D.patk,m.def)}</b> (MATK×1 เข้า <b>${defAdjust(D.mag,m.mdef||0)}</b>) · มันตีโดนเรา <b>${mh}%</b> ~<b>${defAdjust(Math.round((m.atk[0]+m.atk[1])/2),D.def)}</b> · สถานะที่เราใส่ติดนาน <b>×${chaMul(t).toFixed(2)}</b>${(()=>{const d=window.AFItems&&AFItems.spDrop&&AFItems.spDrop(t,14);return d?`<br><span title="${d.tip}" style="display:inline-flex;align-items:center;gap:3px">${d.icon} ${d.tip}</span>`:'';})()}</div>`;}
     x+=`<div class="ro-x">${Object.keys(PRESETS).map(n=>`<button class="rob" data-p="${n}">${n}</button>`).join(' ')} <button class="rob" data-p="reset">Reset</button>${testMode?' <button class="rob" id="rerollBase" title="ทดสอบหน้าสร้างตัว">🎲 สุ่มโบนัสฮีโร่</button>':''}<br><label><input type="checkbox" id="fastreg" ${fastRegen?'checked':''}> เร่งฟื้น HP/SP ×6 (ทดสอบ)</label></div>`;}
   roWin('stw','Status',`<div class="ro-st" style="grid-template-columns:1fr 150px"><div style="display:flex;flex-direction:column;gap:3px">${c1}${der}</div>${side}</div>${x}`,
     `<span>Base Lv</span><button class="rob" data-l="-10">«</button><button class="rob" data-l="-1">-</button><b style="min-width:18px;text-align:center">${PS.lv}</b><button class="rob" data-l="1">+</button><button class="rob" data-l="10">»</button><button class="rob" id="lutest" title="ทดสอบเอฟเฟคเลเวลอัพ">LvUP ✦</button><span style="margin-left:auto"></span><button class="rob" id="stx2">${stOpenX?'▲ ย่อ':'▼ รายละเอียด'}</button>`);
@@ -6056,19 +6056,20 @@ window.AF={levelUp:()=>{if(PS.lv<LV_CAP){PS.lv++;applyStats();player.hp=player.m
 <script src="vfx_rework.js?v=2"></script>
 <script src="croc_vfx.js?v=2"></script>
 <script src="worldmap.js"></script>
-<script src="gem_data.js?v=6"></script>
-<script src="items.js?v=23"></script>
-<script src="market.js?v=2"></script>
+<script src="gem_data.js?v=7"></script>
+<script src="drop_table.js?v=1"></script>
+<script src="items.js?v=25"></script>
+<script src="market.js?v=3"></script>
 <script src="npcs.js?v=10"></script>
-<script src="monsters.js"></script>
+<script src="monsters.js?v=2"></script>
 <script src="monster-sprites.js?v=3"></script>
 <script src="monster-catalog.js"></script>
-<script src="boss_fenrir.js?v=5"></script>
+<script src="boss_fenrir.js?v=6"></script>
 <script src="progress.js?v=2"></script>
 <script src="char_create.js?v=2"></script>
 <script src="skill_shapes.js?v=1"></script>
 <script src="mobile.js?v=6"></script>
-<script src="target_lock.js?v=1"></script>
+<script src="target_lock.js?v=2"></script>
 <script src="totem_gems.js?v=35"></script>
 <script src="seals.js?v=1"></script>
 <script src="relics.js?v=3"></script>
@@ -6077,6 +6078,7 @@ window.AF={levelUp:()=>{if(PS.lv<LV_CAP){PS.lv++;applyStats();player.hp=player.m
 <script src="gem_sup_fx.js?v=2"></script>
 <script src="gem_btn.js?v=1"></script>
 <script src="feel_hits.js?v=1"></script>
+<script src="milestones.js?v=1"></script>
 <script src="wolf_vfx3.js?v=70"></script>
 <script src="cat_art.js?v=1"></script>
 <script src="kitsune_art.js?v=1"></script>

@@ -47,16 +47,97 @@ CSK = {('basic', 1): ('endlessChain', 'Endless Chain'), ('A', 1): ('savageEcho',
        ('basic', 2): ('warBanner', 'War Banner'), ('A', 2): ('ravenousLeap', 'Ravenous Leap'), ('B', 2): ('glacialPath', 'Glacial Path'),
        ('basic', 3): ('echoStep', 'Echo Step'), ('A', 3): ('valhallaAssault', 'Valhalla Assault'), ('B', 3): ('stormChain', 'Storm Chain'),
        ('basic', 4): ('fenrirsSpirit', "Fenrir's Spirit"), ('A', 4): ('einherjarsCall', "Einherjar's Call"), ('B', 4): ('worldstorm', 'Worldstorm')}
-# RO-style rune effects (owner 2026-11-22 'พวกสเตตัสไอเทมรูนก็ทำแบบแรคเลย', like ROM's Aesir monument): each region (the nearest C knot's root)
-# has its own pool; small nodes = a base stat +1 or a sub-stat (ATK / MATK +5, HIT / FLEE +3, CRIT +1, DEF / MDEF +2) · never HP / SP
-FLAV = {'A': ['str', 'atk', 'agi', 'hit', 'str', 'crit', 'dex', 'atk'],
-        'basic': ['vit', 'def', 'luk', 'flee', 'vit', 'mdef', 'dex', 'def'],
-        'B': ['int', 'matk', 'dex', 'int', 'matk', 'luk', 'vit', 'mdef']}
-VAL = {'str': 1, 'agi': 1, 'vit': 1, 'int': 1, 'dex': 1, 'luk': 1, 'atk': 5, 'matk': 5, 'hit': 3, 'flee': 3, 'crit': 1, 'def': 2, 'mdef': 2}
-# notable (big) nodes: the region's main stat +3, or an RO percent / bigger sub-stat
-MAIN = {'A': 'str', 'basic': 'vit', 'B': 'int'}
-SIDE = {'A': ['atkp', 'aspd', 'critd', 'hit'], 'basic': ['flee', 'def', 'luk', 'res'], 'B': ['matkp', 'cast', 'dex', 'mdef']}
-NVAL = {'str': 3, 'vit': 3, 'int': 3, 'dex': 3, 'luk': 3, 'atkp': 2, 'matkp': 2, 'aspd': 2, 'critd': 4, 'cast': 3, 'hit': 8, 'flee': 8, 'def': 6, 'mdef': 6, 'res': 5}
+# ---------------------------------------------------------------- what each node gives
+# Owner 2026-11-22 17:21 'เปลี่ยนระบบผังรูนใต้ดินโทเทมด้วยให้สเตตัสที่ได้มันหลากหลาย แบบของ ROM เลย' (+ 'พวกสเตตัสไอเทมรูนก็ทำแบบแรคเลย'):
+# like ROM's Aesir Monument — mostly +1 stats and flat sub-stats near the heart, rarer RO percents / race / element / boss lines deeper,
+# skill nodes (cooldown / SP of that C skill) on the ring of every C knot. Still never MaxHP (owner 12:34 'ไม่เอา HP').
+# key: (text, small value, big value, 3-letter code on the node, colour, family)
+KIND = {
+    'str': ('STR +{v}', 1, 3, 'STR', '#ff6b5a', 'stat'), 'agi': ('AGI +{v}', 1, 3, 'AGI', '#5fe0e6', 'stat'),
+    'vit': ('VIT +{v}', 1, 3, 'VIT', '#6fdc7a', 'stat'), 'int': ('INT +{v}', 1, 3, 'INT', '#c39bff', 'stat'),
+    'dex': ('DEX +{v}', 1, 3, 'DEX', '#8fa8ff', 'stat'), 'luk': ('LUK +{v}', 1, 3, 'LUK', '#ffd75a', 'stat'),
+    'atk': ('ATK +{v}', 5, 15, 'ATK', '#ff9a5a', 'off'), 'matk': ('MATK +{v}', 5, 15, 'MAT', '#e08bff', 'off'),
+    'hit': ('HIT +{v}', 3, 8, 'HIT', '#ffe08a', 'off'), 'crit': ('CRIT +{v}', 1, 3, 'CRI', '#ffb0d0', 'off'),
+    'critd': ('ดาเมจคริ +{v}%', 2, 5, 'CR%', '#ff8ac0', 'off'), 'atkp': ('ATK +{v}%', 1, 2, 'AT%', '#ff8a4a', 'off'),
+    'matkp': ('MATK +{v}%', 1, 2, 'MA%', '#d07bff', 'off'), 'aspd': ('ASPD +{v}%', 1, 2, 'SPD', '#4fd0e0', 'off'),
+    'cast': ('ร่ายเร็วขึ้น {v}%', 1, 3, 'CST', '#8fa8ff', 'off'), 'ign': ('เจาะ DEF {v}%', 1, 3, 'IGD', '#ffcf5a', 'off'),
+    'mign': ('เจาะ MDEF {v}%', 1, 3, 'IGM', '#d8b4ff', 'off'), 'boss': ('ดาเมจใส่บอส +{v}%', 1, 3, 'BOS', '#ff5a7a', 'off'),
+    'race': ('ดาเมจใส่เผ่า{q} +{v}%', 2, 5, 'เผ่า', '#ffa07a', 'slay'), 'el': ('ดาเมจใส่ธาตุ{q} +{v}%', 2, 5, 'ธาตุ', '#7fd0ff', 'slay'),
+    'def': ('DEF +{v}', 2, 6, 'DEF', '#7fb2ff', 'def'), 'mdef': ('MDEF +{v}', 2, 6, 'MDF', '#b49cff', 'def'),
+    'flee': ('FLEE +{v}', 3, 8, 'FLE', '#9fe8c8', 'def'), 'pd': ('หลบเด็ดขาด +{v}', 1, 2, 'PD', '#fff0a0', 'def'),
+    'res': ('ติดสถานะสั้นลง {v}%', 2, 5, 'RES', '#6fdc7a', 'def'), 'pred': ('รับดาเมจกายภาพ −{v}%', 1, 2, 'PRD', '#6fa2ef', 'def'),
+    'mred': ('รับดาเมจเวท −{v}%', 1, 2, 'MRD', '#a48cef', 'def'), 'xel': ('ต้านธาตุ{q} +{v}%', 2, 5, 'ต้าน', '#a0c8ff', 'def'),
+    'heal': ('ฮีลแรงขึ้น +{v}%', 2, 5, 'HEL', '#8dff7a', 'util'), 'spc': ('ใช้ SP −{v}%', 1, 3, 'SPC', '#7ec8ff', 'util'),
+    'spr': ('ฟื้น SP ต่อรอบ +{v}', 1, 3, 'SPR', '#5ab0ff', 'util'), 'move': ('เดินเร็วขึ้น {v}%', 1, 3, 'MOV', '#9fe8a0', 'util'),
+    'wt': ('แบกของ +{v}', 50, 150, 'WT', '#c8a060', 'util'),
+    'skcd': ('{sk}: คูลดาวน์ −{v} วิ', .5, 1, 'CD', '#ffd36a', 'skill'), 'sksp': ('{sk}: ใช้ SP −{v}', 3, 6, 'SP', '#ffd36a', 'skill'),
+}
+FAM = {'stat': 'สเตตัส', 'off': 'โจมตี', 'slay': 'เผ่า / ธาตุ', 'def': 'ป้องกัน', 'util': 'ใช้งาน', 'skill': 'สกิล C'}
+RACES = [('Brute', 'สัตว์'), ('Formless', 'ไร้รูปร่าง'), ('Undead', 'อมตะ'), ('Demon', 'ปีศาจ'), ('Demi-Human', 'มนุษย์'), ('Plant', 'พืช'),
+         ('Insect', 'แมลง'), ('Fish', 'สัตว์น้ำ'), ('Angel', 'เทวดา'), ('Dragon', 'มังกร')]
+ELS = [('Water', 'น้ำ'), ('Earth', 'ดิน'), ('Fire', 'ไฟ'), ('Wind', 'ลม'), ('Poison', 'พิษ'), ('Holy', 'ศักดิ์สิทธิ์'), ('Dark', 'มืด'),
+       ('Ghost', 'วิญญาณ'), ('Undead', 'อมตะ'), ('Neutral', 'ไร้ธาตุ')]
+# small-node pool per region (the region = the nearest C knot's branch): (kind, weight, first band, last band)
+POOL = {'A': [('str', 13, 1, 4), ('agi', 8, 1, 4), ('dex', 7, 1, 4), ('luk', 4, 1, 4), ('vit', 3, 1, 4), ('atk', 12, 1, 4), ('hit', 7, 1, 4),
+              ('crit', 6, 1, 4), ('flee', 3, 1, 4), ('def', 2, 1, 4), ('critd', 4, 2, 4), ('atkp', 4, 2, 4), ('aspd', 4, 2, 4),
+              ('ign', 3, 3, 4), ('race', 4, 3, 4), ('el', 3, 3, 4), ('pd', 1, 3, 4), ('boss', 2, 4, 4), ('wt', 2, 1, 2)],
+        'basic': [('vit', 12, 1, 4), ('agi', 6, 1, 4), ('luk', 6, 1, 4), ('dex', 6, 1, 4), ('str', 3, 1, 4), ('int', 3, 1, 4), ('def', 9, 1, 4),
+                  ('mdef', 7, 1, 4), ('flee', 7, 1, 4), ('hit', 3, 1, 4), ('crit', 2, 1, 4), ('spr', 3, 1, 4), ('wt', 3, 1, 2), ('res', 4, 2, 4),
+                  ('move', 2, 2, 4), ('pred', 3, 3, 4), ('mred', 3, 3, 4), ('pd', 2, 3, 4), ('xel', 4, 3, 4), ('boss', 1, 4, 4)],
+        'B': [('int', 13, 1, 4), ('dex', 8, 1, 4), ('vit', 4, 1, 4), ('luk', 4, 1, 4), ('agi', 2, 1, 4), ('matk', 12, 1, 4), ('mdef', 6, 1, 4),
+              ('flee', 2, 1, 4), ('spr', 4, 1, 4), ('cast', 4, 2, 4), ('matkp', 4, 2, 4), ('spc', 3, 2, 4), ('heal', 3, 2, 4),
+              ('mign', 3, 3, 4), ('el', 4, 3, 4), ('race', 3, 3, 4), ('boss', 1, 4, 4), ('wt', 2, 1, 2)]}
+# notable (big) nodes per region, in turn
+BIG = {'A': ['str', 'atkp', 'critd', 'aspd', 'ign', 'hit', 'race', 'agi'],
+       'basic': ['vit', 'def', 'flee', 'res', 'pred', 'luk', 'xel', 'mdef'],
+       'B': ['int', 'matkp', 'cast', 'mign', 'heal', 'dex', 'el', 'spc']}
+
+
+def node_text(n):
+    t, vs, vb, code, col, fam = KIND[n['st']]
+    return t.format(v=n['v'], q=n.get('qn', ''), sk=n.get('sk', ''))
+
+
+def assign_kinds(N, sites):
+    """Fill every small / big node with its effect (separate random stream: the layout never moves)."""
+    RS = random.Random(SEED * 31 + 7)
+    big_i = {}
+    for n in N.values():
+        if n['k'] == 'm':
+            pool = [(k, w) for k, w, b0, b1 in POOL[n['col']] if b0 <= n['band'] <= b1]
+            r, acc = RS.random() * sum(w for _, w in pool), 0
+            for k, w in pool:
+                acc += w
+                if r <= acc:
+                    break
+            n['st'], n['v'] = k, KIND[k][1]
+        elif n['k'] == 'n':
+            j = big_i.get(n['col'], 0)
+            big_i[n['col']] = j + 1
+            k = BIG[n['col']][j % len(BIG[n['col']])]
+            n['st'], n['v'] = k, KIND[k][2]
+        else:
+            continue
+        if n['st'] in ('race',):
+            q = RACES[RS.randrange(len(RACES))]
+            n['q'], n['qn'] = q
+        elif n['st'] in ('el', 'xel'):
+            q = ELS[RS.randrange(len(ELS))]
+            n['q'], n['qn'] = q
+    # skill nodes: two of the six ring nodes round every C knot belong to that C skill
+    for n in list(N.values()):
+        if n['k'] != 'c':
+            continue
+        for j, kk in ((1, 'skcd'), (4, 'sksp')):
+            r = N[n['knot'][j]]
+            r['st'], r['v'], r['sk'] = kk, KIND[kk][1], n['nm']
+            r.pop('q', None)
+            r.pop('qn', None)
+    for n in N.values():
+        if 'st' in n:
+            n['tx'] = node_text(n)
+
+
 BRANCH = {('A', 2): 'สาย A · ใช้สกิลครั้งที่ 4 ไม่ใช้ SP', ('A', 3): 'สาย A · คูลดาวน์ −0.5 วิ',
           ('basic', 2): 'สายพื้นฐาน · บัฟ +2 วิ', ('basic', 3): 'สายพื้นฐาน · SP −2',
           ('B', 2): 'สาย B · สถานะติดนาน +0.4 วิ', ('B', 3): 'สาย B · คูลดาวน์ −0.5 วิ'}
@@ -146,9 +227,7 @@ def build_once(seed=SEED):
     cnt = {}
 
     def minor(i, x, y, col):
-        cnt[col] = cnt.get(col, 0) + 1
-        st = FLAV[col][(cnt[col] * 3 + len(i)) % 8]
-        return node(i, x, y, 'm', col=col, st=st, v=VAL[st])
+        return node(i, x, y, 'm', col=col)                 # what it gives: assign_kinds() at the end
 
     for s in sites:
         sid, x0, y0, col = s['id'], s['x'], s['y'], s['col']
@@ -182,9 +261,7 @@ def build_once(seed=SEED):
                 elif s['kind'] == 'b':
                     node(sid, x0, y0, 'b', col=col, txt=BRANCH[s['key']], knot=ring)
                 else:
-                    j = len([1 for t in sites if t['kind'] == 'n' and t['id'] < sid])
-                    st = MAIN[col] if j % 2 == 0 else SIDE[col][(j // 2) % 4]
-                    node(sid, x0, y0, 'n', col=col, st=st, v=NVAL[st], knot=ring)
+                    node(sid, x0, y0, 'n', col=col, knot=ring)
                 for k in range(6):
                     edge(sid, ring[k], 'spoke')
         s['ports'] = ports
@@ -253,6 +330,7 @@ def build_once(seed=SEED):
             prev = cid
         edge(prev, q, ci=(i, j))
 
+    assign_kinds(N, sites)
     # prices + level gates
     for n in N.values():
         if n['k'] == 'h':
@@ -348,6 +426,23 @@ def hours(goods, lvd, bag=None):
     return max((need.get(k, 0) / (r * KPH) for k, r in rate.items()), default=0), need
 
 
+def totals(N, lit):
+    """What a set of lit nodes gives, summed per effect (race / element / skill lines kept apart)."""
+    t = {}
+    for j in lit:
+        n = N[j]
+        if 'st' not in n:
+            continue
+        key = (n['st'], n.get('qn', ''), n.get('sk', ''))
+        t[key] = t.get(key, 0) + n['v']
+    order = list(KIND)
+    out = []
+    for (k, qn, sk), v in sorted(t.items(), key=lambda kv: (order.index(kv[0][0]), kv[0][1], kv[0][2])):
+        v = round(v, 1)
+        out.append(KIND[k][0].format(v=int(v) if v == int(v) else v, q=qn, sk=sk))
+    return out
+
+
 def sim():
     N, E = build()
     A = adj_map(N, E)
@@ -357,8 +452,17 @@ def sim():
     tot = {}
     for n in N.values():
         add_cost(tot, n['cost'])
-    print(f"TOTEM ROOTS v3: {len(N) - 1} nodes + heart — small +1 stat {kinds['m']} · notable +3 {kinds['n']} · "
+    print(f"TOTEM ROOTS v3: {len(N) - 1} nodes + heart — small {kinds['m']} · big {kinds['n']} · "
           f"branch bonus {kinds['b']} · C skills {kinds['c']}")
+    fam, kc = {}, {}
+    for n in N.values():
+        if n['k'] in ('m', 'n') and 'st' in n:
+            f = KIND[n['st']][5]
+            fam[f] = fam.get(f, 0) + 1
+            kc[n['st']] = kc.get(n['st'], 0) + 1
+    print('  what nodes give (small + big): ' + ' · '.join(f"{FAM[f]} {c}" for f, c in sorted(fam.items(), key=lambda x: -x[1]))
+          + f" · {len(kc)} kinds")
+    print('  ' + ' · '.join(f"{k} {c}" for k, c in sorted(kc.items(), key=lambda x: -x[1])))
     bands = {}
     for n in N.values():
         if n['k'] == 'm':
@@ -412,7 +516,10 @@ def sim():
             smalls = sum(1 for j in order if N[j]['k'] == 'm')
             print(f"  + {N[cid]['nm']:17s} (C tier {N[cid]['tier']}): +{len(order):2d} nodes ({smalls} small) · points used {used:3d} · "
                   f"sap {g['sap']:4d} · medals {g.get('medal', 0):2d} · cores {g.get('core', 0)} · {g['z']:,}z → ~{h2:.0f} h{extra}")
+            if k == 0:
+                print('    gives: ' + ' · '.join(totals(N, lit)))
         ht, _ = hours(run, 94)
+        print('    all together: ' + ' · '.join(totals(N, lit)))
         used = sum(N[j]['cost'].get('pt', 0) for j in lit)
         print(f"  = {len(lit) - 1} nodes · {used} points (Lv 60 has {PTS(60)}) · ~{ht:.0f} h of farming in all")
 
@@ -438,6 +545,7 @@ if __name__ == '__main__':
         lit = mock_state(N, A)
         out = os.path.join(os.path.dirname(__file__), '..', 'mock_rune', 'roots_web.js')
         data = dict(N=list(N.values()), E=E, lit=sorted(lit), bandLv=BAND_LV, bands=[b[0] for b in BANDS[:3]], RX=RX, RY=RY,
+                    K={k: dict(s=v[3], c=v[4], f=v[5], t=v[0], v=v[1], b=v[2]) for k, v in KIND.items()}, FAM=FAM, got=totals(N, lit),
                     pts=sum(N[j]['cost'].get('pt', 0) for j in lit))
         open(out, 'w', encoding='utf-8').write('window.ROOTS_WEB=' + json.dumps(data, ensure_ascii=False) + ';\n')
         print('wrote', os.path.normpath(out), len(N), 'nodes,', len(lit), 'lit, points used', data['pts'])

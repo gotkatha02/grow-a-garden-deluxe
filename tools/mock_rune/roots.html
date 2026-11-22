@@ -51,10 +51,8 @@ function txt(x,y,t,col,size,wt,fam,p,anchor){const e=el('text',{x,y,'text-anchor
 function label(x,y,t,col,size,anchor,stroke){const g=el('g',{});const e=txt(x,y,t,col,size,500,'Prompt',g,anchor);const w=e.getComputedTextLength()+14;const x0=anchor==='start'?x-7:anchor==='end'?x-w+7:x-w/2;
  const r=el('rect',{x:x0,y:y-size-1,width:w,height:size+7,rx:7,fill:'#120a05',opacity:.86,stroke:stroke||'#7a5a30','stroke-width':1.2},g);g.insertBefore(r,e);return g;}
 /* RO-style rune effects (2026-11-22) */
-const SC={str:'#ff6b5a',agi:'#5fe0e6',vit:'#6fdc7a',int:'#c39bff',dex:'#8fa8ff',luk:'#ffd75a',atk:'#ff9a5a',matk:'#e08bff',hit:'#ffe08a',flee:'#9fe8c8',crit:'#ffb0d0',def:'#7fb2ff',mdef:'#b49cff',
-  atkp:'#ff9a5a',matkp:'#e08bff',aspd:'#5fe0e6',critd:'#ffb0d0',cast:'#8fa8ff',res:'#6fdc7a'};
-const SL={str:'STR',agi:'AGI',vit:'VIT',int:'INT',dex:'DEX',luk:'LUK',atk:'ATK',matk:'MAT',hit:'HIT',flee:'FLE',crit:'CRI',def:'DEF',mdef:'MDF',atkp:'AT%',matkp:'MA%',aspd:'SPD',critd:'CD%',cast:'CST',res:'RES'};
-const SN={str:'STR +1',agi:'AGI +1',vit:'VIT +1',int:'INT +1',dex:'DEX +1',luk:'LUK +1',atk:'ATK +5',matk:'MATK +5',hit:'HIT +3',flee:'FLEE +3',crit:'CRIT +1',def:'DEF +2',mdef:'MDEF +2'};
+/* node kinds come from roots_gen.py (KIND → W.K): colour, 3-letter code, family, text */
+const SC={},SL={};for(const k in W.K){SC[k]=W.K[k].c;SL[k]=W.K[k].s;}
 const RIM={1:'#c98b4a',2:'#d6dde6',3:'#f3c34e',4:'#7ff5e0'};
 const ADJ={};for(const n of W.N)ADJ[n.id]=new Set();
 for(const [a,b,t] of W.E){if(t==='spoke'){ADJ[b].add(a);continue;}ADJ[a].add(b);ADJ[b].add(a);}
@@ -159,23 +157,26 @@ if(!big){const c=N.CA1,x=X(c.x),y=Y(c.y),g=el('g',{});
 // ---------- panels
 document.getElementById('sub').textContent=`หมาป่า · Lv ${PLV} · ทั้งต้น ${W.N.length-1} โหนด · จุดแล้ว ${nLit} ดวง`;
 document.getElementById('chips').innerHTML=`<span class="chip g">แต้มราก เหลือ ${PTS-USED}/${PTS}</span><span class="chip">ยางวิญญาณ 260</span><span class="chip">เหรียญโทเท็มทอง 1</span><span class="chip">แก่น 0</span>`;
-const side=document.getElementById('side');const dot=c=>`<i class="dot" style="background:${c}"></i>`;
+const side=document.getElementById('side');
+const FAMROWS=()=>{const by={};for(const n of W.N){if(!n.st)continue;const f=W.K[n.st].f;(by[f]=by[f]||{n:0,k:{}}).n++;by[f].k[n.st]=(by[f].k[n.st]||0)+1;}
+  const ex={stat:'STR AGI VIT INT DEX LUK +1',off:'ATK / MATK +5 · HIT +3 · CRIT +1 · ATK% · ASPD% · ดาเมจคริ% · ร่ายเร็ว% · เจาะ DEF% · ใส่บอส%',slay:'ดาเมจใส่เผ่า 10 แบบ · ใส่ธาตุ 10 แบบ',
+    def:'DEF / MDEF +2 · FLEE +3 · หลบเด็ดขาด · รับดาเมจ −% · ติดสถานะสั้นลง · ต้านธาตุ',util:'ฟื้น SP · ใช้ SP −% · ฮีลแรงขึ้น · เดินเร็ว · แบกของ',skill:'คูลดาวน์ / SP ของสกิล C นั้น (รอบปม C)'};
+  const col={stat:'#ff6b5a',off:'#ff9a5a',slay:'#ffa07a',def:'#7fb2ff',util:'#7ec8ff',skill:'#ffd36a'};
+  return ['stat','off','slay','def','util','skill'].filter(f=>by[f]).map(f=>`<div class="row">${dot(col[f])}<span><b>${W.FAM[f]}</b> ${by[f].n} · ${ex[f]}</span></div>`).join('');};const dot=c=>`<i class="dot" style="background:${c}"></i>`;
 const cnt={m:0,n:0,b:0,c:0};for(const n of W.N)if(cnt[n.k]!=null)cnt[n.k]++;
 if(!big){
  side.innerHTML=`<div class="nm">ทั้งต้น ${W.N.length-1} โหนด</div><div class="tg">ผังแบบ ROM · เริ่มกลาง แผ่ไปทุกทาง</div>
  <div class="sec">ชนิดโหนด</div>
- <div class="row">${dot('#7c7466')}<span><b>เล็ก</b> ค่าแบบ RO (STR +1 · ATK +5 · HIT +3 · CRIT +1 · DEF +2 …) · ${cnt.m} ดวง · ไม่มี HP</span></div>
- <div class="row"><i style="width:14px;height:13px;background:#ff6b5a;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%)"></i><span><b>ใหญ่</b> สเตตัสหลัก +3 หรือ % แบบ RO (ATK +2% · ASPD +2% · ร่ายเร็ว −3% …) · ${cnt.n} ดวง</span></div>
- <div class="row"><i style="width:13px;height:13px;background:#ffb347;transform:rotate(45deg)"></i><span><b>โบนัสสาย</b> ${cnt.b} ดวง</span></div>
- <div class="row">${dot('#f6c64e')}<span><b>สกิล C</b> 12 ท่า · กลางปม อยู่ห่างกัน</span></div>
- <div class="row" style="flex-wrap:wrap;gap:4px 10px">${Object.keys(SN).map(s=>`<span style="white-space:nowrap">${dot(SC[s])} ${SN[s]}</span>`).join('')}</div>
+ <div class="row">${dot('#7c7466')}<span><b>เล็ก</b> ${cnt.m} ดวง · <b>ใหญ่</b> ${cnt.n} ดวง · ค่าแบบ ROM ${Object.keys(W.K).length} แบบ · ไม่มี HP</span></div>
+ <div class="row"><i style="width:13px;height:13px;background:#ffb347;transform:rotate(45deg)"></i><span><b>โบนัสสาย</b> ${cnt.b} ดวง · ${dot('#f6c64e')} <b>สกิล C</b> 12 ท่า อยู่ห่างกัน</span></div>
+ ${FAMROWS()}
  <div class="sec">ยิ่งไกลจากหัวใจ ยิ่งยาก</div>
  <div class="row">${dot(RIM[1])}<span>ชั้น 1 Lv 31+ · ยาง + เงิน</span></div>
  <div class="row">${dot(RIM[2])}<span>ชั้น 2 Lv 41+ · ยาง + วัตถุดิบมอน + เงิน</span></div>
  <div class="row">${dot(RIM[3])}<span>ชั้น 3 Lv 51+ · สกิล C ขั้น 1–2 (วงใน)</span></div>
  <div class="row">${dot(RIM[4])}<span>ชั้น 4 Lv 54+ · สกิล C ขั้น 3–4 (ขอบนอก)</span></div>
- <div class="sec">สกิล C ห่างกันแค่ไหน</div>
- <div class="row">จากหัวใจถึงปมขั้น 1 ≈ 17–18 ดวง · ขั้น 3–4 ≈ 25–35 ดวง<br>ปม C สองอันใกล้สุดห่างกัน 9 ดวง (กลางๆ 13)</div>
+ <div class="sec">ตัวอย่าง: ทางเส้นทอง ${nLit} ดวง ได้</div>
+ <div class="row" style="line-height:1.55">${W.got.join(' · ')}</div>
  <div class="foot">จุดสกิล C ได้ต้อง: เดินมาถึงปม · จุดรอบปม 3/6 · จุดรวมครบ 25 / 40 / 55 / 70 ดวง · เลเวล + เงื่อนไขต้นสกิล · ของฟาร์ม<br>แต้มราก เลเวลละ 4 จาก Lv 31 (Lv 60 = 120 · ทั้งต้น 616)</div>`;
 }else{
  const n=N[SEL],on=n.knot.filter(j=>LIT.has(j)).length;

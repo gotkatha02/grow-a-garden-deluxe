@@ -28,7 +28,7 @@ const angTo=(a,b)=>Math.atan2(b.y-a.y,b.x-a.x);
 const dP=e=>Math.hypot(player.x-e.x,player.y-e.y);
 function bossHit(e,mul,after){if(player.hp<=0||e.dead)return false;const sv=e.m;e.m=Object.assign({},sv,{atk:[sv.atk[0]*mul*(e.rage>0?1.25:1),sv.atk[1]*mul*(e.rage>0?1.25:1)]});
   const h0=player.hp;try{hitPlayer(e);}finally{e.m=sv;}const hit=player.hp<h0;if(hit&&after)after();return hit;}
-function debuff(k,dur){dur*=(typeof resMul==='function'?resMul(k==='dbWeak'?'weaken':k):1);const b=player.buffs[k];if(!b||b.t<dur)player.buffs[k]={t:dur,total:dur};}
+function debuff(k,dur){if(window.MSF){dur=MSF.debuffT(k,dur);if(!dur)return;}dur*=(typeof resMul==='function'?resMul(k==='dbWeak'?'weaken':k):1);const b=player.buffs[k];if(!b||b.t<dur)player.buffs[k]={t:dur,total:dur};}
 function inCone(e,phi,R,half){const d=dP(e);if(d>R+12)return false;if(d<e.r)return true;return Math.abs(angDiff(angTo(e,player),phi))<=half;}
 const faceTo=(e,x)=>{e.face=x>=e.x?1:-1;};
 function say(e,txt,col){addFx(new DText({x:e.x,y:e.y,z:MSPR_H(e)+40,text:txt,color:col||'#c9b6ff',size:18,life:1.5}));}
@@ -175,7 +175,7 @@ function spawnBoss(){const h=mapHosts[MAP];if(h&&h.W){const k=h.W/3600;HOME.x=18
   const e=spawnEnemy(x,y,true,null);if(!enemies.includes(e))enemies.push(e);
   const st=monStats(LV,'boss');e.m=Object.assign({},MON.elder,st,{name:NAME,th:'เฟนเรียร์',el:'Dark 4',race:'Brute',size:'large',boss:1,atk:[st.atk[0]*BAL.atkMul,st.atk[1]*BAL.atkMul]});
   e.maxHp=e.hp=Math.round(st.hp*BAL.hpMul);e.vdef={name:NAME,th:'เฟนเรียร์',base:'snowwolf',lv:[LV,LV],role:'boss',aggr:1};
-  Object.assign(e,{fen:1,boss:true,r:44,sc:1,face:-1,homeX:x,homeY:y,cd:{leap:3,breath:5,orb:4,howl:0,step:6},phase:1,bossName:'FENRIR · MVP',koMax:520,ko:520});
+  Object.assign(e,{fen:1,bossKey:'fenrir',boss:true,r:44,sc:1,face:-1,homeX:x,homeY:y,cd:{leap:3,breath:5,orb:4,howl:0,step:6},phase:1,bossName:'FENRIR · MVP',koMax:520,ko:520});
   boss=e;}
 /* spawn when the floor is ready (after its field monsters), respawn 5 min after death */
 (function tick(){requestAnimationFrame(tick);
