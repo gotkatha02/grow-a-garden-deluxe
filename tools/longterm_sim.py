@@ -156,34 +156,75 @@ def carve_part():
         print(f'  skill learned Lv {lo:2d}–{min(hi,99):2d}: {" + ".join(f"{k} ×{v}" for k,v in it)} + {z:,}z  → ~{h*60:3.0f} min');lo=hi+1
 
 def orbs_part():
-    """Orbs v2 PROPOSAL (ORB_SYSTEM_TH.md, owner 2026-11-22 'kept, more stats, rolled at drop, many tiers, a higher tier adds a lot').
-    Keep VAL / TIER / FAM / MERGE in step with the doc. KPH kills an hour like carve_part (dense fields, area skills)."""
+    """Orbs v2 PROPOSAL (ORB_SYSTEM_TH.md). Owner 2026-11-22 16:12 'kept, more stats, rolled at drop, many tiers, a higher tier adds a lot'
+    + 16:31 'the same kind may go in one piece as often as you like' → the values are set so that ONE kind in all 12 holes stays in line
+    with the others, and a physical and a magic hero gain the same. Race / element orbs: in the weapon = damage vs, in armour / helm /
+    shoes = damage taken from (RO weapon cards / armour cards); race + element resist together ≤ 50 %;
+    points from orbs (6 stats, FLEE, perfect dodge) count up to +15 each. Every kind rises at every tier (a merge always gains).
+    Keep VAL / TIER / FAM / MERGE in step with the doc. KPH kills an hour like carve_part (dense fields, area skills).
+    Formulas = index.html derive() / defAdjust() / hurt(): crits only on basic attacks, ASPD only speeds basic attacks."""
+    import math
+    fl=math.floor
     KPH=700;ORB=.012
-    VAL={'stat':[1,2,3,4,6],'atk':[2,4,6,9,12],'crit':[1,1,2,3,4],'aspd':[1,2,3,4,6],'race':[2,3,5,7,10]}
+    VAL={'stat':[1,2,3,4,5],'atk':[3,6,9,12,15],'hit':[1,2,3,4,5],'crit':[1,2,3,4,5],'aspd':[1,2,3,4,5],'spc':[1,2,3,4,5],
+         'def':[1,2,4,6,8],'flee':[1,2,3,4,5],'pd':[1,2,3,4,5],'hp':[1,2,3,4,5],'sp':[2,4,6,8,10],'race':[2,3,5,7,10]}
+    SCAP=15   # points from orbs (each of the 6 stats, FLEE, perfect dodge) count up to +15: INT's (INT/7)² would make an all-INT stack
+              # worth half again an all-STR one, and 12 FLEE orbs let an AGI build dodge 95 % of a boss's swings
     TIER={'Lv 1-18':[.80,.18,.02,0,0],'Lv 19-36':[.55,.33,.10,.02,0],'Lv 37-54':[.35,.38,.20,.06,.01],'Lv 55-60':[.20,.35,.30,.12,.03]}
     FAM={'one stat orb (STR …)':.30/6,'one attack / defence orb (ATK, FLEE …)':.20/6,"the race orb of the monsters you farm":.15,"the element orb of the monsters you farm":.15}
     EQ=[1,3,9,27,81];MERGE=[1000,2000,4000,10000]
     print('  orbs an hour (KPH %d × %.1f %%):'%(KPH,ORB*100))
     for b,od in TIER.items(): print(f'    {b:9s} {KPH*ORB:.1f}/h → '+' · '.join(f'T{i+1} {KPH*ORB*p:.2f}' for i,p in enumerate(od)))
-    od=TIER['Lv 55-60'];eq=sum(p*EQ[i] for i,p in enumerate(od))
+    od=TIER['Lv 55-60']
     zT5=27*MERGE[0]+9*MERGE[1]+3*MERGE[2]+MERGE[3]
-    print(f'  one T5 of a chosen kind at Lv 55-60, own drops + 3→1 merging only (no market), merge zeny for a T5 from T1s {zT5:,}z:')
-    for k,w in FAM.items(): print(f'    {k:42s} ~{81/(KPH*ORB*w*eq):5.1f} h')
-    # damage model: STR build at Lv 60 (STR 90 DEX 40 LUK 20), T9 weapon ATK 220 + refine +10 (wlv 4: +70), a ×3 skill,
-    # Lv 60 normal monster DEF 39 / LUK 8, crit ×1.4 skips DEF, 40 % of the damage from basic attacks (ASPD)
-    N,mL=39,8
-    def dps(STR=90,DEX=40,LUK=20,flat=0,crit=0,aspd=0,basic=.4,k=3):
-        A=STR+(STR/10)**2+DEX/5+LUK/5+220+70+flat;d=A*k;c=max(0,1+LUK*.3+crit-mL/5)/100
-        per=(1-c)*(.35*(d-.5*N)+.65*d*(1-N/(N+64)))+c*1.4*d
-        return per*((1-basic)+basic/(1-aspd/100))
-    b=dps()
-    for t in (3,4,5):
-        i=t-1;v=VAL
-        r=dps(STR=90+4*v['stat'][i],flat=4*v['atk'][i],crit=2*v['crit'][i],aspd=2*v['aspd'][i])/b-1
-        s=dps(STR=90+4*v['stat'][i],flat=4*v['atk'][i])/b-1
-        rv=v['race'][i]/100
-        print(f'  T{t} in all 12 holes, all-in attack (STR ×4, ATK ×4, CRIT ×2, ASPD ×2): damage {r*100:+.0f} % (STR + ATK alone {s*100:+.0f} %)'
-              f' · boss set (4 race + 4 element of the boss): vs that boss damage {((1+4*rv)**2-1)*100:+.0f} %, damage taken {((1-4*rv)**2-1)*100:+.0f} %')
+    print(f'  one orb of a chosen kind at Lv 55-60, own drops + 3→1 merging only (no market); merge zeny for a T5 from T1s {zT5:,}z:')
+    for k,w in FAM.items():
+        h=[EQ[t]/(KPH*ORB*w*sum(p*min(EQ[i],EQ[t]) for i,p in enumerate(od))) for t in (3,4)]
+        print(f'    {k:42s} T4 ~{h[0]:5.1f} h · T5 ~{h[1]:5.1f} h  (all 12 holes: T4 ~{12*h[0]:4.0f} h · T5 ~{12*h[1]:4.0f} h)')
+    def defAdj(d,N):
+        N=max(1,min(512,N));return math.ceil(.35*max(int(d-.5*N),1)+.65*max(int(d*(1-N/(N+64))),1))
+    LV=60;W=220+70   # T9 weapon ATK / MATK 220 + refine +10 (wlv 4: +70)
+    M=dict(d=39,md=20,luk=8,flee=80,hit=84,atk=240)   # Lv 60 normal monster (monStats)
+    def aps(s,o):
+        am=(200-160)*max(.05,1-s['agi']/250-s['dex']/1000)*(1-min(.5,o.get('aspd',0)/100));return 50/max(10,am)
+    def phys(o):   # STR preset at Lv 60 + hero bonus; a ×3 skill; 40 % of the damage from basic attacks
+        s=dict(str=80,agi=25,vit=22,int=1,dex=33,luk=3)
+        for k,v in o.get('st',{}).items():s[k]+=v
+        A=s['str']+fl(s['str']/10)**2+fl(s['dex']/5)+fl(s['luk']/5)+W+o.get('atk',0)
+        h=min(95,max(5,80+LV+s['dex']+fl(s['luk']/3)+o.get('hit',0)-M['flee']))/100
+        c=max(0,1+fl(s['luk']*.3)+o.get('crit',0)-fl(M['luk']/5))/100
+        return h*defAdj(A*3,M['d']),aps(s,o)*((1-c)*h*defAdj(A,M['d'])+c*1.4*A)
+    def magic(o):  # INT preset; magic never misses or crits; 30 % basic attacks
+        s=dict(str=1,agi=1,vit=17,int=82,dex=38,luk=3)
+        for k,v in o.get('st',{}).items():s[k]+=v
+        A=s['int']+fl(s['int']/7)**2+fl(s['dex']/5)+fl(s['luk']/5)+W+o.get('matk',0)
+        return defAdj(A*3,M['md']),aps(s,o)*defAdj(A,M['md'])
+    def gain(f,o,sh):
+        s0,b0=f({});s1,b1=f(o);return (1-sh)*s1/s0+sh*b1/b0-1
+    def ehp(o):    # VIT preset, armour + helm + shoes DEF 38: HP ÷ expected damage of one Lv 60 monster swing
+        s=dict(str=50,agi=1,vit=70,int=1,dex=10,luk=1)
+        for k,v in o.get('st',{}).items():s[k]+=v
+        hp=fl((300+14*LV)*(1+s['vit']/100)*(1+o.get('hp',0)/100));D=38+o.get('def',0)+fl(s['vit']/2)+fl(s['agi']/5)
+        h=min(95,max(5,80+M['hit']-(LV+s['agi']+fl(s['luk']/5)+o.get('flee',0))))/100;pd=(1+fl(s['luk']/10)+o.get('pd',0))/100
+        return hp/(h*(1-pd)*defAdj(M['atk'],D))
+    pc=lambda x:f'{x*100:+.0f} %'
+    print('  one kind in all 12 holes (Lv 60 heroes vs a Lv 60 monster; damage / effective HP):')
+    for t in (2,3,4):
+        v={k:x[t] for k,x in VAL.items()};n=12
+        P={'STR':{'st':{'str':min(SCAP,n*v['stat'])}},'ATK':{'atk':n*v['atk']},'CRIT':{'crit':n*v['crit']},'ASPD':{'aspd':n*v['aspd']}}
+        Q={'INT':{'st':{'int':min(SCAP,n*v['stat'])}},'MATK':{'matk':n*v['atk']},'ASPD':{'aspd':n*v['aspd']}}
+        bp=max((gain(phys,{'st':{'str':min(SCAP,a*v['stat'])},'atk':b*v['atk'],'crit':c*v['crit'],'aspd':(n-a-b-c)*v['aspd']},.4),a,b,c,n-a-b-c)
+               for a in range(n+1) for b in range(n+1-a) for c in range(n+1-a-b))
+        bm=max((gain(magic,{'st':{'int':min(SCAP,a*v['stat'])},'matk':b*v['atk'],'aspd':(n-a-b)*v['aspd']},.3),a,b,n-a-b) for a in range(n+1) for b in range(n+1-a))
+        e0=ehp({});E={'VIT':{'st':{'vit':min(SCAP,n*v['stat'])}},'DEF':{'def':n*v['def']},'MaxHP':{'hp':n*v['hp']},'FLEE':{'flee':min(SCAP,n*v['flee'])},'perfect dodge':{'pd':min(SCAP,n*v['pd'])}}
+        print(f'    T{t+1} physical: '+' · '.join(f'{k} {pc(gain(phys,o,.4))}' for k,o in P.items())+f' | best mix {pc(bp[0])} (STR {bp[1]} ATK {bp[2]} CRIT {bp[3]} ASPD {bp[4]})')
+        print(f'       magic:    '+' · '.join(f'{k} {pc(gain(magic,o,.3))}' for k,o in Q.items())+f' | best mix {pc(bm[0])} (INT {bm[1]} MATK {bm[2]} ASPD {bm[3]})')
+        print(f'       tank EHP: '+' · '.join(f'{k} {pc(ehp(o)/e0-1)}' for k,o in E.items()))
+        fA=60+70+0;bh=60+24+36;hb=lambda f:min(95,max(5,80+bh-f))
+        print(f'       FLEE orbs, AGI build (FLEE {fA}) vs a Lv 60 boss (HIT {bh}): hit {hb(fA)} % → {hb(fA+min(SCAP,n*v["flee"]))} % (without the cap {hb(fA+n*v["flee"])} %)')
+        r=v['race']/100
+        print(f'       boss set: weapon 4 holes (race 2 + element 2 of the boss) damage {pc((1+2*r)**2-1)} (one race ×4 {pc(4*r)})'
+              f' · armour / helm / shoes 8 holes (race 4 + element 4) damage taken {pc(max(.5,(1-4*r)**2)-1)}')
 
 a=sys.argv[1:] or ['refine','gems']
 if 'carve' in a: carve_part()

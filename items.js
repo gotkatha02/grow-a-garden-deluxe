@@ -32,7 +32,7 @@ const TOWNS={
 {const TS={vik:['Fjord Fisher','Longship Raider','Bear Berserker'],azt:['Maize Farmer','Jaguar Warrior','Turquoise Serpent'],
   grk:['Olive Shepherd','Hoplite','Tide Guardian'],egy:['Nile Reed','Sand Scorpion','Jackal Guard'],jpn:['Wandering Ronin','Shinobi','Oni Lord']};
  for(const r in TS)TS[r].forEach((n,i)=>TOWNS[r].pre[3+2*i]=n);}
-const HOME={wolf:'vik',rhino:'vik',owl:'vik',jaguar:'azt',croc:'azt',axolotl:'azt'};
+const HOME={wolf:'vik',rhino:'vik',owl:'vik',jaguar:'azt',croc:'azt',axolotl:'azt',cat:'jpn',dragon:'jpn',kitsune:'jpn',hippo:'egy',bastet:'egy',anubis:'egy',sheep:'grk',lion:'grk'};   // = char_create.js home (the 8 newer heroes fell back to Frostheim: starter kit, return scroll, smith town)
 const regionOf=id=>!id?HOME[CHAR]||'vik':id==='frostheim'||id==='snowpine'?'vik':/^(capT|c[A-Z]|cata|rift)/.test(id)?'cap':id.slice(0,3);
 const townHere=()=>{const m=(window.AF_ROOM_TOWN&&AF_ROOM_TOWN[curMap])||curMap;for(const r in TOWNS)if(TOWNS[r].map===m)return r;return m==='capT'?'cap':null;};   // a craft hall room counts as its town
 /* LEVEL CAP 60 (owner 2026-11-22, level_cap.js): grades / ore tiers keep their old 1–99 design bands; a level of the game is read
