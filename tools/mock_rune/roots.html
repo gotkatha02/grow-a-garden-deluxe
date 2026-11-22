@@ -60,13 +60,21 @@ const nLit=W.lit.length-1;
 function avail(id){const n=N[id];if(LIT.has(id)||n.k==='h')return false;if(PLV<(n.lv||1))return false;
  let ok=false;for(const j of LIT)if(ADJ[j].has(id)&&!(N[j].knot)){ok=true;break;}if(!ok)return false;
  if(n.k==='c'){if(n.knot.filter(j=>LIT.has(j)).length<3)return false;if(nLit<n.need)return false;}return true;}
-// ---- view
-let k,cx,cy,sx,sy;
-if(V==='zoom'){k=1.0;cx=-560;cy=0;sx=622;sy=470;}else{k=.338;cx=0;cy=0;sx=622;sy=474;}
-const X=x=>(x-cx)*k+sx,Y=y=>(y-cy)*k+sy;
-const big=V==='zoom';
 /* owner's pictures 2026-11-22 (ROOTS_ART_PROMPTS_TH.md) — ?art=0 = the old code-drawn look */
 const ART=new URLSearchParams(location.search).get('art')!=='0',AP='../../assets/rune/roots/';
+/* owner 19:09 'the web spills over the edge onto the crystals — keep it in the soil':
+   SOIL = the largest ellipse of the web's shape inside the dirt of bg.webp (dark dirt rim included, rock walls / crystals out; measured on the
+   1536×1024 picture, 8 px inside the edge). Every node + PAD (rim C-knot frames and their names) must lie inside it → the picture's scale
+   BG_G (world px per picture px) and its place follow the web at every zoom (no parallax: a slower layer slid the rock walls under the web). */
+const SOIL={W:1536,H:1024,cx:756,cy:488,a:503,b:386},PAD=100;
+const SP=Math.max(...W.N.map(n=>Math.hypot((Math.abs(n.x)+PAD)/W.RX,(Math.abs(n.y)+PAD)/W.RY))),BG_G=W.RX*SP/SOIL.a;
+// ---- view
+let k,cx,cy,sx,sy;
+if(V==='zoom'){k=1.0;cx=-560;cy=0;sx=622;sy=470;}
+else if(ART){k=900/(SOIL.H*BG_G);cx=0;cy=0;sx=616-(SOIL.W/2-SOIL.cx)*BG_G*k;sy=SOIL.cy*BG_G*k;}   // whole picture height on screen, soil in the middle of the map area
+else{k=.338;cx=0;cy=0;sx=622;sy=474;}
+const X=x=>(x-cx)*k+sx,Y=y=>(y-cy)*k+sy;
+const big=V==='zoom';
 const FAMPIC={stat:'rs_stat',off:'rs_off',slay:'rs_slay',def:'rs_def',util:'rs_util',skill:'rs_skill'};
 const FAMCOL={stat:'#ff6b5a',off:'#ff9a4a',slay:'#ff7aa0',def:'#4f8ef0',util:'#5fd0f0',skill:'#ffc94a'};
 /* measured on the cut pictures (512 px): medallion hole centre 254.9,238.4 r 111.3 · hexagon outer half-height 239, hole r ≈ 140 */
@@ -88,8 +96,8 @@ defs.innerHTML=`
 <filter id="noise" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" seed="5"/><feColorMatrix values="0 0 0 0 .34  0 0 0 0 .22  0 0 0 0 .12  0 0 0 1.5 -.66"/></filter>`;
 // ---------- background: warm soil round the heart, darker and crystal-filled toward the rim
 el('rect',{x:0,y:0,width:1600,height:900,fill:'#0a0614'});
-if(ART){const s=1.2,bk=big?.6:k,BX=x=>(x-cx)*bk+sx,BY=y=>(y-cy)*bk+sy;   /* close-up: the soil is a slower parallax layer so the picture is not blown up ×2.6 */
- img('bg',BX(-W.RX*s),BY(-W.RY*s),2*W.RX*s*bk,2*W.RY*s*bk);}
+if(ART){img('bg',X(-SOIL.cx*BG_G),Y(-SOIL.cy*BG_G),SOIL.W*BG_G*k,SOIL.H*BG_G*k);
+ if(big)el('rect',{x:0,y:0,width:1600,height:900,filter:'url(#noise)',opacity:.28});}   // close-up: fine dirt grain over the enlarged picture
 else{el('ellipse',{cx:X(0),cy:Y(0),rx:W.RX*1.25*k,ry:W.RY*1.25*k,fill:'url(#earth)'});
 el('rect',{x:0,y:0,width:1600,height:900,filter:'url(#noise)',opacity:.5});}
 const RHO=[[.30,1],[.52,2],[.76,3]];
