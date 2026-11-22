@@ -15,11 +15,13 @@ class Game:
         s.hero=hero;s.w=w;s.h=h;s.extra=extra;s.errs=[];s.miss=[]
     async def start(s,pw):
         s.b=await pw.chromium.launch(args=['--disable-gpu-vsync'])
-        s.pg=await s.b.new_page(viewport={'width':s.w,'height':s.h},device_scale_factor=float(os.environ.get('DSF','1')))   # DSF=2 → sharper close-up frames
+        touch=os.environ.get('TOUCH')=='1'   # TOUCH=1 = a phone: touch events on, so mobile.js switches the wheel UI on
+        s.pg=await s.b.new_page(viewport={'width':s.w,'height':s.h},device_scale_factor=float(os.environ.get('DSF','1')),has_touch=touch,is_mobile=touch)   # DSF=2 → sharper close-up frames
         s.pg.on('pageerror',lambda e:s.errs.append(str(e)[:400]))
         s.pg.on('console',lambda m:s.errs.append('console: '+m.text[:300]) if m.type=='error' and 'Failed to load resource' not in m.text else None)
         s.pg.on('response',lambda r:s.miss.append(r.url.split('/',3)[-1].split('?')[0]) if r.status>=400 and 'fonts.g' not in r.url else None)
         await s.pg.add_init_script(INIT)
+        if os.environ.get('KEEPHUD')=='1':await s.pg.add_init_script('window.__KEEPHUD=1')   # KEEPHUD=1 = leave the HUD / hotbar on screen
         await s.pg.goto('http://localhost:8765/index.html?char=%s&map=vikF2&testroom=1&nosw=1&cb=%d%s'%(s.hero,time.time(),s.extra))
         for i in range(60):
             await s.pg.wait_for_timeout(500)
@@ -27,7 +29,7 @@ class Game:
             if ok and i>6: break
         await s.pg.wait_for_timeout(1500)
         await s.pg.evaluate("""()=>{const b=document.getElementById('trbar');if(b)b.style.display='none';
-          for(const id of ['hud','hotbar','chat','minimap']){const e=document.getElementById(id);if(e)e.style.visibility='hidden';}
+          if(!window.__KEEPHUD)for(const id of ['hud','hotbar','chat','minimap']){const e=document.getElementById(id);if(e)e.style.visibility='hidden';}
           try{perfHold=1e9;}catch(e){} try{Q=QUALITY.high;}catch(e){} window.__man=true;}""")
         await s.pg.wait_for_timeout(300)
         await s.step(2,1/60)

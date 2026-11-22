@@ -95,6 +95,42 @@ for y0,y1 in bands:
         ys,xs=np.where(body);w=a[y0:y1,x0:x1]*body;wc=w.sum(0)
         R_.append(dict(m=int(A[y0:y1,x0:x1].sum()),x0=x0,x1=x1,y0=y0,y1=y1,by0=y0+ys.min(),by1=y0+ys.max()+1,cx=x0+float((wc*np.arange(len(wc))).sum()/max(wc.sum(),1))))
     rows.append(R_)
+if LAY=='W':   # frames found from the DARK OUTLINES only (painted bodies have them, glowing effects do not);
+    LUM=col.mean(-1);D=A&(LUM<70)&(a>.92);rows=[]   # each frame runs from its body to the next body, so effects in front stay with it
+    for y0,y1 in bands:
+        cs=D[y0:y1].sum(0);M=[]
+        for sg in [[x0,x1] for x0,x1 in runs(cs>2)]:
+            if M and sg[0]-M[-1][1]<14:M[-1][1]=sg[1]
+            else:M.append(sg)
+        M2=[]
+        for x0,x1 in M:   # bodies whose outlines touch: split at the emptiest columns near even divisions
+            k=int(round((x1-x0)/Wm))
+            if (x1-x0)>1.5*Wm and k>=2:
+                cuts=[x0]
+                for q in range(1,k):
+                    c=int(x0+(x1-x0)*q/k);lo_,hi_=max(x0+1,int(c-.3*Wm)),min(x1-1,int(c+.3*Wm));cuts.append(lo_+int(np.argmin(cs[lo_:hi_])))
+                cuts.append(x1);M2+=[[cuts[i],cuts[i+1]] for i in range(k)]
+            else:M2.append([x0,x1])
+        M=M2
+        dm=[D[y0:y1,x0:x1].sum() for x0,x1 in M];md=max(dm) if dm else 1
+        mdn=float(np.median(dm)) if dm else 1;M=[m_ for m_,v in zip(M,dm) if v>.3*mdn]
+        R_=[]
+        for i,(x0,x1) in enumerate(M):
+            lo=x0-6 if i==0 else x0-3;hi=min((M[i+1][0]-3) if i+1<len(M) else W,int(x1+(.9*Wm if len(rows)==2 else 24)))
+            if i==0:lo=max(0,x0-40)
+            sub=A[y0:y1,lo:hi];cols=np.where(sub.any(0))[0];rws=np.where(sub.any(1))[0]
+            if not len(cols):continue
+            fx0,fx1=lo+cols.min(),lo+cols.max()+1;fy0,fy1=y0+rws.min(),y0+rws.max()+1
+            bd_=A[y0:y1,x0:x1];ys=np.where(bd_.any(1))[0];w_=(a[y0:y1,x0:x1]*bd_).sum(0)
+            R_.append(dict(dk=int(D[y0:y1,x0:x1].sum()),m=int(sub.sum()),x0=fx0,x1=fx1,y0=fy0,y1=fy1,by0=y0+ys.min(),by1=y0+ys.max()+1,cx=x0+float((w_*np.arange(len(w_))).sum()/max(w_.sum(),1))))
+        if len(rows)==len(bands)-1 and R_:   # faded ghost after the last death body (too faint for outlines)
+            g0=R_[-1]['x1']+4;sub=A[y0:y1,g0:]
+            if sub.sum()>.15*R_[-1]['m']:
+                cols=np.where(sub.any(0))[0];rws=np.where(sub.any(1))[0];w_=a[y0:y1,g0:].sum(0)
+                R_.append(dict(m=int(sub.sum()),x0=g0+cols.min(),x1=g0+cols.max()+1,y0=y0+rws.min(),y1=y0+rws.max()+1,by0=y0+rws.min(),by1=y0+rws.max()+1,cx=g0+float((w_*np.arange(len(w_))).sum()/max(w_.sum(),1))))
+        rows.append(R_)
+    LAY='A';WMODE=1
+else:WMODE=0
 cnt=[len(R) for R in rows];print('rows',cnt,file=sys.stderr)
 def spread(R,n):
     if len(R)<=n:return R+[R[-1]]*(n-len(R))
@@ -110,7 +146,23 @@ def squeeze(Rw,n):   # too many pieces in a row: the lightest piece joins its ne
         j=i-1 if i==len(Rw)-1 or (i>0 and Rw[i]['x0']-Rw[i-1]['x1']<Rw[i+1]['x0']-Rw[i]['x1']) else i+1
         a_,b_=(Rw[j],Rw[i]);a_['x0']=min(a_['x0'],b_['x0']);a_['x1']=max(a_['x1'],b_['x1']);a_['m']+=b_['m'];del Rw[i]
     return Rw
-if LAY=='A':rows=[squeeze(r_,n) for r_,n in zip(rows,[4,4,5,2,5])]
+LUM=col.mean(-1)
+def clean(Rw):   # 'W': loose effect pieces (no feet on the row's ground line, or short) join a touching body, else drop
+    if len(Rw)<2:return Rw
+    hs=[c['by1']-c['by0'] for c in Rw];hm=float(np.median(hs));gl=float(np.median([c['by1'] for c in Rw]))
+    def dark(c):   # share of dark outline pixels: painted bodies have thick dark outlines, glowing effects do not
+        m_=A[c['y0']:c['y1'],c['x0']:c['x1']];return float((m_&(LUM[c['y0']:c['y1'],c['x0']:c['x1']]<70)).sum())/max(m_.sum(),1)
+    bod=[c for c,h in zip(Rw,hs) if h>=.5*hm and abs(c['by1']-gl)<.2*hm and dark(c)>.035]
+    if not bod:bod=[max(Rw,key=lambda c:c['m'])]
+    print('clean',[(c['x0'],c['x1'],round(dark(c),3),c['by1']-c['by0']) for c in Rw],file=sys.stderr)
+    for c in Rw:
+        if c in bod:continue
+        t=min(bod,key=lambda f:max(0,c['x0']-f['x1'],f['x0']-c['x1']))
+        if max(0,c['x0']-t['x1'],t['x0']-c['x1'])<40:t['x0']=min(t['x0'],c['x0']);t['x1']=max(t['x1'],c['x1']);t['m']+=c['m']
+    return bod
+if WMODE:   # an attack row with 6+ pieces: drop the ones with the least outline (loose flames / bits)
+    while len(rows[2])>5:k_=min(range(len(rows[2])),key=lambda i:rows[2][i].get('dk',1e9));del rows[2][k_]
+elif LAY=='A':rows=[squeeze(r_,n) for r_,n in zip(rows,[4,4,5,2,5])]
 ATT=sys.argv[4] if len(sys.argv)>4 else ''
 R=rows
 if LAY=='A':P=dict(idle=spread(R[0],4),walk=spread(R[1],4),attack=spread(R[2],5),hurt=R[3][:2],death=R[4][-5:])

@@ -5307,7 +5307,7 @@ function buildHotbar(){hb.innerHTML='';const tb=document.createElement('div');tb
   for(const [ti,pre] of rows){const row=document.createElement('div');row.className='hrow'+(pre?' shiftrow':'');hb.appendChild(row);
     for(let i=0;i<10;i++){const k=TABS[ti].keys[i],b=document.createElement('button');
       if(!k){b.className='hbt empty';b.innerHTML=`<span class="k">${pre}${(i+1)%10}</span>`;row.appendChild(b);continue;}
-      const sk=SKILLS[k];b.className='hbt'+(sk.ult?' ult':'');{const SD=typeof SKILL_DESC!=='undefined'&&(SKILL_DESC[k]||JG_DESC[k]);b.title=sk.name+(LV[k]?` Lv.${LV[k]}`:'')+'\n'+skTypeText(k)+(SD?'\n'+SD.d+((SD.lv[LV[k]]||[]).length?'\n• '+SD.lv[LV[k]].join('\n• '):''):'')+(window.gemMark?gemMark(k,1):'');}
+      const sk=SKILLS[k];b.className='hbt'+(sk.ult?' ult':'');b.dataset.k=k;{const SD=typeof SKILL_DESC!=='undefined'&&(SKILL_DESC[k]||JG_DESC[k]);b.title=sk.name+(LV[k]?` Lv.${LV[k]}`:'')+'\n'+skTypeText(k)+(SD?'\n'+SD.d+((SD.lv[LV[k]]||[]).length?'\n• '+SD.lv[LV[k]].join('\n• '):''):'')+(window.gemMark?gemMark(k,1):'');}
       b.innerHTML=`<span class="k">${pre}${(i+1)%10}</span>${artFor(k)||iconSVG(sk.icon)}${window.gemMark?gemMark(k):''}<span class="cdt"></span><canvas class="cd" width="44" height="44"></canvas>`+(sk.follow?`<span class="combo"><small>กดซ้ำ!</small><span>${SKILLS[sk.follow].name}</span><i></i></span>`:'');
       b.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();useSkill(k);});row.appendChild(b);slotEls.push({el:b,k});}}
   requestAnimationFrame(()=>{const w=document.getElementById('hbw');if(w)document.documentElement.style.setProperty('--hbw',w.offsetWidth+'px');});}
@@ -6002,13 +6002,14 @@ window.AF={levelUp:()=>{if(PS.lv<99){PS.lv++;applyStats();player.hp=player.maxHp
 <script src="progress.js"></script>
 <script src="char_create.js"></script>
 <script src="skill_shapes.js?v=1"></script>
-<script src="mobile.js?v=4"></script>
+<script src="mobile.js?v=5"></script>
 <script src="totem_gems.js?v=34"></script>
 <script src="seals.js?v=1"></script>
 <script src="relics.js?v=1"></script>
 <script src="gem_fx.js?v=3"></script>
 <script src="gem_mut_fx.js?v=3"></script>
 <script src="gem_sup_fx.js?v=2"></script>
+<script src="gem_btn.js?v=1"></script>
 <script src="feel_hits.js?v=1"></script>
 <script src="wolf_vfx3.js?v=70"></script>
 <script src="cat_art.js?v=1"></script>

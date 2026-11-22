@@ -276,7 +276,7 @@ let editing=false;
 function icon(k){const sk=G('SKILLS')[k];try{return (typeof artFor==='function'&&artFor(k))||iconSVG(sk.icon)||'';}catch(e){return '';}}
 function build(){const SK=G('SKILLS');if(!SK)return;W.innerHTML='';btns=[];W.classList.toggle('edit',editing);tabB.textContent=editing?'✓ เสร็จ':'✎ จัดสกิล';setB.innerHTML=`${'①②③④⑤'[cur]}<small>ชุดสกิล</small>`;
   const ks=slots();
-  for(let i=0;i<NSLOT;i++){const k=ks[i],sk=k&&SK[k];const el=document.createElement('button');el.className='mobSk'+(sk?(sk.ult?' ult':''):' empty');
+  for(let i=0;i<NSLOT;i++){const k=ks[i],sk=k&&SK[k];const el=document.createElement('button');el.className='mobSk'+(sk?(sk.ult?' ult':''):' empty');if(sk)el.dataset.k=k;   /* gem_btn.js finds the skill of each button */
     el.innerHTML=sk?`<span class="ic">${icon(k)}</span>${window.gemMark?gemMark(k):''}<span class="sw"></span><span class="t"></span><span class="lb">${sk.follow&&SK[sk.follow]?SK[sk.follow].name:''}</span>`:'<span class="t">+</span>';
     if(editing&&edSel&&edSel.slot===i)el.classList.add('sel');const o={i,k,el,sw:el.querySelector('.sw'),t:el.querySelector('.t')};W.appendChild(el);btns.push(o);placeBtn(o);bindBtn(o);}
   layout();}
