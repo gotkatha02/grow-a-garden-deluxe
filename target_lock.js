@@ -88,7 +88,7 @@ TL.autoPick=r=>alive(L)&&!L.hidden&&dHero(L)<=(r||460)?L:null;
 
 /* ---------- next / previous target ---------- */
 function cands(){const out=[];for(const e of enemies){if(e.dead||e.hidden||dHero(e)>CYC_R)continue;const [x,y]=scr(e,.45);if(!onScr(x,y,-6))continue;out.push(e);}return out;}
-const score=e=>dHero(e)-(e.boss?5000:0)-(e.aggro>0?40:0);
+const score=e=>dHero(e)-(e.boss?5000:0)-(e.mbPart?2500:0)-(e.aggro>0?40:0);   /* map boss parts (gold ◎) come right after the boss */
 function cycle(dir){const C=cands();
   if(!C.length){if(L)kickT=1;else say('ไม่มีศัตรูอยู่ใกล้ ๆ');return null;}
   C.sort((a,b)=>score(a)-score(b));

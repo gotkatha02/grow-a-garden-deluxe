@@ -88,6 +88,7 @@ function spawn(id){const d=MB[id],h=mapHosts[id],L=(window.VK_MONS||{})[id]||[],
   Object.assign(e,{boss:true,bossKey:d[0],mboss:id,mbDef:def.name,bsc:SIZE,r:30,homeX:x,homeY:y,face:-1,mbCd:2.5,mbAdd:0,mbCast:null,bossName:d[2]});
   {const h0=MSPR_H(e)/SIZE;if(h0<52)e.bsc=Math.min(3.6,96/h0);}   /* small sheets (scorpion, catalog art) still stand ~96 px tall */
   cur={map:id,e};addFx(new MbAura(e));
+  {const K=window.MBK,D=K&&K.defs[d[0]];if(D){if(D.spr)e.spr=D.spr;if(D.size)e.bsc=D.size;{const h0=MSPR_H(e)/e.bsc;if(D.minH&&h0*e.bsc<D.minH)e.bsc=D.minH/h0;}if(D.r)e.r=D.r;K.init(e,D);}}   /* boss script (map_bosses_<land>.js, map_boss_kit.js) */
   if(typeof chatLog==='function')chatLog('sys',`👑 <b style="color:#f0b440">${th}</b> (บอสประจำแมพ Lv ${LV}) ปรากฏตัวแถวกลางแมพ — ดูทางที่แถบด้านบน`);
   return e;}
 
@@ -102,7 +103,7 @@ function summon(e,n){const L=((window.VK_MONS||{})[e.mboss]||[]).filter(d=>d.nam
     if(typeof mapBlockedW==='function'&&mapBlockedW(x,y))continue;const m=vkMake(d,x,y);if(!enemies.includes(m))enemies.push(m);m.summon=1;m.mbOf=e;m.aggro=8;k++;
     if(typeof dustPuff==='function')dustPuff(x,y,6,'#d8c8a8',60,8);}
   if(k)say(e,'เรียกลูกน้อง!');}
-function mbAI(e,dt){const s=e.st,cc=s.frozen||s.stagger||s.stun;
+function mbAI(e,dt){if(e.mb&&window.MBK)return MBK.run(e,dt);const s=e.st,cc=s.frozen||s.stagger||s.stun;
   if(e.mbCast){if(cc){e.mbCast=null;e.atk=0;e.mbCd=2;return true;}e.mbCast.t+=dt;if(e.mbCast.t>=SLAM_T)slamLand(e);return true;}
   const dp=Math.hypot(player.x-e.x,player.y-e.y);
   if(Math.hypot(e.x-e.homeX,e.y-e.homeY)>LEASH&&dp>450){e.x=e.homeX;e.y=e.homeY;e.hp=e.maxHp;e.aggro=0;e.mbAdd=0;e.atk=0;return false;}
@@ -117,7 +118,7 @@ const _fr=fieldRespawn;fieldRespawn=function(e){if(e.mboss||e.mbOf){e.gone=1;ret
 const _upd=updEnemies;updEnemies=function(dt){_upd(dt);
   if(cur&&cur.e.dead&&!cur.e._paid)onDead(cur.e);
   for(let i=enemies.length-1;i>=0;i--){const o=enemies[i];if((o.mboss||o.mbOf)&&o.gone&&o.dead&&o.deadT>3.4)enemies.splice(i,1);}};
-function onDead(e){e._paid=1;e.mbCast=null;const id=e.mboss,ms=respMs(id),th=thOf(MB[id][0]);BOSS_T.set(MB[id][0],Date.now()+ms);
+function onDead(e){e._paid=1;e.mbCast=null;if(e.mb&&window.MBK)MBK.dead(e);const id=e.mboss,ms=respMs(id),th=thOf(MB[id][0]);BOSS_T.set(MB[id][0],Date.now()+ms);
   for(const o of enemies)if(o.mbOf===e&&!o.dead){o.hp=0;kill(o);}
   if(typeof shake==='function')shake(4);
   if(typeof chatLog==='function')chatLog('sys',`🏆 ล้ม <b style="color:#f0b440">${th}</b> ได้แล้ว! (เกิดใหม่ใน ${Math.round(ms/60000)} นาที)`);
@@ -150,10 +151,10 @@ body.mob #mbBar{top:98px;width:min(250px,38vw)}body.mob #mbBar .fn{font-size:11p
     const e=cur&&cur.map===id&&!cur.e.dead?cur.e:null,th=thOf(d[0]);
     if(e){show=true;const r=e.hp/e.maxHp,dx=e.x-player.x,dy=(e.y-player.y)*K,dist=Math.hypot(dx,dy);
       const far=dist>650?`📍 ห่าง ~${Math.round(dist/60)} ม. ${ARW[((Math.round(Math.atan2(dy,dx)/(Math.PI/4))%8)+8)%8]}`:'';
-      txt=`a|${th}|${lvOf(id)}|${(r*100).toFixed(1)}|${far}|${r<.5?1:0}`;
+      txt=`a|${th}|${lvOf(id)}|${(r*100).toFixed(1)}|${far}|${r<.5?1:0}|${e.mb?e.mb.awake:''}`;
       if(txt!==lastTxt){bar.className='';bar.querySelector('.fn b').textContent=`👑 ${th} · ${d[2]}`;bar.querySelector('.fn span').textContent=`Lv ${lvOf(id)} · บอสประจำแมพ`;
         bar.querySelector('i').style.width=(r*100).toFixed(1)+'%';bar.querySelector('em').textContent=Math.ceil(r*100)+'%';
-        bar.querySelector('.fp').textContent=far||(r<.5?'⚠ โกรธ — ทุบถี่ขึ้น (วงแดง = ถอยออก)':'วงแดงใต้เท้า = ถอยออกก่อนมันทุบ');}}
+        bar.querySelector('.fp').textContent=far||(e.mb?(e.mb.awake?'':'เดินเข้าไปใกล้เพื่อปลุกบอส'):r<.5?'⚠ โกรธ — ทุบถี่ขึ้น (วงแดง = ถอยออก)':'วงแดงใต้เท้า = ถอยออกก่อนมันทุบ');}}
     else{const left=BOSS_T.get(d[0])-Date.now();if(left>0){show=true;txt=`w|${th}|${mmss(left)}`;
       if(txt!==lastTxt){bar.className='wait';bar.querySelector('.fn b').textContent=`👑 ${th} · ${d[2]}`;bar.querySelector('.fn span').textContent='บอสประจำแมพ';
         bar.querySelector('.fp').textContent=`⏳ เกิดใหม่ใน ${mmss(left)}`;}}}}

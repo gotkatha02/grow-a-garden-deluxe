@@ -661,6 +661,8 @@ body.th-c .ro-st .r span[style]{text-shadow:none}
   </div>
 </div>
 
+<script src="assets/ui/emo/list.js?v=1"></script>
+<script src="ui_emoji.js?v=1"></script>
 <script src="assets.js"></script>
 <script>/* Jaguar has its own sprite set; it is only downloaded when Jaguar is the character being played */
 (function(){var c='';try{c=new URLSearchParams(location.search).get('char')||'';if(!c){var h=(location.hash||'').slice(1);if(['wolf','jaguar','rhino','axolotl','croc','owl','cat','hippo','sheep','dragon','lion','kitsune','bastet','anubis'].indexOf(h)>=0)c=h;}if(!c)c=localStorage.getItem('af_char')||'';}catch(e){}
@@ -1759,7 +1761,7 @@ function hitPlayer(e,o={}){const m=e.m||MON.frostling;const a=player.action;cons
   if(LV.wolfInstinct&&CHAR==='wolf'&&++player.wiN>=[0,20,12][LV.wolfInstinct]){player.wiN=0;addFx(new DText({x:player.x,y:player.y,z:70,text:'EVADE',color:'#ffe08a',size:14,life:.7}));return;}   // skill dodge only — no stat MISS
   if(itemFx.dodge(e)){addFx(new DText({x:player.x,y:player.y,z:70,text:'EVADE',color:'#c8d0ff',size:14,life:.7}));return;}
   /* RO: perfect dodge (LUK) and FLEE vs the monster's HIT — magic always hits. Every attacker after the 2nd takes 10 % off our FLEE */
-  if(!mag){if(Math.random()*100<(D.pd||0)){addFx(new DText({x:player.x,y:player.y,z:70,text:'LUCKY',color:'#ffe08a',size:14,life:.7}));if(window.MSF)MSF.dodge(1,e);return;}
+  if(!mag&&!o.sure){if(Math.random()*100<(D.pd||0)){addFx(new DText({x:player.x,y:player.y,z:70,text:'LUCKY',color:'#ffe08a',size:14,life:.7}));if(window.MSF)MSF.dodge(1,e);return;}
     let n=0;for(const q of enemies)if(!q.dead&&q.aggro>0&&Math.abs(q.x-player.x)<110&&Math.abs(q.y-player.y)<110&&Math.hypot(q.x-player.x,q.y-player.y)<(q.r||18)+70)n++;
     const fl=(D.flee||0)*(window.MSF&&MSF.noMob()?1:Math.max(.1,1-.1*Math.max(0,n-2)));if(Math.random()*100>=clamp(80+((m.hit!=null?m.hit:m.lv||1))-fl,5,95)){dmgNum(player.x,player.y,70,'MISS','miss');if(window.MSF)MSF.dodge(0,e);return;}}   /* MSF: stat tiers (milestones.js) — AGI 90 keeps FLEE when mobbed, dodges feed AGI / LUK tiers */
   let d=Math.max(1,Math.round(defAdjust(rnd(m.atk[0],m.atk[1]),mag?D.mdef:D.def)*dmgTaken()*jgMul*itemFx.takenMul(e)));if(CHAR==='wolf')d=Math.max(1,d+wolfTakenFlat());d=ENH_ABSORB(d);if(d<=0)return;if(JH('jgAbsorb')){d=jgAbsorb(d,e);if(d<=0)return;}player.hp-=d;dmgNum(player.x,player.y,64,d,'taken',{who:player});shake(1.6);
@@ -6073,13 +6075,15 @@ window.AF={levelUp:()=>{if(PS.lv<LV_CAP){PS.lv++;applyStats();player.hp=player.m
 <script src="monsters.js?v=2"></script>
 <script src="monster-sprites.js?v=4"></script>
 <script src="monster-catalog.js"></script>
-<script src="map_bosses.js?v=6"></script>
+<script src="map_boss_kit.js?v=1"></script>
+<script src="map_bosses.js?v=7"></script>
+<script src="map_bosses_egy.js?v=1"></script>
 <script src="boss_fenrir.js?v=8"></script>
 <script src="progress.js?v=2"></script>
 <script src="char_create.js?v=2"></script>
 <script src="skill_shapes.js?v=1"></script>
 <script src="mobile.js?v=6"></script>
-<script src="target_lock.js?v=2"></script>
+<script src="target_lock.js?v=3"></script>
 <script src="sp_rules.js?v=1"></script>
 <script src="totem_gems.js?v=36"></script>
 <script src="seals.js?v=1"></script>
