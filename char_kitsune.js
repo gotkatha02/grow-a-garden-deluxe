@@ -9,7 +9,7 @@
                                       starfall. Hit enemies are slowed; slowed enemies take more (no counter system)
      C Tree · Heir of Inari         — 12 nodes, each tied to the Basic / A / B skill of the same row (Lv 55 / 60 / 70 / 80)
 
-   Pure magic hero: every skill uses TAL.
+   Pure magic hero: every skill uses MATK.
    Owner's rules: no percent effects (flat numbers, counters instead of chances). Attack speed fixed (CHAR_ASPD).
    Sprite: the wolf's sprite stands in until the kitsune's own clips are made.
    ===================================================================== */
@@ -74,12 +74,12 @@ const KI_BAL={
   }
 };
 const KB=KI_BAL.sk;
-/* branch tuning from the bench: damage numbers of each branch are scaled here so the shown TAL×n stays true */
+/* branch tuning from the bench: damage numbers of each branch are scaled here so the shown MATK×n stays true */
 const KI_SCALE={A:1.807,B:1.131};   /* re-tuned at the Lv 60 cap 2026-11-22 (≈ 2,050 per branch, LEVEL_CAP_TH.md); older values in git */
 (()=>{const r2=v=>Math.round(v*100)/100,sc=(o,f,m)=>{if(o[f]==null)return;o[f]=Array.isArray(o[f])?o[f].map(v=>r2(v*m)):r2(o[f]*m);};
   const colOf=k=>k.startsWith('ka')||['kcSwarm','kcWheel','kcMeteor','kcTamamo'].includes(k)?'A':k.startsWith('kb')||['kcPrism','kcDisc','kcShower','kcTsukuyomi'].includes(k)?'B':null;
   for(const k in KB){const c=colOf(k);if(!c)continue;for(const f of ['dmg','per','split'])sc(KB[k],f,KI_SCALE[c]);}})();
-const kT=n=>'TAL×'+(+n).toFixed(2).replace(/0+$/,'').replace(/\.$/,'');
+const kT=n=>'MATK×'+(+n).toFixed(2).replace(/0+$/,'').replace(/\.$/,'');
 
 /* ---------------------------------------------------------------------
    2. SKILL DATA
@@ -92,7 +92,7 @@ const KI_DEFS=[
  {key:'knWard',id:'KN-B04',name:'Ofuda Ward',br:'basic',row:2,max:3,type:'self',d:'ยันต์กันภัย ได้โล่',lv:i=>[`โล่ = เลเวล × ${KB.knWard.shield[i-1]} นาน ${KB.knWard.T} วิ`,`Cooldown ${KB.knWard.cd} วิ`]},
  {key:'knBless',id:'KN-B05',name:"Inari's Blessing",br:'basic',row:3,max:2,type:'self',d:'พรอินาริ ฟื้น HP และ SP',lv:i=>[`ฟื้น HP = เลเวล × ${KB.knBless.hp[i-1]}`,`SP +${KB.knBless.sp[i-1]}`,`Cooldown ${KB.knBless.cd} วิ`]},
  {key:'knFluff',id:'KN-B06',name:'Nine-Tail Fluff',br:'basic',row:3,max:4,passive:1,d:'(Passive) หางฟูกันกระแทก',lv:i=>[`ดาเมจที่ได้รับ −${KB.knFluff.block[i-1]} ต่อครั้ง`]},
- {key:'knTorii',id:'KN-B07',name:'Torii Gate',br:'basic',row:4,max:3,type:'self',d:'ตั้งประตูโทริอิ ยืนในวงฟื้น SP และ TAL เพิ่ม',lv:i=>[`SP +${KB.knTorii.sp[i-1]} ทุกวิ`,`TAL +${KB.knTorii.tal[i-1]} นาน ${KB.knTorii.T} วิ`,`Cooldown ${KB.knTorii.cd} วิ`]},
+ {key:'knTorii',id:'KN-B07',name:'Torii Gate',br:'basic',row:4,max:3,type:'self',d:'ตั้งประตูโทริอิ ยืนในวงฟื้น SP และ MATK เพิ่ม',lv:i=>[`SP +${KB.knTorii.sp[i-1]} ทุกวิ`,`MATK +${KB.knTorii.tal[i-1]} นาน ${KB.knTorii.T} วิ`,`Cooldown ${KB.knTorii.cd} วิ`]},
  // ---------------- A · KITSUNE-BI ----------------
  {key:'kaOrb',id:'KN-A01',name:'Foxfire Orb',br:'A',row:1,max:4,type:'melee',d:'ลูกไฟจิ้งจอก 3 ลูกวิ่งตามเป้า หาง +1 (อัปสลับเลเวลกับ Spirit Flame Pillar)',lv:i=>[`${kT(KB.kaOrb.dmg[i-1])} × ${KB.kaOrb.n}`,`Cooldown ${KB.kaOrb.cd} วิ`]},
  {key:'kaWisp',id:'KN-A02',name:'Wisp Dance',br:'A',row:2,max:3,passive:1,d:'(Passive) ไฟจิ้งจอก 2 ดวงวนรอบตัว ชนศัตรูใกล้ ๆ ทุก 1 วิ',lv:i=>[`${kT(KB.kaWisp.dmg[i-1])} ต่อดวง`]},
@@ -104,7 +104,7 @@ const KI_DEFS=[
  {key:'kaPetals',id:'KN-A08',name:'Burning Petals',br:'A',row:5,max:1,passive:1,enh:'kaRain',pre:[['kaRain',1]],d:'(ต่อยอด Will-o\'-Wisp Rain) ทิ้งกลีบซากุระไฟ ศัตรูที่เหยียบโดนต่อเนื่อง',lv:()=>[`${kT(KB.kaPetals.dmg)} ทุก 0.5 วิ นาน ${KB.kaPetals.T} วิ`]},
  {key:'kaBurst',id:'KN-A09',name:'Tail Burst',br:'A',row:6,max:2,type:'self',d:'ปล่อยไฟจากหางทั้งหมดเป็นคลื่นรอบตัว ใช้หางทั้งหมด',lv:i=>[`${kT(KB.kaBurst.dmg[i-1])} + ${kT(KB.kaBurst.per)} ต่อหาง`,`Cooldown ${KB.kaBurst.cd} วิ`]},
  {key:'kaAfterglow',id:'KN-A10',name:'Afterglow',br:'A',row:6,max:2,passive:1,enh:'kaBurst',pre:[['kaBurst',1]],d:'(ต่อยอด Tail Burst) หลังปล่อยคืนหาง',lv:i=>[`คืน ${KB.kaAfterglow.back[i-1]} หาง`]},
- {key:'kaWisdom',id:'KN-A11',name:'Fox Wisdom',br:'A',row:7,max:3,passive:1,d:'(Passive) หางที่จุดอยู่ให้ TAL เพิ่ม',lv:i=>[`TAL +${KB.kaWisdom.tal[i-1]} ต่อหาง`]},
+ {key:'kaWisdom',id:'KN-A11',name:'Fox Wisdom',br:'A',row:7,max:3,passive:1,d:'(Passive) หางที่จุดอยู่ให้ MATK เพิ่ม',lv:i=>[`MATK +${KB.kaWisdom.tal[i-1]} ต่อหาง`]},
  {key:'kaVeil',id:'KN-A12',name:'Foxfire Veil',br:'A',row:7,max:1,type:'self',d:'ม่านไฟรอบตัว ศัตรูที่เข้ามาใกล้โดนไฟและกระเด็นออก',lv:()=>[`${kT(KB.kaVeil.dmg)} ทุก 0.5 วิ นาน ${KB.kaVeil.T} วิ`,`Cooldown ${KB.kaVeil.cd} วิ`]},
  {key:'kaInferno',id:'KN-A13',name:'Nine-Tailed Inferno',br:'A',row:8,max:2,type:'self',ult:1,d:'ULTIMATE A · หางทั้งเก้ากางออก ยิงลำแสงไฟ 9 สายใส่ศัตรูรอบตัว',lv:i=>[`${kT(KB.kaInferno.dmg[i-1])} × 9 รัศมี ${KB.kaInferno.R}`,`Cooldown ${KB.kaInferno.cd} วิ`]},
  {key:'kaCelestial',id:'KN-A14',name:'Celestial Fox',br:'A',row:8,max:1,passive:1,enh:'kaInferno',pre:[['kaInferno',1]],d:'(ต่อยอด Nine-Tailed Inferno) จบอัลติ หางเต็ม 9 และสกิล A ไม่ใช้ SP',lv:()=>[`นาน ${KB.kaCelestial.T} วิ`]},
@@ -119,7 +119,7 @@ const KI_DEFS=[
  {key:'kbEclipse',id:'KN-G08',name:'Eclipse Core',br:'B',row:5,max:1,passive:1,enh:'kbCircle',pre:[['kbCircle',1]],d:'(ต่อยอด Lunar Circle) วงจบ ศัตรูกลางวงโดนตรึง',lv:()=>[`ตรึง ${KB.kbEclipse.stun} วิ · ${kT(KB.kbEclipse.dmg)}`]},
  {key:'kbStar',id:'KN-G09',name:'Starfall',br:'B',row:6,max:2,type:'melee',d:'ดาว 6 ดวงตกใส่เป้าทีละดวง',lv:i=>[`${kT(KB.kbStar.dmg[i-1])} × ${KB.kbStar.n}`,`Cooldown ${KB.kbStar.cd} วิ`]},
  {key:'kbShooting',id:'KN-G10',name:'Shooting Star',br:'B',row:6,max:1,passive:1,enh:'kbStar',pre:[['kbStar',1]],d:'(ต่อยอด Starfall) ดาวแต่ละดวงเด้งไปโดนศัตรูใกล้ ๆ อีกตัว',lv:()=>[`${kT(KB.kbShooting.dmg)}`]},
- {key:'kbGrace',id:'KN-G11',name:"Moon's Grace",br:'B',row:7,max:3,passive:1,d:'(Passive) ศัตรูที่ช้าอยู่ โดนเวท B แรงขึ้น',lv:i=>[`TAL +${KB.kbGrace.tal[i-1]}`]},
+ {key:'kbGrace',id:'KN-G11',name:"Moon's Grace",br:'B',row:7,max:3,passive:1,d:'(Passive) ศัตรูที่ช้าอยู่ โดนเวท B แรงขึ้น',lv:i=>[`MATK +${KB.kbGrace.tal[i-1]}`]},
  {key:'kbMoonlight',id:'KN-G12',name:'Moonlight Form',br:'B',row:7,max:1,type:'self',d:'กลายเป็นแสงจันทร์ ไม่โดนโจมตี เดินทะลุศัตรู',lv:()=>[`นาน ${KB.kbMoonlight.T} วิ`,`Cooldown ${KB.kbMoonlight.cd} วิ`]},
  {key:'kbNight',id:'KN-G13',name:"Tsukuyomi's Night",br:'B',row:8,max:2,type:'self',ult:1,d:'ULTIMATE B · ฟ้ามืดเป็นกลางคืน ทุก 1 วิ ลำแสงจันทร์ลงใส่ศัตรูทุกตัวรอบตัว',lv:i=>[`${kT(KB.kbNight.dmg[i-1])} ทุก 1 วิ นาน ${KB.kbNight.T} วิ รัศมี ${KB.kbNight.R}`,`Cooldown ${KB.kbNight.cd} วิ`]},
  {key:'kbMoonrise',id:'KN-G14',name:'Moonrise',br:'B',row:8,max:1,passive:1,enh:'kbNight',pre:[['kbNight',1]],d:'(ต่อยอด Tsukuyomi\'s Night) จบอัลติ จันทร์เต็มดวงตกกลางวง',lv:()=>[`${kT(KB.kbMoonrise.dmg)} รัศมี ${KB.kbMoonrise.R}`]},
@@ -130,10 +130,10 @@ const KI_DEFS=[
  {key:'kcPhantom',id:'KN-C04',name:'Phantom Step',br:'C',col:'basic',tier:2,passive:1,pre:[['knStep',3]],d:'เงาจิ้งจอกจาก Fox Step ระเบิดตอนหาย',lv:()=>[`${kT(KB.kcPhantom.dmg)} รัศมี ${KB.kcPhantom.R}`]},
  {key:'kcWheel',id:'KN-C05',name:'Fox Fire Wheel',br:'C',col:'A',tier:2,type:'melee',pre:[['kaPillar',2]],d:'[New Active] วงล้อไฟจิ้งจอกกลิ้งไปข้างหน้า หาง +2',lv:()=>[`${kT(KB.kcWheel.dmg)} ทุกตัวในแนว ${KB.kcWheel.len}`,`Cooldown ${KB.kcWheel.cd} วิ`]},
  {key:'kcDisc',id:'KN-C06',name:'Full Moon Disc',br:'C',col:'B',tier:2,type:'melee',pre:[['kbCrescent',2]],d:'[New Active] ขว้างจานจันทร์เต็มดวงทะลุทุกตัว ศัตรูช้าลง',lv:()=>[`${kT(KB.kcDisc.dmg)} ยาว ${KB.kcDisc.len}`,`Cooldown ${KB.kcDisc.cd} วิ`]},
- {key:'kcGrace',id:'KN-C07',name:"Inari's Grace",br:'C',col:'basic',tier:3,type:'self',pre:[['knBless',2]],d:'[New Active] ข้าวศักดิ์สิทธิ์ ฟื้น HP ต่อเนื่อง TAL เพิ่ม',lv:()=>[`ฟื้น HP = เลเวล × ${KB.kcGrace.hp} ทุกวิ`,`TAL +${KB.kcGrace.tal} นาน ${KB.kcGrace.T} วิ`,`Cooldown ${KB.kcGrace.cd} วิ`]},
+ {key:'kcGrace',id:'KN-C07',name:"Inari's Grace",br:'C',col:'basic',tier:3,type:'self',pre:[['knBless',2]],d:'[New Active] ข้าวศักดิ์สิทธิ์ ฟื้น HP ต่อเนื่อง MATK เพิ่ม',lv:()=>[`ฟื้น HP = เลเวล × ${KB.kcGrace.hp} ทุกวิ`,`MATK +${KB.kcGrace.tal} นาน ${KB.kcGrace.T} วิ`,`Cooldown ${KB.kcGrace.cd} วิ`]},
  {key:'kcMeteor',id:'KN-C08',name:'Meteor Wisp',br:'C',col:'A',tier:3,passive:1,pre:[['kaRain',2]],d:'Will-o\'-Wisp Rain ปิดท้ายด้วยลูกไฟยักษ์กลางวง',lv:()=>[`${kT(KB.kcMeteor.dmg)}`]},
  {key:'kcShower',id:'KN-C09',name:'Meteor Shower',br:'C',col:'B',tier:3,passive:1,pre:[['kbStar',2]],d:'Starfall ดาวตก 10 ดวงแทน 6',lv:()=>['10 ดวง']},
- {key:'kcAwaken',id:'KN-C10',name:'Nine-Tail Awakening',br:'C',col:'basic',tier:4,type:'self',pre:[['knTorii',3]],d:'[New Active] Signature · ร่างเก้าหางเรืองแสง ตีปกติแรงขึ้น หางได้ทีละ 2 คูลดาวน์สกิล B เดินเร็วขึ้น',lv:()=>[`ตีปกติ TAL +${KB.kcAwaken.tal}`,'หาง ×2 · CD สกิล B −1 วิ ทุกวิ',`Cooldown ${KB.kcAwaken.cd} วิ`]},
+ {key:'kcAwaken',id:'KN-C10',name:'Nine-Tail Awakening',br:'C',col:'basic',tier:4,type:'self',pre:[['knTorii',3]],d:'[New Active] Signature · ร่างเก้าหางเรืองแสง ตีปกติแรงขึ้น หางได้ทีละ 2 คูลดาวน์สกิล B เดินเร็วขึ้น',lv:()=>[`ตีปกติ MATK +${KB.kcAwaken.tal}`,'หาง ×2 · CD สกิล B −1 วิ ทุกวิ',`Cooldown ${KB.kcAwaken.cd} วิ`]},
  {key:'kcTamamo',id:'KN-C11',name:"Tamamo's Sun",br:'C',col:'A',tier:4,type:'ground',radius:()=>KB.kcTamamo.R,pre:[['kaInferno',1]],d:'[New Active] ดวงอาทิตย์ไฟจิ้งจอกตกกลางพื้นที่ ใช้หางทั้งหมด',lv:()=>[`${kT(KB.kcTamamo.dmg)} + ${kT(KB.kcTamamo.per)} ต่อหาง`,`Cooldown ${KB.kcTamamo.cd} วิ`]},
  {key:'kcTsukuyomi',id:'KN-C12',name:'Tsukuyomi Descends',br:'C',col:'B',tier:4,type:'melee',pre:[['kbNight',1]],d:'[New Active] เทพจันทราส่องลำแสงยักษ์ทะลุแนว',lv:()=>[`${kT(KB.kcTsukuyomi.dmg)} ยาว ${KB.kcTsukuyomi.len}`,`Cooldown ${KB.kcTsukuyomi.cd} วิ`]},
 ];
@@ -361,7 +361,7 @@ function installKitsune(){
   for(const k in SKILLS)LV[k]=SKILLS[k].max;
   if(typeof jgBuildReq==='function'){const _b=jgBuildReq;jgBuildReq=function(){_b();for(const [a,b] of KI_ZIGZAG){const A=SKREQ[a],B=SKREQ[b];if(!A||!B)continue;
     B.forEach((r,i)=>{if(i>0)r.need.push([a,Math.min(SKILLS[a].max,i+1)]);});A.forEach((r,i)=>{if(i>0&&i<=B.length)r.need.push([b,i]);});}};}
-  /* pure magic: every skill is TAL */
+  /* pure magic: every skill is MATK */
   const m={};for(const d of KI_DEFS)m[d.key]='m';Object.assign(SK_DT,m,{basic:'m'});
   Object.assign(SK_CC,{kaPillar:{flinch:.35},kaBurst:{flinch:.5},kaInferno:{flinch:.3},kaLantern:{flinch:.3},kcTamamo:{air:1},kcWheel:{flinch:.4},
     kbCrescent:{flinch:.2},kbStar:{flinch:.2},kbNight:{flinch:.2},kbMoonrise:{air:1},kcDisc:{flinch:.4},kcTsukuyomi:{flinch:.5},kcChime:{flinch:.3}});
@@ -372,10 +372,10 @@ function installKitsune(){
     {n:'Inari',keys:['kcWheel','kcDisc','kcGrace','kcAwaken','kcTamamo','kcTsukuyomi','knBless']});
   Object.assign(BUFFDEF,{kaVeil:{n:'Foxfire Veil',c:KIC.fire,i:'VEIL'},kaCelestial:{n:'Celestial Fox',c:KIC.fire2,i:'FOX'},kbMoonlight:{n:'Moonlight Form',c:KIC.moon,i:'MOON'},kcGrace:{n:"Inari's Grace",c:KIC.gold,i:'GRACE'},kcAwaken:{n:'Nine-Tail Awakening',c:KIC.fire,i:'NINE'}});
   JOB.name='Shrine Apprentice';JOB.hpA=1.15;JOB.hpB=4.2;JOB.spB=4.2;
-  ITEMS.inariStaff={n:'Inari Shrine Staff',slot:'rhand',two:1,kind:'Staff',atk:60,matk:180,wlv:3,aspd:156,ref:6,cards:2,w:80,b:{tal:2},size:{small:1,medium:1,large:1},d:'ไม้เท้าศาลเจ้าอินาริ TAL +2'};
+  ITEMS.inariStaff={n:'Inari Shrine Staff',slot:'rhand',two:1,kind:'Staff',atk:60,matk:180,wlv:3,aspd:156,ref:6,cards:2,w:80,b:{tal:2},size:{small:1,medium:1,large:1},d:'ไม้เท้าศาลเจ้าอินาริ MATK +2'};
   ITEMS.moonMirrorStaff={n:'Moon Mirror Staff',slot:'rhand',two:1,kind:'Staff',atk:60,matk:200,wlv:4,aspd:154,ref:4,cards:1,w:90,b:{int:3},size:{small:1,medium:1,large:1},d:'ไม้เท้ากระจกจันทรา INT +3'};
   EQ.rhand='inariStaff';INV.length=0;INV.push('moonMirrorStaff','vikinghelm','ringPrec','clipLuck');
-  /* flat TAL bonuses */
+  /* flat MATK bonuses */
   const flat=(e,o)=>{const k=o&&(o.skill||(o.auto?'basic':null)),col=kCol(k);let b=0;
     if(KI.torii&&Math.hypot(player.x-KI.torii.x,player.y-KI.torii.y)<KB.knTorii.R)b+=kLv(KB.knTorii.tal,'knTorii');
     if(hasBuff('kcGrace'))b+=KB.kcGrace.tal;

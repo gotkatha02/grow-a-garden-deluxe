@@ -5,7 +5,7 @@
      race   race     — Formless · Undead · Brute · Plant · Insect · Fish · Demon · Demi-Human · Angel · Dragon
      atype  attack   — melee (default) · ranged (keeps distance, shoots) · caster (long wind-up magic orb) · + healer (heals allies)
      ability on hit  — by element: Poison→poison · Water→slow · Fire→burn · Dark→bleed · Earth→armour crack · Undead→weaken · Wind→knock-back · Ghost→SP drain
-   Player debuffs show in the buff bar; CHA shortens them. Poison/burn/bleed never kill (stop at 1 HP).
+   Player debuffs show in the buff bar; VIT shortens physical ones (poison, burn, bleed, slow, armour crack), INT weaken (RO stats 2026-11-22). Poison/burn/bleed never kill (stop at 1 HP).
    ===================================================================== */
 (function(){
 if(typeof enemyAI!=='function'||!window.VK_MONS)return;
@@ -55,26 +55,26 @@ vkVar=function(def,lv){const v=_vk(def,lv);if(def._t){v.el=EL_TH[def._t.el]||def
 
 /* ---------------- player debuffs ---------------- */
 Object.assign(BUFFDEF,{dbPoison:{n:'ติดพิษ',c:'#b07ad8',i:'☠'},dbBurn:{n:'ไฟไหม้',c:'#ff8a4a',i:'🔥'},dbBleed:{n:'เลือดไหล',c:'#e2574c',i:'🩸'},
-  dbSlow:{n:'ช้าลง',c:'#7fd0ff',i:'❄'},dbArmor:{n:'เกราะร้าว (รับดาเมจเพิ่มต่อครั้ง)',c:'#c8a060',i:'⛨'},dbWeak:{n:'อ่อนแรง (ATK/TAL ลดลง)',c:'#9aa88a',i:'↓'}});
+  dbSlow:{n:'ช้าลง',c:'#7fd0ff',i:'❄'},dbArmor:{n:'เกราะร้าว (รับดาเมจเพิ่มต่อครั้ง)',c:'#c8a060',i:'⛨'},dbWeak:{n:'อ่อนแรง (ATK/MATK ลดลง)',c:'#9aa88a',i:'↓'}});
 /* owner's rule: no percents — every debuff value is the monster's level × n, stored when it lands */
 const DOT={dbPoison:1.2,dbBurn:1,dbBleed:.8};                                   // HP per second = monster level × n
-const DBV={dbArmor:.5,dbWeak:.3};                                               // damage taken +lv×n per hit · ATK/TAL −lv×n
+const DBV={dbArmor:.5,dbWeak:.3};                                               // damage taken +lv×n per hit · ATK/MATK −lv×n
 const DEBV={};
 const DEB={poison:['dbPoison',4],burn:['dbBurn',3],bleed:['dbBleed',4],slow:['dbSlow',3],armor:['dbArmor',4],weak:['dbWeak',4]};
-function debuff(k,dur){dur*=(D.debuffMul||1);const b=player.buffs[k];if(!b||b.t<dur)player.buffs[k]={t:dur,total:dur};}
+function debuff(k,dur){dur*=(typeof resMul==='function'?resMul(k==='dbWeak'?'weaken':k):1);const b=player.buffs[k];if(!b||b.t<dur)player.buffs[k]={t:dur,total:dur};}
 function applyAbility(e,every){const t=e.vdef&&e.vdef._t;if(!t||!t.ab||player.iframes>0)return;e._abN=(e._abN||0)+1;if(e._abN%every)return;   /* every 4th hit that lands, no chance roll */
   const mlv=(e.m&&e.m.lv)||PS.lv;
   if(t.ab==='knock'){const a=Math.atan2(player.y-e.y,player.x-e.x);player.x+=Math.cos(a)*40;player.y+=Math.sin(a)*40;return;}
   if(t.ab==='drain'){const d=Math.round(mlv*.4);player.mp=Math.max(0,player.mp-d);addFx(new DText({x:player.x,y:player.y,z:84,text:`-${d} SP`,color:'#c8d8ff',size:12,life:.8}));return;}
   const [k,dur]=DEB[t.ab]||[];if(!k)return;debuff(k,dur);DEBV[k]=Math.round(mlv*(DOT[k]||DBV[k]||0));addFx(new DText({x:player.x,y:player.y,z:84,text:BUFFDEF[k].n,color:BUFFDEF[k].c,size:12,life:.9}));}
 const _hitPlayer=hitPlayer;
-hitPlayer=function(e){const h0=player.hp;_hitPlayer(e);if(player.hp<h0)applyAbility(e,4);};
+hitPlayer=function(e,o){const h0=player.hp;_hitPlayer(e,o);if(player.hp<h0)applyAbility(e,4);};
 let dotAcc=0;
 const _upd=updEnemies;
 updEnemies=function(dt){_upd(dt);dotAcc+=dt;if(dotAcc>=1){dotAcc-=1;for(const k in DOT)if(hasBuff(k)&&player.hp>1){const d=Math.max(1,DEBV[k]||1);player.hp=Math.max(1,player.hp-d);dmgNum(player.x,player.y,60,d,'taken',{scale:.6});}}};
 const fx0={dmgMul:itemFx.dmgMul,takenMul:itemFx.takenMul,moveMul:itemFx.moveMul};
 {const _flat=window.ENH_FLAT,_abs=window.ENH_ABSORB;
-  window.ENH_FLAT=()=>(_flat?_flat():0)-(hasBuff('dbWeak')?DEBV.dbWeak||0:0);                 // weaken: ATK / TAL − monster lv × .3
+  window.ENH_FLAT=()=>(_flat?_flat():0)-(hasBuff('dbWeak')?DEBV.dbWeak||0:0);                 // weaken: ATK / MATK − monster lv × .3
   window.ENH_ABSORB=d=>(_abs?_abs(d+(hasBuff('dbArmor')?DEBV.dbArmor||0:0)):d);}         // armour crack: damage taken + monster lv × .5 per hit
 itemFx.moveMul=()=>fx0.moveMul()*(hasBuff('dbSlow')?Math.max(.2,(player.speed-60)/player.speed):1);   // slow: move speed −60
 
@@ -83,7 +83,7 @@ class MonShot{
   constructor(o){Object.assign(this,{t:0,layer:'top',life:3,z:30,r:5},o);const a=Math.atan2(player.y-this.y,player.x-this.x);this.vx=Math.cos(a)*this.speed;this.vy=Math.sin(a)*this.speed;}
   update(dt){this.t+=dt;if(this.home){const a=Math.atan2(player.y-this.y,player.x-this.x),sp=this.speed,k=Math.min(1,dt*3);this.vx+=(Math.cos(a)*sp-this.vx)*k;this.vy+=(Math.sin(a)*sp-this.vy)*k;}
     this.x+=this.vx*dt;this.y+=this.vy*dt;
-    if(Math.hypot(player.x-this.x,player.y-this.y)<16){if(!this.e.dead){const h0=player.hp;_hitPlayer(this.e);if(player.hp<h0)applyAbility(this.e,.35);}return false;}
+    if(Math.hypot(player.x-this.x,player.y-this.y)<16){if(!this.e.dead){const h0=player.hp;_hitPlayer(this.e,{magic:!!this.magic});if(player.hp<h0)applyAbility(this.e,.35);}return false;}
     return this.t<this.life;}
   draw(){const [x,y]=P(this.x,this.y,this.z);ctx.save();ctx.globalAlpha=Math.min(1,(this.life-this.t)*4);
     const g=ctx.createRadialGradient(x,y,0,x,y,this.r*2.4);g.addColorStop(0,'#ffffff');g.addColorStop(.35,this.color);g.addColorStop(1,'rgba(0,0,0,0)');
@@ -97,7 +97,7 @@ enemyAI=function(e,dt){const T=e.vdef&&e.vdef._t;if(!T||T.atype==='melee')return
   if(s.frozen||s.stagger||s.stun){e.atk=0;return true;}
   const dx=player.x-e.x,dy=player.y-e.y,L=Math.hypot(dx,dy)||1;
   if(e.atk>0){e.atk-=dt;if(e.atk<=0){e._hitT=gameTime;e.acd=A.cd;
-      addFx(new MonShot({e,x:e.x,y:e.y,speed:A.speed,r:A.r,home:A.home,color:EL_COL[T.el]||'#fff',life:1.6}));}return true;}
+      addFx(new MonShot({e,x:e.x,y:e.y,speed:A.speed,r:A.r,home:A.home,magic:T.atype==='caster',color:EL_COL[T.el]||'#fff',life:1.6}));   /* RO: a caster's orb is magic (MDEF, cannot be dodged), an archer's shot is physical (FLEE) */}return true;}
   if(e.vdef.aggr&&e.aggro<=0&&L<A.range+40)e.aggro=4;
   if(e.aggro<=0)return false;
   if(T.healer&&gameTime-(e._healT||-9)>5){const hurt=enemies.filter(o=>!o.dead&&o!==e&&o.hp<o.maxHp*.7&&Math.hypot(o.x-e.x,o.y-e.y)<220).sort((a,b)=>a.hp/a.maxHp-b.hp/b.maxHp)[0];

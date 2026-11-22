@@ -42,7 +42,7 @@ const BAL_N=5;
 /* support gems: [id, Thai name, symbol, colour, effect, English] */
 const SUP=[
  ['echo','เงาสกิล','⟲','#9b7bff','0.5 วิหลังใช้ ออกซ้ำ ×0.35 (ท่าบัฟ: +3 วิ)','Echo'],['third','ทุกครั้งที่สาม','③','#ffb13b','ทุกครั้งที่ 3 แรง ×1.5 (ท่าบัฟ: รีเซ็ตคูลดาวน์)','Third'],
- ['force','เพิ่มแรง','✚','#ff6a4a','ทุกฮิต +ATK×0.15 หรือ TAL×0.15 (ท่าบัฟ: +2 วิ)','Force'],['splash','กระจาย','✺','#ff9a3a','ตัวที่โดนแตก ×0.3 รัศมี 70 (ท่าบัฟ: โล่ Lv×3)','Splash'],
+ ['force','เพิ่มแรง','✚','#ff6a4a','ทุกฮิต +ATK×0.15 หรือ MATK×0.15 (ท่าบัฟ: +2 วิ)','Force'],['splash','กระจาย','✺','#ff9a3a','ตัวที่โดนแตก ×0.3 รัศมี 70 (ท่าบัฟ: โล่ Lv×3)','Splash'],
  ['chain','ชิ่ง','ϟ','#5ad1ff','ฮิตสุดท้ายชิ่ง 2 ตัว ×0.3 (ท่าบัฟ: +2 วิ)','Chain'],['quick','เร่ง','⏱','#7fe08a','คูลดาวน์ −1.5 วิ','Quick'],
  ['thrift','ประหยัด','◆','#4aa8ff','SP −6','Thrift'],['burn','เผาไหม้','♨','#ff5a2a','ทุกฮิตติดไฟ Lv×1/วิ 3 วิ (ท่าบัฟ: ไฟรอบตัว)','Burn'],
  ['frost','เยือกแข็ง','❄','#8fe6ff','ทุกครั้งที่ 3 ช้า −40 · ทุกครั้งที่ 6 แช่แข็ง 0.8 วิ','Frost'],['pierce','ทะลวง','➶','#d8d8e8','ไม่สน DEF 20 (ท่าบัฟ: +2 วิ)','Pierce'],
@@ -56,7 +56,7 @@ const R=n=>['I','II','III','IV','V'][n-1]||n;
 const f2=x=>(+x).toFixed(2),f1=x=>(+x).toFixed(1),ri=x=>Math.max(1,Math.round(x));
 const statN=v=>Math.max(1,Math.round(.5*v));
 const LINES=[
- ['lpow','พลังท่า','พลัง',v=>`ทุกฮิต +ATK×${f2(.03*v)} (หรือ TAL)`],
+ ['lpow','พลังท่า','พลัง',v=>`ทุกฮิต +ATK×${f2(.03*v)} (หรือ MATK)`],
  ['lfirst','ฮิตแรก','พลัง',v=>`ฮิตแรกของการใช้ +ATK×${f2(.15*v)}`],
  ['lsts','ซ้ำเติม','พลัง',v=>`ศัตรูที่ติดสถานะ (ช้า แช่แข็ง มึน ไหม้ เลือดไหล) ทุกฮิต +ATK×${f2(.06*v)}`],
  ['lpier','เจาะเกราะ','พลัง',v=>`ไม่สน DEF ${ri(4*v)}`],
@@ -71,18 +71,19 @@ const LINES=[
  ['lslow','หน่วง','คุมเกม',v=>`ทุกฮิตที่ 4 ทำให้ช้า ${f1(1+.3*v)} วิ`],
  ['ldur','ยืดสถานะ','คุมเกม',v=>`สถานะที่ท่านี้ใส่ นานขึ้น +${f1(.2*v)} วิ`],
  ['lpush','ผลัก','คุมเกม',v=>`ฮิตสุดท้ายผลักศัตรูออกไป (แรง ${Math.min(5,ri(v))}/5 · บอสไม่ขยับ)`],
- ['satk','ATK','สเตตัส',v=>`ATK +${statN(v)}`],
- ['stal','TAL','สเตตัส',v=>`TAL +${statN(v)}`],
+ ['satk','STR','สเตตัส',v=>`STR +${statN(v)}`],
+ ['stal','INT','สเตตัส',v=>`INT +${statN(v)}`],
  ['sdef','DEF','สเตตัส',v=>`DEF +${statN(v)}`],
  ['sagi','AGI','สเตตัส',v=>`AGI +${statN(v)}`],
  ['svit','VIT','สเตตัส',v=>`VIT +${statN(v)}`],
- ['sint','INT','สเตตัส',v=>`INT +${statN(v)}`],
- ['scha','CHA','สเตตัส',v=>`CHA +${statN(v)}`],
- ['slck','LCK','สเตตัส',v=>`LCK +${statN(v)}`],
+ ['sint','DEX','สเตตัส',v=>`DEX +${statN(v)}`],
+ ['scha','HIT','สเตตัส',v=>`HIT +${statN(v)*2}`],
+ ['slck','LUK','สเตตัส',v=>`LUK +${statN(v)}`],
  ['lnext','คอมโบดาว','เชื่อมแผง',v=>`หลังใช้ ท่าของเจมชั้นถัดไป ทุกฮิต +ATK×${f2(.05*v)} นาน 5 วิ`],
  ['lelem','ดาวพี่น้อง','เชื่อมแผง',v=>`ชั้นข้างกันใส่แปรสภาพชนิดเดียวกับเจมนี้ ต่อชั้น ทุกฮิต +ATK×${f2(.03*v)}`],
  ['lall','ครบกลุ่มดาว','เชื่อมแผง',v=>`ใช้ท่าของเจม C ครบทุกชั้นที่ใส่ไว้ภายใน 20 วิ → โล่ Lv×${f1(v)} (ทุก 20 วิ)`]];
-const SLINE={satk:'atk',stal:'tal',sdef:'def',sagi:'agi',svit:'vit',sint:'int',scha:'cha',slck:'lck'};   // stat line → stat key (index.html BON)
+const SLINE={satk:'str',stal:'int',sdef:'def',sagi:'agi',svit:'vit',sint:'dex',scha:'hit',slck:'luk'};   // stat line → stat key (index.html BON) · RO stats 2026-11-22: line ids kept so saved gems keep their lines (ATK→STR, TAL→INT, INT→DEX, CHA→HIT ×2, LCK→LUK)
+const SLINE_MUL={hit:2};
 const POOL={c:LINES.map(l=>l[0]),s:LINES.filter(l=>l[2]!=='เชื่อมแผง').map(l=>l[0])};   // C gems roll every line, skill gems no board-link lines
 /* rarity (5 tiers, owner 2026-11-21): rolled when a gem is made (carve / craft / extract / re-extract). c / g = colour of the gem's light (hex / rgb),
    lines = special-stat slots it starts with, p = chance, m = multiplier on every line's number, rk = chance of the starting rank I…V of a new line.
@@ -163,6 +164,6 @@ const EXTRACT=[ // [skill learnable up to this level, cost]
    Re-extracting (สกัดใหม่) costs the extraction price again, rolls a new rarity + lines (level kept) and the player keeps either one. */
 const SGEM={lvEss:lv=>Math.round(3+1.2*lv),lvZ:lv=>200*lv,
   brk:{10:[['tstone1',2]],20:[['tstone2',2]],30:[['tstone3',2],['sore',1]],40:[['tstone4',2],['sore',2]]}};
-window.GEMDATA={MUT,SUP,RESO,BAL_N,LINES,QUAL,RANK_P,GEM_CAP,BREAK,COST,gemPow,DROPS,R,CARVE,EXTRACT,SGEM,SLINE,POOL,SLOT_LV,lvMul,nSlots,lineV,statN,
+window.GEMDATA={MUT,SUP,RESO,BAL_N,LINES,QUAL,RANK_P,GEM_CAP,BREAK,COST,gemPow,DROPS,R,CARVE,EXTRACT,SGEM,SLINE,SLINE_MUL,POOL,SLOT_LV,lvMul,nSlots,lineV,statN,
   MUTD:Object.fromEntries(MUT.map(s=>[s[0],s])),SUPD:Object.fromEntries(SUP.map(s=>[s[0],s])),LND:Object.fromEntries(LINES.map(s=>[s[0],s]))};
 })();

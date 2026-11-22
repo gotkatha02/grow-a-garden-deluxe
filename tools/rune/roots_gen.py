@@ -47,12 +47,16 @@ CSK = {('basic', 1): ('endlessChain', 'Endless Chain'), ('A', 1): ('savageEcho',
        ('basic', 2): ('warBanner', 'War Banner'), ('A', 2): ('ravenousLeap', 'Ravenous Leap'), ('B', 2): ('glacialPath', 'Glacial Path'),
        ('basic', 3): ('echoStep', 'Echo Step'), ('A', 3): ('valhallaAssault', 'Valhalla Assault'), ('B', 3): ('stormChain', 'Storm Chain'),
        ('basic', 4): ('fenrirsSpirit', "Fenrir's Spirit"), ('A', 4): ('einherjarsCall', "Einherjar's Call"), ('B', 4): ('worldstorm', 'Worldstorm')}
-# stat flavour of each region (the nearest C knot's root): 8 stats, never HP / SP; the main stat comes most often
-FLAV = {'A': ['atk', 'agi', 'atk', 'lck', 'vit', 'atk', 'def', 'agi'],
-        'basic': ['vit', 'def', 'cha', 'vit', 'int', 'def', 'cha', 'lck'],
-        'B': ['tal', 'int', 'tal', 'cha', 'agi', 'tal', 'int', 'def']}
-MAIN = {'A': 'atk', 'basic': 'vit', 'B': 'tal'}
-SIDE = {'A': ['lck', 'agi', 'def', 'cha'], 'basic': ['def', 'cha', 'int', 'lck'], 'B': ['int', 'cha', 'agi', 'vit']}
+# RO-style rune effects (owner 2026-11-22 'พวกสเตตัสไอเทมรูนก็ทำแบบแรคเลย', like ROM's Aesir monument): each region (the nearest C knot's root)
+# has its own pool; small nodes = a base stat +1 or a sub-stat (ATK / MATK +5, HIT / FLEE +3, CRIT +1, DEF / MDEF +2) · never HP / SP
+FLAV = {'A': ['str', 'atk', 'agi', 'hit', 'str', 'crit', 'dex', 'atk'],
+        'basic': ['vit', 'def', 'luk', 'flee', 'vit', 'mdef', 'dex', 'def'],
+        'B': ['int', 'matk', 'dex', 'int', 'matk', 'luk', 'vit', 'mdef']}
+VAL = {'str': 1, 'agi': 1, 'vit': 1, 'int': 1, 'dex': 1, 'luk': 1, 'atk': 5, 'matk': 5, 'hit': 3, 'flee': 3, 'crit': 1, 'def': 2, 'mdef': 2}
+# notable (big) nodes: the region's main stat +3, or an RO percent / bigger sub-stat
+MAIN = {'A': 'str', 'basic': 'vit', 'B': 'int'}
+SIDE = {'A': ['atkp', 'aspd', 'critd', 'hit'], 'basic': ['flee', 'def', 'luk', 'res'], 'B': ['matkp', 'cast', 'dex', 'mdef']}
+NVAL = {'str': 3, 'vit': 3, 'int': 3, 'dex': 3, 'luk': 3, 'atkp': 2, 'matkp': 2, 'aspd': 2, 'critd': 4, 'cast': 3, 'hit': 8, 'flee': 8, 'def': 6, 'mdef': 6, 'res': 5}
 BRANCH = {('A', 2): 'สาย A · ใช้สกิลครั้งที่ 4 ไม่ใช้ SP', ('A', 3): 'สาย A · คูลดาวน์ −0.5 วิ',
           ('basic', 2): 'สายพื้นฐาน · บัฟ +2 วิ', ('basic', 3): 'สายพื้นฐาน · SP −2',
           ('B', 2): 'สาย B · สถานะติดนาน +0.4 วิ', ('B', 3): 'สาย B · คูลดาวน์ −0.5 วิ'}
@@ -143,7 +147,8 @@ def build_once(seed=SEED):
 
     def minor(i, x, y, col):
         cnt[col] = cnt.get(col, 0) + 1
-        return node(i, x, y, 'm', col=col, st=FLAV[col][(cnt[col] * 3 + len(i)) % 8], v=1)
+        st = FLAV[col][(cnt[col] * 3 + len(i)) % 8]
+        return node(i, x, y, 'm', col=col, st=st, v=VAL[st])
 
     for s in sites:
         sid, x0, y0, col = s['id'], s['x'], s['y'], s['col']
@@ -179,7 +184,7 @@ def build_once(seed=SEED):
                 else:
                     j = len([1 for t in sites if t['kind'] == 'n' and t['id'] < sid])
                     st = MAIN[col] if j % 2 == 0 else SIDE[col][(j // 2) % 4]
-                    node(sid, x0, y0, 'n', col=col, st=st, v=3, knot=ring)
+                    node(sid, x0, y0, 'n', col=col, st=st, v=NVAL[st], knot=ring)
                 for k in range(6):
                     edge(sid, ring[k], 'spoke')
         s['ports'] = ports

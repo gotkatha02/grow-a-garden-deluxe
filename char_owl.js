@@ -157,7 +157,7 @@ const OW_DEFS=[
  {key:'ocNight',id:'OW-C13',name:'Night Hunter',br:'C',tier:3,passive:1,pre:[['owEye',3]],d:"Owl's Eye ติดมาร์คทุกนัด · ตีปกติใส่เป้าที่ติดมาร์คยิงลูกดอกเงาตามอีก 1 ดอก",lv:()=>['ติดมาร์คทุกนัด',`ดอกเงา ${owX(OB.ocNight.extra)}`]},
  {key:'ocPerma',id:'OW-C11',name:'Permafrost',br:'C',tier:3,passive:1,pre:[['obDeep',3]],d:'ความเย็นซ้อนได้ 6 ชั้น · Blizzard Cage อยู่นานขึ้น 2 วิ',lv:()=>['เพดาน 6 ชั้น · กรง +2 วิ']},
  {key:'ocHunt',id:'OW-C16',name:'Perfect Hunt',br:'C',tier:4,type:'self',pre:[['owSight',4]],d:'[New Active] Signature · 15 วิ: ดวงตาทองลุกโชน สกิลยิงเล็งเร็วขึ้น · ตีปกติ ATK เพิ่ม · มาร์คและความเย็นติดเป็น 2 เท่า',lv:()=>[`เวลาเล็งสกิล −${OB.ocHunt.aim} วิ`,`ตีปกติ ATK +${OB.ocHunt.atk}`,'Cooldown 90 วิ']},
- {key:'ocMoonfall',id:'OW-C14',name:'Moonfall',br:'C',tier:4,type:'self',pre:[['oaExec',1]],d:'[New Active] ลำแสงจันทร์ตกใส่ศัตรูทุกตัวที่ติดมาร์คในระยะ 520 ดาเมจตามชั้นมาร์ค แล้วล้างมาร์ค',lv:()=>[`${owX(OB.ocMoonfall.dmg).replace('ATK','TAL')} + ${owX(OB.ocMoonfall.per).replace('ATK','TAL')} ต่อชั้นมาร์ค`,'Cooldown 35 วิ']},
+ {key:'ocMoonfall',id:'OW-C14',name:'Moonfall',br:'C',tier:4,type:'self',pre:[['oaExec',1]],d:'[New Active] ลำแสงจันทร์ตกใส่ศัตรูทุกตัวที่ติดมาร์คในระยะ 520 ดาเมจตามชั้นมาร์ค แล้วล้างมาร์ค',lv:()=>[`${owX(OB.ocMoonfall.dmg).replace('ATK','MATK')} + ${owX(OB.ocMoonfall.per).replace('ATK','MATK')} ต่อชั้นมาร์ค`,'Cooldown 35 วิ']},
  {key:'ocAvalanche',id:'OW-C15',name:'Avalanche Rain',br:'C',tier:4,type:'ground',radius:()=>OB.ocAvalanche.R,pre:[['obCage',1]],d:'[New Active] พายุหิมะลงพื้นที่ 8 วิ ทุกวิดาเมจ + ความเย็น 1 ชั้น · ศัตรูตายในพายุ เกิดพายุลูกเล็กต่อตรงนั้น (สูงสุด 6 ลูก · แบบ Venom Apocalypse)',lv:()=>[`${owX(OB.ocAvalanche.dmg)} ต่อวิ`,'Cooldown 50 วิ']}
 ];
 

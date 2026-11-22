@@ -7,10 +7,10 @@
      A Tree · Raging Tide Fist      — melee rush, FLOW 0–5 (each layer ATK +8, lost after 3 s without a landed punch),
                                       finishers spend Flow (physical, ATK)
      B Tree · Cloud Dragon Palm     — mid range palms, KI ORBS 0–3 orbit the body, THUNDER SEALS 0–3 on enemies
-                                      (3 seals = lightning). Zones, knock-back, control (magic, TAL)
+                                      (3 seals = lightning). Zones, knock-back, control (magic, MATK)
      C Tree · Shishi-Ryu Sovereign  — 12 nodes, each tied to the Basic / A / B skill of the same row (Lv 55 / 60 / 70 / 80)
 
-   Two-way hero: A = ATK, B = TAL, Basic / normal attack = the higher of the two.
+   Two-way hero: A = ATK, B = MATK, Basic / normal attack = the higher of the two.
    Owner's rules: no percent effects (flat numbers, counters instead of chances). Attack speed fixed (CHAR_ASPD).
    Sprites: placeholder from one turnaround image (assets_dragon.js, tools/statichero.py).
    ===================================================================== */
@@ -78,7 +78,7 @@ const DG_BAL={
 };
 const DB=DG_BAL.sk;
 const dX=n=>'ATK×'+(+n).toFixed(2).replace(/0+$/,'').replace(/\.$/,'');
-const dT=n=>'TAL×'+(+n).toFixed(2).replace(/0+$/,'').replace(/\.$/,'');
+const dT=n=>'MATK×'+(+n).toFixed(2).replace(/0+$/,'').replace(/\.$/,'');
 
 /* ---------------------------------------------------------------------
    2. SKILL DATA
@@ -118,7 +118,7 @@ const DG_DEFS=[
  {key:'dkCoil',id:'DL-G08',name:'Dragon Coil',br:'B',row:5,max:1,passive:1,enh:'dkTwin',pre:[['dkTwin',1]],d:'(ต่อยอด Twin Dragon Palms) มังกรกลับมาวนรอบตัว',lv:()=>[`ดาเมจที่ได้รับ −${DB.dkCoil.block} ต่อครั้ง นาน ${DB.dkCoil.T} วิ`]},
  {key:'dkPush',id:'DL-G09',name:'Heaven Push',br:'B',row:6,max:2,type:'self',d:'ฝ่ามือใหญ่ผลักศัตรูรอบตัวกระเด็น ใช้ลูกแก้วทั้งหมด',lv:i=>[`${dT(DB.dkPush.dmg[i-1])} + ${dT(DB.dkPush.per)} ต่อลูกแก้ว`,`Cooldown ${DB.dkPush.cd} วิ`]},
  {key:'dkWall',id:'DL-G10',name:'Gale Wall',br:'B',row:6,max:1,passive:1,enh:'dkPush',pre:[['dkPush',1]],d:'(ต่อยอด Heaven Push) ทิ้งกำแพงลมด้านหน้า ศัตรูเดินผ่านไม่ได้',lv:()=>[`กำแพงลม ${DB.dkWall.T} วิ`]},
- {key:'dkStill',id:'DL-G11',name:'Still Mind',br:'B',row:7,max:3,passive:1,d:'(Passive) ยืนนิ่ง 1 วิ ฝ่ามือถัดไปแรงขึ้น',lv:i=>[`TAL +${DB.dkStill.tal[i-1]}`]},
+ {key:'dkStill',id:'DL-G11',name:'Still Mind',br:'B',row:7,max:3,passive:1,d:'(Passive) ยืนนิ่ง 1 วิ ฝ่ามือถัดไปแรงขึ้น',lv:i=>[`MATK +${DB.dkStill.tal[i-1]}`]},
  {key:'dkMirror',id:'DL-G12',name:'Mirror Pond',br:'B',row:7,max:1,type:'self',d:'ผิวน้ำสะท้อน 2 วิ การโจมตีระยะไกลที่ยิงใส่สะท้อนกลับ',lv:()=>[`สะท้อน ${dT(DB.dkMirror.dmg)}`,`Cooldown ${DB.dkMirror.cd} วิ`]},
  {key:'dkDescend',id:'DL-G13',name:'Azure Dragon Descends',br:'B',row:8,max:2,type:'ground',ult:1,radius:()=>DB.dkDescend.R,d:'ULTIMATE B · มังกรครามยักษ์ลงมาขดรอบพื้นที่ ฟ้าผ่าทุก 1 วิ ติดตราอัสนี',lv:i=>[`${dT(DB.dkDescend.dmg[i-1])} ทุก 1 วิ นาน ${DB.dkDescend.T} วิ`,`Cooldown ${DB.dkDescend.cd} วิ`]},
  {key:'dkKingRain',id:'DL-G14',name:"Dragon King's Rain",br:'B',row:8,max:1,passive:1,enh:'dkDescend',pre:[['dkDescend',1]],d:'(ต่อยอด Azure Dragon Descends) จบอัลติ ตราอัสนีทุกตัวในพื้นที่ระเบิดพร้อมกัน',lv:()=>[`${dT(DB.dkKingRain.per)} ต่อชั้นตรา`]},
@@ -129,7 +129,7 @@ const DG_DEFS=[
  {key:'dcStone',id:'DL-C04',name:'Stone Guardian',br:'C',col:'basic',tier:2,passive:1,pre:[['dnGuard',3]],d:'Komainu Guard กันได้ ปล่อยคลื่นกระแทกรอบตัว ผลักถอย',lv:()=>[`${dX(DB.dcStone.dmg)} รัศมี ${DB.dcStone.R}`]},
  {key:'dcMaelstrom',id:'DL-C05',name:'Maelstrom',br:'C',col:'A',tier:2,type:'self',pre:[['daHook',2]],d:'[New Active] วังน้ำวนดูดศัตรูรอบตัวเข้ากลาง 2 วิ แล้วต่อยกลางวง',lv:()=>[`ดูด ${DB.dcMaelstrom.R} หน่วย`,`${dT(DB.dcMaelstrom.dmg)}`,`Cooldown ${DB.dcMaelstrom.cd} วิ`]},
  {key:'dcThunder',id:'DL-C06',name:'Thunder Chain',br:'C',col:'B',tier:2,passive:1,pre:[['dkSeal',2]],d:'ฟ้าผ่าจากตราอัสนีกระโดดต่อ 3 ตัว เบาลงทีละขั้น',lv:()=>['ต่อ 3 ตัว']},
- {key:'dcBreath',id:'DL-C07',name:"Dragon's Breath",br:'C',col:'basic',tier:3,type:'melee',pre:[['dnBreath',2]],d:'[New Active] พ่นลมหายใจมังกรเป็นกรวยด้านหน้า ใช้ ATK หรือ TAL ที่สูงกว่า',lv:()=>[`${dX(DB.dcBreath.dmg)} ระยะ ${DB.dcBreath.R}`,`Cooldown ${DB.dcBreath.cd} วิ`]},
+ {key:'dcBreath',id:'DL-C07',name:"Dragon's Breath",br:'C',col:'basic',tier:3,type:'melee',pre:[['dnBreath',2]],d:'[New Active] พ่นลมหายใจมังกรเป็นกรวยด้านหน้า ใช้ ATK หรือ MATK ที่สูงกว่า',lv:()=>[`${dX(DB.dcBreath.dmg)} ระยะ ${DB.dcBreath.R}`,`Cooldown ${DB.dcBreath.cd} วิ`]},
  {key:'dcThousand',id:'DL-C08',name:'Thousand Waves',br:'C',col:'A',tier:3,passive:1,pre:[['daHundred',2]],d:'Hundred Waves จบด้วยคลื่นน้ำพุ่งไปข้างหน้า',lv:()=>[`คลื่น ${dX(DB.dcThousand.dmg)}`]},
  {key:'dcNine',id:'DL-C09',name:'Nine Dragons',br:'C',col:'B',tier:3,passive:1,pre:[['dkTwin',2]],d:'Twin Dragon Palms ปล่อยมังกร 4 ตัว กระจายเป็นพัด',lv:()=>['มังกร 4 ตัว']},
  {key:'dcAwaken',id:'DL-C10',name:'Shishi Awakening',br:'C',col:'basic',tier:4,type:'self',pre:[['dnRoar',3]],d:'[New Active] Signature · 15 วิ แผงคอลุกเป็นไฟคราม ตีปกติแรงขึ้น กระแสและลูกแก้วได้ทีละ 2',lv:()=>[`ตีปกติ ATK +${DB.dcAwaken.atk}`,'กระแส / ลูกแก้ว ×2',`Cooldown ${DB.dcAwaken.cd} วิ`]},
@@ -378,7 +378,7 @@ function installDragon(){
   for(const k in SKILLS)LV[k]=SKILLS[k].max;
   if(typeof jgBuildReq==='function'){const _b=jgBuildReq;jgBuildReq=function(){_b();for(const [a,b] of DG_ZIGZAG){const A=SKREQ[a],B=SKREQ[b];if(!A||!B)continue;
     B.forEach((r,i)=>{if(i>0)r.need.push([a,Math.min(SKILLS[a].max,i+1)]);});A.forEach((r,i)=>{if(i>0&&i<=B.length)r.need.push([b,i]);});}};}
-  /* damage type: Basic column = higher of ATK / TAL, A = ATK, B = TAL */
+  /* damage type: Basic column = higher of ATK / MATK, A = ATK, B = MATK */
   Object.assign(SK_DT,{dnSweep:'b',dnRush:'b',dcChain:'b',dcStone:'b',dcBreath:'b',dcAwaken:'b',dcBarrage:'p',dcMaelstrom:'m',dcThousand:'p',dcAbyss:'p',dcFan:'m',dcThunder:'m',dcNine:'m',dcSovereign:'m',
     daRising:'p',daCounter:'p',daCrash:'p',dkOrbit:'m',dkRain:'m',dkStorm:'m',dkKingRain:'m'});
   Object.assign(SK_CC,{daHook:{flinch:.4},daStep:{flinch:.4},daTsunami:{air:1},daCrash:{flinch:.45},daEbb:{flinch:.5},daTorrent:{flinch:.45},dnRush:{flinch:.45},
@@ -391,9 +391,9 @@ function installDragon(){
   Object.assign(BUFFDEF,{dnRoar:{n:"Lion's Roar",c:DGC.gold,i:'ROAR'},dkCoil:{n:'Dragon Coil',c:DGC.azure,i:'COIL'},dkMirror:{n:'Mirror Pond',c:'#bfe8ff',i:'MIRROR'},dcAwaken:{n:'Shishi Awakening',c:DGC.azure,i:'SHISHI'},dcSovereign:{n:'Storm Sovereign',c:DGC.thunder,i:'STORM'},rhSA:BUFFDEF.rhSA||{n:'Steady',c:'#c8b898',i:'SA'}});
   JOB.name='Azure Pupil';JOB.hpA=1.35;JOB.hpB=5;JOB.spB=3.4;
   ITEMS.azureKnuckles={n:'Azure Wave Knuckles',slot:'rhand',two:1,kind:'Knuckle',atk:140,matk:120,wlv:3,aspd:156,ref:6,cards:2,w:120,b:{agi:2},size:{small:1,medium:1,large:.85},d:'สนับมือลายคลื่นคราม AGI +2'};
-  ITEMS.cloudKnuckles={n:'Cloud Dragon Knuckles',slot:'rhand',two:1,kind:'Knuckle',atk:150,matk:160,wlv:4,aspd:154,ref:4,cards:1,w:130,b:{tal:3},size:{small:1,medium:1,large:.85},d:'สนับมือมังกรเมฆ TAL +3'};
+  ITEMS.cloudKnuckles={n:'Cloud Dragon Knuckles',slot:'rhand',two:1,kind:'Knuckle',atk:150,matk:160,wlv:4,aspd:154,ref:4,cards:1,w:130,b:{tal:3},size:{small:1,medium:1,large:.85},d:'สนับมือมังกรเมฆ MATK +3'};
   EQ.rhand='azureKnuckles';INV.length=0;INV.push('cloudKnuckles','vikinghelm','ringPrec','clipLuck');
-  /* flat ATK / TAL bonuses */
+  /* flat ATK / MATK bonuses */
   const flat=(e,o)=>{const k=o&&(o.skill||(o.auto?'basic':null))||window.SKCTX,col=dCol(k);let b=0;
     if(!(o&&o.magic)){b+=DG.flow*DG_BAL.flow.atk;if(hasBuff('dnRoar'))b+=dLv(DB.dnRoar.atk,'dnRoar');if(DG.guardBonus){DG.guardBonus=false;b+=dLv(DB.dnGuard.atk,'dnGuard');}if(dAwake()&&(o&&o.auto))b+=DB.dcAwaken.atk;}
     else{if(o&&o.still)b+=dLv(DB.dkStill.tal,'dkStill');}

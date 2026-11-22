@@ -154,7 +154,7 @@ canvas{display:block;touch-action:none;cursor:crosshair}
 .ro .ft{padding:3px 8px;background:#e8edf6;border-top:1px solid #c3cde0;border-radius:0 0 4px 4px;color:#334;font-size:10.5px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .rob{font:11px Tahoma,Sarabun,sans-serif;color:#223;background:linear-gradient(#ffffff,#d9e0ee);border:1px solid #7e8ca8;border-radius:3px;padding:1px 7px;cursor:pointer;height:18px;line-height:14px}
 .rob:active{background:linear-gradient(#d9e0ee,#fff)}
-#stw{left:12px;top:108px;width:396px}
+#stw{left:12px;top:108px;width:420px}
 .ro-st{display:grid;grid-template-columns:118px 1fr 1fr;gap:0 10px}
 .ro-st .r{display:flex;align-items:center;height:17px;white-space:nowrap}
 .ro-st .r b{width:30px;font-weight:bold;color:#2a3a66}
@@ -1212,27 +1212,32 @@ const snapPlayer=()=>({e:playerFrame(),x:player.x,y:player.y,z:player.z||0});
    ========================================================= */
 const enemies=[];let eid=0;
 /* =========================================================
-   STAT SYSTEM — 12 Tails style: 8 linear stats, every point is worth the same.
-     ATK +1 attack (auto + physical skills)      TAL +1 magic skill power
-     VIT +10 MaxHP                               DEF +1 defence  (damage × 100/(100+DEF))
-     INT +5 MaxSP, faster cast (×100/(100+INT))  AGI move speed + shorter cooldowns (not ASPD)
-     CHA buffs last longer, debuffs on you end sooner, statuses you inflict last longer (vs target CHA)
-     LCK boosts damage that scales with luck (bleed / poison / proc damage)
-   No MISS / FLEE / HIT. Crit comes from items and skills only. ASPD is fixed per character.
-   Monsters use the same stats and formulas (monStats below). Tune everything in SYS.
+   STAT SYSTEM — Ragnarok style (owner 2026-11-22 'สเตตัสเปลี่ยนเป็นแบบแรคนารอค' → 'ทั้งเกม'; rules + numbers: RO_STATS_TH.md)
+     6 stats STR AGI VIT INT DEX LUK · 48 points at Lv 1, floor(Lv/5)+3 more a level · raising x → x+1 costs floor((x−1)/10)+2 · max 99
+     STR  ATK + (STR/10)² (melee; ranged heroes: DEX/5)        AGI  FLEE +1 · ASPD · soft DEF /5
+     VIT  MaxHP +1 % · soft DEF /2 · HP regen · resists poison / bleed / burn / slow …
+     INT  MATK + (INT/7)² · MaxSP +1 % · MDEF · SP regen · resists weaken / SP drain
+     DEX  HIT +1 · cast time × (1 − DEX/150) · ATK /5 (ranged: main) · a little ASPD · statuses we put on monsters last longer (vs their VIT)
+     LUK  CRIT +0.3 · perfect dodge /10 · ATK / MATK /5 · HIT /3 · FLEE /5
+   HIT vs FLEE: hit % = 80 + HIT − FLEE (5…95). Normal attacks and physical skills can MISS; magic, DoT and crits always hit.
+   Monsters roll their HIT against our FLEE (−10 % FLEE for every attacker after the 2nd) and our perfect dodge.
+   ASPD = 200 − (200 − hero base) × (1 − AGI/250 − DEX/1000) × (1 − ASPD % of items) — attacks a second = 50 / (200 − ASPD).
+   Monsters use the same stats (monStats below). Tune everything in SYS.
    ========================================================= */
-const STATK=['atk','tal','vit','def','int','agi','cha','lck'];
-const SYS={ptsStart:20,ptsLv:2,max:200,hpBase:300,hpLv:20,hpVit:10,mpBase:40,mpLv:3,mpInt:5,
-  agiCd:.5,agiMove:.002,agiMoveMax:.4,chaBuff:.005,lckMul:.005,critBase:3,critMul:1.5,
+const STATK=['str','agi','vit','int','dex','luk'];
+const SYS={ptsStart:48,max:99,hpBase:300,hpLvP:14,hpLv:20,hpVit:10,mpBase:40,mpLv:3,aspdMax:190,
+  agiMove:.002,agiMoveMax:.4,critMul:1.4,
   /* monsters are tuned against a player of the same level wearing that level's crafted gear (tier + refine ≈ +0…+7):
      ~12 plain hits to kill a normal monster, ~20 monster hits to die. Without gear the player deals ~½ damage and takes ~1.5× → crafting is needed. */
-  monHpBase:536,monHp:1,monAtk:1.55};
-const PS={lv:LV_CAP,atk:150,tal:1,vit:60,def:40,int:20,agi:30,cha:10,lck:4};
-/* item bonus keys from the old RO item data → new stats (until the item rework) */
-const OLD_KEY={str:'atk',agi:'agi',vit:'vit',int:'tal',dex:'int',luk:'lck'};
+  monHpBase:536,monHp:2.2,monAtk:1.86};   /* RO stats (2026-11-22): heroes hit harder (weapon ATK) → monster HP ×2.2 / ATK ×1.2 keeps the Lv 60 pacing (tools/progression_bench.js) */
+const PS={lv:LV_CAP,str:1,agi:1,vit:1,int:1,dex:1,luk:1};
+/* RO item bonus keys (the old item data) → our keys: the same six now */
+const OLD_KEY={str:'str',agi:'agi',vit:'vit',int:'int',dex:'dex',luk:'luk'};
+/* 12 Tails keys (saves / item data from before 2026-11-22) → RO keys. 'int' was SP + cast speed → DEX now; TAL (magic) → INT; CHA is gone → LUK */
+const K12={atk:'str',tal:'int',int:'dex',cha:'luk',lck:'luk',agi:'agi',vit:'vit'};
 const JOB={name:'Frost Raider',hpA:1.5,hpB:5,spB:3};                         // Knight HP/SP table
 const SIZEMOD={small:.5,medium:.75,large:1};                                    // axe vs size
-const REF_ATK=[0,2,2,3,3];   // refine +ATK/TAL per +1 by weapon tier (+7 at T4 = +21)                                                      // weapon refine ATK/TAL per +1 by tier — refining is the progress inside a tier (T(n)+7 ≈ T(n+1)+0)
+const REF_ATK=[0,2,3,5,7];   /* RO: refine +ATK (or +MATK on a magic weapon) per +1 by weapon level 1–4 */ //   // refine +ATK/MATK per +1 by weapon tier (+7 at T4 = +21)                                                      // weapon refine ATK/MATK per +1 by tier — refining is the progress inside a tier (T(n)+7 ≈ T(n+1)+0)
 /* ---------- equipment database (RO style) ---------- */
 const ITEMS={
  greataxe:{n:'Frostbite Greataxe',slot:'rhand',two:1,kind:'Two-Handed Axe',atk:180,wlv:4,aspd:150,ref:7,cards:2,w:300,b:{},d:'ขวานสองมือหลอมจากน้ำแข็งนิรันดร์ หนักแต่ฟันแรง'},
@@ -1258,7 +1263,7 @@ const INV=['cleaver','hatchet','vikinghelm','ringSwift','ringPrec','clipLuck'];
 /* ---------- 12 Tails style item stats ----------
    Every item gives several of the 8 stats with one stand-out stat (st = the item's own stats).
    sockets = drilled holes (0–4); orbs = stones already set in them, each {s:stat, v:value}.
-   lv = required level · rank = who can use it ('All' or a class).  Refine: weapons +ATK/TAL by weapon level, armour +1 DEF each.
+   lv = required level · rank = who can use it ('All' or a class).  Refine: weapons +ATK/MATK by weapon level, armour +1 DEF each.
    Items without an entry here are converted from their old RO fields (atk/matk/def + b). */
 const ITEM12={
   greataxe:{lv:80,st:{atk:180,vit:6,agi:4,lck:3},sockets:2,orbs:[{s:'atk',v:8},{s:'vit',v:6}]},
@@ -1287,17 +1292,23 @@ const ITEM12={
   obsidianSpear:{lv:75,st:{atk:160,agi:5,def:3},sockets:2},
   templeSpear:{lv:90,st:{atk:185,vit:6,cha:3},sockets:1}};
 for(const k in ITEM12)if(ITEM12[k].lv)ITEM12[k].lv=LVC.nc(ITEM12[k].lv);   /* level cap 60 (level_cap.js): base items keep their old design level above, the game reads the new one (Lv 90 → 55) */
-const ST8=['atk','def','agi','vit','int','cha','tal','lck'];                    // display order (as in 12 Tails)
+const ST8=['str','agi','vit','int','dex','luk'];   // the six RO stats (display order). Items also give atk / matk (weapon power), def / mdef (hard), and special stats
+/* 12 Tails item stats → RO: weapon atk / tal = weapon ATK / MATK (raw) · def stays hard DEF (raw) · the other stats were ×0.1 on read → STR AGI VIT INT DEX LUK */
+function conv12(st,slot){const o={},w=slot==='rhand';for(const k in st){const v=st[k];if(!v)continue;
+  if(w&&k==='atk'){o.atk=(o.atk||0)+v;continue;}if(w&&k==='tal'){o.matk=(o.matk||0)+v;continue;}
+  if(k==='def'||k==='mdef'||k==='matk'){o[k]=(o[k]||0)+v;continue;}
+  const n=K12[k];if(n){o[n]=(o[n]||0)+Math.sign(v)*Math.max(1,Math.round(Math.abs(v)*ITEM_STAT_SCALE));continue;}
+  o[k]=(o[k]||0)+v;}return o;}
+const ORB12={atk:'str',tal:'int',int:'dex',cha:'luk',lck:'luk'};
 const ITEM_STAT_SCALE=.1,ORB_MAX=[1,1,1,2],ORB_CAP=it=>{const c=it.slot==='acc'?0:it.dset!==undefined?1:(it.slot==='rhand'||it.slot==='armor')?4:2;return c&&(it.ref||0)>=12?c+1:c;};   /* refine +12 = one extra hole (owner 2026-11-21) */
-function itemSt(id){const it=ITEMS[id];if(!it)return null;const T=ITEM12[it.base||id];
-  let st,x={};if(it.st){st={...it.st};x={...(it.x||{})};}else if(T){st={...T.st};x={...(T.x||{})};}
-  else{st={};if(it.atk&&!it.matk)st.atk=it.atk;if(it.matk){st.tal=it.matk;if(it.atk)st.atk=it.atk;}if(it.def)st.def=it.def;
+function itemSt(id){const it=ITEMS[id];if(!it)return null;const T=ITEM12[it.base||id],sl=it.slot;
+  let st,x={};if(it.st){st=it.ro?{...it.st}:conv12(it.st,sl);x={...(it.x||{})};}else if(T){st=conv12(T.st,sl);x={...(T.x||{})};}
+  else{st={};if(it.atk&&!it.matk)st.atk=it.atk;if(it.matk){st.matk=it.matk;if(it.atk)st.atk=it.atk;}if(it.def)st.def=it.def;if(it.mdef)st.mdef=it.mdef;
     for(const k0 in (it.b||{})){const k=OLD_KEY[k0]||k0;if(ST8.includes(k))st[k]=(st[k]||0)+it.b[k0];else x[k]=(x[k]||0)+it.b[k0];}}
-  /* 12 Tails scale (owner 2026-11-19): one stat maxed by points + level growth ≈ 300, best items add only ≈ 50 → item stats ×0.1, orbs +1…+2 */
-  for(const k of ST8)if(st[k])st[k]=Math.max(1,Math.round(st[k]*ITEM_STAT_SCALE));
-  const orbs=(it.orbs!==undefined?it.orbs:(T&&T.orbs)||[]).slice(0,ORB_CAP(it)).map(o=>o.n2?o:Object.assign({},o,{v:Math.min(ORB_MAX[Math.max(1,Math.min(4,o.t||Math.ceil(o.v/5)))-1],Math.max(1,Math.round((o.n?o.v*3:o.v)*.6))),n2:1})),orb={};for(const o of orbs){const t=Math.max(1,Math.min(4,o.t||Math.ceil(o.v/5)));orb[o.s]=(orb[o.s]||0)+Math.min(ORB_MAX[t-1],o.n2?o.v:Math.max(1,Math.round((o.n?o.v*3:o.v)*.6)));}   // orbs from older versions are converted to the current scale; only the holes this slot can have count
+  /* RO stats (2026-11-22): items give small STR … LUK bonuses (+1 … +5), weapon ATK / MATK and armour DEF / MDEF at their own (raw) scale */
+  const orbs=(it.orbs!==undefined?it.orbs:(T&&T.orbs)||[]).slice(0,ORB_CAP(it)).map(o=>!it.ro&&ORB12[o.s]?Object.assign({},o,{s:ORB12[o.s]}):o).map(o=>o.n2?o:Object.assign({},o,{v:Math.min(ORB_MAX[Math.max(1,Math.min(4,o.t||Math.ceil(o.v/5)))-1],Math.max(1,Math.round((o.n?o.v*3:o.v)*.6))),n2:1})),orb={};for(const o of orbs){const t=Math.max(1,Math.min(4,o.t||Math.ceil(o.v/5)));orb[o.s]=(orb[o.s]||0)+Math.min(ORB_MAX[t-1],o.n2?o.v:Math.max(1,Math.round((o.n?o.v*3:o.v)*.6)));}   // orbs from older versions are converted to the current scale; only the holes this slot can have count
   /* REPLICA: the item keeps its own abilities (special stats, trait, set, refine, orbs) but its base stats are copied from another item */
-  let st0=null;if(it.rep&&it.rep.st){st0=st;st={};for(const k of ST8){const v=it.rep.st[k]||0;if(v)st[k]=v;}}
+  let st0=null;if(it.rep&&it.rep.st){st0=st;st={};const R=it.rep.ro?it.rep.st:conv12(it.rep.st,sl);for(const k in R){const v=R[k]||0;if(v&&(ST8.includes(k)||/^(atk|matk|def|mdef)$/.test(k)))st[k]=v;}}
   if((it.ref||0)>=15)for(const k in x)x[k]=Math.round(x[k]*1.2*10)/10;   /* refine +15: the piece's special stats ×1.2 */
   return {st,st0,orb,x,orbs,sockets:Math.min(ORB_CAP(it),(it.sockets??((T&&T.sockets)||0))+((it.ref||0)>=12&&ORB_CAP(it)>0?1:0)),lv:Math.max(it.lvReq||(T&&T.lv)||1,(it.rep&&it.rep.lv)||0),rank:it.rank||(it.slot==='rhand'?JOB.name:'All')};}
 /* hooks for item traits (overridden by items.js) */
@@ -1312,82 +1323,102 @@ function gearCalc(){for(const k in BON)delete BON[k];ARMOR.def=0;ARMOR.mdef=0;le
     if(it.slot!=='rhand'){const r=armorRefDef(it);BON.def=(BON.def||0)+r;ARMOR.def+=(S.st.def||0)+r;}/* armour refine: +DEF per refine × item tier */if(it.aspdPen)pen+=it.aspdPen;}
   const wOk=EQ.rhand&&ITEMS[EQ.rhand]&&!ITEMS[EQ.rhand].broken&&itemSt(EQ.rhand).lv<=PS.lv;
   const w=wOk?ITEMS[EQ.rhand]:{n:'Fist',kind:'Bare Hand',atk:0,wlv:1,aspd:160,ref:0},ws=wOk?itemSt(EQ.rhand).st:{};
-  Object.assign(WEAPON,{name:w.n,type:w.kind,atk:(ws.atk||0)+(ws.tal||0),wlv:w.wlv,refine:w.ref||0,refAtk:(w.ref||0)*REF_ATK[w.wlv],baseAspd:w.aspd-pen,size:w.size||null});}
-const statCost=x=>1;                                                            // 12 Tails style: every point costs 1
-const statTotal=x=>Math.max(0,x-1);
-const pointsAt=lv=>SYS.ptsStart+(lv-1)*SYS.ptsLv;
+  Object.assign(WEAPON,{name:w.n,type:w.kind,atk:ws.atk||0,matk:ws.matk||0,magic:(ws.matk||0)>(ws.atk||0),wlv:w.wlv,refine:w.ref||0,refAtk:(w.ref||0)*REF_ATK[clamp(w.wlv||1,1,4)],baseAspd:w.aspd-pen,size:w.size||null});}
+/* RO points: Lv x → x+1 gives floor(x/5)+3 · raising a stat from x to x+1 costs floor((x−1)/10)+2 (2 up to 10, 3 up to 20 …) */
+const ptsGain=lv=>Math.floor(lv/5)+3;
+const statCost=x=>Math.floor((x-1)/10)+2;
+const STAT_TOT=[0,0];for(let x=2;x<=SYS.max+1;x++)STAT_TOT[x]=STAT_TOT[x-1]+statCost(x-1);
+const statTotal=x=>STAT_TOT[clamp(Math.round(x),1,SYS.max+1)];                   // points spent to bring a stat from 1 to x
+const PTS_AT=[0,SYS.ptsStart];for(let lv=2;lv<=200;lv++)PTS_AT[lv]=PTS_AT[lv-1]+ptsGain(lv-1);
+const pointsAt=lv=>PTS_AT[clamp(lv,1,200)];
 const pointsUsed=()=>STATK.reduce((n,k)=>n+statTotal(PS[k]),0);
 const pointsLeft=()=>pointsAt(PS.lv)-pointsUsed();
 const effStat=k=>Math.max(1,PS[k]+(BON[k]||0));
-/* fixed base ASPD per character (RO scale; higher = faster). Jaguar is light and quick, Rhino slow and heavy. */
+/* base ASPD per character at AGI 1 / DEX 1 (RO scale; higher = faster). AGI and DEX raise it (derive). Jaguar is light and quick, Rhino slow and heavy. */
 const CHAR_ASPD={jaguar:178,owl:170,axolotl:164,wolf:160,croc:158,rhino:150,cat:168,hippo:152,sheep:162,dragon:166,lion:156,kitsune:158,bastet:160,anubis:152};
 /* class damage modifier — evens out the characters' total damage (all hits, Bleed and Poison).
    Tuned with the fast-forward combat benchmark so no class out-damages the others by much.
    Role targets: damage dealers ≈ 1.0, ranged Owl ≈ 0.95 (safer), healer Axolotl ≈ 0.9, tank Rhino ≈ 0.75. */
 const CHAR_DMG={wolf:.70,jaguar:.82,rhino:3.1,axolotl:1.78,croc:2.32,owl:.73,cat:.8,hippo:1.3,sheep:2,dragon:1,lion:1,kitsune:1,bastet:1,anubis:1};   // re-tuned 2026-11-16 for the 12 Tails stat system (Lv99 presets)
 const CLASS_DMG=()=>1;   // no hidden damage multiplier any more: balance lives in the visible skill coefficients (CHAR_COEF)
-/* ---------- 12 Tails stat model ----------
-   ATK  = allocated + class growth + gear + weapon refine   → physical skills: coefficient × ATK (raw stat, nothing added)
-   TAL  = allocated + class growth + gear + weapon refine   → magic skills: coefficient × พลัง TAL, พลัง TAL = talAdjust(50) = 50 × (1 + 0.02 × TAL)
-   class growth (12 Tails getTypeLevelStat) = floor((Lv − 1) × (base + 3) × 0.083)
-   damage → + LCK roll (0 … ceil(0.2 × LCK) − 1) → target DEF: 35% × (d − DEF/2) + 65% × d × (1 − DEF/(DEF + 64))
-   AGI: cooldown × (1 − AGI/(AGI + 128)) · CHA: buff duration × (1 + 0.015 × CHA) · attack speed is fixed per character */
-/* class base stats (12 Tails getTypeStat style, every class sums to 48). The character's own base is rolled from this at creation. */
+/* ---------- RO stat model ----------
+   total stat = points you put in + hero bonus (like RO's job bonus: grows with level from the base rolled at creation) + items / buffs
+   physical skills: coefficient × ATK (status ATK + weapon ATK + refine + flat ATK) · magic skills / heals: coefficient × MATK
+   target DEF (35 / 65 mix below) for physical hits, target MDEF for magic · crits skip DEF and FLEE, ×1.4 */
+/* hero base stats (6 RO stats, every hero sums to 36). The hero's own base is rolled from this at creation. */
 const CLASS_BASE={
-  wolf:   {atk:7,def:7,agi:6,vit:7,int:5,cha:5,tal:6,lck:5},
-  jaguar: {atk:8,def:4,agi:9,vit:5,int:4,cha:6,tal:6,lck:6},
-  owl:    {atk:7,def:4,agi:7,vit:5,int:6,cha:5,tal:7,lck:7},
-  rhino:  {atk:8,def:9,agi:3,vit:9,int:4,cha:5,tal:4,lck:6},
-  croc:   {atk:9,def:7,agi:5,vit:8,int:4,cha:5,tal:4,lck:6},
-  cat:    {atk:8,def:4,agi:9,vit:5,int:3,cha:5,tal:6,lck:8},
-  hippo:  {atk:7,def:8,agi:3,vit:9,int:5,cha:5,tal:6,lck:5},
-  sheep:  {atk:4,def:5,agi:4,vit:5,int:8,cha:8,tal:8,lck:6},
-  dragon: {atk:8,def:5,agi:7,vit:6,int:4,cha:5,tal:7,lck:5},
-  lion:   {atk:8,def:7,agi:4,vit:8,int:4,cha:6,tal:7,lck:4},
-  kitsune:{atk:3,def:5,agi:6,vit:5,int:8,cha:7,tal:9,lck:5},
-  bastet: {atk:3,def:5,agi:5,vit:5,int:8,cha:8,tal:9,lck:5},
-  anubis: {atk:9,def:7,agi:5,vit:8,int:3,cha:5,tal:4,lck:5},
-  axolotl:{atk:4,def:6,agi:5,vit:6,int:7,cha:7,tal:8,lck:5}};
-/* 12 Tails getNewRandomStat: class base → +1 on 4 random stats → −1 on 4 random stats → +1 on all, clamp 3…12 */
+  wolf:   {str:7,agi:5,vit:7,int:6,dex:6,luk:5},
+  jaguar: {str:7,agi:9,vit:5,int:5,dex:5,luk:5},
+  owl:    {str:4,agi:7,vit:5,int:6,dex:9,luk:5},
+  rhino:  {str:7,agi:3,vit:10,int:4,dex:6,luk:6},
+  croc:   {str:9,agi:5,vit:8,int:3,dex:6,luk:5},
+  cat:    {str:7,agi:8,vit:5,int:3,dex:6,luk:7},
+  hippo:  {str:7,agi:3,vit:9,int:6,dex:6,luk:5},
+  sheep:  {str:3,agi:5,vit:6,int:9,dex:8,luk:5},
+  dragon: {str:7,agi:7,vit:6,int:6,dex:5,luk:5},
+  lion:   {str:8,agi:4,vit:8,int:6,dex:5,luk:5},
+  kitsune:{str:3,agi:6,vit:5,int:10,dex:7,luk:5},
+  bastet: {str:3,agi:5,vit:5,int:10,dex:7,luk:6},
+  anubis: {str:9,agi:5,vit:8,int:3,dex:6,luk:5},
+  axolotl:{str:3,agi:5,vit:6,int:9,dex:7,luk:6}};
+/* ranged physical heroes: status ATK comes from DEX (RO bows) */
+const RANGED={owl:1};
+/* creation roll (12 Tails getNewRandomStat, 6 stats): hero base → +1 on 3 random stats → −1 on 3 random stats → +1 on all, clamp 3…12 */
 function rollStats(){const b=Object.assign({},CLASS_BASE[CHAR]||CLASS_BASE.wolf),K=STATK;
-  for(let i=0;i<4;i++)b[K[Math.floor(Math.random()*8)]]++;for(let i=0;i<4;i++)b[K[Math.floor(Math.random()*8)]]--;
+  for(let i=0;i<3;i++)b[K[Math.floor(Math.random()*6)]]++;for(let i=0;i<3;i++)b[K[Math.floor(Math.random()*6)]]--;
   for(const k of K)b[k]=clamp(b[k]+1,3,12);return b;}
+/* an old 12 Tails roll (8 stats) → the six RO stats */
+function rollFrom12(r){if(!r||r.str!=null)return r;const o={};for(const k of STATK)o[k]=clamp(Math.round(k==='str'?r.atk:k==='int'?r.tal:k==='dex'?r.int:k==='luk'?((r.lck||5)+(r.cha||5))/2:r[k]||5),3,12);return o;}
 let ROLL=null;   // this hero's rolled base (saved with the hero); null = the class average (class base +1)
 const baseStat=k=>ROLL&&ROLL[k]!=null?ROLL[k]:clamp(((CLASS_BASE[CHAR]||CLASS_BASE.wolf)[k]||5)+1,3,12);
-const TAL_BASE=50;
-const growStat=(k,lv=PS.lv)=>Math.floor((lv-1)*(baseStat(k)+3)*0.083);   // 12 Tails getTypeLevelStat
-const talAdjust=(p,tal=(typeof D!=='undefined'?D.tal:1))=>p<=0?0:Math.floor(p*(1+0.02*clamp(tal,1,512)));
+/* hero bonus (RO job bonus): base 10 → +5 at Lv 60, base 4 → +2 · about +18 over the six stats */
+const growStat=(k,lv=PS.lv)=>Math.floor((lv-1)*baseStat(k)*0.0085);
+const TAL_BASE=50,talAdjust=(p)=>p;   // (12 Tails MATK power is gone — kept so old calls do not break)
 function defAdjust(d,def){const N=clamp(def,1,512),light=Math.max(Math.trunc(d-.5*N),1),heavy=Math.max(Math.trunc(d*(1-N/(N+64))),1);return Math.ceil(.35*light+.65*heavy);}
-const lckRoll=lck=>Math.floor(Math.random()*Math.max(1,Math.ceil(.2*lck)));
-/* visible coefficient scale per hero / branch: every "ATK×n" / "TAL×n" in a skill text is already multiplied by this.
-   Re-tuned at the Lv 60 cap 2026-11-22 (owner 'จูน'): every branch benches ≈ 2,050 at Lv 60 (tank rhino ≈ 1,880) — LEVEL_CAP_TH.md; the Lv 99 values are in git */
-const CHAR_COEF={wolf:{A:1.98,B:2.95,basic:1.0,all:1.0},jaguar:{A:0.484,B:1.59,basic:.95,all:.95},owl:{A:1.23,B:0.86,basic:1.4,all:1.4},hippo:{A:1.731,B:1.34,basic:1.67,all:1.67},dragon:{A:0.66,B:1.61,basic:1.4,all:1.4},lion:{A:1.66,B:1.017,basic:1.4,all:1.4},rhino:5.198,croc:3.436,cat:0.569,sheep:3.35,axolotl:2.571,kitsune:.45,bastet:.45,anubis:1.5};
+const lckRoll=()=>0;   // RO: no luck roll on every hit (LUK gives CRIT / perfect dodge / small ATK instead)
+/* visible coefficient scale per hero / branch: every "ATK×n" / "MATK×n" in a skill text is already multiplied by this.
+   Re-tuned 2026-11-22 for the RO stats (RO_STATS_TH.md §10): every branch benches ≈ 2,050 at Lv 60 (tank rhino ≈ 1,880); the 12 Tails values are in git */
+const CHAR_COEF={wolf:{A:1.763,B:2.499,basic:1.0,all:1.0},jaguar:{A:0.592,B:1.502,basic:.95,all:.95},owl:{A:1,B:0.699,basic:1.22,all:1.4},hippo:{A:1.52,B:0.98,basic:1.67,all:1.67},dragon:{A:0.78,B:0.981,basic:1.4,all:1.4},lion:{A:1.714,B:0.92,basic:1.4,all:1.4},rhino:4.283,croc:2.365,cat:0.658,sheep:2.01,axolotl:1.315,kitsune:0.349,bastet:0.385,anubis:1.5};
 const coefOf=br=>{const c=CHAR_COEF[CHAR];if(c==null)return 1;return typeof c==='number'?c:(c[br]??c.all??1);};
-function derive(){gearCalc();const s={};const lv=PS.lv;for(const k of STATK)s[k]=effStat(k)+growStat(k,lv);   // total = points + level growth + items/buffs
-  const maxHp=Math.floor((SYS.hpBase+lv*10+s.vit*SYS.hpVit)*(1+(BON.hpPct||0)/100)*(typeof window.jgHpMul==='function'?window.jgHpMul():1));
-  const maxSp=Math.floor((SYS.mpBase+lv*SYS.mpLv+s.int*SYS.mpInt)*(1+(BON.spPct||0)/100));   // item special stats: spPct, cdr, move, hpRegen
-  /* ASPD is FIXED per character — stats and weapons do not change it. Only the character's own skills
-     (buffs read in aspd(): War Fury, Predator's Cry, Savage Tempo, Perfect Hunt …) can raise attack speed. */
-  const aspd=CHAR_ASPD[CHAR]||160,w=ITEMS[EQ.rhand];
-  const gA=growStat('atk',lv),gT=growStat('tal',lv),atkT=s.atk+WEAPON.refAtk,talT=s.tal+WEAPON.refAtk,patk=atkT,mag=talAdjust(TAL_BASE,talT);   // equipment stats are already inside s (BON)
-  return {stat:s,patk,mag,tal:talT,atkGrow:gA,talGrow:gT,def:s.def,maxHp,maxSp,aspd,aps:50/(200-aspd),
-    castMul:100/(100+s.int),cdMul:(1-s.agi/(s.agi+128))*(1-Math.min(.3,(BON.cdr||0)/100)),moveMul:(1+s.agi*SYS.agiMove)*(1+(BON.move||0)/100),
-    buffMul:1+.015*clamp(s.cha,0,512),debuffMul:100/(100+s.cha),cha:s.cha,lckMul:1+s.lck*SYS.lckMul,crit:SYS.critBase+s.lck*.1+(BON.crit||0),
-    statusAtk:lv+s.atk,matkMin:mag,matkMax:mag,wmin:WEAPON.atk,hit:0,flee:0,weight:2000+lv*20+s.atk*10,
-    wUsed:Object.values(EQ).reduce((n,i)=>n+(ITEMS[i]?ITEMS[i].w:0),0)+INV.reduce((n,i)=>n+ITEMS[i].w,0),
-    hpReg:Math.max(1,Math.floor(maxHp/50*(1+(BON.hpRegen||0)/100))),spReg:1+Math.floor(maxSp/40)};}
+function derive(){gearCalc();const s={},lv=PS.lv;for(const k of STATK)s[k]=Math.max(1,PS[k]+growStat(k,lv)+(BON[k]||0));   // total = points + hero bonus + items / buffs
+  const f5=v=>Math.floor(v/5),sq=v=>Math.floor(v/10)**2;
+  /* status ATK (RO classic): melee STR + (STR/10)² + DEX/5 + LUK/5 · ranged DEX + (DEX/10)² + STR/5 + LUK/5 · status MATK INT + (INT/7)² + DEX/5 + LUK/5 */
+  const sAtk=RANGED[CHAR]?s.dex+sq(s.dex)+f5(s.str)+f5(s.luk):s.str+sq(s.str)+f5(s.dex)+f5(s.luk);
+  const sMatk=s.int+Math.floor(s.int/7)**2+f5(s.dex)+f5(s.luk);
+  const wm=!!WEAPON.magic;   // BON.atk / BON.matk already hold the weapon's ATK / MATK (gearCalc)
+  const patk=Math.round((sAtk+(BON.atk||0)+(wm?0:WEAPON.refAtk))*(1+(BON.atkPct||0)/100));
+  const mag=Math.round((sMatk+(BON.matk||0)+(wm?WEAPON.refAtk:0))*(1+(BON.matkPct||0)/100));
+  const hit=lv+s.dex+Math.floor(s.luk/3)+(BON.hit||0),flee=lv+s.agi+f5(s.luk)+(BON.flee||0),pd=1+Math.floor(s.luk/10)+(BON.pd||0);
+  const crit=1+Math.floor(s.luk*.3)+(BON.crit||0);
+  const hardDef=BON.def||0,def=hardDef+Math.floor(s.vit/2)+f5(s.agi),hardMdef=BON.mdef||0,mdef=hardMdef+s.int+f5(s.vit)+f5(s.dex)+Math.floor(lv/4);
+  const maxHp=Math.floor((SYS.hpBase+lv*SYS.hpLvP)*(1+s.vit/100)*(1+(BON.hpPct||0)/100)*(typeof window.jgHpMul==='function'?window.jgHpMul():1));
+  const maxSp=Math.floor((SYS.mpBase+lv*SYS.mpLv)*(1+s.int/100)*(1+(BON.spPct||0)/100));   // item special stats: spPct, cdr, move, hpRegen, aspd, cast …
+  /* ASPD (RO classic): AGI and DEX shorten the hero's own attack delay; items 'aspd' % shorten it again; buffs (aspd() below) on top */
+  const base=CHAR_ASPD[CHAR]||160,am=(200-base)*Math.max(.05,1-s.agi/250-s.dex/1000)*(1-Math.min(.5,(BON.aspd||0)/100)),aspd=Math.min(SYS.aspdMax,200-am);
+  return {stat:s,patk,mag,sAtk,sMatk,tal:s.int,def,hardDef,mdef,hardMdef,hit,flee,pd,crit,maxHp,maxSp,aspd,aps:50/(200-aspd),
+    castMul:Math.max(0,1-s.dex/150)*(1-Math.min(.5,(BON.cast||0)/100)),cdMul:1-Math.min(.3,(BON.cdr||0)/100),moveMul:1+(BON.move||0)/100,
+    buffMul:1,debuffMul:1,resP:100/(100+s.vit+s.luk/3),resM:100/(100+s.int+s.luk/3),dex:s.dex,lckMul:1,
+    statusAtk:sAtk,weight:2000+lv*20+s.str*30,
+    wUsed:Object.values(EQ).reduce((n,i)=>n+(ITEMS[i]?ITEMS[i].w:0),0)+INV.reduce((n,i)=>n+(ITEMS[i]?ITEMS[i].w:0),0),
+    hpReg:Math.max(1,Math.floor(maxHp/50*(1+(BON.hpRegen||0)/100)))+f5(s.vit),spReg:1+Math.floor(maxSp/40)+Math.floor(s.int/6)};}
+/* status resistance (RO): physical statuses (poison, bleed, burn, armour crack, slow …) by VIT, magic ones (weaken, SP drain) by INT, LUK helps both */
+const RES_M={weaken:1,drain:1,silence:1,curse:1,spdrain:1};
+const resMul=k=>RES_M[k]?(D.resM||1):(D.resP||1);
 let D=derive(),ATK=0;
 function applyStats(){const hr=player.hp/player.maxHp,mr=player.mp/player.maxMp;D=derive();player.maxHp=D.maxHp;player.maxMp=D.maxSp;player.hp=Math.round(player.maxHp*hr);player.mp=Math.round(player.maxMp*mr);ATK=D.patk;if(window.__skreq){skValidate();if(typeof buildHotbar==='function'&&typeof hb!=='undefined')buildHotbar();}if(typeof buildEquip==='function')buildEquip();if(typeof buildSkillWin==='function'&&document.getElementById('skw'))buildSkillWin();if(typeof buildStatus==='function')buildStatus();}
 /* monster database (RO style) */
-/* monsters get the same stat points as a player of their level, spread by a role profile, then the same formulas:
-   HP = (base + Lv×20 + VIT×10) × SYS.monHp · ATK = (Lv + ATK + Lv) × SYS.monAtk (±15%) · DEF / CHA / AGI as players */
-const MON_PROFILE={normal:{atk:.35,vit:.35,def:.2,agi:.05,cha:.05},critter:{atk:.3,vit:.4,def:.15,agi:.1,cha:.05},
-  brute:{atk:.3,vit:.45,def:.25},swift:{atk:.4,vit:.25,def:.1,agi:.25},boss:{atk:.35,vit:.35,def:.2,cha:.1}};
+/* monsters get stat points by level (20 + 3 a level) spread by a role profile, then the RO formulas:
+   HP = (base + Lv×20 + VIT×10) × SYS.monHp · ATK = (Lv + STR) × SYS.monAtk (±15%) · hard DEF / MDEF by role · HIT = Lv + DEX · FLEE = Lv + AGI
+   bosses get +60 % of their level as extra HIT (RO MVPs hit hard-to-miss); VIT resists our statuses, LUK shields against our crits */
+const MON_PROFILE={normal:{str:.35,vit:.35,agi:.1,dex:.12,int:.04,luk:.04,def:.2,mdef:.08},critter:{str:.3,vit:.4,agi:.12,dex:.1,int:.04,luk:.04,def:.15,mdef:.05},
+  brute:{str:.3,vit:.45,agi:.05,dex:.12,int:.04,luk:.04,def:.25,mdef:.06},swift:{str:.4,vit:.25,agi:.25,dex:.1,def:.1,mdef:.05},boss:{str:.35,vit:.35,agi:.08,dex:.14,int:.04,luk:.04,def:.2,mdef:.1}};
 const MON_ROLE_MUL={critter:{hp:.6,atk:.7},brute:{hp:1.2},swift:{hp:.9},boss:{hp:8,atk:1.4}};
-function monStats(lv,role='normal'){const P=MON_PROFILE[role]||MON_PROFILE.normal,R=MON_ROLE_MUL[role]||{},pts=SYS.ptsStart+(lv-1)*3,s={};   // monsters: 3 points per level spread by role (their level growth)
-  for(const k of ['atk','vit','def','agi','cha'])s[k]=Math.round(pts*(P[k]||0));
-  const hp=Math.round((SYS.monHpBase+lv*SYS.hpLv+s.vit*SYS.hpVit)*SYS.monHp*(R.hp||1)),a=(lv+s.atk)*SYS.monAtk*(R.atk||1);
-  return {lv,hp,atk:[Math.round(a*.85),Math.round(a*1.15)],def:s.def,vit:s.vit,agi:s.agi,cha:s.cha,spd:1+Math.min(SYS.agiMoveMax,s.agi*SYS.agiMove),role};}
+function monStats(lv,role='normal'){const P=MON_PROFILE[role]||MON_PROFILE.normal,R=MON_ROLE_MUL[role]||{},pts=20+(lv-1)*3,s={};
+  for(const k of ['str','agi','vit','int','dex','luk'])s[k]=Math.round(pts*(P[k]||0));
+  const hp=Math.round((SYS.monHpBase+lv*SYS.hpLv+s.vit*SYS.hpVit)*SYS.monHp*(R.hp||1)),a=(lv+s.str)*SYS.monAtk*(R.atk||1);
+  return {lv,hp,atk:[Math.round(a*.85),Math.round(a*1.15)],def:Math.round(pts*(P.def||0)),mdef:Math.round(pts*(P.mdef||0))+Math.floor(s.int/2),
+    str:s.str,vit:s.vit,agi:s.agi,int:s.int,dex:s.dex,luk:s.luk,hit:lv+s.dex+(role==='boss'?Math.round(lv*.6):0),flee:lv+s.agi,
+    spd:1+Math.min(SYS.agiMoveMax,s.agi*SYS.agiMove),role};}
 /* the bench / test-room dummies (world monsters get their own level from VK_MONS). Level cap 60: design Lv 62 / 85 / 72 → 38 / 52 / 44
    (tools/balance_bench.js swaps the design levels back in for its Lv 99 reference runs: MON_LV0) */
 const MON_LV0={frostling:62,elder:85,snowwolf:72};
@@ -1401,23 +1432,24 @@ function spawnEnemy(x,y,boss=false,kind=null){const M=kind?MON[kind]:boss?MON.el
   if(!kind&&Math.hypot(e.x-player.x,e.y-player.y)<140){e.x+=160;}if(curMap){e.sc*=MAP_CHAR;e.r=Math.round(e.r*.9);}enemies.push(e);return e;}
 /* no map (curMap null) = empty test arena, only used by tools/balance_bench.js */
 function resetEnemies(){enemies.length=0;}
-const hitChance=m=>100;                                                         // 12 Tails style: no MISS
+/* RO: hit % = 80 + our HIT − its FLEE, 5…95 (normal attacks and physical skills; magic, DoT and crits always hit) */
+const hitChance=m=>clamp(80+(D.hit||0)-((m&&m.flee)||0),5,95);
 /* Hunter's Rhythm: every 6th / 4th normal-attack hit is a sure crit (counter, no chance) */
 const wolfRhythm=o=>{if(CHAR!=='wolf'||!o.auto||!LV.huntersRhythm)return false;player.hrN=(player.hrN||0)+1;if(player.hrN>=[0,6,4][LV.huntersRhythm]){player.hrN=0;return true;}return false;};
-const critChance=m=>Math.max(0,D.crit+5*(LV.wolfInstinct||0));
+const critChance=m=>Math.max(0,D.crit-Math.floor(((m&&m.luk)||0)/5)+5*(LV.wolfInstinct||0));   // RO: the target's LUK/5 shields against crits
 const defMul=def=>100/(100+Math.max(0,def));                                    // DEF never reaches immunity
-/* CHA: statuses we put on a monster last longer (or shorter) by our CHA vs its CHA */
-const chaMul=e=>Math.max(.5,1+((D.cha||0)-((e.m&&e.m.cha)||0))/100);   /* owner 2026-11-19: no upper cap — the more CHA, the longer our statuses last on monsters */
+const chaMul=e=>Math.max(.5,1+((D.dex||0)-Math.floor(((e.m&&e.m.vit)||0)/2))/100);   /* RO stats (CHA is gone): statuses we put on a monster last longer by our DEX against half its VIT, no upper cap */ //   /* owner 2026-11-19: no upper cap — the more CHA, the longer our statuses last on monsters */
 function statusProxy(e,st){return new Proxy(st,{set(t,k,v){const o=t[k]||0;if(e.koFix&&k==='stun')t[k]=v;else t[k]=v>o&&o>=0?o+(v-o)*chaMul(e):v;if(v>o&&window.ST_HOOK)ST_HOOK(e,k,t[k],o);return true;}});}   /* ST_HOOK: a status was put on (totem seals, seals.js) */
-function missFx(x,y,txt,col){dmgNum(x,y,52,'MISS','miss');}
+function missFx(x,y,txt,col){dmgNum(x,y,52,txt||'MISS','miss');}
 function hurt(e,mult,o={}){if(e.dead)return 0;const m=e.m||MON.frostling;const HT=hitType(o);o.magic=HT==='m'||(HT==='b'&&D.mag>D.patk);
   const crit=(!o.magic||!!o.owShot)&&(!!o.auto||!!o.critOK)&&(wolfRhythm(o)||Math.random()*100<critChance(m))+(JH('jgCrit')?jgCrit(e,o):0);
-  /* 12 Tails: raw = coefficient × ATK (physical) or coefficient × พลัง TAL (magic) → + LCK roll → target DEF (35/65); crits skip DEF */
+  /* RO stats: raw = coefficient × ATK (physical) or coefficient × MATK (magic) → HIT vs FLEE (physical) → target DEF / MDEF (35/65); crits skip DEF and FLEE */
   const br=o.br||(player.action&&player.action.skill&&SKILLS[player.action.skill]?SKILLS[player.action.skill].br:'basic');
   o._defCut=0;const hm=JH('jgDmgMul')?jgDmgMul(e,o):1;
   let dmg=(o.magic?D.mag+ENH_FLAT():HT==='x'?MIX.atk*(D.patk+wolfAtkFlat())+MIX.tal*D.mag+ENH_FLAT():D.patk+wolfAtkFlat()+ENH_FLAT())*mult*coefOf(br)*atkMul()*hm*(o.lck||o.dot?D.lckMul:1);
-  dmg+=lckRoll(D.stat.lck||0);
-  const effDef=Math.max(0,(m.def||0)-(e.st.armor>0?30:0)-(e.st.defdown>0?15:0)-(o._defCut||0));
+  /* RO HIT vs FLEE: a physical hit that is not a crit can MISS (o.sure = always hits) */
+  if(!crit&&!o.magic&&!o.dot&&!o.sure&&Math.random()*100>=hitChance(m)){missFx(e.x,e.y);e.aggro=Math.max(e.aggro||0,8);o._miss=1;return 0;}
+  const effDef=o.magic?Math.max(0,(m.mdef||0)-(o._defCut||0)):Math.max(0,(m.def||0)-(e.st.armor>0?30:0)-(e.st.defdown>0?15:0)-(o._defCut||0));
   if(crit)dmg*=SYS.critMul+(JH('jgCritDmg')?jgCritDmg(e,o):0);else dmg=defAdjust(dmg,effDef);
   dmg=Math.max(1,Math.round(dmg*itemFx.dmgMul(e,o,crit)));e.hp-=dmg;e.flash=1;e.aggro=8;e._hurtT=gameTime;
 
@@ -1695,7 +1727,7 @@ function mkShatterPulse(c){const pr=c.action.prison;const phi=Math.atan2(pr.y-pl
 let skyDark=0,skyDarkT=0,camZoom=1,camZoomT=1;
 player.z=0;player.buffs={};player.iframes=0;player.hpRegen=12;
 const BUFFDEF={hallHeroes:{n:'Hall of Heroes',c:'#ffd27a',i:'ATK'},warHowl:{n:'War Howl',c:'#e0a050',i:'ATK'},rally:{n:'Rallying Cry',c:'#9fffc8',i:'SPD'},warFury:{n:'War Fury',c:'#ff3a3a',i:'FURY'},runeGuard:{n:'Rune Guard',c:'#5aa8ff',i:'GUARD'}};
-function addBuff(k,dur){dur*=D.buffMul||1;player.buffs[k]={t:dur,total:dur};}   // CHA: buffs last longer
+function addBuff(k,dur){dur*=D.buffMul||1;player.buffs[k]={t:dur,total:dur};}   // RO stats: buff length = the skill's own (D.buffMul is 1, no CHA any more)
 const hasBuff=k=>player.buffs[k]&&player.buffs[k].t>0;
 const atkMul=()=>1+(JH('jgAtk')?jgAtk():0);
 /* wolf buffs are flat (owner's rule: no percent effects): ATK +X on physical hits, damage taken ±X per hit */
@@ -1703,7 +1735,7 @@ const WOLF_FLAT={howl:[0,30,55,80],fury:[0,40,80,120,160],banner:35,furyTaken:25
 let wolfTempest=null;
 const wolfAtkFlat=()=>CHAR!=='wolf'?0:(hasBuff('hallHeroes')?60:0)+(hasBuff('warHowl')?WOLF_FLAT.howl[LV.warHowl]||0:0)+(hasBuff('warFury')?WOLF_FLAT.fury[LV.warFury]||0:0)+(hasBuff('banner')?WOLF_FLAT.banner:0);
 const wolfTakenFlat=()=>CHAR!=='wolf'?0:(hasBuff('warFury')?WOLF_FLAT.furyTaken:0)-(hasBuff('runeGuard')?WOLF_FLAT.guard[LV.runeGuard]||0:0)-(hasBuff('banner')?WOLF_FLAT.bannerTaken:0)-(LV.eyeOfTempest&&wolfTempest&&wolfTempest.until>gameTime&&Math.hypot(player.x-wolfTempest.x,player.y-wolfTempest.y)<wolfTempest.r?[0,20,35][LV.eyeOfTempest]:0);
-const aspd=()=>D.aps/1.45*(JH('jgAspd')?jgAspd():1);   // attack speed is fixed per character (CHAR_ASPD + weapon)
+const aspd=()=>D.aps/1.45*(JH('jgAspd')?jgAspd():1);   // attack speed: hero base + AGI / DEX / items (derive) + buffs
 const dmgTaken=()=>(JH('jgDmgTaken')?jgDmgTaken():1);
 const moveMul=()=>(D.moveMul||1)*itemFx.moveMul()*(hasBuff('rally')?(player.speed+WOLF_FLAT.rally)/player.speed:1)*(JH('jgMove')?jgMove():1);   // AGI: move speed
 function freeze(e,dur){if(e.boss){e.st.slow=Math.max(e.st.slow,dur);}else{e.st.frozen=Math.max(e.st.frozen,dur);e.vx=e.vy=0;}}
@@ -1719,14 +1751,18 @@ function enemyAI(e,dt){const s=e.st;e.acd=Math.max(0,(e.acd||0)-dt);e.aggro=Math
   if(L>e.r+24){const sp=(e.boss?48:e.kind?82:58)*((e.m&&e.m.spd)||1)*(s.slow?.4:1)*(s.root?0:1);e.x+=dx/L*sp*dt;e.y+=dy/L*sp*dt;e.face=dx>0?1:-1;}
   else if(e.acd<=0)e.atk=e.boss?.8:.6;
   return true;}
-function hitPlayer(e){const m=e.m||MON.frostling;const a=player.action;
+function hitPlayer(e,o={}){const m=e.m||MON.frostling;const a=player.action;const mag=!!o.magic;
   if(player.iframes>0){dmgNum(player.x,player.y,70,'MISS','miss');return;}
   if(decoy&&!decoy.dead&&Math.hypot(e.x-decoy.snap.x,e.y-decoy.snap.y)<Math.hypot(e.x-player.x,e.y-player.y)+30){decoy.shatter();return;}
   if(a&&a.key==='ironCounter'&&!a.ended){a.blocked=true;a.attacker=e;blockFx(e);return;}
   let jgMul=1;if(JH('jgPreHit')){const r=jgPreHit(e);if(r===0)return;if(typeof r==='number')jgMul=r;}
   if(LV.wolfInstinct&&CHAR==='wolf'&&++player.wiN>=[0,20,12][LV.wolfInstinct]){player.wiN=0;addFx(new DText({x:player.x,y:player.y,z:70,text:'EVADE',color:'#ffe08a',size:14,life:.7}));return;}   // skill dodge only — no stat MISS
   if(itemFx.dodge(e)){addFx(new DText({x:player.x,y:player.y,z:70,text:'EVADE',color:'#c8d0ff',size:14,life:.7}));return;}
-  let d=Math.max(1,Math.round(defAdjust(rnd(m.atk[0],m.atk[1]),D.def)*dmgTaken()*jgMul*itemFx.takenMul(e)));if(CHAR==='wolf')d=Math.max(1,d+wolfTakenFlat());d=ENH_ABSORB(d);if(d<=0)return;if(JH('jgAbsorb')){d=jgAbsorb(d,e);if(d<=0)return;}player.hp-=d;dmgNum(player.x,player.y,64,d,'taken',{who:player});shake(1.6);
+  /* RO: perfect dodge (LUK) and FLEE vs the monster's HIT — magic always hits. Every attacker after the 2nd takes 10 % off our FLEE */
+  if(!mag){if(Math.random()*100<(D.pd||0)){addFx(new DText({x:player.x,y:player.y,z:70,text:'LUCKY',color:'#ffe08a',size:14,life:.7}));return;}
+    let n=0;for(const q of enemies)if(!q.dead&&q.aggro>0&&Math.abs(q.x-player.x)<110&&Math.abs(q.y-player.y)<110&&Math.hypot(q.x-player.x,q.y-player.y)<(q.r||18)+70)n++;
+    const fl=(D.flee||0)*Math.max(.1,1-.1*Math.max(0,n-2));if(Math.random()*100>=clamp(80+((m.hit!=null?m.hit:m.lv||1))-fl,5,95)){dmgNum(player.x,player.y,70,'MISS','miss');return;}}
+  let d=Math.max(1,Math.round(defAdjust(rnd(m.atk[0],m.atk[1]),mag?D.mdef:D.def)*dmgTaken()*jgMul*itemFx.takenMul(e)));if(CHAR==='wolf')d=Math.max(1,d+wolfTakenFlat());d=ENH_ABSORB(d);if(d<=0)return;if(JH('jgAbsorb')){d=jgAbsorb(d,e);if(d<=0)return;}player.hp-=d;dmgNum(player.x,player.y,64,d,'taken',{who:player});shake(1.6);
   if(hasBuff('runeGuard')&&runeShield){runeShield.flash=1;}
   if(LV.unbrokenWill&&player.hp>0&&player.hp<player.maxHp*.3&&unbrokenICD<=0)triggerUnbroken();
   if(JH('jgPostHit'))jgPostHit(e,d);
@@ -4165,7 +4201,7 @@ const axCap=()=>LV.axDroplets||0;
 function axGain(){if(AX.icd>0||AX.drops>=axCap())return;AX.drops++;AX.icd=AX_BAL.dropICD;if(axOverlay)axOverlay.pop=.4;}
 function axUse(){const n=AX.drops;AX.drops=0;if(n&&axOverlay)axOverlay.spent=.5;return n;}
 /* ---------- healing ---------- */
-function axHealPow(m){const intv=effStat('tal'),matk=D.mag;return Math.round(((PS.lv+intv)/8*AX_BAL.healBase+matk*.45+30*(LV.asBlessing||0))*m);}
+function axHealPow(m){const intv=effStat('int'),matk=D.mag;return Math.round(((PS.lv+intv)/8*AX_BAL.healBase+matk*.45+30*(LV.asBlessing||0))*m);}
 function axHeal(amt,o={}){if(AX.cocoon)return 0;amt=Math.round(amt+(o.low&&LV.asBloom&&player.hp<PS.lv*AX_BAL.lowHp?axHealPow(.15*LV.asBloom):0));const was=player.hp,need=player.maxHp-player.hp,got=Math.min(need,amt),over=amt-got;
   player.hp+=got;if(!o.quiet&&got>0)dmgNum(player.x,player.y,74,'+'+got,'heal',{scale:o.small?.6:.85});
   if(over>0&&LV.asShared){AX.shield=Math.round(Math.min(PS.lv*AX_BAL.shieldCap,AX.shield+PS.lv));AX.shieldT=6;}
@@ -4325,7 +4361,7 @@ window.jgCrit=()=>0;window.jgHit=()=>0;window.jgCritDmg=()=>0;window.jgAspd=()=>
 window.jgPlayerAlpha=()=>{if(player.jgHide&&!AX.cocoon&&!(player.action&&player.action.key==='acBlink'))player.jgHide=false;return player.jgHide?0:1;};
 window.jgNoInterrupt=()=>!!LV.acFluid&&(AX.fluidN=(AX.fluidN||0)+1)%4!==0;   /* only every 4th interruption gets through */
 window.jgMove=()=>(hasBuff('axHarmony')?(player.speed+30)/player.speed:1);
-window.jgDmgMul=(e,o)=>{let b=0;const br=o&&o.br||((player.action&&player.action.skill&&SKILLS[player.action.skill])?SKILLS[player.action.skill].br:'basic');if(br==='A')b+=15*(LV.axMastery||0);if(LV.axDeep&&(e.st.slow>0||e.st.stagger>0))b+=20*LV.axDeep;const base=Math.max(1,D.mag);return (base+b)/base;};   /* flat TAL, no percents */
+window.jgDmgMul=(e,o)=>{let b=0;const br=o&&o.br||((player.action&&player.action.skill&&SKILLS[player.action.skill])?SKILLS[player.action.skill].br:'basic');if(br==='A')b+=15*(LV.axMastery||0);if(LV.axDeep&&(e.st.slow>0||e.st.stagger>0))b+=20*LV.axDeep;const base=Math.max(1,D.mag);return (base+b)/base;};   /* flat MATK, no percents */
 window.jgDmgTaken=()=>1;
 window.jgEnemyTick=(e,dt)=>{if(e.axFloat>0){e.axFloat-=dt;e.z=24+Math.sin(gameTime*3+e.id)*4;e.vz=0;e.vx*=.8;e.vy*=.8;e.st.stagger=Math.max(e.st.stagger,.1);if(e.axFloat<=0){e.vz=-120;}}return false;};
 window.jgAfterHurt=()=>{};window.jgOnSkillHit=()=>{};
@@ -4492,35 +4528,35 @@ const AX_C={
  acInfinite:{id:'AX-C12',name:'Infinite Renewal',tier:4,col:'B',passive:1,icon:['star','#c8ffe8','#0a2a22'],creq:()=>LV.asMiracle>=1,rq:'Miracle of Life Lv.1',th:'Miracle HoT แรงและนานขึ้น'}};
 
 /* per-level descriptions */
-(function(){const P=n=>'TAL×'+(+n).toFixed(2).replace(/0+$/,'').replace(/\.$/,''),L=(max,f)=>{const o={};for(let i=1;i<=max;i++)o[i]=f(i);return o;},D=(k,d,lv)=>{JG_DESC[k]={d,lv};};
-D('axFlick','ตีปกติระยะไกล (220) ดีดหยดน้ำแรงดัน · ดาเมจเวท (TAL)',L(4,i=>[`${P(.9+.1*i)}`]));
+(function(){const P=n=>'MATK×'+(+n).toFixed(2).replace(/0+$/,'').replace(/\.$/,''),L=(max,f)=>{const o={};for(let i=1;i<=max;i++)o[i]=f(i);return o;},D=(k,d,lv)=>{JG_DESC[k]={d,lv};};
+D('axFlick','ตีปกติระยะไกล (220) ดีดหยดน้ำแรงดัน · ดาเมจเวท (MATK)',L(4,i=>[`${P(.9+.1*i)}`]));
 D('axSlip','ไถลบนแผ่นน้ำไปทางเมาส์ ไม่โดนโจมตีครึ่งแรก',L(2,i=>[`ระยะ ${110+30*i}`]));
 D('axPop','ฟองน้ำพองที่เป้า 0.5 วิ แล้วแตก · ได้ Living Water',L(3,i=>[`${P(1.2+.3*i)} รัศมี 64`]));
 D('axRinse','สายน้ำไหลวนผ่านร่าง ฟื้น HP · ใช้ Living Water ทั้งหมด หยดละ +0.4× Heal Power',L(3,i=>[`ฮีล ${(1.6+.5*i).toFixed(1)}× Heal Power`]));
 D('axGill','(Passive) หายใจด้วยเหงือก',L(2,i=>[`ฟื้น SP +${(.6*i).toFixed(1)}/วิ`]));
 D('axLanding','(Passive) แผ่นน้ำรองรับแรงกระแทก',L(1,()=>['ทุกครั้งที่ 3 ที่โดนตี ไม่ชะงัก']));
 D('axDroplets','(Passive) ปลดล็อก Living Water · ได้จากสกิลโจมตีที่โดน (ICD 0.8 วิ)',L(3,i=>[`เก็บได้สูงสุด ${i} หยด`]));
-D('axNeedle','ลำน้ำเส้นเล็กแรงดันสูง ทะลุแนวตรง',L(4,i=>[`${P(1.3+.25*i)} · ทะลุ 2 ตัว (ตัวถัดไป TAL ×−0.3)`]));
-D('axMastery','(Passive)',L(2,i=>[`สกิลสาย A: TAL +${15*i}`]));
-D('axDrill','เกลียวน้ำหมุนเจาะ',L(3,i=>[`${2+i} ฮิต × TAL×0.55`]));
-D('axDrillBurst','(Enhancement · Water Drill) จบแล้วระเบิดแรงดัน',L(1,()=>['TAL×1.1 รัศมี 60']));
+D('axNeedle','ลำน้ำเส้นเล็กแรงดันสูง ทะลุแนวตรง',L(4,i=>[`${P(1.3+.25*i)} · ทะลุ 2 ตัว (ตัวถัดไป MATK ×−0.3)`]));
+D('axMastery','(Passive)',L(2,i=>[`สกิลสาย A: MATK +${15*i}`]));
+D('axDrill','เกลียวน้ำหมุนเจาะ',L(3,i=>[`${2+i} ฮิต × MATK×0.55`]));
+D('axDrillBurst','(Enhancement · Water Drill) จบแล้วระเบิดแรงดัน',L(1,()=>['MATK×1.1 รัศมี 60']));
 D('axSlap','ฝ่ามือน้ำตบด้านหน้า ศัตรูทั่วไปเสียหลัก (บอส Slow)',L(3,i=>[`${P(1.6+.3*i)}`]));
-D('axRebound','(Enhancement · Hydro Slap) Water Flick / Compression Shot สะท้อนไปศัตรูใกล้ 1 ตัว (ICD 0.5 วิ)',L(1,()=>['TAL×0.45 (จาก Water Flick)']));
+D('axRebound','(Enhancement · Hydro Slap) Water Flick / Compression Shot สะท้อนไปศัตรูใกล้ 1 ตัว (ICD 0.5 วิ)',L(1,()=>['MATK×0.45 (จาก Water Flick)']));
 D('axSaw','วงแหวนน้ำหมุนตัดแนวตรง 300',L(3,i=>[`${P(1.5+.3*i)} ต่อตัวที่ผ่าน`]));
 D('axCollapse','วงน้ำหดยุบเข้าหาเป้า แล้วกระแทก',L(2,i=>[`${P(2+.4*i)} รัศมี 80 · Slow 2 วิ`]));
 D('axGyro','น้ำหมุนวนรอบเป้า',L(3,i=>[`6 ฮิต × ${P(.45+.1*i)} · Slow`]));
-D('axReverse','(Enhancement · Gyro Current) หมุนกลับแล้วแตก',L(1,()=>['TAL×1.8']));
+D('axReverse','(Enhancement · Gyro Current) หมุนกลับแล้วแตก',L(1,()=>['MATK×1.8']));
 D('axCompress','อัดน้ำเป็นลูกแก้วเล็กแล้วยิง',L(3,i=>[`${P(2.4+.4*i)}`]));
-D('axRicochet','(Enhancement · Compression Shot)',L(1,()=>['ทุกนัดที่ 2 แฉลบไปอีกตัว TAL×1.6']));
-D('axDeep','(Passive)',L(2,i=>[`TAL +${20*i} ต่อเป้าที่ Slow หรือเสียหลัก`]));
-D('axCannon','สองมือรวมน้ำ ยิงลำน้ำใหญ่ ผู้ร่ายถอยเล็กน้อย',L(1,()=>['TAL×3.7 แนวตรง 320 · Slow 2 วิ']));
-D('axHeart',"ULTIMATE A — หัวใจน้ำยักษ์ เต้น 3 จังหวะ (Hit Event แยก 3 ครั้ง)",L(1,()=>['TAL×2.6 / TAL×3.2 / TAL×3.8 รัศมี 136 / 170 / 170','จบเป็นฝน']));
+D('axRicochet','(Enhancement · Compression Shot)',L(1,()=>['ทุกนัดที่ 2 แฉลบไปอีกตัว MATK×1.6']));
+D('axDeep','(Passive)',L(2,i=>[`MATK +${20*i} ต่อเป้าที่ Slow หรือเสียหลัก`]));
+D('axCannon','สองมือรวมน้ำ ยิงลำน้ำใหญ่ ผู้ร่ายถอยเล็กน้อย',L(1,()=>['MATK×3.7 แนวตรง 320 · Slow 2 วิ']));
+D('axHeart',"ULTIMATE A — หัวใจน้ำยักษ์ เต้น 3 จังหวะ (Hit Event แยก 3 ครั้ง)",L(1,()=>['MATK×2.6 / MATK×3.2 / MATK×3.8 รัศมี 136 / 170 / 170','จบเป็นฝน']));
 D('asDrop','หยดน้ำลอยมาซึมเข้าร่าง',L(4,i=>[`ฮีล ${(1.4+.4*i).toFixed(1)}× Heal Power`]));
 D('asBlessing','(Passive)',L(2,i=>[`Heal Power +${30*i} · ฟื้น SP +${(.4*i).toFixed(1)}/วิ`]));
 D('asMist','หมอกมินต์รอบตัว 10 วิ · ใช้ Living Water หยดละ +0.06× Heal Power/วิ',L(3,i=>[`ฟื้น ${(.3+.1*i).toFixed(1)}× Heal Power ต่อวินาที`]));
 D('asPurify','น้ำไหลจากหัวลงเท้า ล้างสถานะ + ฮีลเล็กน้อย',L(1,()=>['ฮีล 0.6× Heal Power']));
 D('asCushion','เยื่อน้ำกันการโจมตีครั้งถัดไปทั้งหมด (8 วิ)',L(2,i=>['ใช้ Living Water ทั้งหมด']));
-D('asLift','ฟองน้ำยกศัตรูทั่วไปลอย 2.5 วิ (ตีไม่ได้) · บอส Slow 3 วิ',L(1,()=>['TAL×0.6']));
+D('asLift','ฟองน้ำยกศัตรูทั่วไปลอย 2.5 วิ (ตีไม่ได้) · บอส Slow 3 วิ',L(1,()=>['MATK×0.6']));
 D('asMending','Channel 2.4 วิ สายน้ำวนรักษาต่อเนื่อง',L(3,i=>[`ทุก 0.4 วิ ฮีล ${(.32+.08*i).toFixed(2)}× Heal Power`]));
 D('asSoothing','(Enhancement · Mending Stream) จบแล้วทิ้ง HoT 6 วิ',L(1,()=>['0.25× Heal Power/วิ']));
 D('asShared','(Passive · ยังไม่มีระบบปาร์ตี้) ฮีลส่วนเกินกลายเป็นเกราะน้ำ',L(2,i=>['ฮีลเกินแต่ละครั้ง เกราะ + เลเวล × 1 · สูงสุด เลเวล × 6']));
@@ -4530,8 +4566,8 @@ D('asCascade','(Passive) Healing Drop / Gentle Rinse ทิ้ง HoT เล็�
 D('asLastDrop','(Passive) HP ต่ำกว่า เลเวล × 8 ใช้ Living Water ฮีลเอง (ICD 30 วิ)',L(2,i=>['ฮีล เลเวล × 2 ต่อหยด']));
 D('asRenewal','คลื่นน้ำเล็กแผ่ออก',L(1,()=>['ฮีล 0.9× · ต่อเวลา HoT ทั้งหมด +3 วิ (สูงสุด 12 วิ)']));
 D('asMiracle','ULTIMATE B — น้ำวนขึ้น ดอกบัวน้ำคลี่ หยดน้ำไหลเข้าร่าง',L(1,()=>['ฮีล 3.5× · HoT 0.4×/วิ 6 วิ · ล้างสถานะ']));
-const C={acOverflow:['Living Water เต็ม 3 หยด เวทโจมตีถัดไปแตกเป็น Splash (ICD 4 วิ)','TAL×0.8 รัศมี 70'],acPierce:['Needle Jet ทะลุ 5 ตัว','ตัวถัดไป TAL ×−0.3 (ต่ำสุด TAL×0.5)'],acRipple:['Healing Drop มีคลื่นรักษา','HoT เล็ก + ศัตรูรอบตัว Slow'],
- acBlink:['ร่างละลายเป็นแอ่งน้ำไหลไป 190 แล้วรวมร่าง','ไม่โดนโจมตีระหว่างทาง'],acMembrane:['เยื่อน้ำ 10 วิ','ครั้งแรกที่โดน ดาเมจ − เลเวล × 5'],acSplit:['Hydro Cannon แยกสองสายหลังเป้าแรก','TAL×1.4 ต่อสาย'],
+const C={acOverflow:['Living Water เต็ม 3 หยด เวทโจมตีถัดไปแตกเป็น Splash (ICD 4 วิ)','MATK×0.8 รัศมี 70'],acPierce:['Needle Jet ทะลุ 5 ตัว','ตัวถัดไป MATK ×−0.3 (ต่ำสุด MATK×0.5)'],acRipple:['Healing Drop มีคลื่นรักษา','HoT เล็ก + ศัตรูรอบตัว Slow'],
+ acBlink:['ร่างละลายเป็นแอ่งน้ำไหลไป 190 แล้วรวมร่าง','ไม่โดนโจมตีระหว่างทาง'],acMembrane:['เยื่อน้ำ 10 วิ','ครั้งแรกที่โดน ดาเมจ − เลเวล × 5'],acSplit:['Hydro Cannon แยกสองสายหลังเป้าแรก','MATK×1.4 ต่อสาย'],
  acRestore:['Mending Stream เดินได้ระหว่าง Channel','—'],acFluid:['ระหว่างร่าย ร่างเป็นน้ำ','ถูกขัดการร่ายได้แค่ทุกครั้งที่ 4'],acRecycle:['ฮีลตอน HP เต็ม น้ำไหลกลับ','คืน SP 10 (ICD 2 วิ)'],
  acResonant:["Ocean's Heartbeat Pulse 3 กว้างขึ้น",'รัศมี 240 (จำนวนฮิตเท่าเดิม)'],acRapid:['(ตัดออก)','—'],acConvert:['(ตัดออก)','—'],
  acAdapt:['(ตัดออก)','—'],acHarmony:["จบ Ocean's Heartbeat ทิ้งละอองน้ำ 5 วิ",'ความเร็วเดิน +30 ในวง'],acInfinite:['Miracle of Life HoT 0.6× Heal Power/วิ และนาน 10 วิ','—'],
@@ -5387,15 +5423,23 @@ function buildLevels(){const box=document.getElementById('lvls');box.innerHTML='
 buildLevels();
 
 /* ---------- Status window (Ragnarok style) ---------- */
-/* stat presets, written for Lv 99 (216 points: 20 + 2 per level); presetAt(name, lv) scales one to the points a level has —
-   test mode uses it at the Lv 60 cap (level_cap.js), the balance bench at its own level (Lv 99 by default) */
-const PRESETS={'ตีแรง':{atk:150,tal:1,vit:25,def:15,int:5,agi:15,cha:5,lck:4},'แทงก์':{atk:70,tal:1,vit:70,def:60,int:5,agi:5,cha:5,lck:4},
-  'สายเวท':{atk:1,tal:150,vit:25,def:15,int:15,agi:5,cha:5,lck:4},'เร็ว/บัฟ':{atk:110,tal:1,vit:25,def:15,int:5,agi:40,cha:20,lck:4}};
-const presetAt=(name,lv)=>{const P=PRESETS[name]||PRESETS['ตีแรง'];if(lv>=99)return {...P};const B=pointsAt(lv),U=STATK.reduce((n,k)=>n+P[k]-1,0),f=Math.min(1,B/U),o={};let u=0;
-  for(const k of STATK){o[k]=1+Math.floor((P[k]-1)*f);u+=o[k]-1;}const main=STATK.reduce((a,c)=>P[c]>P[a]?c:a,'atk');o[main]+=Math.max(0,B-u);return o;};   // same shape, every point of that level spent
-const STATDESC={atk:'ATK +1 · สกิลกายภาพ = ตัวคูณ × ATK',tal:'TAL +1 · พลัง TAL = 50 × (1 + 0.02 × TAL) ใช้กับสกิลเวทและฮีล',vit:'HP +10',def:'DEF +1 · ลดดาเมจ 35% × (ดาเมจ − DEF/2) + 65% × ดาเมจ × (1 − DEF/(DEF+64))',
-  int:'MAG +1 · SP +5 · ร่ายเร็วขึ้น',agi:'AGI +1 · คูลดาวน์ × (1 − AGI/(AGI+128)) · เดินเร็วขึ้น (ไม่เพิ่มความเร็วตี)',cha:'CHA +1 · บัฟนาน ×(1 + 0.015 × CHA) · สถานะที่เราใส่ติดนาน (เทียบ CHA ศัตรู)',lck:'LCK +1 · ทุกฮิตบวกดาเมจสุ่ม 0 ถึง 0.2 × LCK · เลือดไหล/พิษแรงขึ้น'};
-function fitStats(){while(pointsLeft()<0){const k=STATK.reduce((a,c)=>PS[c]>PS[a]?c:a,'atk');PS[k]--;}}
+/* stat presets (RO builds), written for the Lv 60 cap (555 points); presetAt(name, lv) keeps the shape at the points a level has.
+   Test mode starts with the hero's CHAR_PRESET; the balance bench uses the same preset (PS._pre). */
+const PRESETS={'STR':{str:72,agi:22,vit:20,int:1,dex:30,luk:1},'AGI':{str:50,agi:65,vit:1,int:1,dex:20,luk:7},
+  'INT':{str:1,agi:1,vit:15,int:75,dex:35,luk:1},'VIT':{str:50,agi:1,vit:70,int:1,dex:10,luk:1},'DEX':{str:1,agi:38,vit:10,int:1,dex:75,luk:4}};
+const PRESET_OLD={'ตีแรง':'STR','แทงก์':'VIT','สายเวท':'INT','เร็ว/บัฟ':'AGI'};
+const presetAt=(name,lv)=>{const P=PRESETS[PRESET_OLD[name]||name]||PRESETS.STR,B=pointsAt(lv),at=f=>{const o={};for(const k of STATK)o[k]=clamp(1+Math.floor((P[k]-1)*f),1,SYS.max);return o;},
+    cost=o=>STATK.reduce((n,k)=>n+statTotal(o[k]),0);let lo=0,hi=1;if(cost(at(1))<=B)lo=1;else for(let i=0;i<22;i++){const m=(lo+hi)/2;if(cost(at(m))<=B)lo=m;else hi=m;}
+  const o=at(lo),ord=STATK.slice().sort((a,b)=>P[b]-P[a]);let left=B-cost(o);
+  for(const k of ord)while(o[k]<SYS.max&&statCost(o[k])<=left){left-=statCost(o[k]);o[k]++;if(k!==ord[0]&&o[k]>=P[k])break;}   // left-over points: main stat first
+  return o;};
+const STATDESC={str:'STR +1 · ATK +1 และโบนัส (STR/10)² (สายตีไกล: ATK +1 ต่อ 5 STR) · แบกของได้มากขึ้น',
+  agi:'AGI +1 · FLEE +1 (หลบการโจมตีกายภาพ) · ASPD ตีเร็วขึ้น · DEF +1 ต่อ 5 AGI',
+  vit:'VIT +1 · MaxHP +1% · DEF +1 ต่อ 2 VIT · ฟื้น HP · ต้านพิษ เลือดออก ไฟไหม้ เกราะแตก ช้า',
+  int:'INT +1 · MATK +1 และโบนัส (INT/7)² · MaxSP +1% · MDEF +1 · ฟื้น SP · ต้านอ่อนแรง ดูด SP',
+  dex:'DEX +1 · HIT +1 · ร่ายเร็วขึ้น (ร่าย × (1 − DEX/150)) · ATK +1 ต่อ 5 DEX (สายตีไกล: ATK หลัก) · ASPD นิดหน่อย · สถานะที่เราใส่มอนติดนานขึ้น',
+  luk:'LUK +1 · CRIT +0.3 · หลบเด็ดขาด +1 ต่อ 10 LUK · ATK / MATK +1 ต่อ 5 · HIT +1 ต่อ 3 · FLEE +1 ต่อ 5'};
+function fitStats(){while(pointsLeft()<0){const k=STATK.reduce((a,c)=>PS[c]>PS[a]?c:a,'str');if(PS[k]<=1)break;PS[k]--;}}
 function statusTarget(){const t=player.attackTarget&&!player.attackTarget.dead?player.attackTarget:nearestEnemy(player.x,player.y,9999);return t;}
 /* ---------- Skill Tree window (12 Tails Online style: Basic / A-Tree / B-Tree tabs, icon nodes, combo links, detail panel) ---------- */
 let skTab='basic',skSel=BASIC_KEY;
@@ -5425,9 +5469,9 @@ function skSet(k,n){const s=SKILLS[k],mx=s.br==='C'?1:s.max,lo=k===BASIC_KEY?1:0
   while(LV[k]<n){if(!canRaise(k)||skLocked(k))break;LV[k]++;}if(LV[k]>n)LV[k]=n;
   skValidate();buildLevels();buildHotbar();buildSkillWin();}
 function skTip(k,lvl){const s=SKILLS[k],mx=s.br==='C'?1:s.max,ct=CAST[k]||0,rl=reqList(k,lvl),SD=SKILL_DESC[k]||JG_DESC[k]||{d:s.th||'',lv:{}};
-  const DT0=skDT(k),MG=DT0==='m'||(DT0==='b'&&D.mag>D.patk),MX=DT0==='x',cf=coefOf(s.br),pw=MG?D.mag:MX?MIX.atk*D.patk+MIX.tal*D.mag:D.patk,PN=MG?'TAL':MX?'ผสม':'ATK',
+  const DT0=skDT(k),MG=DT0==='m'||(DT0==='b'&&D.mag>D.patk),MX=DT0==='x',cf=coefOf(s.br),pw=MG?D.mag:MX?MIX.atk*D.patk+MIX.tal*D.mag:D.patk,PN=MG?'MATK':MX?'ผสม':'ATK',
     sc=n=>{const v=+(n*cf).toFixed(2);return `${PN} ×${v} <span style="color:#9aa6b8">(≈${Math.round(v*pw)})</span>`;},
-    fixT=t=>String(t).replace(/ATK\s*×\s*(\d+(?:\.\d+)?)/g,(_,n)=>sc(+n)).replace(/ATK (\d+(?:\.\d+)?)%/g,(_,n)=>sc(n/100)).replace(/ดาเมจ ATK/g,MG?'ดาเมจเวท':'ดาเมจ ATK').replace(/TAL×(\d+(?:\.\d+)?)/g,(m0,n)=>/ฟื้น|ฮีล|โล่|เกราะ|HP/.test(String(t))?`TAL×${n} <span style="color:#9aa6b8">(≈${Math.round(n*D.mag)})</span>`:`TAL×${+(n*cf).toFixed(2)} <span style="color:#9aa6b8">(≈${Math.round(n*cf*D.mag)})</span>`);   /* coefficients shown already include the hero's scale; ≈ = before enemy DEF */
+    fixT=t=>String(t).replace(/ATK\s*×\s*(\d+(?:\.\d+)?)/g,(_,n)=>sc(+n)).replace(/ATK (\d+(?:\.\d+)?)%/g,(_,n)=>sc(n/100)).replace(/ดาเมจ ATK/g,MG?'ดาเมจเวท':'ดาเมจ ATK').replace(/MATK×(\d+(?:\.\d+)?)/g,(m0,n)=>/ฟื้น|ฮีล|โล่|เกราะ|HP/.test(String(t))?`MATK×${n} <span style="color:#9aa6b8">(≈${Math.round(n*D.mag)})</span>`:`MATK×${+(n*cf).toFixed(2)} <span style="color:#9aa6b8">(≈${Math.round(n*cf*D.mag)})</span>`);   /* coefficients shown already include the hero's scale; ≈ = before enemy DEF */
   const lines=n=>(SD.lv[n]||[]).map(t=>`<div class="tl">• ${fixT(t)}</div>`).join('');const R=n=>s.br==='C'?'C':ROMAN[n-1];
   return `<div class="th"><b>${s.name}</b> <i>Lv.${lvl}/${mx}</i></div><small>${s.id} · ${s.passive?(s.br==='C'?'Enhancement':'Passive'):s.ult?'ULTIMATE':s.parent?'Combo':s.br==='C'?'New Active':'Active'}${s.mp?` · SP ${s.mp}`:''}${s.cd?` · CD ${s.cd} วิ`:''}${s.range?` · ระยะ ${s.range}`:''}${ct?` · ร่าย ${ct}→${(ct*D.castMul).toFixed(2)} วิ`:''}</small>
    ${skTypeHTML(k)}<div class="td">${fixT(SD.d)}</div>
@@ -5514,7 +5558,7 @@ function levelUpFx(from,to){const cx=player.x,cy=player.y;
   for(let i=0;i<qn(30);i++){const an=rnd(0,TAU);emit({type:'ember',x:cx+Math.cos(an)*rnd(4,30),y:cy+Math.sin(an)*rnd(2,16),z:rnd(0,20),vz:rnd(120,300),drag:.6,life:rnd(.7,1.3),size:rnd(1.5,3),size1:.3,color:Math.random()<.6?'#ffd36a':'#ffffff'});}
   screenFlash(.25,'#fff6c8');shake(2);
   const el=document.getElementById('lvup');document.getElementById('lulv').innerHTML=`Lv. ${from} ➜ <b>${to}</b>`;
-  const gains=[`Status Point +${(to-from)*SYS.ptsLv}`];if(SP_MAX(to)>SP_MAX(from))gains.push('Skill Point +1');if(!window.totemGems&&CP_MAX(to)>CP_MAX(from))gains.push('C-Point +1');gains.push('HP / SP เต็ม');document.getElementById('lugain').textContent=gains.join(' · ');
+  const gains=[`Status Point +${pointsAt(to)-pointsAt(from)}`];if(SP_MAX(to)>SP_MAX(from))gains.push('Skill Point +1');if(!window.totemGems&&CP_MAX(to)>CP_MAX(from))gains.push('C-Point +1');gains.push('HP / SP เต็ม');document.getElementById('lugain').textContent=gains.join(' · ');
   el.classList.remove('on');void el.offsetWidth;el.classList.add('on');clearTimeout(lvupTimer);lvupTimer=setTimeout(()=>el.classList.remove('on'),3200);}
 function toggleAuto(){autoMode=!autoMode;document.getElementById('autob').classList.toggle('on',autoMode);msg(autoMode?'AUTO: เปิด':'AUTO: ปิด');}
 document.getElementById('autob').onclick=toggleAuto;
@@ -5563,53 +5607,61 @@ function roWin(id,title,body,foot){const w=document.getElementById(id);w.innerHT
     const mv=ev=>{w.style.left=clamp(ev.clientX-ox,0,innerWidth-60)+'px';w.style.top=clamp(ev.clientY-oy,0,innerHeight-20)+'px';},up=()=>{removeEventListener('pointermove',mv);removeEventListener('pointerup',up);};addEventListener('pointermove',mv);addEventListener('pointerup',up);};
   w.onpointerdown=e=>{e.stopPropagation();document.querySelectorAll('.ro').forEach(o=>o.style.zIndex=30);w.style.zIndex=31;};return w;}
 let stOpenX=false;
-/* ---------- creation: roll the hero's base stats (12 Tails) — reroll as often as you like, then confirm ---------- */
+const STLAB={str:'STR',agi:'AGI',vit:'VIT',int:'INT',dex:'DEX',luk:'LUK'};
+/* hexagon radar for the six stats (STR at the top, clockwise AGI · VIT · INT · DEX · LUK — RO's creation hexagon order) */
+function statRadar(val,ref,mx,size=150){const R=['str','agi','vit','int','dex','luk'],C=70,Rr=50,pt=(i,r)=>{const a=-Math.PI/2+i*Math.PI/3;return [(C+Math.cos(a)*r).toFixed(1),(C+Math.sin(a)*r).toFixed(1)];},
+    ring=f=>R.map((_,i)=>pt(i,Rr*f).join(',')).join(' ');
+  return `<svg viewBox="0 0 140 140" width="${size}" height="${size}" style="display:block;margin:0 auto">${[.25,.5,.75,1].map(f=>`<polygon points="${ring(f)}" fill="none" stroke="#c9b48a" stroke-width="${f===1?1.2:.6}"/>`).join('')}
+    ${R.map((_,i)=>{const [x,y]=pt(i,Rr);return `<line x1="${C}" y1="${C}" x2="${x}" y2="${y}" stroke="#c9b48a" stroke-width=".6"/>`;}).join('')}
+    ${ref?`<polygon points="${R.map((k,i)=>pt(i,Rr*Math.min(1,ref[k]/mx)).join(',')).join(' ')}" fill="none" stroke="#9a8a6a" stroke-dasharray="2 2" stroke-width="1"/>`:''}
+    <polygon points="${R.map((k,i)=>pt(i,Rr*Math.min(1,val[k]/mx)).join(',')).join(' ')}" fill="rgba(214,58,58,.13)" stroke="#d63a3a" stroke-width="1.7" stroke-linejoin="round"/>
+    ${R.map((k,i)=>{const [x,y]=pt(i,Rr+11);return `<text x="${x}" y="${(+y+3).toFixed(1)}" text-anchor="middle" font-size="8.5" font-weight="700" fill="#6a2a10">${STLAB[k]}</text>`;}).join('')}</svg>`;}
+/* ---------- creation: roll the hero's base (hero bonus growth, like RO's job bonus) — reroll as often as you like, then confirm ---------- */
 function openRollWin(onDone){let cur=rollStats(),n=1;const old=document.getElementById('rollwin');if(old)old.remove();
   const box=document.createElement('div');box.id='rollwin';
   box.style.cssText='position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(10,8,6,.55);font-family:inherit';
-  const lab={atk:'ATK',def:'DEF',agi:'AGI',vit:'VIT',int:'INT',cha:'CHA',tal:'TAL',lck:'LCK'},ORD=['atk','def','agi','vit','int','cha','tal','lck'],RAD=['atk','lck','tal','cha','int','vit','agi','def'];
-  const draw=()=>{const cb=CLASS_BASE[CHAR]||CLASS_BASE.wolf,sum=ORD.reduce((a,k)=>a+cur[k],0),C=70,Rr=50;
-    const pt=(i,r)=>{const a=-Math.PI/2+i*Math.PI/4;return [(C+Math.cos(a)*r).toFixed(1),(C+Math.sin(a)*r).toFixed(1)];},ring=f=>RAD.map((_,i)=>pt(i,Rr*f).join(',')).join(' ');
-    const svg=`<svg viewBox="0 0 140 140" width="170" height="170">${[.25,.5,.75,1].map(f=>`<polygon points="${ring(f)}" fill="none" stroke="#c9b48a" stroke-width="${f===1?1.2:.6}"/>`).join('')}
-      <polygon points="${RAD.map((k,i)=>pt(i,Rr*cb[k]/12).join(',')).join(' ')}" fill="none" stroke="#9a8a6a" stroke-dasharray="2 2" stroke-width="1"/>
-      <polygon points="${RAD.map((k,i)=>pt(i,Rr*cur[k]/12).join(',')).join(' ')}" fill="rgba(214,58,58,.15)" stroke="#d63a3a" stroke-width="1.8" stroke-linejoin="round"/>
-      ${RAD.map((k,i)=>{const [x,y]=pt(i,Rr+12);return `<text x="${x}" y="${(+y+3).toFixed(1)}" text-anchor="middle" font-size="8.5" font-weight="700" fill="#6a2a10">${lab[k]}</text>`;}).join('')}</svg>`;
-    const rows=ORD.map(k=>{const d=cur[k]-(cb[k]+1),g=Math.floor((LV_CAP-1)*(cur[k]+3)*.083);return `<div style="display:flex;justify-content:space-between;gap:10px;padding:3px 8px;margin:2px 0;background:rgba(255,248,226,.7);border:2px solid #c99a4a;border-radius:9px">
-      <b style="color:#6a2a10;width:34px">${lab[k]}</b><b style="font-size:15px;color:${d>0?'#2a8a28':d<0?'#c0392b':'#3a2a1a'}">${cur[k]}</b><span style="color:#8a6a4a;font-size:11px;min-width:70px;text-align:right">Lv${LV_CAP} +${g}</span></div>`;}).join('');
+  const draw=()=>{const cb=CLASS_BASE[CHAR]||CLASS_BASE.wolf,sum=STATK.reduce((a,k)=>a+cur[k],0);
+    const rows=STATK.map(k=>{const d=cur[k]-(cb[k]+1),g=Math.floor((LV_CAP-1)*cur[k]*.0085);return `<div style="display:flex;justify-content:space-between;gap:10px;padding:3px 8px;margin:2px 0;background:rgba(255,248,226,.7);border:2px solid #c99a4a;border-radius:9px">
+      <b style="color:#6a2a10;width:34px">${STLAB[k]}</b><b style="font-size:15px;color:${d>0?'#2a8a28':d<0?'#c0392b':'#3a2a1a'}">${cur[k]}</b><span style="color:#8a6a4a;font-size:11px;min-width:70px;text-align:right">Lv${LV_CAP} +${g}</span></div>`;}).join('');
     box.innerHTML=`<div style="width:430px;max-width:94vw;background:linear-gradient(#fff6dc,#f3dfae);border:3px solid #b8823a;border-radius:16px;box-shadow:0 10px 40px rgba(0,0,0,.5);padding:14px 16px;color:#3a2a1a">
-      <div style="text-align:center;font-weight:800;font-size:17px;color:#7a2a10">สร้างตัวละคร · สุ่มสเตตัสเริ่มต้น</div>
-      <div style="text-align:center;font-size:11px;color:#7a5a3a;margin:2px 0 8px">ค่าพื้นฐานใช้คำนวณการโตทุกเลเวล ยิ่งสูงยิ่งโตเร็ว (เส้นประ = ค่าของคลาส) · สุ่มใหม่ได้ไม่จำกัด</div>
-      <div style="display:flex;gap:10px;align-items:center"><div style="flex:1">${rows}<div style="text-align:right;font-size:11px;color:#7a5a3a;margin-top:3px">รวม ${sum} · สุ่มครั้งที่ ${n}</div></div><div>${svg}</div></div>
+      <div style="text-align:center;font-weight:800;font-size:17px;color:#7a2a10">สร้างตัวละคร · สุ่มโบนัสสเตตัส</div>
+      <div style="text-align:center;font-size:11px;color:#7a5a3a;margin:2px 0 8px">ค่านี้คือโบนัสที่ฮีโร่ได้เพิ่มเองทุกเลเวล (แบบโบนัสอาชีพของ RO) ยิ่งสูงยิ่งได้มาก (เส้นประ = ค่าของฮีโร่) · สุ่มใหม่ได้ไม่จำกัด</div>
+      <div style="display:flex;gap:10px;align-items:center"><div style="flex:1">${rows}<div style="text-align:right;font-size:11px;color:#7a5a3a;margin-top:3px">รวม ${sum} · สุ่มครั้งที่ ${n}</div></div><div>${statRadar(cur,Object.fromEntries(STATK.map(k=>[k,cb[k]+1])),12,170)}</div></div>
       <div style="display:flex;gap:10px;justify-content:center;margin-top:10px">
         <button id="rollAgain" class="rob" style="padding:6px 18px;font-size:14px">🎲 สุ่มใหม่</button>
         <button id="rollOk" class="rob" style="padding:6px 18px;font-size:14px;font-weight:800">ยืนยัน</button></div></div>`;
     box.querySelector('#rollAgain').onclick=()=>{cur=rollStats();n++;draw();};
     box.querySelector('#rollOk').onclick=()=>{ROLL=cur;box.remove();applyStats();player.hp=player.maxHp;player.mp=player.maxMp;if(onDone)onDone(cur);};};
   draw();document.body.appendChild(box);}
+/* ---------- Status window (Ragnarok style): stats with point costs on the left, ATK / MATK / HIT / FLEE / CRIT / DEF / MDEF / ASPD below ---------- */
 function buildStatus(){const w=document.getElementById('stw');if(!w||!w.classList.contains('open'))return;const left=pointsLeft(),t=statusTarget(),m=t&&t.m;
-  /* 12 Tails layout: front number = level growth + points you put in · back number = items + buffs */
-  const lab={atk:'ATK',def:'DEF',agi:'AGI',vit:'VIT',int:'INT',cha:'CHA',tal:'TAL',lck:'LCK'},ORD=['atk','def','agi','vit','int','cha','tal','lck'];
-  const base=k=>PS[k]+growStat(k),bonus=k=>(D.stat[k]-PS[k]-growStat(k))+((k==='atk'||k==='tal')?WEAPON.refAtk:0),tot=k=>base(k)+bonus(k);
-  let c1='';for(const k of ORD){const c=statCost(PS[k]),bn=bonus(k);
-    c1+=`<div class="r" title="${STATDESC[k]}&#10;ลงเอง ${PS[k]}${growStat(k)?` + โตตามเลเวล ${growStat(k)}`:''}${bn?` · ไอเทม/บัฟ ${bn>0?'+':''}${bn}`:''}"><b>${lab[k]}</b><span class="v" style="width:auto;min-width:64px;flex:1">${base(k)}${bn?` <span style="color:${bn>0?'#2a8a28':'#c0392b'};font-weight:700">${bn>0?'+':'−'} ${Math.abs(bn)}</span>`:''}</span><button class="dn" data-s="${k}" data-d="-1" ${PS[k]<=1?'disabled':''}>-</button><button class="up" data-s="${k}" data-d="1" title="Shift+คลิก = +10" ${PS[k]>=SYS.max||c>left?'disabled':''}></button><span class="c">${PS[k]<SYS.max?c:''}</span></div>`;}
-  c1+=`<div style="font-size:10px;color:#7a5a3a;margin-top:2px" title="ค่าพื้นฐานที่สุ่มได้ตอนสร้างตัว ยิ่งสูงยิ่งโตเร็วทุกเลเวล">ค่าพื้นฐาน: ${ORD.map(k=>lab[k]+' '+baseStat(k)).join(' · ')}</div>`;
-  /* radar: ATK at the top, clockwise LCK · TAL · CHA · INT · VIT · AGI · DEF */
-  const RAD=['atk','lck','tal','cha','int','vit','agi','def'],mx=Math.max(100,...RAD.map(tot)),C=70,Rr=52;
-  const pt=(i,r)=>{const a=-Math.PI/2+i*Math.PI/4;return [(C+Math.cos(a)*r).toFixed(1),(C+Math.sin(a)*r).toFixed(1)];};
-  const ring=f=>RAD.map((_,i)=>pt(i,Rr*f).join(',')).join(' ');
-  const radar=`<svg viewBox="0 0 140 140" width="150" height="150" style="display:block;margin:0 auto">${[.25,.5,.75,1].map(f=>`<polygon points="${ring(f)}" fill="none" stroke="#c9b48a" stroke-width="${f===1?1.2:.6}"/>`).join('')}
-    ${RAD.map((_,i)=>{const [x,y]=pt(i,Rr);return `<line x1="${C}" y1="${C}" x2="${x}" y2="${y}" stroke="#c9b48a" stroke-width=".6"/>`;}).join('')}
-    <polygon points="${RAD.map((k,i)=>pt(i,Rr*Math.min(1,tot(k)/mx)).join(',')).join(' ')}" fill="rgba(214,58,58,.12)" stroke="#d63a3a" stroke-width="1.6" stroke-linejoin="round"/>
-    ${RAD.map((k,i)=>{const [x,y]=pt(i,Rr+11);return `<text x="${x}" y="${(+y+3).toFixed(1)}" text-anchor="middle" font-size="8.5" font-weight="700" fill="#6a2a10">${lab[k]}</text>`;}).join('')}</svg>`;
-  const side=`<div style="display:flex;flex-direction:column;gap:6px">${radar}<div class="k" title="ความเร็วตีคงที่ตามตัวละคร สเตตัสไม่มีผล"><span>Speed</span><i>${D.aps.toFixed(2)} t/s</i></div><div class="k"><span>Weight</span><i>${Math.round(D.wUsed/10)} / ${D.weight/10}</i></div><div class="k sp"><span>Point</span><i>${left}</i></div></div>`;
+  const base=k=>PS[k]+growStat(k),bonus=k=>D.stat[k]-base(k),tot=k=>D.stat[k];
+  let c1='';for(const k of STATK){const c=statCost(PS[k]),bn=bonus(k),g=growStat(k);
+    c1+=`<div class="r" title="${STATDESC[k]}&#10;ลงเอง ${PS[k]}${g?` + โบนัสฮีโร่ ${g}`:''}${bn?` · ไอเทม/บัฟ ${bn>0?'+':''}${bn}`:''}&#10;อัป ${PS[k]} → ${PS[k]+1} ใช้ ${c} แต้ม"><b>${STLAB[k]}</b><span class="v" style="width:auto;min-width:64px;flex:1">${base(k)}${bn?` <span style="color:${bn>0?'#2a8a28':'#c0392b'};font-weight:700">${bn>0?'+':'−'} ${Math.abs(bn)}</span>`:''}</span><button class="dn" data-s="${k}" data-d="-1" ${PS[k]<=1?'disabled':''}>-</button><button class="up" data-s="${k}" data-d="1" title="Shift+คลิก = +10" ${PS[k]>=SYS.max||c>left?'disabled':''}></button><span class="c">${PS[k]<SYS.max?c:''}</span></div>`;}
+  const kv=(n,v,tip)=>`<div class="k" title="${tip||''}"><span>${n}</span><i>${v}</i></div>`;
+  const wA=D.patk-D.sAtk,wM=D.mag-D.sMatk;
+  const der=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:0 10px;margin-top:4px">
+    ${kv('ATK',`${D.sAtk}${wA?' + '+wA:''}`,'ATK สถานะ (STR + (STR/10)² + DEX/5 + LUK/5) + อาวุธ / ตีบวก / ไอเทม · สกิลกายภาพ = ตัวคูณ × ATK')}
+    ${kv('DEF',`${D.hardDef} + ${D.def-D.hardDef}`,'DEF เกราะ + DEF จาก VIT/2 และ AGI/5 · ลดดาเมจกายภาพที่โดน')}
+    ${kv('MATK',`${D.sMatk}${wM?' + '+wM:''}`,'MATK สถานะ (INT + (INT/7)² + DEX/5 + LUK/5) + อาวุธเวท / ไอเทม · สกิลเวท / ฮีล = ตัวคูณ × MATK')}
+    ${kv('MDEF',`${D.hardMdef} + ${D.mdef-D.hardMdef}`,'MDEF ไอเทม + INT + VIT/5 + DEX/5 + Lv/4 · ลดดาเมจเวทที่โดน')}
+    ${kv('HIT',D.hit,'Lv + DEX + LUK/3 · โอกาสตีโดน = 80 + HIT − FLEE ของเป้า (5–95%)')}
+    ${kv('FLEE',`${D.flee} + ${D.pd}`,'FLEE = Lv + AGI + LUK/5 (โดนรุมเกิน 2 ตัว ลดตัวละ 10%) · + หลบเด็ดขาด % (LUK/10)')}
+    ${kv('CRIT',D.crit,'1 + LUK × 0.3 + ไอเทม (%) · คริไม่พลาด ไม่สนใจ DEF ดาเมจ ×1.4 · ตีปกติคริได้')}
+    ${kv('ASPD',Math.floor(D.aspd),'ความเร็วตีปกติ (RO): 200 − (200 − ฐานฮีโร่) × (1 − AGI/250 − DEX/1000) × (1 − ASPD% ไอเทม) · ตีได้ '+D.aps.toFixed(2)+' ครั้ง/วิ')}</div>`;
+  const side=`<div style="display:flex;flex-direction:column;gap:4px">${statRadar(Object.fromEntries(STATK.map(k=>[k,tot(k)])),null,Math.max(60,...STATK.map(tot)),140)}
+    ${kv('ตี/วิ',D.aps.toFixed(2),'ตีปกติกี่ครั้งต่อวินาที (ASPD)')}${kv('ร่าย',`×${D.castMul.toFixed(2)}`,'เวลาร่าย × (1 − DEX/150)')}${kv('HP / SP',`${player.maxHp} / ${player.maxMp}`,'MaxHP +1% ต่อ VIT · MaxSP +1% ต่อ INT')}<div class="k sp" title="แต้มที่เหลือ · Lv x → x+1 ได้ floor(x/5)+3 · ค่าอัปแพงขึ้นทุก 10"><span>Point</span><i>${left}</i></div></div>`;
   let x='';if(stOpenX){x=`<div class="ro-x"><b>${JOB.name}</b> · Base Lv <b>${PS.lv}</b> · ฟื้น HP ${D.hpReg}/6s · SP ${D.spReg}/8s · ตีปกติ ${D.aps.toFixed(2)} ครั้ง/วิ<br>
-    อาวุธ <b>${WEAPON.refine?'+'+WEAPON.refine+' ':''}${WEAPON.name}</b> (${WEAPON.type}) · ATK อาวุธ ${WEAPON.atk} + ตีบวก ${WEAPON.refAtk}</div>`;
-    if(m){x+=`<div class="ro-x"><b>${m.name}</b> Lv${m.lv}${m.role?' · '+m.role:''}${m.el?' · ธาตุ'+m.el:''}${m.race?' · '+m.race:''}${m.atype&&m.atype!=='melee'?' · '+(m.atype==='ranged'?'ตีไกล':'ร่ายเวท'):''}${m.healer?' · ฮีลเพื่อน':''}${m.boss?' · <span style="color:#c0392b">BOSS</span>':''}<br>HP ${m.hp} · ATK ${m.atk[0]}~${m.atk[1]} · DEF ${m.def} · CHA ${m.cha||0}<br>เราตี ATK×1 เข้า <b>${defAdjust(D.patk,m.def)}</b> (พลัง TAL×1 เข้า <b>${defAdjust(D.mag,m.def)}</b>) · มันตีเรา ~<b>${defAdjust(Math.round((m.atk[0]+m.atk[1])/2),D.def)}</b> · สถานะที่เราใส่ติดนาน <b>×${clamp(1+((D.cha||0)-(m.cha||0))/100,.5,2).toFixed(2)}</b></div>`;}
-    x+=`<div class="ro-x">${Object.keys(PRESETS).map(n=>`<button class="rob" data-p="${n}">${n}</button>`).join(' ')} <button class="rob" data-p="reset">Reset</button>${testMode?' <button class="rob" id="rerollBase" title="ทดสอบหน้าสร้างตัว">🎲 สุ่มค่าพื้นฐาน</button>':''}<br><label><input type="checkbox" id="fastreg" ${fastRegen?'checked':''}> เร่งฟื้น HP/SP ×6 (ทดสอบ)</label></div>`;}
-  roWin('stw','Status',`<div class="ro-st" style="grid-template-columns:1fr 160px"><div style="display:flex;flex-direction:column;gap:4px">${c1}</div>${side}</div>${x}`,
+    อาวุธ <b>${WEAPON.refine?'+'+WEAPON.refine+' ':''}${WEAPON.name}</b> (${WEAPON.type}) · ${WEAPON.magic?'MATK':'ATK'} อาวุธ ${WEAPON.magic?WEAPON.matk:WEAPON.atk} + ตีบวก ${WEAPON.refAtk}<br>
+    โบนัสฮีโร่ (สุ่มตอนสร้างตัว): ${STATK.map(k=>STLAB[k]+' '+baseStat(k)).join(' · ')}</div>`;
+    if(m){const hc=hitChance(m),mh=clamp(80+(m.hit!=null?m.hit:m.lv||1)-D.flee,5,95);
+      x+=`<div class="ro-x"><b>${m.name}</b> Lv${m.lv}${m.role?' · '+m.role:''}${m.el?' · ธาตุ'+m.el:''}${m.race?' · '+m.race:''}${m.atype&&m.atype!=='melee'?' · '+(m.atype==='ranged'?'ตีไกล':'ร่ายเวท'):''}${m.healer?' · ฮีลเพื่อน':''}${m.boss?' · <span style="color:#c0392b">BOSS</span>':''}<br>HP ${m.hp} · ATK ${m.atk[0]}~${m.atk[1]} · DEF ${m.def} · MDEF ${m.mdef||0} · HIT ${m.hit||0} · FLEE ${m.flee||0}<br>
+        เราตีโดน <b>${hc}%</b> · ATK×1 เข้า <b>${defAdjust(D.patk,m.def)}</b> (MATK×1 เข้า <b>${defAdjust(D.mag,m.mdef||0)}</b>) · มันตีโดนเรา <b>${mh}%</b> ~<b>${defAdjust(Math.round((m.atk[0]+m.atk[1])/2),D.def)}</b> · สถานะที่เราใส่ติดนาน <b>×${chaMul(t).toFixed(2)}</b></div>`;}
+    x+=`<div class="ro-x">${Object.keys(PRESETS).map(n=>`<button class="rob" data-p="${n}">${n}</button>`).join(' ')} <button class="rob" data-p="reset">Reset</button>${testMode?' <button class="rob" id="rerollBase" title="ทดสอบหน้าสร้างตัว">🎲 สุ่มโบนัสฮีโร่</button>':''}<br><label><input type="checkbox" id="fastreg" ${fastRegen?'checked':''}> เร่งฟื้น HP/SP ×6 (ทดสอบ)</label></div>`;}
+  roWin('stw','Status',`<div class="ro-st" style="grid-template-columns:1fr 150px"><div style="display:flex;flex-direction:column;gap:3px">${c1}${der}</div>${side}</div>${x}`,
     `<span>Base Lv</span><button class="rob" data-l="-10">«</button><button class="rob" data-l="-1">-</button><b style="min-width:18px;text-align:center">${PS.lv}</b><button class="rob" data-l="1">+</button><button class="rob" data-l="10">»</button><button class="rob" id="lutest" title="ทดสอบเอฟเฟคเลเวลอัพ">LvUP ✦</button><span style="margin-left:auto"></span><button class="rob" id="stx2">${stOpenX?'▲ ย่อ':'▼ รายละเอียด'}</button>`);
   w.querySelectorAll('[data-s]').forEach(b=>b.onclick=ev=>{const k=b.dataset.s,d=+b.dataset.d*(ev.shiftKey?10:1);
-    PS[k]=d>0?Math.min(SYS.max,PS[k]+Math.min(d,pointsLeft())):Math.max(1,PS[k]+d);applyStats();});
+    if(d>0){for(let i=0;i<d&&PS[k]<SYS.max&&statCost(PS[k])<=pointsLeft();i++)PS[k]++;}else PS[k]=Math.max(1,PS[k]+d);applyStats();});
   {const rb=w.querySelector('#rerollBase');if(rb)rb.onclick=()=>openRollWin(()=>buildStatus());}
   w.querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>{PS.lv=clamp(PS.lv+ +b.dataset.l,1,LV_CAP);fitStats();applyStats();});
   w.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{const p=b.dataset.p;if(p==='reset')for(const k of STATK)PS[k]=1;else{PS.lv=LV_CAP;Object.assign(PS,presetAt(p,LV_CAP));PS._pre=p;}applyStats();});
@@ -5993,7 +6045,7 @@ document.getElementById('inspOpen').onclick=()=>{INS.open=true;insEl.style.displ
 function insTick(rdt){if(!INS.open||!INS.play)return;INS.acc+=rdt*1000;const D=durs(INS.st,INS.d);let moved=false;while(INS.acc>=D[INS.f]){INS.acc-=D[INS.f];INS.f=(INS.f+1)%D.length;moved=true;}if(moved)insDraw();}
 
 /* default test build per hero (12 Tails stats) — a Lv 60 hero since the level cap (presetAt scales the Lv 99 presets) */
-const CHAR_PRESET={wolf:'ตีแรง',owl:'ตีแรง',croc:'ตีแรง',cat:'ตีแรง',hippo:'ตีแรง',sheep:'สายเวท',dragon:'ตีแรง',lion:'ตีแรง',kitsune:'สายเวท',bastet:'สายเวท',anubis:'ตีแรง',jaguar:'เร็ว/บัฟ',rhino:'แทงก์',axolotl:'สายเวท'};
+const CHAR_PRESET={wolf:'STR',owl:'DEX',croc:'STR',cat:'AGI',hippo:'STR',sheep:'INT',dragon:'STR',lion:'STR',kitsune:'INT',bastet:'INT',anubis:'STR',jaguar:'AGI',rhino:'VIT',axolotl:'INT'};
 PS._pre=CHAR_PRESET[CHAR]||'ตีแรง';Object.assign(PS,presetAt(PS._pre,PS.lv));applyStats();player.hp=player.maxHp;player.mp=player.maxMp;
 window.AF={levelUp:()=>{if(PS.lv<LV_CAP){PS.lv++;applyStats();player.hp=player.maxHp;player.mp=player.maxMp;levelUpFx(PS.lv-1,PS.lv);}},player,enemies,useSlot,useSkill,command,SKILLS,get tab(){return tab;},setTab:i=>{tab=i;buildHotbar();},ground:(x,y,key='icePrison')=>{targeting={key};groundClick(x,y);},setSlow:v=>timeScale=v,LV,fx,get state(){return player.state;}};
 </script>

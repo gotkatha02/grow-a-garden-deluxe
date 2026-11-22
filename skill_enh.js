@@ -7,16 +7,16 @@
    fox → tails, curse cat → hex, jackal → momentum / sin …). The wolf's were hand-made in index.html.
 
    Kinds (all flat numbers or counters — owner's rule: no percents):
-     echo  [m…]        the skill strikes each target again 0.4 s later for ATK/TAL×m
+     echo  [m…]        the skill strikes each target again 0.4 s later for ATK/MATK×m
      splash[m…],R      each hit also hurts enemies around the target
-     flat  [v…]        ATK / TAL +v on this skill's hits
-     vs    [v…],st     ATK / TAL +v against enemies with a status (slow, stun, bleed, poison, root, armor)
+     flat  [v…]        ATK / MATK +v on this skill's hits
+     vs    [v…],st     ATK / MATK +v against enemies with a status (slow, stun, bleed, poison, root, armor)
      cc    [s…],type   hits slow / stun / root for s seconds (bosses half)
      sp    [v…]        using the skill gives SP +v
      heal  [v…]        using the skill heals level × v
      shield[v…]        using the skill gives a shield of level × v (6 s)
      cdr   [v…]        using the skill cuts the other skills' cooldowns by v s
-     buff  [v…],T      using the skill gives ATK / TAL +v for T s
+     buff  [v…],T      using the skill gives ATK / MATK +v for T s
      res   fn          hero-specific resource (tails, hex, souls, momentum, sin …)
    Damage numbers shown include the hero's coefficient like every other skill.
    ===================================================================== */
@@ -95,7 +95,7 @@ const RES={
 const ENH={byMain:{},list:[],shield:0,shieldT:0,cast:{},castId:0,cdrT:{}};window.ENH=ENH;
 const lvV=(d,lv)=>d.v[Math.min(lv,d.v.length)-1];
 const num=v=>(+v).toFixed(2).replace(/0+$/,'').replace(/\.$/,'');
-function stat(main){try{const t=skDT(main);return t==='m'||t==='h'||(t==='b'&&D.mag>D.patk)?'TAL':'ATK';}catch(e){return 'ATK';}}
+function stat(main){try{const t=skDT(main);return t==='m'||t==='h'||(t==='b'&&D.mag>D.patk)?'MATK':'ATK';}catch(e){return 'ATK';}}
 function line(d,lv){const v=lvV(d,lv),S=stat(d.main);
   switch(d.kind){case 'echo':return `ตีซ้ำแต่ละเป้าหลัง 0.4 วิ ${S}×${num(v)}`;case 'splash':return `ศัตรูรอบเป้า (รัศมี ${d.R}) โดน ${S}×${num(v)}`;
    case 'flat':return `${S} +${v} กับสกิลนี้`;case 'vs':return `${S} +${v} กับศัตรูที่${ST_TH[d.st]||d.st}`;

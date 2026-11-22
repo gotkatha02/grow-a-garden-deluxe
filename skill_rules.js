@@ -1,7 +1,7 @@
 /* =====================================================================
    AETHERFALL — SKILL RULES: damage type (physical / magic / heal) + crowd control
    ---------------------------------------------------------------------
-   • Physical ('p') damage scales with ATK (โจมตี), magic ('m') with TAL (เวท), heals ('h') with TAL.
+   • Physical ('p') damage scales with ATK (โจมตี), magic ('m') with MATK (เวท), heals ('h') with MATK.
      Magic hits show BLUE numbers and cannot crit; physical hits can crit.
    • Branch rule: Wolf / Jaguar / Owl → class A physical, class B magic.
      Rhino and Croc are pure physical classes; Axolotl is a pure water-magic class (class B heals).
@@ -19,7 +19,7 @@ const SK_DT={
   hoarfrostEdge:'m',runicDetonation:'m',glacialPath:'m',stormChain:'m',frostbloodPact:'m',worldstorm:'m',
   // jaguar C
   jcResidue:'m',jcSeal:'m',jcCorridor:'m',jcChain:'m',jcEternal:'m',
-  // jaguar C (12 nodes): Basic column = best of ATK/TAL, A = ATK, B = TAL
+  // jaguar C (12 nodes): Basic column = best of ATK/MATK, A = ATK, B = MATK
   jcEndlessHunt:'b',jcEcho:'p',jcMirage:'b',jcSkyPounce:'p',jcRhythm:'b',jcThousand:'p',jcTotem:'b',jcGodfall:'p',
   // owl C
   ocMastery:'b',ocExtra:'p',ocDouble:'m',ocMantle:'b',ocTwin:'p',ocErase:'m',ocFan:'b',ocNight:'p',ocPerma:'m',ocHunt:'b',ocMoonfall:'m',ocAvalanche:'m',
@@ -84,12 +84,12 @@ function skKO(k){if(!k||k==='basic')return 1;if(SK_KO[k]!=null)return SK_KO[k];c
   if(/leap|slam|smash|quake|meteor|uppercut|crush|drop|pounce|charge|break|impact|hammer|ทุบ|กระโดด|กระแทก|พุ่งชน/i.test(n))return 2.6;
   const cc=SK_CC[k];if(cc&&cc.air)return 2.4;if(cc&&cc.flinch)return 1.6;return 1;}
 const KO_LV=v=>v>=3.5?['สูงมาก','#ff6a4a']:v>=2.4?['สูง','#ffa04a']:v>=1.5?['กลาง','#ffd36a']:v>=.9?['ปกติ','#cfd6e0']:['ต่ำ','#8a94a8'];
-/* 12 Tails rule: a build goes one way. Pure classes use one stat for everything (ATK or TAL).
-   Two-way classes (A = ATK, B = TAL): the normal attack and Basic-branch skills use whichever power is higher ('b'),
-   so an ATK build and a TAL build both keep a working basic kit. */
+/* 12 Tails rule: a build goes one way. Pure classes use one stat for everything (ATK or MATK).
+   Two-way classes (A = ATK, B = MATK): the normal attack and Basic-branch skills use whichever power is higher ('b'),
+   so an ATK build and a MATK build both keep a working basic kit. */
 function skCol(k){try{for(const L of [typeof HP_DEFS!=='undefined'&&HP_DEFS,typeof KT_DEFS!=='undefined'&&KT_DEFS,typeof SP_DEFS!=='undefined'&&SP_DEFS,typeof DG_DEFS!=='undefined'&&DG_DEFS,typeof LI_DEFS!=='undefined'&&LI_DEFS,typeof KI_DEFS!=='undefined'&&KI_DEFS,typeof BA_DEFS!=='undefined'&&BA_DEFS,typeof ANU_DEFS!=='undefined'&&ANU_DEFS,typeof CRX_DEFS!=='undefined'&&CRX_DEFS]){if(!L)continue;const d=L.find(x=>x.key===k);if(d&&d.col)return d.col;}}catch(_){}return null;}
-/* owner 2026-11-19 (two-way heroes): normal attack = ATK only · magic-looking skills = TAL only ·
-   physical-looking skills ('x') = ATK 30% + TAL power 70% (MIX below) · Basic-branch 'b' = the higher of the two */
+/* owner 2026-11-19 (two-way heroes): normal attack = ATK only · magic-looking skills = MATK only ·
+   physical-looking skills ('x') = ATK 30% + MATK power 70% (MIX below) · Basic-branch 'b' = the higher of the two */
 const MIX={atk:.3,tal:.7};
 function skDT(k){const t=skDT0(k),r=DT_CHAR[CHAR]||'p';return r==='AB'&&t==='p'&&k&&k!=='basic'?'x':t;}
 function skDT0(k){
@@ -120,14 +120,14 @@ function hitCC(o){const k=o.skill||(o.owShot&&o.owShot.key)||window.SKCTX;return
 const CCTXT={stun:['สตั้น','#ffe066'],slow:['สโลว์','#9fe6ff'],air:['ลอย!','#ffb36a'],flinch:['ชะงัก','#ffd0a0']};
 const CCLINE=c=>Object.entries(c).map(([k,v])=>k==='air'?'ยกลอย':`${CCTXT[k][0]} ${v} วิ`).join(' + ');
 function skTypeHTML(k){const s=SKILLS[k];if(!s)return '';const t=skDT(k),cc=SK_CC[k];
-  const T=t==='x'?`<span style="color:#ffcf8a;font-weight:700">ดาเมจกายภาพผสม</span> · <b style="color:#ffb36a">ATK 30%</b> + <b style="color:#7ec8ff">พลัง TAL 70%</b>`
-    :t==='b'?`<span style="color:#e8d8ff;font-weight:700">ดาเมจตามสายที่บิ้ว</span> · ใช้ <b style="color:#ffb36a">ATK</b> หรือ <b style="color:#7ec8ff">พลัง TAL</b> ที่สูงกว่า`
-    :t==='m'?`<span style="color:#7ec8ff;font-weight:700">ดาเมจเวท</span> · แรงขึ้นตาม <b style="color:#7ec8ff">TAL</b>`
-    :t==='h'?`<span style="color:#8dff7a;font-weight:700">ฮีล</span> · ฮีลมากขึ้นตาม <b style="color:#8dff7a">TAL</b>`
+  const T=t==='x'?`<span style="color:#ffcf8a;font-weight:700">ดาเมจกายภาพผสม</span> · <b style="color:#ffb36a">ATK 30%</b> + <b style="color:#7ec8ff">MATK 70%</b>`
+    :t==='b'?`<span style="color:#e8d8ff;font-weight:700">ดาเมจตามสายที่บิ้ว</span> · ใช้ <b style="color:#ffb36a">ATK</b> หรือ <b style="color:#7ec8ff">MATK</b> ที่สูงกว่า`
+    :t==='m'?`<span style="color:#7ec8ff;font-weight:700">ดาเมจเวท</span> · แรงขึ้นตาม <b style="color:#7ec8ff">MATK</b>`
+    :t==='h'?`<span style="color:#8dff7a;font-weight:700">ฮีล</span> · ฮีลมากขึ้นตาม <b style="color:#8dff7a">MATK</b>`
     :`<span style="color:#ffb36a;font-weight:700">ดาเมจกายภาพ</span> · แรงขึ้นตาม <b style="color:#ffb36a">ATK</b>`;
   const s2=SKILLS[k],kv=skKO(k),[kn,kc]=KO_LV(kv),KO=(s2.passive&&!s2.make)?'':` · KO: <b style="color:${kc}">${kn}</b>`;
   return `<div class="tl" style="margin:3px 0">${T}${KO}${cc?` · สถานะ: <b style="color:#ffe066">${CCLINE(cc)}</b>`:''}</div>`;}
-function skTypeText(k){const t=skDT(k),cc=SK_CC[k];return (t==='x'?'ดาเมจกายภาพผสม (ATK 30% + TAL 70%)':t==='b'?'ดาเมจตามสายที่บิ้ว (ATK หรือ TAL ที่สูงกว่า)':t==='m'?'ดาเมจเวท (อัป TAL)':t==='h'?'ฮีล (อัป TAL)':'ดาเมจกายภาพ (อัป ATK)')+(t!=='h'?' · KO '+KO_LV(skKO(k))[0]:'')+(cc?' · สถานะ: '+CCLINE(cc):'');}
+function skTypeText(k){const t=skDT(k),cc=SK_CC[k];return (t==='x'?'ดาเมจกายภาพผสม (ATK 30% + MATK 70%) · พลาดได้ (HIT)':t==='b'?'ดาเมจตามสายที่บิ้ว (ATK หรือ MATK ที่สูงกว่า)':t==='m'?'ดาเมจเวท (อัป INT) · โดนเสมอ':t==='h'?'ฮีล (อัป INT)':'ดาเมจกายภาพ (อัป STR) · พลาดได้ (HIT)')+(t!=='h'?' · KO '+KO_LV(skKO(k))[0]:'')+(cc?' · สถานะ: '+CCLINE(cc):'');}
 Object.assign(window,{MIX,SK_KO,skKO,KO_LV,SK_DT,SK_CC,skDT,hitType,skCol,hitIsMagic,hitCC,CCTXT,skTypeHTML,skTypeText});
 window.SKCTX=null;
 })();

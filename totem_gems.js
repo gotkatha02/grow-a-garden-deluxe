@@ -54,7 +54,7 @@ const MUT=GD?GD.MUT:[ // mutation gems (gem_data.js; this copy is only a fallbac
  ['totem','เสาร่ายแทน','♆','#d9a441','ปักเสาร่ายสกิลทุก 2 วิ × 4 ครั้ง พลัง ×0.45','ระหว่างเสาอยู่ใช้สกิลนั้นเองไม่ได้']];
 const SUP=GD?GD.SUP:[ // support gems: [id, name, symbol, colour, effect]
  ['echo','เงาสกิล','⟲','#9b7bff','0.5 วิหลังใช้ ออกซ้ำ ×0.35 (ท่าบัฟ: +3 วิ)'],['third','ทุกครั้งที่สาม','③','#ffb13b','ทุกครั้งที่ 3 แรง ×1.5 (ท่าบัฟ: รีเซ็ตคูลดาวน์)'],
- ['force','เพิ่มแรง','✚','#ff6a4a','ทุกฮิต +ATK×0.15 หรือ TAL×0.15 (ท่าบัฟ: +2 วิ)'],['splash','กระจาย','✺','#ff9a3a','ตัวที่โดนแตก ×0.3 รัศมี 70 (ท่าบัฟ: โล่ Lv×3)'],
+ ['force','เพิ่มแรง','✚','#ff6a4a','ทุกฮิต +ATK×0.15 หรือ MATK×0.15 (ท่าบัฟ: +2 วิ)'],['splash','กระจาย','✺','#ff9a3a','ตัวที่โดนแตก ×0.3 รัศมี 70 (ท่าบัฟ: โล่ Lv×3)'],
  ['chain','ชิ่ง','ϟ','#5ad1ff','ฮิตสุดท้ายชิ่ง 2 ตัว ×0.3 (ท่าบัฟ: +2 วิ)'],['quick','เร่ง','⏱','#7fe08a','คูลดาวน์ −1.5 วิ'],
  ['thrift','ประหยัด','◆','#4aa8ff','SP −6'],['burn','เผาไหม้','♨','#ff5a2a','ทุกฮิตติดไฟ Lv×1/วิ 3 วิ (ท่าบัฟ: ไฟรอบตัว)'],
  ['frost','เยือกแข็ง','❄','#8fe6ff','ทุกครั้งที่ 3 ช้า −40 · ทุกครั้งที่ 6 แช่แข็ง 0.8 วิ'],['pierce','ทะลวง','➶','#d8d8e8','ไม่สน DEF 20 (ท่าบัฟ: +2 วิ)'],
@@ -1188,7 +1188,7 @@ function apply(){const S=G('SKILLS'),LV=G('LV');if(!S||!LV)return;let chg=false;
   for(const k in S){const s=S[k];if(s._gb){s.mp=s._gb.mp;s.cd=s._gb.cd;delete s._gb;}}
   ACT={};
   const tgt=D.sock.map(k=>k&&LV[k]&&D.own[k]?targetOf(k):null);
-  const GS={},addS=(l,q,lv)=>{const st=SLINE[l[0]];if(!st)return false;GS[st]=(GS[st]||0)+statN(LV_V(l[1],q,lv));return true;};   /* stat lines → character stats */
+  const GS={},addS=(l,q,lv)=>{const st=SLINE[l[0]];if(!st)return false;GS[st]=(GS[st]||0)+statN(LV_V(l[1],q,lv))*((GD&&GD.SLINE_MUL&&GD.SLINE_MUL[st])||1);return true;};   /* stat lines → character stats */
   const MC={};   /* working mutation gems per kind (resonance / balance) */
   D.sock.forEach((k,i)=>{if(!k||!LV[k]||!D.own[k])return;const t=targetOf(k);if(t!=='@auto'&&!S[t])return;const m=D.mods[k]||[];
     const A=ACT[t]||(ACT[t]={gems:[],lv:1,mut:[],sup:[],n:0,casts:0,ln:{},elem:0,next:null,socks:[]});A.gems.push(k);A.lv=Math.max(A.lv,D.own[k].lv||1);A.socks.push(i);

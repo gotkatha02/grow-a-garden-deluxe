@@ -18,15 +18,15 @@ const fmt=n=>Math.round(n).toLocaleString('en-US');
 
 /* ---------------- regions / towns ---------------- */
 const TOWNS={
-  vik:{name:'ฟรอสต์เฮล์ม',map:'frostheim',pair:['atk','vit'],third:'lck',col:'#7fb8e8',
+  vik:{name:'ฟรอสต์เฮล์ม',map:'frostheim',pair:['str','vit'],third:'luk',col:'#7fb8e8',
     pre:['Driftwood','Iron','Wolfbone','Runic','Frostforged','Glacier','Valkyrie','Jotun','Einherjar','Fenrir']},
-  azt:{name:'โชชิตลัน',map:'aztT',pair:['agi','cha'],third:'lck',col:'#5fbf6a',
+  azt:{name:'โชชิตลัน',map:'aztT',pair:['agi','luk'],third:'dex',col:'#5fbf6a',
     pre:['Reed','Bone','Jade','Obsidian','Feathered','Jaguar','Serpent','Sunforged','Quetzal','Solar']},
-  grk:{name:'ไอโอเนีย',map:'grkT',pair:['vit','def'],third:'cha',col:'#d8c890',
+  grk:{name:'ไอโอเนีย',map:'grkT',pair:['vit','def'],third:'int',col:'#d8c890',
     pre:['Olive','Bronze','Marble','Hoplite','Spartan','Oracle','Titan','Olympian','Aegis','Thunderlord']},
-  egy:{name:'เคเมท',map:'egyT',pair:['tal','int'],third:'cha',col:'#e8b84a',
+  egy:{name:'เคเมท',map:'egyT',pair:['int','dex'],third:'luk',col:'#e8b84a',
     pre:['Linen','Papyrus','Scarab','Sandstone','Jackal','Sphinx','Ankh','Pharaoh','Sun-Disk','Eternal']},
-  jpn:{name:'ฮาคุเซ็น',map:'jpnT',pair:['atk','agi'],third:'lck',col:'#f08aa8',
+  jpn:{name:'ฮาคุเซ็น',map:'jpnT',pair:['str','agi'],third:'dex',col:'#f08aa8',
     pre:['Bamboo','Paper','Ashigaru','Ronin','Shinobi','Samurai','Oni','Daimyo','Shogun','Raijin']}};
 /* craft tiers Lv30/50/70 are their own themed sets (Lv90 = the town's signature set) */
 {const TS={vik:['Fjord Fisher','Longship Raider','Bear Berserker'],azt:['Maize Farmer','Jaguar Warrior','Turquoise Serpent'],
@@ -58,8 +58,13 @@ const MATS={
        ['Vulture Plume','ขนแร้ง','Embalming Oil','น้ำมันอาบศพ'],['Tomb Dust','ฝุ่นสุสาน','Canopic Jar','โถคาโนปิก'],['Sand Worm Hide','หนังหนอนทราย','Ankh Shard','เศษอังค์'],['Anubis Cloth','ผ้าอนูบิส','Pharaoh Gold','ทองฟาโรห์'],['Djinn Smoke','ควันจินน์','Eye of Ra','ดวงตาแห่งรา']],
   jpn:[['Sakura Petal','กลีบซากุระ','Tanuki Leaf','ใบไม้ทานุกิ'],['Rice Straw','ฟางข้าว','Kappa Plate','จานกัปปะ'],['Bamboo Strip','ซีกไผ่','Panda Fur','ขนแพนด้าแดง'],['Onsen Stone','หินออนเซ็น','Steam Crystal','ผลึกไอน้ำ'],['Fox Tail','หางจิ้งจอก','Tengu Feather','ขนเท็งงุ'],
        ['Pirate Rope','เชือกโจรสลัด','Ink Sac','ถุงหมึก'],['Shuriken','ดาวกระจาย','Toad Oil','น้ำมันคางคก'],['Spirit Talisman','ยันต์วิญญาณ','Ronin Steel','เหล็กโรนิน'],['Oni Horn','เขาโอนิ','Tamahagane','เหล็กทามาฮากาเนะ'],['Shogun Seal','ตราโชกุน','Raiju Spark','ประกายไรจู']]};
-const STN={atk:'ATK',def:'DEF',agi:'AGI',vit:'VIT',int:'INT',cha:'CHA',tal:'TAL',lck:'LCK'};
-const ORB_COL={atk:'#e2574c',def:'#8a96a8',agi:'#5fd0a0',vit:'#f08a3a',int:'#7fa8ff',cha:'#f0a8d8',tal:'#b07aff',lck:'#f5d040'};
+/* RO stats (2026-11-22): items give weapon ATK / MATK and armour DEF / MDEF at their own scale + small STR … LUK bonuses + special stats */
+const STN={str:'STR',agi:'AGI',vit:'VIT',int:'INT',dex:'DEX',luk:'LUK',atk:'ATK',matk:'MATK',def:'DEF',mdef:'MDEF',hit:'HIT',flee:'FLEE'};
+const SHOWK=['atk','matk','def','mdef','str','agi','vit','int','dex','luk','hit','flee'];   // stat order on item lines
+const ORB_K=['str','agi','vit','int','dex','luk','def'];                                    // orb kinds (small RO-style cards)
+const ORB_COL={str:'#e2574c',agi:'#5fd0a0',vit:'#f08a3a',int:'#b07aff',dex:'#7fa8ff',luk:'#f5d040',def:'#8a96a8'};
+/* old 12 Tails orb ids → RO (bag goods, market box): 'int' was SP / cast speed → DEX, only on the first load of an old save */
+const ORB_OLD={atk:'str',tal:'int',cha:'luk',lck:'luk'};
 const matA=(r,g)=>`m_${r}_${g}_a`,matB=(r,g)=>`m_${r}_${g}_b`;
 const ETC={};
 for(const r in MATS)MATS[r].forEach((m,g)=>{const lv=bandTxt(g);
@@ -91,12 +96,12 @@ const CONS={
   sp2:{n:'Blue Potion',th:'ยาฟ้า',lv:30,sp:150,price:300,col:'#3a6ad8',d:'ฟื้น SP 150'},
   sp3:{n:'Mana Elixir',th:'ยาน้ำมานา',lv:60,sp:300,price:900,col:'#7a4ad8',d:'ฟื้น SP 300'},
   elixir:{n:'World Tree Dew',th:'น้ำค้างต้นไม้โลก',lv:1,full:1,price:15000,col:'#7fe0a0',d:'ฟื้น HP และ SP เต็ม (ดรอปจากดันเจี้ยน ไม่มีขาย)'},
-  food_atk:{n:'Roast Boar',th:'หมูป่าย่าง',lv:1,buff:'atk',price:1500,col:'#c9884a',d:'ATK +5 +2 ต่อ 10 เลเวล · 10 นาที'},
-  food_def:{n:'Iron Stew',th:'สตูว์เหล็ก',lv:1,buff:'def',price:1500,col:'#8a96a8',d:'DEF +5 +2 ต่อ 10 เลเวล · 10 นาที'},
-  food_vit:{n:'Hearty Soup',th:'ซุปบำรุง',lv:1,buff:'vit',price:1500,col:'#f0a050',d:'VIT +5 +2 ต่อ 10 เลเวล · 10 นาที'},
-  food_agi:{n:'Wind Dumpling',th:'เกี๊ยวสายลม',lv:1,buff:'agi',price:1500,col:'#5fd0a0',d:'AGI +5 +2 ต่อ 10 เลเวล · 10 นาที'},
-  food_tal:{n:'Star Tea',th:'ชาดวงดาว',lv:1,buff:'tal',price:1500,col:'#b07aff',d:'TAL +5 +2 ต่อ 10 เลเวล · 10 นาที'},
-  food_cha:{n:'Honey Cake',th:'เค้กน้ำผึ้ง',lv:1,buff:'cha',price:1500,col:'#f0a8d8',d:'CHA +5 +2 ต่อ 10 เลเวล · 10 นาที'},
+  food_atk:{n:'Roast Boar',th:'หมูป่าย่าง',lv:1,buff:'str',price:1500,col:'#c9884a',d:'STR +3 +1 ต่อ 10 เลเวล · 10 นาที'},
+  food_def:{n:'Iron Stew',th:'สตูว์เหล็ก',lv:1,buff:'def',price:1500,col:'#8a96a8',d:'DEF +3 +1 ต่อ 10 เลเวล · 10 นาที'},
+  food_vit:{n:'Hearty Soup',th:'ซุปบำรุง',lv:1,buff:'vit',price:1500,col:'#f0a050',d:'VIT +3 +1 ต่อ 10 เลเวล · 10 นาที'},
+  food_agi:{n:'Wind Dumpling',th:'เกี๊ยวสายลม',lv:1,buff:'agi',price:1500,col:'#5fd0a0',d:'AGI +3 +1 ต่อ 10 เลเวล · 10 นาที'},
+  food_tal:{n:'Star Tea',th:'ชาดวงดาว',lv:1,buff:'int',price:1500,col:'#b07aff',d:'INT +3 +1 ต่อ 10 เลเวล · 10 นาที'},
+  food_cha:{n:'Honey Cake',th:'เค้กน้ำผึ้ง',lv:1,buff:'dex',price:1500,col:'#f0a8d8',d:'DEX +3 +1 ต่อ 10 เลเวล · 10 นาที'},
   manual:{n:'Battle Manual',th:'คู่มือการต่อสู้',lv:1,exp:.5,price:20000,col:'#d8b070',d:'EXP +50% · 30 นาที'},
   ret:{n:'Return Scroll',th:'ม้วนกลับเมืองเกิด',lv:1,warp:'home',price:300,col:'#e8d8a0',d:'วาร์ปกลับเมืองเกิด'},
   capscroll:{n:'Capital Scroll',th:'ม้วนวาร์ปเมืองหลวง',lv:1,warp:'capT',price:800,col:'#f5d36a',d:'วาร์ปไปเมืองหลวง (ตลาดกลาง)'},
@@ -105,7 +110,7 @@ for(const k in CONS)if(CONS[k].lv>1)CONS[k].lv=LC.nc(CONS[k].lv);   /* level cap
 for(const k in CONS)ETC[k]=Object.assign({kind:'use'},CONS[k]);
 const ORB_RANGE=t=>[[1,1],[1,1],[1,1],[1,2]][Math.max(1,Math.min(4,t))-1];   // owner 2026-11-19: 12 Tails has 3 gear pieces × 4 holes, we have 8 pieces / 16 holes → orbs stay tiny; all items together ≈ +50 to one stat
 //   // value rolled when socketed   // rebalanced 2026-11-18: was 1–5 … 16–20 (24 holes × 20 = +480 to one stat)
-for(const s in STN)for(let t=1;t<=4;t++)ETC[`orb_${s}_${t}`]={n:`${STN[s]} Orb T${t}`,th:`หินออฟ ${STN[s]} ขั้น ${t}`,price:300*t*t,kind:'orb',stat:s,tier:t,col:ORB_COL[s],d:`ยัดลงรู: ${STN[s]} +${ORB_RANGE(t)[0]}–${ORB_RANGE(t)[1]} (สุ่มตอนยัด)`};
+for(const s of ORB_K)for(let t=1;t<=4;t++)ETC[`orb_${s}_${t}`]={n:`${STN[s]} Orb T${t}`,th:`หินออฟ ${STN[s]} ขั้น ${t}`,price:300*t*t,kind:'orb',stat:s,tier:t,col:ORB_COL[s],d:`ยัดลงรู: ${STN[s]} +${ORB_RANGE(t)[0]}–${ORB_RANGE(t)[1]} (สุ่มตอนยัด)`};
 
 /* ---------------- tuning ---------------- */
 /* economy (tuned 2026-11-16): one grade (10 levels, ~240–960 kills) drops enough for 4–16 crafts → early you choose which
@@ -130,9 +135,9 @@ const holeCap=it=>it.slot==='acc'?0:it.dset!==undefined?1:(it.slot==='rhand'||it
 /* 5 kinds since 2026-11-21 (owner: weapon · headgear · armour · shoes · one accessory). The cut pieces' stats moved onto the rest so a full set
    is as strong as before: town-pair weight 1+1+.6+.6+.6+1+1 (old 7 pieces) = 1+1+1+1+1.8 (new 5) · DEF 10+3.14g = armour 5+1.75g + helm 2.5+.72g + boots 2.5+.67g.
    garment stays defined (gone:1) so old cloaks in bags still show and sell; GEAR = the kinds that exist now. */
-const SLOTS={rhand:{nm:'อาวุธ',code:'W',main:g=>40+20*g,pm:1,w:150},armor:{nm:'เกราะ',code:'B',kind:'Armor',noun:'Mail',main:g=>5+1.75*g,pm:1,w:200},
-  top:{nm:'หมวก',code:'T',kind:'Upper Headgear',noun:'Helm',main:g=>2.5+.72*g,pm:1,w:50},garment:{nm:'ผ้าคลุม',code:'G',kind:'Garment',noun:'Cloak',main:g=>2+.56*g,pm:.6,w:40,gone:1},
-  shoes:{nm:'รองเท้า',code:'S',kind:'Shoes',noun:'Boots',main:g=>2.5+.67*g,pm:1,w:40},acc:{nm:'เครื่องประดับ',code:'A',kind:'Accessory',noun:'Charm',main:null,pm:1.8,w:10}};
+const SLOTS={rhand:{nm:'อาวุธ',code:'W',main:g=>40+20*g,pm:1,w:150},armor:{nm:'เกราะ',code:'B',kind:'Armor',noun:'Mail',main:g=>5+1.75*g,mdef:.15,pm:1,w:200},
+  top:{nm:'หมวก',code:'T',kind:'Upper Headgear',noun:'Helm',main:g=>2.5+.72*g,mdef:.3,pm:1,w:50},garment:{nm:'ผ้าคลุม',code:'G',kind:'Garment',noun:'Cloak',main:g=>2+.56*g,pm:.6,w:40,gone:1},
+  shoes:{nm:'รองเท้า',code:'S',kind:'Shoes',noun:'Boots',main:g=>2.5+.67*g,mdef:.1,pm:1,w:40},acc:{nm:'เครื่องประดับ',code:'A',kind:'Accessory',noun:'Charm',main:null,pm:1.8,w:10}};
 const GEAR=Object.keys(SLOTS).filter(s=>!SLOTS[s].gone);
 const PAIR=g=>[3+1.7*g,2+1.33*g,1+.78*g];                                        // town pair stat 1 / 2 / third stat
 const W_NOUN={wolf:'Greataxe',rhino:'Knuckles',owl:'Crossbow',jaguar:'Fang Daggers',croc:'Spear',axolotl:'Bracelets'};
@@ -141,16 +146,27 @@ const W_NOUN={wolf:'Greataxe',rhino:'Knuckles',owl:'Crossbow',jaguar:'Fang Dagge
    value = max × (0.4 + 0.6·grade/9) × random(0.3…1) · count 1 (60%) / 2 (30%) / 3 (10%) · each stat once per item
    slots: W weapon · B armour · T helm · G cloak · S boots · A accessory */
 const AFF={
-  crit:{n:'คริ',max:6,s:'WAT'},critDmg:{n:'ดาเมจคริ',max:15,s:'WA'},skillDmg:{n:'ดาเมจสกิล',max:8,s:'WAT'},autoDmg:{n:'ดาเมจตีปกติ',max:10,s:'WA'},
+  crit:{n:'CRIT',max:6,flat:1,s:'WAT'},hit:{n:'HIT',max:12,flat:1,s:'WTA'},flee:{n:'FLEE',max:12,flat:1,s:'BGSA'},pd:{n:'หลบเด็ดขาด',max:3,flat:1,s:'GSA'},
+  aspd:{n:'ASPD',max:6,s:'WA'},cast:{n:'เวลาร่าย',max:8,neg:1,s:'WTA'},atkPct:{n:'ATK',max:5,s:'WA'},matkPct:{n:'MATK',max:5,s:'WA'},
+  raceDmg:{n:'ดาเมจใส่เผ่า',max:12,fam:'r',s:'WA'},elDmg:{n:'ดาเมจใส่ธาตุ',max:12,fam:'e',s:'WA'},elRes:{n:'ต้านธาตุ',max:15,fam:'x',s:'BTGS'},critDmg:{n:'ดาเมจคริ',max:15,s:'WA'},skillDmg:{n:'ดาเมจสกิล',max:8,s:'WAT'},autoDmg:{n:'ดาเมจตีปกติ',max:10,s:'WA'},
   bossDmg:{n:'ดาเมจใส่มอนถึก/บอส',max:12,s:'W'},lifesteal:{n:'ดูดเลือด',max:2,dec:1,s:'WA'},
   hpPct:{n:'MaxHP',max:8,s:'BTGSA'},dmgRed:{n:'รับดาเมจ',max:5,neg:1,s:'BGS'},hpRegen:{n:'ฟื้น HP',max:40,s:'BTGS'},
   spPct:{n:'MaxSP',max:10,s:'TGA'},cdr:{n:'คูลดาวน์',max:5,neg:1,s:'TGSA'},move:{n:'เดินเร็ว',max:6,s:'SG'},spCost:{n:'ใช้ SP',max:8,neg:1,s:'WTA'},
   exp:{n:'EXP',max:5,s:'A'},zeny:{n:'Zeny',max:8,s:'A'},drop:{n:'ดรอปวัตถุดิบ',max:8,s:'A'}};
-const affLabel=(k,v)=>{const A=AFF[k];return A?`${A.n} ${A.neg?'-':'+'}${v}%`:`${k} +${v}%`;};
+/* monster races / elements (monsters.js) for the RO-style race / element special stats: key r_<race> · e_<element> · x_<element> */
+const RACES=['Formless','Undead','Brute','Plant','Insect','Fish','Demon','Demi-Human','Angel','Dragon'],ELS=['Water','Fire','Earth','Wind','Poison','Holy','Dark','Ghost','Undead'];
+const RACE_N={Formless:'ไร้รูป',Undead:'อันเดด',Brute:'สัตว์ร้าย',Plant:'พืช',Insect:'แมลง',Fish:'ปลา/น้ำ',Demon:'ปีศาจ','Demi-Human':'มนุษย์ครึ่ง',Angel:'เทวดา',Dragon:'มังกร'};
+const EL_N={Neutral:'ไร้ธาตุ',Water:'น้ำ',Fire:'ไฟ',Earth:'ดิน',Wind:'ลม',Poison:'พิษ',Holy:'ศักดิ์สิทธิ์',Dark:'มืด',Ghost:'วิญญาณ',Undead:'อมตะ'};
+const FAM={r:RACES,e:ELS,x:ELS};
+const raceOf=e=>(e&&e.vdef&&e.vdef._t&&e.vdef._t.race)||(e&&e.m&&e.m.race)||'';
+const elOf=e=>(e&&e.vdef&&e.vdef._t&&e.vdef._t.el)||String((e&&e.m&&e.m.el)||'').split(' ')[0];
+const affLabel=(k,v)=>{const f=/^([rex])_(.+)$/.exec(k);if(f){const q=f[2];return f[1]==='r'?`ดาเมจใส่${RACE_N[q]||q} +${v}%`:f[1]==='e'?`ดาเมจใส่ธาตุ${EL_N[q]||q} +${v}%`:`ต้านธาตุ${EL_N[q]||q} -${v}%`;}
+  const A=AFF[k];return A?`${A.n} ${A.neg?'-':'+'}${v}${A.flat?'':'%'}`:`${k} +${v}%`;};
 function rollAffixes(slot,g){const code=SLOTS[slot].code,pool=Object.keys(AFF).filter(k=>AFF[k].s.includes(code)),x=Math.random(),n=x<.6?1:x<.9?2:3,out=[];
   while(out.length<n&&pool.length){const k=pool.splice(Math.floor(Math.random()*pool.length),1)[0],A=AFF[k],raw=A.max*(.4+.6*g/9)*rnd(.3,1);
-    out.push({k,v:A.dec?Math.max(.1,Math.round(raw*10)/10):Math.max(1,Math.round(raw))});}return out;}
-const affRating=it=>(it.aff||[]).reduce((s,a)=>s+a.v/(AFF[a.k].max*(.4+.6*(it.grade||0)/9)),0);   // 0…3, how good the roll is
+    out.push({k:A.fam?A.fam+'_'+FAM[A.fam][Math.floor(Math.random()*FAM[A.fam].length)]:k,v:A.dec?Math.max(.1,Math.round(raw*10)/10):Math.max(1,Math.round(raw))});}return out;}
+const affKey=k=>{const f=/^([rex])_/.exec(k);return f?{r:'raceDmg',e:'elDmg',x:'elRes'}[f[1]]:k;};
+const affRating=it=>(it.aff||[]).reduce((s,a)=>s+a.v/((AFF[affKey(a.k)]||{max:a.v||1}).max*(.4+.6*(it.grade||0)/9)),0);   // 0…3, how good the roll is
 
 /* ---------------- traits (3 per town, power × grade) ---------------- */
 const TRAITS={
@@ -182,7 +198,7 @@ const BUFF={food:null,manual:0};                                                
 const isInst=id=>/^i\d+$/.test(id);
 function newInst(base,data){const id='i'+(++SEQ);ITEMS[id]=Object.assign({},ITEMS[base]||{},data||{},{base:data&&data.base!==undefined?data.base:base});return id;}
 function ownedIds(){return [...Object.values(EQ).filter(Boolean),...INV];}
-function save(){try{const inst={};for(const id of ownedIds())inst[id]=ITEMS[id];localStorage.setItem(SKEY,JSON.stringify({v:1,zeny:ZENY,seq:SEQ,bag:BAG,buff:BUFF,inst,inv:INV.slice(),eq:{...EQ}}));}catch(e){}}
+function save(){try{const inst={};for(const id of ownedIds())inst[id]=ITEMS[id];localStorage.setItem(SKEY,JSON.stringify({v:1,ro:1,zeny:ZENY,seq:SEQ,bag:BAG,buff:BUFF,inst,inv:INV.slice(),eq:{...EQ}}));}catch(e){}}
 let FRESH=false;                                                                // no item save yet = a brand-new hero (market.js clears that hero's market record)
 /* level cap 60 (owner 2026-11-22): an item's level requirement is re-read from its grade / base item on the new scale, so saves
    from before (grade 9 = Lv 90) open as Lv 55 pieces; a replicated look keeps its source's level, converted once (rep.lc) */
@@ -192,12 +208,19 @@ function lvFix(it){if(!it||typeof it!=='object')return it;
   if(it.rep&&it.rep.lv&&!it.rep.lc){it.rep.lv=LC.nc(it.rep.lv);it.rep.lc=1;}return it;}
 function load(){let s=null;try{s=JSON.parse(localStorage.getItem(SKEY)||'null');}catch(e){}
   if(s&&s.v===1){ZENY=s.zeny||0;SEQ=s.seq||0;Object.assign(BUFF,s.buff||{});
+    /* RO stats (2026-11-22): an old save's orbs / food buff move to the new stats once (old INT orbs = SP / cast → DEX) */
+    if(!s.ro){const B0=s.bag||{};s.bag={};for(const k in B0){const m=/^orb_(\w+)_(\d)$/.exec(k),n=m?`orb_${({...ORB_OLD,int:'dex'})[m[1]]||m[1]}_${m[2]}`:k;s.bag[n]=(s.bag[n]||0)+B0[k];}
+      if(BUFF.food&&K12[BUFF.food.stat])BUFF.food.stat=K12[BUFF.food.stat];}
+    for(const k in s.bag||{}){const m=/^orb_(atk|tal|cha|lck)_(\d)$/.exec(k);if(m){const n=`orb_${ORB_OLD[m[1]]}_${m[2]}`;s.bag[n]=(s.bag[n]||0)+s.bag[k];delete s.bag[k];}}   // stray old orbs (market box)
     for(const k in s.bag||{}){const m=/^m_(\w+)_(\d)_([ab])$/.exec(k);if(m&&!ETC[k])continue;BAG[k]=s.bag[k];}   // drop materials from the old 4-tier table
     for(const id in s.inst||{}){const it=ITEMS[id]=s.inst[id];if(it.crafted&&it.grade===undefined){it.grade=[0,3,6,9][(it.tier||1)-1];restat(id);}
       if(it.crafted&&![3,5,7,9].includes(it.grade)){it.grade=[3,3,3,3,3,5,5,7,7,9][it.grade]??3;restat(id);}
       if(it.crafted&&!it.renamed)it.n=craftName(it.town,it.cslot,it.grade);   /* crafting now has 4 tiers (Lv30/50/70/90): older pieces move to the nearest */
       if(!it.sealM){const sl=it.cslot||it.slot;if(SEAL_SL.includes(sl)&&!it.seal){if(it.crafted&&TOWNS[it.town])it.seal=it.town;else if(it.dset!==undefined)it.seal=Object.keys(TOWNS)[(parseInt(id.slice(1))||0)%5];}it.sealM=1;}   /* totem seals (2026-11-21): crafted = its town, drop pieces = a fixed pick */
       if(it.trait){const g=TRAIT2SEAL[it.trait];if(g)(window.__SEAL_GRANTS=window.__SEAL_GRANTS||[]).push(g);delete it.trait;}   /* an old trait unlocks the seal power it became */
+      if(!it.ro){if(it.crafted&&TOWNS[it.town]&&it.cslot&&SLOTS[it.cslot]&&it.grade!=null){it.st=craftStats(it.town,it.cslot,it.grade,it.magic);it.s5=1;}
+        else if(it.dset!=null&&it.cslot&&SLOTS[it.cslot]&&it.grade!=null){it.st=dsStats(it.dset,it.cslot,it.magic);it.s5=1;}else if(it.st)it.st=conv12(it.st,it.slot);
+        if(it.orbs)it.orbs=it.orbs.map(o=>ORB12[o.s]?Object.assign({},o,{s:ORB12[o.s]}):o);it.ro=1;}   /* RO stats (2026-11-22): old pieces re-read their stats once */
       if(!it.s5&&it.cslot&&SLOTS[it.cslot]&&!SLOTS[it.cslot].gone&&it.grade!=null){it.st=it.crafted?craftStats(it.town,it.cslot,it.grade,it.magic):it.dset!==undefined?dsStats(it.dset,it.cslot,it.magic):it.st;it.s5=1;}lvFix(it);}   /* 5-slot cut (2026-11-21): helms / boots / armour / accessories carry the stats of the removed pieces */
     INV.length=0;for(const id of s.inv||[])if(ITEMS[id])INV.push(id);for(const sl in EQ)EQ[sl]=s.eq&&ITEMS[s.eq[sl]]?s.eq[sl]:null;for(const sl of ['low','lhand','mid','garment','acc2'])if(s.eq&&ITEMS[s.eq[sl]]&&!INV.includes(s.eq[sl]))INV.push(s.eq[sl]);return;}   /* removed slots (2026-11-19: low, lhand · 2026-11-21: mid, garment, acc2): old gear goes back to the bag */
   FRESH=true;
@@ -220,16 +243,18 @@ const etcName=id=>ETC[id]?ETC[id].th:id;
 /* ---------------- crafted item generation ---------------- */
 /* the hero's weapon type (kind, speed, magic or physical) comes from the weapon it holds / owns */
 function classWeapon(){const id=EQ.rhand||INV.find(i=>ITEMS[i]&&ITEMS[i].slot==='rhand'),w=ITEMS[id]||{},S=id?itemSt(id).st:{};
-  return {kind:w.kind||'Weapon',two:w.two,aspd:w.aspd||150,size:w.size,magic:(S.tal||0)>(S.atk||0)};}
+  return {kind:w.kind||'Weapon',two:w.two,aspd:w.aspd||150,size:w.size,magic:(S.matk||0)>(S.atk||0)};}
+/* a pair / third stat on a piece: STR … LUK ×0.1 (+1 at least), a DEF / MDEF pair ×0.15 (raw hard DEF) */
+const pairPut=(put,k,v)=>{if(k==='def'||k==='mdef')put(k,v*.15);else put(k,Math.sign(v)*Math.max(1,Math.round(Math.abs(v)*ITEM_STAT_SCALE)));};
 function craftStats(town,slot,g,magic){const T=TOWNS[town],S=SLOTS[slot],P=PAIR(g),st={},put=(k,v)=>{v=Math.round(v);if(v)st[k]=(st[k]||0)+v;};
-  if(slot==='rhand')put(magic?'tal':'atk',S.main(g));else if(S.main)put('def',S.main(g));
-  put(T.pair[0],P[0]*S.pm);put(T.pair[1],P[1]*S.pm);put(T.third,P[2]*S.pm);return st;}
+  if(slot==='rhand')put(magic?'matk':'atk',S.main(g));else if(S.main){put('def',S.main(g));if(S.mdef)put('mdef',Math.max(1,S.main(g)*S.mdef));}
+  pairPut(put,T.pair[0],P[0]*S.pm);pairPut(put,T.pair[1],P[1]*S.pm);pairPut(put,T.third,P[2]*S.pm);return st;}
 function craftName(town,slot,g){return `${TOWNS[town].pre[g]} ${slot==='rhand'?(W_NOUN[CHAR]||'Weapon'):SLOTS[slot].noun}`;}
 function craftItem(town,slot,g=0,seal=null){const S=SLOTS[slot],cw=slot==='rhand'?classWeapon():{},aff=rollAffixes(slot,g),x={};for(const a of aff)x[a.k]=(x[a.k]||0)+a.v;
   return newInst(null,{base:null,n:craftName(town,slot,g),slot,kind:slot==='rhand'?cw.kind:S.kind,two:cw.two,aspd:cw.aspd,size:cw.size,magic:!!cw.magic,
-    st:craftStats(town,slot,g,cw.magic),x,aff,b:{},grade:g,tier:gradeTier(g),wlv:gradeTier(g),lvReq:gradeLv(g),town,seal:SEAL_SL.includes(slot)?(TOWNS[seal]?seal:town):undefined,sealM:1,sockets:0,orbs:[],ref:0,w:S.w,crafted:1,cslot:slot,
+    st:craftStats(town,slot,g,cw.magic),ro:1,x,aff,b:{},grade:g,tier:gradeTier(g),wlv:gradeTier(g),lvReq:gradeLv(g),town,seal:SEAL_SL.includes(slot)?(TOWNS[seal]?seal:town):undefined,sealM:1,sockets:0,orbs:[],ref:0,w:S.w,crafted:1,cslot:slot,
     rank:slot==='rhand'?JOB.name:'All',d:`เซ็ทคราฟ${TOWNS[town].name} Lv${gradeLv(g)}`});}
-function restat(id){const it=ITEMS[id],g=it.grade;it.tier=it.wlv=gradeTier(g);it.lvReq=gradeLv(g);it.st=craftStats(it.town,it.cslot,g,it.magic);it.n=craftName(it.town,it.cslot,g);
+function restat(id){const it=ITEMS[id],g=it.grade;it.tier=it.wlv=gradeTier(g);it.lvReq=gradeLv(g);it.st=craftStats(it.town,it.cslot,g,it.magic);it.ro=1;it.n=craftName(it.town,it.cslot,g);
   if(!it.aff){it.aff=rollAffixes(it.cslot,g);it.x={};for(const a of it.aff)it.x[a.k]=(it.x[a.k]||0)+a.v;}}
 
 
@@ -252,17 +277,17 @@ const csBonusText=(t,g,n=-1)=>CSET[t](csTier(g)).map(([p,o])=>`<span style="${n<
 /* ---------------- DROP SETS (มอนดรอป): one 5-piece set per 10 levels (6 before the 5-slot cut, 2026-11-21), ~60% of a crafted piece of the same grade ----------------
    Any monster drops pieces of the set for its level band. No random special stats, 1 socket max, can be refined.
    Set bonus (equipped pieces of the SAME set, worn at your level): 2 = MaxHP · 4 = damage · 5 = crit + move speed. */
-const DSET=[['Traveler','นักเดินทาง',['vit','agi']],['Hunter','นักล่า',['atk','lck']],['Scout','หน่วยสอดแนม',['agi','lck']],['Mercenary','ทหารรับจ้าง',['atk','vit']],
-  ['Ranger','เรนเจอร์',['agi','int']],['Knight','อัศวิน',['vit','def']],['Warden','ผู้พิทักษ์',['def','tal']],['Champion','แชมเปี้ยน',['atk','agi']],
-  ['Warlord','ขุนศึก',['atk','vit']],['Ancient','โบราณ',['tal','lck']]];
+const DSET=[['Traveler','นักเดินทาง',['vit','agi']],['Hunter','นักล่า',['str','luk']],['Scout','หน่วยสอดแนม',['agi','luk']],['Mercenary','ทหารรับจ้าง',['str','vit']],
+  ['Ranger','เรนเจอร์',['agi','dex']],['Knight','อัศวิน',['vit','def']],['Warden','ผู้พิทักษ์',['def','int']],['Champion','แชมเปี้ยน',['str','agi']],
+  ['Warlord','ขุนศึก',['str','vit']],['Ancient','โบราณ',['int','luk']]];
 const DSET_MUL=.6;
 const dsBonus=g=>({hp:Math.round(3+g*.5),dmg:Math.round(3+g*.45),crit:Math.round(2+g*.35),move:5});
-function dsStats(g,slot,magic){const S=SLOTS[slot],D=DSET[g],P=PAIR(g),st={},put=(k,v)=>{v=Math.round(v*DSET_MUL);if(v)st[k]=(st[k]||0)+v;};
-  if(slot==='rhand')put(magic?'tal':'atk',S.main(g));else if(S.main)put('def',S.main(g));
-  put(D[2][0],P[0]*S.pm);put(D[2][1],P[1]*S.pm);return st;}
+function dsStats(g,slot,magic){const S=SLOTS[slot],D=DSET[g],P=PAIR(g),st={},put=(k,v)=>{v=Math.round(v*DSET_MUL);if(v)st[k]=(st[k]||0)+v;},put1=(k,v)=>{v=Math.round(v);if(v)st[k]=(st[k]||0)+v;};
+  if(slot==='rhand')put(magic?'matk':'atk',S.main(g));else if(S.main){put('def',S.main(g));if(S.mdef)put1('mdef',Math.max(1,S.main(g)*S.mdef*DSET_MUL));}
+  pairPut(put1,D[2][0],P[0]*S.pm*DSET_MUL);pairPut(put1,D[2][1],P[1]*S.pm*DSET_MUL);return st;}
 function dropSetItem(g,slot){const S=SLOTS[slot],D=DSET[g],cw=slot==='rhand'?classWeapon():{},st=dsStats(g,slot,cw.magic);
   return newInst(null,{base:null,n:`${D[0]}'s ${slot==='rhand'?(W_NOUN[CHAR]||'Weapon'):S.noun}`,slot,kind:slot==='rhand'?cw.kind:S.kind,two:cw.two,aspd:cw.aspd,size:cw.size,magic:!!cw.magic,
-    st,x:{},aff:[],b:{},grade:g,tier:gradeTier(g),wlv:gradeTier(g),lvReq:gradeLv(g),dset:g,seal:SEAL_SL.includes(slot)?Object.keys(TOWNS)[Math.floor(Math.random()*5)]:undefined,sealM:1,sockets:0,orbs:[],ref:0,w:S.w,cslot:slot,
+    st,ro:1,x:{},aff:[],b:{},grade:g,tier:gradeTier(g),wlv:gradeTier(g),lvReq:gradeLv(g),dset:g,seal:SEAL_SL.includes(slot)?Object.keys(TOWNS)[Math.floor(Math.random()*5)]:undefined,sealM:1,sockets:0,orbs:[],ref:0,w:S.w,cslot:slot,
     rank:slot==='rhand'?JOB.name:'All',d:`ชุด${D[1]} (ของดรอป Lv${gradeLv(g)}) · อ่อนกว่าของคราฟ แต่สวมครบเซ็ทได้โบนัส`});}
 const dsCount=()=>{const c={};for(const sl in EQ){const it=ITEMS[EQ[sl]];if(it&&!it.broken&&it.dset!==undefined&&(it.lvReq||1)<=PS.lv)c[it.dset]=(c[it.dset]||0)+1;}return c;};
 /* 2026-11-21: drop-set bonuses are off too — drop pieces come with a random seal instead (seals.js). */
@@ -277,12 +302,13 @@ Object.assign(window.itemFx,{
   dmgMul(e,o,crit){let m=1;
     if(o.auto)m*=1+B('autoDmg');else if(!o.dot)m*=1+B('skillDmg');
     if(e.boss||(e.m&&e.m.role==='brute'))m*=1+B('bossDmg');
+    {const r=raceOf(e),el=elOf(e);if(r&&BON['r_'+r])m*=1+B('r_'+r);if(el&&BON['e_'+el])m*=1+B('e_'+el);}   // RO: damage vs race / element %
     if(crit)m*=(SYS.critMul+B('critDmg'))/SYS.critMul;
     return m;},
   afterHit(e,dmg,crit,o){if(o.dot)return;
     if(BON.lifesteal)player.hp=Math.min(player.maxHp,player.hp+dmg*B('lifesteal'));},
   dodge(){return false;},
-  takenMul(e){return Math.max(.2,1-Math.min(.3,B('dmgRed')));},
+  takenMul(e){const el=elOf(e),x=el&&BON['x_'+el]?Math.min(.5,B('x_'+el)):0;return Math.max(.2,(1-Math.min(.3,B('dmgRed')))*(1-x));},   // + element resistance %
   moveMul(){return 1;}});
 
 /* ---------------- drops ---------------- */
@@ -298,7 +324,7 @@ function dropFor(e){const m=e.m||{},L=m.lv||1,t=tierOfLv(L),g=gradeOfLv(L),R=Loo
   if(ch(DROP.ore))got.push('ore'+t);
   if(ch(DROP.hpPot))got.push(L0<20?'hp1':L0<45?'hp2':L0<70?'hp3':'hp4');if(ch(DROP.spPot))got.push(L0<30?'sp1':L0<60?'sp2':'sp3');   /* zeny / potions follow the design level (level cap 60) */
   if(ch(DROP.food))got.push(['food_atk','food_def','food_vit','food_agi','food_tal','food_cha'][Math.floor(Math.random()*6)]);
-  if(ch(DROP.orb))got.push(`orb_${Object.keys(STN)[Math.floor(Math.random()*8)]}_${t}`);
+  if(ch(DROP.orb))got.push(`orb_${ORB_K[Math.floor(Math.random()*ORB_K.length)]}_${t}`);
   const dun=/D\d|H\d|E\d|cata|rift/.test(curMap||'');
   if(ch(dun?DROP.crystalDun:DROP.crystalField))got.push('trait_'+r);
   if(dun&&ch(DROP.elixir))got.push('elixir');
@@ -336,7 +362,7 @@ unequip=function(sl){if(eqFull()){msg(`กระเป๋าอุปกรณ�
 
 /* ---------------- using consumables ---------------- */
 let potCd=0;
-const foodVal=()=>5+2*Math.floor(PS.lv/10);
+const foodVal=()=>3+Math.floor(PS.lv/10);   // RO stats: +3 … +9 (Lv 60)
 function useItem(id){const C=CONS[id];if(!C||!has(id))return false;if(PS.lv<C.lv){msg(`ต้องเลเวล ${C.lv}`);return false;}
   const now=performance.now();
   if(C.hp||C.sp||C.full){if(now<potCd)return false;
@@ -431,8 +457,8 @@ for(const id of ['smw','shw'])if(!document.getElementById(id)){const d=document.
 const costHtml=(list,z)=>list.map(([id,n])=>`<span class="${has(id,n)?'':'no'}">${etcName(id)} ${BAG[id]||0}/${n}</span>`).concat(z?[`<span class="${ZENY>=z?'':'no'}">${fmt(z)}z</span>`]:[]).join(' · ');
 const canPay=(list,z)=>list.every(([id,n])=>has(id,n))&&ZENY>=(z||0);
 const pay=(list,z)=>{for(const [id,n] of list)add(id,-n);ZENY-=z||0;};
-const statLine=st=>ST8.filter(k=>st[k]).map(k=>`${STN[k]} ${st[k]>0?'+':''}${st[k]}`).join(' · ');
-const repLine=(b,f)=>ST8.filter(k=>b[k]||f[k]).map(k=>{const v=b[k]||0,d=(f[k]||0)-v;return `${STN[k]} ${v}${d?` <b style="color:${d>0?'#2a9a28':'#d23a2a'}">${d>0?'+':''}${d}</b>`:''}`;}).join(' · ');
+const statLine=st=>SHOWK.filter(k=>st[k]).map(k=>`${STN[k]} ${st[k]>0?'+':''}${st[k]}`).join(' · ');
+const repLine=(b,f)=>SHOWK.filter(k=>b[k]||f[k]).map(k=>{const v=b[k]||0,d=(f[k]||0)-v;return `${STN[k]} ${v}${d?` <b style="color:${d>0?'#2a9a28':'#d23a2a'}">${d>0?'+':''}${d}</b>`:''}`;}).join(' · ');
 function itemRow(id,extra='',sel=false){const it=ITEMS[id],S=itemSt(id),eq=Object.values(EQ).includes(id);
   return `<div class="ix-row${sel?' sel':''}" data-pick="${id}"><div class="ic">${itemIcon(it,26)}</div><div class="mid"><b>${it.ref?'+'+it.ref+' ':''}${it.n}</b> <span style="color:#e0a020">${stars(it)}</span>${eq?' <span style="color:#2a9a28;font-size:10px">(สวมอยู่)</span>':''}
     <small>Lv${S.lv} · ${S.st0?'◈ '+repLine(S.st0,S.st):statLine(S.st)}${it.aff&&it.aff.length?' · '+it.aff.map(a=>affLabel(a.k,a.v)).join(' · '):''}${S.sockets?` · รู ${S.orbs.length}/${S.sockets}`:''}${it.seal&&SEAL_N[it.seal]?` · ตรา${SEAL_N[it.seal]}`:''}</small>${extra}</div></div>`;}
@@ -508,7 +534,7 @@ function doUnsocket(id,i){const it=ITEMS[id];if(!it)return;const S=itemSt(id),o=
   it.orbs=S.orbs.filter((_,j)=>j!==i);done(`ถอดหิน ${STN[o.s]} +${o.v} ออกจาก ${it.n}`);buildSmith();}
 function doMerge(t){const L=Object.keys(BAG).filter(k=>ETC[k]&&ETC[k].kind==='orb'&&ETC[k].tier===t);let need=3;if(L.reduce((s,k)=>s+BAG[k],0)<3||ZENY<COST.mergeZ(t))return;
   L.sort((a,b)=>BAG[b]-BAG[a]);for(const k of L){while(need>0&&BAG[k]){add(k,-1);need--;}}ZENY-=COST.mergeZ(t);
-  const s=Object.keys(STN)[Math.floor(Math.random()*8)];add(`orb_${s}_${t+1}`,1);done(`รวมหินสำเร็จ: ได้ ${ETC[`orb_${s}_${t+1}`].th}`);buildSmith();}
+  const s=ORB_K[Math.floor(Math.random()*ORB_K.length)];add(`orb_${s}_${t+1}`,1);done(`รวมหินสำเร็จ: ได้ ${ETC[`orb_${s}_${t+1}`].th}`);buildSmith();}
 
 /* ---------------- Shop ---------------- */
 let shTab='buy';
@@ -947,10 +973,10 @@ function buildSmith(){const w=$('#smw');if(!w||!w.classList.contains('open'))ret
       <div class="ttnote" style="margin-top:6px">${f?f.n:'ยังไม่มีของที่ตีบวกไว้'}${to?' ➜ '+to.n:f?' · ไม่มีของช่องเดียวกันที่รับได้':''}</div>
       <div class="ttnote">ของใหม่ได้บวก <b>−1</b> จากของเดิม · ของเก่ากลับเป็น +0 · ใช้ Zeny เท่านั้น</div>
       <div class="act"><span class="ttnote">ค่าย้าย <b style="color:${ZENY>=z?'#b8740c':'#d23a2a'}">${fmt(z)}z</b></span><button class="ttb" ${to?`data-move="${smTo}"`:''} ${to&&ZENY>=z?'':'disabled'}>⇄ ย้ายบวก</button></div></div></div>`;}
-  else if(smTab==='replica'){const has8=id=>{const S=itemSt(id);return S&&ST8.some(k=>(S.st0||S.st)[k]);};const src=owned.filter(has8);if(!src.includes(rpSrc))rpSrc=null;const s=rpSrc&&ITEMS[rpSrc];
+  else if(smTab==='replica'){const has8=id=>{const S=itemSt(id);return S&&SHOWK.some(k=>(S.st0||S.st)[k]);};const src=owned.filter(has8);if(!src.includes(rpSrc))rpSrc=null;const s=rpSrc&&ITEMS[rpSrc];
     const dst=s?owned.filter(id=>id!==rpSrc&&ITEMS[id].slot===s.slot):owned.filter(id=>ITEMS[id].rep);if(!dst.includes(rpDst))rpDst=null;const d=rpDst&&ITEMS[rpDst];
     const S1=s&&itemSt(rpSrc),S2=d&&itemSt(rpDst),base=S2?(S2.st0||S2.st):{},after=S1?(S1.st0||S1.st):{};const z=d?REP_Z(d):0,ok=s&&d&&ZENY>=z,eqSrc=s&&Object.values(EQ).includes(rpSrc);
-    const rows=s&&d?ST8.filter(k=>base[k]||after[k]).map(k=>{const v=base[k]||0,f=after[k]||0,df=f-v;return `<span class="chip ${df>0?'g':''}">${STN[k]} ${v}${df?` <b style="color:${df>0?'#2a9a28':'#d23a2a'}">${df>0?'+':''}${df}</b>`:''}</span>`;}).join(''):'';
+    const rows=s&&d?SHOWK.filter(k=>base[k]||after[k]).map(k=>{const v=base[k]||0,f=after[k]||0,df=f-v;return `<span class="chip ${df>0?'g':''}">${STN[k]} ${v}${df?` <b style="color:${df>0?'#2a9a28':'#d23a2a'}">${df>0?'+':''}${df}</b>`:''}</span>`;}).join(''):'';
     body=`<div class="sgrid"><div class="ttp"><h4>📋 ต้นแบบ (ให้สเตตัส · จะหายไป)</h4><div class="inv" style="max-height:140px">${invGrid(src,rpSrc,'rpsrc',10)}</div>
       <h4 style="margin-top:8px">◈ ตัวรับ (ช่องเดียวกัน · เก็บความสามารถเดิม)</h4><div class="inv" style="max-height:140px">${invGrid(dst,rpDst,'rpdst',10)}</div></div>
       <div class="ttp"><div class="stage2 violet" style="height:170px"><div class="lv2">จำลองสเตตัส (Replica)</div>
@@ -989,7 +1015,7 @@ function buildSmith(){const w=$('#smw');if(!w||!w.classList.contains('open'))ret
   q('[data-pick]',b=>{smPick=b.dataset.pick;buildSmith();});
   q('[data-rpsrc]',b=>{rpSrc=b.dataset.rpsrc===rpSrc?null:b.dataset.rpsrc;rpDst=null;buildSmith();});q('[data-rpdst]',b=>{rpDst=b.dataset.rpdst;buildSmith();});
   q('[data-rpgo]',()=>{const s=ITEMS[rpSrc],d=ITEMS[rpDst];if(!s||!d||s.slot!==d.slot)return;const z=REP_Z(d);if(ZENY<z)return;if(!confirm(`จำลองสเตตัสของ ${s.n} ไปให้ ${d.n}?\n${s.n} จะหายไป`))return;
-    const S=itemSt(rpSrc),st={...(S.st0||S.st)};ZENY-=z;d.rep={n:s.n,st,lv:S.lv,lc:1};destroyItem(rpSrc);rpSrc=null;done(`◈ จำลองสเตตัสสำเร็จ: ${d.n} ใช้สเตตัสของ ${d.rep.n}`);buildSmith();});
+    const S=itemSt(rpSrc),st={...(S.st0||S.st)};ZENY-=z;d.rep={n:s.n,st,lv:S.lv,lc:1,ro:1};destroyItem(rpSrc);rpSrc=null;done(`◈ จำลองสเตตัสสำเร็จ: ${d.n} ใช้สเตตัสของ ${d.rep.n}`);buildSmith();});
   q('[data-rpclear]',b=>{const d=ITEMS[b.dataset.rpclear];if(!d||!confirm(`ล้างสเตตัสจำลองของ ${d.n}? (กลับเป็นสเตตัสเดิม ต้นแบบไม่คืน)`))return;delete d.rep;done(`ล้างสเตตัสจำลอง ${d.n} แล้ว`);buildSmith();});
   q('[data-drill]',()=>doDrill(smPick));q('[data-sock]',b=>doSocket(smPick,b.dataset.sock));q('[data-unsock]',b=>doUnsocket(smPick,+b.dataset.unsock));
   q('[data-merge]',b=>doMerge(+b.dataset.merge));}

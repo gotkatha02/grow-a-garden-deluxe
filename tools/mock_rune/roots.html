@@ -50,8 +50,11 @@ let seed=17;const rnd=()=>{seed=(seed*16807)%2147483647;return (seed-1)/21474836
 function txt(x,y,t,col,size,wt,fam,p,anchor){const e=el('text',{x,y,'text-anchor':anchor||'middle','font-size':size,'font-family':fam||'Prompt','font-weight':wt||500,fill:col},p);e.textContent=t;return e;}
 function label(x,y,t,col,size,anchor,stroke){const g=el('g',{});const e=txt(x,y,t,col,size,500,'Prompt',g,anchor);const w=e.getComputedTextLength()+14;const x0=anchor==='start'?x-7:anchor==='end'?x-w+7:x-w/2;
  const r=el('rect',{x:x0,y:y-size-1,width:w,height:size+7,rx:7,fill:'#120a05',opacity:.86,stroke:stroke||'#7a5a30','stroke-width':1.2},g);g.insertBefore(r,e);return g;}
-const SC={atk:'#ff6b5a',tal:'#c39bff',vit:'#6fdc7a',def:'#7fb2ff',agi:'#5fe0e6',cha:'#ff9ed0',int:'#8fa8ff',lck:'#ffd75a'};
-const SL={atk:'ATK',tal:'TAL',vit:'VIT',def:'DEF',agi:'AGI',cha:'CHA',int:'INT',lck:'LCK'};
+/* RO-style rune effects (2026-11-22) */
+const SC={str:'#ff6b5a',agi:'#5fe0e6',vit:'#6fdc7a',int:'#c39bff',dex:'#8fa8ff',luk:'#ffd75a',atk:'#ff9a5a',matk:'#e08bff',hit:'#ffe08a',flee:'#9fe8c8',crit:'#ffb0d0',def:'#7fb2ff',mdef:'#b49cff',
+  atkp:'#ff9a5a',matkp:'#e08bff',aspd:'#5fe0e6',critd:'#ffb0d0',cast:'#8fa8ff',res:'#6fdc7a'};
+const SL={str:'STR',agi:'AGI',vit:'VIT',int:'INT',dex:'DEX',luk:'LUK',atk:'ATK',matk:'MAT',hit:'HIT',flee:'FLE',crit:'CRI',def:'DEF',mdef:'MDF',atkp:'AT%',matkp:'MA%',aspd:'SPD',critd:'CD%',cast:'CST',res:'RES'};
+const SN={str:'STR +1',agi:'AGI +1',vit:'VIT +1',int:'INT +1',dex:'DEX +1',luk:'LUK +1',atk:'ATK +5',matk:'MATK +5',hit:'HIT +3',flee:'FLEE +3',crit:'CRIT +1',def:'DEF +2',mdef:'MDEF +2'};
 const RIM={1:'#c98b4a',2:'#d6dde6',3:'#f3c34e',4:'#7ff5e0'};
 const ADJ={};for(const n of W.N)ADJ[n.id]=new Set();
 for(const [a,b,t] of W.E){if(t==='spoke'){ADJ[b].add(a);continue;}ADJ[a].add(b);ADJ[b].add(a);}
@@ -125,7 +128,7 @@ for(const n of W.N){const x=X(n.x),y=Y(n.y),lit=LIT.has(n.id),av=avail(n.id);if(
   el('polygon',{points:P(.68),fill:'none',stroke:n.k==='b'?'#ffd9a0':SC[n.st],'stroke-width':Math.max(.9,1.6*k),opacity:.8});
   el('polygon',{points:P(1.14),fill:'none',stroke:RIM[n.band],'stroke-width':Math.max(.9,1.6*k),opacity:lit?.95:.55});
   if(big){if(n.k==='b'){txt(x,y+4.5,n.col==='A'?'A':n.col==='B'?'B':'พฐ',lit?'#3a1606':'#ffe9c8',n.col==='basic'?10:13,600,'Mitr');LBL.push(()=>label(x+r+10,y+5,n.txt,'#ffe3a0',11.5,'start'));}
-   else txt(x,y+4.5,'+3','#fff3c8',12,600,'Mitr');}
+   else txt(x,y+4.5,SL[n.st]||'+3','#fff3c8',10.5,600,'Mitr');}
   continue;}
  // C skill knot centre
  const r=36*k*(big?1:1.12),sel=n.id===SEL&&big,lk=PLV<n.lv;
@@ -161,11 +164,11 @@ const cnt={m:0,n:0,b:0,c:0};for(const n of W.N)if(cnt[n.k]!=null)cnt[n.k]++;
 if(!big){
  side.innerHTML=`<div class="nm">ทั้งต้น ${W.N.length-1} โหนด</div><div class="tg">ผังแบบ ROM · เริ่มกลาง แผ่ไปทุกทาง</div>
  <div class="sec">ชนิดโหนด</div>
- <div class="row">${dot('#7c7466')}<span><b>เล็ก</b> +1 สเตตัส · ${cnt.m} ดวง (ไม่มี HP)</span></div>
- <div class="row"><i style="width:14px;height:13px;background:#ff6b5a;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%)"></i><span><b>ใหญ่</b> +3 สเตตัส · ${cnt.n} ดวง</span></div>
+ <div class="row">${dot('#7c7466')}<span><b>เล็ก</b> ค่าแบบ RO (STR +1 · ATK +5 · HIT +3 · CRIT +1 · DEF +2 …) · ${cnt.m} ดวง · ไม่มี HP</span></div>
+ <div class="row"><i style="width:14px;height:13px;background:#ff6b5a;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%)"></i><span><b>ใหญ่</b> สเตตัสหลัก +3 หรือ % แบบ RO (ATK +2% · ASPD +2% · ร่ายเร็ว −3% …) · ${cnt.n} ดวง</span></div>
  <div class="row"><i style="width:13px;height:13px;background:#ffb347;transform:rotate(45deg)"></i><span><b>โบนัสสาย</b> ${cnt.b} ดวง</span></div>
  <div class="row">${dot('#f6c64e')}<span><b>สกิล C</b> 12 ท่า · กลางปม อยู่ห่างกัน</span></div>
- <div class="row" style="flex-wrap:wrap;gap:4px 10px">${Object.keys(SC).map(s=>`<span style="white-space:nowrap">${dot(SC[s])} ${SL[s]}</span>`).join('')}</div>
+ <div class="row" style="flex-wrap:wrap;gap:4px 10px">${Object.keys(SN).map(s=>`<span style="white-space:nowrap">${dot(SC[s])} ${SN[s]}</span>`).join('')}</div>
  <div class="sec">ยิ่งไกลจากหัวใจ ยิ่งยาก</div>
  <div class="row">${dot(RIM[1])}<span>ชั้น 1 Lv 31+ · ยาง + เงิน</span></div>
  <div class="row">${dot(RIM[2])}<span>ชั้น 2 Lv 41+ · ยาง + วัตถุดิบมอน + เงิน</span></div>

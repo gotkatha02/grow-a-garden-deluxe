@@ -13,7 +13,7 @@ const P={mode:null,save:{map:HOME_MAP},dead:false};
 try{Object.assign(P,JSON.parse(localStorage.getItem(KEY)||'{}'));}catch(e){}
 const townName=id=>(MAPDEF[id]&&MAPDEF[id].name)||id;
 
-function snapshot(){return {v:1,mode:P.mode,name:P.name||null,lv:PS.lv,exp:player.exp,ps:Object.fromEntries(STATK.map(k=>[k,PS[k]])),roll:ROLL||null,skills:{...LV},
+function snapshot(){return {v:1,mode:P.mode,name:P.name||null,lv:PS.lv,exp:player.exp,ps:Object.assign(Object.fromEntries(STATK.map(k=>[k,PS[k]])),{_ro:1}),roll:ROLL||null,skills:{...LV},
   map:curMap||null,x:player.x,y:player.y,hp:player.hp/player.maxHp,mp:player.mp/player.maxMp,save:P.save};}
 function save(){if(P.mode!=='play'||P.dead)return;try{localStorage.setItem(KEY,JSON.stringify(snapshot()));}catch(e){}}
 function setMode(m,fresh){const o={mode:m,save:{map:HOME_MAP}};if(!fresh&&m==='play'){try{Object.assign(o,JSON.parse(localStorage.getItem(KEY)||'{}'),{mode:m});}catch(e){}}
@@ -21,15 +21,16 @@ function setMode(m,fresh){const o={mode:m,save:{map:HOME_MAP}};if(!fresh&&m==='p
   localStorage.setItem(KEY,JSON.stringify(o));location.reload();}
 
 /* ---------------- apply the saved state ---------------- */
-function startPlay(){testMode=false;if(P.roll)ROLL=P.roll;
+function startPlay(){testMode=false;if(P.roll)ROLL=typeof rollFrom12==='function'?rollFrom12(P.roll):P.roll;
   if(P.lv){PS.lv=Math.min(P.lv,window.LV_CAP||99);   /* level cap 60 (2026-11-22): an older save above the cap comes back at the cap; fitStats below hands back the extra points */
-    for(const k of STATK)if(P.ps&&P.ps[k]!=null)PS[k]=P.ps[k];player.exp=P.lv>PS.lv?0:(P.exp||0);for(const k in SKILLS)LV[k]=(P.skills&&P.skills[k])||0;if(!LV[BASIC_KEY])LV[BASIC_KEY]=1;}
-  else{PS.lv=1;for(const k of STATK)PS[k]=1;player.exp=0;for(const k in SKILLS)LV[k]=k===BASIC_KEY?1:0;}   // brand-new hero: 20 status points to spend
+    /* RO stats (2026-11-22): a save from the 12 Tails stat system comes back with every point refunded (stats at 1) — spend them again under the new rules */
+    const ro=P.ps&&P.ps._ro;for(const k of STATK)PS[k]=ro&&P.ps[k]!=null?P.ps[k]:1;if(P.ps&&!ro)setTimeout(()=>chatLog('sys','ระบบสเตตัสเปลี่ยนเป็นแบบ Ragnarok (STR AGI VIT INT DEX LUK) — <b>คืนแต้มทั้งหมดแล้ว</b> เปิด Status (Alt+A) แจกใหม่ได้เลย'),1500);player.exp=P.lv>PS.lv?0:(P.exp||0);for(const k in SKILLS)LV[k]=(P.skills&&P.skills[k])||0;if(!LV[BASIC_KEY])LV[BASIC_KEY]=1;}
+  else{PS.lv=1;for(const k of STATK)PS[k]=1;player.exp=0;for(const k in SKILLS)LV[k]=k===BASIC_KEY?1:0;}   // brand-new hero: 48 status points to spend (RO)
   fitStats();if(typeof skValidate==='function')skValidate();applyStats();
   const map=P.map!==undefined?P.map:HOME_MAP;if(map&&MAPDEF[map]&&curMap!==map)enterMap(map);
   if(P.lv&&P.map===curMap&&P.x!=null){player.x=P.x;player.y=P.y;cam.x=player.x;cam.y=player.y;}
   player.hp=Math.max(1,Math.round(player.maxHp*(P.hp??1)));player.mp=Math.round(player.maxMp*(P.mp??1));
-  buildLevels();buildHotbar();if(!P.lv){if(!P.roll)setTimeout(()=>openRollWin(r=>{P.roll=r;save();}),400);chatLog('sys',`เริ่มการผจญภัย! ได้ <b>20 Status Point</b> — เปิดหน้าต่าง Status (Alt+A) เพื่ออัปสเตตัส · Skill (K) เมื่อได้ Skill Point`);P.lv=1;}
+  buildLevels();buildHotbar();if(!P.lv){if(!P.roll)setTimeout(()=>openRollWin(r=>{P.roll=r;save();}),400);chatLog('sys',`เริ่มการผจญภัย! ได้ <b>${pointsAt(1)} Status Point</b> — เปิดหน้าต่าง Status (Alt+A) เพื่ออัปสเตตัส · Skill (K) เมื่อได้ Skill Point`);P.lv=1;}
   save();}
 /* play mode hides the cheat controls (old settings panel + Skill window "Test" box) */
 const _buildLevels=buildLevels;

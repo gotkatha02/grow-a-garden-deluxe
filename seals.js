@@ -16,30 +16,30 @@ if(typeof ITEMS==='undefined'||!window.AFItems)return;
 const AF=window.AFItems;
 const f=(S,k)=>Math.max(1,Math.round(S*k));
 const pairV=S=>Math.round(2+S*.07);
-const STN={atk:'ATK',def:'DEF',agi:'AGI',vit:'VIT',int:'INT',cha:'CHA',tal:'TAL',lck:'LCK'};
+const STN={str:'STR',agi:'AGI',vit:'VIT',int:'INT',dex:'DEX',luk:'LUK',def:'DEF',mdef:'MDEF'};   /* RO stats 2026-11-22 */
 const LK=['vik','azt','grk','egy','jpn'],SL4=['rhand','top','armor','shoes'];
 const vitT=()=>(D&&D.stat&&D.stat.vit)||effStat('vit');   // VIT total (points + level growth + items)
 const LANDS={
-  vik:{n:'กา',realm:'ไวกิ้ง',col:'#7fb8e8',dk:'#1d3454',pair:['atk','vit'],P:[
-    {k:'blood',n:'เลือดนักรบ',tag:'บู๊เลือดน้อย',d:S=>`HP ต่ำกว่าครึ่ง: ATK/TAL +${f(S,.3)} และรับดาเมจ −${f(S,.5)} ต่อครั้ง`},
+  vik:{n:'กา',realm:'ไวกิ้ง',col:'#7fb8e8',dk:'#1d3454',pair:['str','vit'],P:[
+    {k:'blood',n:'เลือดนักรบ',tag:'บู๊เลือดน้อย',d:S=>`HP ต่ำกว่าครึ่ง: ATK/MATK +${f(S,.3)} และรับดาเมจ −${f(S,.5)} ต่อครั้ง`},
     {k:'rune',n:'รูนระเบิด',tag:'ตีรัว',d:S=>`ตีโดนครบ 5 ครั้ง (ตีปกติหรือสกิล): รูนระเบิดรอบเป้า ${f(S,1.2)} รัศมี 90 (ไม่เกิน 4 ตัว · ทุก 1.5 วิ)`},
     {k:'gate',n:'ประตูวัลฮัลลา',tag:'แทงก์ · ล่าบอส',d:S=>`โดนตีจนตาย: รอดด้วย HP ${f(S,5)} และไม่โดนดาเมจ 2 วิ · ทุก 90 วิ`}]},
-  azt:{n:'งูขนนก',realm:'แอซเท็ก',col:'#5fbf6a',dk:'#163f1c',pair:['agi','cha'],P:[
+  azt:{n:'งูขนนก',realm:'แอซเท็ก',col:'#5fbf6a',dk:'#163f1c',pair:['agi','luk'],P:[
     {k:'obs',n:'คมออบซิเดียน',tag:'ตีเร็ว',d:S=>`ตีเป้าเดิมครบ 4 ครั้ง: เลือดออก 3 วิ (${f(S,.3)} ต่อวิ) ซ้อนได้ 3 ชั้น`},
-    {k:'coil',n:'งูรัด',tag:'สายคุม CHA',d:S=>`ใส่สถานะใดก็ได้ (ช้า มึน แข็ง ราก เลือดออก พิษ…): เดินเร็ว +${f(S,.5)} 3 วิ และสกิลถัดไปคูลดาวน์ −2 วิ (ทุก 2.5 วิ)`},
+    {k:'coil',n:'งูรัด',tag:'สายคุม DEX',d:S=>`ใส่สถานะใดก็ได้ (ช้า มึน แข็ง ราก เลือดออก พิษ…): เดินเร็ว +${f(S,.5)} 3 วิ และสกิลถัดไปคูลดาวน์ −2 วิ (ทุก 2.5 วิ)`},
     {k:'sun',n:'เครื่องบูชาสุริยะ',tag:'สายฟาร์ม',d:S=>`ฆ่าศัตรู: AGI +${f(S,.1)} 8 วิ ซ้อน 5 ชั้น · ครบ 5 ชั้น สกิลถัดไปไม่เสีย SP`}]},
   grk:{n:'ม้าบิน',realm:'กรีก',col:'#e3d09a',dk:'#5a4014',pair:['vit','def'],P:[
     {k:'aegis',n:'โล่เทพ',tag:'แทงก์',d:S=>`โดนตีครบ 4 ครั้ง: ได้โล่ ${f(S,1.5)} นาน 3 วิ`},
     {k:'phalanx',n:'ฟาแลงซ์',tag:'โดนรุม',d:S=>`ศัตรูรอบตัว (150) ตัวละ รับดาเมจ −${f(S,.06)} ต่อครั้ง สูงสุด 5 ตัว`},
     {k:'hero',n:'วีรบุรุษ',tag:'แทงก์ที่ตีแรง',d:S=>`โดนตีครบ 10 ครั้ง: สกิลถัดไปแรงขึ้น VIT × 0.4 (ตอนนี้ +${Math.round(vitT()*.4)})`}]},
-  egy:{n:'สคารับ',realm:'อียิปต์',col:'#f0bf4e',dk:'#4a2a06',pair:['tal','int'],P:[
-    {k:'ra',n:'ตาแห่งรา',tag:'เวทรัวสกิล',d:S=>`ร่ายครบ 3 สกิล: สกิลถัดไปไม่เสีย SP และ ATK/TAL +${f(S,.2)}`},
-    {k:'curse',n:'คำสาปฟาโรห์',tag:'ล่าบอส',d:S=>`สกิลโดนเป้า: คำสาป 1 ชั้น (สูงสุด 3) DEF −${f(S,.02)} ต่อชั้น · ครบ 3 ชั้น เป้าโดนเพิ่ม ATK/TAL +${f(S,.05)} ทุกครั้ง`},
+  egy:{n:'สคารับ',realm:'อียิปต์',col:'#f0bf4e',dk:'#4a2a06',pair:['int','dex'],P:[
+    {k:'ra',n:'ตาแห่งรา',tag:'เวทรัวสกิล',d:S=>`ร่ายครบ 3 สกิล: สกิลถัดไปไม่เสีย SP และ ATK/MATK +${f(S,.2)}`},
+    {k:'curse',n:'คำสาปฟาโรห์',tag:'ล่าบอส',d:S=>`สกิลโดนเป้า: คำสาป 1 ชั้น (สูงสุด 3) DEF −${f(S,.02)} ต่อชั้น · ครบ 3 ชั้น เป้าโดนเพิ่ม ATK/MATK +${f(S,.05)} ทุกครั้ง`},
     {k:'sand',n:'ทรายดูดวิญญาณ',tag:'วนสกิลไม่หยุด',d:S=>`สกิลโดนศัตรู ตัวละ SP +${f(S,.08)} (สูงสุด 5 ตัวต่อครั้งที่ร่าย)`}]},
-  jpn:{n:'กระเรียน',realm:'ญี่ปุ่น',col:'#f4a0b8',dk:'#4a1626',pair:['atk','agi'],P:[
-    {k:'iaido',n:'ไออิโด',tag:'จู่โจม',d:S=>`ตีแรกใส่ศัตรูที่ HP เต็ม: ATK/TAL +${f(S,.8)}`},
+  jpn:{n:'กระเรียน',realm:'ญี่ปุ่น',col:'#f4a0b8',dk:'#4a1626',pair:['str','agi'],P:[
+    {k:'iaido',n:'ไออิโด',tag:'จู่โจม',d:S=>`ตีแรกใส่ศัตรูที่ HP เต็ม: ATK/MATK +${f(S,.8)}`},
     {k:'ninja',n:'เงานินจา',tag:'หลบ AGI',d:S=>`โดนตีครั้งที่ 8 ทุกรอบ: หลบได้ + สวนกลับ ${f(S,3)}`},
-    {k:'leaf',n:'สายลมใบไม้',tag:'พุ่งเข้าออก',d:S=>`หลังใช้ท่าพุ่ง / กระโดด / วาร์ป: 2 ตีถัดไป ATK/TAL +${f(S,.5)}`}]}};
+    {k:'leaf',n:'สายลมใบไม้',tag:'พุ่งเข้าออก',d:S=>`หลังใช้ท่าพุ่ง / กระโดด / วาร์ป: 2 ตีถัดไป ATK/MATK +${f(S,.5)}`}]}};
 
 /* ---------------- emblems (code placeholders until painted art) ---------------- */
 const EMB={
@@ -120,7 +120,7 @@ window.ST_HOOK=function(e,k,v,o){if(!POW||POW.k!=='coil'||k==='stagger'||!(v>0)|
   if(gameTime>=ST.coilCdT){ST.coilCd=true;ST.coilCdT=gameTime+2.5;}if(gameTime>=ST.coilFxT){ST.coilFxT=gameTime+.7;fxAt('coil',player.x,player.y);}};
 
 function nearN(){let n=0;const px=player.x,py=player.y;for(const e of enemies){if(e.dead||!(e.aggro>0))continue;const dx=e.x-px,dy=e.y-py;if(dx*dx+dy*dy<22500&&++n>=5)break;}return n;}
-/* rune burst: every 5th landed hit, ATK/TAL×1.2 around the target (o.dot: no crit, no item / gem / combo chains) */
+/* rune burst: every 5th landed hit, ATK/MATK×1.2 around the target (o.dot: no crit, no item / gem / combo chains) */
 /* seal damage is absolute (S × n through the target's DEF), not ×ATK: every hero's damage is balanced to the same total, but their per-hit scales differ a lot */
 function sealDmg(e,raw,label,col){if(!e||e.dead)return 0;const d=Math.max(1,Math.round(defAdjust(raw,(e.m&&e.m.def)||0)));e.hp-=d;e.flash=1;e.aggro=Math.max(e.aggro||0,8);dmgNum(e.x,e.y,(typeof MSPR_H==='function'?MSPR_H(e):48)+18,d,'hit',{scale:.9,who:e});
   if(label)addFx(new DText({x:e.x,y:e.y,z:64,text:label,color:col||'#ffe9a8',size:12,life:.9}));if(e.hp<=0&&!e.dead)kill(e);return d;}

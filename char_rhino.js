@@ -55,7 +55,7 @@ function installRhinoRework(){if(CHAR!=='rhino')return;
       addFx(new GRing({x:e.x,y:e.y,r0:8,r1:e.boss?90:60,w:8,color:'#fff4d8',life:.4}));rocks(e.x,e.y,6,160);shake(2.2);stop(70);}};
 
   /* ---------- survivability: flat HP / flat damage blocks / shields in character level ---------- */
-  window.jgHpMul=()=>{const base=Math.max(1,SYS.hpBase+PS.lv*SYS.hpLv+(PS.vit||0)*SYS.hpVit);return 1+((LV.rhThickHide?RX.hp.rhThickHide:0)+(LV.rhFortified?rxL(RX.hp.rhFortified,'rhFortified'):0))/base;};
+  window.jgHpMul=()=>{const base=Math.max(1,(SYS.hpBase+PS.lv*(SYS.hpLvP||SYS.hpLv))*(1+((typeof D!=='undefined'&&D.stat&&D.stat.vit)||PS.vit||0)/100));   /* RO HP (2026-11-22): flat HP bonus ÷ the hero's base HP */return 1+((LV.rhThickHide?RX.hp.rhThickHide:0)+(LV.rhFortified?rxL(RX.hp.rhFortified,'rhFortified'):0))/base;};
   window.jgMove=()=>.88*(1-((hasBuff('rhStance')?RX.move.rhStance:0)+(hasBuff('rhFortress')?RX.move.rhFortress:0))/165);
   window.jgDmgTaken=()=>1;
   const _sh=rhShield;rhShield=(amt,dur)=>{const r=Math.round(amt/Math.max(1,player.maxHp)*100)/100,L=PS.lv;

@@ -7,10 +7,10 @@
      A Tree · Olympian Pankration — GRIP: grab a normal enemy and hold it (it can't act), then throw / slam / swing it.
                                     GLORY 0–3 from throws, finishers spend it (physical, ATK)
      B Tree · Thunder King        — CHARGE 0–10 stored in the lion himself, javelins / sky strikes / eagle / storm cloud,
-                                    Overcharge at 10 (magic, TAL)
+                                    Overcharge at 10 (magic, MATK)
      C Tree · Heir of Zeus        — 12 nodes, each tied to the Basic / A / B skill of the same row (Lv 55 / 60 / 70 / 80)
 
-   Two-way hero: A = ATK, B = TAL, Basic / normal attack = the higher of the two.
+   Two-way hero: A = ATK, B = MATK, Basic / normal attack = the higher of the two.
    Owner's rules: no percent effects (flat numbers, counters instead of chances). Attack speed fixed (CHAR_ASPD).
    Sprite: the wolf's sprite stands in until the lion's own clips are made.
    ===================================================================== */
@@ -78,7 +78,7 @@ const LI_BAL={
 };
 const LB=LI_BAL.sk;
 const lX=n=>'ATK×'+(+n).toFixed(2).replace(/0+$/,'').replace(/\.$/,'');
-const lT=n=>'TAL×'+(+n).toFixed(2).replace(/0+$/,'').replace(/\.$/,'');
+const lT=n=>'MATK×'+(+n).toFixed(2).replace(/0+$/,'').replace(/\.$/,'');
 
 /* ---------------------------------------------------------------------
    2. SKILL DATA
@@ -116,7 +116,7 @@ const LI_DEFS=[
  {key:'lbAetos',id:'LN-G06',name:'Aetos Guard',br:'B',row:4,max:2,passive:1,enh:'lbEagle',pre:[['lbEagle',1]],d:'(ต่อยอด Eagle of Zeus) นกอินทรีบินวนรอบตัว กันการโจมตีให้ 1 ครั้ง',lv:i=>[`นาน ${LB.lbAetos.T[i-1]} วิ`]},
  {key:'lbCloud',id:'LN-G07',name:'Storm Cloud',br:'B',row:5,max:2,type:'ground',radius:()=>LB.lbCloud.R,d:'เมฆพายุ 5 วิ ฟ้าผ่าตัวที่ HP มากสุดในเมฆทุก 0.5 วิ',lv:i=>[`${lT(LB.lbCloud.dmg[i-1])} ทุก 0.5 วิ`,`Cooldown ${LB.lbCloud.cd} วิ`]},
  {key:'lbThunderhead',id:'LN-G08',name:'Thunderhead',br:'B',row:5,max:1,passive:1,enh:'lbCloud',pre:[['lbCloud',1]],d:'(ต่อยอด Storm Cloud) เมฆใหญ่ขึ้น ศัตรูในเมฆช้าลง',lv:()=>['เมฆใหญ่ขึ้นครึ่งหนึ่ง · สโลว์']},
- {key:'lbOver',id:'LN-G09',name:'Overcharge',br:'B',row:6,max:2,type:'self',d:'ใช้ประจุ 10 → 8 วิ สกิล B แรงขึ้น หอกทะลุทุกตัว',lv:i=>[`TAL +${LB.lbOver.tal[i-1]} นาน ${LB.lbOver.T} วิ`,'ต้องมีประจุ 10',`Cooldown ${LB.lbOver.cd} วิ`]},
+ {key:'lbOver',id:'LN-G09',name:'Overcharge',br:'B',row:6,max:2,type:'self',d:'ใช้ประจุ 10 → 8 วิ สกิล B แรงขึ้น หอกทะลุทุกตัว',lv:i=>[`MATK +${LB.lbOver.tal[i-1]} นาน ${LB.lbOver.T} วิ`,'ต้องมีประจุ 10',`Cooldown ${LB.lbOver.cd} วิ`]},
  {key:'lbField',id:'LN-G10',name:'Static Field',br:'B',row:6,max:1,passive:1,enh:'lbOver',pre:[['lbOver',1]],d:'(ต่อยอด Overcharge) ระหว่าง Overcharge ศัตรูรอบตัวโดนช็อตทุก 1 วิ',lv:()=>[`${lT(LB.lbField.dmg)} รัศมี ${LB.lbField.R}`]},
  {key:'lbConductor',id:'LN-G11',name:'Conductor',br:'B',row:7,max:3,passive:1,d:'(Passive) ประจุคงอยู่นานขึ้น สกิล B ใช้ SP น้อยลง',lv:i=>[`ประจุเริ่มลดหลัง ${LB.lbConductor.keep[i-1]} วิ`,`สกิล B SP −${LB.lbConductor.sp[i-1]}`]},
  {key:'lbAegis',id:'LN-G12',name:'Aegis Flash',br:'B',row:7,max:1,type:'self',d:'โดมสายฟ้าอีจิส กันการโจมตี 2 ครั้ง คนที่ตีโดนชะงัก',lv:()=>[`กัน ${LB.lbAegis.n} ครั้ง`,`Cooldown ${LB.lbAegis.cd} วิ`]},
@@ -129,7 +129,7 @@ const LI_DEFS=[
  {key:'lcReflect',id:'LN-C04',name:"Lion's Reflection",br:'C',col:'basic',tier:2,passive:1,pre:[['lnHide',3]],d:'ระหว่าง Nemean Hide ศัตรูที่ตีประชิดโดนสะท้อน',lv:()=>[`${lX(LB.lcReflect.dmg)} ต่อครั้ง`]},
  {key:'lcToss',id:'LN-C05',name:'Titan Toss',br:'C',col:'A',tier:2,type:'melee',pre:[['laSuplex',2]],d:'[New Active] ขว้างศัตรูไปไกล ระเบิดตอนตก',lv:()=>[`ไกล ${LB.lcToss.len} · ${lX(LB.lcToss.dmg)} รัศมี ${LB.lcToss.R}`,`Cooldown ${LB.lcToss.cd} วิ`]},
  {key:'lcRain',id:'LN-C06',name:'Thunder Rain',br:'C',col:'B',tier:2,passive:1,pre:[['lbSky',2]],d:'Sky Strike ฟ้าผ่าลง 3 จุดเรียงไปข้างหน้า',lv:()=>['ฟ้าผ่า 3 จุด']},
- {key:'lcCrown',id:'LN-C07',name:'Laurel Crown',br:'C',col:'basic',tier:3,type:'self',pre:[['lnRest',2]],d:'[New Active] มงกุฎลอเรลทอง ฟื้น HP ต่อเนื่อง ATK และ TAL เพิ่ม',lv:()=>[`ฟื้น HP = เลเวล × ${LB.lcCrown.hp} ทุกวิ`,`ATK / TAL +${LB.lcCrown.flat} นาน ${LB.lcCrown.T} วิ`,`Cooldown ${LB.lcCrown.cd} วิ`]},
+ {key:'lcCrown',id:'LN-C07',name:'Laurel Crown',br:'C',col:'basic',tier:3,type:'self',pre:[['lnRest',2]],d:'[New Active] มงกุฎลอเรลทอง ฟื้น HP ต่อเนื่อง ATK และ MATK เพิ่ม',lv:()=>[`ฟื้น HP = เลเวล × ${LB.lcCrown.hp} ทุกวิ`,`ATK / MATK +${LB.lcCrown.flat} นาน ${LB.lcCrown.T} วิ`,`Cooldown ${LB.lcCrown.cd} วิ`]},
  {key:'lcAtlas',id:'LN-C08',name:'Atlas Slam',br:'C',col:'A',tier:3,passive:1,pre:[['laSpin',2]],d:'Arena Spin จบด้วยทุ่มลงพื้นรอบตัว',lv:()=>[`${lX(LB.lcAtlas.dmg)} รัศมี ${LB.lcAtlas.R}`]},
  {key:'lcSupercell',id:'LN-C09',name:'Supercell',br:'C',col:'B',tier:3,passive:1,pre:[['lbCloud',2]],d:'เปิด Overcharge แล้วได้ Storm Cloud ตามตัวไปฟรี',lv:()=>['เมฆพายุตามตัวตลอด Overcharge']},
  {key:'lcAscend',id:'LN-C10',name:'Olympian Ascension',br:'C',col:'basic',tier:4,type:'self',pre:[['lnRoar',3]],d:'[New Active] Signature · 15 วิ ร่างเรืองทองมีปีกสายฟ้า ตีปกติแรงขึ้น เกียรติและประจุได้ 2 เท่า',lv:()=>[`ตีปกติ ATK +${LB.lcAscend.atk}`,'เกียรติ / ประจุ ×2',`Cooldown ${LB.lcAscend.cd} วิ`]},
@@ -386,7 +386,7 @@ function installLion(){
   for(const k in SKILLS)LV[k]=SKILLS[k].max;
   if(typeof jgBuildReq==='function'){const _b=jgBuildReq;jgBuildReq=function(){_b();for(const [a,b] of LI_ZIGZAG){const A=SKREQ[a],B=SKREQ[b];if(!A||!B)continue;
     B.forEach((r,i)=>{if(i>0)r.need.push([a,Math.min(SKILLS[a].max,i+1)]);});A.forEach((r,i)=>{if(i>0&&i<=B.length)r.need.push([b,i]);});}};}
-  /* damage type: Basic column = higher of ATK / TAL, A = ATK, B = TAL */
+  /* damage type: Basic column = higher of ATK / MATK, A = ATK, B = MATK */
   Object.assign(SK_DT,{lnKnuckle:'b',lnPounce:'b',lcCombo:'b',lcReflect:'b',lcClinch:'p',lcToss:'p',lcAtlas:'p',lcTwelfth:'p',lcFork:'m',lcRain:'m',lcSupercell:'m',lcKeraunos:'m',
     laPile:'p',laDomino:'p',laCrack:'p',lbStatic:'m',lbTwin:'m',lbField:'m',lbKing:'m'});
   Object.assign(SK_CC,{laSuplex:{flinch:.5},laShove:{flinch:.4},laSpin:{flinch:.3},laLift:{air:1},laCrack:{air:1},laLabors:{flinch:.35},lnPounce:{flinch:.35},
@@ -400,11 +400,11 @@ function installLion(){
     laLegend:{n:'Nemean Legend',c:LIC.gold,i:'LEGEND'},lcCrown:{n:'Laurel Crown',c:LIC.gold,i:'CROWN'},lcAscend:{n:'Olympian Ascension',c:LIC.gold,i:'ZEUS'},rhSA:BUFFDEF.rhSA||{n:'Steady',c:'#c8b898',i:'SA'}});
   JOB.name='Olympian Cub';JOB.hpA=1.5;JOB.hpB=5.5;JOB.spB=3.2;
   ITEMS.olympianCestus={n:'Olympian Cestus',slot:'rhand',two:1,kind:'Knuckle',atk:145,matk:125,wlv:3,aspd:152,ref:6,cards:2,w:150,b:{vit:2},size:{small:1,medium:1,large:.85},d:'ถุงมือนักชกโอลิมปิก VIT +2'};
-  ITEMS.zeusGauntlets={n:"Zeus's Thunder Gauntlets",slot:'rhand',two:1,kind:'Knuckle',atk:150,matk:165,wlv:4,aspd:150,ref:4,cards:1,w:160,b:{tal:3},size:{small:1,medium:1,large:.85},d:'ปลอกแขนสายฟ้าของซุส TAL +3'};
+  ITEMS.zeusGauntlets={n:"Zeus's Thunder Gauntlets",slot:'rhand',two:1,kind:'Knuckle',atk:150,matk:165,wlv:4,aspd:150,ref:4,cards:1,w:160,b:{tal:3},size:{small:1,medium:1,large:.85},d:'ปลอกแขนสายฟ้าของซุส MATK +3'};
   EQ.rhand='olympianCestus';INV.length=0;INV.push('zeusGauntlets','vikinghelm','ringPrec','clipLuck');
   /* Royal Mane: flat max HP (level × n) */
   if(typeof applyStats==='function'&&!applyStats._lion){const _as=applyStats;applyStats=function(){_as.apply(this,arguments);const f=lL('lnMane')?PS.lv*lLv(LB.lnMane.hp,'lnMane'):0;if(f>0){const r=player.hp/player.maxHp;player.maxHp+=f;if(D)D.maxHp=player.maxHp;player.hp=Math.min(player.maxHp,Math.round(player.maxHp*r));}};applyStats._lion=1;}
-  /* flat ATK / TAL bonuses */
+  /* flat ATK / MATK bonuses */
   const flat=(e,o)=>{let b=0;
     if(hasBuff('lcCrown'))b+=LB.lcCrown.flat;
     if(!(o&&o.magic)){if(lL('laPride'))b+=LI.glory*lLv(LB.laPride.atk,'laPride');if(lAsc()&&(o&&o.auto))b+=LB.lcAscend.atk;}

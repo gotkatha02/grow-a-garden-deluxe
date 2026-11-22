@@ -21,16 +21,16 @@ const HEROES=[
  {k:'anubis',n:'Anubis Jackal',r:'Flail Knight',land:'อียิปต์',home:'egyT',d:'หมาจิ้งจอกผู้เฝ้าดูอัต เหวี่ยงลูกตุ้มโซ่ หมุนรุม หรือเกี่ยวตัดสิน',A:'Flail Dervish · หมุน กวาด แรงเหวี่ยง',B:'Judge of the Dead · เกี่ยว ตรึง ตัดสิน'},
  {k:'sheep',n:'Golden Sheep',r:'Healer',land:'กรีก',home:'grkT',d:'แกะขนทองผู้รักษา ฮีลเพื่อนหรือสะกดศัตรูด้วยเพลง',A:'Asclepian Healer · ฮีล โล่',B:"Medea's Enchanter · สะกด หลับ คำสาป"},
  {k:'lion',n:'Olympian Lion',r:'Thunder Champion',land:'กรีก',home:'grkT',d:'สิงโตขาวนักมวยปล้ำแห่งโอลิมปัส ทุ่มศัตรู หรือเรียกสายฟ้าแบบซุส',A:'Olympian Pankration · จับ ทุ่ม ปล้ำ',B:'Thunder King · สายฟ้า หอก ประจุ'}];
-const SN={atk:'ATK',def:'DEF',agi:'AGI',vit:'VIT',int:'INT',cha:'CHA',tal:'TAL',lck:'LCK'},ORDER=['atk','def','agi','vit','int','cha','tal','lck'];
+const SN={str:'STR',agi:'AGI',vit:'VIT',int:'INT',dex:'DEX',luk:'LUK'},ORDER=['str','agi','vit','int','dex','luk'];   /* RO stats (2026-11-22): the hero bonus roll, hexagon */
 const anySave=()=>{try{for(const h of HEROES){const o=JSON.parse(localStorage.getItem('af_prog_v1_'+h.k)||'{}');if(o.mode)return true;}}catch(e){}return false;};
-function roll(k){const b=Object.assign({},CLASS_BASE[k]||CLASS_BASE.wolf);for(let i=0;i<4;i++)b[ORDER[Math.floor(Math.random()*8)]]++;for(let i=0;i<4;i++)b[ORDER[Math.floor(Math.random()*8)]]--;
+function roll(k){const b=Object.assign({},CLASS_BASE[k]||CLASS_BASE.wolf);for(let i=0;i<3;i++)b[ORDER[Math.floor(Math.random()*6)]]++;for(let i=0;i<3;i++)b[ORDER[Math.floor(Math.random()*6)]]--;
   for(const s of ORDER)b[s]=Math.max(3,Math.min(12,b[s]+1));return b;}
 const art=k=>{try{return SKILL_BG_ALL[k]&&SKILL_BG_ALL[k].basic;}catch(e){return null;}};
-function radar(st){const R=70,c=90,pts=ORDER.map((s,i)=>{const a=-Math.PI/2+i*Math.PI/4,v=(st[s]||0)/12;return [c+Math.cos(a)*R*v,c+Math.sin(a)*R*v];});
-  const ring=f=>ORDER.map((s,i)=>{const a=-Math.PI/2+i*Math.PI/4;return `${c+Math.cos(a)*R*f},${c+Math.sin(a)*R*f}`;}).join(' ');
-  const lab=ORDER.map((s,i)=>{const a=-Math.PI/2+i*Math.PI/4;return `<text x="${c+Math.cos(a)*(R+13)}" y="${c+Math.sin(a)*(R+13)+3}" text-anchor="middle">${SN[s]}</text>`;}).join('');
+function radar(st){const R=70,c=90,pts=ORDER.map((s,i)=>{const a=-Math.PI/2+i*Math.PI/3,v=(st[s]||0)/12;return [c+Math.cos(a)*R*v,c+Math.sin(a)*R*v];});
+  const ring=f=>ORDER.map((s,i)=>{const a=-Math.PI/2+i*Math.PI/3;return `${c+Math.cos(a)*R*f},${c+Math.sin(a)*R*f}`;}).join(' ');
+  const lab=ORDER.map((s,i)=>{const a=-Math.PI/2+i*Math.PI/3;return `<text x="${c+Math.cos(a)*(R+13)}" y="${c+Math.sin(a)*(R+13)+3}" text-anchor="middle">${SN[s]}</text>`;}).join('');
   return `<svg viewBox="0 0 180 180" class="cc-radar"><polygon points="${ring(1)}" class="g"/><polygon points="${ring(.66)}" class="g"/><polygon points="${ring(.33)}" class="g"/>
-    ${ORDER.map((s,i)=>{const a=-Math.PI/2+i*Math.PI/4;return `<line x1="${c}" y1="${c}" x2="${c+Math.cos(a)*R}" y2="${c+Math.sin(a)*R}" class="g"/>`;}).join('')}
+    ${ORDER.map((s,i)=>{const a=-Math.PI/2+i*Math.PI/3;return `<line x1="${c}" y1="${c}" x2="${c+Math.cos(a)*R}" y2="${c+Math.sin(a)*R}" class="g"/>`;}).join('')}
     <polygon points="${pts.map(p=>p.join(',')).join(' ')}" class="v"/>${lab}</svg>`;}
 const css=document.createElement('style');css.textContent=`
 #ccov{position:fixed;inset:0;z-index:70;display:none;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 40%,#3a2a18,#120c08);font-family:Sarabun,Mali,sans-serif}

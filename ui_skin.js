@@ -9,7 +9,7 @@
 const U='assets/ui/';
 const u=n=>`url(${U}${n}.webp)`;
 const G='body.th-gold';
-const STAT=['atk','tal','vit','def','int','agi','cha','lck'];
+const STAT=['str','agi','vit','int','dex','luk'],STAT_ICON={str:'atk',agi:'agi',vit:'vit',int:'int',dex:'tal',luk:'lck'};   /* RO stats (2026-11-22): icon picture per stat (DEX borrows the feather until it has its own) */
 const EQMAP={top:'eq_head',mid:'eq_face',low:'eq_face',armor:'eq_armor',rhand:'eq_weapon',lhand:'eq_shield',garment:'eq_cape',shoes:'eq_shoes',acc1:'eq_acc1',acc2:'eq_acc2'};
 
 const FRAME=`border:26px solid transparent!important;border-image:${u('win9')} 150 fill / 26px stretch!important;background:none!important;box-shadow:none!important;filter:drop-shadow(0 6px 10px rgba(0,0,0,.45))`;
@@ -68,7 +68,7 @@ ${G} #eqrr{background-image:${u('eq_rot_r')}!important}
 ${G} .ro-st .r{background:rgba(255,248,226,.6)!important;border:2px solid #c99a4a!important;border-radius:10px!important}
 ${G} .ro-st .r b{display:flex;align-items:center;gap:3px;color:#6a2a10!important;width:50px!important}
 ${G} .ro-st .r b:before{content:'';flex:none;width:22px;height:22px;background:center/contain no-repeat}
-${STAT.map(k=>`${G} .ro-st .r:has([data-s="${k}"]) b:before{background-image:${u('stat_'+k)}}`).join('\n')}
+${STAT.map(k=>`${G} .ro-st .r:has([data-s="${k}"]) b:before{background-image:${u('stat_'+STAT_ICON[k])}}`).join('\n')}
 ${G} .ro-st .r .up,${G} .ro-st .r .dn{width:22px!important;height:22px!important;border:0!important;border-radius:50%!important;box-shadow:none!important;padding:0!important;
   background:${u('win_plus')} center/contain no-repeat!important;color:transparent!important;font-size:0!important}
 ${G} .ro-st .r .up:after{display:none!important}

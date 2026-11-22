@@ -4,7 +4,7 @@
 
      Basic  · Nile Calf          — heavy mace combo, Waddle Rush, Yawn taunt, Nap (SP), Feast, Blood Sweat, Hippo Heart
      A Tree · Taweret Guardian   — FULLNESS + body slams [slam]: jump, land, crush (physical, ATK)
-     B Tree · Nile Flood Priest  — MUD POOLS: mud, water, lotus magic (magic, TAL)
+     B Tree · Nile Flood Priest  — MUD POOLS: mud, water, lotus magic (magic, MATK)
      C Tree · Behemoth of the Nile — 12 Tails "Additions": 4 upgrades each for Basic / A / B at Lv 55 / 60 / 70 / 80
 
    FULLNESS 0–100 (120 with Big Appetite Lv2) comes from fighting: every hit +1, slam hits +2, kills +8.
@@ -77,7 +77,7 @@ const HP_BAL={
   }};
 const HB=HP_BAL.sk,HF=HP_BAL.full;
 const hpX=n=>'ATK×'+(+n).toFixed(2).replace(/0+$/,'').replace(/\.$/,'');
-const hpT=n=>'TAL×'+(+n).toFixed(2).replace(/0+$/,'').replace(/\.$/,'');
+const hpT=n=>'MATK×'+(+n).toFixed(2).replace(/0+$/,'').replace(/\.$/,'');
 
 /* ---------------------------------------------------------------------
    2. SKILL DATA
@@ -118,9 +118,9 @@ const HP_DEFS=[
  {key:'hbGeyser',id:'HP-B08',name:'Geyser',br:'B',row:4,max:2,type:'ground',pre:[['hbWallow',1]],d:'บ่อโคลนที่เลือกพุ่งเป็นน้ำพุร้อน ถ้าไม่มีบ่อแรงน้อยลง',lv:i=>[`ในบ่อ ${hpT(HB.hbGeyser.dmg[i-1])}`,`ไม่มีบ่อ ${hpT(HB.hbGeyser.dry)}`,'ยกลอย']},
  {key:'hbLotus',id:'HP-B09',name:'Lotus Bloom',br:'B',row:5,max:3,type:'self',d:'ดอกบัวผุดในทุกบ่อโคลน ยิงกลีบใส่ศัตรู กดซ้ำเพื่อใช้ Lotus Storm',lv:i=>[`ดอกละ ${HB.hbLotus.n} กลีบ กลีบละ ${hpT(HB.hbLotus.dmg[i-1])}`]},
  {key:'hbLotusStorm',id:'HP-B10',name:'Lotus Storm',br:'B',row:5,max:1,parent:'hbLotus',d:'(ท่าต่อ) ดอกบัวทุกดอกแตกพร้อมกัน ฟื้น HP ต่อดอก',lv:()=>[`ดอกละ ${hpT(HB.hbLotusStorm.dmg)} รัศมี ${HB.hbLotusStorm.R}`,`ฟื้น HP = เลเวล×${HB.hbLotusStorm.heal} ต่อดอก`]},
- {key:'hbInund',id:'HP-B11',name:'Inundation',br:'B',row:6,max:2,passive:1,d:'(Passive) สกิล B แรงขึ้นกับศัตรูที่ยืนในโคลน',lv:i=>[`TAL +${HB.hbInund.tal[i-1]} (เป้าในโคลน)`]},
+ {key:'hbInund',id:'HP-B11',name:'Inundation',br:'B',row:6,max:2,passive:1,d:'(Passive) สกิล B แรงขึ้นกับศัตรูที่ยืนในโคลน',lv:i=>[`MATK +${HB.hbInund.tal[i-1]} (เป้าในโคลน)`]},
  {key:'hbQuick',id:'HP-B12',name:'Quicksand Mire',br:'B',row:6,max:1,type:'ground',pre:[['hbSilt',1]],d:'หล่มทรายดูดศัตรูเข้ากลางช้าๆ นับเป็นบ่อโคลน',lv:()=>[`รัศมี ${HB.hbQuick.R} นาน ${HB.hbQuick.T} วิ`,`${hpT(HB.hbQuick.tick)} ทุก 0.5 วิ`]},
- {key:'hbFlood',id:'HP-B13',name:'Flood Mastery',br:'B',row:7,max:2,passive:1,d:'(Passive) ทุกบ่อโคลนที่มีอยู่ เพิ่มพลังสกิล B',lv:i=>[`TAL +${HB.hbFlood.per[i-1]} ต่อบ่อ (สูงสุด 5 บ่อ)`]},
+ {key:'hbFlood',id:'HP-B13',name:'Flood Mastery',br:'B',row:7,max:2,passive:1,d:'(Passive) ทุกบ่อโคลนที่มีอยู่ เพิ่มพลังสกิล B',lv:i=>[`MATK +${HB.hbFlood.per[i-1]} ต่อบ่อ (สูงสุด 5 บ่อ)`]},
  {key:'hbWrath',id:'HP-B14',name:'Wrath of the Nile',br:'B',row:7,max:1,type:'melee',pre:[['hbQuick',1]],d:'คลื่นยักษ์กวาดเป็นแนว ทิ้งโคลนตลอดทาง',lv:()=>[`${hpT(HB.hbWrath.dmg)} ยาว ${HB.hbWrath.len}`,'ยกลอย']},
  {key:'hbSea',id:'HP-B15',name:'The Great Inundation',br:'B',row:8,max:1,type:'self',ult:1,pre:[['hbWrath',1],['hbLotusStorm',1]],d:'ULTIMATE B · รอบตัวกลายเป็นทะเลโคลน ฮิปโปว่ายน้ำ น้ำพุพุ่งใส่ศัตรูทุกวิ จบด้วยคลื่นยักษ์',lv:()=>[`${HB.hbSea.dur} วิ รัศมี ${HB.hbSea.R}`,`เดิน +${HB.hbSea.move} · ฟื้น HP = เลเวล×${HB.hbSea.regen}/วิ`,`น้ำพุ ${hpT(HB.hbSea.geyser)} · คลื่นจบ ${hpT(HB.hbSea.fin)}`]},
  // ---------------- C · BEHEMOTH OF THE NILE ----------------

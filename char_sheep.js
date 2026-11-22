@@ -8,8 +8,8 @@
      C Tree · Golden Wing          — 12 Tails "Additions": 4 upgrades each for Basic / A / B at Lv 55 / 60 / 70 / 80
 
    GOLDEN WOOL 0–5: grows on its own; each layer: damage taken −4 per hit. [Shear] uses all layers for a bigger heal / shield.
-   ENCHANT 0–3 on an enemy: B skills add layers; at 3 the enemy is SPELLBOUND for 5 s (slowed, our TAL +30 against it).
-   All damage is magic (TAL). Heals and shields are written as TAL×n. Owner's rules: no percent effects; counters instead of chances.
+   ENCHANT 0–3 on an enemy: B skills add layers; at 3 the enemy is SPELLBOUND for 5 s (slowed, our MATK +30 against it).
+   All damage is magic (MATK). Heals and shields are written as MATK×n. Owner's rules: no percent effects; counters instead of chances.
    Sprites: placeholder drawn in code (assets_sheep.js, tools/statichero.py).
    ===================================================================== */
 
@@ -77,13 +77,13 @@ const SP_BAL={
 const SB=SP_BAL.sk;
 /* per-branch damage scale (2026-11-21, like KI_SCALE / BA_SCALE): once the bench kept the sheep's core ticker alive and Thread of Fate
    was fixed, each branch benched alone (owner's rule for pure heroes with two same-stat branches) gave A 2,593 · B 5,667 against
-   the 2,450 target — B stacks many flat TAL bonuses (Spellbound, sleep, Lore, Harmony, War Song, Colchis). The scale is applied once
-   here to each branch's damage numbers, so every tooltip shows the real TAL×n. Bench: HERO=sheep COL=sBranch tools/qa/bench_branch.py all,A,B 8 */
-const SP_SCALE={A:0.887,B:0.15};   /* re-tuned at the Lv 60 cap 2026-11-22 (≈ 2,050 per branch, LEVEL_CAP_TH.md); older values in git */
+   the 2,450 target — B stacks many flat MATK bonuses (Spellbound, sleep, Lore, Harmony, War Song, Colchis). The scale is applied once
+   here to each branch's damage numbers, so every tooltip shows the real MATK×n. Bench: HERO=sheep COL=sBranch tools/qa/bench_branch.py all,A,B 8 */
+const SP_SCALE={A:0.669,B:0.139};   /* re-tuned at the Lv 60 cap 2026-11-22 (≈ 2,050 per branch, LEVEL_CAP_TH.md); older values in git */
 (()=>{const sc=(k,f,keys)=>{for(const q of keys){const v=SB[k][q];SB[k][q]=Array.isArray(v)?v.map(x=>+(x*f).toFixed(3)):+(v*f).toFixed(3);}};
   for(const [k,q] of [['saSun',['dmg']],['saEcho',['dmg']],['saPurify',['dmg']],['saRain',['dmg']],['saOlympus',['dmg']],['scChariot',['dmg']],['scGorgon',['dmg']]])sc(k,SP_SCALE.A,q);
   for(const [k,q] of [['sbThread',['dmg']],['sbLullaby',['dmg']],['sbShatter',['dmg','per']],['sbRam',['dmg']],['sbSiren',['dmg']],['sbCauldron',['dmg']],['sbColchis',['bolt','fin']],['sbMirror',['dmg']],['scCharm',['hit']],['scSirens',['dmg']]])sc(k,SP_SCALE.B,q);})();
-const sT=n=>'TAL×'+(+n).toFixed(2).replace(/0+$/,'').replace(/\.$/,'');
+const sT=n=>'MATK×'+(+n).toFixed(2).replace(/0+$/,'').replace(/\.$/,'');
 
 /* ---------------------------------------------------------------------
    2. SKILL DATA
@@ -115,20 +115,20 @@ const SP_DEFS=[
  {key:'saOlympus',id:'SP-A15',name:'Blessing of Olympus',br:'A',row:8,max:1,type:'self',ult:1,pre:[['saHand',1],['saRain',1]],d:'ULTIMATE A · ออร่าทองแห่งโอลิมปัส ฟื้น HP ต่อเนื่อง ทุกสกิลไม่เสีย SP จบด้วยฮีลใหญ่และเสาแสง',lv:()=>[`${SB.saOlympus.dur} วิ · ฟื้น ${sT(SB.saOlympus.heal)}/วิ · ดาเมจที่ได้รับ −${SB.saOlympus.block}`,`จบ: ฟื้น ${sT(SB.saOlympus.fin)} · เสาแสง ${sT(SB.saOlympus.dmg)} รัศมี ${SB.saOlympus.R}`]},
  // ---------------- B · MEDEA'S ENCHANTER ----------------
  {key:'sbThread',id:'SP-B01',name:'Golden Thread',br:'B',row:1,max:4,type:'melee',d:'ยิงด้ายมนตร์ทองคำ +1 มนตร์ (อัปสลับเลเวลกับ Hex of Weakness)',lv:i=>[`${sT(SB.sbThread.dmg[i-1])} ยาว ${SB.sbThread.len}`,'+1 มนตร์']},
- {key:'sbLore',id:'SP-B02',name:'Colchis Lore',br:'B',row:1,max:2,passive:1,d:'(Passive) ตำราคอลคิส สกิล B แรงขึ้น',lv:i=>[`TAL +${SB.sbLore.tal[i-1]} (สกิล B)`]},
+ {key:'sbLore',id:'SP-B02',name:'Colchis Lore',br:'B',row:1,max:2,passive:1,d:'(Passive) ตำราคอลคิส สกิล B แรงขึ้น',lv:i=>[`MATK +${SB.sbLore.tal[i-1]} (สกิล B)`]},
  {key:'sbLullaby',id:'SP-B03',name:'Lullaby',br:'B',row:2,max:3,type:'melee',d:'เพลงกล่อมเป็นรูปพัด ศัตรูช้า +1 มนตร์ กดซ้ำเพื่อใช้ Dream Shatter',lv:i=>[`${sT(SB.sbLullaby.dmg)} รัศมี ${SB.sbLullaby.R}`,'สโลว์ 2.5 วิ · +1 มนตร์']},
  {key:'sbShatter',id:'SP-B04',name:'Dream Shatter',br:'B',row:2,max:1,parent:'sbLullaby',d:'(ท่าต่อ) ปลุกฝัน ระเบิดใส่เป้าที่ช้าอยู่ ใช้มนตร์ทั้งหมดบนเป้า',lv:()=>[`${sT(SB.sbShatter.dmg)} + ${sT(SB.sbShatter.per)} ต่อมนตร์ 1 ชั้น`]},
  {key:'sbHex',id:'SP-B05',name:'Hex of Weakness',br:'B',row:3,max:2,type:'ground',pre:[['sbThread',1]],d:'คำสาปอ่อนแรง ศัตรูตีเบาลงและ DEF ลด +1 มนตร์',lv:i=>[`รัศมี ${SB.sbHex.R} · ${SB.sbHex.T} วิ`,`ศัตรูตี −${SB.sbHex.atk} · DEF −${SB.sbHex.def}`,'+1 มนตร์']},
- {key:'sbSong',id:'SP-B06',name:'War Song',br:'B',row:3,max:2,type:'self',d:'เพลงศึก TAL เพิ่ม',lv:i=>[`TAL +${SB.sbSong.tal[i-1]}`,`${SB.sbSong.dur} วิ`]},
+ {key:'sbSong',id:'SP-B06',name:'War Song',br:'B',row:3,max:2,type:'self',d:'เพลงศึก MATK เพิ่ม',lv:i=>[`MATK +${SB.sbSong.tal[i-1]}`,`${SB.sbSong.dur} วิ`]},
  {key:'sbMirror',id:'SP-B07',name:'Mirror Fleece',br:'B',row:4,max:2,passive:1,d:'(Passive) ขนกระจก โดนตีครบจำนวนครั้ง สะท้อนดาเมจและใส่มนตร์คนตี',lv:i=>[`ทุก ${SB.sbMirror.every[i-1]} ครั้งที่โดนตี`,`สะท้อน ${sT(SB.sbMirror.dmg)} · +1 มนตร์`]},
  {key:'sbRam',id:'SP-B08',name:'Golden Ram',br:'B',row:4,max:2,type:'melee',pre:[['sbHex',1]],d:'เรียกวิญญาณแกะทองคำพุ่งชนเป็นแนว',lv:()=>[`${sT(SB.sbRam.dmg)} ยาว ${SB.sbRam.len}`,'ยกลอย']},
- {key:'sbSleep',id:'SP-B09',name:"Dragon's Sleep",br:'B',row:5,max:3,type:'ground',d:'(มีเดียกล่อมมังกรเฝ้าขนแกะ) ศัตรูในวงช้ามาก และโดนแรงขึ้น +1 มนตร์ กดซ้ำเพื่อใช้ Thread of Fate',lv:i=>[`รัศมี ${SB.sbSleep.R} · ${SB.sbSleep.T} วิ`,`TAL +${SB.sbSleep.tal} ใส่ตัวที่หลับ`,'+1 มนตร์']},
+ {key:'sbSleep',id:'SP-B09',name:"Dragon's Sleep",br:'B',row:5,max:3,type:'ground',d:'(มีเดียกล่อมมังกรเฝ้าขนแกะ) ศัตรูในวงช้ามาก และโดนแรงขึ้น +1 มนตร์ กดซ้ำเพื่อใช้ Thread of Fate',lv:i=>[`รัศมี ${SB.sbSleep.R} · ${SB.sbSleep.T} วิ`,`MATK +${SB.sbSleep.tal} ใส่ตัวที่หลับ`,'+1 มนตร์']},
  {key:'sbFate',id:'SP-B10',name:'Thread of Fate',br:'B',row:5,max:1,parent:'sbSleep',d:'(ท่าต่อ) ผูกด้ายชะตาศัตรูทุกตัวในวง ตีตัวหนึ่ง ตัวอื่นโดนด้วย',lv:()=>[`${SB.sbFate.T} วิ`,`ตัวอื่นโดน ×${SB.sbFate.share} ของดาเมจ`]},
- {key:'sbBinder',id:'SP-B11',name:'Spellbinder',br:'B',row:6,max:2,passive:1,d:'(Passive) ติดมนตร์นานขึ้นและโดนแรงขึ้น',lv:i=>[`ติดมนตร์นานขึ้น ${SB.sbBinder.t[i-1]} วิ`,`TAL +${SB.sbBinder.tal[i-1]} ใส่ตัวที่ติดมนตร์`]},
+ {key:'sbBinder',id:'SP-B11',name:'Spellbinder',br:'B',row:6,max:2,passive:1,d:'(Passive) ติดมนตร์นานขึ้นและโดนแรงขึ้น',lv:i=>[`ติดมนตร์นานขึ้น ${SB.sbBinder.t[i-1]} วิ`,`MATK +${SB.sbBinder.tal[i-1]} ใส่ตัวที่ติดมนตร์`]},
  {key:'sbSiren',id:'SP-B12',name:"Siren's Call",br:'B',row:6,max:1,type:'ground',pre:[['sbSleep',1]],d:'เสียงไซเรนดึงศัตรูรอบๆ เข้าหาจุดเดียว +1 มนตร์',lv:()=>[`รัศมี ${SB.sbSiren.R}`,`${sT(SB.sbSiren.dmg)} · +1 มนตร์`]},
- {key:'sbHarmony',id:'SP-B13',name:'Enchanted Harmony',br:'B',row:7,max:2,passive:1,d:'(Passive) บัฟที่มีอยู่บนตัว ทำให้สกิล B แรงขึ้น',lv:i=>[`TAL +${SB.sbHarmony.per[i-1]} ต่อบัฟ 1 ชิ้น (สกิล B)`]},
+ {key:'sbHarmony',id:'SP-B13',name:'Enchanted Harmony',br:'B',row:7,max:2,passive:1,d:'(Passive) บัฟที่มีอยู่บนตัว ทำให้สกิล B แรงขึ้น',lv:i=>[`MATK +${SB.sbHarmony.per[i-1]} ต่อบัฟ 1 ชิ้น (สกิล B)`]},
  {key:'sbCauldron',id:'SP-B14',name:"Medea's Cauldron",br:'B',row:7,max:1,type:'ground',pre:[['sbBinder',1]],d:'ขว้างหม้อยามีเดียเดือด ติดอ่อนแรงและช้า +2 มนตร์',lv:()=>[`${sT(SB.sbCauldron.dmg)} รัศมี ${SB.sbCauldron.R}`,'+2 มนตร์']},
- {key:'sbColchis',id:'SP-B15',name:'Fleece of Colchis',br:'B',row:8,max:1,type:'self',ult:1,pre:[['sbCauldron',1],['sbFate',1]],d:'ULTIMATE B · ขนแกะทองคำแห่งคอลคิสลอยเหนือหัว ยิงแสงใส่ศัตรูทุกวิ จบแล้วศัตรูที่ติดมนตร์ระเบิด',lv:()=>[`${SB.sbColchis.dur} วิ · แสงทอง ${sT(SB.sbColchis.bolt)}/วิ +1 มนตร์`,`TAL +${SB.sbColchis.tal}`,`ระเบิด ${sT(SB.sbColchis.fin)} ต่อตัวที่ติดมนตร์`]},
+ {key:'sbColchis',id:'SP-B15',name:'Fleece of Colchis',br:'B',row:8,max:1,type:'self',ult:1,pre:[['sbCauldron',1],['sbFate',1]],d:'ULTIMATE B · ขนแกะทองคำแห่งคอลคิสลอยเหนือหัว ยิงแสงใส่ศัตรูทุกวิ จบแล้วศัตรูที่ติดมนตร์ระเบิด',lv:()=>[`${SB.sbColchis.dur} วิ · แสงทอง ${sT(SB.sbColchis.bolt)}/วิ +1 มนตร์`,`MATK +${SB.sbColchis.tal}`,`ระเบิด ${sT(SB.sbColchis.fin)} ต่อตัวที่ติดมนตร์`]},
  // ---------------- C · GOLDEN WING ----------------
  {key:'scPrism',id:'SP-C01',name:'Prism Ball',br:'C',tier:1,col:'basic',passive:1,pre:[['snLight',3]],d:'ลูกแสงโดนเป้าแล้วแตกเป็น 3 ลูกใส่ตัวรอบๆ',lv:()=>[`ลูกละ ×${SB.scPrism.mul} ของท่า`]},
  {key:'scChorus',id:'SP-C02',name:'Hymn Chorus',br:'C',tier:1,col:'A',passive:1,pre:[['saHymn',4]],d:'Healing Hymn ฟื้นเพิ่มตามขนที่มี (ไม่ใช้ขน)',lv:()=>[`+${sT(SB.scChorus.per)} ต่อขน 1 ชั้น`]},
@@ -138,7 +138,7 @@ const SP_DEFS=[
  {key:'scCharm',id:'SP-C06',name:'Charm',br:'C',tier:2,col:'B',pre:[['sbHex',2]],d:'[New Active] มนตร์เสน่ห์ มอนไม่ใช่บอสกลายเป็นพวก ไปตีมอนตัวอื่น บอสโดนสโลว์แทน',lv:()=>[`${SB.scCharm.T} วิ · ตี ${sT(SB.scCharm.hit)} ต่อวิ`,`บอส: สโลว์ ${SB.scCharm.slow} วิ`,'Cooldown 25 วิ']},
  {key:'scShearing',id:'SP-C07',name:'Golden Shearing',br:'C',tier:3,col:'basic',pre:[['snFleece',3]],d:'[New Active] สลัดขนทุกชั้นเป็นลูกทองลอยรอบตัว ฟื้น HP หรือพุ่งใส่ศัตรูที่เข้าใกล้',lv:()=>[`${SB.scShearing.T} วิ · ลูกละฟื้น ${sT(SB.scShearing.heal)}/วิ`,`พุ่งใส่ ${sT(SB.scShearing.dmg)}`,'Cooldown 30 วิ']},
  {key:'scGorgon',id:'SP-C08',name:"Gorgon's Gaze",br:'C',tier:3,col:'A',passive:1,pre:[['saAegis',2]],d:'ระหว่าง Aegis สะท้อนดาเมจ ครบจำนวนครั้งคนตีติดช้า',lv:()=>[`สะท้อน ${sT(SB.scGorgon.dmg)} ต่อครั้ง`,`ทุก ${SB.scGorgon.every} ครั้ง คนตีสโลว์ 2 วิ`]},
- {key:'scSlumber',id:'SP-C09',name:'Deep Slumber',br:'C',tier:3,col:'B',passive:1,pre:[['sbSleep',3]],d:"Dragon's Sleep นานขึ้นและโดนแรงขึ้นอีก",lv:()=>[`นานขึ้น ${SB.scSlumber.t} วิ`,`TAL +${SB.scSlumber.tal}`]},
+ {key:'scSlumber',id:'SP-C09',name:'Deep Slumber',br:'C',tier:3,col:'B',passive:1,pre:[['sbSleep',3]],d:"Dragon's Sleep นานขึ้นและโดนแรงขึ้นอีก",lv:()=>[`นานขึ้น ${SB.scSlumber.t} วิ`,`MATK +${SB.scSlumber.tal}`]},
  {key:'scCloud',id:'SP-C10',name:'Woolly Cloud',br:'C',tier:4,col:'basic',pre:[['snHop',2]],d:'[New Active] กลายเป็นเมฆขนฟู ไม่โดนตี เดินเร็ว ลงมาพ่นฝุ่นกล่อมนอน',lv:()=>[`${SB.scCloud.T} วิ · เดิน +${SB.scCloud.move}`,`ลงพื้น ${sT(SB.scCloud.dmg)} รัศมี ${SB.scCloud.R} สโลว์ 2 วิ`,'Cooldown 20 วิ']},
  {key:'scWell',id:'SP-C11',name:'Wellspring',br:'C',tier:4,col:'A',passive:1,pre:[['saHand',1]],d:'Hand of Asclepius เหลือขนไว้ 1 ชั้น และคูลดาวน์สั้นลง',lv:()=>[`Cooldown ${SB.scWell.cd} วิ`]},
  {key:'scSirens',id:'SP-C12',name:'Chorus of Sirens',br:'C',tier:4,col:'B',pre:[['sbSiren',1]],d:'[New Active] เรียกเงาไซเรน 3 ตนรอบตัว ดึงศัตรูเข้าหาและใส่มนตร์',lv:()=>[`${SB.scSirens.T} วิ · ตนละ ${sT(SB.scSirens.dmg)}/วิ +1 มนตร์`,'Cooldown 30 วิ']}
@@ -154,7 +154,7 @@ const sBranch=k=>!k?'':k==='basic'?'N':(k.startsWith('sa')||['scChorus','scChari
 const sTal=()=>Math.max(1,D.mag);
 function sWoolEvery(){if(!sL('snFleece'))return 99;return Math.max(1,sLv(SB.snFleece.every,'snFleece')-(sL('saRegrow')?sLv(SB.saRegrow.cut,'saRegrow'):0));}
 function sShear(keep=0){const n=SHP.wool;SHP.wool=Math.min(keep,n);const used=n-SHP.wool;if(used>0){SHP.thin=1;if(sL('saRegrow'))sHeal(SB.saRegrow.heal*used,true);sFluff(player.x,player.y,used*3);}return used;}
-/* heal: n = TAL×n; Rod / Grace add to n; overflow → Overflowing Cup shield */
+/* heal: n = MATK×n; Rod / Grace add to n; overflow → Overflowing Cup shield */
 function sHeal(n,plain){let m=n;if(!plain){if(sL('saRod'))m+=sLv(SB.saRod.add,'saRod');if(sL('saGrace')&&player.hp<player.maxHp*.5)m+=sLv(SB.saGrace.add,'saGrace');}
   const amt=Math.round(sTal()*m);if(amt<=0)return 0;const room=player.maxHp-player.hp,g=Math.min(room,amt);player.hp+=g;
   if(amt>room&&sL('saCup'))SHP.cup=Math.min(sLv(SB.saCup.cap,'saCup'),SHP.cup+(amt-room));
@@ -162,7 +162,7 @@ function sHeal(n,plain){let m=n;if(!plain){if(sL('saRod'))m+=sLv(SB.saRod.add,'s
 function sHot(n,T){SHP.hot.push({rate:n/T,until:gameTime+T});}
 function sShieldSet(n,T){SHP.shield=Math.max(SHP.shield,Math.round(sTal()*n));SHP.shieldT=gameTime+T;}
 function sCleanse(){let c=0;for(const k in player.buffs)if(k.startsWith('db')){delete player.buffs[k];c++;}if(player.ccT>0)player.ccT=0;return c;}
-function sHit(e,mult,key,o={}){if(!e||e.dead)return 0;return hurt(e,mult,Object.assign({skill:key,_m:mult},o));}   /* _m: the hit's TAL multiplier (Thread of Fate shares a part of it) */
+function sHit(e,mult,key,o={}){if(!e||e.dead)return 0;return hurt(e,mult,Object.assign({skill:key,_m:mult},o));}   /* _m: the hit's MATK multiplier (Thread of Fate shares a part of it) */
 const sNear=(x,y,R)=>enemies.filter(e=>!e.dead&&Math.hypot(e.x-x,e.y-y)<=R+e.r*.5);
 const sLine=(x0,y0,phi,L,w)=>enemies.filter(e=>!e.dead&&distToSeg(e.x,e.y,x0,y0,x0+Math.cos(phi)*L,y0+Math.sin(phi)*L)<e.r+w);
 function sFree(x,y){const c=clampPt(x,y);if(c[0]!==x||c[1]!==y)return false;return !(curMap&&mapBlockedW(x,y));}
@@ -422,7 +422,7 @@ function installSheep(){
   ITEMS.shepherdCrook={n:"Golden Shepherd's Crook",slot:'rhand',two:1,kind:'Staff',atk:70,matk:170,wlv:3,aspd:156,ref:6,cards:2,w:110,b:{},size:{small:1,medium:1,large:1},d:'ไม้เท้าคนเลี้ยงแกะสีทอง'};
   ITEMS.colchisStaff={n:'Staff of Colchis',slot:'rhand',two:1,kind:'Staff',atk:80,matk:195,wlv:4,aspd:154,ref:4,cards:1,w:120,b:{},size:{small:1,medium:1,large:1},d:'ไม้เท้าแห่งคอลคิส'};
   EQ.rhand='shepherdCrook';INV.length=0;INV.push('colchisStaff','vikinghelm','ringPrec','clipLuck');
-  /* flat TAL bonuses for magic hits */
+  /* flat MATK bonuses for magic hits */
   const flat=(e,o)=>{const k=o&&(o.skill||(o.auto?'basic':null))||window.SKCTX,br=sBranch(k);let b=0;
     if(hasBuff('sbSong'))b+=sLv(SB.sbSong.tal,'sbSong');if(SHP.colchis)b+=SB.sbColchis.tal;
     if(br==='B'){if(sL('sbLore'))b+=sLv(SB.sbLore.tal,'sbLore');if(sL('sbHarmony')){let n=0;for(const q in player.buffs)if(!q.startsWith('db')&&!q.startsWith('sl_')&&q!=='rhSA')n++;b+=n*sLv(SB.sbHarmony.per,'sbHarmony');}}
@@ -444,7 +444,7 @@ function installSheep(){
   window.jgAspd=()=>1;window.jgRecover=()=>1;window.jgPlayerAlpha=()=>SHP.cloud?.35:(player.jgHide?.1:1);window.jgBleedMul=()=>1;
   window.jgSquash=()=>{const s=1+.025*SHP.wool-.04*SHP.thin;return [s,1+.01*SHP.wool];};window.jgOnSkillHit=()=>{};
   /* Thread of Fate: damage shared to the other bound enemies */
-  /* 2026-11-21 fix: the share used to be dmg×0.3÷TAL, which went through the coefficient / bonuses a second time (≈ ×1.3 of the damage
+  /* 2026-11-21 fix: the share used to be dmg×0.3÷MATK, which went through the coefficient / bonuses a second time (≈ ×1.3 of the damage
      per linked enemy instead of ×0.3); now each linked enemy takes the hit's own multiplier × share */
   window.jgAfterHurt=(e,dmg,crit,o)=>{if(!o||o.dot||o.noFate||o.fate||!(o._m>0))return;const F=SHP.fate;if(F&&F.until>gameTime&&F.set.has(e)){for(const q of F.set){if(q===e||q.dead)continue;sHit(q,o._m*SB.sbFate.share,'sbFate',{fate:true});}}};
   window.sheepAutoTick=sheepAutoTick;

@@ -26,36 +26,36 @@ const LANDS={vik:{n:'ไวกิ้ง',c:'#7fb8e8'},grk:{n:'กรีก',c:'#
 const TYPE={act:['⚡','สกิลกด R'],rule:['🔁','เปลี่ยนกติกา'],build:['🧬','ปลดบิลด์ใหม่']};
 /* key · land · boss map slot · boss · item (en) · item (th) · type · power · what it does (GEAR_V3_PLAN_TH.md §4) */
 const DATA=[
- ['draugr','vik','D1b','ดรอกร์ช่างหลอม',"Deathforge Anvil",'ทั่งคนตาย','build','เกราะคือพลัง','ATK และ TAL + DEF × 0.5 → แทงก์สาย DEF ตีแรงได้'],
+ ['draugr','vik','D1b','ดรอกร์ช่างหลอม',"Deathforge Anvil",'ทั่งคนตาย','build','เกราะคือพลัง','ATK และ MATK + DEF × 0.5 → แทงก์สาย DEF ตีแรงได้'],
  ['huldra','vik','H1','ฮุลดรา',"Huldra's Lyre",'พิณฮุลดรา','act','เพลงล่อ','คูล 20 วิ: ดึงมอนทุกตัวในรัศมี 500 มากองหน้าเรา มึน 1.5 วิ (บอสไม่โดนดึง)'],
- ['jotun','vik','H2','ยักษ์โยตุน',"Jotun's Fist",'กำปั้นโยตุน','build','ร่างยักษ์','ATK และ TAL + VIT × 0.5 → สาย VIT ถึกและตีแรง'],
+ ['jotun','vik','H2','ยักษ์โยตุน',"Jotun's Fist",'กำปั้นโยตุน','build','ร่างยักษ์','ATK และ MATK + VIT × 0.5 → สาย VIT ถึกและตีแรง'],
  ['fenrir','vik','D2c','เฟนเรียร์',"Fenrir's Fang",'เขี้ยวเฟนเรียร์','act','หอนแร็กนาร็อก','รีเซ็ตคูลดาวน์ทุกสกิลทันที ยกเว้นท่าไม้ตาย → ปล่อยชุดท่าใส่บอสได้ 2 รอบติด'],
- ['nidhogg','vik','E1','นิดฮ็อกก์',"Nidhogg's Scale",'เกล็ดนิดฮ็อกก์','rule','ซากระเบิด','มอนที่เราฆ่าระเบิดพิษ ATK/TAL×1.5 รัศมี 120 ระเบิดต่อกันเป็นลูกโซ่'],
+ ['nidhogg','vik','E1','นิดฮ็อกก์',"Nidhogg's Scale",'เกล็ดนิดฮ็อกก์','rule','ซากระเบิด','มอนที่เราฆ่าระเบิดพิษ ATK/MATK×1.5 รัศมี 120 ระเบิดต่อกันเป็นลูกโซ่'],
  ['ymir','vik','E2','ยมีร์',"Heart of Ymir",'หัวใจยมีร์','rule','กายาแห่งโลก','โดนตีครั้งเดียวเสีย HP ไม่เกิน เลเวล × 4 → ท่าใหญ่ของบอสฆ่าเราในทีเดียวไม่ได้'],
  ['polyphemus','grk','D1b','โพลีฟีมัส',"Cloak of Nobody",'ผ้าคลุม "ไม่มีใคร"','act','ฉันชื่อไม่มีใคร','คูล 30 วิ: ล่องหน 6 วิ มอนไม่เห็นเรา ตีแรกออกจากล่องหนคริแน่นอน'],
  ['hecate','grk','H1','เฮคาที',"Hecate's Torch",'คบเพลิงเฮคาที','build','มนตร์ทางสามแพร่ง','ดาเมจที่โดนหักจาก SP ก่อน สูงสุด INT × 2 ต่อครั้ง → สาย INT เป็นแทงก์เวท'],
- ['trojan','grk','H2','ยักษ์ทรอย',"Trojan Horse",'ม้าไม้ทรอย','act','ม้าไม้','คูล 30 วิ: หลบเข้าม้าไม้ 2 วิ ไม่โดนดาเมจ แล้วกระโดดออกมาทุบรอบตัว ATK/TAL×4 มึน 1 วิ'],
+ ['trojan','grk','H2','ยักษ์ทรอย',"Trojan Horse",'ม้าไม้ทรอย','act','ม้าไม้','คูล 30 วิ: หลบเข้าม้าไม้ 2 วิ ไม่โดนดาเมจ แล้วกระโดดออกมาทุบรอบตัว ATK/MATK×4 มึน 1 วิ'],
  ['minotaur','grk','D2c','มิโนทอร์',"Minotaur's Horn",'เขามิโนทอร์','rule','ไม่หยุด','ไม่โดนมึน ผลัก ล้ม ราก ช้า → ยืนตีบอสได้ตลอด'],
  ['cerberus','grk','E1','เซอร์เบอรัส',"Three-Headed Collar",'ปลอกคอสามหัว','rule','สามหัว','ตีปกติโดน 3 ตัวพร้อมกัน (เป้า + 2 ตัวใกล้สุด)'],
- ['typhon','grk','E2','ไทฟอน',"Eye of Typhon",'ตาพายุไทฟอน','act','ตาพายุ','คูล 35 วิ: พายุหมุนรอบตัว 8 วิ รัศมี 160 ผลักมอนออกและทำให้ช้า กระสุนมอนเบี่ยง ตัวในพายุโดน ATK/TAL×0.3 ทุก 0.5 วิ'],
+ ['typhon','grk','E2','ไทฟอน',"Eye of Typhon",'ตาพายุไทฟอน','act','ตาพายุ','คูล 35 วิ: พายุหมุนรอบตัว 8 วิ รัศมี 160 ผลักมอนออกและทำให้ช้า กระสุนมอนเบี่ยง ตัวในพายุโดน ATK/MATK×0.3 ทุก 0.5 วิ'],
  ['mummy','egy','D1b','มัมมี่อัครเสนาบดี',"Burial Wraps",'ผ้าพันศพ','build','จ่ายด้วยเลือด','สกิลใช้ HP แทน SP (SP 1 = HP 3) ฆ่ามอนฟื้น HP เลเวล × 2'],
  ['sphinx','egy','H1','สฟิงซ์',"Riddle of the Sphinx",'ปริศนาสฟิงซ์','act','ย้อนเวลา','คูล 45 วิ: กลับไปตำแหน่ง HP SP เมื่อ 4 วิก่อน'],
  ['scorpion','egy','H2','ราชาแมงป่องเกลือ',"Scorpion King's Stinger",'เหล็กไนราชา','rule','เจาะเกราะ','ทุกการโจมตีไม่สน DEF ของเป้า 60 แต้ม'],
  ['pharaoh','egy','D2c','ฟาโรห์อมตะ',"Golden Pharaoh Mask",'หน้ากากทองฟาโรห์','act','พีระมิดทอง','คูล 40 วิ: พีระมิดทองครอบตัว 6 วิ รัศมี 160 ข้างในสกิลไม่เสีย SP รับดาเมจ − เลเวล × 1 ต่อครั้ง มอนที่เดินเข้ามาช้าลง'],
- ['set','egy','E1','เซ็ต',"Scepter of Set",'คทาเซ็ต','build','โชคแห่งความโกลาหล','คริทุกครั้ง คูลดาวน์ทุกสกิล −0.5 วิ → สาย LCK ใช้สกิลรัว'],
- ['apep','egy','E2','อาเปป',"Apep's Fang",'เขี้ยวอาเปป','act','กลืนกิน','คูล 12 วิ: กลืนมอนธรรมดาทั้งตัว ได้พลังมัน ATK/TAL + เลเวลมอน × 0.3 นาน 30 วิ ซ้อน 3 · บอส = กัด ATK/TAL×5 + พิษ'],
+ ['set','egy','E1','เซ็ต',"Scepter of Set",'คทาเซ็ต','build','โชคแห่งความโกลาหล','คริทุกครั้ง คูลดาวน์ทุกสกิล −0.5 วิ → สาย LUK ใช้สกิลรัว'],
+ ['apep','egy','E2','อาเปป',"Apep's Fang",'เขี้ยวอาเปป','act','กลืนกิน','คูล 12 วิ: กลืนมอนธรรมดาทั้งตัว ได้พลังมัน ATK/MATK + เลเวลมอน × 0.3 นาน 30 วิ ซ้อน 3 · บอส = กัด ATK/MATK×5 + พิษ'],
  ['tanuki','jpn','D1b','นินจาทานูกิ',"Tanuki's Leaf",'ใบไม้ทานูกิ','act','ร่างแยก','คูล 40 วิ: ร่างแยก 10 วิ ทำท่าตามทุกสกิลที่เราใช้ แรงครึ่งหนึ่ง'],
- ['jorogumo','jpn','H1','โจโรกุโมะ',"Jorogumo's Silk",'ใยโจโรกุโมะ','build','เสน่ห์พิษ','ทุกสถานะที่เราใส่ ทำดาเมจ CHA × 0.4 ต่อวิ ตลอดที่ติด → สาย CHA ตีแรงได้'],
- ['gashadokuro','jpn','H2','กาชะโดคุโระ',"Hungry Skull",'กะโหลกหิวโหย','rule','ตัดจบ','มอนธรรมดาที่ HP เหลือน้อยกว่า ATK/TAL × 3 ตายทันทีเมื่อโดนเรา'],
+ ['jorogumo','jpn','H1','โจโรกุโมะ',"Jorogumo's Silk",'ใยโจโรกุโมะ','build','เสน่ห์พิษ','ทุกสถานะที่เราใส่ ทำดาเมจ DEX × 0.4 ต่อวิ ตลอดที่ติด → สาย DEX ตีแรงได้'],
+ ['gashadokuro','jpn','H2','กาชะโดคุโระ',"Hungry Skull",'กะโหลกหิวโหย','rule','ตัดจบ','มอนธรรมดาที่ HP เหลือน้อยกว่า ATK/MATK × 3 ตายทันทีเมื่อโดนเรา'],
  ['shogun','jpn','D2c','โชกุนวิญญาณ',"Ghost Shogun's Blade",'ดาบโชกุนผี','rule','ท่าไม้ตายโชกุน','ท่าไม้ตายคูลดาวน์ −15 วิ และไม่โดนดาเมจระหว่างร่าย'],
- ['shuten','jpn','E1','ชูเท็นโดจิ',"Sake Gourd",'น้ำเต้าสาเก','rule','คอแข็ง','ยาฟื้น HP/SP แรง 2 เท่า กินยาแล้ว ATK/TAL + เลเวล × 0.5 นาน 5 วิ'],
+ ['shuten','jpn','E1','ชูเท็นโดจิ',"Sake Gourd",'น้ำเต้าสาเก','rule','คอแข็ง','ยาฟื้น HP/SP แรง 2 เท่า กินยาแล้ว ATK/MATK + เลเวล × 0.5 นาน 5 วิ'],
  ['orochi','jpn','E2','ยามาตะโนะโอโรจิ',"Kusanagi Sword",'ดาบคุซานางิ','rule','แปดเศียร','ทุกครั้งที่ 8 ที่ใช้สกิล สกิลนั้นออกแรงสองเท่าและไม่เสีย SP'],
  ['camazotz','azt','D1b','คามาโซตซ์',"Camazotz Wing",'ปีกค้างคาว','act','ร่างค้างคาว','คูล 20 วิ: แปลงเป็นฝูงค้างคาว 3 วิ ไม่โดนดาเมจ บินเร็ว ทะลุมอน ดูดเลือดตัวที่บินผ่าน'],
  ['ahuizotl','azt','H1','อาฮุยซอตล์',"Ahuizotl's Tail-Hand",'มือหางอาฮุยซอตล์','act','คว้า','คูล 6 วิ: คว้าศัตรูไกล 500 มาตรงหน้า (บอส: ดึงเราไปหามัน)'],
  ['eagle','azt','H2','ขุนศึกอินทรี',"Eagle Warrior Plume",'ขนนกนักรบอินทรี','build','ปีกพายุ','เดินครบ 120 เก็บแรงลม 1 ชั้น (สูงสุด 5) สกิลถัดไป + AGI × 0.6 ต่อชั้น'],
  ['tzitzimitl','azt','D2c','ซิตซิมิตล์',"Starry Eclipse Cloak",'ผ้าคลุมดาว','act','สุริยคราส','คูล 50 วิ: ความมืดรัศมี 300 นาน 8 วิ มอนในความมืดตีพลาดทุกครั้ง (บอสครั้งเว้นครั้ง) เราตีตัวในความมืดคริทุกครั้ง'],
  ['mictlan','azt','E1','มิกตลันเตกุตลี',"Staff of Mictlan",'ไม้เท้ามิกตลัน','rule','กองทัพกระดูก','ทุกตัวที่ 5 ที่ฆ่า ลุกเป็นโครงกระดูกสู้ให้ 15 วิ (สูงสุด 3 ตัว)'],
- ['quetzal','azt','E2','เควตซัลโคอาทล์',"Quetzal Feather",'ขนนกเควตซัล','rule','ใบลมขนนก','ทุกครั้งที่ใช้สกิล ปล่อยใบลมขนนกพุ่งทะลุแถว 400 ใส่ศัตรูที่ใกล้สุด ATK/TAL×1']];
+ ['quetzal','azt','E2','เควตซัลโคอาทล์',"Quetzal Feather",'ขนนกเควตซัล','rule','ใบลมขนนก','ทุกครั้งที่ใช้สกิล ปล่อยใบลมขนนกพุ่งทะลุแถว 400 ใส่ศัตรูที่ใกล้สุด ATK/MATK×1']];
 /* live relics: the boss is in the maps and the power is coded */
 const LV0=v=>window.LVC?LVC.n(v):v;   /* level cap 60: relic levels are their boss's design level, on the new scale (80 → 49) */
 const LIVE={fenrir:{lv:LV0(80),map:'vikD2c',where:'บัลลังก์เฟนเรียร์ (ถ้ำเฟนเรียร์ ชั้น 3)',cd:[90,84,78,72,66],use:o=>fenrirHowl(o)}};
@@ -71,7 +71,7 @@ const saveRS=()=>{try{localStorage.setItem(SKEY,JSON.stringify(RS));}catch(e){}}
 /* ---------------- items ---------------- */
 const gradeOf=r=>A.gradeOfLv(r.live?r.live.lv:LV0(80));
 function makeRelic(k,star=1){const r=R[k],g=gradeOf(r),t=A.gradeTier(g);
-  return A.mkInst({base:null,n:r.en,slot:'acc',kind:'Accessory',relic:k,star:Math.max(1,Math.min(5,star|0||1)),st:A.craftStats(r.land,'acc',g,false),x:{},b:{},
+  return A.mkInst({base:null,n:r.en,slot:'acc',kind:'Accessory',relic:k,star:Math.max(1,Math.min(5,star|0||1)),st:A.craftStats(r.land,'acc',g,false),ro:1,x:{},b:{},
     grade:g,tier:t,wlv:t,lvReq:A.gradeLv(g),sockets:0,orbs:[],ref:0,w:10,rank:'All',sealM:1,d:`วัตถุโบราณจาก${r.boss} · ${TYPE[r.type][0]} ${r.pw}`});}
 function give(k,star,why){const id=makeRelic(k,star);A.buyGear(id,0);RS.got[k]=1;saveRS();
   chatLog('sys',`🗿 ได้ <b style="color:#b89aff">${R[k].th}</b> ★${star}${why?` (${why})`:''} — สวมที่ช่องเครื่องประดับ${R[k].type==='act'?' แล้วกด R':''}`);return id;}
@@ -88,8 +88,8 @@ const cdOf=(r,s)=>r.live&&r.live.cd?r.live.cd[Math.max(1,Math.min(5,s||1))-1]:0;
 const RC={};                                                                           // relic key → gameTime when ready
 const cdLeft=k=>Math.max(0,(RC[k]||0)-gameTime);
 const starsHtml=n=>`<span class="rls">${'★'.repeat(n)}<s>${'★'.repeat(5-n)}</s></span>`;
-function statsText(k){const r=R[k],st=A.craftStats(r.land,'acc',gradeOf(r),false),N={atk:'ATK',def:'DEF',agi:'AGI',vit:'VIT',int:'INT',cha:'CHA',tal:'TAL',lck:'LCK'};
-  return Object.entries(st).map(([s,v])=>`${N[s]||s} +${Math.max(1,Math.round(v*ITEM_STAT_SCALE))}`).join(' · ');}
+function statsText(k){const r=R[k],st=A.craftStats(r.land,'acc',gradeOf(r),false),N={str:'STR',agi:'AGI',vit:'VIT',int:'INT',dex:'DEX',luk:'LUK',def:'DEF',mdef:'MDEF',atk:'ATK',matk:'MATK'};   /* RO stats: craftStats gives the final numbers */
+  return Object.entries(st).map(([s,v])=>`${N[s]||s} +${v}`).join(' · ');}
 function powerText(r,star){if(r.key==='fenrir')return `กด R: รีเซ็ตคูลดาวน์ทุกสกิลทันที ยกเว้นท่าไม้ตาย (ชาร์จสะสมของเจมก็เติมเต็ม) · คูลดาวน์ ${cdOf(r,star)} วิ`;return r.txt;}
 
 /* ---------------- pictures (painted icon when it exists, else a code placeholder) ---------------- */

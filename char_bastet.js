@@ -8,7 +8,7 @@
      B Tree · Tomb Warden            — summons cursed servants (mummies, scarabs, Anubis shade); SOULS 0–6 feed the servants
      C Tree · Heir of Bastet         — 12 nodes, each tied to the Basic / A / B skill of the same row (Lv 55 / 60 / 70 / 80)
 
-   Pure magic hero: every skill uses TAL.
+   Pure magic hero: every skill uses MATK.
    Owner's rules: no percent effects (flat numbers, counters instead of chances). Attack speed fixed (CHAR_ASPD).
    Sprite: the wolf's sprite stands in until Bastet's own clips are made. All FX are code placeholders.
    ===================================================================== */
@@ -74,13 +74,13 @@ const BA_BAL={
   }
 };
 const BB=BA_BAL.sk;
-/* branch tuning from the bench: damage numbers of each branch are scaled here so the shown TAL×n stays true */
+/* branch tuning from the bench: damage numbers of each branch are scaled here so the shown MATK×n stays true */
 const BA_SCALE={A:1.38,B:0.802};   /* re-tuned at the Lv 60 cap 2026-11-22 (≈ 2,050 per branch, LEVEL_CAP_TH.md); older values in git */
 (()=>{const r2=v=>Math.round(v*100)/100,sc=(o,f,m)=>{if(o[f]==null)return;o[f]=Array.isArray(o[f])?o[f].map(v=>r2(v*m)):r2(o[f]*m);};
   const colOf=k=>k.startsWith('ba')||['bcTriple','bcStorm','bcApep','bcSekhmet'].includes(k)?'A':k.startsWith('bb')||['bcTether','bcLord','bcPack','bcOsiris'].includes(k)?'B':null;
   for(const k in BB){const c=colOf(k);if(!c)continue;for(const f of ['dmg','per','dot'])sc(BB[k],f,BA_SCALE[c]);}
   BA_BAL.hex.dot=r2(BA_BAL.hex.dot*BA_SCALE.A);})();
-const bT=n=>'TAL×'+(+n).toFixed(2).replace(/0+$/,'').replace(/\.$/,'');
+const bT=n=>'MATK×'+(+n).toFixed(2).replace(/0+$/,'').replace(/\.$/,'');
 
 /* ---------------------------------------------------------------------
    2. SKILL DATA
@@ -93,7 +93,7 @@ const BA_DEFS=[
  {key:'bnVeil',id:'BN-B04',name:'Sand Veil',br:'basic',row:2,max:3,type:'self',d:'ผ้าคลุมทรายพันรอบตัว ได้โล่',lv:i=>[`โล่ = เลเวล × ${BB.bnVeil.shield[i-1]} นาน ${BB.bnVeil.T} วิ`,`Cooldown ${BB.bnVeil.cd} วิ`]},
  {key:'bnAnkh',id:'BN-B05',name:'Ankh of Life',br:'basic',row:3,max:2,type:'self',d:'ชูอังค์ ฟื้น HP และ SP',lv:i=>[`ฟื้น HP = เลเวล × ${BB.bnAnkh.hp[i-1]}`,`SP +${BB.bnAnkh.sp[i-1]}`,`Cooldown ${BB.bnAnkh.cd} วิ`]},
  {key:'bnSistrum',id:'BN-B06',name:'Sistrum Charm',br:'basic',row:3,max:4,passive:1,d:'(Passive) เครื่องรางกระดิ่งซิสตรัม',lv:i=>[`ดาเมจที่ได้รับ −${BB.bnSistrum.block[i-1]} ต่อครั้ง`]},
- {key:'bnObelisk',id:'BN-B07',name:'Temple Obelisk',br:'basic',row:4,max:3,type:'self',d:'ปักเสาโอเบลิสก์ ยืนในวงฟื้น SP และ TAL เพิ่ม',lv:i=>[`SP +${BB.bnObelisk.sp[i-1]} ทุกวิ`,`TAL +${BB.bnObelisk.tal[i-1]} นาน ${BB.bnObelisk.T} วิ`,`Cooldown ${BB.bnObelisk.cd} วิ`]},
+ {key:'bnObelisk',id:'BN-B07',name:'Temple Obelisk',br:'basic',row:4,max:3,type:'self',d:'ปักเสาโอเบลิสก์ ยืนในวงฟื้น SP และ MATK เพิ่ม',lv:i=>[`SP +${BB.bnObelisk.sp[i-1]} ทุกวิ`,`MATK +${BB.bnObelisk.tal[i-1]} นาน ${BB.bnObelisk.T} วิ`,`Cooldown ${BB.bnObelisk.cd} วิ`]},
  // ---------------- A · HEXWEAVER OF THE DEAD ----------------
  {key:'baGlyph',id:'BN-A01',name:'Curse Glyph',br:'A',row:1,max:4,type:'melee',d:'ยิงอักษรคำสาปใส่เป้า คำสาป +1 (อัปสลับเลเวลกับ Plague of Locusts)',lv:i=>[`${bT(BB.baGlyph.dmg[i-1])}`,`Cooldown ${BB.baGlyph.cd} วิ`]},
  {key:'baWither',id:'BN-A02',name:'Withering',br:'A',row:2,max:3,passive:1,d:'(Passive) คำสาปกัดแรงขึ้น',lv:i=>[`+${bT(BB.baWither.dot[i-1])} ต่อชั้นต่อวิ`]},
@@ -105,13 +105,13 @@ const BA_DEFS=[
  {key:'baVenom',id:'BN-A08',name:'Venom Coil',br:'A',row:5,max:1,passive:1,enh:'baApep',pre:[['baApep',1]],d:'(ต่อยอด Mark of Apep) ศัตรูที่โดนงูช้าลง คำสาปอยู่นานขึ้น',lv:()=>[`ช้าลง ${BB.baVenom.slow} วิ · คำสาป +${BB.baVenom.T} วิ`]},
  {key:'baDoom',id:'BN-A09',name:'Word of Doom',br:'A',row:6,max:2,type:'self',d:'ศัตรูทุกตัวที่มีคำสาปรอบตัวระเบิด ล้างคำสาปตัวที่ระเบิด',lv:i=>[`${bT(BB.baDoom.dmg[i-1])} + ${bT(BB.baDoom.per)} ต่อชั้น รัศมี ${BB.baDoom.R}`,`Cooldown ${BB.baDoom.cd} วิ`]},
  {key:'baLinger',id:'BN-A10',name:'Lingering Doom',br:'A',row:6,max:2,passive:1,enh:'baDoom',pre:[['baDoom',1]],d:'(ต่อยอด Word of Doom) ระเบิดแล้วเหลือคำสาปไว้',lv:i=>[`เหลือ ${BB.baLinger.left[i-1]} ชั้น`]},
- {key:'baGrimoire',id:'BN-A11',name:'Black Grimoire',br:'A',row:7,max:3,passive:1,d:'(Passive) ศัตรูที่มีคำสาปใกล้ตัว (สูงสุด 5 ตัว) ให้ TAL เพิ่มกับสกิล A',lv:i=>[`TAL +${BB.baGrimoire.tal[i-1]} ต่อตัว`]},
+ {key:'baGrimoire',id:'BN-A11',name:'Black Grimoire',br:'A',row:7,max:3,passive:1,d:'(Passive) ศัตรูที่มีคำสาปใกล้ตัว (สูงสุด 5 ตัว) ให้ MATK เพิ่มกับสกิล A',lv:i=>[`MATK +${BB.baGrimoire.tal[i-1]} ต่อตัว`]},
  {key:'baWrap',id:'BN-A12',name:"Mummy's Wrap",br:'A',row:7,max:1,type:'melee',d:'ผ้าพันมัมมี่พุ่งรัดเป้า ตรึงอยู่กับที่ คำสาป +1',lv:()=>[`${bT(BB.baWrap.dmg)} · ตรึง ${BB.baWrap.root} วิ`,`Cooldown ${BB.baWrap.cd} วิ`]},
  {key:'baPharaoh',id:'BN-A13',name:'Curse of the Pharaoh',br:'A',row:8,max:2,type:'self',ult:1,d:'ULTIMATE A · ดวงตาฟาโรห์ลืมบนฟ้า ศัตรูรอบตัวคำสาปเต็ม 5 ชั้น',lv:i=>[`${bT(BB.baPharaoh.dmg[i-1])} รัศมี ${BB.baPharaoh.R}`,`Cooldown ${BB.baPharaoh.cd} วิ`]},
  {key:'baEternal',id:'BN-A14',name:'Eternal Curse',br:'A',row:8,max:1,passive:1,enh:'baPharaoh',pre:[['baPharaoh',1]],d:'(ต่อยอด Curse of the Pharaoh) จบอัลติ คำสาปไม่หมดเวลา เพดาน 5 → 8 ชั้น',lv:()=>[`นาน ${BB.baEternal.T} วิ`]},
  // ---------------- B · TOMB WARDEN ----------------
  {key:'bbSiphon',id:'BN-G01',name:'Soul Siphon',br:'B',row:1,max:4,type:'melee',d:'สายวิญญาณดูดจากเป้า 4 ครั้ง ฟื้น HP ทุกครั้ง (อัปสลับเลเวลกับ Raise Mummy)',lv:i=>[`${bT(BB.bbSiphon.dmg[i-1])} × ${BB.bbSiphon.n}`,`ฟื้น HP = เลเวล × ${BB.bbSiphon.hp} ต่อครั้ง`,`Cooldown ${BB.bbSiphon.cd} วิ`]},
- {key:'bbJars',id:'BN-G02',name:'Canopic Jars',br:'B',row:2,max:3,passive:1,d:'(Passive) เริ่มมีวิญญาณ และวิญญาณแต่ละดวงเพิ่ม TAL ผู้รับใช้มากขึ้น',lv:i=>[`เริ่ม ${BB.bbJars.start[i-1]} ดวง`,`TAL ผู้รับใช้ +${BB.bbJars.tal[i-1]} ต่อดวง`]},
+ {key:'bbJars',id:'BN-G02',name:'Canopic Jars',br:'B',row:2,max:3,passive:1,d:'(Passive) เริ่มมีวิญญาณ และวิญญาณแต่ละดวงเพิ่ม MATK ผู้รับใช้มากขึ้น',lv:i=>[`เริ่ม ${BB.bbJars.start[i-1]} ดวง`,`MATK ผู้รับใช้ +${BB.bbJars.tal[i-1]} ต่อดวง`]},
  {key:'bbMummy',id:'BN-G03',name:'Raise Mummy',br:'B',row:3,max:2,type:'self',pre:[['bbSiphon',1]],d:'มัมมี่ผู้รับใช้โผล่จากทราย ยั่วศัตรูใกล้ ๆ (สูงสุด 2 ตัว)',lv:i=>[`${bT(BB.bbMummy.dmg[i-1])} ทุก 1 วิ นาน ${BB.bbMummy.T} วิ`,`Cooldown ${BB.bbMummy.cd} วิ`]},
  {key:'bbLash',id:'BN-G04',name:'Bandage Lash',br:'B',row:3,max:2,passive:1,enh:'bbMummy',pre:[['bbMummy',1]],d:'(ต่อยอด Raise Mummy) ทุกครั้งที่ 4 ที่มัมมี่ตี ผ้าพันแผลดึงศัตรูรอบ ๆ เข้ามา',lv:i=>[`${bT(BB.bbLash.dmg[i-1])} รัศมี ${BB.bbLash.R}`]},
  {key:'bbScarab',id:'BN-G05',name:'Scarab Swarm',br:'B',row:4,max:2,type:'self',d:'ปล่อยแมลงสคารับทอง 6 ตัว บินไปกัดเป้า',lv:i=>[`${bT(BB.bbScarab.dmg[i-1])} ทุก 0.5 วิ นาน ${BB.bbScarab.T} วิ`,`Cooldown ${BB.bbScarab.cd} วิ`]},
@@ -131,10 +131,10 @@ const BA_DEFS=[
  {key:'bcShadow',id:'BN-C04',name:'Shadow Cat',br:'C',col:'basic',tier:2,passive:1,pre:[['bnGrace',3]],d:"Cat's Grace ทิ้งเงาแมวดำล่อศัตรู แล้วระเบิด",lv:()=>[`${bT(BB.bcShadow.dmg)} รัศมี ${BB.bcShadow.R}`]},
  {key:'bcStorm',id:'BN-C05',name:'Locust Storm',br:'C',col:'A',tier:2,type:'melee',pre:[['baLocust',2]],d:'[New Active] พายุตั๊กแตนพุ่งไปข้างหน้า คำสาป +2',lv:()=>[`${bT(BB.bcStorm.dmg)} ทุกตัวในแนว ${BB.bcStorm.len}`,`Cooldown ${BB.bcStorm.cd} วิ`]},
  {key:'bcLord',id:'BN-C06',name:'Mummy Lord',br:'C',col:'B',tier:2,type:'self',pre:[['bbMummy',2]],d:'[New Active] มัมมี่ฟาโรห์ตัวใหญ่ ตีวงรอบตัว ยั่วศัตรูในวงกว้าง',lv:()=>[`${bT(BB.bcLord.dmg)} ทุก ${BB.bcLord.iv} วิ นาน ${BB.bcLord.T} วิ`,`Cooldown ${BB.bcLord.cd} วิ`]},
- {key:'bcBless',id:'BN-C07',name:"Bastet's Blessing",br:'C',col:'basic',tier:3,type:'self',pre:[['bnAnkh',2]],d:'[New Active] พรบาสเทต ฟื้น HP ต่อเนื่อง TAL เพิ่ม',lv:()=>[`ฟื้น HP = เลเวล × ${BB.bcBless.hp} ทุกวิ`,`TAL +${BB.bcBless.tal} นาน ${BB.bcBless.T} วิ`,`Cooldown ${BB.bcBless.cd} วิ`]},
+ {key:'bcBless',id:'BN-C07',name:"Bastet's Blessing",br:'C',col:'basic',tier:3,type:'self',pre:[['bnAnkh',2]],d:'[New Active] พรบาสเทต ฟื้น HP ต่อเนื่อง MATK เพิ่ม',lv:()=>[`ฟื้น HP = เลเวล × ${BB.bcBless.hp} ทุกวิ`,`MATK +${BB.bcBless.tal} นาน ${BB.bcBless.T} วิ`,`Cooldown ${BB.bcBless.cd} วิ`]},
  {key:'bcApep',id:'BN-C08',name:'Apep Awakens',br:'C',col:'A',tier:3,passive:1,pre:[['baApep',2]],d:'Mark of Apep จบด้วยงูตัวใหญ่งับปลายทาง คำสาป +1',lv:()=>[`${bT(BB.bcApep.dmg)} รัศมี ${BB.bcApep.R}`]},
  {key:'bcPack',id:'BN-C09',name:'Jackal Pack',br:'C',col:'B',tier:3,passive:1,pre:[['bbAnubis',2]],d:'Anubis Shade เรียกเงาอนูบิส 3 ตัว',lv:()=>['3 ตัว']},
- {key:'bcAvatar',id:'BN-C10',name:'Avatar of Bastet',br:'C',col:'basic',tier:4,type:'self',pre:[['bnObelisk',3]],d:'[New Active] Signature · ร่างเทพีแมวทอง ตีปกติแรงขึ้น คำสาปใส่ทีละ 2 เท่า ผู้รับใช้ตีถี่ขึ้น',lv:()=>[`ตีปกติ TAL +${BB.bcAvatar.tal}`,`ผู้รับใช้ช่วงตี −${BB.bcAvatar.iv} วิ`,`นาน ${BB.bcAvatar.T} วิ · Cooldown ${BB.bcAvatar.cd} วิ`]},
+ {key:'bcAvatar',id:'BN-C10',name:'Avatar of Bastet',br:'C',col:'basic',tier:4,type:'self',pre:[['bnObelisk',3]],d:'[New Active] Signature · ร่างเทพีแมวทอง ตีปกติแรงขึ้น คำสาปใส่ทีละ 2 เท่า ผู้รับใช้ตีถี่ขึ้น',lv:()=>[`ตีปกติ MATK +${BB.bcAvatar.tal}`,`ผู้รับใช้ช่วงตี −${BB.bcAvatar.iv} วิ`,`นาน ${BB.bcAvatar.T} วิ · Cooldown ${BB.bcAvatar.cd} วิ`]},
  {key:'bcSekhmet',id:'BN-C11',name:"Sekhmet's Plague Sun",br:'C',col:'A',tier:4,type:'ground',radius:()=>BB.bcSekhmet.R,pre:[['baPharaoh',1]],d:'[New Active] ดวงอาทิตย์แดงตกกลางพื้นที่ ล้างคำสาป',lv:()=>[`${bT(BB.bcSekhmet.dmg)} + ${bT(BB.bcSekhmet.per)} ต่อชั้นคำสาปของตัวที่โดน`,`Cooldown ${BB.bcSekhmet.cd} วิ`]},
  {key:'bcOsiris',id:'BN-C12',name:'Judgment of Osiris',br:'C',col:'B',tier:4,type:'self',pre:[['bbArmy',1]],d:'[New Active] ผู้รับใช้ทุกตัวระเบิดพร้อมกันแล้วสู้ต่อ วิญญาณ +2',lv:()=>[`${bT(BB.bcOsiris.dmg)} ต่อตัว รัศมี ${BB.bcOsiris.R}`,`Cooldown ${BB.bcOsiris.cd} วิ`]},
 ];
@@ -390,7 +390,7 @@ function installBastet(){
   for(const k in SKILLS)LV[k]=SKILLS[k].max;
   if(typeof jgBuildReq==='function'){const _b=jgBuildReq;jgBuildReq=function(){_b();for(const [a,b] of BA_ZIGZAG){const A=SKREQ[a],B=SKREQ[b];if(!A||!B)continue;
     B.forEach((r,i)=>{if(i>0)r.need.push([a,Math.min(SKILLS[a].max,i+1)]);});A.forEach((r,i)=>{if(i>0&&i<=B.length)r.need.push([b,i]);});}};}
-  /* pure magic: every skill is TAL */
+  /* pure magic: every skill is MATK */
   const m={};for(const d of BA_DEFS)m[d.key]='m';Object.assign(SK_DT,m,{basic:'m',baHex:'m'});
   Object.assign(SK_CC,{baApep:{flinch:.3},baDoom:{flinch:.4},baPharaoh:{flinch:.4},bcStorm:{flinch:.4},bcApep:{air:1},bcSekhmet:{air:1},
     bbWeigh:{flinch:.4},bbAmmit:{air:1},bcOsiris:{flinch:.4},bcPages:{flinch:.3},bcShadow:{flinch:.3}});
@@ -401,11 +401,11 @@ function installBastet(){
     {n:'Bastet',keys:['bcStorm','bcLord','bcBless','bcAvatar','bcSekhmet','bcOsiris','bnAnkh']});
   Object.assign(BUFFDEF,{bnGrace:{n:"Cat's Grace",c:BAC.white,i:'CAT'},baEternal:{n:'Eternal Curse',c:BAC.hex,i:'HEX'},bcBless:{n:"Bastet's Blessing",c:BAC.gold,i:'BLESS'},bcAvatar:{n:'Avatar of Bastet',c:BAC.gold,i:'BAST'}});
   JOB.name='Temple Kitten';JOB.hpA=1.15;JOB.hpB=4.2;JOB.spB=4.2;
-  ITEMS.ankhTome={n:'Ankh Tome',slot:'rhand',two:1,kind:'Staff',atk:60,matk:180,wlv:3,aspd:156,ref:6,cards:2,w:60,b:{tal:2},size:{small:1,medium:1,large:1},d:'คัมภีร์อังค์ TAL +2'};
+  ITEMS.ankhTome={n:'Ankh Tome',slot:'rhand',two:1,kind:'Staff',atk:60,matk:180,wlv:3,aspd:156,ref:6,cards:2,w:60,b:{tal:2},size:{small:1,medium:1,large:1},d:'คัมภีร์อังค์ MATK +2'};
   ITEMS.bookOfDead={n:'Book of the Dead',slot:'rhand',two:1,kind:'Staff',atk:60,matk:200,wlv:4,aspd:154,ref:4,cards:1,w:70,b:{int:3},size:{small:1,medium:1,large:1},d:'คัมภีร์แห่งความตาย INT +3'};
   EQ.rhand='ankhTome';INV.length=0;INV.push('bookOfDead','vikinghelm','ringPrec','clipLuck');
   BA.souls=bL('bbJars')?bLv(BB.bbJars.start,'bbJars'):0;
-  /* flat TAL bonuses */
+  /* flat MATK bonuses */
   const flat=(e,o)=>{const k=o&&(o.skill||(o.auto?'basic':null)),col=bCol(k);let b=0;
     if(BA.obelisk&&Math.hypot(player.x-BA.obelisk.x,player.y-BA.obelisk.y)<BB.bnObelisk.R)b+=bLv(BB.bnObelisk.tal,'bnObelisk');
     if(hasBuff('bcBless'))b+=BB.bcBless.tal;
