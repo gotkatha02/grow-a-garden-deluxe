@@ -99,7 +99,7 @@ function roadFire(q,i){const ai=q.a0+i*T2/3,col=ROADS[q.order[i]][0];
   for(const r of [130,260,390])addFx(new GRing({x:q.x+Math.cos(ai)*r,y:q.y+Math.sin(ai)*r,r0:10,r1:110,w:10,color:col,life:.45}));}
 function crossroads(e){const b=e.mb,p3=b.phase>=3,c=b.home;M.cancel(e);
   const a0=Math.random()*T2,order=[0,1,2].sort(()=>Math.random()-.5);
-  if(!b.seenX){b.seenX=1;M.banner('ทางสามแพร่ง! ไปยืนทางที่สีตรงกับคบเพลิงที่เธอชู','gold',3);}else M.banner(p3?'ทางสามแพร่ง ×2! ดูคบทุกครั้ง':'ทางสามแพร่ง!','gold',1.6);
+  if(!b.seenX){b.seenX=1;M.banner('ทางสามแพร่ง! ไปยืนทางที่สีตรงกับคบเพลิงที่เธอชู','gold',1.15);}else M.banner(p3?'ทางสามแพร่ง ×2! ดูคบทุกครั้ง':'ทางสามแพร่ง!','gold',1.1);
   M.hint(e,'ทางสามแพร่ง — ยืนในทางที่สีตรงกับคบเพลิงที่เฮคาทีชู · อีกสองทางระเบิด');
   const st=[{at:1.1,boom:3.6,rot:0}];if(p3)st.push({at:4.1,boom:6.2,rot:T2/6});
   M.act(e,{name:'🔥 ทางสามแพร่ง',T:st[st.length-1].boom+.45,unstop:1,cross:1,
@@ -107,7 +107,8 @@ function crossroads(e){const b=e.mb,p3=b.phase>=3,c=b.home;M.cancel(e);
     step(e,a){e.atk=0;if(e.hidden&&a.t>.35){e.hidden=0;e.x=c.x;e.y=c.y;puff(e.x,e.y,'#b070ff',18);}
       const s=st[a.i];if(!s)return;
       if(!s.raised&&a.t>=s.at){s.raised=1;if(s.rot){a.rd.a0+=s.rot;a.rd.boomT=-1;a.rd.safe=-1;}s.col=a.col=Math.floor(Math.random()*3);
-        a.torch=torch(e,s.col,s.boom-s.at+.15);a.name='🔥 ชูคบ'+ROADS[s.col][1]+' — ยืนทางสี'+ROADS[s.col][1];M.say(e,'คบ'+ROADS[s.col][1]+'!',ROADS[s.col][0],20);}
+        a.torch=torch(e,s.col,s.boom-s.at+.15);a.name='🔥 ชูคบ'+ROADS[s.col][1]+' — ยืนทางสี'+ROADS[s.col][1];M.say(e,'คบ'+ROADS[s.col][1]+'!',ROADS[s.col][0],20);
+        M.banner('🔥 คบสี'+ROADS[s.col][1]+'! ยืนทางสี'+ROADS[s.col][1],['purple','blue','gold'][s.col],2.2);}
       if(s.raised&&!s.done&&a.t>=s.boom){s.done=1;a.i++;boom(e,a,s,a.i>=st.length);}},
     end(e,a){if(a.rd)a.rd.dead=1;if(a.ok)M.window(e,4,'เฮคาทีเสียสมดุล!');
       M.hint(e,'เดินไม่หยุด (ไฟจันทร์ใต้เท้า) · ผีเสื้อกุญแจ ◎ ตีก่อนถึงตัว · ทางสามแพร่ง = ยืนทางสีเดียวกับคบ');},

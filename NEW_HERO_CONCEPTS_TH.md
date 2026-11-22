@@ -3,7 +3,8 @@
 เจ้าของ 22:22: "ถ้าจะสร้างตัวละครใหม่ มีสกิลแยกร่างที่กดโจมตีจังหวะตามเรา เน้น auto spell ทั้งเวทย์และกายภาพ คอนเซปตามนี้เป็นสัตว์อะไรดี" → เสนอ 3 ตัว (แนะนำหงส์)
 เจ้าของ 22:25: "ขอพร้อมดีไซน์ทั้ง3ตัวหน่อย" → พรอมต์ชีตดีไซน์ 3 ตัวอยู่ข้างล่าง · **ยังไม่ได้สร้างอะไรในเกม รอเจ้าของเลือกตัว**
 เจ้าของ 22:33: "แต่ละตัว เพลสไตล์ต่างกันไหม" → ร่างแรกใช้สูตรเดียวกันทั้ง 3 ตัว (A ทุกการตีครั้งที่ 4 ปล่อยท่าเอง · B ทุกครั้งที่ 3 ร่ายเวทเอง) ต่างแค่หน้าตา → แยกใหม่ให้ร่างแยกต่างกันที่ **ตีตามเราตอนไหน · ตรงไหน · กี่ร่าง** (ตารางข้างล่าง แทนร่างแรก)
-เจ้าของ 22:40: "ขอดีไซน์อีกสหลายไฟสไตล์หน่อย" (= อีกหลายๆ สไตล์) → เพิ่มอีก 6 แบบ #4–#9 (หัวข้อ 'อีก 6 เพลย์สไตล์') รวมเป็น 9 ตัวเลือก · แต่ละตัวออกออโต้สเปลด้วยเงื่อนไขต่างกันด้วย · พรอมต์ชีตดีไซน์ของ #4–#9 เขียนเมื่อเจ้าของเลือก
+เจ้าของ 22:40: "ขอดีไซน์อีกสหลายไฟสไตล์หน่อย" (= อีกหลายๆ สไตล์) → เพิ่มอีก 6 แบบ #4–#9 (หัวข้อ 'อีก 6 เพลย์สไตล์') รวมเป็น 9 ตัวเลือก · แต่ละตัวออกออโต้สเปลด้วยเงื่อนไขต่างกันด้วย · พรอมต์ชีตดีไซน์ของ #4–#9 เขียนเมื่อเจ้าของเลือก — **อ่านผิด** (ดู 22:57): เจ้าของหมายถึงลุคอีกา · 6 แบบนี้เก็บไว้เป็นไอเดียสำรองของฮีโร่ตัวต่อไป
+เจ้าของ 22:57 (ส่งภาพอีกา v1 ที่เจนจากพรอมต์ 2): "ไม่ใช่ครับ ผมขอให้ออกแบบดีไซน์รูปลักษณ์อีกาเพิ่ม เพราะเจนมาแล้วมันไม่เท่ ส่วนคอนเซปต์สกิลผมชอบแล้ว" → **เลือกอีกา · คอนเซปต์สกิลผ่าน** · ลุคใหม่ 4 แบบ + พรอมต์ในหัวข้อ 'อีกา: ลุคใหม่ 4 แบบ (22:57)'
 
 ## กติกาที่ใช้กับทุกตัว
 - ร่างแยกทำท่าเดียวกับเราตามจังหวะ (ตีปกติ + สกิล) · ดาเมจของร่างแยก = ส่วนหนึ่งของดาเมจเรา (ปรับด้วย bench)
@@ -37,7 +38,7 @@
 - B เวท "ดาวเจมิไน · ถักกลุ่มดาว": ตีโดนแล้วทิ้งดาวไว้บนพื้น (สูงสุด 5) ดาวโยงเส้นกันเอง ศัตรูที่เดินผ่านเส้นโดนเวท · ครบรูปกลุ่มดาว → ร่ายเวทในช่องออโต้สเปล ร่างเงาร่ายกระจกอีกฝั่ง · คุมพื้นที่ระยะกลาง
 - (ร่างแรก 22:22 ถูกแทน: A เพิ่มร่างตามการตีต่อเนื่องสูงสุด 3 · B ทุกการตีครั้งที่ 3 จุดดาว)
 
-## 2. อีกาแห่งโอดิน — นอร์ส
+## 2. อีกาแห่งโอดิน — นอร์ส (เจ้าของเลือก 22:57 · คอนเซปต์สกิลผ่าน · ลุคยังไม่ได้)
 - ตำนาน: ฮูกิน (ความคิด) กับมูนิน (ความจำ) อีกาสองตัวของโอดิน · โอดินเสียตาข้างหนึ่ง → ผ้าปิดตารูน · หมวกปีกกว้างของผู้พเนจร · หอกแบบกุงนีร์
 - ตำนานเข้ากับคอนเซปต์ตรงที่สุด แต่นอร์สมี 3 ตัวแล้ว และมีนกฮูกอยู่แล้ว
 - พื้นฐาน (22:33): ร่างแยก 2 ร่าง **ไม่ตีพร้อมเรา** — มูนิน (ร่างเงาควันม่วง) ตีตามเราช้ากว่า 1 จังหวะ · ฮูกิน (ร่างแสงรูนสีฟ้า) บินไปเกาะจุดหรือศัตรูไกลๆ เป็นจุดร่ายที่สอง · หอกระยะกลาง · เล่นแบบวางแผน
@@ -52,7 +53,7 @@
 - B เวท "เนตรทอง · เมฆไฟ": ร่างแยกกลายเป็นวิญญาณเมฆลอยรอบตัว พ่นไฟทองตามเรา · ทุกการตีครั้งที่ 3 ร่ายเวทในช่องออโต้สเปล ทุกร่างร่ายตามแบบอ่อนๆ (ปูพรมทั้งพื้นที่) · เนตรทองช่วยเห็นตัวจริงของบอสที่แยกร่าง / ปลอมตัว / ล่องหนเร็วขึ้น (ตัวช่วย ไม่ข้ามกลไก — กติกาบอสข้อ 6–7)
 - ถ้าไม่อยากเปิดดินแดนจีน (22:40): ย้ายลิงเข้าแอซเท็กได้ — ตำนานพระอาทิตย์ห้ายุคของแอซเท็ก มนุษย์ยุคพระอาทิตย์ที่ 2 (ยุคลม) ถูกลมพายุพัดจนกลายเป็นลิง → ลิงลมที่ "เป่าขน" เป็นร่างแยก เข้ากันพอดี (แต่งตัวเป็นนักรบแอซเท็กแทนชุดไซอิ๋ว)
 
-## อีก 6 เพลย์สไตล์ (22:40)
+## อีก 6 เพลย์สไตล์ (22:40 · ไอเดียสำรอง — เจ้าของขอลุคอีกา ไม่ได้ขอเพลย์สไตล์เพิ่ม)
 ยังเป็นฮีโร่สองทางตามกติกาข้างบน (A = ATK · B = MATK · ร่างแยกตีตามเรา · ออโต้สเปลใช้ตัวนับ) แต่ร่างแยกทำงานและเงื่อนไขออโต้สเปลไม่ซ้ำกับใคร · โค้ดวาดร่างโคลน (KClone / WClone / WGhost) ใช้ต่อได้ทุกตัว
 
 | # | ตัว · ดินแดน | ร่างแยก | ออโต้สเปลออกเมื่อ | ระยะ · บทบาท | ความยาก · ออโต้ |
@@ -142,7 +143,7 @@ Layout: LEFT HALF — the hero large, full body, three-quarter front view, in an
 Keep the hero identical in every view: same colours, outfit and sword.
 ```
 
-### 2. อีกาแห่งโอดิน
+### 2. อีกาแห่งโอดิน (v1 — เจ้าของเจนแล้วว่าไม่เท่ 22:57 · ใช้ชุดใหม่ในหัวข้อ 'อีกา: ลุคใหม่ 4 แบบ')
 ```
 Character design sheet for a NEW hero of my cute cartoon fantasy MMORPG (animal heroes from Norse, Greek, Egyptian, Japanese and Aztec myths). ONE wide image 1536×1024 on a plain soft cream background. No text, no labels, no names, no logo, no watermark.
 Style: copy the first attached image (the game's key art) — friendly hand-painted chibi cartoon, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft cartoon glow, bright and warm. Not realistic, not painterly, not 3D. The second attached image is an existing hero of the game: match its chibi body proportions, outline weight and finish, but do NOT copy that character.
@@ -162,5 +163,71 @@ Layout: LEFT HALF — the hero large, full body, three-quarter front view, balan
 Keep the hero identical in every view: same colours, outfit and staff.
 ```
 
-## ขั้นต่อไป (หลังเจ้าของเลือก)
-1. ชีตตัวละครจริง (หันหลายทิศ) → 2. ออกแบบสกิลทั้งทรี (Basic / A / B / C) ตามกติกาข้างบน → 3. คลิปวิดีโอท่า 5 ทิศ × idle / walk / attack / buff (แบบมังกร แอกโซลอเติล) → 4. ไอคอน + ภาพพื้นหลังทรี + เอฟเฟกต์
+## อีกา: ลุคใหม่ 4 แบบ (22:57)
+เจ้าของเลือกอีกา · คอนเซปต์สกิล (มูนินเล่นซ้ำช้ากว่า 1 จังหวะ / ฮูกินเป็นจุดร่ายที่สอง) ผ่านแล้ว · ลุค v1 (พรอมต์ 2 ข้างบน) เจนแล้ว "ไม่เท่"
+
+ทำไม v1 ไม่เท่ (จากภาพที่เจ้าของส่ง):
+- หมวกปีกกว้างกินครึ่งตัว บังหัวกับจะงอยปาก (จุดเด่นของอีกา) และอ่านเป็นพ่อมด / แม่มด
+- ปกขนฟู + ผ้าคลุมยาว + ชายขนนก = ทรงกลมก้อนเดียว ไม่มีมุมแหลม → ออกน่ารัก
+- กรม–ม่วงทั้งตัว ไม่มีสีตัด (กลืนกับร่างเงาม่วงของตัวเองในภาพล่างขวา) · ตาปรือ · หินรูนห้อยรก
+
+กติกาใหม่ (อยู่ในพรอมต์ 0): หงอนขนแหลมลู่หลัง · จะงอยปากหนาดำเงา โค้งนิดๆ · ขนคอแหลมฟูแบบอีกาจริง · หัว ปาก และตาอย่างน้อย 1 ข้างต้องเห็นเสมอ (ห้ามหมวกปีกกว้าง / ฮู้ดใหญ่ / ปกสูงบังหน้า) · ตาคม คิ้วขนลาด ไม่ปรือ · ตัวเพรียวเหลี่ยม ยืนตรงแบบนักกีฬา ไม่ฟู · ขนเข้ม + สีตัด 1–2 สีที่ไม่ใช่ฟ้า / ม่วงของร่างแยก (ยกเว้นแบบ 4) · ของห้อยน้อย · ห้ามสีเขียว (คลิปท่าตัดพื้นเขียว)
+
+วิธีใช้: แชต ChatGPT ใหม่ → พรอมต์ 0 + แนบภาพปกแคมป์ไฟ + ชีตฮีโร่ที่เจ้าของว่าเท่ที่สุด (เช่น มังกร) — **ไม่แนบอีกา v1** (หมวกจะกลับมา) → มันตอบ ready → ส่งแบบ 1–4 ทีละข้อความ (ข้อความละ 1 ภาพ) → ชอบคนละส่วนใช้พรอมต์ผสม · อยากได้ตัวเมีย: ต่อท้ายแบบไหนก็ได้ว่า `Make the hero female, keep the cool look.`
+
+| แบบ | ลุค | สีตัด | ท่าภาพใหญ่ |
+|---|---|---|---|
+| 1 อัศวินหอกเหิรฟ้า | หมวกเงินเปิดหน้า หงอนปีกอีกา 2 ข้าง · เกราะเพลตพอดีตัว บ่าแหลมรูปขนนก · ปีกพับ ปลายขนเป็นใบมีดเงิน | แดงเลือดนก + ทอง (ผ้าพันคอแดงยาว) | พุ่งแทงหอกลงจากกลางอากาศ |
+| 2 นักล่าเงา | ฮู้ดสั้นรัดหัว ขอบขนนกแหลม (เห็นหน้าเต็ม) · แผลเป็นเงินพาดตา · เกราะหนังเบา · ผ้าคลุมสั้นขนนกเหมือนใบมีด · หอกใบเสี้ยวจันทร์ | ขาวเถ้า + ทอง (ผ้าพันคอขาวหางขาดยาว) | ย่อตัวต่ำ กำลังจะพุ่ง |
+| 3 ราชันรูนตาเดียว | มงกุฎขนแหลม + วงทองบาง · ตาข้างหนึ่งเป็นผลึกรูนเรืองฟ้า (แลกปัญญาแบบโอดิน) · เสื้อคลุมขนนกตกเหมือนปีกพับ · หินรูน 3 ก้อนลอยรอบตัว | ทอง + แดงเบอร์กันดี (ซับในเสื้อคลุม) | ยืนตระหง่าน ชูหอกขึ้นฟ้า |
+| 4 สองวิญญาณ | ครึ่งขวาฮูกิน (เกราะเงิน เส้นรูนฟ้า ตาฟ้า) · ครึ่งซ้ายมูนิน (ผ้าคลุมขนนกขาดๆ มีควันม่วง ตาทอง) · หอกใบสองสี | ฟ้า + ม่วง + ทอง (ตัวเองมีสีของร่างแยกทั้งคู่) | เหวี่ยงหอกขวางตัว แสงรูนฟ้าข้างหนึ่ง ควันม่วงอีกข้าง |
+
+แนะนำ: แบบ 4 ผูกกับสกิลที่สุด (เห็นตัวก็รู้ว่าแยกเป็นสองร่าง) · แบบ 1 เท่แบบปลอดภัยที่สุด
+
+### พรอมต์ 0 — กติกา (ส่งครั้งเดียวต่อแชต พร้อมแนบ 2 ภาพ)
+```
+I will ask you for several character design sheets of ONE new hero for my cute cartoon fantasy MMORPG (animal heroes from Norse, Greek, Egyptian, Japanese and Aztec myths). These rules apply to every sheet in this chat. Do not draw anything yet: reply only "ready", then draw ONE sheet each time I send a design.
+
+Style: copy the first attached image (the game's key art) — friendly hand-painted chibi cartoon, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft cartoon glow, bright and warm. Not realistic, not painterly, not 3D. The second attached image is an existing hero of the game: match its chibi body proportions, outline weight and finish, but do NOT copy that character.
+
+The hero: one of Odin's ravens from Norse myth — a chibi anthropomorphic raven standing on two legs who fights with a spear. He must look COOL and heroic, like a stylish action-game hero in chibi form, not a cute mascot:
+- a strong, sharp, readable silhouette with pointed shapes: a crest of spiky swept-back head feathers, a strong slightly hooked glossy black beak, shaggy spiky throat feathers like a real raven
+- the head, the beak and at least one eye are always fully visible: no wide-brimmed hat, no big hood or high collar hiding the face
+- confident narrowed eyes under angled feather brows, never sleepy or half-closed
+- a slim, angular, upright athletic body: no puffy fur collar, no round blob shapes
+- dark feathers with one or two bold accent colours (each design names them), kept away from the doubles' frost blue and violet unless the design says otherwise, so the hero stands out from his doubles
+- only a few dangling items
+- no green anywhere on the character
+
+Every sheet: ONE wide image 1536×1024 on a plain soft cream background. No text, no labels, no names, no logo, no watermark.
+Layout: LEFT HALF — the hero large, full body, three-quarter front view, in the pose the design gives. TOP RIGHT — a small turnaround of the same hero standing neutral: front, side facing right, back, all the same height. BOTTOM RIGHT — the hero in the middle with his two raven doubles, all three doing the same spear thrust in perfect sync: on one side a half-transparent double of glowing frost-blue rune light with tiny rune shapes floating around it, on the other side a half-transparent double of smoky violet shadow with drifting black feathers. The doubles copy the hero's silhouette, outfit and spear in simplified form.
+Keep the hero identical in every view of a sheet. Every design I send is a completely new look: reuse nothing from earlier sheets in this chat.
+```
+
+### แบบ 1 — อัศวินหอกเหิรฟ้า
+```
+Design 1 — "Sky Lancer". Blue-black feathers with a steel-blue sheen and two fierce gold eyes. A sleek open-faced silver helm with two swept-back raven-wing crests. Fitted dark-steel plate armour with gold trim, sharp feather-shaped pauldrons, a gold raven emblem on the chest, gauntlets, and greaves over dark talons. A long crimson scarf. Two black wings folded on his back, their tips shaped like silver blades. Accent colours: crimson and gold. Weapon: a long lance like Odin's Gungnir — a silver leaf-shaped blade with glowing ice-blue runes, a gold collar, a dark shaft. Pose: a diving lance strike from a leap, wings half open, scarf whipping behind him.
+```
+
+### แบบ 2 — นักล่าเงา
+```
+Design 2 — "Shadow Hunter". Black feathers with a faint violet sheen and sharp gold eyes; a thin silver scar crosses his left eye (the eye stays open). A short, close-fitting hood with a spiky feather-tip edge that frames the head — beak and eyes fully visible. A long ash-white scarf wrapped high around the neck with two long tattered tails. Light charcoal leather armour with silver buckles and thin glowing gold rune lines, wrapped forearms, wrapped dark talons, and a short tattered cape of long blade-like black feathers. Accent colours: ash white and gold. Weapon: a slender black spear with a long crescent-hooked silver blade and a small white ribbon. Pose: a low crouch with the spear held back along his arm, about to dash forward.
+```
+
+### แบบ 3 — ราชันรูนตาเดียว
+```
+Design 3 — "One-Eyed Rune King". Blue-black feathers with a deep indigo sheen. One sharp gold eye; the other eye is a glowing ice-blue rune crystal set in a gold socket (he traded it for wisdom, like Odin). A crown of tall spiky black feathers held by a thin gold circlet. A long feather mantle that falls like folded wings, lined in deep burgundy with tiny gold runes, over a dark fitted robe with a gold belt and a raven-head brooch. Three small carved rune stones orbit around him. Accent colours: gold and burgundy. Weapon: Gungnir, a tall spear with a gold-and-silver blade, glowing runes and two black feather tassels. Pose: standing tall and proud, spear raised to the sky, mantle blowing in the wind.
+```
+
+### แบบ 4 — สองวิญญาณ
+```
+Design 4 — "Twin Soul". Glossy black feathers and an ASYMMETRIC look that carries both of Odin's ravens in one body. His right side is Huginn (thought): sleek silver armour with glowing frost-blue rune lines and a glowing frost-blue right eye. His left side is Muninn (memory): a tattered black-feather half-cloak trailing violet smoke and a gold left eye. A gold belt with a round buckle split blue and violet, dark fitted trousers, silver-capped boots. Accent colours: frost blue, violet and gold (for this design the hero shares his doubles' colours). Weapon: a spear with a two-coloured blade, frost blue on one edge and violet on the other, with a silver collar. Pose: the spear swung across his body, blue rune light trailing from one side and violet smoke from the other.
+```
+
+### พรอมต์ผสม (ตัวอย่าง — เปลี่ยนเลขกับส่วนได้)
+```
+Design 5 — a mix: the head, eyes and crown of design 3 with the armour, scarf and lance of design 1, in the pose of design 1. Same rules and layout.
+```
+
+## ขั้นต่อไป
+1. เจ้าของเลือกลุคอีกา (หรือผสม) → 2. ชีตตัวละครจริง 8 ทิศ บนพื้นเขียว (ไว้ทำท่านั่ง / เทียบคลิป) → 3. ออกแบบสกิลทั้งทรี (Basic / A / B / C) ตามคอนเซปต์ที่ผ่านแล้ว → 4. คลิปวิดีโอท่า 5 ทิศ × idle / walk / attack / buff (แบบมังกร แอกโซลอเติล, tools/cliphero.py) → 5. ไอคอน + ภาพพื้นหลังทรี + เอฟเฟกต์

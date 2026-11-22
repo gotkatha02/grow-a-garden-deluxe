@@ -241,7 +241,7 @@ body.mob #mbCast{top:128px;width:min(300px,46vw)}body.mob #mbCast .cn{font-size:
 #mbBan b{display:inline-block;font-weight:600;font-size:26px;padding:6px 22px;border-radius:14px;background:rgba(40,16,8,.82);border:2px solid #ffb04a;color:#fff0d0;text-shadow:0 2px 3px #000;box-shadow:0 4px 18px rgba(0,0,0,.5)}
 #mbBan.on{opacity:1;transform:translate(-50%,-50%) scale(1)}#mbBan.gold b{border-color:#ffd23a;color:#ffe9a0;background:rgba(48,32,6,.86)}#mbBan.blue b{border-color:#5ab8ff;color:#d8f0ff;background:rgba(8,26,48,.86)}
 #mbBan.red b{border-color:#ff5a3a;color:#ffd8d0;background:rgba(56,8,6,.86)}#mbBan.purple b{border-color:#c07aff;color:#f0dcff;background:rgba(36,10,52,.86)}
-body.mob #mbBan{top:30%}body.mob #mbBan b{font-size:19px;padding:5px 14px}
+body.mob #mbBan{top:150px}body.mob #mbBan b{font-size:17px;padding:5px 14px;white-space:normal;max-width:72vw}body.mob #mbCast.bn{opacity:0}#mbCast{transition:opacity .15s}
 .mbLk{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:22px;background:rgba(40,10,60,.62);border-radius:inherit;z-index:6;pointer-events:none;text-shadow:0 0 6px #c890ff}
 .mbLk.bl{background:rgba(90,0,8,.42);font-size:16px;align-items:flex-start;justify-content:flex-end;padding:2px 4px;text-shadow:0 0 5px #ff3a3a}`;
   document.head.appendChild(st);
@@ -255,8 +255,9 @@ function drawUI(dt){ui();if(banT>0){banT-=dt;if(banT<=0)ban.className=ban.classN
   const a=b.act,win=b.win>0,au=typeof autoMode!=='undefined'&&autoMode;
   const name=win?'✦ ช่วงเปิด — ตีเลย!':a&&a.name?a.name:'',k=win?b.win/Math.max(.01,b.winT||1):a&&a.name?Math.min(1,a.t/a.T):0,brk=!!(a&&a.brk!=null&&!win);
   const top=mob()&&!(document.getElementById('mbBar')&&document.getElementById('mbBar').style.display==='block');
-  const sig=[name,(k*40|0),brk,win,b.hint,au,top].join('|');if(sig===cbSig)return;cbSig=sig;
-  cb.style.display='block';cb.className=(brk?'brk ':'')+(win?'win ':'')+(au?'auto ':'')+(top?'top':'');
+  const bn=mob()&&banT>0;   /* phones: the banner takes the cast bar's place for its 2 s */
+  const sig=[name,(k*40|0),brk,win,b.hint,au,top,bn].join('|');if(sig===cbSig)return;cbSig=sig;
+  cb.style.display='block';cb.className=(brk?'brk ':'')+(win?'win ':'')+(au?'auto ':'')+(top?'top ':'')+(bn?'bn':'');
   cb.querySelector('.cn b').textContent=name;cb.querySelector('.cn span').textContent=brk?'แถบทอง = ขัดได้ (ทำเกจ KO ให้หมด)':'';
   const bar=cb.querySelector('.cb');bar.style.display=name?'block':'none';cb.querySelector('.cb i').style.width=(k*100).toFixed(0)+'%';
   cb.querySelector('.ht').textContent=b.hint||'';}
