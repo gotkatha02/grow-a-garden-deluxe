@@ -1,5 +1,6 @@
 """Long-term systems as built 2026-11-21 (GEAR_GEM_LONGTERM_TH.md · numbers in items.js REFINE_CHANCE / gem_data.js).
-python3 tools/longterm_sim.py [refine|gems|carve]   — pure Monte Carlo, no game code. Re-run after changing those tables."""
+python3 tools/longterm_sim.py [refine|gems|carve|orbs]   — pure Monte Carlo, no game code. Re-run after changing those tables.
+orbs = the orb v2 PROPOSAL (ORB_SYSTEM_TH.md, not built yet)."""
 import sys
 def refine_part():
     import random,statistics as st
@@ -154,7 +155,38 @@ def carve_part():
         h=max(d.get('tess',0)/(.03*KPH),(z+buy)/((10+3*lv)*KPH))
         print(f'  skill learned Lv {lo:2d}–{min(hi,99):2d}: {" + ".join(f"{k} ×{v}" for k,v in it)} + {z:,}z  → ~{h*60:3.0f} min');lo=hi+1
 
+def orbs_part():
+    """Orbs v2 PROPOSAL (ORB_SYSTEM_TH.md, owner 2026-11-22 'kept, more stats, rolled at drop, many tiers, a higher tier adds a lot').
+    Keep VAL / TIER / FAM / MERGE in step with the doc. KPH kills an hour like carve_part (dense fields, area skills)."""
+    KPH=700;ORB=.012
+    VAL={'stat':[1,2,3,4,6],'atk':[2,4,6,9,12],'crit':[1,1,2,3,4],'aspd':[1,2,3,4,6],'race':[2,3,5,7,10]}
+    TIER={'Lv 1-18':[.80,.18,.02,0,0],'Lv 19-36':[.55,.33,.10,.02,0],'Lv 37-54':[.35,.38,.20,.06,.01],'Lv 55-60':[.20,.35,.30,.12,.03]}
+    FAM={'one stat orb (STR …)':.30/6,'one attack / defence orb (ATK, FLEE …)':.20/6,"the race orb of the monsters you farm":.15,"the element orb of the monsters you farm":.15}
+    EQ=[1,3,9,27,81];MERGE=[1000,2000,4000,10000]
+    print('  orbs an hour (KPH %d × %.1f %%):'%(KPH,ORB*100))
+    for b,od in TIER.items(): print(f'    {b:9s} {KPH*ORB:.1f}/h → '+' · '.join(f'T{i+1} {KPH*ORB*p:.2f}' for i,p in enumerate(od)))
+    od=TIER['Lv 55-60'];eq=sum(p*EQ[i] for i,p in enumerate(od))
+    zT5=27*MERGE[0]+9*MERGE[1]+3*MERGE[2]+MERGE[3]
+    print(f'  one T5 of a chosen kind at Lv 55-60, own drops + 3→1 merging only (no market), merge zeny for a T5 from T1s {zT5:,}z:')
+    for k,w in FAM.items(): print(f'    {k:42s} ~{81/(KPH*ORB*w*eq):5.1f} h')
+    # damage model: STR build at Lv 60 (STR 90 DEX 40 LUK 20), T9 weapon ATK 220 + refine +10 (wlv 4: +70), a ×3 skill,
+    # Lv 60 normal monster DEF 39 / LUK 8, crit ×1.4 skips DEF, 40 % of the damage from basic attacks (ASPD)
+    N,mL=39,8
+    def dps(STR=90,DEX=40,LUK=20,flat=0,crit=0,aspd=0,basic=.4,k=3):
+        A=STR+(STR/10)**2+DEX/5+LUK/5+220+70+flat;d=A*k;c=max(0,1+LUK*.3+crit-mL/5)/100
+        per=(1-c)*(.35*(d-.5*N)+.65*d*(1-N/(N+64)))+c*1.4*d
+        return per*((1-basic)+basic/(1-aspd/100))
+    b=dps()
+    for t in (3,4,5):
+        i=t-1;v=VAL
+        r=dps(STR=90+4*v['stat'][i],flat=4*v['atk'][i],crit=2*v['crit'][i],aspd=2*v['aspd'][i])/b-1
+        s=dps(STR=90+4*v['stat'][i],flat=4*v['atk'][i])/b-1
+        rv=v['race'][i]/100
+        print(f'  T{t} in all 12 holes, all-in attack (STR ×4, ATK ×4, CRIT ×2, ASPD ×2): damage {r*100:+.0f} % (STR + ATK alone {s*100:+.0f} %)'
+              f' · boss set (4 race + 4 element of the boss): vs that boss damage {((1+4*rv)**2-1)*100:+.0f} %, damage taken {((1-4*rv)**2-1)*100:+.0f} %')
+
 a=sys.argv[1:] or ['refine','gems']
 if 'carve' in a: carve_part()
+if 'orbs' in a: print('ORBS v2 PROPOSAL (5 tiers, 38 kinds, rolled at drop; values = ORB_SYSTEM_TH.md)');orbs_part()
 if 'refine' in a: print('REFINE v2 (−1 + break below +10 · break only above · pity +1 %/fail cap 10 % above +10 · Star Ore 1…5 per try)');refine_part()
 if 'gems' in a: print('GEMS v3 (one hero, 5 chosen C gems + 5 skill gems, 1.5 h a day at Lv 90+; 5 rarities, pity 20 / 50)');gems_part()

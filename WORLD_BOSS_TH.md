@@ -1,6 +1,6 @@
 # บอสโลกตัวแรก: เออร์ทอค ผู้แบกโทเท็ม (Urtok, the Totem-Bearer)
 
-สถานะ: **ข้อเสนอ (2026-11-22) ยังไม่ได้สร้าง** · เจ้าของ: *"อยากทำเวิลบอสที่ให้ทุกคนทั้งเซิฟมารุมตี ช่วยออกแบบบอสตัวแรกให้หน่อย คอนเซปอะไรก็ได้"*
+สถานะ: **ข้อเสนอ (2026-11-22) ยังไม่ได้สร้าง** · รูปต้นแบบเข้าแล้ว (§16b) · เจ้าของ: *"อยากทำเวิลบอสที่ให้ทุกคนทั้งเซิฟมารุมตี ช่วยออกแบบบอสตัวแรกให้หน่อย คอนเซปอะไรก็ได้"*
 จะมาแทนบอสโลกชั่วคราว Aether Wyrm ที่กิลด์มาสเตอร์ (npcs.js `guildMenu`, มอนธรรมดา HP ×6 ในแมพ rift3)
 
 ---
@@ -27,7 +27,7 @@
 | แอซเท็ก | ออบซิเดียนดำ ฝังเทอร์ควอยซ์ |
 
 - **ห้ามสีเขียว** (ตัดพื้นเขียวไม่ได้) ใช้เทอร์ควอยซ์แทนตะไคร่
-- ขนาด: กระดองกว้าง ~420 px โลก (ฮีโร่สูง ~75) ฮีโร่ยืนรอบตัวได้หลายสิบคน · ในแมพนี้กล้องถอยออก (Z × 0.8)
+- ขนาด: ภาพกว้าง ~400 px โลก (สูงราว 5.5 เท่าฮีโร่) ฮีโร่ยืนรอบตัวได้หลายสิบคน · กล้องในแมพนี้ถอยออก (PC × 0.8 · มือถือ × 0.7) และเลื่อนเข้าหาบอสนิดหน่อย ให้เห็นทั้งตัวบอสกับตัวเรา
 - เลเวล 60 (เลเวลจริงในเกม ไม่ใช่สเกลออกแบบ 1–99) · เผ่า Brute · ธาตุ Earth (ของ `e_Earth` ช่วยตี)
 
 ## 4. สนาม: แอ่งโทเท็มแตก
@@ -37,7 +37,7 @@
 
 ## 5. กติกาหลัก (วนเป็นรอบ)
 1. **ยืน → ทุบขา:** ขา 4 ข้างนับ **จำนวนครั้งที่ตีโดน** ไม่ใช่ดาเมจ (ตีโดน 1 ครั้ง = 1 แต้มพลิก · คริ = 2 · ตีพลาดไม่นับ) เกจพลิกรวมของทั้งเซิฟ
-2. **พลิก:** เกจเต็ม → มันโยกเยกแล้วล้มหงายท้อง ขาตะกุยฟ้า เสาคริสตัลจมดิน (ภัยจากเสาหยุด) **หัวใจที่อกเปิด 20 วิ + 4 วิต่อเสาที่แตกแล้ว** (สูงสุด 40 วิ) ทุกคนรุมระเบิดหัวใจ · **ตัว / กระดอง / หัวตีไม่เข้า** (ขึ้นคำว่า "แข็ง!") ลด HP ได้แค่หัวใจ
+2. **พลิก:** เกจเต็ม → มันโยกเยกแล้ว **ล้มตะแคง ท้องหันออกมาหาผู้เล่น** ขาตะกุยอากาศ (ไม่หงายท้องเต็มตัว เพราะมีตอโทเท็มบนหลัง) ภัยจากเสาหยุด **หัวใจที่อกเปิด 20 วิ + 4 วิต่อเสาที่แตกแล้ว** (สูงสุด 40 วิ) ทุกคนรุมระเบิดหัวใจ · **ตัว / กระดอง / หัวตีไม่เข้า** (ขึ้นคำว่า "แข็ง!") ลด HP ได้แค่หัวใจ
 3. **ลุก:** ดีดตัวกลับ = กระดองสะเทือนทั้งแมพ แล้วหดหัวหมุนกระดองไล่ชน → กลับไปข้อ 1
 - หัวใจตั้งไว้ให้ใช้ **~3 รอบพลิก** (ประมาณ 12–15 นาที)
 
@@ -65,7 +65,7 @@
 
 | ท่า | เมื่อไร | สัญญาณเตือน | ผล (k) | วิธีรับ |
 |---|---|---|---|---|
-| เหยียบ | ทุก 12 วิ เลือก **ขาที่มีคนรุมมากสุด** | เงาวงกลมใต้ขา 1.5 วิ | ×14 + ลอย 0.8 วิ | ถอยออกจากเงา · ขานั้น **ติดพื้น 3 วิ ตีได้แต้ม ×2** |
+| เหยียบ | ทุก 12 วิ ยก **ขาคู่หน้าหรือคู่หลัง ฝั่งที่มีคนรุมมากกว่า** | เงาวงกลมใต้ขาคู่นั้น 1.5 วิ | ×14 + ลอย 0.8 วิ | ถอยออกจากเงา · ขาคู่นั้น **ติดพื้น 3 วิ ตีได้แต้ม ×2** |
 | งับ | ทุก 8 วิ | หัวง้าง 1 วิ | ×20 ใส่คนในวงผู้พิทักษ์ · ถ้าวงว่าง ยืดคองับคนที่ทำดาเมจสูงสุดใน 10 วิล่าสุด (เส้นเตือน 2 วิ) | ให้แทงก์ยืนในวง |
 | ลมหายใจบรรพกาล | งับครั้งที่ 3 ทุกครั้ง | กรวยหน้า 90° 2 วิ | ×4 × 6 ครั้งใน 3 วิ ธาตุตามเสาที่เหลือ HP มากสุด | **มีคนในวงผู้พิทักษ์ = ลมโดนแค่คนในวง** ถ้าวงว่าง โดนทุกคนข้างหน้า |
 | ฟาดหาง | ทุก 15 วิ ถ้ามีคนข้างหลัง ≥ 3 | หางยก 1.2 วิ | ×9 + กระเด็น 200 | อย่ากองหลังหาง |
@@ -137,17 +137,7 @@
 เสนอ: **ก ก่อน → ข → ค** กติกาเดียวกันทั้ง 3 ทาง โค้ดสถานะบอสย้ายขึ้นเซิร์ฟเวอร์ได้
 
 ## 15. แผนสร้าง (เมื่อเจ้าของสั่ง)
-1. รูปต้นแบบบอส (พรอมต์ข้อ 16) → วิดีโอท่าทางแบบเฟนเรียร์ (`tools/vidclips.py`):
-   - ยืนหายใจ
-   - เหยียบขาหน้า / ขาหลัง
-   - งับ
-   - พ่นลมหายใจ
-   - ฟาดหาง
-   - หดหัว + หมุน
-   - ล้มหงาย + ดิ้น (วนได้)
-   - ดีดตัวลุก + กระแทก
-   - คำราม
-   - สงบ / หลับ
+1. รูปต้นแบบบอส (ข้อ 16 · เข้าแล้ว ข้อ 16b) → วิดีโอท่าทาง 11 คลิป (ข้อ 18) ตัดด้วย `tools/vidclips.py` · ระหว่างรอคลิป ใช้รูปนิ่งขยับด้วยโค้ดได้ (หายใจ เอียง สั่น ล้มตะแคง)
 2. แมพแอ่งโทเท็มแตก
 3. `world_boss.js`: ลำดับท่า, ชิ้นส่วนที่ตีได้ (ขา 4 · เสา 5 · หัวใจ · วงผู้พิทักษ์ = ศัตรูล่องหนผูกกับตัวบอส), สัญญาณเตือนแบบ FWarn ของเฟนเรียร์, แต้มผลงาน, แถบบนจอ (HP หัวใจ · เกจพลิก · ไอคอนเสา 5 · เวลา · แต้มของเรา)
 4. `wb_allies.js`: วิญญาณนักรบ AI
@@ -162,6 +152,46 @@ URTOK, THE TOTEM-BEARER — an ancient giant tortoise older than the world, in p
 On its back: a huge dome shell of dark slate-blue stone plates with gold-trimmed rims and simple carved patterns. From the top of the shell rises the BROKEN STUMP of a giant carved wooden totem pole (bear, owl and wolf faces carved on it), snapped off near the top with glowing splinters. Around the stump grow FIVE crystal pillars, one per land: ice-blue with Norse runes, white-gold with tiny crackling lightning, sand-gold with lapis-blue bands, crimson with sakura-pink petals inside, obsidian-black with turquoise inlays. Short spiked tail.
 Background: SOLID FLAT PURE GREEN (#00FF00), no gradient, no ground, no shadow. Never use green on the boss (teal and turquoise are fine, no moss green). No text, no labels, no frames, no effects floating around it — glow only ON the body (eyes, crystals, chest cracks).
 ```
+
+## 16b. รูปต้นแบบเข้าแล้ว (2026-11-22)
+- `assets/bosses/world/urtok.png` = รูปจากเจ้าของ (พื้นเขียว เก็บแบบเดียวกับบอสแดนอื่น) · `urtok_cut.webp` = ตัดพื้นแล้ว (1166×1234 ไม่มีขอบเขียว ตาฟ้า / คริสตัลเทอร์ควอยซ์อยู่ครบ)
+- ตรงแบบ: ตอโทเท็มหน้าหมี นกฮูก หมาป่า · คริสตัล 5 แดน (รูนน้ำแข็ง · สายฟ้า · อังค์ · ซากุระ · เกลียวเทอร์ควอยซ์) · หัวใจเรืองแสงที่อก · เคราขาวร้อยลูกปัด
+- ลองวางในแมพจริง (`tools/fx/bossmock.py`): กว้าง 400 px โลก = สูงราว 5.5 เท่าฮีโร่ · PC ซูม × 0.8 เห็นทั้งตัวพร้อมคนรอบตัว · มือถือ × 0.8 เต็มจอพอดี × 0.7 มีที่ว่าง (ปุ่มสกิลบังด้านขวา จึงควรเลื่อนกล้องเข้าหาบอส)
+
+## 18. ท่าทาง: วิดีโอจากรูปต้นแบบ (แบบเฟนเรียร์)
+บอสยืนกลางแอ่ง ไม่เดิน หันขวาล่างทางเดียว (หันซ้ายล่าง = กลับด้านรูป) · ทำในเครื่องทำวิดีโอ (Kling / Hailuo / Sora) **ใช้รูปต้นแบบเป็นรูปเริ่ม** · คลิป "ลุก" ใช้เฟรมสุดท้ายของคลิป "ล้ม" เป็นรูปเริ่ม · ตัดเฟรมด้วย `tools/vidclips.py`
+กฎทุกคลิป: กล้องนิ่ง ไม่ซูม (คลิปที่ซูมต้องแก้ขนาดทีละเฟรม) · พื้นเขียวเรียบตลอด · ไม่มีแสงวาบ / เอฟเฟกต์รอบตัว (เอฟเฟกต์ทำด้วยโค้ด) · ตัวบอสอยู่ในกรอบตลอด
+
+| # | คลิป | ใช้กับ | วน |
+|---|---|---|---|
+| 1 | idle ยืนหายใจ | ตลอด | วน |
+| 2 | stompF ยกขาคู่หน้ากระทืบ | เหยียบ (คู่หน้า) | – |
+| 3 | stompB ยกตัวหลังกระแทก | เหยียบ (คู่หลัง) | – |
+| 4 | bite งับ | งับ | – |
+| 5 | breath อ้าปากพ่นลมหายใจ | ลมหายใจบรรพกาล | – |
+| 6 | tail ฟาดหาง | ฟาดหาง | – |
+| 7 | spin หดหัวหมุนกระดอง + มึน | หมุนกระดอง | กลางคลิปวน |
+| 8 | topple ล้มตะแคง ขาตะกุย | พลิก | ท้ายคลิปวน |
+| 9 | getup ดีดตัวลุก + กระแทก | ลุก + กระดองสะเทือน | – |
+| 10 | roar ยืนสองขาหลังคำราม + กระแทก | กระดองสะเทือน (ทุก 90 วิ) | – |
+| 11 | calm หัวใจดับ หลับ | ชนะ | – |
+
+ส่วนหัวที่ใส่ทุกพรอมต์ (ต่อด้วยท่าของคลิปนั้น):
+```
+Animate the attached picture: the same giant tortoise boss, same design, same size, same position. Locked camera: no zoom, no pan, no rotation; the whole body stays inside the frame the entire time. The solid flat green background stays pure flat green: no ground, no shadow, no particles, no light rays, no flashes, no text. Hand-painted cartoon look, smooth motion.
+```
+ท่าของแต่ละคลิป:
+1. `It stands in place breathing slowly; its head bobs gently, the white beard and braids sway, the crystal heart in its chest pulses softly, the tail twitches once. It ends in exactly the starting pose so the clip loops.`
+2. `It shifts its weight back, lifts BOTH front legs off the ground, holds them up for a moment, then slams them down hard; the whole body jolts on impact, then it settles back into the starting pose.`
+3. `It leans forward, kicks its rear body and both hind legs up off the ground, then slams them down hard; the whole shell jolts on impact, then it settles back into the starting pose.`
+4. `It lowers its head, opens its beak wide and lunges its neck forward toward the bottom-right, snapping its jaws shut, then pulls back into the starting pose.`
+5. `It takes a deep breath (its chest swells and the crystal heart glows brighter), then opens its beak wide toward the bottom-right and holds it open for three seconds with the head steady, as if breathing out a long blast, then closes its mouth and returns to the starting pose. Do not draw the breath itself.`
+6. `It swings its rear body and short spiked tail hard to the left behind it, the shell twisting with it, then swings back into the starting pose.`
+7. `It pulls its head, legs and tail fully into its shell; the shell spins fast in place like a spinning top for three seconds (the totem stump and crystals spin with it), slows down and stops; the head and legs pop back out and it sways, dizzy, with swirling eyes.`
+8. `It rocks from side to side, loses its balance and topples over onto its far side (away from the viewer), so its sandy belly with the glowing crystal heart faces the viewer; lying on its side it kicks its four legs in the air helplessly and wobbles until the end.`
+9. (รูปเริ่ม = เฟรมสุดท้ายของคลิป 8) `The giant tortoise boss is lying on its side with its belly facing the viewer. It rocks itself and rolls back up onto its four legs with a heavy jolt, rears its front up and slams it down, then stands in its normal pose facing the bottom-right.`
+10. `It rears up on its hind legs, raising its front body high, and roars toward the sky with its beak wide open and its beard flying; it holds for a moment, then slams its front legs down; the whole body jolts and it settles back into the starting pose.`
+11. `The glowing crystal heart in its chest flickers and dims, its angry glowing eyes soften and slowly close, it lets out a long sigh, lowers its head to the ground and settles down to sleep peacefully, breathing slowly.`
 
 ## 17. คำถามถึงเจ้าของ
 1. คอนเซปเต่าโอเคไหม (สำรอง: วาฬฟ้าที่บินข้ามห้าแดน · ราชาหน้ากากห้าแดนผู้ทุบโทเท็ม)
