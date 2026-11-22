@@ -79,7 +79,7 @@ const SB=SP_BAL.sk;
    was fixed, each branch benched alone (owner's rule for pure heroes with two same-stat branches) gave A 2,593 · B 5,667 against
    the 2,450 target — B stacks many flat TAL bonuses (Spellbound, sleep, Lore, Harmony, War Song, Colchis). The scale is applied once
    here to each branch's damage numbers, so every tooltip shows the real TAL×n. Bench: HERO=sheep COL=sBranch tools/qa/bench_branch.py all,A,B 8 */
-const SP_SCALE={A:.94,B:.215};
+const SP_SCALE={A:0.887,B:0.15};   /* re-tuned at the Lv 60 cap 2026-11-22 (≈ 2,050 per branch, LEVEL_CAP_TH.md); older values in git */
 (()=>{const sc=(k,f,keys)=>{for(const q of keys){const v=SB[k][q];SB[k][q]=Array.isArray(v)?v.map(x=>+(x*f).toFixed(3)):+(v*f).toFixed(3);}};
   for(const [k,q] of [['saSun',['dmg']],['saEcho',['dmg']],['saPurify',['dmg']],['saRain',['dmg']],['saOlympus',['dmg']],['scChariot',['dmg']],['scGorgon',['dmg']]])sc(k,SP_SCALE.A,q);
   for(const [k,q] of [['sbThread',['dmg']],['sbLullaby',['dmg']],['sbShatter',['dmg','per']],['sbRam',['dmg']],['sbSiren',['dmg']],['sbCauldron',['dmg']],['sbColchis',['bolt','fin']],['sbMirror',['dmg']],['scCharm',['hit']],['scSirens',['dmg']]])sc(k,SP_SCALE.B,q);})();

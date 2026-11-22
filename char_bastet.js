@@ -75,7 +75,7 @@ const BA_BAL={
 };
 const BB=BA_BAL.sk;
 /* branch tuning from the bench: damage numbers of each branch are scaled here so the shown TAL×n stays true */
-const BA_SCALE={A:1.38,B:.70};   /* re-benched 2026-11-21 after the core ticker fix (hex now really ticks): A 2,468 · B 2,470 (8 runs) — before the fix she sat at A 2,088 · B 1,690 */
+const BA_SCALE={A:1.38,B:0.802};   /* re-tuned at the Lv 60 cap 2026-11-22 (≈ 2,050 per branch, LEVEL_CAP_TH.md); older values in git */
 (()=>{const r2=v=>Math.round(v*100)/100,sc=(o,f,m)=>{if(o[f]==null)return;o[f]=Array.isArray(o[f])?o[f].map(v=>r2(v*m)):r2(o[f]*m);};
   const colOf=k=>k.startsWith('ba')||['bcTriple','bcStorm','bcApep','bcSekhmet'].includes(k)?'A':k.startsWith('bb')||['bcTether','bcLord','bcPack','bcOsiris'].includes(k)?'B':null;
   for(const k in BB){const c=colOf(k);if(!c)continue;for(const f of ['dmg','per','dot'])sc(BB[k],f,BA_SCALE[c]);}

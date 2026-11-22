@@ -3,11 +3,11 @@ HERO=bastet COL=bCol python3 tools/qa/bench_branch.py A,B 8      (kitsune: COL=k
 'all' = the whole hero, nothing skipped (e.g. HERO=croc COL=crCol python3 tools/qa/bench_branch.py all,A,B 8)
 Two-way heroes (CLAUDE.md rule 5): PRESET=สายเวท benches with the TAL build, e.g. HERO=dragon COL=dCol PRESET=สายเวท python3 tools/qa/bench_branch.py A,B 8
 EXTRA='&vfx3=0' adds to the page query (compare effect passes).
-LV=60 = bench at the Lv 60 launch cap (default Lv 99 = the reference every target in CLAUDE.md was measured at).
+Level: the bench runs at the Lv 60 cap by default (tools/balance_bench.js); LV=99 = the old Lv 99 reference.
 Needs the game served: python3 -m http.server 8765 in the repo folder."""
 import asyncio,sys,os
 from playwright.async_api import async_playwright
-PORT=os.environ.get('PORT','8765');HERO=os.environ.get('HERO','kitsune');COL=os.environ.get('COL','kCol');PRESET=os.environ.get('PRESET','');EXTRA=os.environ.get('EXTRA','');LV=os.environ.get('LV','')   # LV=60 benches at the launch cap (default: the Lv 99 reference, tools/balance_bench.js)
+PORT=os.environ.get('PORT','8765');HERO=os.environ.get('HERO','kitsune');COL=os.environ.get('COL','kCol');PRESET=os.environ.get('PRESET','');EXTRA=os.environ.get('EXTRA','');LV=os.environ.get('LV','')   # LV=99 benches the old Lv 99 reference (default: the Lv 60 cap, tools/balance_bench.js)
 BENCH=os.path.join(os.path.dirname(os.path.abspath(__file__)),'..','balance_bench.js')
 async def run(branch,runs):
     async with async_playwright() as p:

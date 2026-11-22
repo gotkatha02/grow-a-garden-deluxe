@@ -75,7 +75,7 @@ const ANU_BAL={
 };
 const UK=ANU_BAL.sk;
 /* branch tuning from the bench: damage numbers of each branch are scaled here so the shown ATK×n stays true */
-const ANU_SCALE={A:.675,B:1.46};
+const ANU_SCALE={A:0.883,B:2.2};   /* re-tuned at the Lv 60 cap 2026-11-22 (≈ 2,050 per branch, LEVEL_CAP_TH.md); older values in git */
 (()=>{const r2=v=>Math.round(v*100)/100,sc=(o,f,m)=>{if(o[f]==null)return;o[f]=Array.isArray(o[f])?o[f].map(v=>r2(v*m)):r2(o[f]*m);};
   const colOf=k=>k.startsWith('aa')||['acTwin','acDevil','acTwinMeteor','acWrath'].includes(k)?'A':k.startsWith('ab')||['acBarbed','acBreaker','acPack','acVerdict'].includes(k)?'B':null;
   for(const k in UK){const c=colOf(k);if(!c)continue;for(const f of ['dmg','per'])sc(UK[k],f,ANU_SCALE[c]);}})();

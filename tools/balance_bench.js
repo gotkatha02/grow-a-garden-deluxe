@@ -11,12 +11,13 @@
      wolf 2545 · jaguar 2618 · croc 2567 · owl 2439 (ranged) · axolotl 2381 (healer) · rhino 1904 (tank)
    Level-by-level fight length with crafted gear: tools/progression_bench.js
    Tune CHAR_COEF in index.html (visible skill coefficients) and re-run to keep every class within ~±5% of its role target.
-   LEVEL (2026-11-22): the game caps at Lv 60 and test mode is a Lv 60 hero, but the bench keeps measuring the old Lv 99 reference
-   (so the 2,450 target keeps its meaning): benchOnce switches the hero to window.__BENCH_LV (default 99) with the same stat preset
-   (PS._pre, set whenever a preset is applied) scaled by presetAt, and puts the hero back afterwards. __BENCH_LV=60 = the launch cap.
+   LEVEL (2026-11-22): the game caps at Lv 60 and every hero was re-tuned there (owner 'จูน') → the bench measures Lv 60 by default
+   (target ≈ 2,050 · tank ≈ 1,880, dummies at their game levels 38 / 52). benchOnce switches the hero to window.__BENCH_LV (default 60)
+   with the same stat preset (PS._pre, set whenever a preset is applied) scaled by presetAt, and puts the hero back afterwards.
+   __BENCH_LV=99 = the old Lv 99 reference (dummies at their design levels 62 / 85; the 2,450 target of that time).
    ========================================================================= */
 async function benchOnce(opts={}){
-  const LVB=opts.lv||window.__BENCH_LV||99,keep=PS.lv!==LVB&&typeof presetAt==='function'?{lv:PS.lv,ps:Object.fromEntries(STATK.map(k=>[k,PS[k]]))}:null;
+  const LVB=opts.lv||window.__BENCH_LV||60,keep=PS.lv!==LVB&&typeof presetAt==='function'?{lv:PS.lv,ps:Object.fromEntries(STATK.map(k=>[k,PS[k]]))}:null;
   if(keep){PS.lv=LVB;Object.assign(PS,presetAt(PS._pre||(typeof CHAR_PRESET!=='undefined'&&CHAR_PRESET[CHAR])||'ตีแรง',LVB));applyStats();}
   /* dummies: Lv 99 reference = their design levels (Frostling 62, Elder 85 boss) as always; any other bench level = the levels the game uses now */
   const mon0=typeof MON_LV0!=='undefined'?{frostling:MON.frostling,elder:MON.elder}:null;

@@ -75,7 +75,7 @@ const KI_BAL={
 };
 const KB=KI_BAL.sk;
 /* branch tuning from the bench: damage numbers of each branch are scaled here so the shown TAL×n stays true */
-const KI_SCALE={A:1.60,B:1.06};   /* 2026-11-20: was {A:1.84,B:1.07} while the core ticker was dead (Wisp Dance, Veil, lanterns, circle, night did no damage) */
+const KI_SCALE={A:1.807,B:1.131};   /* re-tuned at the Lv 60 cap 2026-11-22 (≈ 2,050 per branch, LEVEL_CAP_TH.md); older values in git */
 (()=>{const r2=v=>Math.round(v*100)/100,sc=(o,f,m)=>{if(o[f]==null)return;o[f]=Array.isArray(o[f])?o[f].map(v=>r2(v*m)):r2(o[f]*m);};
   const colOf=k=>k.startsWith('ka')||['kcSwarm','kcWheel','kcMeteor','kcTamamo'].includes(k)?'A':k.startsWith('kb')||['kcPrism','kcDisc','kcShower','kcTsukuyomi'].includes(k)?'B':null;
   for(const k in KB){const c=colOf(k);if(!c)continue;for(const f of ['dmg','per','split'])sc(KB[k],f,KI_SCALE[c]);}})();
