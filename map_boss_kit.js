@@ -18,7 +18,7 @@
    ===================================================================== */
 (function(){
 if(typeof hurt!=='function'||typeof enemyAI!=='function'||typeof hitPlayer!=='function')return;
-const MB=window.MBK={defs:{},boss:null,ver:1};
+const MB=window.MBK={defs:{},boss:null,ver:1,thru:[]};
 const T2=Math.PI*2;
 const lvOf=e=>(e&&e.m&&e.m.lv)||30;
 const dP=e=>Math.hypot(player.x-e.x,player.y-e.y);
@@ -163,12 +163,12 @@ MB.chase=function(e,dt,reach,spd,tx,ty){const s=e.st;tx=tx==null?player.x:tx;ty=
 MB.wake=function(e){const b=e.mb;b.awake=1;e.aggro=30;b.fightT=0;MB.clearLair(e);
   if(b.D.wake)b.D.wake(e);say(e,b.D.cry||'!!','#ffb070',19);
   if(!b.seen&&b.D.intro){b.seen=1;MB.banner(b.D.intro,'gold',3);}};
-MB.reset=function(e){const b=e.mb;MB.cancel(e);for(const p of b.parts)if(!p.dead){p.dead=true;p.gone=1;}b.parts.length=0;for(const q of b.props)q.dead=1;b.props.length=0;
+MB.reset=function(e){const b=e.mb;MB.cancel(e);MB.thru.length=0;for(const p of b.parts)if(!p.dead){p.dead=true;p.gone=1;}b.parts.length=0;for(const q of b.props)q.dead=1;b.props.length=0;
   e.x=b.home.x;e.y=b.home.y;e.hp=e.maxHp;b.awake=0;b.away=0;b.win=0;b.enr=0;b.phase=1;b.fails=0;b.cnt={};b.cd={};for(const k in b.D.cd0||{})b.cd[k]=b.D.cd0[k];e.hidden=0;e.mbLift=0;b.immune=0;e.aggro=0;e.atk=0;MB.defNow(e);
   for(const o of enemies)if(o.mbOf===e&&!o.dead){o.dead=true;o.gone=1;}
   MB.pcClear();if(b.D.reset)b.D.reset(e);if(b.D.setup)b.D.setup(e,b);
   if(typeof chatLog==='function')chatLog('sys',`👑 ${e.m.th||e.bossName} กลับไปพักฟื้นที่รัง (เลือดเต็ม)`);};
-MB.dead=function(e){const b=e.mb;if(!b)return;MB.cancel(e);for(const q of b.props)q.dead=1;for(const p of b.parts)if(!p.dead){p.dead=true;p.gone=1;}MB.pcClear();if(b.D.dead)b.D.dead(e);
+MB.dead=function(e){const b=e.mb;if(!b)return;MB.cancel(e);MB.thru.length=0;for(const q of b.props)q.dead=1;for(const p of b.parts)if(!p.dead){p.dead=true;p.gone=1;}MB.pcClear();if(b.D.dead)b.D.dead(e);
   if(b.fails===0&&b.fightT>20){try{if(window.AFItems&&AFItems.add)AFItems.add('bm_'+e.bossKey,1);}catch(err){}
     MB.banner('✦ ล้มไร้ที่ติ! ชิ้นส่วนบอส +1','gold',2.4);if(typeof chatLog==='function')chatLog('sys',`✦ <b style="color:#ffd36a">ล้มไร้ที่ติ</b> — ไม่พลาดกลไกเลย ได้ชิ้นส่วนบอสเพิ่ม 1 ชิ้น`);
     try{const k='af_mbclean_'+(window.BOSS_T&&BOSS_T.play?'play':'test'),o=JSON.parse(localStorage.getItem(k)||'{}');o[e.bossKey]=(o[e.bossKey]||0)+1;localStorage.setItem(k,JSON.stringify(o));}catch(err){}}
@@ -327,13 +327,15 @@ if(typeof enterMap==='function'){const _em=enterMap;enterMap=function(id,sp){MB.
 /* screen-space: darkness with a hole round the hero (+ light props), arrows to gold objects off screen */
 if(typeof mapOverlay==='function'){const _mo=mapOverlay;let dk=null,dg=null;
   mapOverlay=function(){_mo();const e=MB.boss;if(!e||!e.mb||curMap!==e.mboss)return;
-    const S=(wx,wy)=>{const [x,y]=P(wx,wy);return [x*Z+ox,y*Z+oy];};
+    const S=(wx,wy,wz)=>{const [x,y]=P(wx,wy,wz||0);return [x*Z+ox,y*Z+oy];};
     if(PC.dark&&player.hp>0){const d=PC.dark,f=Math.min(1,d.t/.4,(d.T-d.t+.05)/.35);if(!dk){dk=document.createElement('canvas');dg=dk.getContext('2d');}
       const w=Math.ceil(VW/2),h=Math.ceil(VH/2);if(dk.width!==w||dk.height!==h){dk.width=w;dk.height=h;}
       dg.globalCompositeOperation='source-over';dg.clearRect(0,0,w,h);dg.fillStyle=`rgba(${d.col},${d.a*f})`;dg.fillRect(0,0,w,h);dg.globalCompositeOperation='destination-out';
       const hole=(wx,wy,r)=>{const [sx,sy]=S(wx,wy),R=r*Z*.5;const g=dg.createRadialGradient(sx/2,sy/2,R*.55,sx/2,sy/2,R);g.addColorStop(0,'rgba(0,0,0,1)');g.addColorStop(1,'rgba(0,0,0,0)');dg.fillStyle=g;dg.beginPath();dg.arc(sx/2,sy/2,R,0,T2);dg.fill();};
       hole(player.x,player.y-20,d.r);for(const q of e.mb.props)if(q.light&&!q.dead)hole(q.x,q.y,q.light);
       ctx.save();ctx.setTransform(DPR,0,0,DPR,0,0);ctx.imageSmoothingEnabled=true;ctx.drawImage(dk,0,0,VW,VH);ctx.restore();}
+    /* things that glow through the darkness (MB.thru: {dead, drawS(S)}; S(wx,wy,wz) → screen px) */
+    if(MB.thru.length){ctx.save();ctx.setTransform(DPR,0,0,DPR,0,0);for(let i=MB.thru.length-1;i>=0;i--){const f=MB.thru[i];if(f.dead){MB.thru.splice(i,1);continue;}try{f.drawS(S);}catch(err){}}ctx.restore();}
     /* gold objects off screen → a small gold arrow at the edge */
     if(e.mb.awake&&!e.dead){ctx.save();ctx.setTransform(DPR,0,0,DPR,0,0);for(const p of e.mb.parts.concat(e.mb.props.filter(q=>q.arrow&&!q.dead))){if(p.dead||p.gold===0)continue;const [sx,sy]=S(p.x,p.y-20);if(sx>20&&sx<VW-20&&sy>60&&sy<VH-20)continue;
       const cx=VW/2,cy=VH/2,a=Math.atan2(sy-cy,sx-cx),m=34,x=clamp(sx,m,VW-m),y=clamp(sy,m+50,VH-m);ctx.save();ctx.translate(x,y);ctx.rotate(a);ctx.fillStyle='#ffd23a';ctx.strokeStyle='#3a2408';ctx.lineWidth=2;

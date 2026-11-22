@@ -79,6 +79,7 @@ function homeOf(h){const W=h.W||4800,H=h.H||W*.75,cx=W/2,cy=H/2,pm=W2M(player.x,
   const far=L.filter(p=>Math.hypot(p.x-pm.x,p.y-pm.y)>420);if(far.length)L=far;
   L=L.slice().sort((a,b)=>Math.hypot(a.x-cx,a.y-cy)-Math.hypot(b.x-cx,b.y-cy)).slice(0,6);
   return L.length?L[Math.floor(Math.random()*L.length)]:{x:cx,y:cy};}
+function kitInit(e){const K=window.MBK,D=K&&K.defs[e.bossKey];if(!D||e.mb)return;if(D.spr)e.spr=D.spr;if(D.size)e.bsc=D.size;{const h0=MSPR_H(e)/e.bsc;if(D.minH&&h0*e.bsc<D.minH)e.bsc=D.minH/h0;}if(D.r)e.r=D.r;K.init(e,D);}
 function spawn(id){const d=MB[id],h=mapHosts[id],L=(window.VK_MONS||{})[id]||[],def=L.find(x=>x.name===d[1])||L[0];if(!def||!h)return null;
   const LV=lvOf(id),th=thOf(d[0]);let [x,y]=M2W(homeOf(h));
   const e=vkMake(def,x,y);if(!enemies.includes(e))enemies.push(e);
@@ -88,7 +89,7 @@ function spawn(id){const d=MB[id],h=mapHosts[id],L=(window.VK_MONS||{})[id]||[],
   Object.assign(e,{boss:true,bossKey:d[0],mboss:id,mbDef:def.name,bsc:SIZE,r:30,homeX:x,homeY:y,face:-1,mbCd:2.5,mbAdd:0,mbCast:null,bossName:d[2]});
   {const h0=MSPR_H(e)/SIZE;if(h0<52)e.bsc=Math.min(3.6,96/h0);}   /* small sheets (scorpion, catalog art) still stand ~96 px tall */
   cur={map:id,e};addFx(new MbAura(e));
-  {const K=window.MBK,D=K&&K.defs[d[0]];if(D){if(D.spr)e.spr=D.spr;if(D.size)e.bsc=D.size;{const h0=MSPR_H(e)/e.bsc;if(D.minH&&h0*e.bsc<D.minH)e.bsc=D.minH/h0;}if(D.r)e.r=D.r;K.init(e,D);}}   /* boss script (map_bosses_<land>.js, map_boss_kit.js) */
+  kitInit(e);   /* boss script (map_bosses_<land>.js, map_boss_kit.js) */
   if(typeof chatLog==='function')chatLog('sys',`👑 <b style="color:#f0b440">${th}</b> (บอสประจำแมพ Lv ${LV}) ปรากฏตัวแถวกลางแมพ — ดูทางที่แถบด้านบน`);
   return e;}
 
@@ -103,7 +104,8 @@ function summon(e,n){const L=((window.VK_MONS||{})[e.mboss]||[]).filter(d=>d.nam
     if(typeof mapBlockedW==='function'&&mapBlockedW(x,y))continue;const m=vkMake(d,x,y);if(!enemies.includes(m))enemies.push(m);m.summon=1;m.mbOf=e;m.aggro=8;k++;
     if(typeof dustPuff==='function')dustPuff(x,y,6,'#d8c8a8',60,8);}
   if(k)say(e,'เรียกลูกน้อง!');}
-function mbAI(e,dt){if(e.mb&&window.MBK)return MBK.run(e,dt);const s=e.st,cc=s.frozen||s.stagger||s.stun;
+function mbAI(e,dt){if(!e.mb)kitInit(e);   /* a boss that spawned before its land's script had loaded */
+  if(e.mb&&window.MBK)return MBK.run(e,dt);const s=e.st,cc=s.frozen||s.stagger||s.stun;
   if(e.mbCast){if(cc){e.mbCast=null;e.atk=0;e.mbCd=2;return true;}e.mbCast.t+=dt;if(e.mbCast.t>=SLAM_T)slamLand(e);return true;}
   const dp=Math.hypot(player.x-e.x,player.y-e.y);
   if(Math.hypot(e.x-e.homeX,e.y-e.homeY)>LEASH&&dp>450){e.x=e.homeX;e.y=e.homeY;e.hp=e.maxHp;e.aggro=0;e.mbAdd=0;e.atk=0;return false;}
@@ -128,7 +130,7 @@ function onDead(e){e._paid=1;e.mbCast=null;if(e.mb&&window.MBK)MBK.dead(e);const
 function tick(){requestAnimationFrame(tick);
   if(cur&&(curMap!==cur.map||!enemies.includes(cur.e)))cur=null;
   const id=curMap,d=id&&MB[id];
-  if(d&&!cur&&!mapFadeDir){const h=mapHosts[id];if(h&&h.ready&&enemies.length&&Date.now()>=BOSS_T.get(d[0]))spawn(id);}
+  if(d&&!cur&&!mapFadeDir&&document.readyState!=='loading'){const h=mapHosts[id];   /* wait until every script ran (the boss scripts load after this file) */if(h&&h.ready&&enemies.length&&Date.now()>=BOSS_T.get(d[0]))spawn(id);}
   drawBar(id,d);}
 
 /* ---------------- top bar: HP · the way to the boss · respawn countdown ---------------- */
