@@ -1,4 +1,7 @@
-<!DOCTYPE html><html><head><meta charset="utf-8"><style>
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Totem Roots v3 mockup</title><style>
+/* Concept mockup of the Totem Roots v3 (owner 2026-11-22 12:34 / 12:38 / 12:47: many small nodes like ROM's rune map,
+   shallow = easy, deep = hard, the strong C skills far apart). Data: roots_web.js from tools/rune/roots_gen.py js.
+   ?v=all = whole web · ?v=zoom = close-up with a C-node card. Code-drawn; the real art will be generated later. */
 @font-face{font-family:Mitr;src:url(../../assets/fonts/Mitr-Medium.ttf);font-weight:500}
 @font-face{font-family:Mitr;src:url(../../assets/fonts/Mitr-SemiBold.ttf);font-weight:600}
 @font-face{font-family:Prompt;src:url(../../assets/fonts/Prompt-Regular.ttf);font-weight:400}
@@ -6,173 +9,190 @@
 *{box-sizing:border-box}body{margin:0;background:#000}
 #W{position:relative;width:1600px;height:900px;overflow:hidden;font-family:Prompt,Mitr,sans-serif;color:#fff3c8}
 svg{position:absolute;left:0;top:0}
-.panel{position:absolute;background:linear-gradient(#3a2418,#24140c);border:3px solid #e9b44c;border-radius:18px;box-shadow:0 0 0 3px #3a1f14,0 10px 30px rgba(0,0,0,.6)}
-.ttl{font:600 30px Mitr;color:#ffd77a;text-shadow:0 2px 0 #3a1f14;line-height:1.1}
-.sub{font:400 14px Prompt;color:#e8d3a8;margin-top:2px}
-.chips{display:flex;gap:5px;margin-top:9px;flex-wrap:nowrap}
+.panel{position:absolute;background:linear-gradient(rgba(58,36,24,.97),rgba(36,20,12,.97));border:3px solid #e9b44c;border-radius:18px;box-shadow:0 0 0 3px #3a1f14,0 10px 30px rgba(0,0,0,.6)}
+.ttl{font:600 28px Mitr;color:#ffd77a;text-shadow:0 2px 0 #3a1f14;line-height:1.1}
+.sub{font:400 13.5px Prompt;color:#e8d3a8;margin-top:3px}
+.chips{display:flex;gap:5px;margin-top:8px;flex-wrap:nowrap}
 .chip{font:500 12px Prompt;background:#1a0e07;border:1.5px solid #8a6a3a;border-radius:10px;padding:2px 7px;white-space:nowrap;color:#f3e0b8}
 .chip.g{border-color:#ffd25a;color:#ffe9a0;background:#3a2408}
-#leg{left:860px;top:14px;width:362px;height:96px;padding:11px 14px;font:400 13.5px Prompt;line-height:1.6;white-space:nowrap}
-#leg b{font-weight:500;color:#ffe3a0}
-#info{left:1236px;top:18px;width:346px;height:864px;padding:18px 18px}
+#side{left:1236px;top:18px;width:346px;height:864px;padding:16px 16px}
+.sec{margin-top:11px;font:500 14.5px Prompt;color:#ffd77a;border-bottom:1px solid #6a4a2a;padding-bottom:3px}
+.row{font:400 13.5px Prompt;color:#f3e6cc;margin-top:6px;line-height:1.45;display:flex;gap:8px;align-items:flex-start}
+.row i{flex:none;display:inline-block;margin-top:3px}
+.ok{color:#bff0a8}.no{color:#ff9a8a}
+.dot{width:13px;height:13px;border-radius:50%;border:2px solid #1a0c05}
 .hd{display:flex;gap:12px;align-items:center}
-.ic{width:92px;height:92px;border-radius:50%;overflow:hidden;border:4px solid #f6c64e;box-shadow:0 0 18px #ffcf5a99;flex:none;background:#1a120c}
+.ic{width:86px;height:86px;border-radius:50%;overflow:hidden;border:4px solid #e8d9a8;box-shadow:0 0 18px #ffe27a88;flex:none;background:#1a120c}
 .ic img{width:124%;height:124%;margin:-12%}
 .nm{font:600 21px Mitr;color:#fff3c8;line-height:1.15}
 .tg{font:500 13px Prompt;color:#ffd77a;margin-top:4px}
-.ds{margin-top:14px;font:400 15px Prompt;background:#1a0e07;border:1.5px solid #6a4a2a;border-radius:10px;padding:9px 11px;color:#f3e6cc}
-.sec{margin-top:14px;font:500 14px Prompt;color:#ffd77a;border-bottom:1px solid #6a4a2a;padding-bottom:3px}
-.ok{font:400 14px Prompt;color:#bff0a8;margin-top:5px}
-.cost{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.cost span{font:500 13px Prompt;background:#1a0e07;border:1.5px solid #8a6a3a;border-radius:10px;padding:2px 9px}
-.go{display:block;width:100%;margin-top:14px;height:50px;border-radius:25px;border:3px solid #fff0b0;background:linear-gradient(#ffd55a,#d18a1a);font:600 21px Mitr;color:#3a1a06;box-shadow:0 4px 0 #6a3a0a,0 0 22px #ffcf5a88}
-ul{margin:8px 0 0 0;padding-left:20px;font:400 14px Prompt;color:#f3e6cc;line-height:1.55}
-.foot{position:absolute;left:18px;right:18px;bottom:16px;font:400 13px Prompt;color:#d9c39a;background:#1a0e07;border:1.5px dashed #8a6a3a;border-radius:10px;padding:7px 10px}
-.zb{position:absolute;left:1166px;width:48px;height:48px;border-radius:50%;background:linear-gradient(#5a3a22,#2a160a);border:3px solid #e9b44c;font:600 26px Mitr;color:#ffe3a0;display:flex;align-items:center;justify-content:center}
-.tagnote{position:absolute;left:862px;top:118px;font:500 12px Prompt;color:#9fe8d8;background:#0c1a1acc;border:1px solid #2a6a62;border-radius:8px;padding:3px 9px}
-</style></head><body><div id="W">
-<svg id="S" width="1600" height="900" xmlns="http://www.w3.org/2000/svg"></svg>
-<div class="panel" style="left:18px;top:14px;width:396px;height:112px;padding:9px 14px">
- <div class="ttl">รากโทเท็ม</div><div class="sub">หมาป่า · Lv 55 · รูนปกติ = ที่ปลดสกิลสาย C</div>
- <div class="chips"><span class="chip g">แต้มราก เหลือ 2/15</span><span class="chip">ยางวิญญาณ 340</span><span class="chip">เหรียญทอง 3</span></div>
+.ds{margin-top:10px;font:400 14.5px Prompt;background:#1a0e07;border:1.5px solid #6a4a2a;border-radius:10px;padding:8px 11px;color:#f3e6cc}
+.cost{display:grid;grid-template-columns:1fr auto;gap:3px 8px;margin-top:7px;font:400 13.5px Prompt}
+.cost b{font-weight:500;text-align:right}
+.go{display:block;width:100%;margin-top:12px;height:44px;border-radius:22px;border:3px solid #9a8a6a;background:linear-gradient(#6a5a40,#3a3020);font:600 18px Mitr;color:#d8c8a8}
+.foot{font:400 12.5px Prompt;color:#d9c39a;background:#1a0e07;border:1.5px dashed #8a6a3a;border-radius:10px;padding:7px 10px;margin-top:10px;line-height:1.5}
+.tagnote{position:absolute;font:500 12px Prompt;color:#9fe8d8;background:#0c1a1acc;border:1px solid #2a6a62;border-radius:8px;padding:3px 9px}
+.zb{position:absolute;width:46px;height:46px;border-radius:50%;background:linear-gradient(#5a3a22,#2a160a);border:3px solid #e9b44c;font:600 24px Mitr;color:#ffe3a0;display:flex;align-items:center;justify-content:center}
+</style></head><body><div id="W"><svg id="S" width="1600" height="900" xmlns="http://www.w3.org/2000/svg"></svg>
+<div class="panel" id="ttl" style="left:14px;top:12px;width:420px;height:108px;padding:8px 14px">
+ <div class="ttl">รากโทเท็ม</div><div class="sub" id="sub"></div><div class="chips" id="chips"></div></div>
+<div class="panel" id="side"></div>
+<div class="zb" style="left:1176px;top:782px">+</div><div class="zb" style="left:1176px;top:836px">−</div>
+<div class="tagnote" id="note" style="left:446px;top:14px">ภาพตัวอย่างวาดด้วยโค้ด · ของจริงเจนภาพใหม่</div>
 </div>
-<div class="panel" id="leg"><b>◉ สกิล C</b> 2 แต้ม · <b>◆ โบนัสสาย</b> 1 · <b>● สเตตัส</b> 1<br>รากสว่าง = จุดแล้ว · เส้นประ = จุดต่อได้<br>แต้มไม่พอเดินครบทุกราก → ต้องเลือกทาง</div>
-<div class="panel" id="info">
- <div class="hd"><div class="ic"><img src="../../assets/icons/wolf/valhallaAssault.webp"></div><div><div class="nm">Valhalla Assault</div><div class="tg">สกิล C · ขั้น 3 · สาย A</div></div></div>
- <div class="ds">Wolf Finale พุ่งทะลุแล้วฟันกลับ<br><span style="color:#c9b48c;font-size:13px">(ท่า C เดิมทุกท่าใช้ต่อ — แค่ย้ายมาปลดที่ราก)</span></div>
- <div class="sec">เงื่อนไข</div>
- <div class="ok">✓ เลเวลตัวละคร 54</div>
- <div class="ok">✓ Axe Dance Lv 2 + Wolf Finale Lv 1</div>
- <div class="ok">✓ ต่อจากรากที่สว่างแล้ว</div>
- <div class="sec">ค่าจุดราก</div>
- <div class="cost"><span>2 แต้มราก</span><span>ยางวิญญาณ 60</span><span>เหรียญทอง 1</span></div>
- <button class="go">จุดราก</button>
- <div class="sec">จุดแล้วได้อะไร</div>
- <ul><li>ใช้สกิล C นี้ได้เลย ไม่ต้องมีเจม</li><li>อยากแต่งท่า → สกัดเป็นเจมสกิล C แล้วใส่ชั้นเสาโทเท็ม (แปรสภาพ / เจมเสริม เหมือนเดิม)</li></ul>
- <div class="sec">ได้จากรากตอนนี้</div>
- <div style="font:400 14px Prompt;color:#f3e6cc;margin-top:6px;line-height:1.6">ATK +2 · VIT +2 · DEF +2 · AGI +1<br>สกิล C: Savage Echo · Ravenous Leap · Endless Chain · War Banner<br>สาย A: ใช้สกิลครั้งที่ 4 ไม่เสีย SP</div>
- <div class="foot">รีเซ็ตราก: น้ำค้างราก 1 ขวด → คืนแต้มและของครบ เปลี่ยนทางเดินได้</div>
-</div>
-<div class="zb" style="top:772px">+</div><div class="zb" style="top:828px">−</div>
-<div class="tagnote">ภาพตัวอย่างวาดด้วยโค้ด · ของจริงเจนภาพใหม่</div>
-</div>
+<script src="roots_web.js"></script>
 <script>
-const NS='http://www.w3.org/2000/svg',S=document.getElementById('S');
+const V=new URLSearchParams(location.search).get('v')||'all';
+const W=window.ROOTS_WEB,NS='http://www.w3.org/2000/svg',S=document.getElementById('S');
+const N={};for(const n of W.N)N[n.id]=n;const LIT=new Set(W.lit);const PLV=55,PTS=100,USED=W.pts,SEL='CA1';
 function el(t,a,p){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);(p||S).appendChild(e);return e;}
-let seed=11;const rnd=()=>{seed=(seed*16807)%2147483647;return (seed-1)/2147483646;};
+let seed=17;const rnd=()=>{seed=(seed*16807)%2147483647;return (seed-1)/2147483646;};
+function txt(x,y,t,col,size,wt,fam,p,anchor){const e=el('text',{x,y,'text-anchor':anchor||'middle','font-size':size,'font-family':fam||'Prompt','font-weight':wt||500,fill:col},p);e.textContent=t;return e;}
+function label(x,y,t,col,size,anchor,stroke){const g=el('g',{});const e=txt(x,y,t,col,size,500,'Prompt',g,anchor);const w=e.getComputedTextLength()+14;const x0=anchor==='start'?x-7:anchor==='end'?x-w+7:x-w/2;
+ const r=el('rect',{x:x0,y:y-size-1,width:w,height:size+7,rx:7,fill:'#120a05',opacity:.86,stroke:stroke||'#7a5a30','stroke-width':1.2},g);g.insertBefore(r,e);return g;}
+const SC={atk:'#ff6b5a',tal:'#c39bff',vit:'#6fdc7a',def:'#7fb2ff',agi:'#5fe0e6',cha:'#ff9ed0',int:'#8fa8ff',lck:'#ffd75a'};
+const SL={atk:'ATK',tal:'TAL',vit:'VIT',def:'DEF',agi:'AGI',cha:'CHA',int:'INT',lck:'LCK'};
+const RIM={1:'#c98b4a',2:'#d6dde6',3:'#f3c34e',4:'#7ff5e0'};
+const ADJ={};for(const n of W.N)ADJ[n.id]=new Set();
+for(const [a,b,t] of W.E){if(t==='spoke'){ADJ[b].add(a);continue;}ADJ[a].add(b);ADJ[b].add(a);}
+const nLit=W.lit.length-1;
+function avail(id){const n=N[id];if(LIT.has(id)||n.k==='h')return false;if(PLV<(n.lv||1))return false;
+ let ok=false;for(const j of LIT)if(ADJ[j].has(id)&&!(N[j].knot)){ok=true;break;}if(!ok)return false;
+ if(n.k==='c'){if(n.knot.filter(j=>LIT.has(j)).length<3)return false;if(nLit<n.need)return false;}return true;}
+// ---- view
+let k,cx,cy,sx,sy;
+if(V==='zoom'){k=1.0;cx=-560;cy=0;sx=622;sy=470;}else{k=.338;cx=0;cy=0;sx=622;sy=474;}
+const X=x=>(x-cx)*k+sx,Y=y=>(y-cy)*k+sy;
+const big=V==='zoom';
 async function build(){
-await Promise.all(['500 13px Prompt','400 13px Prompt','600 30px Mitr','500 13px Mitr'].map(f=>document.fonts.load(f)));
+await Promise.all(['500 13px Prompt','400 13px Prompt','600 28px Mitr','600 12px Mitr'].map(f=>document.fonts.load(f)));
 const defs=el('defs',{});
 defs.innerHTML=`
-<radialGradient id="earth" cx="40%" cy="28%" r="85%"><stop offset="0" stop-color="#40291a"/><stop offset=".5" stop-color="#24150c"/><stop offset="1" stop-color="#0a0503"/></radialGradient>
-<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#060b20"/><stop offset="1" stop-color="#1c2a58"/></linearGradient>
+<radialGradient id="earth" cx="${X(0)/16}%" cy="${Y(0)/9}%" r="${W.RX*k*1.15/16}%" gradientUnits="objectBoundingBox"><stop offset="0" stop-color="#4a301c"/><stop offset=".35" stop-color="#2c1a0e"/><stop offset=".7" stop-color="#160c08"/><stop offset="1" stop-color="#070510"/></radialGradient>
 <radialGradient id="stone" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#bdb3a0"/><stop offset=".6" stop-color="#7c7466"/><stop offset="1" stop-color="#4b453c"/></radialGradient>
-<radialGradient id="stone2" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#6e5c49"/><stop offset="1" stop-color="#2a1f17"/></radialGradient>
+<radialGradient id="stone2" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#6e5c49"/><stop offset="1" stop-color="#241a12"/></radialGradient>
 <radialGradient id="heart" cx="45%" cy="40%" r="60%"><stop offset="0" stop-color="#fff7cf"/><stop offset=".4" stop-color="#ffd25a"/><stop offset=".8" stop-color="#c8701a"/><stop offset="1" stop-color="#6a3208"/></radialGradient>
 <linearGradient id="br" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffc760"/><stop offset="1" stop-color="#c0581a"/></linearGradient>
-<linearGradient id="plq" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7a4a26"/><stop offset="1" stop-color="#3c2010"/></linearGradient>
-<filter id="glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="5"/></filter>
-<filter id="glow2" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="11"/></filter>
+<filter id="glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="${big?5:2.5}"/></filter>
+<filter id="glow2" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="${big?10:5}"/></filter>
 <filter id="soft" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="3"/></filter>
-<filter id="dim"><feColorMatrix type="saturate" values="0.12"/><feComponentTransfer><feFuncR type="linear" slope=".48"/><feFuncG type="linear" slope=".48"/><feFuncB type="linear" slope=".52"/></feComponentTransfer></filter>
+<filter id="dim"><feColorMatrix type="saturate" values="0.15"/><feComponentTransfer><feFuncR type="linear" slope=".5"/><feFuncG type="linear" slope=".5"/><feFuncB type="linear" slope=".55"/></feComponentTransfer></filter>
 <filter id="noise" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" seed="5"/><feColorMatrix values="0 0 0 0 .34  0 0 0 0 .22  0 0 0 0 .12  0 0 0 1.5 -.66"/></filter>`;
-// ---------- background
-el('rect',{x:0,y:0,width:1600,height:900,fill:'url(#earth)'});
-el('rect',{x:0,y:0,width:1600,height:900,filter:'url(#noise)',opacity:.6});
-for(let i=0;i<7;i++){const y=235+i*95+rnd()*30;let d=`M -20 ${y}`;for(let x=-20;x<=1640;x+=160)d+=` Q ${x+80} ${y+(rnd()-.5)*44} ${x+160} ${y+(rnd()-.5)*22}`;el('path',{d,stroke:'#3c2616',fill:'none','stroke-width':2.2,opacity:.55});}
-for(let i=0;i<40;i++){const x=rnd()*1240,y=185+rnd()*710,r=5+rnd()*22;el('ellipse',{cx:x,cy:y,rx:r,ry:r*.68,fill:'url(#stone2)',opacity:.5});}
-// glowing spirit motes in the soil
-for(let i=0;i<46;i++){const x=rnd()*1230,y=190+rnd()*700;el('circle',{cx:x,cy:y,r:1+rnd()*1.8,fill:rnd()<.5?'#9ff3e8':'#ffd77a',opacity:.25+rnd()*.35});}
-el('rect',{x:0,y:0,width:1600,height:152,fill:'url(#sky)'});
-for(let i=0;i<70;i++)el('circle',{cx:rnd()*1600,cy:rnd()*128,r:rnd()*1.3+.3,fill:'#fff',opacity:.25+rnd()*.55});
-let gd='M 0 148';for(let x=0;x<=1600;x+=40)gd+=` L ${x} ${143+Math.sin(x*.021)*3+rnd()*4}`;gd+=' L 1600 166 L 0 166 Z';el('path',{d:gd,fill:'#2b3a22'});
-el('rect',{x:0,y:164,width:1600,height:16,fill:'#000',opacity:.35,filter:'url(#soft)'});
-for(let i=0;i<46;i++){const x=rnd()*1600;el('ellipse',{cx:x,cy:144+rnd()*4,rx:9+rnd()*26,ry:3.5+rnd()*3,fill:'#e6eef8',opacity:.85});}
-// totem foot above ground
-el('image',{href:'totem_foot.png',x:415,y:-9,width:430,height:175});
-// ---------- graph
-const N={
- H:{x:630,y:174,k:'h'},
- a1:{x:508,y:238,k:'s',st:'ATK',v:'+2'},A1:{x:402,y:300,k:'c',sk:'savageEcho',nm:'Savage Echo',t:1},
- a2:{x:318,y:386,k:'b',col:'A',lb:'สาย A · ครั้งที่ 4 ไม่ใช้ SP',side:-1},A2:{x:288,y:460,k:'c',sk:'ravenousLeap',nm:'Ravenous Leap',t:2},
- a3:{x:206,y:544,k:'s',st:'AGI',v:'+1'},A3:{x:270,y:615,k:'c',sk:'valhallaAssault',nm:'Valhalla Assault',t:3},
- a4:{x:346,y:696,k:'b',col:'A',lb:'สาย A · คูลดาวน์ −1 วิ',side:-1},A4:{x:272,y:765,k:'c',sk:'einherjarsCall',nm:"Einherjar's Call",t:4},
- b1:{x:630,y:238,k:'s',st:'VIT',v:'+2'},K1:{x:630,y:300,k:'c',sk:'endlessChain',nm:'Endless Chain',t:1},
- b2:{x:552,y:388,k:'s',st:'DEF',v:'+2'},K2:{x:640,y:460,k:'c',sk:'warBanner',nm:'War Banner',t:2},
- b3:{x:708,y:548,k:'b',col:'พฐ',lb:'สายพื้นฐาน · บัฟ +2 วิ',side:1},K3:{x:632,y:615,k:'c',sk:'echoStep',nm:'Echo Step',t:3},
- b4:{x:552,y:700,k:'s',st:'LCK',v:'+2'},K4:{x:630,y:765,k:'c',sk:'fenrirsSpirit',nm:"Fenrir's Spirit",t:4},
- c1:{x:752,y:238,k:'s',st:'TAL',v:'+2'},B1:{x:858,y:300,k:'c',sk:'hoarfrostEdge',nm:'Hoarfrost Edge',t:1},
- c2:{x:942,y:386,k:'b',col:'B',lb:'สาย B · สถานะติดนาน +0.5 วิ',side:1},B2:{x:972,y:460,k:'c',sk:'glacialPath',nm:'Glacial Path',t:2},
- c3:{x:1054,y:544,k:'s',st:'CHA',v:'+2'},B3:{x:990,y:615,k:'c',sk:'stormChain',nm:'Storm Chain',t:3},
- c4:{x:914,y:696,k:'b',col:'B',lb:'สาย B · ชิ่ง +1 ตัว',side:1},B4:{x:990,y:765,k:'c',sk:'worldstorm',nm:'Worldstorm',t:4},
- x1:{x:465,y:390,k:'s',st:'HP',v:'+60'},x2:{x:775,y:390,k:'s',st:'SP',v:'+8'},x3:{x:470,y:702,k:'s',st:'DEF',v:'+2'},x4:{x:790,y:702,k:'s',st:'TAL',v:'+2'},
-};
-const E=[['H','a1',15],['a1','A1',14],['A1','a2',13],['a2','A2',13],['A2','a3',12],['a3','A3',12],['A3','a4',11],['a4','A4',11],
-['H','b1',16],['b1','K1',15],['K1','b2',14],['b2','K2',14],['K2','b3',13],['b3','K3',13],['K3','b4',12],['b4','K4',12],
-['H','c1',15],['c1','B1',14],['B1','c2',13],['c2','B2',13],['B2','c3',12],['c3','B3',12],['B3','c4',11],['c4','B4',11],
-['a2','x1',8],['x1','b2',8],['b2','x2',8],['x2','c2',8],['a4','x3',8],['x3','b4',8],['b4','x4',8],['x4','c4',8]];
-const L=new Set(['H','a1','A1','a2','A2','a3','b1','K1','b2','K2']);
-const AV=new Set(['A3','x1','x2','b3','c1']);const LK=new Set(['A4','K4','B4']);const SEL='A3';
-const C=E.map(([p,q,w])=>{const a=N[p],b=N[q],dx=b.x-a.x,dy=b.y-a.y,Ln=Math.hypot(dx,dy),nx=-dy/Ln,ny=dx/Ln,o1=(rnd()-.5)*.34*Ln,o2=(rnd()-.5)*.34*Ln;
- const c1={x:a.x+dx*.33+nx*o1,y:a.y+dy*.33+ny*o1},c2={x:a.x+dx*.66+nx*o2,y:a.y+dy*.66+ny*o2};
- return {p,q,w,a,b,c1,c2,d:`M ${a.x} ${a.y} C ${c1.x} ${c1.y} ${c2.x} ${c2.y} ${b.x} ${b.y}`,lit:L.has(p)&&L.has(q),av:(L.has(p)&&AV.has(q))||(L.has(q)&&AV.has(p))};});
-const bez=(c,t)=>{const u=1-t;return {x:u*u*u*c.a.x+3*u*u*t*c.c1.x+3*u*t*t*c.c2.x+t*t*t*c.b.x,y:u*u*u*c.a.y+3*u*u*t*c.c1.y+3*u*t*t*c.c2.y+t*t*t*c.b.y};};
-// rootlets
-for(const c of C)for(let k=0;k<3;k++){const t=.2+rnd()*.6,p=bez(c,t),q=bez(c,t+.02),dx=q.x-p.x,dy=q.y-p.y,l=Math.hypot(dx,dy)||1,s=rnd()<.5?1:-1,nx=-dy/l*s,ny=dx/l*s+.35,len=26+rnd()*58;
- const ex=p.x+nx*len,ey=p.y+ny*len,mx=p.x+nx*len*.5+(rnd()-.5)*22,my=p.y+ny*len*.5+(rnd()-.5)*22;
- el('path',{d:`M ${p.x} ${p.y} Q ${mx} ${my} ${ex} ${ey}`,stroke:'#3b2213','stroke-width':3.6,fill:'none','stroke-linecap':'round'});
- el('path',{d:`M ${mx} ${my} q ${(rnd()-.5)*30} ${12+rnd()*16} ${(rnd()-.5)*36} ${18+rnd()*22}`,stroke:'#33200f','stroke-width':2,fill:'none','stroke-linecap':'round'});}
-for(const c of C)el('path',{d:c.d,stroke:'#170c05','stroke-width':c.w+7,fill:'none','stroke-linecap':'round'});
-for(const c of C)el('path',{d:c.d,stroke:'#5f3c22','stroke-width':c.w,fill:'none','stroke-linecap':'round'});
-for(const c of C)el('path',{d:c.d,stroke:'#93643b','stroke-width':Math.max(2,c.w*.32),fill:'none','stroke-linecap':'round',transform:'translate(-1.5,-2.5)',opacity:.75});
-// bark marks
-for(const c of C)for(let k=0;k<4;k++){const p=bez(c,.15+k*.22);el('circle',{cx:p.x+(rnd()-.5)*4,cy:p.y+(rnd()-.5)*4,r:1.4,fill:'#2a170b',opacity:.8});}
-for(const c of C)if(c.lit){el('path',{d:c.d,stroke:'#ffcf5a','stroke-width':c.w+14,fill:'none',opacity:.32,filter:'url(#glow)','stroke-linecap':'round'});
- el('path',{d:c.d,stroke:'#ffd977','stroke-width':4.5,fill:'none','stroke-linecap':'round'});el('path',{d:c.d,stroke:'#fff8d8','stroke-width':1.6,fill:'none','stroke-linecap':'round'});
- for(const t of [.22,.5,.78]){const p=bez(c,t);el('circle',{cx:p.x,cy:p.y,r:3.4,fill:'#fff6cf'});}}
- else if(c.av)el('path',{d:c.d,stroke:'#ffe58a','stroke-width':2.4,fill:'none','stroke-dasharray':'6 7',opacity:.85});
-// tier guides
-const TL=[[300,'ขั้น 1','Lv 51',1],[460,'ขั้น 2','Lv 52',1],[615,'ขั้น 3','Lv 54',1],[765,'ขั้น 4','Lv 56',0]];
-for(const [y,a,b,ok] of TL){el('line',{x1:150,y1:y,x2:1120,y2:y,stroke:'#f3d9a0','stroke-width':1.2,'stroke-dasharray':'2 10',opacity:.12});
- const g=el('g',{});el('rect',{x:22,y:y-24,width:110,height:48,rx:12,fill:'url(#plq)',stroke:ok?'#e9b44c':'#a04030','stroke-width':2},g);
- txt(77,y-3,a,'#fff3c8',16,600,'Mitr',g);txt(77,y+16,ok?b:b+' ยังไม่ถึง',ok?'#ffd77a':'#ff9a8a',12,500,'Prompt',g);}
-// nodes
-function txt(x,y,t,col,size,wt,fam,p,anchor){const e=el('text',{x,y,'text-anchor':anchor||'middle','font-size':size,'font-family':fam||'Prompt','font-weight':wt||500,fill:col},p);e.textContent=t;return e;}
-function label(x,y,t,col,size,anchor){const g=el('g',{});const e=txt(x,y,t,col,size||13,500,'Prompt',g,anchor);const w=e.getComputedTextLength()+16;const x0=anchor==='start'?x-8:anchor==='end'?x-w+8:x-w/2;
- const r=el('rect',{x:x0,y:y-(size||13)-2,width:w,height:(size||13)+9,rx:8,fill:'#120a05',opacity:.82,stroke:'#7a5a30','stroke-width':1},g);g.insertBefore(r,e);return g;}
-const SC={ATK:'#ff6b5a',TAL:'#c39bff',VIT:'#6fdc7a',DEF:'#7fb2ff',AGI:'#5fe0e6',CHA:'#ff9ed0',LCK:'#ffd75a',HP:'#ff8a8a',SP:'#7fc8ff'};
-for(const id in N){const n=N[id],lit=L.has(id),av=AV.has(id);
- if(n.k==='h'){el('circle',{cx:n.x,cy:n.y,r:44,fill:'#ffcf5a',opacity:.45,filter:'url(#glow2)'});el('circle',{cx:n.x,cy:n.y,r:27,fill:'url(#heart)',stroke:'#3a1f0c','stroke-width':3});
-  el('circle',{cx:n.x,cy:n.y,r:33,fill:'none',stroke:'#e9b44c','stroke-width':3});el('path',{d:`M ${n.x} ${n.y-11} q 10 0 10 10 q 0 9 -9 9 q -7 0 -7 -7 q 0 -5 5 -5`,stroke:'#7a3a08','stroke-width':2.5,fill:'none','stroke-linecap':'round'});
-  label(n.x+48,n.y+5,'หัวใจราก','#ffe3a0',12,'start');continue;}
- if(n.k==='s'){const c=SC[n.st];if(lit)el('circle',{cx:n.x,cy:n.y,r:25,fill:c,opacity:.38,filter:'url(#glow)'});
-  el('circle',{cx:n.x,cy:n.y,r:20,fill:'url(#stone2)',stroke:'#140a05','stroke-width':3});el('circle',{cx:n.x,cy:n.y,r:16.5,fill:'none',stroke:c,'stroke-width':lit?3:2,opacity:lit?1:.45});
-  txt(n.x,n.y-1,n.st,lit?'#fff':'#b9a78d',9.5,600,'Mitr');txt(n.x,n.y+10,n.v,lit?c:'#97866f',9,600,'Mitr');
-  if(av)el('circle',{cx:n.x,cy:n.y,r:25,fill:'none',stroke:'#ffe58a','stroke-width':2,'stroke-dasharray':'5 4'});continue;}
- if(n.k==='b'){const s=21,P=k=>`${n.x},${n.y-s*k} ${n.x+s*k},${n.y} ${n.x},${n.y+s*k} ${n.x-s*k},${n.y}`;
-  if(lit)el('polygon',{points:P(1.25),fill:'#ffb347',opacity:.45,filter:'url(#glow)'});
-  el('polygon',{points:P(1),fill:lit?'url(#br)':'#5a4030',stroke:'#1a0c05','stroke-width':3});el('polygon',{points:P(.68),fill:'none',stroke:lit?'#ffe9b0':'#8c6c4c','stroke-width':1.5});
-  txt(n.x,n.y+5,n.col,lit?'#3a1606':'#dcc4a2',n.col==='พฐ'?11:13,600,'Mitr');
-  if(av)el('polygon',{points:P(1.32),fill:'none',stroke:'#ffe58a','stroke-width':2,'stroke-dasharray':'5 4'});
-  label(n.x+n.side*30,n.y+5,n.lb,lit?'#ffe3a0':'#d9bf96',12,n.side>0?'start':'end');continue;}
- // C skill node
- el('ellipse',{cx:n.x,cy:n.y+40,rx:40,ry:10,fill:'#000',opacity:.45,filter:'url(#soft)'});
- if(lit)el('circle',{cx:n.x,cy:n.y,r:56,fill:'#ffcf5a',opacity:.38,filter:'url(#glow2)'});
- el('circle',{cx:n.x,cy:n.y,r:46,fill:'url(#stone)',stroke:'#170c05','stroke-width':3});
- for(let i=0;i<10;i++){const a=i/10*Math.PI*2+.3;el('line',{x1:n.x+Math.cos(a)*40.5,y1:n.y+Math.sin(a)*40.5,x2:n.x+Math.cos(a)*45,y2:n.y+Math.sin(a)*45,stroke:'#423a31','stroke-width':2});}
- const cp=el('clipPath',{id:'cp_'+id},defs);el('circle',{cx:n.x,cy:n.y,r:37},cp);
- el('circle',{cx:n.x,cy:n.y,r:38,fill:'#1a120c'});
- const im=el('image',{href:`../../assets/icons/wolf/${n.sk}.webp`,x:n.x-50,y:n.y-50,width:100,height:100,'clip-path':`url(#cp_${id})`,preserveAspectRatio:'xMidYMid slice'});
- if(!lit&&id!==SEL)im.setAttribute('filter','url(#dim)');
- el('circle',{cx:n.x,cy:n.y,r:38,fill:'none',stroke:lit?'#f6c64e':id===SEL?'#e8d9a8':'#6b6255','stroke-width':lit?4.5:3});
- if(av&&id!==SEL)el('circle',{cx:n.x,cy:n.y,r:53,fill:'none',stroke:'#ffe58a','stroke-width':2.5,'stroke-dasharray':'7 6'});
- if(id===SEL){el('circle',{cx:n.x,cy:n.y,r:57,fill:'none',stroke:'#ffe27a','stroke-width':9,opacity:.55,filter:'url(#glow)'});el('circle',{cx:n.x,cy:n.y,r:56,fill:'none',stroke:'#fff3b8','stroke-width':3,'stroke-dasharray':'10 6'});}
- label(n.x,n.y+64,n.nm,lit?'#fff3c8':'#c8b796',13);
- if(LK.has(id)){const g=el('g',{});el('rect',{x:n.x+18,y:n.y-50,width:46,height:20,rx:10,fill:'#7a1a10',stroke:'#ff9a7a','stroke-width':1.5},g);txt(n.x+41,n.y-35,'Lv 56','#ffe0d0',11,600,'Mitr',g);}
+// ---------- background: warm soil round the heart, darker and crystal-filled toward the rim
+el('rect',{x:0,y:0,width:1600,height:900,fill:'#070510'});
+el('ellipse',{cx:X(0),cy:Y(0),rx:W.RX*1.25*k,ry:W.RY*1.25*k,fill:'url(#earth)'});
+el('rect',{x:0,y:0,width:1600,height:900,filter:'url(#noise)',opacity:.5});
+const RHO=[[.30,1],[.52,2],[.76,3]];
+// band 4 crystals (outside ρ .76) + band 3 gold specks
+for(let i=0;i<(big?60:220);i++){const a=rnd()*Math.PI*2,r=.5+rnd()*.55,wx=Math.cos(a)*W.RX*r,wy=Math.sin(a)*W.RY*r,x=X(wx),y=Y(wy);if(x<0||x>1232||y<0||y>900)continue;
+ const s=(big?7:3)+rnd()*(big?8:4),deep=r>.76;el('polygon',{points:`${x},${y-s*1.6} ${x+s*.6},${y} ${x},${y+s*.5} ${x-s*.6},${y}`,fill:deep?'#7ff5e0':'#ffd77a',opacity:(deep?.14:.08)+rnd()*.1});}
+for(const [r,b] of RHO){el('ellipse',{cx:X(0),cy:Y(0),rx:W.RX*r*k,ry:W.RY*r*k,fill:'none',stroke:RIM[b+1],'stroke-width':big?2:1.6,'stroke-dasharray':big?'4 10':'3 7',opacity:.45});}
+// faint rootlets (decor)
+for(const [a,b,t] of W.E){if(t!=='root'||rnd()<.6)continue;const A=N[a],B=N[b],tt=.3+rnd()*.4,x=X(A.x+(B.x-A.x)*tt),y=Y(A.y+(B.y-A.y)*tt),an=rnd()*Math.PI*2,l=(16+rnd()*36)*k*1.4;
+ el('path',{d:`M ${x} ${y} q ${Math.cos(an)*l*.5+(rnd()-.5)*8} ${Math.sin(an)*l*.5+(rnd()-.5)*8} ${Math.cos(an)*l} ${Math.sin(an)*l}`,stroke:'#3b2213','stroke-width':Math.max(1,2.6*k),fill:'none','stroke-linecap':'round',opacity:.8});}
+// ---------- edges
+const WID={root:10,ring:6,spoke:2};
+const curve=(A,B,t)=>{const x1=X(A.x),y1=Y(A.y),x2=X(B.x),y2=Y(B.y);if(t!=='root')return `M ${x1} ${y1} L ${x2} ${y2}`;
+ const mx=(x1+x2)/2,my=(y1+y2)/2,dx=x2-x1,dy=y2-y1,L=Math.hypot(dx,dy)||1,o=(rnd()-.5)*.25*L;return `M ${x1} ${y1} Q ${mx-dy/L*o} ${my+dx/L*o} ${x2} ${y2}`;};
+const ED=W.E.map(([a,b,t])=>({a,b,t,d:curve(N[a],N[b],t),lit:LIT.has(a)&&LIT.has(b)}));
+for(const e of ED)if(e.t==='spoke')el('path',{d:e.d,stroke:e.lit?'#ffe08a':'#8a6a4a','stroke-width':Math.max(.8,WID.spoke*k),fill:'none','stroke-dasharray':`${4*k} ${5*k}`,opacity:e.lit?.9:.4});
+for(const e of ED)if(e.t!=='spoke')el('path',{d:e.d,stroke:'#170c05','stroke-width':(WID[e.t]+5)*k,fill:'none','stroke-linecap':'round'});
+for(const e of ED)if(e.t!=='spoke')el('path',{d:e.d,stroke:e.t==='ring'?'#6b4a2c':'#5f3c22','stroke-width':WID[e.t]*k,fill:'none','stroke-linecap':'round'});
+if(big)for(const e of ED)if(e.t!=='spoke')el('path',{d:e.d,stroke:'#93643b','stroke-width':Math.max(1,WID[e.t]*k*.3),fill:'none','stroke-linecap':'round',transform:`translate(${-1*k},${-2*k})`,opacity:.7});
+for(const e of ED)if(e.lit&&e.t!=='spoke'){el('path',{d:e.d,stroke:'#ffcf5a','stroke-width':(WID[e.t]+12)*k,fill:'none',opacity:.35,filter:'url(#glow)','stroke-linecap':'round'});
+ el('path',{d:e.d,stroke:'#ffd977','stroke-width':Math.max(1.4,4*k),fill:'none','stroke-linecap':'round'});}
+ else if(big&&e.t!=='spoke'&&((LIT.has(e.a)&&avail(e.b))||(LIT.has(e.b)&&avail(e.a))))el('path',{d:e.d,stroke:'#ffe58a','stroke-width':2.4*k,fill:'none','stroke-dasharray':`${6*k} ${6*k}`,opacity:.85});
+// ---------- nodes (labels go in a last pass so nothing covers them)
+const LBL=[];
+for(const n of W.N){const x=X(n.x),y=Y(n.y),lit=LIT.has(n.id),av=avail(n.id);if(x<-60||x>1300||y<-60||y>960)continue;
+ if(n.k==='h'){const r=30*k*(big?1:1.8);el('circle',{cx:x,cy:y,r:r*2,fill:'#ffcf5a',opacity:.5,filter:'url(#glow2)'});
+  const cp=el('clipPath',{id:'cph'},defs);el('circle',{cx:x,cy:y,r:r},cp);el('circle',{cx:x,cy:y,r:r,fill:'url(#heart)'});
+  el('image',{href:'faces/bear_s.png',x:x-r*1.25,y:y-r*.55,width:r*2.5,height:r*1.1,'clip-path':'url(#cph)',preserveAspectRatio:'xMidYMid slice',opacity:.9});
+  el('circle',{cx:x,cy:y,r:r,fill:'none',stroke:'#ffe27a','stroke-width':big?4:2.5});el('circle',{cx:x,cy:y,r:r*1.22,fill:'none',stroke:'#e9b44c','stroke-width':big?2:1.4,'stroke-dasharray':'3 4'});
+  LBL.push(()=>label(x,y+r*1.22+(big?20:14),'หัวใจราก (จุดเริ่ม)','#ffe3a0',big?13:10.5));continue;}
+ if(n.k==='m'){const r=(big?13:15)*k,c=SC[n.st];
+  if(lit)el('circle',{cx:x,cy:y,r:r*1.8,fill:c,opacity:.38,filter:'url(#glow)'});
+  el('circle',{cx:x,cy:y,r,fill:lit?c:'url(#stone2)',stroke:'#120a05','stroke-width':Math.max(1,2.5*k)});
+  if(!lit)el('circle',{cx:x,cy:y,r:r*.72,fill:'none',stroke:c,'stroke-width':Math.max(.9,2.2*k),opacity:.6});
+  el('circle',{cx:x,cy:y,r:r+Math.max(.8,1.6*k),fill:'none',stroke:RIM[n.band],'stroke-width':Math.max(.8,1.8*k),opacity:lit?.95:.5});
+  if(big)txt(x,y+3.5,SL[n.st],lit?'#1a0a04':'#cdb896',9.5,600,'Mitr');
+  if(av&&big)el('circle',{cx:x,cy:y,r:r*1.65,fill:'none',stroke:'#ffe58a','stroke-width':2*k,'stroke-dasharray':`${4*k} ${3*k}`});continue;}
+ if(n.k==='n'||n.k==='b'){const r=21*k*(big?1:1.15);
+  if(lit)el('circle',{cx:x,cy:y,r:r*1.7,fill:n.k==='b'?'#ffb347':SC[n.st],opacity:.4,filter:'url(#glow)'});
+  let pts=[];if(n.k==='b')pts=[[0,-1.15],[1.15,0],[0,1.15],[-1.15,0]];else for(let i=0;i<6;i++){const a=Math.PI/6+i*Math.PI/3;pts.push([Math.cos(a),Math.sin(a)]);}
+  const P=s=>pts.map(([a,b])=>`${x+a*r*s},${y+b*r*s}`).join(' ');
+  el('polygon',{points:P(1),fill:n.k==='b'?(lit?'url(#br)':'#8a5a2a'):(lit?SC[n.st]:'#3a2a1c'),stroke:'#120a05','stroke-width':Math.max(1.2,3*k)});
+  el('polygon',{points:P(.68),fill:'none',stroke:n.k==='b'?'#ffd9a0':SC[n.st],'stroke-width':Math.max(.9,1.6*k),opacity:.8});
+  el('polygon',{points:P(1.14),fill:'none',stroke:RIM[n.band],'stroke-width':Math.max(.9,1.6*k),opacity:lit?.95:.55});
+  if(big){if(n.k==='b'){txt(x,y+4.5,n.col==='A'?'A':n.col==='B'?'B':'พฐ',lit?'#3a1606':'#ffe9c8',n.col==='basic'?10:13,600,'Mitr');LBL.push(()=>label(x+r+10,y+5,n.txt,'#ffe3a0',11.5,'start'));}
+   else txt(x,y+4.5,'+3','#fff3c8',12,600,'Mitr');}
+  continue;}
+ // C skill knot centre
+ const r=36*k*(big?1:1.12),sel=n.id===SEL&&big,lk=PLV<n.lv;
+ if(lit)el('circle',{cx:x,cy:y,r:r*1.55,fill:'#ffcf5a',opacity:.42,filter:'url(#glow2)'});
+ el('circle',{cx:x,cy:y,r:r*1.5,fill:'#ffd77a',opacity:big?.12:.22,filter:'url(#glow2)'});
+ el('circle',{cx:x,cy:y,r:r*1.22,fill:'url(#stone)',stroke:'#170c05','stroke-width':Math.max(1.2,3*k)});
+ const cp=el('clipPath',{id:'cp_'+n.id},defs);el('circle',{cx:x,cy:y,r},cp);
+ el('circle',{cx:x,cy:y,r:r+1,fill:'#1a120c'});
+ const im=el('image',{href:`../../assets/icons/wolf/${n.sk}.webp`,x:x-r*1.32,y:y-r*1.32,width:r*2.64,height:r*2.64,'clip-path':`url(#cp_${n.id})`,preserveAspectRatio:'xMidYMid slice'});
+ if(!lit&&!sel&&big)im.setAttribute('filter','url(#dim)');
+ el('circle',{cx:x,cy:y,r,fill:'none',stroke:lit?'#f6c64e':RIM[n.band],'stroke-width':Math.max(1.6,(lit?4.5:3)*k)});
+ if(sel){el('circle',{cx:x,cy:y,r:r*1.45,fill:'none',stroke:'#ffe27a','stroke-width':9*k,opacity:.55,filter:'url(#glow)'});el('circle',{cx:x,cy:y,r:r*1.42,fill:'none',stroke:'#fff3b8','stroke-width':3*k,'stroke-dasharray':`${10*k} ${6*k}`});}
+ if(big){LBL.push(()=>label(x,y+r+16,n.nm,'#fff3c8',12.5));const on=n.knot.filter(j=>LIT.has(j)).length;
+  if(!lit){const g=el('g',{});el('rect',{x:x+r*.8,y:y-r*1.35,width:54,height:20,rx:10,fill:on>=3?'#3a5a10':'#5a1a10',stroke:on>=3?'#bff0a8':'#ff9a7a','stroke-width':1.5},g);txt(x+r*.8+27,y-r*1.35+15,`ปม ${on}/6`,on>=3?'#e8ffd8':'#ffe0d0',11,600,'Mitr',g);}}
+ else{const tierTxt=['','ขั้น 1','ขั้น 2','ขั้น 3','ขั้น 4'][n.tier];LBL.push(()=>label(x,y+(72+18)*k+9,`${n.nm} · ${tierTxt}`,'#fff3c8',10.5,'middle',RIM[n.band]));}
 }
-// column plaques
-for(const [x,t] of [[272,'สาย A · ขวานเลือด'],[630,'สายพื้นฐาน'],[990,'สาย B · พายุน้ำแข็ง']]){const g=el('g',{});const e=txt(x,880,t,'#fff3c8',16,600,'Mitr',g);const w=e.getComputedTextLength()+34;
- const r=el('rect',{x:x-w/2,y:858,width:w,height:30,rx:15,fill:'url(#plq)',stroke:'#e9b44c','stroke-width':2.5},g);g.insertBefore(r,e);}
+for(const f of LBL)f();
+// ---------- callouts
+if(!big){const c=N.CA1,x=X(c.x),y=Y(c.y),g=el('g',{});
+ el('path',{d:`M ${x-14} ${y+22} Q ${x-40} ${y+60} ${x-70} ${y+84}`,stroke:'#ffe27a','stroke-width':2,fill:'none','stroke-dasharray':'5 4'},g);
+ el('rect',{x:x-250,y:y+84,width:236,height:52,rx:12,fill:'#1a0e07',opacity:.94,stroke:'#ffd25a','stroke-width':2},g);
+ txt(x-132,y+105,'โหนดเล็ก 25 ดวงก่อนสกิล C ท่าแรก','#ffe9a0',12.5,600,'Prompt',g);
+ txt(x-132,y+124,'(เส้นสีทอง = ทางที่จุดมาแล้ว)','#e8d3a8',11.5,400,'Prompt',g);
+ // depth tags sit on the ring lines (where one band ends and the next begins)
+ const TAGS=[[.30,2,'ชั้น 2 · Lv 41+'],[.52,3,'ชั้น 3 · Lv 51+'],[.76,4,'ชั้น 4 · Lv 54+']],a=320*Math.PI/180;
+ for(const [r,b,t] of TAGS)label(X(Math.cos(a)*W.RX*r),Y(Math.sin(a)*W.RY*r)+5,t,RIM[b],11,'middle',RIM[b]);
+ label(X(Math.cos(a)*W.RX*.15),Y(Math.sin(a)*W.RY*.15)+5,'ชั้น 1 · Lv 31+',RIM[1],11,'middle',RIM[1]);}
+// ---------- panels
+document.getElementById('sub').textContent=`หมาป่า · Lv ${PLV} · ทั้งต้น ${W.N.length-1} โหนด · จุดแล้ว ${nLit} ดวง`;
+document.getElementById('chips').innerHTML=`<span class="chip g">แต้มราก เหลือ ${PTS-USED}/${PTS}</span><span class="chip">ยางวิญญาณ 260</span><span class="chip">เหรียญโทเท็มทอง 1</span><span class="chip">แก่น 0</span>`;
+const side=document.getElementById('side');const dot=c=>`<i class="dot" style="background:${c}"></i>`;
+const cnt={m:0,n:0,b:0,c:0};for(const n of W.N)if(cnt[n.k]!=null)cnt[n.k]++;
+if(!big){
+ side.innerHTML=`<div class="nm">ทั้งต้น ${W.N.length-1} โหนด</div><div class="tg">ผังแบบ ROM · เริ่มกลาง แผ่ไปทุกทาง</div>
+ <div class="sec">ชนิดโหนด</div>
+ <div class="row">${dot('#7c7466')}<span><b>เล็ก</b> +1 สเตตัส · ${cnt.m} ดวง (ไม่มี HP)</span></div>
+ <div class="row"><i style="width:14px;height:13px;background:#ff6b5a;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%)"></i><span><b>ใหญ่</b> +3 สเตตัส · ${cnt.n} ดวง</span></div>
+ <div class="row"><i style="width:13px;height:13px;background:#ffb347;transform:rotate(45deg)"></i><span><b>โบนัสสาย</b> ${cnt.b} ดวง</span></div>
+ <div class="row">${dot('#f6c64e')}<span><b>สกิล C</b> 12 ท่า · กลางปม อยู่ห่างกัน</span></div>
+ <div class="row" style="flex-wrap:wrap;gap:4px 10px">${Object.keys(SC).map(s=>`<span style="white-space:nowrap">${dot(SC[s])} ${SL[s]}</span>`).join('')}</div>
+ <div class="sec">ยิ่งไกลจากหัวใจ ยิ่งยาก</div>
+ <div class="row">${dot(RIM[1])}<span>ชั้น 1 Lv 31+ · ยาง + เงิน</span></div>
+ <div class="row">${dot(RIM[2])}<span>ชั้น 2 Lv 41+ · + วัตถุดิบมอน</span></div>
+ <div class="row">${dot(RIM[3])}<span>ชั้น 3 Lv 51+ · สกิล C ขั้น 1–2 (วงใน)</span></div>
+ <div class="row">${dot(RIM[4])}<span>ชั้น 4 Lv 54+ · สกิล C ขั้น 3–4 (ขอบนอก)</span></div>
+ <div class="sec">สกิล C ห่างกันแค่ไหน</div>
+ <div class="row">จากหัวใจถึงปมขั้น 1 ≈ 17–18 ดวง · ขั้น 3–4 ≈ 25–35 ดวง<br>ปม C สองอันใกล้สุดห่างกัน 9 ดวง (กลางๆ 13)</div>
+ <div class="foot">จุดสกิล C ได้ต้อง: เดินมาถึงปม · จุดรอบปม 3/6 · จุดรวมครบ 25 / 40 / 55 / 70 ดวง · เลเวล + เงื่อนไขต้นสกิล · ของฟาร์ม<br>แต้มราก เลเวลละ 4 จาก Lv 31 (Lv 60 = 120 · ทั้งต้น 616)</div>`;
+}else{
+ const n=N[SEL],on=n.knot.filter(j=>LIT.has(j)).length;
+ side.innerHTML=`<div class="hd"><div class="ic"><img src="../../assets/icons/wolf/${n.sk}.webp"></div><div><div class="nm">${n.nm}</div><div class="tg">สกิล C ขั้น 1 · สาย A · ชั้น 3</div></div></div>
+ <div class="ds">Blood Cleave ฟันซ้ำด้วยเงาขวาน</div>
+ <div class="sec">เงื่อนไข</div>
+ <div class="row ok">✓ เดินรากมาถึงปมแล้ว</div>
+ <div class="row ok">✓ จุดรอบปมแล้ว ${on}/6 (ต้อง 3)</div>
+ <div class="row ok">✓ จุดรวมแล้ว ${nLit} ดวง (ต้อง ${n.need})</div>
+ <div class="row ok">✓ เลเวล 51 (ตอนนี้ ${PLV}) · Blood Cleave Lv 3</div>
+ <div class="sec">ค่าจุด</div>
+ <div class="cost"><span class="ok">แต้มราก 3</span><b class="ok">มี ${PTS-USED}</b>
+ <span class="no">ยางวิญญาณ 120</span><b class="no">มี 60</b>
+ <span class="no">วัตถุดิบหายาก Lv 51–56 ×8</span><b class="no">มี 3</b>
+ <span class="no">เหรียญโทเท็มทอง ×3</span><b class="no">มี 1</b>
+ <span class="no">แก่นผู้พิทักษ์ ×1</span><b class="no">มี 0</b>
+ <span class="ok">40,000z</span><b class="ok">มี 96,000</b></div>
+ <button class="go">ของยังไม่ครบ — ไปฟาร์มก่อน</button>
+ <div class="foot"><b style="color:#ffe3a0">หาได้ที่</b><br>• ยางวิญญาณ: มอน Lv 30+ ทุกตัว<br>• วัตถุดิบหายาก: มอน Lv 51–56 ทุกเขต<br>• เหรียญโทเท็มทอง: มอนถึก · บอสแผนที่ · ดันเจี้ยน · เควสต์รายวัน · ตลาด<br>• แก่นผู้พิทักษ์: MVP / บอสหลัก หรือแลกที่หมอผี (เหรียญทอง 15)</div>`;
+}
 document.body.setAttribute('data-ready','1');
 }
 build();
