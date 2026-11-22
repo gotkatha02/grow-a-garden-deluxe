@@ -52,7 +52,7 @@
 - A กายภาพ "กระบองวิเศษ": กระบองยืด–หด 3 ระยะ (สั้น ตีเร็ว · ยาว กวาดเป็นแนว) ร่างแยกหมุนกระบองตามทั้งฝูง · ทุกการตีครั้งที่ 4 ทั้งฝูงกระโดดทุบพร้อมกัน (ออโต้กายภาพ) · รอบตัวมีมอนเยอะยิ่งงอกร่างไว
 - B เวท "เนตรทอง · เมฆไฟ": ร่างแยกกลายเป็นวิญญาณเมฆลอยรอบตัว พ่นไฟทองตามเรา · ทุกการตีครั้งที่ 3 ร่ายเวทในช่องออโต้สเปล ทุกร่างร่ายตามแบบอ่อนๆ (ปูพรมทั้งพื้นที่) · เนตรทองช่วยเห็นตัวจริงของบอสที่แยกร่าง / ปลอมตัว / ล่องหนเร็วขึ้น (ตัวช่วย ไม่ข้ามกลไก — กติกาบอสข้อ 6–7)
 - ถ้าไม่อยากเปิดดินแดนจีน (22:40): ย้ายลิงเข้าแอซเท็กได้ — ตำนานพระอาทิตย์ห้ายุคของแอซเท็ก มนุษย์ยุคพระอาทิตย์ที่ 2 (ยุคลม) ถูกลมพายุพัดจนกลายเป็นลิง → ลิงลมที่ "เป่าขน" เป็นร่างแยก เข้ากันพอดี (แต่งตัวเป็นนักรบแอซเท็กแทนชุดไซอิ๋ว)
-- **ออกแบบสกิลแล้ว (2026-11-23 00:53):** เจ้าของขอ "หงอคงเป็นกายภาพ มีร่างแยก เน้นออโต้สเปล (ตีปกติแล้วสกิลออก · อัปตีไว)" → ทรีครบ Basic / A / B / C ใน **WUKONG_SKILLS_TH.md** (ร่างดีไซน์ ยังไม่ได้สร้างในเกม) · สาย B เวท "เนตรทอง · เมฆไฟ" ข้างบนตัดออก — ตอนนี้ทั้งสองสายเป็น ATK: A อาละวาดสวรรค์ (เป้าเดียว ร่างขนโผล่หลังเป้า) · B เจ็ดสิบสองแปลง (ฝูงร่างขนถาวร แปลงเสือ / ผึ้ง / หิน) · ดินแดนเคาะแล้ว 05:24: ผู้หลุดมาจากรอยแยกเอเธอร์ (บ้าน = เมืองหลวง) · เจ้าของถาม "สกิลจะโกงไปไหม" → หัวข้อกันโกงใน WUKONG_SKILLS_TH.md
+- **ออกแบบสกิลแล้ว (2026-11-23 00:53):** เจ้าของขอ "หงอคงเป็นกายภาพ มีร่างแยก เน้นออโต้สเปล (ตีปกติแล้วสกิลออก · อัปตีไว)" → ทรีครบ Basic / A / B / C ใน **WUKONG_SKILLS_TH.md** (ร่างดีไซน์ ยังไม่ได้สร้างในเกม) · สาย B เวท "เนตรทอง · เมฆไฟ" ข้างบนตัดออก — ตอนนี้ทั้งสองสายเป็น ATK: A อาละวาดสวรรค์ (เป้าเดียว ร่างขนโผล่หลังเป้า) · B เจ็ดสิบสองแปลง (ฝูงร่างขนถาวร แปลงเสือ / ผึ้ง / หิน) · ดินแดนเคาะแล้ว 05:24: ผู้หลุดมาจากรอยแยกเอเธอร์ (บ้าน = เมืองหลวง) · เจ้าของถาม "สกิลจะโกงไปไหม" → หัวข้อกันโกงใน WUKONG_SKILLS_TH.md · ลุคอื่นอีก 4 แบบ (05:43): หัวข้อ 'ราชาวานร: ลุคใหม่ 4 แบบ' ท้ายไฟล์นี้
 
 ## อีก 6 เพลย์สไตล์ (22:40 · ไอเดียสำรอง — เจ้าของขอลุคอีกา ไม่ได้ขอเพลย์สไตล์เพิ่ม)
 ยังเป็นฮีโร่สองทางตามกติกาข้างบน (A = ATK · B = MATK · ร่างแยกตีตามเรา · ออโต้สเปลใช้ตัวนับ) แต่ร่างแยกทำงานและเงื่อนไขออโต้สเปลไม่ซ้ำกับใคร · โค้ดวาดร่างโคลน (KClone / WClone / WGhost) ใช้ต่อได้ทุกตัว
@@ -154,7 +154,7 @@ Layout: LEFT HALF — the hero large, full body, three-quarter front view, thrus
 Keep the hero identical in every view: same colours, outfit and spear.
 ```
 
-### 3. ราชาวานร
+### 3. ราชาวานร (ลุคคลาสสิก · ลุคอื่นอีก 4 แบบอยู่ในหัวข้อ 'ราชาวานร: ลุคใหม่ 4 แบบ' ท้ายไฟล์)
 ```
 Character design sheet for a NEW hero of my cute cartoon fantasy MMORPG (animal heroes from mythic lands). ONE wide image 1536×1024 on a plain soft cream background. No text, no labels, no names, no logo, no watermark.
 Style: copy the first attached image (the game's key art) — friendly hand-painted chibi cartoon, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft cartoon glow, bright and warm. Not realistic, not painterly, not 3D. The second attached image is an existing hero of the game: match its chibi body proportions, outline weight and finish, but do NOT copy that character.
@@ -234,3 +234,75 @@ Design 5 — a mix: the head, eyes and crown of design 3 with the armour, scarf 
 1. เจ้าของเลือกลุคอีกา (หรือผสม) → 2. ชีตตัวละครจริง 8 ทิศ บนพื้นเขียว (ไว้ทำท่านั่ง / เทียบคลิป) → 3. ออกแบบสกิลทั้งทรี (Basic / A / B / C) ตามคอนเซปต์ที่ผ่านแล้ว → 4. คลิปวิดีโอท่า 5 ทิศ × idle / walk / attack / buff (แบบมังกร แอกโซลอเติล, tools/cliphero.py) → 5. ไอคอน + ภาพพื้นหลังทรี + เอฟเฟกต์
 
 **อัปเดต 2026-11-22 23:11 (เจ้าของ 'ทำสกิลทั้งหมดของอีกาให้หน่อย แบบพร้อมเล่น'):** ข้อ 3 ทำแล้ว — ทรีสกิลครบ Basic / A / B / C 47 สกิล + สกิลเสริม 11, ร่างแยกมูนิน / ฮูกินในเกมจริง, เล่นได้ที่ `index.html?char=raven` (บาลานซ์ตามเป้า bench แล้ว) · รายละเอียดทั้งหมด: RAVEN_SKILLS_TH.md · ตอนนี้ยืมสไปรต์หมาป่า (ย้อมเข้ม) + ไอคอนโค้ด จนกว่าข้อ 1, 2, 4, 5 จะเสร็จ
+
+## ราชาวานร: ลุคใหม่ 4 แบบ (2026-11-23 05:43)
+เจ้าของ "โอเค ขอพร้อมรูปลักษณ์แบบอื่นด้วย" (หลังเคาะดินแดน = ผู้หลุดมาจากรอยแยก) · ลุคคลาสสิก = พรอมต์ 3 ข้างบน ยังใช้ได้ · ชุดนี้คือลุคอื่นอีก 4 แบบ ใช้บทเรียนจากอีกา v1
+
+กติกา (อยู่ในพรอมต์ 0 แล้ว):
+- หน้าลิงจริง (ปากสั้น หูกลม ขนทั้งตัว หางยาวปลายม้วน) — ไม่ใช่คนมีหาง
+- ห่วงรัดเกล้าทอง + ตาทองขอบแดง (เนตรเพลิงตาทอง) เห็นเสมอ · ห้ามหมวก ฮู้ด หน้ากากบังหน้า
+- ตัวเพรียวแบบนักกายกรรม ไม่ฟู ไม่ใส่เสื้อคลุมยาว · ของห้อยน้อย
+- ร่างขนในเกมเป็นแสงทองโปร่ง → ตัวจริงห้ามทองทั้งตัว (ขน + ชุดเป็นสีอื่น ทองแค่ขลิบ) ไม่งั้นกลืนกับร่างขน · ลุคคลาสสิก (พรอมต์ 3) ขนทองทั้งตัว ถ้าเลือกต้องทำร่างขนให้เรืองแสงจางกว่าตัวจริงมาก (ทำในโค้ดได้)
+- ห้ามสีเขียว (ตัดคลิปพื้นเขียว) · ห้ามตัวอักษรบนยันต์ / ธง
+- ดีไซน์ของเราเอง ไม่อิงหงอคงจากเกม หนัง การ์ตูนเรื่องไหน
+
+วิธีใช้: แชต ChatGPT ใหม่ → พรอมต์ 0 + แนบภาพปกแคมป์ไฟ + ชีตฮีโร่ที่ว่าเท่ที่สุด (เช่น มังกร หรือแมว) → มันตอบ ready → ส่งแบบ 1–4 ทีละข้อความ (ข้อความละ 1 ภาพ) · อยากเทียบลุคคลาสสิกในแชตเดียวกัน ส่งพรอมต์ 3 ต่อได้ · ชอบคนละส่วน → พรอมต์ผสม · ตัวเมีย: ต่อท้ายแบบไหนก็ได้ว่า `Make the hero female, keep the cool look.` · ออกมาเป็นคนมีหาง: ส่ง `Make him look more like a real monkey: short muzzle, round ears, fur everywhere.` · แก้แค่บางส่วน: ใช้แปรงเลือกเฉพาะจุดใน ChatGPT (สั่งแก้ทั้งภาพจะวาดใหม่หมด)
+
+| แบบ | ลุค | สีตัด | ท่าภาพใหญ่ |
+|---|---|---|---|
+| 1 ผู้ทะลวงผนึก | ขนน้ำตาลแดง · กุญแจมือหินแตก โซ่ขาดห้อยสองข้อมือ · ยันต์กระดาษขาดติดบ่า · รอยร้าวแสงม่วง (รอยแยก) บนห่วงทองกับกระบอง · ผ้าพันอก กระโปรงหนังเสือ ผ้าพันแขน | แดงเข้ม + ม่วงรอยแยก | ทะลวงซากหินขึ้นมา ชูกระบองเหนือหัว |
+| 2 ป่วนสวรรค์ (งิ้ว) | ขนส้มอำพัน · หน้างิ้วลิง (หัวใจแดงรอบตา) · มงกุฎงิ้ว + ขนไก่ฟ้ายาวสองเส้น · เกราะงิ้วดำ–แดง · ธงสามเหลี่ยม 4 ผืนที่หลัง · รองเท้างิ้วพื้นขาวหนา | แดงสด + ดำหมึก (ทองแค่ขลิบ) | ยืนขาเดียวบนหินรูปเมฆ มือป้องตามองไกล กระบองหนีบรักแร้ |
+| 3 ปราชญ์ศิลา | ขนสีทราย · เกราะหินเทางอกจากขน รอยต่อเรืองทอง (แบบคินสึงิ) · ผ้าคาดแดงปะการัง · กระบองเสาค้ำทะเลสลักลายคลื่น (จากวังพญามังกร) | แดงปะการัง + น้ำเงินทะเล | ย่อขากว้าง ปักกระบองยักษ์ลงพื้นจนแตกเป็นเส้นทอง ละอองทะเลพุ่งด้านหลัง |
+| 4 จอมแสบเหนือเมฆ | ขนน้ำตาลเกาลัด · ชุดนักกายกรรมฟ้า–ขาวขอบลายเมฆ · ผ้าพันคอฟ้ายาวปลายม้วนเป็นเมฆ · ลูกท้อสวรรค์ที่ขโมยมาม้วนไว้ที่หาง · เมฆตีลังกาก้อนเล็ก | ฟ้า + ชมพูลูกท้อ | ตีลังกาหัวลง ทรงตัวมือเดียวบนยอดกระบองที่ปักพื้น ยิ้มกวน |
+
+แนะนำ: แบบ 1 ผูกกับเรื่องที่เคาะแล้วที่สุด (หลุดจากผนึกใต้ภูเขา ทะลุรอยแยกมา) · แบบ 2 เงาตัวเป็นเอกลักษณ์ที่สุด (ธงหลัง + ขนไก่ฟ้ายาว ไม่ซ้ำฮีโร่ไหนในเกม เห็นไกลๆ ก็รู้ว่าใคร)
+
+### พรอมต์ 0 — กติกา (ส่งครั้งเดียวต่อแชต พร้อมแนบ 2 ภาพ)
+```
+I will ask you for several character design sheets of ONE new hero for my cute cartoon fantasy MMORPG (animal heroes from Norse, Greek, Egyptian, Japanese and Aztec myths; this one is a visitor who fell into our world through a magic rift). These rules apply to every sheet in this chat. Do not draw anything yet: reply only "ready", then draw ONE sheet each time I send a design.
+
+Style: copy the first attached image (the game's key art) — friendly hand-painted chibi cartoon, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft cartoon glow, bright and warm. Not realistic, not painterly, not 3D. The second attached image is an existing hero of the game: match its chibi body proportions, outline weight and finish, but do NOT copy that character.
+
+The hero: the Monkey King from the classic Chinese legend Journey to the West — an ORIGINAL design of my own, not based on any game, film, TV show or cartoon version. A chibi anthropomorphic monkey standing on two legs who fights with a staff. He must look COOL and heroic, like a stylish action-game hero in chibi form, not a cute mascot:
+- a real monkey face (short muzzle, round ears) and fur on the whole body — not a human with a tail
+- a thin gold circlet (his famous headband) always on his head, and fiery eyes: gold irises with a red-orange rim, confident and narrowed, with a cheeky grin
+- the face, the circlet and both eyes are always fully visible: no hat, hood or mask over the face
+- a long tail with a curl at the tip, visible in every view
+- a slim, athletic acrobat's body with a strong, readable silhouette: no puffy shapes, no long robe
+- his staff, the Ruyi Jingu Bang: a long staff with a gold band at each end (each design gives the rest of its look)
+- fur and outfit in the colours each design names; gold only as trim, never a mostly gold hero, because his clones are made of golden light and he must stand out from them
+- only a few dangling items
+- no green anywhere on the character, and no letters or writing anywhere (talismans and flags carry only abstract brush swirls)
+
+Every sheet: ONE wide image 1536×1024 on a plain soft cream background. No text, no labels, no names, no logo, no watermark.
+Layout: LEFT HALF — the hero large, full body, three-quarter front view, in the pose the design gives. TOP RIGHT — a small turnaround of the same hero standing neutral: front, side facing right, back, all the same height. BOTTOM RIGHT — the hero in the middle with two of his hair clones beside him, all three swinging their staffs in the same overhead strike in perfect sync, a few golden hairs drifting in the air around them. The clones are slightly smaller, half-transparent copies made of glowing golden light and fur strands, with a small golden cloud puff at their feet; they copy the hero's silhouette, outfit and staff in simplified form.
+Keep the hero identical in every view of a sheet. Every design I send is a completely new look: reuse nothing from earlier sheets in this chat.
+```
+
+### แบบ 1 — ผู้ทะลวงผนึก
+```
+Design 1 — "Rift Breaker". The moment he breaks free after 500 years sealed under a mountain. Dark russet-brown fur with a warm cream face and chest. Broken stone shackles on both wrists with a few snapped chain links swinging from them. One torn paper seal strip with abstract red brush swirls (no letters) stuck to his shoulder and fluttering. Small glowing violet rift cracks on his gold circlet and along his staff, like cracks in glass with light shining through. A weathered crimson martial-arts wrap across the chest, a short tiger-skin kilt over dark trousers with crimson ankle wraps, bandaged forearms, bare monkey feet. Accent colours: crimson and rift violet. Weapon: a dark iron staff with gold bands at both ends and violet light leaking from its cracks. Pose: bursting up out of cracking rubble with the staff raised overhead in both hands, rock chunks, chain links and violet sparks flying.
+```
+
+### แบบ 2 — ป่วนสวรรค์ (งิ้ว)
+```
+Design 2 — "Heaven's Havoc". The proud rebel who turned Heaven upside down, dressed like a Peking-opera war hero. Tawny orange fur with a cream face painted in Peking-opera monkey make-up: a red heart shape around the eyes and nose, outlined with thin gold and black lines, white around it. A small scarlet-and-gold opera crown with two red pompoms sits above his gold circlet, with two very long curved pheasant tail feathers arching up and back from it. Fitted ink-black and scarlet silk opera armour with gold cloud trim, a small round gold chest mirror, short red tassels at the waist, and four small triangular scarlet flags with black flame edges fanning from his back on short poles (no writing). Black opera boots with thick white soles. Accent colours: scarlet and ink black, gold only as trim. Weapon: a red-lacquered staff with gold bands at both ends and a small red tassel. Pose: balancing on one leg on a small cloud-shaped rock, one hand shading his eyes as he peers far into the distance (the classic Monkey King look-out gesture), the staff tucked under his other arm, the long feathers swinging.
+```
+
+### แบบ 3 — ปราชญ์ศิลา
+```
+Design 3 — "Stone-Born Sage". He was born from a magic stone egg on the Mountain of Flowers and Fruit. Warm sandy-beige fur with a cream face. Smooth slate-grey stone armour plates that seem to grow out of his fur on the shoulders, forearms, chest and shins, mended with glowing gold seams like kintsugi pottery. A coral-red sash with long tails, deep sea-blue cloth wraps under the armour (deep blue, not teal), a small round stone pendant. Accent colours: coral red and deep sea blue. Weapon: the sea-pillar staff he took from the Dragon King's palace under the sea — dark iron engraved with curling sea waves, a gold band at each end, a faint deep-blue glow in the engravings. Pose: a low, wide stance, planting the huge staff into the ground with one hand, the ground cracking in glowing gold lines, sea spray rising behind him.
+```
+
+### แบบ 4 — จอมแสบเหนือเมฆ
+```
+Design 4 — "Cloud Trickster". The cheeky thief who stole Heaven's peaches and rides a somersault cloud. Chestnut-brown fur with a cream face. A sleek, fitted sky-blue and white acrobat outfit with white cloud-swirl trim, a long sky-blue scarf whose ends curl like little clouds, a peach-pink sash, wrapped wrists and ankles, bare monkey feet. A small white swirling cloud (his somersault cloud) floats beside him. He holds a stolen peach in the curl of his tail (a peach with no leaves). Accent colours: sky blue and peach pink. Weapon: a slim black iron staff with gold bands at both ends. Pose: upside down, balancing on one hand on top of his planted staff, grinning at the viewer, scarf and tail flowing.
+```
+
+### พรอมต์ผสม (ตัวอย่าง — เปลี่ยนเลขกับส่วนได้)
+```
+Design 5 — a mix: the face paint, crown and feathers of design 2 with the shackles, rift cracks and staff of design 1, in the pose of design 1. Same rules and layout.
+```
+
+### ขั้นต่อไป (ราชาวานร)
+1. เจ้าของเลือกลุค (หรือผสม) → 2. ชีต 8 ทิศบนพื้นเขียว → 3. สร้างในเกมตาม WUKONG_SKILLS_TH.md (รอเจ้าของสั่ง) → 4. คลิปท่า 20 ตัว (idle / walk / attack / buff × 5 ทิศ) → 5. ไอคอน + พื้นหลังทรี + เอฟเฟกต์ + ท่านั่ง

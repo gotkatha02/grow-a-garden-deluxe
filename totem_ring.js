@@ -115,7 +115,9 @@ function tick(dt){const t=now();if(DIRTY){DIRTY=false;try{applyStats();}catch(e)
 {const _u=updEnemies;updEnemies=function(dt){_u(dt);try{tick(dt);}catch(err){if(!tick.err){tick.err=1;console.warn('ring tick',err);}}};}
 /* buff bar: one icon per working spirit rune with its counter */
 const ICK=new Set();
-const PIC={};function artImg(a){if(PIC[a])return PIC[a];const i=new Image();i.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="160" height="160">${RU.ART[a]||''}</svg>`);PIC[a]=i;return i;}
+/* draw a spirit picture inside a w×h box centred on (x,y), keeping its aspect (painted pictures are not square) */
+const artFit=(X,im,x,y,w,h)=>{const iw=im.naturalWidth||1,ih=im.naturalHeight||1,k=Math.min(w/iw,h/ih);X.drawImage(im,x-iw*k/2,y-ih*k/2,iw*k,ih*k);};
+const PIC={};function artImg(a){if(PIC[a])return PIC[a];const i=new Image();if(RU.SPIRIT_HAVE.has(a)){i.src=`assets/rune/spirit/${a}.webp`;PIC[a]=i;return i;}i.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="160" height="160">${RU.ART[a]||''}</svg>`);PIC[a]=i;return i;}
 const svgURI=s=>'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(s.replace('<svg ','<svg xmlns="http://www.w3.org/2000/svg" '));
 function lbl(k){const t=now();switch(k){case 'bearHide':return RS.sh>0&&t<RS.shT?Math.ceil(RS.sh)+'':RS.hitN+'/6';case 'bearSleep':return t<RS.sleepT?Math.ceil(RS.sleepT-t)+'s':'พร้อม';
   case 'owlNight':return RS.owlArm?'พร้อม':RS.owlN+'/4';case 'owlMoon':return RS.moonArm?'พร้อม':RS.buffN+'/3';case 'wolfPack':return RS.packStk>0&&t<RS.packT?'×'+RS.packStk:'';
@@ -123,7 +125,7 @@ function lbl(k){const t=now();switch(k){case 'bearHide':return RS.sh>0&&t<RS.shT
   case 'tbWing':return RS.tbN+'/6';case 'tbCharge':return RS.tbStk?'×'+RS.tbStk:'';case 'orcaFlow':return RS.flowN+'/5';case 'orcaWave':return A.orcaWave&&t-RS.lastFight>=A.orcaWave.v.s?'พร้อม':'';default:return '';}}
 function icons(){const want=new Set();if(!OFF())for(const k in A){const M=A[k],key='rn_'+k;want.add(key);
     if(!BUFFDEF[key]||BUFFDEF[key]._s!==M.t+':'+M.g){const An=RU.ANIMAL[M.r.a];BUFFDEF[key]={n:`รูนวิญญาณ${An.th} · ${M.r.th} ${GR[M.g].k} ขั้น ${RU.TIERN[M.t]} — ${M.r.d(M.v)}`,c:An.c,i:'✦',_s:M.t+':'+M.g};
-      if(!window.BUFF_ART)window.BUFF_ART={};BUFF_ART[key]=svgURI(RU.srIcon(M.r.a,M.g));}
+      if(!window.BUFF_ART)window.BUFF_ART={};BUFF_ART[key]=RU.ICON_HAVE.has('sr_'+k)?RU.iconPath('sr_'+k):svgURI(RU.srIcon(M.r.a,M.g));}   /* painted medallion when cut, else the code stone */
     const b=player.buffs[key]||(player.buffs[key]={t:1e9,total:1e9});b.t=1e9;b.lbl=lbl(k);}
   for(const key of ICK)if(!want.has(key)&&player.buffs[key])delete player.buffs[key];ICK.clear();for(const k of want)ICK.add(k);}
 /* ---------------- effects: the spirit animals show up when a rune fires ---------------- */
@@ -133,7 +135,7 @@ const ANI={bear:'bear',sleep:'bear',owlArm:'owl',owlHit:'owl',moon:'owl',pack:'w
 const COL={bear:'#ffb36a',owl:'#c8b0ff',wolf:'#a8c8ff',eagle:'#ffd36a',tbird:'#7fc8ff',orca:'#7fe0ff'};
 class RingFx{constructor(o){Object.assign(this,{t:0,layer:'top'},o);this.life=LIFE[this.kind]||.6;}update(dt){this.t+=dt;return this.t<this.life;}
   draw(){try{const q=Math.min(1,this.t/this.life),a=ANI[this.kind],im=artImg(a),c=COL[a],e=this.e,x0=e&&!e.dead?e.x:this.x,y0=e&&!e.dead?e.y:this.y;const X=ctx;X.save();
-    const pic=(sx,sy,sz,al,rot)=>{if(!im.complete||!im.naturalWidth)return;X.globalAlpha=Math.max(0,al);X.translate(sx,sy);if(rot)X.rotate(rot);X.drawImage(im,-sz/2,-sz/2,sz,sz);X.setTransform(1,0,0,1,0,0);};
+    const pic=(sx,sy,sz,al,rot)=>{if(!im.complete||!im.naturalWidth)return;X.globalAlpha=Math.max(0,al);X.translate(sx,sy);if(rot)X.rotate(rot);artFit(X,im,0,0,sz,sz);X.setTransform(1,0,0,1,0,0);};
     const ring=(sx,sy,r,w,al)=>{X.globalAlpha=Math.max(0,al);X.strokeStyle=c;X.lineWidth=w;X.beginPath();X.ellipse(sx,sy,r,r*KY(),0,0,7);X.stroke();};
     const glow=(sx,sy,r,al)=>{X.globalCompositeOperation='lighter';X.globalAlpha=Math.max(0,al);const g=X.createRadialGradient(sx,sy,0,sx,sy,r);g.addColorStop(0,c);g.addColorStop(1,'rgba(0,0,0,0)');X.fillStyle=g;X.beginPath();X.arc(sx,sy,r,0,7);X.fill();X.globalCompositeOperation='source-over';};
     const k=this.kind;
@@ -155,14 +157,14 @@ class RingAura{constructor(){this.layer='top';this.t=0;}update(dt){this.t+=dt;re
   draw(){if(!ANY())return;const t=this.t,X=ctx;try{X.save();
     if(RS.sh>0&&now()<RS.shT){const [sx,sy]=P(player.x,player.y,40),f=Math.max(.25,RS.sh/Math.max(1,RS.shMax));X.globalAlpha=.22+.18*f;X.fillStyle='#d89a5a';X.beginPath();X.ellipse(sx,sy,34,46,0,0,7);X.fill();
       X.globalAlpha=.75*f+.2;X.strokeStyle='#7a4a22';X.lineWidth=2.6;X.setLineDash([6,4]);X.lineDashOffset=-t*20;X.beginPath();X.ellipse(sx,sy,34,46,0,0,7);X.stroke();X.setLineDash([]);}
-    const head=(a,dy,sz,al,bob)=>{const im=artImg(a);if(!im.complete||!im.naturalWidth)return;const [sx,sy]=P(player.x,player.y,118+dy+(bob?Math.sin(t*3)*4:0));X.globalAlpha=al;X.drawImage(im,sx-sz/2,sy-sz/2,sz,sz);};
+    const head=(a,dy,sz,al,bob)=>{const im=artImg(a);if(!im.complete||!im.naturalWidth)return;const [sx,sy]=P(player.x,player.y,118+dy+(bob?Math.sin(t*3)*4:0));X.globalAlpha=al;artFit(X,im,sx,sy,sz,sz);};
     if(A.owlNight&&RS.owlArm)head('owl',0,30,.85,1);
-    if(A.eagleSwoop&&RS.swoopArm){const im=artImg('eagle');if(im.complete&&im.naturalWidth){const an=t*2.2,[sx,sy]=P(player.x+Math.cos(an)*46,player.y+Math.sin(an)*20,150);X.globalAlpha=.85;X.drawImage(im,sx-17,sy-17,34,34);}}
+    if(A.eagleSwoop&&RS.swoopArm){const im=artImg('eagle');if(im.complete&&im.naturalWidth){const an=t*2.2,[sx,sy]=P(player.x+Math.cos(an)*46,player.y+Math.sin(an)*20,150);X.globalAlpha=.85;artFit(X,im,sx,sy,34,34);}}
     if(A.tbCharge&&RS.tbStk>0){for(let i=0;i<RS.tbStk;i++){const an=t*3+i*2.09,[sx,sy]=P(player.x+Math.cos(an)*22,player.y+Math.sin(an)*10,70);X.globalAlpha=.9;X.fillStyle='#ffd23a';X.strokeStyle='#3a1f14';X.lineWidth=1.4;
         X.beginPath();X.moveTo(sx,sy-7);X.lineTo(sx-4,sy+1);X.lineTo(sx,sy+1);X.lineTo(sx-2,sy+8);X.lineTo(sx+5,sy-1);X.lineTo(sx+1,sy-1);X.closePath();X.fill();X.stroke();}}
     if(A.wolfPack&&RS.packStk>0&&now()<RS.packT){const [gx,gy]=P(player.x,player.y,0);X.globalAlpha=.6;X.strokeStyle='#a8c8ff';X.lineWidth=2;for(let i=0;i<RS.packStk;i++){X.beginPath();X.ellipse(gx,gy,26+i*8,(26+i*8)*KY(),0,t*2+i,t*2+i+2.2);X.stroke();}}
     for(const w of RS.wolves){const im=artImg('wolf');if(!im.complete||!im.naturalWidth)continue;const [sx,sy]=P(w.x,w.y,26+Math.abs(Math.sin(t*9+w.x))*6),al=Math.min(1,(w.until-now())*2);
-      X.globalAlpha=.25*al;X.fillStyle='#a8c8ff';X.beginPath();X.ellipse(sx,sy+22,18,7,0,0,7);X.fill();X.globalAlpha=.82*al;X.drawImage(im,sx-21,sy-21,42,42);}
+      X.globalAlpha=.25*al;X.fillStyle='#a8c8ff';X.beginPath();X.ellipse(sx,sy+22,18,7,0,0,7);X.fill();X.globalAlpha=.82*al;artFit(X,im,sx,sy,42,42);}
     X.restore();}catch(err){}}}
 let AUR=null;function ensureAura(){if(!ANY())return;if(!AUR)AUR=new RingAura();if(!fx.includes(AUR))fx.push(AUR);}
 /* ================= window ================= */
