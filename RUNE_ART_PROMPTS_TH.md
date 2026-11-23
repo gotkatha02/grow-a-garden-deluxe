@@ -1,18 +1,21 @@
-# ภาพระบบรูน — พรอมต์เจนภาพ v2 (2026-11-23)
+# ภาพระบบรูน — พรอมต์เจนภาพ v3 (2026-11-23)
 
-รอบก่อนมีแค่หินหน้าสัตว์ 6 ลูก กับหินเหลี่ยมเปล่า 3 สี → รอบนี้ **รูนทุกแบบมีภาพของตัวเอง**:
-- **ก.** รูนวิญญาณ 18 แบบ (3 แผ่น)
-- **ข.** รูนสลัก 18 แบบ (3 แผ่น)
-- **ค.** สัตว์วิญญาณ 6 ตัว สำหรับเอฟเฟค (รูปละตัว)
-- **ง.** ของในระบบ 13 ชิ้น (1 แผ่น)
-- **จ.** พื้นหลังหน้าวงเศษโทเท็ม (1 รูป)
+รูนทุกแบบมีภาพของตัวเอง
 
-รวม **14 รูป**
+## สถานะ (2026-11-23 07:30)
+
+| ส่วน | ภาพ | ในเกม |
+|---|---|---|
+| ก. รูนวิญญาณ 18 แบบ | 3 แผ่น ✅ | ✅ ใส่แล้วทั้ง 18 |
+| ข. รูนสลัก 18 แบบ | 3 แผ่น ✅ | ✅ ใส่แล้วทั้ง 18 |
+| ค. สัตว์วิญญาณ 6 ตัว | 6 รูป ✅ | ✅ เอฟเฟคตอนรูนทำงาน |
+| ง. ของในระบบ | ได้มา 13 ชิ้น แต่ ChatGPT วาดของคนละอย่างกับที่ขอ | ✅ ใช้ได้ 9 ชิ้น + ปุ่มเมนูวง · **ขาด 2 ชิ้น → ง2** |
+| จ. พื้นหลังหน้าวง | เจนทีเดียวไม่ได้ (ออกมาเป็นศาลในมุมเอียง) | **แยกเป็น 4 ชิ้น จ1–จ4 → เกมประกอบเอง** |
+
+**เหลือเจน 5 รูป**: ง2 + จ1–จ4
 
 **ทุกครั้ง**: แนบภาพคีย์อาร์ตกองไฟ (สไตล์) · ส่งทีละกล่อง ทีละรูป · ได้ภาพแล้วส่งกลับมาในแชทได้เลย ผมตัดและใส่เกมให้
 **สไตล์** (เขียนไว้ในทุกพรอมต์แล้ว): การ์ตูนชิบิลงสีมือ · เส้นขอบน้ำตาลเข้มหนา · เงา 2–3 โทนแบบเซล · แสงเรืองแบบการ์ตูน · สดใส อบอุ่น · ไม่สมจริง ไม่ใช่ 3D · ไม่มีตัวหนังสือ / โลโก้ / ลายน้ำ
-
-ระบบเกมรอภาพไว้แล้ว ส่งมาเมื่อไหร่ภาพจริงแทนภาพโค้ดได้เลย ไม่ต้องแก้ระบบเพิ่ม (ทดสอบด้วยภาพจำลองแล้ว)
 
 ---
 
@@ -253,80 +256,112 @@ ONE character only, centred, empty space on every side, flat base at the bottom 
 
 ---
 
-## ง. ของในระบบ 13 ชิ้น (ไอคอน) — 1 แผ่น พื้นชมพูบานเย็น
+## ง. ของในระบบ — ผลที่ได้ + ง2 (อีก 2 ชิ้น)
 
-ใช้พื้นชมพูเพราะหินรูนดิบเกรด B มีรอยแตกสีเขียว (บนพื้นเขียวจะโดนตัดหาย) → ห้ามมีสีชมพู / ม่วงในของ
-สีในเกมปรับตามภาพนี้แล้ว: ยางวิญญาณเป็นสีอำพัน · ผงวิญญาณเป็นสีเงิน · เจมสกิลรากขั้น 1–4 เป็นสีอำพัน / หยก / ไพลิน / ทอง
+แผ่นที่ได้มาเป็นของชุดอื่น (หินเกลียวฟ้า คริสตัล หน้ากากทอง คัมภีร์ ค้อน ฯลฯ) จึงจับคู่เท่าที่เข้าความหมาย:
 
-ลำดับในภาพ (ซ้าย→ขวา บน→ล่าง):
+| ภาพที่ได้ | ใช้เป็น |
+|---|---|
+| หินเทาลายเกลียวเรือง | หินรูนดิบ B / A / S (ผมเปลี่ยนสีลายเป็น เขียว / ฟ้า / ทอง ตามสีเกรด) |
+| คริสตัลบนใบไม้ทอง | เจมสกิลราก ขั้น 1–3 (เปลี่ยนสีเป็น หยก / ไพลิน / ทับทิม) |
+| หินจักรวาลในมงกุฎทอง | เจมสกิลราก ขั้น 4 |
+| หน้ากากโทเท็มทองติดขนนก | เหรียญโทเท็มทอง |
+| แผ่นรูน 3 แผ่น | ถุงรูนสลัก |
+| คัมภีร์ติดขนนก | **คัมภีร์หมอผี** (เดิมชื่อ ขนนกหมอผี — เปลี่ยนชื่อตามภาพ ใช้อ่านหินรูนเหมือนเดิม) |
+| ไฟวิญญาณสีฟ้าบนฐานทอง | **ไฟวิญญาณ** (เดิมชื่อ ผงวิญญาณ — เปลี่ยนชื่อตามภาพ ได้จากการหลอมรูน 10 ดวงเลือกชนิดได้เหมือนเดิม) |
+| วงแหวนหินทองติดขนนก | ปุ่มเมนู 🔱 วงเศษโทเท็ม (Y) |
+| คริสตัลฟ้า · ค้อน · จอบ · คีม · หีบ | ยังไม่ได้ใช้ (ไม่มีของนี้ในระบบรูน) |
 
-| แถว | 1 | 2 | 3 | 4 | 5 |
-|---|---|---|---|---|---|
-| 1 | rsap ยางวิญญาณ | rmedal เหรียญโทเท็มทอง | rdew น้ำค้างราก | rfeather ขนนกหมอผี | |
-| 2 | rstone0 หินรูนดิบ B | rstone1 หินรูนดิบ A | rstone2 หินรูนดิบ S | rbag ถุงรูนสลัก | |
-| 3 | sdust ผงวิญญาณ | rg1 เจมสกิลราก ขั้น 1 | rg2 ขั้น 2 | rg3 ขั้น 3 | rg4 ขั้น 4 |
+ปุ่มเมนู 🌳 รากโทเท็ม (U) ใช้ภาพหัวใจรากที่มีอยู่แล้ว
+
+### ง2 — ยางวิญญาณ + น้ำค้างราก (2 ชิ้น พื้นเขียว)
+
+แนบ: ภาพคีย์อาร์ตกองไฟ + แผ่นของ 13 ชิ้นที่ได้รอบก่อน (ให้สไตล์เข้าชุดกัน)
 
 ```
-A friendly hand-painted chibi cartoon game ITEM ICON SHEET for a fantasy RPG with a totem theme, matching the attached campfire key art: thick clean dark-brown outlines, cel shading with 2–3 flat tones, soft cartoon glow, bright and warm. Not realistic, not 3D.
-Thirteen separate items in three rows (4 + 4 + 5) on a flat pure MAGENTA (#FF00FF) background, each item centred with lots of empty space around it, nothing touching:
-Row 1 (4 items): a glowing drop of golden-amber tree sap with a tiny root curl; a gold coin stamped with a smiling totem face; a small glass flask of shimmering sky-blue dew with a wooden cork; a long orange-and-cream shaman feather with small red, blue and gold beads tied to it.
-Row 2 (4 items): a small rough grey raw rune stone with a glowing GREEN crack; a medium raw rune stone with a glowing BLUE crack; a big raw rune stone with a glowing GOLD crack and tiny golden crystals poking out; a small brown leather pouch tied with string, red, blue and gold glints peeking out.
-Row 3 (5 items): a little heap of glittering silver-white spirit dust with tiny gold sparkles; then four root gems with the same cut (a five-sided gem with a carved tree-root pattern inside), from plain to precious: warm amber-tan, jade green, sapphire blue, and radiant gold with a soft glow.
-No pink, purple or magenta on the items. No text, no numbers, no logo, no watermark.
+A friendly hand-painted chibi cartoon game ITEM ICON SHEET for a fantasy RPG with a totem theme, matching the attached campfire key art and the attached item sheet: thick clean dark-brown outlines, cel shading with 2–3 flat tones, soft cartoon glow, bright and warm. Not realistic, not 3D.
+Two separate items side by side on a flat pure green (#00FF00) background, each centred with lots of empty green space around it, nothing touching:
+1. a big glowing drop of golden-amber tree sap clinging to a small curled tree root, with a tiny gold leaf.
+2. a small round glass flask of shimmering sky-blue dew with a wooden cork and a tiny gold root charm tied around its neck.
+Same size and style for both. No green on the items. No text, no numbers, no logo, no watermark.
 ```
 
 ---
 
-## จ. พื้นหลังหน้าวงเศษโทเท็ม — สี่เหลี่ยมจัตุรัส 1:1
+## จ. หน้าวงเศษโทเท็ม — แยก 4 ชิ้น แล้วเกมประกอบเอง
 
-ตอโทเท็มยักษ์อยู่ตรงกลาง ช่องรูนเรียงตามหน้าในเกม:
-- **วงนอก**: เศษใหญ่ 6 ชิ้นที่ 12 / 2 / 4 / 6 / 8 / 10 นาฬิกา (ช่องรูนวิญญาณ) สลับกับหินกลมเล็ก 6 ก้อนที่ 1 / 3 / 5 / 7 / 9 / 11 นาฬิกา
-- **วงใน**: หินกลมเล็กอีก 6 ก้อน แต่ละก้อนอยู่ในแนวเศษใหญ่ของมัน
-- **เส้นแสง**: เศษใหญ่แต่ละชิ้นต่อกับหินเล็กข้างๆ 2 ก้อนบนวงนอก และหินเล็กวงในของมัน (= 3 ช่องที่ส่งสีให้รูนวิญญาณ)
+ChatGPT วางของหลายชิ้นให้ตรงตำแหน่งในรูปเดียวไม่ได้ จึงแยกเจนทีละชิ้น แล้วโค้ดวางแต่ละชิ้นตรงช่องเป๊ะ:
 
-เกมวางรูนทับรูหลุมเอง ได้ภาพแล้วผมวัดตำแหน่งรูให้ตรง
+| ชิ้น | ใช้ในหน้า | จำนวนที่วาง |
+|---|---|---|
+| จ1 พื้นหลัง | ฟ้ายามค่ำของโลกวิญญาณ เต็มกรอบ | 1 |
+| จ2 ตอโทเท็ม | ตรงกลาง | 1 |
+| จ3 เศษใหญ่ (ช่องรูนวิญญาณ) | วงนอก หันปลายออกด้านนอก | 6 (ชิ้นเดียว หมุนให้) |
+| จ4 หลุมเล็ก (ช่องรูนสลัก) | วงนอกสลับเศษใหญ่ + วงใน | 12 (ชิ้นเดียว) |
+
+เส้นแสงเชื่อมช่อง วงนำทาง กุญแจล็อก ระดับช่อง = โค้ดวาดเอง
+
+**แนบทุกครั้ง**:
+- คีย์อาร์ตกองไฟ
+- ภาพเสาโทเท็ม (ไฟล์ ref_totem.png ที่ผมส่งให้) — ตอ / เศษ / หลุม ต้องเป็นไม้แกะทาสีแบบเสานี้ เหมือนเสาเดียวกันที่แตกออกมา
+
+**จ2–จ4 ต้องเป็นมุมมองตรงจากบนลงล่างเป๊ะ** (แบนเหมือนเหรียญวางบนโต๊ะ ไม่เห็นด้านข้าง) — ถ้าได้ภาพเอียง ให้บอก ChatGPT ว่า "flat, straight from above, no perspective" แล้วเจนใหม่
+**รูต้องว่าง** (ด้านในสีน้ำตาลเข้มเรียบๆ) เพราะเกมวางรูนลงในรู
+
+### จ1 — พื้นหลัง (1:1)
 
 ```
-A friendly hand-painted chibi cartoon GAME MENU BACKGROUND for a fantasy RPG, matching the attached campfire key art: thick clean dark-brown outlines, cel shading with 2–3 flat tones, soft cartoon glow. Not realistic, not 3D. Square 1:1.
-Top-down night view. In the exact centre, the cut-off stump of a GIANT ANCIENT TOTEM POLE seen from above (about a quarter of the picture wide): carved wood rings, a glowing golden crack across its top.
-Around it, on one big circle about three quarters of the picture wide: six LARGE floating shards of the broken totem at the 12, 2, 4, 6, 8 and 10 o'clock positions, each a carved painted wooden fragment with an EMPTY ROUND HOLE in its middle; and between each pair of large shards, one SMALL round carved socket stone with an empty hole (at 1, 3, 5, 7, 9 and 11 o'clock).
-On an inner circle about half as wide: six more SMALL round socket stones with empty holes, each one lined up between the stump and a large shard.
-Thin glowing violet lines link each large shard to the two small sockets beside it on the big circle and to its own inner small socket. Soft violet magic light, deep purple-blue starry night sky behind, darker at the edges. Keep the empty holes plain and dark (the game places the runes in them).
-No characters, no text, no logo, no watermark.
+A friendly hand-painted chibi cartoon GAME MENU BACKGROUND for a fantasy RPG with a totem theme, matching the attached campfire key art: soft cel shading with 2–3 flat tones, soft cartoon glow, bright and warm. Not realistic, not 3D. Square 1:1.
+A magical night sky of the spirit world seen straight on: deep indigo and violet, soft swirling nebula clouds in purple and teal, faint aurora ribbons, many tiny twinkling stars, a soft warm golden glow in the middle that fades out, darker toward the edges.
+Keep it calm and EMPTY: no ground, no platform, no circle, no objects, no characters. No text, no logo, no watermark.
+```
+
+### จ2 — ตอโทเท็ม
+
+```
+A friendly hand-painted chibi cartoon GAME UI PIECE for a fantasy RPG with a totem theme, matching the attached campfire key art and the attached totem pole picture: thick clean dark-brown outlines, cel shading with 2–3 flat tones, soft cartoon glow, bright and warm. Not realistic, not 3D.
+Subject: the cut-off top of the giant ancient totem pole from the attached picture, seen PERFECTLY STRAIGHT FROM ABOVE — flat like a coin lying on a table, no visible sides, no perspective. A perfect circle: warm brown wood with tree-ring circles in the middle, an outer band carved with the pole's painted zigzag and feather patterns in red, turquoise, cream and gold, and a big glowing golden crack across the middle with soft light rising from it.
+ONE object only, centred, empty space on every side, transparent PNG background. No text, no logo, no watermark.
+```
+
+### จ3 — เศษใหญ่ (ช่องรูนวิญญาณ)
+
+```
+A friendly hand-painted chibi cartoon GAME UI PIECE for a fantasy RPG with a totem theme, matching the attached campfire key art and the attached totem pole picture: thick clean dark-brown outlines, cel shading with 2–3 flat tones, soft cartoon glow, bright and warm. Not realistic, not 3D.
+Subject: one broken shard of the giant totem pole from the attached picture, lying flat and seen PERFECTLY STRAIGHT FROM ABOVE — no visible sides, no perspective. A chunk of carved brown wood painted like the pole (red, turquoise, cream and gold bands, a small carved feather pattern), wider at the bottom and broken into a jagged point at the TOP. In its middle, a big EMPTY round socket hole with a thick shiny gold rim and a plain dark brown inside, exactly like the big holes on the totem pole; the hole takes up about two-thirds of the shard's width.
+ONE object only, upright (the broken point at the top), centred, empty space on every side, transparent PNG background. Keep the hole empty and plain. No text, no logo, no watermark.
+```
+
+### จ4 — หลุมเล็ก (ช่องรูนสลัก)
+
+```
+A friendly hand-painted chibi cartoon GAME UI PIECE for a fantasy RPG with a totem theme, matching the attached campfire key art and the attached totem pole picture: thick clean dark-brown outlines, cel shading with 2–3 flat tones, soft cartoon glow, bright and warm. Not realistic, not 3D.
+Subject: a small round socket for a carved rune, lying flat and seen PERFECTLY STRAIGHT FROM ABOVE — a perfect circle, no visible sides, no perspective. A short disc of carved brown wood with a thin painted ring of red, turquoise and cream zigzags, and in its middle a big EMPTY round hole with a thick shiny gold rim and a plain dark brown inside, exactly like the small holes on the wings of the totem pole; the hole takes up about three-quarters of the disc.
+ONE object only, centred, empty space on every side, transparent PNG background. Keep the hole empty and plain. No text, no logo, no watermark.
 ```
 
 ---
 
 ## สำหรับแชทถัดไป — ตัดภาพ / ใส่เกม
 
-ระบบรอภาพไว้แล้ว (`rune_data.js` ICON_HAVE / SPIRIT_HAVE)
+ทุกคำสั่งรันจากโฟลเดอร์ repo · ภาพที่ใส่แล้วอยู่ใน `rune_data.js` ICON_HAVE / SPIRIT_HAVE / RING_ART
 
-**ก. รูนวิญญาณ**
-```
-GLOBAL=1 python3 tools/iconsheet.py <sheet.png> assets/rune/icons 3,3 sr_bearHide,sr_bearStand,sr_bearSleep,sr_owlNight,sr_owlWing,sr_owlMoon
-```
-- ก2 / ก3 ใช้คำสั่งเดียวกัน เปลี่ยน key ตามตาราง
-- เติม key ลง `ICON_HAVE`
-- ภาพจะถูกตัดเป็นวงกลมใต้กรอบเกรดเอง (clipPath `srClip`)
+**ก / ข (ทำแล้ว 2026-11-23)**: `python3 tools/iconsheet.py <sheet> <cut dir> 3,3 <6 keys>` (โหมดธรรมดา ไม่ใช้ GLOBAL — สีในภาพไม่เพี้ยน) → `python3 -I tools/rune/rune_art.py icons <cut dir>` → `assets/rune/icons/<key>.webp`
+- เหรียญรูนวิญญาณถูกตัดเป็นวงกลมใต้กรอบเกรด (`srIcon`, clipPath `srClip`)
 
-**ข. รูนสลัก**
-- คำสั่งเดียวกัน → `assets/rune/icons/c_<stat>.png` (key ตามตาราง)
-- เติม key ลง `ICON_HAVE`
+**ค (ทำแล้ว)**: `python3 -I tools/rune/rune_art.py spirit <bear|owl|wolf|eagle|tbird|orca> <png>` → `assets/rune/spirit/<animal>.webp` (ตัดขอบใส สูงสุด 512 px)
+- `artFit` ใน `totem_ring.js` ให้ภาพที่ไม่ใช่จัตุรัสได้พื้นที่เท่ากัน · หมาป่าวิญญาณหันตามทางวิ่ง · อินทรีโฉบก้มหัวลง
 
-**ค. สัตว์วิญญาณ**
-- ตัดขอบใส → `assets/rune/spirit/<bear|owl|wolf|eagle|tbird|orca>.webp`
-- เติมชื่อลง `SPIRIT_HAVE`
-- ภาพไม่ต้องเป็นจัตุรัส: `artFit` ใน `totem_ring.js` รักษาสัดส่วนให้
+**ง (ทำแล้ว)**: ตัดแผ่นด้วย `tools/iconsheet.py <sheet> <dir> 5,5,3 g01,…,g13 256` → `rune_art.py goods <dir>` (เปลี่ยนสีหินดิบ / เจมราก ในสคริปต์)
+- ของ rune ที่มีภาพจะได้ `big` = ภาพ + ป้ายเกรด / ขั้นจากโค้ด (`gPic` / `gBadge`)
 
-**ง. ของในระบบ**
-```
-GLOBAL=1 python3 tools/iconsheet.py <sheet.png> assets/items 4,4,5 rsap,rmedal,rdew,rfeather,rstone0,rstone1,rstone2,rbag,sdust,rg1,rg2,rg3,rg4
-```
-- เติม key ลง `icons.json` (`etcIcon` เช็ค ICONS ก่อนภาพโค้ด)
+**ง2**: `tools/iconsheet.py <sheet> <dir> 2 rsap,rdew` → `rune_art.py pic <dir>/rsap.png rsap` (และ rdew) → เติม `rsap`, `rdew` ลง ICON_HAVE
 
-**จ. พื้นหลัง**
-- วางที่ `assets/rune/ring/bg.webp`
-- วัดจุดกลางรูทั้ง 18 → แก้ `POS` ใน `totem_ring.js` (ตอนนี้: ใหญ่ r 38% · เล็กนอก r 38% +30° · เล็กใน r 21%)
-- ใส่ภาพไว้หลัง `ringSVG()` แล้วปิดพื้นที่โค้ดวาด
+**จ1–จ4**: `python3 -I tools/rune/ring_parts.py <bg|stump|shard|sock> <png>`
+- เขียน `assets/rune/ring/<part>.webp` + วัดรูแล้วพิมพ์ตัวเลขให้
+- เติมชื่อชิ้นลง `RING_ART` + วางตัวเลขลง `RING_LAY` (rune_data.js)
+- เศษใหญ่ต้องหันปลายขึ้น (ถ้าไม่ใช่ใส่ `rot=<องศา>`)
+- แต่ละชิ้นเปิดใช้เองทีละชิ้น ชิ้นที่ยังไม่มีใช้ภาพโค้ดเดิม
+- ทดสอบการประกอบด้วยภาพจำลอง: `/home/claude/work/runeart/mockparts.py` + `ringart.py`
 
-**ทุกครั้ง**: bump `V` ใน `sw.js` · ถ่ายภาพหน้าวงเศษ (`tools/rune/r1.py`) ส่งให้เจ้าของดู
+**ทุกครั้ง**: bump `V` ใน `sw.js` (ภาพแคชไว้) · ถ่ายหน้าวง (`tools/rune/r1.py` หรือ `/home/claude/work/runeart/shots.py`) ส่งให้เจ้าของดู

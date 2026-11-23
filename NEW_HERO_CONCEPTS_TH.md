@@ -45,7 +45,7 @@
 - A กายภาพ "มูนิน · ความจำ": ทุกการตีครั้งที่ 4 จดท่าล่าสุดที่โดนเป้าลงความจำ 1 ช่อง (สูงสุด 3) · กดปล่อยความจำเมื่อไหร่ก็ได้ → มูนินเล่นซ้ำทั้งชุดรวดเดียว = เก็บไว้ทุ่มในช่วงเปิดของบอส
 - B เวท "ฮูกิน · ความคิด": เวททุกอันออกทั้งจากเราและจากฮูกิน (ตีได้สองมุม) · ทุกการตีครั้งที่ 3 สลักรูน 1 ตัวรอบฮูกิน ครบ 3 → ร่ายเวทรูนในช่องออโต้สเปลจากจุดนั้น
 
-## 3. ราชาวานร — นอกห้าดินแดน
+## 3. ราชาวานร — นอกห้าดินแดน → เลือกแล้ว 07:20: ร่างสถิต "นักพรตหิมะ" (ลิงหิมะญี่ปุ่น) ดูหัวข้อ 'เลือกแล้ว: นักพรตหิมะ' ท้ายไฟล์
 - ตำนาน: ไซอิ๋ว — ถอนขนเป่าเป็นร่างแยก คนไทยรู้จักที่สุด · ไม้กระบองแดงหัวท้ายทอง · มงกุฎห่วงทอง · หมวกขนหางไก่ฟ้ายาว · กระโปรงหนังเสือ · ตีลังกาเมฆ
 - เป็นตำนานจีน ไม่อยู่ใน 5 ดินแดน → ถ้าเลือกตัวนี้ต้องตัดสินใจเรื่องดินแดนก่อน
 - พื้นฐาน (22:33): ถอนขนเป่า → ร่างเล็กหลายร่าง (ขน = แต้มที่ได้จากการตีโดน) ตัวละอ่อน ก็อปท่าเราพร้อมกันทั้งฝูงรอบตัว · มอนบางตัวหันไปตีร่างแยกแทนเรา · เล่นง่าย เหมาะออโต้ ฟาร์มมอนกลุ่ม · ตีบอสตัวเดียวช้ากว่าเพื่อน
@@ -307,7 +307,7 @@ Design 5 — a mix: the face paint, crown and feathers of design 2 with the shac
 ### ขั้นต่อไป (ราชาวานร)
 1. เจ้าของเลือกลุค (หรือผสม) → 2. ชีต 8 ทิศบนพื้นเขียว → 3. สร้างในเกมตาม WUKONG_SKILLS_TH.md (รอเจ้าของสั่ง) → 4. คลิปท่า 20 ตัว (idle / walk / attack / buff × 5 ทิศ) → 5. ไอคอน + พื้นหลังทรี + เอฟเฟกต์ + ท่านั่ง
 
-## ราชาวานร: แบบ "ร่างสถิต" 4 แบบ (2026-11-23 07:07)
+## ราชาวานร: แบบ "ร่างสถิต" 4 แบบ (2026-11-23 07:07) · เจ้าของเลือกแบบ 2 (07:20)
 เจ้าของ "มีดีไซน์อื่นไหม … เป็นลิงตัวอื่นที่ไม่ใช่หงอคง แต่มีพลังเป็นร่างสถิตของหงอคง"
 
 เรื่อง: ตอนโทเท็มใหญ่แตก ร่างหงอคงยังถูกทับอยู่ใต้ภูเขาห้านิ้วฝั่งโน้น แต่ "วิญญาณ" หลุดผ่านรอยแยกเอเธอร์มาอาศัยอยู่ในห่วงรัดเกล้าทอง (ของที่เคยใช้คุมเขา กลายเป็นที่ผูกวิญญาณ) · ลิงตัวไหนสวมห่วงก็กลายเป็นร่างสถิต — ฮีโร่คือลิงตัวนั้น ส่วนหงอคงเป็นเสียงในหัว + พลังที่ให้ยืม (ต่อกับไอเดียเควสต์ "ห่วงรัดเกล้าองค์จริง" ใน WUKONG_SKILLS_TH.md ได้พอดี)
@@ -359,7 +359,7 @@ Keep the hero identical in every view of a sheet. Every design I send is a compl
 Design 1 — "Olympus Thief". A Kerkops from Greek myth: one of the twin thieves who tried to rob Heracles and were turned into monkeys by Zeus. The Monkey King's spirit chose him because both of them stole from the gods. A lean long-tailed monkey with sandy-brown fur and a pale cream face, a cheeky grin, amber eyes. A short terracotta-red one-shoulder tunic with a black Greek-key hem, a leather belt with one small stolen bronze trinket, bronze wrist guards, a short Aegean-blue scarf, bare monkey feet. Accent colours: terracotta red and Aegean blue. Weapon: Heracles' old carrying pole — worn dark wood wrapped in bronze bands, gold caps at both ends, two small leather loops still hanging near one end. Pose: leaping off a broken marble column, snatching a small golden apple with his tail while swinging the pole.
 ```
 
-### แบบ 2 — นักพรตหิมะ (ญี่ปุ่น)
+### แบบ 2 — นักพรตหิมะ (ญี่ปุ่น) ✅ เลือกแล้ว 07:20
 ```
 Design 2 — "Snow Ascetic". A Japanese snow monkey from the mountain hot springs who trained as a yamabushi mountain monk; the gold circlet fell into his hot spring through the rift. Thick silver-grey fur, a bright red face, calm sharp brown eyes, a short stubby tail as his species has. Yamabushi outfit: a white short-sleeved jacket over indigo wide trousers tied below the knees, a sash with six fluffy vermilion pompoms down the chest, straw sandals, a large conch-shell horn on a cord at his hip. Wisps of warm steam curl around him. Accent colours: indigo and vermilion. Weapon: a ringed monk's staff — dark wood, a small iron crown of jingling rings at the top, gold bands under the rings and at the foot. Pose: standing on a snowy rock above a steaming hot spring, spinning the ringed staff behind his back, snow and steam swirling.
 ```
@@ -376,3 +376,45 @@ Design 4 — "Wind Dancer". A spider monkey from the Aztec land, a temple dancer
 
 ### ขั้นต่อไป (ร่างสถิต)
 เจ้าของเลือกร่าง (หรือกลับไปใช้ลุคหงอคงเอง) → ถ้าเป็นร่างสถิต: แก้ชื่อ / คำบรรยายสกิลให้เป็นเสียงของหงอคงที่ให้ยืมพลัง (ตัวเลขเดิม) + ดินแดน / บ้านตามร่าง → ชีต 8 ทิศ → คลิปท่า → ไอคอน + ทรี (ทรี C = วิญญาณหงอคงยักษ์ข้างหลัง)
+
+## เลือกแล้ว: นักพรตหิมะ (เจ้าของ 2026-11-23 07:20 'ชอบแบบนี้')
+ชีตที่เจ้าของเจน (แบบ 2): `assets/heroes/wukong/sheet_snow_ascetic.webp` = ต้นแบบลุคของทุกภาพต่อจากนี้ · มุมล่างขวา (วิญญาณหงอคงยักษ์จากเมฆทอง + ร่างขนทอง 2 ร่าง + ตาไฟทอง) = ภาพอ้างอิงของอัลติ ท่าร่างยักษ์ และพื้นหลังทรี C
+
+**ลุคตามชีต** (เขียนลงทุกพรอมต์ต่อไป): ลิงหิมะญี่ปุ่น ขนเงินเทาฟูชี้ · หน้าแดงสด · ตาน้ำตาลนิ่งคม · ห่วงทองเส้นเล็ก ลายเมฆม้วนตรงหน้าผาก · หางสั้นฟู · เสื้อขาวแขนสั้น ลายเมฆม้วนสีคราม ขอบคราม หลังเสื้อมีตราดอกสี่กลีบสีคราม · ปอมปอมแดงชาด 6 ลูก ข้างละ 3 บนเชือกเข้ม · ผ้าคาดแดงผูกโบหน้า ชายยาว · กางเกงครามพอง · ผ้าพันแข้งขาว · รองเท้าฟาง · หอยสังข์ขาวลายน้ำตาลห้อยเชือกทองที่สะโพกขวา · ไม้เท้า: ด้ามไม้เข้ม หัวเป็นพวงห่วงเหล็กเข้ม ปลอกทองใต้พวงห่วงและที่โคน (ตอนวิญญาณขึ้นพวงห่วงเป็นทอง)
+- ระวังพื้นเขียว: เข็มขัดเส้นเล็กใต้ผ้าคาดแดงในภาพใหญ่ออกเขียวเข้มนิดเดียว → พรอมต์สั่งเป็นกรมท่า (navy) ไว้แล้ว ส่วนอื่นไม่มีเขียว
+
+**เคาะตามแบบที่เลือก**
+- ดินแดน **ญี่ปุ่น** (ตัวที่ 4 ของญี่ปุ่น เท่านอร์ส) · บ้าน `jpnT` · เรื่อง: วิญญาณหงอคงหลุดผ่านรอยแยก มาอยู่ในห่วงทอง ห่วงตกลงบ่อน้ำพุร้อนที่เขาแช่อยู่ · ที่ "ผู้มาเยือนจากรอยแยก" (บ้านเมืองหลวง) ว่างไว้ให้ฮีโร่ตัวอื่น
+- สกิล ตัวเลข ตัวกันโกง ใน WUKONG_SKILLS_TH.md ใช้เหมือนเดิมทั้งหมด · คีย์ในโค้ดยังเป็น `wukong` (`?char=wukong`)
+- ชื่อคลาสเสนอ: **Snow Monkey · Yamabushi** (ผู้เล่นตั้งชื่อตัวเองอยู่แล้ว) · ชื่อในเนื้อเรื่องเสนอ **มาซารุ** (神猿 ลิงศักดิ์สิทธิ์ผู้ส่งสารของศาลเจ้าฮิเอะ · อ่านพ้องกับ 魔去る "ปีศาจจงไป" และ 勝る "ชนะ" → เข้ากับทรี C พระพุทธะผู้ชนะการต่อสู้) — รอเจ้าของเห็นด้วย
+
+**ของในชีตที่เอาไปใช้ในเกม** (ไอเดีย ยังไม่ทำ)
+- ปอมปอม 6 ลูก = ร่างขนสาย B (สูงสุด 6 ร่างพอดี): มีร่างกี่ร่าง ปอมปอมติดแสงทองกี่ลูก · ในชุดยามาบุชิจริง 6 ลูกนี้หมายถึงบารมี 6 ประการ
+- พวงห่วงไม้เท้า: กระดิ่งดังและห่วงวาบทุกจังหวะออโต้ (แถบท่าออโต้ยังเป็นตัวนับหลัก)
+- หอยสังข์: อัลติ B Flower-Fruit Mountain Army = เป่าสังข์เรียกกองทัพ (ยามาบุชิใช้เป่าส่งสัญญาณบนภูเขาจริง)
+- ไอน้ำบ่อน้ำร้อน + หิมะ: ท่านั่งนั่งสมาธิ ไอน้ำลอย · เอฟเฟกต์ตอนเดิน / ตีลังกาเมฆ
+
+### พรอมต์ 1 — ชีต 8 ทิศ (ยืน · พื้นเขียว)
+ส่งในแชต ChatGPT เดิมที่เจนชีตนี้ + แนบชีตนี้อีกครั้ง (แชตนั้นตั้งกติกา "ทุกแบบเป็นลุคใหม่" ไว้ พรอมต์นี้เลยสั่งย้ำว่าเป็นตัวเดิม)
+```
+This is NOT a new design: draw the SAME hero as the attached sheet (Design 2, "Snow Ascetic") and copy him exactly. Draw an 8-direction turnaround of him for game sprites.
+Style: the same as the attached sheet — friendly hand-painted chibi cartoon, thick clean dark-brown outlines, cel shading with 2–3 flat tones, bright and warm. Not realistic, not painterly, not 3D.
+Keep him identical: Japanese snow monkey, spiky silver-grey fur, bright red face, calm brown eyes, thin gold circlet with a cloud swirl at the front, short fluffy grey tail. White short-sleeved jacket with indigo cloud-swirl patterns and an indigo four-petal crest on the back. Six fluffy vermilion pompoms on dark cords, three down each side of the chest. A red sash tied in a bow at the front with long hanging ends; the thin belt under it is dark navy blue. Puffy indigo trousers, white leg wraps, straw sandals. A cream-and-brown striped conch-shell horn on a gold cord at his right hip. Ringed staff: dark wood, a crown of dark iron rings at the top, gold bands under the rings and at the foot.
+Layout: ONE image 1536×1024 on a flat pure green background (#00FF00) — this time green, not cream. Two rows of four views, every view full body at the same size, feet on the same line, clear green space between the views. The same relaxed ready stance in every view, the staff held upright in his right hand, rings at the top.
+Top row, left to right: front view · three-quarter front view facing right · side view facing right · three-quarter back view facing right.
+Bottom row, left to right: back view · three-quarter back view facing left · side view facing left · three-quarter front view facing left.
+No steam, no snow, no ground, no shadow, no glow, no effects. No green anywhere on the character. No text, no labels, no watermark.
+```
+
+### พรอมต์ 2 — ชีตท่านั่ง 8 ทิศ (ส่งหลังได้ชีต 8 ทิศแล้ว แนบทั้ง 2 ภาพ)
+ใช้กับระบบนั่งพัก (hero_sit.js: ภาพละทิศ 8 ทิศ ไม่กลับด้าน ขนาดเทียบกับชีตยืน)
+```
+Same hero, same style, NOT a new design: copy him exactly from the attached sheets. Draw an 8-direction SITTING sheet: he sits cross-legged in calm meditation, back straight, hands resting on his knees, eyes half-closed and peaceful, the ringed staff lying across his lap, the conch horn at his right hip.
+Layout: exactly like the attached 8-direction standing sheet — ONE image 1536×1024, flat pure green background (#00FF00), two rows of four, drawn at the same scale as the standing sheet, clear green space between the views.
+Top row, left to right: front view · three-quarter front view facing right · side view facing right · three-quarter back view facing right.
+Bottom row, left to right: back view · three-quarter back view facing left · side view facing left · three-quarter front view facing left.
+No steam, no snow, no rock, no ground, no shadow, no effects. No green anywhere on the character. No text, no labels, no watermark.
+```
+
+### ขั้นต่อไป (นักพรตหิมะ)
+ชีต 8 ทิศ → สร้างในเกม (รอเจ้าของสั่ง · ระหว่างรอสไปรต์ใช้หมาป่าย้อมสีแบบอีกา) → คลิปท่า 20 ตัวบนพื้นเขียว (idle / walk / attack / buff × S, SE, E, NE, N · 480×480 24 fps แบบมังกร / แอคโซลอเติล → `tools/cliphero.py`) → ชีตท่านั่ง → ไอคอน 4 ชีต + พื้นหลังทรี 4 ใบ + ภาพหน้าสร้างตัว

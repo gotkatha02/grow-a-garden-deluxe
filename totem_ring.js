@@ -110,13 +110,15 @@ function tick(dt){const t=now();if(DIRTY){DIRTY=false;try{applyStats();}catch(e)
   if(A.orcaDive&&player.action&&player.action.skill&&sp>650&&mv<420&&RS.diveTok!==player.action){RS.diveTok=player.action;const v=A.orcaDive.v.hp;player.hp=Math.min(player.maxHp,player.hp+v);fxAt('dive',player.x,player.y);txt('+'+v+' HP','#9fe8a8',90);}
   if(RS.wolves.length){const bite=A.wolfHowl?A.wolfHowl.v.bite:0;RS.wolves=RS.wolves.filter(w=>w.until>t&&bite);
     for(const w of RS.wolves){if(!w.tg||w.tg.dead||Math.hypot(w.tg.x-player.x,w.tg.y-player.y)>320)w.tg=near(player.x,player.y,300);const g=w.tg,tx=g?g.x:player.x+30,ty=g?g.y+6:player.y+18,k=Math.min(1,dt*7);
-      w.x+=(tx-w.x)*k;w.y+=(ty-w.y)*k;w.cd-=dt;if(g&&w.cd<=0&&Math.hypot(g.x-w.x,g.y-w.y)<60){w.cd=.8;rDmg(g,bite,false);fxAt('bite',g.x,g.y,{e:g});}}}
+      if(Math.abs(tx-w.x)>3)w.fl=tx<w.x;w.x+=(tx-w.x)*k;w.y+=(ty-w.y)*k;w.cd-=dt;if(g&&w.cd<=0&&Math.hypot(g.x-w.x,g.y-w.y)<60){w.cd=.8;rDmg(g,bite,false);fxAt('bite',g.x,g.y,{e:g});}}}
   icons();ensureAura();}
 {const _u=updEnemies;updEnemies=function(dt){_u(dt);try{tick(dt);}catch(err){if(!tick.err){tick.err=1;console.warn('ring tick',err);}}};}
 /* buff bar: one icon per working spirit rune with its counter */
 const ICK=new Set();
 /* draw a spirit picture inside a w×h box centred on (x,y), keeping its aspect (painted pictures are not square) */
-const artFit=(X,im,x,y,w,h)=>{const iw=im.naturalWidth||1,ih=im.naturalHeight||1,k=Math.min(w/iw,h/ih);X.drawImage(im,x-iw*k/2,y-ih*k/2,iw*k,ih*k);};
+/* draw a spirit picture centred on (x,y): the code art is square (fits the w×h box); painted pictures keep their aspect and get the box's AREA, so a wide wolf is not drawn smaller than a tall bear; fl = mirror */
+const artFit=(X,im,x,y,w,h,fl)=>{const iw=im.naturalWidth||1,ih=im.naturalHeight||1,k=Math.abs(iw-ih)<4?Math.min(w/iw,h/ih):Math.sqrt(w*h/(iw*ih));
+  if(fl){X.save();X.translate(x,y);X.scale(-1,1);X.drawImage(im,-iw*k/2,-ih*k/2,iw*k,ih*k);X.restore();}else X.drawImage(im,x-iw*k/2,y-ih*k/2,iw*k,ih*k);};
 const PIC={};function artImg(a){if(PIC[a])return PIC[a];const i=new Image();if(RU.SPIRIT_HAVE.has(a)){i.src=`assets/rune/spirit/${a}.webp`;PIC[a]=i;return i;}i.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="160" height="160">${RU.ART[a]||''}</svg>`);PIC[a]=i;return i;}
 const svgURI=s=>'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(s.replace('<svg ','<svg xmlns="http://www.w3.org/2000/svg" '));
 function lbl(k){const t=now();switch(k){case 'bearHide':return RS.sh>0&&t<RS.shT?Math.ceil(RS.sh)+'':RS.hitN+'/6';case 'bearSleep':return t<RS.sleepT?Math.ceil(RS.sleepT-t)+'s':'พร้อม';
@@ -142,7 +144,7 @@ class RingFx{constructor(o){Object.assign(this,{t:0,layer:'top'},o);this.life=LI
     if(k==='bolt'){const [tx,ty]=P(x0,y0,40),[sx,sy]=P(x0,y0,260);X.globalCompositeOperation='lighter';for(const [w,col,al] of [[9,'#3a6ad8',.5],[4,'#9fd0ff',.9],[1.6,'#ffffff',1]]){X.globalAlpha=(1-q)*al;X.strokeStyle=col;X.lineWidth=w;X.beginPath();X.moveTo(sx,sy);
         let px=sx,py=sy;for(let i=1;i<=6;i++){const f=i/6;px=sx+(tx-sx)*f+(i<6?(Math.sin(i*7.3+this.x)*16):0);py=sy+(ty-sy)*f;X.lineTo(px,py);}X.stroke();}X.globalCompositeOperation='source-over';
       glow(tx,ty,46*(this.big?1.4:1),(1-q)*.9);pic(sx,sy-6,(this.big?92:64)*(.8+.2*q),(1-q)*.95);}
-    else if(k==='swoop'){const [tx,ty]=P(x0,y0,40),sx=tx-160*(1-q),sy=ty-150*(1-q);pic(sx,sy,70,1-q*q,-.5);glow(tx,ty,34,q<.6?q/.6:(1-q)/.4);}
+    else if(k==='swoop'){const [tx,ty]=P(x0,y0,40),sx=tx-160*(1-q),sy=ty-150*(1-q);pic(sx,sy,70,1-q*q,RU.SPIRIT_HAVE.has('eagle')?.5:-.5);glow(tx,ty,34,q<.6?q/.6:(1-q)/.4);}
     else if(k==='bite'){const [tx,ty]=P(x0,y0,36);pic(tx-18+20*q,ty-6,46,(1-q)*.95,.2);X.globalAlpha=(1-q);X.strokeStyle='#e8f0ff';X.lineWidth=2.4;for(const s of [-1,1]){X.beginPath();X.arc(tx+s*6,ty,14,s>0?2.2:0.1,s>0?3.6:1.4);X.stroke();}}
     else if(k==='owlHit'){const [tx,ty]=P(x0,y0,70);pic(tx,ty,58*(1+.3*q),1-q);ring(...P(x0,y0,0),22+40*q,3,1-q);}
     else if(k==='feather'){const [sx,sy]=P(x0,y0,50);X.fillStyle='#fff6d8';X.strokeStyle='#7a4a22';X.lineWidth=1.2;for(let i=0;i<7;i++){const an=i/7*6.28+this.x,r=12+60*q;X.globalAlpha=1-q;X.save();X.translate(sx+Math.cos(an)*r,sy+Math.sin(an)*r*.6-20*q);X.rotate(an+q*3);X.beginPath();X.ellipse(0,0,9,3.4,0,0,7);X.fill();X.stroke();X.restore();}pic(sx,sy-40,54,(1-q)*.85);}
@@ -164,7 +166,7 @@ class RingAura{constructor(){this.layer='top';this.t=0;}update(dt){this.t+=dt;re
         X.beginPath();X.moveTo(sx,sy-7);X.lineTo(sx-4,sy+1);X.lineTo(sx,sy+1);X.lineTo(sx-2,sy+8);X.lineTo(sx+5,sy-1);X.lineTo(sx+1,sy-1);X.closePath();X.fill();X.stroke();}}
     if(A.wolfPack&&RS.packStk>0&&now()<RS.packT){const [gx,gy]=P(player.x,player.y,0);X.globalAlpha=.6;X.strokeStyle='#a8c8ff';X.lineWidth=2;for(let i=0;i<RS.packStk;i++){X.beginPath();X.ellipse(gx,gy,26+i*8,(26+i*8)*KY(),0,t*2+i,t*2+i+2.2);X.stroke();}}
     for(const w of RS.wolves){const im=artImg('wolf');if(!im.complete||!im.naturalWidth)continue;const [sx,sy]=P(w.x,w.y,26+Math.abs(Math.sin(t*9+w.x))*6),al=Math.min(1,(w.until-now())*2);
-      X.globalAlpha=.25*al;X.fillStyle='#a8c8ff';X.beginPath();X.ellipse(sx,sy+22,18,7,0,0,7);X.fill();X.globalAlpha=.82*al;artFit(X,im,sx,sy,42,42);}
+      X.globalAlpha=.25*al;X.fillStyle='#a8c8ff';X.beginPath();X.ellipse(sx,sy+22,18,7,0,0,7);X.fill();X.globalAlpha=.82*al;artFit(X,im,sx,sy,48,48,w.fl&&RU.SPIRIT_HAVE.has('wolf'));}
     X.restore();}catch(err){}}}
 let AUR=null;function ensureAura(){if(!ANY())return;if(!AUR)AUR=new RingAura();if(!fx.includes(AUR))fx.push(AUR);}
 /* ================= window ================= */
@@ -177,7 +179,7 @@ const css=`#rgw{position:fixed;inset:0;z-index:59;display:none;align-items:cente
 .rgRing svg.bg{position:absolute;inset:0;width:100%;height:100%}.rgS{position:absolute;transform:translate(-50%,-50%);border-radius:50%;cursor:pointer;padding:0;border:0;background:none}
 .rgS.b{width:19%;height:19%}.rgS.s{width:11.5%;height:11.5%}.rgS .in{position:absolute;inset:0;border-radius:50%;display:flex;align-items:center;justify-content:center}
 .rgS.b .in{background:radial-gradient(circle at 40% 35%,#4a3a5a,#1a1020 70%);border:3px solid #7a6a8a;box-shadow:0 0 0 2px #1a0c06,inset 0 0 12px #000}.rgS.s .in{background:radial-gradient(circle at 40% 35%,#3a3040,#140c14 70%);border:2.5px solid #6a5a6a;box-shadow:0 0 0 2px #1a0c06}
-.rgS svg.ic{width:92%;height:92%}.rgS.sel .in{border-color:#fff3b8!important;box-shadow:0 0 0 2px #1a0c06,0 0 16px #ffe08a}.rgS.lock .in{opacity:.45}
+.rgS svg.ic{width:92%;height:92%}.rgRing.artB .rgS.b .in,.rgRing.artS .rgS.s .in{background:none;border-color:transparent!important;box-shadow:none}.rgRing.artB .rgS.b.sel .in,.rgRing.artS .rgS.s.sel .in{box-shadow:0 0 0 2.5px #fff3b8,0 0 18px #ffe08a!important}.rgRing.artB .rgS.b.lock .in,.rgRing.artS .rgS.s.lock .in{opacity:1}.rgRing.artB .rgS.b.lock .lk,.rgRing.artS .rgS.s.lock .lk{text-shadow:0 1px 2px #000,0 0 6px #000}.rgS.sel .in{border-color:#fff3b8!important;box-shadow:0 0 0 2px #1a0c06,0 0 16px #ffe08a}.rgS.lock .in{opacity:.45}
 .rgS .bd{position:absolute;left:50%;bottom:-9%;transform:translateX(-50%);font:900 11px Sarabun;padding:0 6px;border-radius:8px;background:#1a0e07;border:1.5px solid #8a6a3a;color:#ffe9a0;white-space:nowrap}
 .rgS.b .bd{bottom:-4%;font-size:12px}.rgS .lk{font:700 11px Sarabun;color:#e8d3a8;text-align:center;line-height:1.1}
 .rgSide{flex:1;min-width:0;display:flex;flex-direction:column;border-left:1.5px solid #6a4a2a}
@@ -202,7 +204,23 @@ let tab='sock',sel='b0',res='',smG=0,smPick={},smK='';
 const ANG=i=>(-90+i*60)*Math.PI/180;
 const POS={};for(let i=0;i<6;i++){POS['b'+i]=[50+38*Math.cos(ANG(i)),50+38*Math.sin(ANG(i))];POS['e'+i]=[50+38*Math.cos(ANG(i)+Math.PI/6),50+38*Math.sin(ANG(i)+Math.PI/6)];POS['i'+i]=[50+21*Math.cos(ANG(i)),50+21*Math.sin(ANG(i))];}
 const C3=RU.C3;
-function ringSVG(){let lines='';for(let i=0;i<6;i++){const M=match(i),L=RU.RING.links(i),[bx,by]=POS['b'+i];
+/* ring background: the code look, or the painted parts assembled at the exact socket spots (RUNEDATA.RING_ART / RING_LAY) */
+const RA=RU.RING_ART||new Set(),RL=RU.RING_LAY||{};
+function partImg(k,x,y,lay,rot,op){const w=lay.w,h=w*(lay.ar||1);return `<g transform="translate(${x} ${y})${rot?` rotate(${rot})`:''}"${op<1?` opacity="${op}"`:''}><image href="${RU.ringPath(k)}" x="${-w*(lay.hx==null?.5:lay.hx)}" y="${-h*(lay.hy==null?.5:lay.hy)}" width="${w}" height="${h}" preserveAspectRatio="none"/></g>`;}
+function linkLines(onOnly){let lines='';for(let i=0;i<6;i++){const M=match(i),L=RU.RING.links(i),[bx,by]=POS['b'+i];
+    L.forEach((s2,q)=>{const [sx,sy]=POS[s2],c=S.small[s2]&&CRK[S.small[s2]]?C3[CRK[S.small[s2]].c].c:'#5a4a5a',on=!!(M&&S.small[s2]);
+      if(onOnly===!on)return;lines+=on?`<line x1="${bx}" y1="${by}" x2="${sx}" y2="${sy}" stroke="${c}" stroke-width="2.6" opacity=".35" stroke-linecap="round"/><line x1="${bx}" y1="${by}" x2="${sx}" y2="${sy}" stroke="${c}" stroke-width="1.1" opacity=".95" stroke-linecap="round"/>`
+        :`<line x1="${bx}" y1="${by}" x2="${sx}" y2="${sy}" stroke="#c8b0ff" stroke-width=".6" stroke-dasharray="1.4 1.2" opacity=".45"/>`;});}return lines;}
+function ringSVG(){if(!RA.size)return ringSVGcode();
+  const code=ringSVGcode();   /* parts that are not painted yet still come from the code look */
+  const sky=RA.has('bg')?`<image href="${RU.ringPath('bg')}" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice"/>`:(code.match(/<rect width="100"[\s\S]*?(?=<circle cx="50" cy="50" r="38")/)||[''])[0];
+  const guide=`<circle cx="50" cy="50" r="38" fill="none" stroke="#ffe08a" stroke-width=".35" opacity=".35"/><circle cx="50" cy="50" r="21" fill="none" stroke="#ffe08a" stroke-width=".3" opacity=".3"/>`;
+  const shards=RA.has('shard')?[0,1,2,3,4,5].map(i=>{const [x,y]=POS['b'+i];return partImg('shard',x,y,RL.shard,ANG(i)*180/Math.PI+90,bigOpen(i)?1:.5);}).join(''):'';
+  const socks=RA.has('sock')?SM.map(id=>{const [x,y]=POS[id];return partImg('sock',x,y,RL.sock,0,smOpen(id)?1:.5);}).join(''):'';
+  const stump=RA.has('stump')?`<ellipse cx="50" cy="53" rx="${RL.stump.w*.5}" ry="${RL.stump.w*.2}" fill="#000" opacity=".4"/>`+partImg('stump',50,50,RL.stump,0,1):'';
+  const defs=(code.match(/<defs>[\s\S]*?<\/defs>/)||[''])[0];
+  return `<svg class="bg" viewBox="0 0 100 100">${defs}${sky}${guide}${RA.has('shard')?'':(code.match(/<g transform="translate[\s\S]*?<\/g>(?=[^]*<line|[^]*<ellipse)/g)||[]).join('')}${linkLines(false)}${shards}${linkLines(true)}${socks}${stump||(code.match(/<ellipse cx="50" cy="53"[\s\S]*<\/svg>/)||['</svg>'])[0].replace('</svg>','')}</svg>`;}
+function ringSVGcode(){let lines='';for(let i=0;i<6;i++){const M=match(i),L=RU.RING.links(i),[bx,by]=POS['b'+i];
     L.forEach((s,q)=>{const [sx,sy]=POS[s],c=S.small[s]&&CRK[S.small[s]]?C3[CRK[S.small[s]].c].c:'#5a4a5a',on=!!(M&&S.small[s]);
       lines+=`<line x1="${bx}" y1="${by}" x2="${sx}" y2="${sy}" stroke="${on?c:'#4a3a4a'}" stroke-width="${on?1.1:.6}" stroke-dasharray="${on?'':'1.4 1.2'}" opacity="${on?.9:.6}"/>`;});}
   const shards=[0,1,2,3,4,5].map(i=>{const [x,y]=POS['b'+i],a=ANG(i)*180/Math.PI;return `<g transform="translate(${x} ${y}) rotate(${a+90})"><path d="M0 -14 L10 -4 L8 11 L-7 13 L-11 -3Z" fill="${bigOpen(i)?'#5a4a6a':'#2a2232'}" stroke="#1a0c06" stroke-width=".8"/><path d="M0 -14 L10 -4 L0 -2Z" fill="#fff" opacity=".12"/></g>`;}).join('');
@@ -221,7 +239,7 @@ function sockHTML(id){const b=id[0]==='b',i=+id.slice(1),open=b?bigOpen(i):smOpe
   if(b&&open&&cur){const M=match(i);bd=`<span class="bd" style="color:${M&&M.t?'#ffe9a0':'#ff9a8a'}">${M&&M.t?'ขั้น '+RU.TIERN[M.t]:'ยังไม่ทำงาน'}</span>`;}
   else if(!b&&open)bd=crDead(id)?`<span class="bd" style="color:#ff9a8a">ซ้ำเกิน ${RU.RING.sameMax}</span>`:`<span class="bd">Lv ${slv(id)}</span>`;
   const [x,y]=POS[id];return `<button class="rgS ${b?'b':'s'} ${open?'':'lock'} ${sel===id?'sel':''}" data-s="${id}" style="left:${x}%;top:${y}%"><span class="in" style="${b&&cur?`border-color:${GR[ETC[cur].grade].c}`:!b&&cur?`border-color:${C3[CRK[cur].c].c}`:''}">${inner}</span>${bd}</button>`;}
-function drawRing(){ringEl.innerHTML=ringSVG()+[...[0,1,2,3,4,5].map(i=>'b'+i),...SM].map(sockHTML).join('');
+function drawRing(){ringEl.classList.toggle('artB',RA.has('shard'));ringEl.classList.toggle('artS',RA.has('sock'));ringEl.innerHTML=ringSVG()+[...[0,1,2,3,4,5].map(i=>'b'+i),...SM].map(sockHTML).join('');
   ringEl.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{sel=b.dataset.s;if(tab!=='sock'&&!(tab==='lvl'&&sel[0]!=='b'))tab='sock';if(tab==='lvl'&&sel[0]==='b')tab='sock';build();});}
 const reqHTML=(r,ok)=>r.req.split('').map((c,q)=>`<span class="rgDot" title="${C3[c].th}" style="background:${C3[c].c};${ok&&ok[q]?'box-shadow:0 0 0 2px #bff0a8':''}"></span>`).join('');
 function pouch(kind,filter){const ids=Object.keys(AF.BAG).filter(id=>ETC[id]&&ETC[id].kind===kind&&AF.BAG[id]>0&&(!filter||filter(id)));
@@ -246,16 +264,16 @@ function sockPane(){const b=sel[0]==='b',i=+sel.slice(1);let h='';
     if(open){const L=pouch('crune');h+=`<div class="rgRow"><span class="rgN" style="margin:0">รูนสลักในกระเป๋า (${L.reduce((a,id)=>a+AF.BAG[id],0)})</span><button class="rgB" data-a="bag" ${bagN('rbag')?'':'disabled'}>🎁 เปิดถุงรูนสลัก (${bagN('rbag')})</button></div>
       <div class="rgL">${L.map(id=>{const c2=CRK[id];return `<div class="rgI" data-put="${id}" title="${ETC[id].th} — ${RU.crTxt(c2,slv(sel))} ที่ Lv ${slv(sel)}">${ETC[id].big}<em>${AF.BAG[id]}</em>${c2.th}</div>`;}).join('')||'<span class="rgN">ยังไม่มี — เปิดถุงรูนสลัก (มอน Lv 28+ / บอส) หรือซื้อที่ตลาดกลาง</span>'}</div>`;}}
   if(res)h=`<div class="rgRes">${res}</div>`+h;return h;}
-function readPane(){const fe=bagN('rfeather');return `<div class="rgRes">${res||'<span class="rgN" style="margin:0">อ่านหินรูนดิบ 1 ก้อน + ขนนกหมอผี 1 อัน = รูนวิญญาณ 1 อัน สุ่ม 1 ใน 18 แบบ ในเกรดของหิน</span>'}</div>
+function readPane(){const fe=bagN('rfeather');return `<div class="rgRes">${res||'<span class="rgN" style="margin:0">อ่านหินรูนดิบ 1 ก้อน + คัมภีร์หมอผี 1 ม้วน = รูนวิญญาณ 1 อัน สุ่ม 1 ใน 18 แบบ ในเกรดของหิน</span>'}</div>
   ${[0,1,2].map(g=>{const id='rstone'+g,n=bagN(id);return `<div class="rgCard"><div class="rgRow" style="margin:0">${eIcon(id,30)}<b>${ETC[id].th}</b><span class="rgN" style="margin:0">มี ${n}</span>
     <span style="margin-left:auto"></span><button class="rgB" data-read="${g}" data-n="1" ${n&&fe?'':'disabled'}>อ่าน</button><button class="rgB" data-read="${g}" data-n="5" ${n>=5&&fe>=5?'':'disabled'}>อ่าน ×5</button></div></div>`;}).join('')}
-  <div class="rgRow">${eIcon('rfeather',24)} ขนนกหมอผี <b>${fe}</b><button class="rgB" data-a="shop">🧙 ซื้อขนนก</button></div>
+  <div class="rgRow">${eIcon('rfeather',24)} คัมภีร์หมอผี <b>${fe}</b><button class="rgB" data-a="shop">🧙 ซื้อคัมภีร์</button></div>
   <div class="rgN">หินรูนดิบ: มอน Lv 28+ ดรอปน้อย (ดันเจี้ยน ×2) · บอสดรอปแน่นอน (แมพ B · MVP B + A · บอสใหญ่ A + S) · ซื้อขายที่ตลาดกลาง (หมวด 🔱 รูน)</div>`;}
 function smeltPane(){const G2=smG,C=RU.COST.smelt,z=C.z[G2],L=pouch('srune',id=>ETC[id].grade===G2),pick=Object.keys(smPick).reduce((a,id)=>a+smPick[id],0),dust=bagN('sdust');
-  return `<div class="rgRes">${res||`<span class="rgN" style="margin:0">หลอมรูนวิญญาณเกรดเดียวกัน ${C.n} อัน + ${fmt(z)}z = รูนใหม่ 1 อัน (สุ่มชนิด · มีโอกาส ${Math.round(C.up*100)}% ได้เกรดสูงขึ้น) + ผงวิญญาณ 1 · ผงครบ ${C.dustPick} = เลือกชนิดเองได้</span>`}</div>
+  return `<div class="rgRes">${res||`<span class="rgN" style="margin:0">หลอมรูนวิญญาณเกรดเดียวกัน ${C.n} อัน + ${fmt(z)}z = รูนใหม่ 1 อัน (สุ่มชนิด · มีโอกาส ${Math.round(C.up*100)}% ได้เกรดสูงขึ้น) + ไฟวิญญาณ 1 · ไฟครบ ${C.dustPick} = เลือกชนิดเองได้</span>`}</div>
   <div class="rgRow">${[0,1,2].map(g=>`<button class="rgB ${g===G2?'blue':''}" data-sg="${g}">เกรด ${GR[g].k}</button>`).join('')}<span class="rgN" style="margin:0">เลือกแล้ว <b>${pick}/${C.n}</b></span></div>
   <div class="rgL">${L.map(id=>{const E=ETC[id],r=SRK[E.sr],p=smPick[id]||0;return `<div class="rgI" data-sp="${id}" title="แตะ = ใส่ 1 · แตะค้าง/คลิกขวา = เอาออก">${E.big}<em>${p?p+'/':''}${AF.BAG[id]}</em>${r.th}</div>`;}).join('')||'<span class="rgN">ไม่มีรูนเกรดนี้</span>'}</div>
-  <div class="rgRow">${eIcon('sdust',22)} ผงวิญญาณ <b>${dust}</b>${dust>=C.dustPick?`<select data-a="sk" style="font:600 13px Sarabun;border-radius:8px;padding:3px"><option value="">สุ่มชนิด</option>${RU.SR.map(r=>`<option value="${r.k}" ${smK===r.k?'selected':''}>${RU.ANIMAL[r.a].th} · ${r.th}</option>`).join('')}</select>`:''}</div>
+  <div class="rgRow">${eIcon('sdust',22)} ไฟวิญญาณ <b>${dust}</b>${dust>=C.dustPick?`<select data-a="sk" style="font:600 13px Sarabun;border-radius:8px;padding:3px"><option value="">สุ่มชนิด</option>${RU.SR.map(r=>`<option value="${r.k}" ${smK===r.k?'selected':''}>${RU.ANIMAL[r.a].th} · ${r.th}</option>`).join('')}</select>`:''}</div>
   <button class="rgB" data-a="smelt" ${pick===C.n&&zeny()>=z?'':'disabled'}>🔥 หลอม (${fmt(z)}z)</button><button class="rgB" data-a="spclr">ล้างที่เลือก</button>`;}
 function lvlPane(){if(sel[0]==='b')sel='e0';const L=slv(sel),C=RU.COST.slot,nR=C.runes(L),z=C.z(L),have=pouch('crune').reduce((a,id)=>a+AF.BAG[id],0),cur=S.small[sel];
   return `<div class="rgRes">${res||'<span class="rgN" style="margin:0">ป้อนรูนสลักให้ช่องเล็ก = เลเวลช่องขึ้น (สูงสุด 10) · รูนในช่องแรงขึ้นตามเลเวล · เปลี่ยนรูนได้ไม่เสียเลเวล</span>'}</div>
@@ -263,7 +281,7 @@ function lvlPane(){if(sel[0]==='b')sel='e0';const L=slv(sel),C=RU.COST.slot,nR=C
     ${L>=10?'<div class="ok">เลเวลตันแล้ว</div>':`<div style="margin-top:4px">Lv ${L} → ${L+1}: รูนสลักชนิดไหนก็ได้ <b class="${have>=nR?'ok':'no'}">${have}/${nR}</b> + <b class="${zeny()>=z?'ok':'no'}">${fmt(z)}z</b>${cur?` → ${RU.crTxt(CRK[cur],L+1)}`:''}</div>
     <button class="rgB" data-a="lvup" ${have>=nR&&zeny()>=z&&smOpen(sel)?'':'disabled'}>⬆ อัปเลเวล</button>`}<div class="rgN">ใช้รูนสลักที่มีมากที่สุดก่อน (ไม่แตะรูนที่ใส่อยู่) · ช่องทั้งหมด: ${SM.map(s=>`<a data-go="${s}" style="cursor:pointer;color:${s===sel?'#ffd25a':'#e8d3a8'}">${s} Lv${slv(s)}</a>`).join(' · ')}</div></div>`;}
 function build(){recalc();drawRing();win.querySelector('.rgHead .sub').textContent=`Lv ${PLV()} · ทำงาน ${Object.keys(A).length}/6 · ช่องเปิด ${[0,1,2,3,4,5].filter(bigOpen).length}/6${OFF()?' · __RING_OFF':''}`;
-  tabsEl.innerHTML=[['sock','💎 ฝังรูน'],['read','🪶 อ่านรูน'],['smelt','🔥 หลอมรูน'],['lvl','⬆ อัปช่อง']].map(([k,n])=>`<button data-t="${k}" class="${tab===k?'on':''}">${n}</button>`).join('');
+  tabsEl.innerHTML=[['sock','💎 ฝังรูน'],['read','📜 อ่านรูน'],['smelt','🔥 หลอมรูน'],['lvl','⬆ อัปช่อง']].map(([k,n])=>`<button data-t="${k}" class="${tab===k?'on':''}">${n}</button>`).join('');
   tabsEl.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{tab=b.dataset.t;res='';build();});
   pane.innerHTML=tab==='read'?readPane():tab==='smelt'?smeltPane():tab==='lvl'?lvlPane():sockPane();bindPane();}
 function put(id){const E=ETC[id];if(!E||!bagN(id))return;if(sel[0]==='b'){const i=+sel.slice(1);if(!bigOpen(i)||E.kind!=='srune')return;
@@ -289,7 +307,7 @@ function bindPane(){pane.querySelectorAll('[data-put]').forEach(b=>b.onclick=()=
     else if(a==='spclr'){smPick={};res='';}
     else if(a==='smelt'){const C=RU.COST.smelt,n=Object.keys(smPick).reduce((x,k)=>x+smPick[k],0);if(n!==C.n||!payZ(C.z[smG]))return;for(const id in smPick)bagAdd(id,-smPick[id]);
       let g=smG;if(g<2&&Math.random()<C.up)g++;let k=null;if(smK&&bagN('sdust')>=C.dustPick){k=smK;bagAdd('sdust',-C.dustPick);}const r=k?SRK[k]:RU.SR[Math.floor(Math.random()*RU.SR.length)],id=`sr_${r.k}_${g}`;
-      AF.add(id,1);AF.add('sdust',1);smPick={};smK='';res=`<span class="rgPop" style="display:inline-block;width:48px">${ETC[id].big}</span><div>ได้ <b style="color:${GR[g].c}">${ETC[id].th}</b>${g>smG?' <b class="ok">เกรดขึ้น!</b>':''} + ผงวิญญาณ 1</div>`;}
+      AF.add(id,1);AF.add('sdust',1);smPick={};smK='';res=`<span class="rgPop" style="display:inline-block;width:48px">${ETC[id].big}</span><div>ได้ <b style="color:${GR[g].c}">${ETC[id].th}</b>${g>smG?' <b class="ok">เกรดขึ้น!</b>':''} + ไฟวิญญาณ 1</div>`;}
     else if(a==='lvup'){const L=slv(sel),C=RU.COST.slot;if(L>=10)return;const use=pickUse(C.runes(L));if(!use||!payZ(C.z(L)))return;for(const [id,q] of use)bagAdd(id,-q);S.slv[sel]=L+1;res=`<div>ช่อง ${sel} ขึ้น <b class="ok">Lv ${L+1}</b>${S.small[sel]?' · '+RU.crTxt(CRK[S.small[sel]],L+1):''}</div>`;}
     bagSave();save();DIRTY=true;try{applyStats();}catch(e){}build();};});}
 win.querySelectorAll('[data-h]').forEach(b=>b.onclick=()=>{const h=b.dataset.h;if(h==='x')close();else if(h==='roots'){close();try{ROOTS.open();}catch(e){}}else if(h==='shop'){try{ROOTS.shop();}catch(e){}}});
@@ -300,12 +318,15 @@ addEventListener('keydown',e=>{const tg=(e.target&&e.target.tagName)||'';if(/INP
   if(e.key==='y'||e.key==='Y'||e.code==='KeyY'){win.classList.contains('open')?close():open();}else if(e.key==='Escape'&&win.classList.contains('open'))close();});
 (function addBtn(){const mg=document.getElementById('mgrid');if(!mg||!mg.children.length){setTimeout(addBtn,300);return;}if(mg.querySelector('[data-m="mgring"]'))return;
   const b=document.createElement('button');b.dataset.m='mgring';b.title='วงเศษโทเท็ม (Y)';
+  /* painted ring button (RUNE_ART_PROMPTS_TH.md ง, ring_btn) when it exists, else the code ring */
+  if(RU.ICON_HAVE.has('ring_btn'))b.innerHTML=`<span class="kb">Y</span><img src="${RU.iconPath('ring_btn')}" alt="" style="width:100%;height:100%;object-fit:contain;display:block;pointer-events:none">`;else
   b.innerHTML=`<span class="kb">Y</span><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="15" fill="none" stroke="#3a1f14" stroke-width="5"/><circle cx="20" cy="20" r="15" fill="none" stroke="#8a6ac8" stroke-width="2.4" stroke-dasharray="3 3"/>${[0,1,2,3,4,5].map(i=>{const a=(-90+i*60)*Math.PI/180;return `<circle cx="${20+15*Math.cos(a)}" cy="${20+15*Math.sin(a)}" r="4.2" fill="${['#ff6a4a','#5aa8ff','#ffcf3a'][i%3]}" stroke="#3a1f14" stroke-width="1.8"/>`;}).join('')}<circle cx="20" cy="20" r="6.5" fill="#a8683a" stroke="#3a1f14" stroke-width="2.2"/><path d="M18 16 L21 20 L19 23" stroke="#ffd25a" stroke-width="1.6" fill="none"/></svg>`;
   b.addEventListener('click',e=>{e.stopPropagation();e.stopImmediatePropagation();win.classList.contains('open')?close():open();},true);mg.appendChild(b);})();
 let lastLv=PLV();setInterval(()=>{const lv=PLV();if(lv!==lastLv){lastLv=lv;recalc();if(win.classList.contains('open'))build();}
-  if(!TEST()&&lv>=30&&!S.seen){S.seen=1;save();chat('<b style="color:#c8a8ff">🔱 วงเศษโทเท็มเปิดแล้ว!</b> — ใส่รูนวิญญาณสัตว์ (ความสามารถพิเศษทั้งชุดสกิล) + รูนสลัก 3 สี · อ่านหินรูนดิบด้วยขนนกหมอผี · กด Y หรือปุ่ม 🔱');say('วงเศษโทเท็มเปิดแล้ว (Y)');}},1000);
+  if(!TEST()&&lv>=30&&!S.seen){S.seen=1;save();chat('<b style="color:#c8a8ff">🔱 วงเศษโทเท็มเปิดแล้ว!</b> — ใส่รูนวิญญาณสัตว์ (ความสามารถพิเศษทั้งชุดสกิล) + รูนสลัก 3 สี · อ่านหินรูนดิบด้วยคัมภีร์หมอผี · กด Y หรือปุ่ม 🔱');say('วงเศษโทเท็มเปิดแล้ว (Y)');}},1000);
 recalc();
-window.RING={open,close,data:()=>S,act:()=>A,rs:()=>RS,match,key:SKEY,recalc,
+window.RING={open,close,data:()=>S,act:()=>A,rs:()=>RS,match,key:SKEY,recalc,fx:fxAt,   /* fx: tests / previews */
+  
   /* tests: put runes straight in (no bag) — RING.force([[0,'sr_wolfHunt_2'],…],{e0:'c_str',…},lv) */
   force(big,small,lv){S.big=[null,null,null,null,null,null];for(const [i,id] of big||[])S.big[i]=id;S.small=Object.assign({},small||{});if(lv)for(const s of SM)S.slv[s]=lv;save();recalc();DIRTY=true;try{applyStats();}catch(e){}},
   clear(){S.big=[null,null,null,null,null,null];S.small={};S.slv={};save();recalc();DIRTY=true;try{applyStats();}catch(e){}}};
