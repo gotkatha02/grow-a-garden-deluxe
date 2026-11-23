@@ -7,12 +7,15 @@ radius from the skill's own radius()) · target {k} (single target) · none (buf
 import asyncio, json, math, os, re, sys
 from playwright.async_api import async_playwright
 ROOT=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-HEROES=['wolf','rhino','owl','jaguar','croc','axolotl','cat','hippo','sheep','dragon','lion','kitsune','bastet','anubis','raven','wukong']
+HEROES=['wolf','rhino','owl','jaguar','croc','axolotl','cat','hippo','sheep','dragon','lion','kitsune','bastet','anubis','raven','wukong','drake']
 TGT=(70,0)
 
 # shapes the probe cannot see (dashes, summons, swarm orders — the monkey's clones hit for them): set by hand, applied after the fit
 FIX={'wukong':{'gnCloud':{'k':'line','len':300,'w':40},'gaLeap':{'k':'target'},'gbBlow':{'k':'target'},'gbForm':{'k':'none'},'gbRecall':{'k':'none'},
-     'gbMob':{'k':'target'},'gxBang':{'k':'target'},'gxStorm':{'k':'self','r':130}}}
+     'gbMob':{'k':'target'},'gxBang':{'k':'target'},'gxStorm':{'k':'self','r':130}},
+     # drake: Searing Hammer is single-target, Bellows Rush a dash, the Hearts burst only with a full gauge, Roar only flinches
+     'drake':{'zaSear':{'k':'target'},'zaRush':{'k':'line','len':200,'w':34},'znRoar':{'k':'self','r':160},'zaHeart':{'k':'self','r':140},'zbHeart':{'k':'self','r':170},
+       'zxComet':{'k':'line','len':320,'w':36},'zxTyphon':{'k':'target'},'zxVeil':{'k':'self','r':150},'zxEmbrace':{'k':'aim'}}}
 
 def fit(v):
     hit=v['hit']

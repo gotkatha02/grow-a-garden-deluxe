@@ -31,14 +31,14 @@ async function benchOnce(opts={}){
    later run in a page started warm, and fx.length=0 also wiped the heroes' core tickers (layer 'none', which enterMap keeps: owl / hippo /
    cat / wolf cores, the croc / axolotl / rhino keepers) — those heroes were benched without their gauges ticking. Now: the hero state objects
    are snapshotted once per page (fresh) and restored at every reset, cores / keepers stay, and every *Ensure() re-adds its overlay. */
-const BENCH_ST='ANU AX BA CAT CR CRX DG HI HIP JGX JX KI LI OW RH RHX RV SHP SI UC KTI WK'.split(' ');
+const BENCH_ST='ANU AX BA CAT CR CRX DG HI HIP JGX JX KI LI OW RH RHX RV SHP SI UC KTI WK ZD'.split(' ');
 const BENCH_LETS={warBanner:null,fenrir:null,decoy:null,unbrokenICD:0,jgMirrorObj:null,jgTotem:null,jgSpirit:null};
 function benchClone(v,d){if(v===null||typeof v!=='object')return v;if(d>4)return v;if(v instanceof Map)return new Map(v);if(v instanceof Set)return new Set(v);
   if(Array.isArray(v))return v.map(x=>benchClone(x,d+1));if(Object.getPrototypeOf(v)!==Object.prototype)return v;const o={};for(const k in v)o[k]=benchClone(v[k],d+1);return o;}
 function benchSnap(){const S={};for(const n of BENCH_ST){let o;try{o=(0,eval)(n);}catch(_){continue;}if(o&&typeof o==='object'&&!Array.isArray(o))S[n]={o,v:benchClone(o,0)};}return S;}
 function benchRestore(S){for(const n in S){const {o,v}=S[n];for(const k of Object.keys(o))if(!(k in v))delete o[k];for(const k in v)o[k]=benchClone(v[k],0);}
   for(const k in BENCH_LETS){try{(0,eval)(k+'='+JSON.stringify(BENCH_LETS[k]));}catch(_){}}}
-function benchEnsure(){for(const k of ['axEnsure','bEnsure','crEnsure','dEnsure','kEnsure','lEnsure','rhEnsure','sEnsure','uEnsure','vEnsure','gEnsure'])if(typeof window[k]==='function')try{window[k]();}catch(_){}}   // each returns at once for another hero
+function benchEnsure(){for(const k of ['axEnsure','bEnsure','crEnsure','dEnsure','kEnsure','lEnsure','rhEnsure','sEnsure','uEnsure','vEnsure','gEnsure','zdEnsure'])if(typeof window[k]==='function')try{window[k]();}catch(_){}}   // each returns at once for another hero
 async function benchRun(opts={}){
   if(!window.__BENCH_SNAP)window.__BENCH_SNAP=benchSnap();
   const SIM=opts.sim||40, DT=1/60;

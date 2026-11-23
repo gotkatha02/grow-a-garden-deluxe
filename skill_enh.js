@@ -85,6 +85,10 @@ const HERO={
   T('bnGrace','Nine Lives','heal',[1.5]),T('bnVeil','Desert Mirage','sp',[15]),T('bnAnkh','Breath of Ra','shield',[2,4]),T('bnObelisk','Sun Disk','buff',[40],{T:8}),
   T('baApep','Coils of Apep','res',[1],{res:'baHex',th:'คำสาป +1 เพิ่ม'}),T('baWrap','Burial Linen','res',[1,2],{res:'baHex',th:'คำสาป +1 / +2 เพิ่ม'}),
   T('bbAnubis','Jackal Howl','res',[1],{res:'bbSoul',th:'วิญญาณ +1'}),T('bbGate','Tomb Door','res',[1,2],{res:'bbSoul',th:'วิญญาณ +1 / +2'})],
+ drake:[
+  T('znSkin','Basalt Scales','shield',[4]),T('znLeap','Anvil Shock','cc',[.8],{cc:'stun'}),T('znRoar','Wyrm Call','buff',[30],{T:6}),
+  T('zaRush','Ember Wake','splash',[.5],{R:80}),T('zaAnvil','Second Strike','echo',[.6]),T('zaGuard','Obsidian Riposte','buff',[30,55],{T:5}),T('zaUlt','Ash Cloud','cc',[1.5],{cc:'stun'}),
+  T('zbChain','Bedrock Bind','sp',[15]),T('zbMono','Shard Rain','splash',[.5],{R:90}),T('zbAegis','Marble Bulwark','shield',[3,5]),T('zbUlt','Stone Gaze','cc',[1.5],{cc:'stun'})],
  wukong:[
   T('gnCloud','Cloud Trail','buff',[20,35],{T:5}),T('gnPeach','Peach Pit','res',[2,3],{res:'wkBeat',th:'ท่าออโต้ทุกท่า +2 / +3 จังหวะ'}),T('gnSub','Iron Brow','shield',[3,5]),
   T('gaSmash','Pillar Stun','cc',[.8],{cc:'stun'}),T('gaNeedle','Needle Echo','echo',[.5,.8]),T('gaSplit','Splitter Sweep','splash',[.5,.8],{R:80}),T('gaUlt','Rebel Roar','buff',[40],{T:10}),

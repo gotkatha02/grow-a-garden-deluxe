@@ -1,0 +1,16 @@
+{
+ "_note": "Snow Monkey jump smash (owner's sheet 2026-11-23 18:52 'เพิ่มสไปร้ท่ากระโดดทุบของลิง'): 8 frames, 2 rows x 4, green, one view (3/4 facing right = SE; the engine mirrors it for SW). 1 crouch · 2 take-off · 3 rise, staff overhead · 4 apex · 5 swing down (yellow swoosh) · 6 IMPACT (burst + rocks) · 7 crouch · 8 stand. Anchors = body centre x, feet y in each frame's cut box; in-air frames use the lowest foot (the game lifts the hero by player.z). Scale .6 = body area of the idle / attack SE frames. Rebuild: python3 -I tools/sheet_state.py tools/clips/wukong_jump.json [preview.png]",
+ "js": "assets_wukong.js",
+ "prefix": "WKG",
+ "state": "jump",
+ "sheet": "assets/heroes/wukong/jump_sheet.webp",
+ "rows": 2,
+ "cols": 4,
+ "centers": [[180, 560, 980, 1360], [190, 580, 960, 1340]],
+ "scale": 0.6,
+ "anchors": [[158, 312], [163, 338], [122, 380], [145, 384], [118, 304], [128, 300], [157, 314], [162, 324]],
+ "dirs": ["S", "SE", "E", "NE", "N"],
+ "flip": false,
+ "dur": [60, 70, 80, 110, 110, 90, 60, 60],
+ "loop": false
+}

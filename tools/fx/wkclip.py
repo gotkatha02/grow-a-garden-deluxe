@@ -39,7 +39,12 @@ SEQ={'basic':[('basic','Ruyi Staff · ไม้เท้าห่วงฟาด
       ('gbCave','Water Curtain Cave · ม่านน้ำตก ร่างงอกเร็ว',1.6,'',110,'room'),
       ('gbUlt','Flower-Fruit Mountain Army · ULT B กองทัพวานร',2.2,'',0,'room'),
       ('gxStorm','Storm of Ten Thousand Monkeys · พายุวานรหมื่นตัว',2.2,'',0,'room'),
-      ('gbRecall','Hair Recall · เรียกร่างกลับเป็นขน ได้จังหวะ + HP',1.2,'',0,'room')]}[TREE]
+      ('gbRecall','Hair Recall · เรียกร่างกลับเป็นขน ได้จังหวะ + HP',1.2,'',0,'room')],
+ # jump smash sprite (owner's 8-frame sheet 2026-11-23): 7th field = playback speed (1/3 = slow motion)
+ 'jump':[('gaLeap','Heaven-Smashing Leap · ท่ากระโดดทุบ (สไปร์ใหม่)',1.0,CLR+SKA+'window.__cy=player.y-40;',220,'one'),
+      ('gaLeap','ช้าลง 3 เท่า',1.0,'window.__cy=player.y-40;',220,'one',1/3),
+      ('gaLeap','กระโดดไปทางซ้าย (ภาพกลับด้านให้เอง)',1.0,'player.x=__e.x+220;window.__cx=(player.x+__e.x)/2;window.__cy=player.y-40;',220,'one'),
+      ('gxBang','Ruyi Jingu Bang · กระโดดทุบ + ไม้เท้าเท่าภูเขา',1.7,'WK.ultA=-99;WK.ultAOn=0;window.__cy=player.y-40;',200,'one')]}[TREE]
 OUT=os.environ.get('OUT','/tmp/fx');os.makedirs(OUT,exist_ok=True);FR=f'/tmp/frwk_{TREE}';shutil.rmtree(FR,ignore_errors=True);os.makedirs(FR)
 W,H=int(os.environ.get('CW','600')),int(os.environ.get('CH','350'))
 CAST="""([k,near,pre])=>{try{if(player.action)endAction();}catch(x){}player.casting=null;player.hp=player.maxHp;player.mp=player.maxMp;player.ccT=0;player.cd={};
@@ -55,14 +60,15 @@ async def main():
         g=Game(w=1280,h=720,extra=EXTRA);await g.start(pw);await g.step(60)
         fnt=ImageFont.truetype(os.path.join(os.path.dirname(os.path.abspath(__file__)),'..','..','assets','fonts','Mitr-Medium.ttf'),22)
         n=0;mode='one'
-        for (k,label,secs,pre,near,md) in SEQ:
+        for (k,label,secs,pre,near,md,*sp) in SEQ:
+            sp=sp[0] if sp else 1
             if md!=mode:
                 mode=md;await g.ev("(m)=>{const b=document.querySelector('[data-tr='+m+']');if(b)b.click();}",md);await g.step(30)
             if not k.startswith('js:') and k!='basic':await g.step(36)
             r=await g.ev(CAST,[k,near,pre])
             if r not in ('ok','true','undefined','[object Object]'):print(k,r)
-            for i in range(int(secs*30)):
-                await g.step(2)
+            for i in range(int(secs*30/sp)):
+                await g.step(2) if sp==1 else await g.step(1,sp/30)
                 cx,cy=await g.ev("([w,h])=>{const q=P(window.__cx,window.__cy-30,0);return [q[0]*Z+ox-w/2,q[1]*Z+oy-h/2];}",[W,H])
                 p=f'{FR}/{n:05d}.png';await g.shot(p,clip={'x':max(0,cx),'y':max(0,cy),'width':W,'height':H})
                 im=Image.open(p).convert('RGB')

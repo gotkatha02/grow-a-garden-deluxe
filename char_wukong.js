@@ -658,6 +658,14 @@ class WkPeach{constructor(o){Object.assign(this,{t:0,life:.8,layer:WKPIC_ON?'sor
     ctx.fillStyle=g;ctx.beginPath();ctx.moveTo(x,y-r);ctx.bezierCurveTo(x+r*1.3,y-r*.8,x+r,y+r,x,y+r);ctx.bezierCurveTo(x-r,y+r,x-r*1.3,y-r*.8,x,y-r);ctx.fill();ctx.fillStyle='#5ac46a';ctx.beginPath();ctx.ellipse(x+4,y-r,5,2.4,-.5,0,TAU);ctx.fill();ctx.restore();gGlow(x,y,24,'#ffd0c0',.3*a);}}
 
 /* ---------- A · Havoc in Heaven ---------- */
+/* Jump smash sprite (owner's 8-frame sheet 2026-11-23, state 'jump' in assets_wukong.js, tools/clips/wukong_jump.json):
+   0 crouch · 1 take-off · 2 rise · 3 apex · 4 swing down · 5 IMPACT (burst baked in) · 6 crouch · 7 stand.
+   One view only (3/4 facing right): SE when the leap goes right, SW (mirrored) when it goes left. Frames 0–4 fill
+   the flight [0,T) — the height comes from dashUpd's z arc — and the impact frame starts exactly at T (the hit). */
+const WK_JUMP=()=>!/[?&]wkjump=0(&|$)/.test(location.search)&&!!(SPR_META.states&&SPR_META.states.jump);   // ?wkjump=0 = the old 'buff' clip
+function jumpSeq(phi,T,tot){const d=Math.cos(phi)<-.05?'SW':'SE',A=[.1,.15,.17,.26,.32],B=[.45,.3,.25],o=[];
+  for(let i=0;i<5;i++)o.push({st:'jump',d,f:i,ms:A[i]*T*1000});
+  for(let i=0;i<3;i++)o.push({st:'jump',d,f:5+i,ms:B[i]*(tot-T)*1000});return o;}
 function mkGaSmash(c){const t=gTgt(c,WKS.gaSmash.range);if(!t){msg('ไม่มีเป้าหมาย');return null;}const phi=angTo(t),m=gLv(WKS.gaSmash.dmg,'gaSmash');
   return gStrike({key:'gaSmash',name:'Pillar Smash',phi,I:.46,from:4,to:3,glow:WKC.amber,gk:.6,events:tC=>[{t:Math.max(0,tC-.2),f:()=>{if(!t.dead)addFx(new WkFall({x:t.x,y:t.y,T:.2/(ACTION_TEMPO||.75),w:20,H:380}));}}],
     f:a=>{if(t.dead)return;gHit(t,m,'gaSmash',{big:true,knock:[phi,16]});gSlam(t.x,t.y,60,{dust:10});flashAt(t,1,WKC.amber);rpAdd(WKS.gaSmash.rp,t);WK.lastTgt=t;shake(2.4);stop(55);a.hitList.push(t);a.hitConfirmed=true;}});}
@@ -670,10 +678,10 @@ function mkGaNeedle(c){const t=gTgt(c,WKS.gaNeedle.range);if(!t){msg('ไม่�
   return gStrike({key:'gaNeedle',name:'Needle Strike',phi,I:.3,glow:WKC.gold,f:a=>{addFx(new WkNeedle({x0:player.x+Math.cos(phi)*16,y0:player.y+Math.sin(phi)*16,e:t,done:e=>{
     if(gOn('gaHavoc')&&!aRest()){WK.rpE=e;WK.rpT=gameTime;}   // Rampage moves to the new target whole
     addFx(new WkFall({x:e.x,y:e.y,T:.1,w:11,H:200,stay:.2}));setFxTimer(.1,()=>{if(e.dead)return;gHit(e,m,'gaNeedle',{big:true});flashAt(e,1);shake(1.2);WK.lastTgt=e;});}}));a.hitConfirmed=true;}});}
-function mkGaLeap(c){const t=gTgt(c,WKS.gaLeap.range);if(!t){msg('ไม่มีเป้าหมาย');return null;}const phi=angTo(t);faceTo(phi);const sx=player.x,sy=player.y,L=Math.max(0,dist(player,t)-t.r-10),[dx,dy]=gPathEnd(sx,sy,phi,L),T=.42,
-    s=seq('buff',player.dir,0,null,seqTotal(seq('buff',player.dir,0,null,1))/(T+.16));
+function mkGaLeap(c){const t=gTgt(c,WKS.gaLeap.range);if(!t){msg('ไม่มีเป้าหมาย');return null;}const phi=angTo(t);faceTo(phi);const sx=player.x,sy=player.y,L=Math.max(0,dist(player,t)-t.r-10),[dx,dy]=gPathEnd(sx,sy,phi,L),T=.42,J=WK_JUMP(),
+    s=J?jumpSeq(phi,T,T+.16):seq('buff',player.dir,0,null,seqTotal(seq('buff',player.dir,0,null,1))/(T+.16));
   return act({key:'gaLeap',name:'Heaven-Smashing Leap',seq:s,windup:T,dur:T+.16,hitList:[],update:(a,dt)=>{dashUpd(a,dt,0,T,sx,sy,dx,dy,WKC.gold,120);player.iframes=Math.max(player.iframes||0,a.t<T?.05:0);player.glow={color:WKC.amber,k:.6};},
-    events:[{t:Math.max(0,T-.12),f:()=>{addFx(new WkFall({x:dx+Math.cos(phi)*20,y:dy+Math.sin(phi)*20,T:.12/(ACTION_TEMPO||.75),w:14,H:260,stay:.25}));}},
+    events:[{t:Math.max(0,T-.12),f:()=>{if(!J)addFx(new WkFall({x:dx+Math.cos(phi)*20,y:dy+Math.sin(phi)*20,T:.12/(ACTION_TEMPO||.75),w:14,H:260,stay:.25}));}},   // the jump sprite swings its own staff down
       {t:T,f:a=>{const m=gLv(WKS.gaLeap.dmg,'gaLeap'),x=player.x+Math.cos(phi)*20,y=player.y+Math.sin(phi)*20;for(const e of gNear(x,y,WKS.gaLeap.R)){gHit(e,m,'gaLeap',{big:e===t});if(gOn('gaQuake'))applyCC(e,e.boss?{slow:1}:{flinch:WKS.gaQuake.flinch});a.hitList.push(e);a.hitConfirmed=true;}
         gSlam(x,y,WKS.gaLeap.R,{w:12,dust:16,sp:10});if(gOn('gaQuake'))beatsA(WKS.gaQuake.beats);if(!t.dead){rpAdd(WKS.gaLeap.rp,t);WK.lastTgt=t;player.attackTarget=t;}shake(3);stop(60);}}]});}
 function mkGaSplit(c){const t=gTgt(c,WKS.gaSplit.range);if(!t){msg('ไม่มีเป้าหมาย');return null;}const phi=angTo(t);
@@ -738,7 +746,7 @@ function mkGxFurnace(c){const T=WKS.gxFurnace.T;return buffAct({key:'gxFurnace',
   if(wkPic('furnace')){const F=new WkFurnace({});addFx(F);setFxTimer(F.burst,()=>{if(CHAR==='wukong'&&WK.furnT>gameTime){giantOn(Math.max(.5,WK.furnT-gameTime));addFx(new DText({x:player.x,y:player.y,z:150,text:'OUT OF THE FURNACE',color:WKC.fire,size:15,life:1.1}));}});return;}
   addFx(new GRing({x:player.x,y:player.y,r0:10,r1:110,w:12,color:WKC.fire,life:.5}));addFx(new DText({x:player.x,y:player.y,z:120,text:'OUT OF THE FURNACE',color:WKC.fire,size:15,life:1.1}));shake(2);}}]});}
 function mkGxBang(c){const t=gTgt(c,WKS.gxBang.range);if(!t){msg('ไม่มีเป้าหมาย');return null;}const phi=angTo(t);faceTo(phi);const sx=player.x,sy=player.y,L=Math.max(0,dist(player,t)-t.r-60),[dx,dy]=gPathEnd(sx,sy,phi,L),T=.5,
-    s=seq('buff',player.dir,0,null,seqTotal(seq('buff',player.dir,0,null,1))/(T+.2));
+    s=WK_JUMP()?jumpSeq(phi,T,T+.2):seq('buff',player.dir,0,null,seqTotal(seq('buff',player.dir,0,null,1))/(T+.2));
   return act({key:'gxBang',name:'Ruyi Jingu Bang',seq:s,windup:T,dur:T+.2,hitList:[],update:(a,dt)=>{dashUpd(a,dt,0,T,sx,sy,dx,dy,WKC.gold,170);player.iframes=Math.max(player.iframes||0,.05);player.glow={color:WKC.gold,k:.8};},
     events:[{t:.05,f:()=>{if(!t.dead)addFx(new WkFall({x:t.x,y:t.y,T:(T-.05)/(ACTION_TEMPO||.75),w:34,H:700,stay:.5}));skyDarkT=.35;}},
       {t:T,f:a=>{if(t.dead)return;const pts=aRest()?0:Math.floor(WK.rp),m=WKS.gxBang.dmg+WKS.gxBang.per*pts;gHit(t,m,'gxBang',{big:true});for(const e of gNear(t.x,t.y,WKS.gxBang.R))if(e!==t)applyCC(e,{flinch:.6});
