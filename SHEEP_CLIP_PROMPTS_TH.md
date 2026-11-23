@@ -8,12 +8,18 @@ _ไฟล์นี้สร้างจาก `python3 tools/clip_prompts.py sh
 - `assets/heroes/sheep/view_S|E|N|NE|SW.webp` = ต้นฉบับบนพื้นเขียว ภาพละมุม (1199×1312) · ภาพเฉียงหน้าวาดหันซ้าย (SW) → กลับด้านเป็น SE ตอนทำภาพตั้งต้น
 - หน้าตา: แกะสาวนักบวชกรีก เขาแกะทองม้วน ผมขนแกะฟูสีชมพูอ่อน ตาฟ้าโต มงกุฎใบลอเรลทองมีเพชรฟ้า ต่างหูเพชรฟ้า ชุดกรีกขาว–ม่วงอ่อน เข็มขัดพระอาทิตย์ทอง ผ้าคลุมม่วงขอบลายกรีกทอง หลังผ้าคลุมเป็นเสาไอโอนิก + ช่อลอเรล กำไลทอง รองเท้าสานทองมีเพชรฟ้า · ไม้เท้าทอง หัวเป็นช่อลอเรล + ลูกแก้วฟ้า ปลายล่างหัวแหลมทอง · ไม่มีสีเขียวเลย → ตัดพื้นเขียวได้สะอาด
 
-## ภาพตั้งต้น 5 ทิศ (ส่งให้เจ้าของแล้ว 2026-11-23 ชื่อ sheep_1_S … sheep_5_N.png)
-`V=assets/heroes/sheep; python3 -I tools/dir8cut.py startv <โฟลเดอร์> S=$V/view_S.webp SE=$V/view_SW.webp:flip E=$V/view_E.webp NE=$V/view_NE.webp N=$V/view_N.webp clean=0`
-→ start_<ทิศ>.png 900×900 พื้นเขียวเดิม ทุกทิศสเกลเดียวกัน (ตัวในภาพหน้าสูง 450 px) เท้าที่ 84 % ความสูง ตัวกลางภาพ เหลือที่ด้านบนให้ชูไม้เท้าเหนือหัวได้ · clean=0 = ไม่ทาจุดเขียวในตัว (แกะไม่มีสีเขียว จุดเขียวเล็กๆ ในตัวคือช่องว่างระหว่างใบลอเรล / มือกับไม้ ถ้าทาจะเป็นจุดดำ)
+## ภาพตั้งต้น ชุด 2 (2026-11-23 21:40) — ทิศละ 2 ภาพ
+เจ้าของ 21:40 'เจนวีดีโอมาแล้วภาพมันคุณภาพแย่มาก' → แอปของเจ้าของทำคลิป 480p (คลิปลิง = 480×480) · ชุดแรก (900×900 ตัวสูง 450 = ครึ่งจอ, ส่งไปชื่อ sheep_1_S … sheep_5_N.png) ในคลิปตัวเธอสูงแค่ ~240 px ทั้งที่ชุดเต็มไปด้วยลายกรีก ใบลอเรล ต่างหู → รายละเอียดเละ · ชุด 2 ให้ตัวใหญ่ขึ้นในคลิปโดยใช้กรอบไม่สี่เหลี่ยม (แอปให้ 480 กับด้านสั้น):
+- `sheep_<n>_<ทิศ>_stand.png` 1080×1920 แนวตั้ง ใช้กับ ยืน · เดิน · ร่าย — ตัวสูง 900 (ในคลิป ~400 px) เท้าที่ 90 % เหลือเหนือหัว 0.9 เท่าตัวให้ชูไม้ ข้างละ 0.25–0.3 เท่าตัว
+- `sheep_<n>_<ทิศ>_attack.png` 1920×1080 แนวนอน ใช้กับ ตี — ตัวสูง 630 (ในคลิป ~280 px) เท้าที่ 93 % เหลือเหนือหัว 0.6 เท่าตัว ข้างละ 1.2 เท่าตัวให้เหวี่ยงไม้
+```
+V=assets/heroes/sheep; for m in "stand 1080x1920 .9 900" "attack 1920x1080 .93 630"; do set -- $m
+python3 -I tools/dir8cut.py startv <โฟลเดอร์> S=$V/view_S.webp SE=$V/view_SW.webp:flip E=$V/view_E.webp NE=$V/view_NE.webp N=$V/view_N.webp size=$2 feet=$3 ht=$4 clean=0 suf=_$1; done
+```
+→ start_<ทิศ>_stand.png / start_<ทิศ>_attack.png ทุกทิศสเกลเดียวกันในชุดเดียวกัน · clean=0 = ไม่ทาจุดเขียวในตัว (แกะไม่มีสีเขียว จุดเขียวเล็กๆ ในตัวคือช่องว่างระหว่างใบลอเรล / มือกับไม้ ถ้าทาจะเป็นจุดดำ) · ถ้าแอปเลือกความละเอียดได้ 720p / 1080p ช่วยมากกว่านี้อีก
 
 ## วิธีใช้
-แนบภาพตั้งต้นของทิศนั้น 1 ภาพ + วางพรอมต์ทีละตัว → 4 คลิปต่อทิศ (ยืน · เดิน · ตี · ร่าย) · คลิปละ 3–5 วิ · ไม่ต้องทำทิศซ้าย (เกมกลับด้านเอง) · ส่งกลับเรียง S → SE → E → NE → N ทิศละ ยืน → เดิน → ตี → ร่าย (สลับได้ ดูเองว่าคลิปไหนเป็นท่าอะไร)
+แนบภาพตั้งต้นของทิศนั้น (ตี = ภาพ _attack แนวนอน · ยืน / เดิน / ร่าย = ภาพ _stand แนวตั้ง) + วางพรอมต์ทีละตัว → 4 คลิปต่อทิศ (ยืน · เดิน · ตี · ร่าย) · คลิปละ 3–5 วิ · ไม่ต้องทำทิศซ้าย (เกมกลับด้านเอง) · ส่งกลับเรียง S → SE → E → NE → N ทิศละ ยืน → เดิน → ตี → ร่าย (สลับได้ ดูเองว่าคลิปไหนเป็นท่าอะไร)
 
 ## กติกาที่อยู่ในทุกพรอมต์ (บทเรียนจากคลิปลิง / แอคโซลอเติล / มังกร)
 - ประโยคบอกทิศขึ้นต้นทุกพรอมต์ กันโมเดลหมุนตัวหันหากล้อง (มุมหลังโดนบ่อย)
@@ -25,117 +31,118 @@ _ไฟล์นี้สร้างจาก `python3 tools/clip_prompts.py sh
 - ห้ามเบลอ · ห้ามแสง ประกาย วงเวท ลูกแก้วเรืองแสง (เอฟเฟกต์ใส่ด้วยโค้ดในเกม) · กล้องนิ่งไม่ซูม (คลิป N ของแอคโซลอเติล / เดิน S ของมังกรเคยซูม) · พื้นเขียวตลอด · ตัว + ไม้อยู่ในกรอบตลอด
 - ไม่ระบุมือที่ถือไม้ (ภาพ SE เป็นภาพกลับด้าน ไม้อยู่มืออีกข้าง) · ไม่พูดถึงสีทองของผม (ผมชมพูอ่อน — คำว่า golden fleece จะทำให้โมเดลระบายผมเป็นทอง)
 
-## 1. S — หน้าตรง · แนบ `sheep_1_S.png`
+## 1. S — หน้าตรง · แนบ `sheep_1_S_stand.png` / `sheep_1_S_attack.png`
 
-ยืน (idle · วนลูป)
+ยืน (idle · วนลูป) · แนบ `sheep_1_S_stand.png`
 ```
 Idle loop of the little sheep priestess in this picture. She faces straight toward the viewer (front view), exactly as in the picture. She stands in a relaxed pose holding her golden staff upright beside her, the laurel wreath and blue orb at the top, and breathes slowly; her fluffy pale-pink woolly hair, her cape and the hem of her dress sway a little, her earrings swing gently, and she blinks once. The last frame matches the first frame so the clip loops. Keep her face exactly as in the picture: the same big blue eyes and the same gentle smile, mouth closed. Her curled golden horns, laurel tiara, earrings and purple cape stay exactly the same. Keep the exact look of the picture: hand-painted chibi cartoon, thick dark-brown outlines, flat cel shading — not realistic, not 3D. The background stays plain flat green for the whole clip. The camera never moves or zooms. She stays in the middle of the frame at the same size and never turns to another direction; her whole body and the whole staff stay inside the frame. No shadow, no flash, no glow, no sparkles, no particles, no smoke, no magic effects, no text.
 ```
 
-เดิน (walk · วนลูป)
+เดิน (walk · วนลูป) · แนบ `sheep_1_S_stand.png`
 ```
 Walk loop of the little sheep priestess in this picture. She faces straight toward the viewer (front view), exactly as in the picture. She walks in place, like on a treadmill, toward the way she is facing: light, bouncy little steps (about two steps per second), her golden staff held upright beside her swinging a little with each step, her woolly hair bouncing and her cape swaying. She does not move across the frame and the ground does not move. The last frame matches the first frame so the clip loops. Keep her face exactly as in the picture: the same big blue eyes and the same gentle smile, mouth closed. Her curled golden horns, laurel tiara, earrings and purple cape stay exactly the same. Keep the exact look of the picture: hand-painted chibi cartoon, thick dark-brown outlines, flat cel shading — not realistic, not 3D. The background stays plain flat green for the whole clip. The camera never moves or zooms. She stays in the middle of the frame at the same size and never turns to another direction; her whole body and the whole staff stay inside the frame. No shadow, no flash, no glow, no sparkles, no particles, no smoke, no magic effects, no text.
 ```
 
-ตี (attack · คอมโบไม้เท้าตีปกติ + ปล่อย Light Ball + สกิลที่ใช้ท่าตี)
+ตี (attack · คอมโบไม้เท้าตีปกติ + ปล่อย Light Ball + สกิลที่ใช้ท่าตี) · แนบ `sheep_1_S_attack.png`
 ```
 Attack of the little sheep priestess in this picture. She faces straight toward the viewer (front view), exactly as in the picture. She grips her golden staff with both hands, pulls it back over her shoulder in a short wind-up, then swings it down in a fast diagonal arc in front of her toward the way she is facing, orb head first, holds the moment of the hit for an instant with the orb low in front of her, then returns to her starting pose and stands still for the rest of the clip. The whole strike takes about one second. Her feet stay in place. Clean outlines in every frame, no motion blur. The blue orb never lights up or glows. Keep her face exactly as in the picture: the same big blue eyes and the same gentle smile, mouth closed. Her curled golden horns, laurel tiara, earrings and purple cape stay exactly the same. Keep the exact look of the picture: hand-painted chibi cartoon, thick dark-brown outlines, flat cel shading — not realistic, not 3D. The background stays plain flat green for the whole clip. The camera never moves or zooms. She stays in the middle of the frame at the same size and never turns to another direction; her whole body and the whole staff stay inside the frame. No shadow, no flash, no glow, no sparkles, no particles, no smoke, no magic effects, no text.
 ```
 
-ร่าย (buff · ฮีล / บัฟ / เพลง / อัลติ — เกมค้างเฟรมตอนชูไม้ไว้ตอนชาร์จ Light Ball)
+ร่าย (buff · ฮีล / บัฟ / เพลง / อัลติ — เกมค้างเฟรมตอนชูไม้ไว้ตอนชาร์จ Light Ball) · แนบ `sheep_1_S_stand.png`
 ```
 Spell cast of the little sheep priestess in this picture. She faces straight toward the viewer (front view), exactly as in the picture. She raises her golden staff high above her head with both hands, the blue orb pointing to the sky, and holds that pose still for about one second, then lowers the staff back beside her, returns to her starting pose and stands still for the rest of the clip. Her feet stay in place. Clean outlines in every frame, no motion blur. The blue orb never lights up or glows. Keep her face exactly as in the picture: the same big blue eyes and the same gentle smile, mouth closed. Her curled golden horns, laurel tiara, earrings and purple cape stay exactly the same. Keep the exact look of the picture: hand-painted chibi cartoon, thick dark-brown outlines, flat cel shading — not realistic, not 3D. The background stays plain flat green for the whole clip. The camera never moves or zooms. She stays in the middle of the frame at the same size and never turns to another direction; her whole body and the whole staff stay inside the frame. No shadow, no flash, no glow, no sparkles, no particles, no smoke, no magic effects, no text.
 ```
 
-## 2. SE — เฉียงหน้า (ภาพกลับด้าน) · แนบ `sheep_2_SE.png`
+## 2. SE — เฉียงหน้า (ภาพกลับด้าน) · แนบ `sheep_2_SE_stand.png` / `sheep_2_SE_attack.png`
 
-ยืน (idle · วนลูป)
+ยืน (idle · วนลูป) · แนบ `sheep_2_SE_stand.png`
 ```
 Idle loop of the little sheep priestess in this picture. She is seen in a three-quarter front view, facing down and to the right, exactly as in the picture. She stands in a relaxed pose holding her golden staff upright beside her, the laurel wreath and blue orb at the top, and breathes slowly; her fluffy pale-pink woolly hair, her cape and the hem of her dress sway a little, her earrings swing gently, and she blinks once. The last frame matches the first frame so the clip loops. Keep her face exactly as in the picture: the same big blue eyes and the same gentle smile, mouth closed. Her curled golden horns, laurel tiara, earrings and purple cape stay exactly the same. Keep the exact look of the picture: hand-painted chibi cartoon, thick dark-brown outlines, flat cel shading — not realistic, not 3D. The background stays plain flat green for the whole clip. The camera never moves or zooms. She stays in the middle of the frame at the same size and never turns to another direction; her whole body and the whole staff stay inside the frame. No shadow, no flash, no glow, no sparkles, no particles, no smoke, no magic effects, no text.
 ```
 
-เดิน (walk · วนลูป)
+เดิน (walk · วนลูป) · แนบ `sheep_2_SE_stand.png`
 ```
 Walk loop of the little sheep priestess in this picture. She is seen in a three-quarter front view, facing down and to the right, exactly as in the picture. She walks in place, like on a treadmill, toward the way she is facing: light, bouncy little steps (about two steps per second), her golden staff held upright beside her swinging a little with each step, her woolly hair bouncing and her cape swaying. She does not move across the frame and the ground does not move. The last frame matches the first frame so the clip loops. Keep her face exactly as in the picture: the same big blue eyes and the same gentle smile, mouth closed. Her curled golden horns, laurel tiara, earrings and purple cape stay exactly the same. Keep the exact look of the picture: hand-painted chibi cartoon, thick dark-brown outlines, flat cel shading — not realistic, not 3D. The background stays plain flat green for the whole clip. The camera never moves or zooms. She stays in the middle of the frame at the same size and never turns to another direction; her whole body and the whole staff stay inside the frame. No shadow, no flash, no glow, no sparkles, no particles, no smoke, no magic effects, no text.
 ```
 
-ตี (attack · คอมโบไม้เท้าตีปกติ + ปล่อย Light Ball + สกิลที่ใช้ท่าตี)
+ตี (attack · คอมโบไม้เท้าตีปกติ + ปล่อย Light Ball + สกิลที่ใช้ท่าตี) · แนบ `sheep_2_SE_attack.png`
 ```
 Attack of the little sheep priestess in this picture. She is seen in a three-quarter front view, facing down and to the right, exactly as in the picture. She grips her golden staff with both hands, pulls it back over her shoulder in a short wind-up, then swings it down in a fast diagonal arc in front of her toward the way she is facing, orb head first, holds the moment of the hit for an instant with the orb low in front of her, then returns to her starting pose and stands still for the rest of the clip. The whole strike takes about one second. Her feet stay in place. Clean outlines in every frame, no motion blur. The blue orb never lights up or glows. Keep her face exactly as in the picture: the same big blue eyes and the same gentle smile, mouth closed. Her curled golden horns, laurel tiara, earrings and purple cape stay exactly the same. Keep the exact look of the picture: hand-painted chibi cartoon, thick dark-brown outlines, flat cel shading — not realistic, not 3D. The background stays plain flat green for the whole clip. The camera never moves or zooms. She stays in the middle of the frame at the same size and never turns to another direction; her whole body and the whole staff stay inside the frame. No shadow, no flash, no glow, no sparkles, no particles, no smoke, no magic effects, no text.
 ```
 
-ร่าย (buff · ฮีล / บัฟ / เพลง / อัลติ — เกมค้างเฟรมตอนชูไม้ไว้ตอนชาร์จ Light Ball)
+ร่าย (buff · ฮีล / บัฟ / เพลง / อัลติ — เกมค้างเฟรมตอนชูไม้ไว้ตอนชาร์จ Light Ball) · แนบ `sheep_2_SE_stand.png`
 ```
 Spell cast of the little sheep priestess in this picture. She is seen in a three-quarter front view, facing down and to the right, exactly as in the picture. She raises her golden staff high above her head with both hands, the blue orb pointing to the sky, and holds that pose still for about one second, then lowers the staff back beside her, returns to her starting pose and stands still for the rest of the clip. Her feet stay in place. Clean outlines in every frame, no motion blur. The blue orb never lights up or glows. Keep her face exactly as in the picture: the same big blue eyes and the same gentle smile, mouth closed. Her curled golden horns, laurel tiara, earrings and purple cape stay exactly the same. Keep the exact look of the picture: hand-painted chibi cartoon, thick dark-brown outlines, flat cel shading — not realistic, not 3D. The background stays plain flat green for the whole clip. The camera never moves or zooms. She stays in the middle of the frame at the same size and never turns to another direction; her whole body and the whole staff stay inside the frame. No shadow, no flash, no glow, no sparkles, no particles, no smoke, no magic effects, no text.
 ```
 
-## 3. E — ข้าง หันขวา · แนบ `sheep_3_E.png`
+## 3. E — ข้าง หันขวา · แนบ `sheep_3_E_stand.png` / `sheep_3_E_attack.png`
 
-ยืน (idle · วนลูป)
+ยืน (idle · วนลูป) · แนบ `sheep_3_E_stand.png`
 ```
 Idle loop of the little sheep priestess in this picture. She is seen in a side view, facing right, exactly as in the picture. She stands in a relaxed pose holding her golden staff upright in front of her, the laurel wreath and blue orb at the top, and breathes slowly; her fluffy pale-pink woolly hair, her cape and the hem of her dress sway a little, her earrings swing gently, and she blinks once. The last frame matches the first frame so the clip loops. Keep her face exactly as in the picture: the same big blue eyes and the same gentle smile, mouth closed. Her curled golden horns, laurel tiara, earrings and purple cape stay exactly the same. Keep the exact look of the picture: hand-painted chibi cartoon, thick dark-brown outlines, flat cel shading — not realistic, not 3D. The background stays plain flat green for the whole clip. The camera never moves or zooms. She stays in the middle of the frame at the same size and never turns to another direction; her whole body and the whole staff stay inside the frame. No shadow, no flash, no glow, no sparkles, no particles, no smoke, no magic effects, no text.
 ```
 
-เดิน (walk · วนลูป)
+เดิน (walk · วนลูป) · แนบ `sheep_3_E_stand.png`
 ```
 Walk loop of the little sheep priestess in this picture. She is seen in a side view, facing right, exactly as in the picture. She walks in place, like on a treadmill, toward the way she is facing: light, bouncy little steps (about two steps per second), her golden staff held upright in front of her swinging a little with each step, her woolly hair bouncing and her cape swaying. She does not move across the frame and the ground does not move. The last frame matches the first frame so the clip loops. Keep her face exactly as in the picture: the same big blue eyes and the same gentle smile, mouth closed. Her curled golden horns, laurel tiara, earrings and purple cape stay exactly the same. Keep the exact look of the picture: hand-painted chibi cartoon, thick dark-brown outlines, flat cel shading — not realistic, not 3D. The background stays plain flat green for the whole clip. The camera never moves or zooms. She stays in the middle of the frame at the same size and never turns to another direction; her whole body and the whole staff stay inside the frame. No shadow, no flash, no glow, no sparkles, no particles, no smoke, no magic effects, no text.
 ```
 
-ตี (attack · คอมโบไม้เท้าตีปกติ + ปล่อย Light Ball + สกิลที่ใช้ท่าตี)
+ตี (attack · คอมโบไม้เท้าตีปกติ + ปล่อย Light Ball + สกิลที่ใช้ท่าตี) · แนบ `sheep_3_E_attack.png`
 ```
 Attack of the little sheep priestess in this picture. She is seen in a side view, facing right, exactly as in the picture. She grips her golden staff with both hands, pulls it back over her shoulder in a short wind-up, then swings it down in a fast diagonal arc in front of her toward the way she is facing, orb head first, holds the moment of the hit for an instant with the orb low in front of her, then returns to her starting pose and stands still for the rest of the clip. The whole strike takes about one second. Her feet stay in place. Clean outlines in every frame, no motion blur. The blue orb never lights up or glows. Keep her face exactly as in the picture: the same big blue eyes and the same gentle smile, mouth closed. Her curled golden horns, laurel tiara, earrings and purple cape stay exactly the same. Keep the exact look of the picture: hand-painted chibi cartoon, thick dark-brown outlines, flat cel shading — not realistic, not 3D. The background stays plain flat green for the whole clip. The camera never moves or zooms. She stays in the middle of the frame at the same size and never turns to another direction; her whole body and the whole staff stay inside the frame. No shadow, no flash, no glow, no sparkles, no particles, no smoke, no magic effects, no text.
 ```
 
-ร่าย (buff · ฮีล / บัฟ / เพลง / อัลติ — เกมค้างเฟรมตอนชูไม้ไว้ตอนชาร์จ Light Ball)
+ร่าย (buff · ฮีล / บัฟ / เพลง / อัลติ — เกมค้างเฟรมตอนชูไม้ไว้ตอนชาร์จ Light Ball) · แนบ `sheep_3_E_stand.png`
 ```
 Spell cast of the little sheep priestess in this picture. She is seen in a side view, facing right, exactly as in the picture. She raises her golden staff high above her head with both hands, the blue orb pointing to the sky, and holds that pose still for about one second, then lowers the staff back in front of her, returns to her starting pose and stands still for the rest of the clip. Her feet stay in place. Clean outlines in every frame, no motion blur. The blue orb never lights up or glows. Keep her face exactly as in the picture: the same big blue eyes and the same gentle smile, mouth closed. Her curled golden horns, laurel tiara, earrings and purple cape stay exactly the same. Keep the exact look of the picture: hand-painted chibi cartoon, thick dark-brown outlines, flat cel shading — not realistic, not 3D. The background stays plain flat green for the whole clip. The camera never moves or zooms. She stays in the middle of the frame at the same size and never turns to another direction; her whole body and the whole staff stay inside the frame. No shadow, no flash, no glow, no sparkles, no particles, no smoke, no magic effects, no text.
 ```
 
-## 4. NE — เฉียงหลัง · แนบ `sheep_4_NE.png`
+## 4. NE — เฉียงหลัง · แนบ `sheep_4_NE_stand.png` / `sheep_4_NE_attack.png`
 
-ยืน (idle · วนลูป)
+ยืน (idle · วนลูป) · แนบ `sheep_4_NE_stand.png`
 ```
 Idle loop of the little sheep priestess in this picture. She is seen in a three-quarter back view, facing away from us up and to the right, exactly as in the picture; we mostly see her back and she never turns toward the viewer. She stands in a relaxed pose holding her golden staff upright in front of her, the laurel wreath and blue orb at the top, and breathes slowly; her fluffy pale-pink woolly hair, her cape and the hem of her dress sway a little. The last frame matches the first frame so the clip loops. We see her mostly from behind: the back of her fluffy hair, her horns and only the edge of her face with one eye, as in the picture; her face never turns toward us. Her curled golden horns, laurel tiara and purple cape stay exactly the same. Keep the exact look of the picture: hand-painted chibi cartoon, thick dark-brown outlines, flat cel shading — not realistic, not 3D. The background stays plain flat green for the whole clip. The camera never moves or zooms. She stays in the middle of the frame at the same size and never turns to another direction; her whole body and the whole staff stay inside the frame. No shadow, no flash, no glow, no sparkles, no particles, no smoke, no magic effects, no text.
 ```
 
-เดิน (walk · วนลูป)
+เดิน (walk · วนลูป) · แนบ `sheep_4_NE_stand.png`
 ```
 Walk loop of the little sheep priestess in this picture. She is seen in a three-quarter back view, facing away from us up and to the right, exactly as in the picture; we mostly see her back and she never turns toward the viewer. She walks in place, like on a treadmill, toward the way she is facing: light, bouncy little steps (about two steps per second), her golden staff held upright in front of her swinging a little with each step, her woolly hair bouncing and her cape swaying. She does not move across the frame and the ground does not move. The last frame matches the first frame so the clip loops. We see her mostly from behind: the back of her fluffy hair, her horns and only the edge of her face with one eye, as in the picture; her face never turns toward us. Her curled golden horns, laurel tiara and purple cape stay exactly the same. Keep the exact look of the picture: hand-painted chibi cartoon, thick dark-brown outlines, flat cel shading — not realistic, not 3D. The background stays plain flat green for the whole clip. The camera never moves or zooms. She stays in the middle of the frame at the same size and never turns to another direction; her whole body and the whole staff stay inside the frame. No shadow, no flash, no glow, no sparkles, no particles, no smoke, no magic effects, no text.
 ```
 
-ตี (attack · คอมโบไม้เท้าตีปกติ + ปล่อย Light Ball + สกิลที่ใช้ท่าตี)
+ตี (attack · คอมโบไม้เท้าตีปกติ + ปล่อย Light Ball + สกิลที่ใช้ท่าตี) · แนบ `sheep_4_NE_attack.png`
 ```
 Attack of the little sheep priestess in this picture. She is seen in a three-quarter back view, facing away from us up and to the right, exactly as in the picture; we mostly see her back and she never turns toward the viewer. She grips her golden staff with both hands, pulls it back over her shoulder in a short wind-up, then swings it down in a fast diagonal arc in front of her toward the way she is facing, orb head first, holds the moment of the hit for an instant with the orb low in front of her, then returns to her starting pose and stands still for the rest of the clip. The whole strike takes about one second. Her feet stay in place. The staff stays visible beside her body during the whole swing. Clean outlines in every frame, no motion blur. The blue orb never lights up or glows. We see her mostly from behind: the back of her fluffy hair, her horns and only the edge of her face with one eye, as in the picture; her face never turns toward us. Her curled golden horns, laurel tiara and purple cape stay exactly the same. Keep the exact look of the picture: hand-painted chibi cartoon, thick dark-brown outlines, flat cel shading — not realistic, not 3D. The background stays plain flat green for the whole clip. The camera never moves or zooms. She stays in the middle of the frame at the same size and never turns to another direction; her whole body and the whole staff stay inside the frame. No shadow, no flash, no glow, no sparkles, no particles, no smoke, no magic effects, no text.
 ```
 
-ร่าย (buff · ฮีล / บัฟ / เพลง / อัลติ — เกมค้างเฟรมตอนชูไม้ไว้ตอนชาร์จ Light Ball)
+ร่าย (buff · ฮีล / บัฟ / เพลง / อัลติ — เกมค้างเฟรมตอนชูไม้ไว้ตอนชาร์จ Light Ball) · แนบ `sheep_4_NE_stand.png`
 ```
 Spell cast of the little sheep priestess in this picture. She is seen in a three-quarter back view, facing away from us up and to the right, exactly as in the picture; we mostly see her back and she never turns toward the viewer. She raises her golden staff high above her head with both hands, the blue orb pointing to the sky, and holds that pose still for about one second, then lowers the staff back in front of her, returns to her starting pose and stands still for the rest of the clip. Her feet stay in place. Clean outlines in every frame, no motion blur. The blue orb never lights up or glows. We see her mostly from behind: the back of her fluffy hair, her horns and only the edge of her face with one eye, as in the picture; her face never turns toward us. Her curled golden horns, laurel tiara and purple cape stay exactly the same. Keep the exact look of the picture: hand-painted chibi cartoon, thick dark-brown outlines, flat cel shading — not realistic, not 3D. The background stays plain flat green for the whole clip. The camera never moves or zooms. She stays in the middle of the frame at the same size and never turns to another direction; her whole body and the whole staff stay inside the frame. No shadow, no flash, no glow, no sparkles, no particles, no smoke, no magic effects, no text.
 ```
 
-## 5. N — หลัง · แนบ `sheep_5_N.png`
+## 5. N — หลัง · แนบ `sheep_5_N_stand.png` / `sheep_5_N_attack.png`
 
-ยืน (idle · วนลูป)
+ยืน (idle · วนลูป) · แนบ `sheep_5_N_stand.png`
 ```
 Idle loop of the little sheep priestess in this picture. Her back faces the viewer (back view), exactly as in the picture; she never turns toward the viewer. She stands in a relaxed pose holding her golden staff upright beside her, the laurel wreath and blue orb at the top, and breathes slowly; her fluffy pale-pink woolly hair, her cape and the hem of her dress sway a little. The last frame matches the first frame so the clip loops. We only see the back of her fluffy hair and her two curled horns, as in the picture; her face never turns toward us. Her curled golden horns and purple cape stay exactly the same. Keep the exact look of the picture: hand-painted chibi cartoon, thick dark-brown outlines, flat cel shading — not realistic, not 3D. The background stays plain flat green for the whole clip. The camera never moves or zooms. She stays in the middle of the frame at the same size and never turns to another direction; her whole body and the whole staff stay inside the frame. No shadow, no flash, no glow, no sparkles, no particles, no smoke, no magic effects, no text.
 ```
 
-เดิน (walk · วนลูป)
+เดิน (walk · วนลูป) · แนบ `sheep_5_N_stand.png`
 ```
 Walk loop of the little sheep priestess in this picture. Her back faces the viewer (back view), exactly as in the picture; she never turns toward the viewer. She walks in place, like on a treadmill, toward the way she is facing: light, bouncy little steps (about two steps per second), her golden staff held upright beside her swinging a little with each step, her woolly hair bouncing and her cape swaying. She does not move across the frame and the ground does not move. The last frame matches the first frame so the clip loops. We only see the back of her fluffy hair and her two curled horns, as in the picture; her face never turns toward us. Her curled golden horns and purple cape stay exactly the same. Keep the exact look of the picture: hand-painted chibi cartoon, thick dark-brown outlines, flat cel shading — not realistic, not 3D. The background stays plain flat green for the whole clip. The camera never moves or zooms. She stays in the middle of the frame at the same size and never turns to another direction; her whole body and the whole staff stay inside the frame. No shadow, no flash, no glow, no sparkles, no particles, no smoke, no magic effects, no text.
 ```
 
-ตี (attack · คอมโบไม้เท้าตีปกติ + ปล่อย Light Ball + สกิลที่ใช้ท่าตี)
+ตี (attack · คอมโบไม้เท้าตีปกติ + ปล่อย Light Ball + สกิลที่ใช้ท่าตี) · แนบ `sheep_5_N_attack.png`
 ```
 Attack of the little sheep priestess in this picture. Her back faces the viewer (back view), exactly as in the picture; she never turns toward the viewer. She grips her golden staff with both hands, pulls it back over her shoulder in a short wind-up, then swings it down in a fast diagonal arc in front of her toward the way she is facing, orb head first, holds the moment of the hit for an instant with the orb low in front of her, then returns to her starting pose and stands still for the rest of the clip. The whole strike takes about one second. Her feet stay in place. The staff stays visible beside her body during the whole swing. Clean outlines in every frame, no motion blur. The blue orb never lights up or glows. We only see the back of her fluffy hair and her two curled horns, as in the picture; her face never turns toward us. Her curled golden horns and purple cape stay exactly the same. Keep the exact look of the picture: hand-painted chibi cartoon, thick dark-brown outlines, flat cel shading — not realistic, not 3D. The background stays plain flat green for the whole clip. The camera never moves or zooms. She stays in the middle of the frame at the same size and never turns to another direction; her whole body and the whole staff stay inside the frame. No shadow, no flash, no glow, no sparkles, no particles, no smoke, no magic effects, no text.
 ```
 
-ร่าย (buff · ฮีล / บัฟ / เพลง / อัลติ — เกมค้างเฟรมตอนชูไม้ไว้ตอนชาร์จ Light Ball)
+ร่าย (buff · ฮีล / บัฟ / เพลง / อัลติ — เกมค้างเฟรมตอนชูไม้ไว้ตอนชาร์จ Light Ball) · แนบ `sheep_5_N_stand.png`
 ```
 Spell cast of the little sheep priestess in this picture. Her back faces the viewer (back view), exactly as in the picture; she never turns toward the viewer. She raises her golden staff high above her head with both hands, the blue orb pointing to the sky, and holds that pose still for about one second, then lowers the staff back beside her, returns to her starting pose and stands still for the rest of the clip. Her feet stay in place. Clean outlines in every frame, no motion blur. The blue orb never lights up or glows. We only see the back of her fluffy hair and her two curled horns, as in the picture; her face never turns toward us. Her curled golden horns and purple cape stay exactly the same. Keep the exact look of the picture: hand-painted chibi cartoon, thick dark-brown outlines, flat cel shading — not realistic, not 3D. The background stays plain flat green for the whole clip. The camera never moves or zooms. She stays in the middle of the frame at the same size and never turns to another direction; her whole body and the whole staff stay inside the frame. No shadow, no flash, no glow, no sparkles, no particles, no smoke, no magic effects, no text.
 ```
 
 ## ตอนคลิปมาถึง (โน้ตสำหรับแชตที่ทำต่อ)
+- คลิปตีถ่ายจากกรอบแนวนอน ตัวเล็กกว่าคลิปอื่นในทิศเดียวกัน (630 / 900 ของภาพตั้งต้น) → ต้องสเกลต่อคลิป: วัดความสูงตัวในเฟรมแรกของทุกคลิป (= ท่ายืนตั้งต้นเดียวกัน) แล้วปรับให้เท่าคลิป idle ของทิศนั้น (cliphero ยังมีแค่ perDir — เพิ่มตัวเลือกต่อคลิปตอนตัด)
 - ตัดด้วย `tools/cliphero.py` + แผน `tools/clips/sheep_plan.json` (ดู `tools/clips/wukong_plan.json` เป็นตัวอย่าง: flipDirs ถ้ามีคลิปหันผิดฝั่ง, perDir ถ้าคลิปบางทิศถ่ายมาเล็ก / ใหญ่กว่า, loop ถ้าช่วงต้นคลิปยืนขยับไม่วน) → assets_sheep.js ใหม่ (prefix SHE เดิม — SHE_ART ใน index.html สลับ atlas ให้อยู่แล้ว)
 - เวลาเฟรมใช้ของสไปรต์ชั่วคราวเดิม (assets_sheep.js จาก statichero.py): idle 12 × 190 ms · walk 8 × 110 · attack 12 เฟรม [60 × 8, 70, 80, 90, 100] contact 8 · buff 12 × 80 peak 7 · hurt 7 × 70 → จังหวะโดน / ปล่อยสกิลเท่าเดิม bench ไม่เปลี่ยน (แบบลิง)
 - sockets: ลูกแก้วฟ้าบนหัวไม้ (cliphero 'orb' แบบแอคโซลอเติล) → แก้ crook() / tip() ใน sheep_vfx.js ให้ใช้ตำแหน่งลูกแก้วแทนปลายไม้ข้อของสไปรต์ชั่วคราว (cell 306,204)

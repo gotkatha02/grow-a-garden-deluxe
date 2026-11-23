@@ -3,9 +3,9 @@
    Character module. Loaded only when the drake is played (?char=drake); index.html calls installDrake().
    Design + numbers: DRAKE_SKILLS_TH.md (owner 2026-11-23: design 15:47 · burly stone dragon 16:14 · 'ทำสกิลของมังกรเลย' 16:36)
 
-     Basic · Forgeborn Hatchling — forge-hammer swings (fire, fire, fire … then stone), Bellows Breath, Stone Skin, Anvil Leap,
+     Basic · Forgeborn Hatchling — forge-blade cuts (fire, fire, fire … then stone), Bellows Breath, Stone Skin, Quenching Plunge,
              Cyclops Apprentice, Molten Core, Dragon Roar
-     A · Etna's Magma Hammer (physical, ATK) — HEAT then QUENCH = a LAVA BURST · Heart of Etna = the Magma Drake form
+     A · Etna's Magma Blade (physical, ATK) — HEAT then QUENCH = a LAVA BURST · Heart of Etna = the Magma Drake form
      B · Stone Oracle of Delphi (magic, MATK) — HEAT then QUENCH = the enemy turns to STONE (bosses: slow + KO drain) · Heart of Gaia = the Mountain Drake
      C · Primordial Dragon — 12 nodes (lit on the Totem Roots)
 
@@ -37,7 +37,7 @@ const ZD_BAL={
     znCyclops:{heal:[.2,.4,.6,.8]},
     znCore:{life:[.7,1.4,2],burn:[.07,.14,.2]},
     znRoar:{R:160,range:170,flinch:[.5,.75,1],blood:15,cd:24,mp:16},
-    // ---- A · Etna's Magma Hammer
+    // ---- A · Etna's Magma Blade
     zaHeart:{dmg:[1.4,1.67,1.93,2.2],R:140},
     zaSear:{dmg:[.85,1.0,1.15,1.3],dd:[.65,.77,.88,1.0],cd:5,mp:9,range:90},
     zaBurst:{per:[.6,.7,.8],R:[80,90,100]},
@@ -93,28 +93,28 @@ const zdX=n=>'ATK×'+zdN(n),zdM=n=>'MATK×'+zdN(n);
    --------------------------------------------------------------------- */
 const ZD_DEFS=[
  // ---------------- BASIC · FORGEBORN HATCHLING ----------------
- {key:'znHammer',id:'ZD-B01',name:'Forge Hammer',br:'basic',row:1,max:4,passive:1,d:'(ตีปกติ) ฟาดค้อนเตาหลอมต่อเนื่อง จังหวะแรก ๆ เป็นไฟ ติดความร้อน 1 · จังหวะสุดท้ายเป็นหิน ชุบความร้อนออก · ร่างมังกรใช้ตีปกติของมังกรแทน (อัปสลับกับ Bellows Breath)',lv:i=>[`ต่อ ${ZB.znHammer.chain[i-1]} จังหวะ (ไฟ ×${ZB.znHammer.chain[i-1]-1} แล้วหิน)`,`${zdX(ZB.znHammer.hit)} ต่อจังหวะ · จังหวะหิน ${zdX(ZB.znHammer.last)}`]},
- {key:'znBreath',id:'ZD-B02',name:'Bellows Breath',br:'basic',row:1,max:4,type:'melee',d:'พ่นไฟจากเครื่องเป่าเตาเป็นกรวยสั้นด้านหน้า ทุกตัวในกรวยติดความร้อน 2 · ร่างมังกร กรวยยาว ×1.5 (อัปสลับกับ Forge Hammer)',lv:i=>[`${zdX(ZB.znBreath.dmg[i-1])} กรวย ${ZB.znBreath.r[i-1]}`,'ความร้อน +2',`Cooldown ${ZB.znBreath.cd} วิ`]},
+ {key:'znHammer',id:'ZD-B01',name:'Forge Blade',br:'basic',row:1,max:4,passive:1,d:'(ตีปกติ) ฟันดาบเตาหลอมต่อเนื่อง จังหวะแรก ๆ เป็นไฟ ติดความร้อน 1 · จังหวะสุดท้ายเป็นหิน ชุบความร้อนออก · ร่างมังกรใช้ตีปกติของมังกรแทน (อัปสลับกับ Bellows Breath)',lv:i=>[`ต่อ ${ZB.znHammer.chain[i-1]} จังหวะ (ไฟ ×${ZB.znHammer.chain[i-1]-1} แล้วหิน)`,`${zdX(ZB.znHammer.hit)} ต่อจังหวะ · จังหวะหิน ${zdX(ZB.znHammer.last)}`]},
+ {key:'znBreath',id:'ZD-B02',name:'Bellows Breath',br:'basic',row:1,max:4,type:'melee',d:'พ่นไฟจากเครื่องเป่าเตาเป็นกรวยสั้นด้านหน้า ทุกตัวในกรวยติดความร้อน 2 · ร่างมังกร กรวยยาว ×1.5 (อัปสลับกับ Forge Blade)',lv:i=>[`${zdX(ZB.znBreath.dmg[i-1])} กรวย ${ZB.znBreath.r[i-1]}`,'ความร้อน +2',`Cooldown ${ZB.znBreath.cd} วิ`]},
  {key:'znSkin',id:'ZD-B03',name:'Stone Skin',br:'basic',row:2,max:3,type:'self',d:'เกล็ดกลายเป็นหินอ่อน ดาเมจที่ได้รับลดลง โดนตีได้เลือดมังกร +2 แทน +1 (สูงสุด +6 ต่อวิ)',lv:i=>[`ดาเมจที่ได้รับ −${ZB.znSkin.block[i-1]} ต่อครั้ง นาน ${ZB.znSkin.T} วิ`,`Cooldown ${ZB.znSkin.cd} วิ`]},
- {key:'znLeap',id:'ZD-B04',name:'Anvil Leap',br:'basic',row:2,max:3,type:'ground',radius:()=>ZB.znLeap.R,d:'กระโดดทุบค้อนลงจุดที่เลือก ชุบความร้อนของทุกตัวในวง · ร่างมังกร กระโจนด้วยร่างมังกร วงกว้างขึ้น',lv:i=>[`ระยะ ${ZB.znLeap.dist[i-1]}`,`${zdX(ZB.znLeap.dmg[i-1])} รัศมี ${ZB.znLeap.R}`,`Cooldown ${ZB.znLeap.cd} วิ`]},
+ {key:'znLeap',id:'ZD-B04',name:'Quenching Plunge',br:'basic',row:2,max:3,type:'ground',radius:()=>ZB.znLeap.R,d:'กระโดดปักดาบลงจุดที่เลือก ชุบความร้อนของทุกตัวในวง · ร่างมังกร กระโจนด้วยร่างมังกร วงกว้างขึ้น',lv:i=>[`ระยะ ${ZB.znLeap.dist[i-1]}`,`${zdX(ZB.znLeap.dmg[i-1])} รัศมี ${ZB.znLeap.R}`,`Cooldown ${ZB.znLeap.cd} วิ`]},
  {key:'znCyclops',id:'ZD-B05',name:'Cyclops Apprentice',br:'basic',row:3,max:4,passive:1,d:'(Passive) ศิษย์ไซคลอปส์ช่างตีเหล็ก ชุบได้แต่ละครั้งฟื้น HP (ไม่เกิน 1 ครั้งต่อวิ)',lv:i=>[`ฟื้น HP = เลเวล × ${ZB.znCyclops.heal[i-1]}`]},
  {key:'znCore',id:'ZD-B06',name:'Molten Core',br:'basic',row:3,max:3,passive:1,d:'(Passive) ความร้อนบนศัตรูอยู่นานขึ้นและไหม้แรงขึ้น',lv:i=>[`ความร้อนอยู่ ${zdN(ZD_BAL.heat.life+ZB.znCore.life[i-1])} วิ`,`ไหม้ + เลเวล × ${ZB.znCore.burn[i-1]} ต่อขั้นต่อวิ`]},
  {key:'znRoar',id:'ZD-B07',name:'Dragon Roar',br:'basic',row:4,max:3,type:'self',d:'คำรามเลือดมังกร ศัตรูรอบตัวชะงัก (บอสไม่ติด) เลือดมังกร +15 · ร่างมังกร: ร่างอยู่นานขึ้น 3 วิแทน (ไม่เกินนานสุด)',lv:i=>[`ชะงัก ${ZB.znRoar.flinch[i-1]} วิ รัศมี ${ZB.znRoar.R}`,`เลือดมังกร +${ZB.znRoar.blood}`,`Cooldown ${ZB.znRoar.cd} วิ`]},
- // ---------------- A · ETNA'S MAGMA HAMMER ----------------
- {key:'zaHeart',id:'ZD-A01',name:'Heart of Etna',br:'A',row:1,max:4,type:'self',dn:'Heart of Etna · คืนร่าง',d:'แปลงร่างเป็นมังกรลาวาเอตนา (ใช้เลือดมังกร 100) ภูเขาไฟเล็กระเบิดรอบตัว ทุกตัวร้อน 2 แล้วชุบ · ร่างมังกร: ปุ่มสกิลสาย A กลายเป็นท่ามังกร ตัวใหญ่ ไม่ติดชะงัก มีโล่ · กดซ้ำ = คืนร่าง (อัปสลับกับ Searing Hammer)',lv:i=>[`ระเบิด ${zdX(ZB.zaHeart.dmg[i-1])} รัศมี ${ZB.zaHeart.R}`,`โล่มังกร = เลเวล × ${ZD_BAL.form.A.shield} · นานสุด ${ZD_BAL.form.max[i-1]} วิ`]},
- {key:'zaSear',id:'ZD-A02',name:'Searing Hammer',br:'A',row:1,max:4,type:'melee',dn:'Molten Maul',d:'ฟาดค้อนร้อน 2 ครั้ง ครั้งแรกไฟ ร้อน 2 · ครั้งที่สองหิน ชุบ · ร่างมังกร Molten Maul ตะปบซ้าย–ขวา (ไฟ) แล้วกัด (หิน)',lv:i=>[`${zdX(ZB.zaSear.dmg[i-1])} × 2`,`มังกร ${zdX(ZB.zaSear.dd[i-1])} × 3`,`Cooldown ${ZB.zaSear.cd} วิ`]},
+ // ---------------- A · ETNA'S MAGMA BLADE ----------------
+ {key:'zaHeart',id:'ZD-A01',name:'Heart of Etna',br:'A',row:1,max:4,type:'self',dn:'Heart of Etna · คืนร่าง',d:'แปลงร่างเป็นมังกรลาวาเอตนา (ใช้เลือดมังกร 100) ภูเขาไฟเล็กระเบิดรอบตัว ทุกตัวร้อน 2 แล้วชุบ · ร่างมังกร: ปุ่มสกิลสาย A กลายเป็นท่ามังกร ตัวใหญ่ ไม่ติดชะงัก มีโล่ · กดซ้ำ = คืนร่าง (อัปสลับกับ Searing Blade)',lv:i=>[`ระเบิด ${zdX(ZB.zaHeart.dmg[i-1])} รัศมี ${ZB.zaHeart.R}`,`โล่มังกร = เลเวล × ${ZD_BAL.form.A.shield} · นานสุด ${ZD_BAL.form.max[i-1]} วิ`]},
+ {key:'zaSear',id:'ZD-A02',name:'Searing Blade',br:'A',row:1,max:4,type:'melee',dn:'Molten Maul',d:'ฟันดาบร้อน 2 ครั้ง ครั้งแรกไฟ ร้อน 2 · ครั้งที่สองหิน ชุบ · ร่างมังกร Molten Maul ตะปบซ้าย–ขวา (ไฟ) แล้วกัด (หิน)',lv:i=>[`${zdX(ZB.zaSear.dmg[i-1])} × 2`,`มังกร ${zdX(ZB.zaSear.dd[i-1])} × 3`,`Cooldown ${ZB.zaSear.cd} วิ`]},
  {key:'zaBurst',id:'ZD-A03',name:'Magma Burst',br:'A',row:2,max:3,passive:1,d:'(Passive) ระเบิดลาวาตอนชุบแรงขึ้นและกว้างขึ้น',lv:i=>[`ต่อขั้นความร้อน ${zdX(ZB.zaBurst.per[i-1])} รัศมี ${ZB.zaBurst.R[i-1]}`]},
- {key:'zaQuake',id:'ZD-A04',name:'Forge Quake',br:'A',row:3,max:2,type:'self',dn:'Volcano Dive',d:'ทุบพื้นรอบตัว ชุบความร้อนทุกตัวในวง · ร่างมังกร Volcano Dive กระพือปีกขึ้นฟ้าแล้วดิ่งลงใส่เป้า ร้อน 1 แล้วชุบทั้งวง',lv:i=>[`${zdX(ZB.zaQuake.dmg[i-1])} รัศมี ${ZB.zaQuake.R}`,`มังกร ${zdX(ZB.zaQuake.dd[i-1])} รัศมี ${ZB.zaQuake.dR}`,`Cooldown ${ZB.zaQuake.cd} วิ`]},
+ {key:'zaQuake',id:'ZD-A04',name:'Forge Quake',br:'A',row:3,max:2,type:'self',dn:'Volcano Dive',d:'ปักดาบกระแทกพื้นรอบตัว ชุบความร้อนทุกตัวในวง · ร่างมังกร Volcano Dive กระพือปีกขึ้นฟ้าแล้วดิ่งลงใส่เป้า ร้อน 1 แล้วชุบทั้งวง',lv:i=>[`${zdX(ZB.zaQuake.dmg[i-1])} รัศมี ${ZB.zaQuake.R}`,`มังกร ${zdX(ZB.zaQuake.dd[i-1])} รัศมี ${ZB.zaQuake.dR}`,`Cooldown ${ZB.zaQuake.cd} วิ`]},
  {key:'zaAfter',id:'ZD-A05',name:'Aftershock',br:'A',row:3,max:2,passive:1,enh:'zaQuake',pre:[['zaQuake',1]],d:'(ต่อยอด Forge Quake) 0.6 วิต่อมาพื้นแตกวงที่สองใหญ่กว่า ติดความร้อน 1',lv:i=>[`${zdX(ZB.zaAfter.dmg[i-1])} รัศมี ${ZB.zaAfter.R}`]},
  {key:'zaRush',id:'ZD-A06',name:'Bellows Rush',br:'A',row:4,max:2,type:'melee',dn:'Inferno Charge',d:'พุ่งด้วยแรงลมเป่าเตาทะลุศัตรู ทุกตัวในแนวร้อน 1 · ร่างมังกร Inferno Charge พุ่งเอาเขาชนไกลขึ้น ร้อน 2 (ไม่ผลักบอส)',lv:i=>[`${zdX(ZB.zaRush.dmg[i-1])} ไกล ${ZB.zaRush.len}`,`มังกร ${zdX(ZB.zaRush.dd[i-1])} ไกล ${ZB.zaRush.dlen}`,`Cooldown ${ZB.zaRush.cd} วิ`]},
  {key:'zaCinder',id:'ZD-A07',name:'Cinder Path',br:'A',row:4,max:1,passive:1,enh:'zaRush',pre:[['zaRush',1]],d:'(ต่อยอด Bellows Rush) รอยไฟค้างพื้น 3 วิ ศัตรูที่เหยียบร้อน 1 ทุก 1 วิ',lv:()=>[`${zdX(ZB.zaCinder.dmg)} ทุก ${ZB.zaCinder.tick} วิ`]},
- {key:'zaAnvil',id:'ZD-A08',name:'Anvil Breaker',br:'A',row:5,max:2,type:'melee',dn:'Tail Hammer',d:'ทุบเป้าเดียวสุดแรง ชุบโดยนับความร้อนเป็น 2 เท่า · ร่างมังกร Tail Hammer หมุนตัวฟาดหางกระบองรอบตัว ชุบ ×2 ทุกตัว',lv:i=>[`${zdX(ZB.zaAnvil.dmg[i-1])}`,`มังกร ${zdX(ZB.zaAnvil.dd[i-1])} รัศมี ${ZB.zaAnvil.dR}`,`Cooldown ${ZB.zaAnvil.cd} วิ`]},
- {key:'zaCrack',id:'ZD-A09',name:'Cracked Plate',br:'A',row:5,max:1,passive:1,enh:'zaAnvil',pre:[['zaAnvil',1]],d:'(ต่อยอด Anvil Breaker) เป้าที่ถูกชุบตั้งแต่ 2 ขั้น เกราะร้าว DEF ลด 6 วิ',lv:()=>['DEF − เลเวล ÷ 4']},
+ {key:'zaAnvil',id:'ZD-A08',name:'Anvil Cleaver',br:'A',row:5,max:2,type:'melee',dn:'Tail Hammer',d:'ฟันผ่าเป้าเดียวสุดแรง ชุบโดยนับความร้อนเป็น 2 เท่า · ร่างมังกร Tail Hammer หมุนตัวฟาดหางกระบองรอบตัว ชุบ ×2 ทุกตัว',lv:i=>[`${zdX(ZB.zaAnvil.dmg[i-1])}`,`มังกร ${zdX(ZB.zaAnvil.dd[i-1])} รัศมี ${ZB.zaAnvil.dR}`,`Cooldown ${ZB.zaAnvil.cd} วิ`]},
+ {key:'zaCrack',id:'ZD-A09',name:'Cracked Plate',br:'A',row:5,max:1,passive:1,enh:'zaAnvil',pre:[['zaAnvil',1]],d:'(ต่อยอด Anvil Cleaver) เป้าที่ถูกชุบตั้งแต่ 2 ขั้น เกราะร้าว DEF ลด 6 วิ',lv:()=>['DEF − เลเวล ÷ 4']},
  {key:'zaGeyser',id:'ZD-A10',name:'Lava Geyser',br:'A',row:6,max:2,type:'ground',radius:()=>ZB.zaGeyser.R,dn:'Magma Breath',d:'ลาวาพุ่งจากพื้น 3 ครั้งที่จุดที่เลือก ร้อน 1 ต่อครั้ง · ร่างมังกร Magma Breath พ่นลาวาเป็นกรวยหน้า 1.2 วิ ร้อนครบทุกตัว',lv:i=>[`${zdX(ZB.zaGeyser.dmg[i-1])} × ${ZB.zaGeyser.n} รัศมี ${ZB.zaGeyser.R}`,`มังกร ${zdX(ZB.zaGeyser.dd[i-1])} ทุก ${ZB.zaGeyser.dTick} วิ กรวย ${ZB.zaGeyser.dR}`,`Cooldown ${ZB.zaGeyser.cd} วิ`]},
  {key:'zaPool',id:'ZD-A11',name:'Molten Pool',br:'A',row:6,max:1,passive:1,enh:'zaGeyser',pre:[['zaGeyser',1]],d:'(ต่อยอด Lava Geyser / Magma Breath) เหลือบ่อลาวา 4 วิ',lv:()=>[`${zdX(ZB.zaPool.dmg)} ทุก ${ZB.zaPool.tick} วิ · ร้อน 1 ทุก 1 วิ`]},
  {key:'zaFury',id:'ZD-A12',name:'Forge Fury',br:'A',row:7,max:3,passive:1,d:'(Passive) ทุกศัตรูที่ติดความร้อนรอบตัว 220 ATK เพิ่ม (สูงสุด 5 ตัว)',lv:i=>[`ATK +${ZB.zaFury.atk[i-1]} ต่อตัว`]},
- {key:'zaGuard',id:'ZD-A13',name:'Obsidian Guard',br:'A',row:7,max:1,type:'self',dn:'Obsidian Hide',d:'ยกค้อนรับ 1 วิ โดนตีประชิด = กันได้ทั้งหมด สวนด้วยระเบิดลาวา + เลือดมังกร +10 · ร่างมังกร Obsidian Hide เกล็ดออบซิเดียนกันได้ 2 ครั้งใน 3 วิ',lv:()=>[`สวน ${zdX(ZB.zaGuard.dmg)} รัศมี ${ZB.zaGuard.R}`,`Cooldown ${ZB.zaGuard.cd} วิ`]},
- {key:'zaUlt',id:'ZD-A14',name:'Etna Erupts',br:'A',row:8,max:2,type:'self',ult:1,dn:'Cataclysm',d:'ULTIMATE A · ทุบพื้นจนภูเขาไฟเล็กโผล่ พ่นลาวา 10 ลูกรอบตัว แล้วทุกตัวร้อนเต็มและชุบพร้อมกัน + เลือดมังกร +40 · ร่างมังกร Cataclysm (ท่าปิดฉาก) บินขึ้น ฝนอุกกาบาตลาวา 12 ลูก ดิ่งลงกลางวง ชุบ ×2 แล้วคืนร่าง',lv:i=>[`${zdX(ZB.zaUlt.dmg[i-1])} × ${ZB.zaUlt.n} รัศมี ${ZB.zaUlt.R}`,`มังกร ${zdX(ZB.zaUlt.ddmg[i-1])} × ${ZB.zaUlt.dn} + ${zdX(ZB.zaUlt.dfin[i-1])}`,`Cooldown ${ZB.zaUlt.cd} วิ`]},
+ {key:'zaGuard',id:'ZD-A13',name:'Obsidian Guard',br:'A',row:7,max:1,type:'self',dn:'Obsidian Hide',d:'ยกดาบรับ 1 วิ โดนตีประชิด = กันได้ทั้งหมด สวนด้วยระเบิดลาวา + เลือดมังกร +10 · ร่างมังกร Obsidian Hide เกล็ดออบซิเดียนกันได้ 2 ครั้งใน 3 วิ',lv:()=>[`สวน ${zdX(ZB.zaGuard.dmg)} รัศมี ${ZB.zaGuard.R}`,`Cooldown ${ZB.zaGuard.cd} วิ`]},
+ {key:'zaUlt',id:'ZD-A14',name:'Etna Erupts',br:'A',row:8,max:2,type:'self',ult:1,dn:'Cataclysm',d:'ULTIMATE A · ปักดาบลงพื้นจนภูเขาไฟเล็กโผล่ พ่นลาวา 10 ลูกรอบตัว แล้วทุกตัวร้อนเต็มและชุบพร้อมกัน + เลือดมังกร +40 · ร่างมังกร Cataclysm (ท่าปิดฉาก) บินขึ้น ฝนอุกกาบาตลาวา 12 ลูก ดิ่งลงกลางวง ชุบ ×2 แล้วคืนร่าง',lv:i=>[`${zdX(ZB.zaUlt.dmg[i-1])} × ${ZB.zaUlt.n} รัศมี ${ZB.zaUlt.R}`,`มังกร ${zdX(ZB.zaUlt.ddmg[i-1])} × ${ZB.zaUlt.dn} + ${zdX(ZB.zaUlt.dfin[i-1])}`,`Cooldown ${ZB.zaUlt.cd} วิ`]},
  {key:'zaHeir',id:'ZD-A15',name:'Heir of Typhon',br:'A',row:8,max:1,passive:1,enh:'zaUlt',pre:[['zaUlt',1]],d:'(ต่อยอด Etna Erupts) เลือดไทฟอนในตัวตื่น ร่างมังกรลาวาอยู่นานขึ้น',lv:()=>[`นานสุด +${ZB.zaHeir.ext} วิ · เลือดมังกรลด ${ZB.zaHeir.drain} ต่อวิ (แทน 5)`]},
  // ---------------- B · STONE ORACLE OF DELPHI ----------------
  {key:'zbHeart',id:'ZD-G01',name:'Heart of Gaia',br:'B',row:1,max:4,type:'self',dn:'Heart of Gaia · คืนร่าง',d:'แปลงร่างเป็นมังกรภูผาแห่งไกอา (ใช้เลือดมังกร 100) แผ่นดินรอบตัวยกตัว ไอร้อนพวย ทุกตัวร้อน 2 แล้วชุบ = เป็นหินทั้งวง · ร่างมังกร: ตัวใหญ่สุด ไม่ติดชะงัก ไม่โดนผลัก เดินช้าลง 40 มีโล่ · กดซ้ำ = คืนร่าง (อัปสลับกับ Stone Spike)',lv:i=>[`ระเบิด ${zdM(ZB.zbHeart.dmg[i-1])} รัศมี ${ZB.zbHeart.R}`,`โล่มังกร = เลเวล × ${ZD_BAL.form.B.shield} · นานสุด ${ZD_BAL.form.max[i-1]} วิ`]},
@@ -124,7 +124,7 @@ const ZD_DEFS=[
  {key:'zbTrance',id:'ZD-G05',name:"Pythia's Trance",br:'B',row:3,max:1,passive:1,enh:'zbVent',pre:[['zbVent',1]],d:'(ต่อยอด Vapour Vent) ศัตรูที่ยืนในไอครบ 2 วิ มึน (บอสช้าลงแทน)',lv:()=>[`มึน ${ZB.zbTrance.stun} วิ ทุก ${ZB.zbTrance.need} วิ`]},
  {key:'zbChain',id:'ZD-G06',name:'Earth Chains',br:'B',row:4,max:2,type:'melee',dn:'Mountain Grip',d:'โซ่หินโผล่จากพื้นตรึงเป้าแล้วชุบ (บอสช้าลงแทน) · ร่างมังกร Mountain Grip คว้าเป้ายกขึ้นแล้วกระแทกลงพื้น 2 ครั้ง (บอสคว้าไม่ได้: ทุบแทน ลดเกจ KO หนัก)',lv:i=>[`ตรึง ${ZB.zbChain.root[i-1]} วิ · ${zdM(ZB.zbChain.dmg[i-1])}`,`มังกร ${zdM(ZB.zbChain.dd[i-1])} × 2 + มึน ${ZB.zbChain.stun} วิ`,`Cooldown ${ZB.zbChain.cd} วิ`]},
  {key:'zbLink',id:'ZD-G07',name:'Linked Fetters',br:'B',row:4,max:1,passive:1,enh:'zbChain',pre:[['zbChain',1]],d:'(ต่อยอด Earth Chains) โซ่แตกแขนงไปตรึงอีก 2 ตัวใกล้ ๆ',lv:()=>[`+${ZB.zbLink.n} ตัว ระยะ ${ZB.zbLink.R}`]},
- {key:'zbQuake',id:'ZD-G08',name:'Quake Ring',br:'B',row:5,max:2,type:'self',dn:'Mountain Quake',d:'กระแทกค้อนลงพื้น แผ่นดินไหวรอบตัว ชุบทุกตัว · ร่างมังกร Mountain Quake กระโดดแล้วทิ้งตัวลงพื้น วงใหญ่กว่า',lv:i=>[`${zdM(ZB.zbQuake.dmg[i-1])} รัศมี ${ZB.zbQuake.R}`,`มังกร ${zdM(ZB.zbQuake.dd[i-1])} รัศมี ${ZB.zbQuake.dR}`,`Cooldown ${ZB.zbQuake.cd} วิ`]},
+ {key:'zbQuake',id:'ZD-G08',name:'Quake Ring',br:'B',row:5,max:2,type:'self',dn:'Mountain Quake',d:'กระแทกดาบลงพื้น แผ่นดินไหวรอบตัว ชุบทุกตัว · ร่างมังกร Mountain Quake กระโดดแล้วทิ้งตัวลงพื้น วงใหญ่กว่า',lv:i=>[`${zdM(ZB.zbQuake.dmg[i-1])} รัศมี ${ZB.zbQuake.R}`,`มังกร ${zdM(ZB.zbQuake.dd[i-1])} รัศมี ${ZB.zbQuake.dR}`,`Cooldown ${ZB.zbQuake.cd} วิ`]},
  {key:'zbFault',id:'ZD-G09',name:'Fault Line',br:'B',row:5,max:1,passive:1,enh:'zbQuake',pre:[['zbQuake',1]],d:'(ต่อยอด Quake Ring) แผ่นดินแยกเป็นแนวตรงไปข้างหน้าต่อ ชุบทุกตัวในแนว',lv:()=>[`${zdM(ZB.zbFault.dmg)} แนว ${ZB.zbFault.len}`]},
  {key:'zbMono',id:'ZD-G10',name:'Monolith',br:'B',row:6,max:2,type:'ground',radius:()=>ZB.zbMono.R,dn:'Boulder Toss',d:'เรียกแท่งหินพยากรณ์ขึ้นที่จุด 6 วิ มอนรอบ ๆ หันไปตีหิน (บอสไม่หลง) หมดเวลาระเบิดชุบรอบ · ร่างมังกร Boulder Toss ฉีกหินยักษ์ขว้างลงจุด ระเบิดชุบ แล้วหินค้างเป็นเป้าล่อ 4 วิ',lv:i=>[`ระเบิด ${zdM(ZB.zbMono.dmg[i-1])} รัศมี ${ZB.zbMono.R}`,`มังกร ${zdM(ZB.zbMono.dd[i-1])} รัศมี ${ZB.zbMono.dR}`,`Cooldown ${ZB.zbMono.cd} วิ`]},
  {key:'zbOracle',id:'ZD-G11',name:'Oracle Stone',br:'B',row:6,max:1,passive:1,enh:'zbMono',pre:[['zbMono',1]],d:'(ต่อยอด Monolith) แท่งหินพ่นไอใส่ตัวที่ใกล้ที่สุดทุก 1 วิ ร้อน 1',lv:()=>[`${zdM(ZB.zbOracle.dmg)} ระยะ ${ZB.zbOracle.R}`]},
@@ -133,17 +133,17 @@ const ZD_DEFS=[
  {key:'zbUlt',id:'ZD-G14',name:"Gorgon's Eye",br:'B',row:8,max:2,type:'self',ult:1,dn:'Mountainfall',d:'ULTIMATE B · รอยแยกเดลฟีเปิดเป็นวง ไอร้อนพวย 3 ระลอก แล้วดวงตากอร์กอนบนฟ้าลืมตา ทุกตัวกลายเป็นรูปปั้นพร้อมกัน (ข้ามกันหิน) + เลือดมังกร +40 · ร่างมังกร Mountainfall (ท่าปิดฉาก) กระโดดสูงแล้วทิ้งตัวลงกลางวง หนามหินพุ่งทั่ว ชุบ ×2 แล้วคืนร่าง',lv:i=>[`${zdM(ZB.zbUlt.dmg[i-1])} × ${ZB.zbUlt.waves} + รูปปั้น ${ZB.zbUlt.stat} วิ รัศมี ${ZB.zbUlt.R}`,`มังกร ${zdM(ZB.zbUlt.dd[i-1])} + หนามหิน ${zdM(ZB.zbUlt.dspk[i-1])}`,`Cooldown ${ZB.zbUlt.cd} วิ`]},
  {key:'zbProph',id:'ZD-G15',name:"Oracle's Prophecy",br:'B',row:8,max:1,passive:1,enh:'zbUlt',pre:[['zbUlt',1]],d:"(ต่อยอด Gorgon's Eye) ร่างมังกรภูผาอยู่นานขึ้น · 6 วิหลังคืนร่าง ชุบทุกครั้งนับเต็ม 3 ขั้น",lv:()=>[`นานสุด +${ZB.zbProph.ext} วิ`]},
  // ---------------- C · PRIMORDIAL DRAGON (12 nodes, tied to the Basic / A / B skill) ----------------
- {key:'zxSmith',id:'ZD-C01',name:'Master Smith',br:'C',col:'basic',tier:1,passive:1,pre:[['znHammer',4]],d:'Forge Hammer ต่อได้อีก 1 จังหวะ จังหวะหินชุบรอบตัว (ไม่ใช่แค่เป้า)',lv:()=>[`ไฟ ×4 แล้วหิน · ชุบรอบตัว ${ZB.zxSmith.R}`]},
+ {key:'zxSmith',id:'ZD-C01',name:'Master Smith',br:'C',col:'basic',tier:1,passive:1,pre:[['znHammer',4]],d:'Forge Blade ต่อได้อีก 1 จังหวะ จังหวะหินชุบรอบตัว (ไม่ใช่แค่เป้า)',lv:()=>[`ไฟ ×4 แล้วหิน · ชุบรอบตัว ${ZB.zxSmith.R}`]},
  {key:'zxWhite',id:'ZD-C02',name:'White-Hot',br:'C',col:'A',tier:1,passive:1,pre:[['zaSear',4]],d:'ความร้อนบนศัตรูสูงสุด 4 ขั้น',lv:()=>['ความร้อนสูงสุด 4 · ระเบิดลาวาได้ถึง 4 ขั้นต่อการชุบ']},
  {key:'zxStare',id:'ZD-C03',name:'Basilisk Stare',br:'C',col:'B',tier:1,passive:1,pre:[['zbSpike',4]],d:'Stone Spike / Petrifying Roar แตกไปชุบอีก 1 ตัวที่ใกล้ที่สุด',lv:()=>[`+1 เป้า ระยะ ${ZB.zxStare.R}`]},
  {key:'zxLiving',id:'ZD-C04',name:'Living Stone',br:'C',col:'basic',tier:2,passive:1,pre:[['znSkin',3]],d:'ระหว่าง Stone Skin ศัตรูที่ตีเราประชิดร้อน 1 · หมดเวลาแล้วเกล็ดหินระเบิดชุบรอบตัว',lv:()=>[`ระเบิด ${zdX(ZB.zxLiving.dmg)} รัศมี ${ZB.zxLiving.R}`]},
- {key:'zxComet',id:'ZD-C05',name:'Molten Comet',br:'C',col:'A',tier:2,type:'melee',pre:[['zaAnvil',2]],d:'[New Active] ขว้างค้อนลาวาเป็นดาวหางทะลุแนว ร้อน 2 ทุกตัว ค้อนบินกลับชุบอีกรอบ · ร่างมังกร พ่นก้อนลาวาเป็นดาวหางแทน',lv:()=>[`${zdX(ZB.zxComet.dmg)} ไป + ${zdX(ZB.zxComet.back)} กลับ แนว ${ZB.zxComet.len}`,`Cooldown ${ZB.zxComet.cd} วิ`]},
+ {key:'zxComet',id:'ZD-C05',name:'Molten Comet',br:'C',col:'A',tier:2,type:'melee',pre:[['zaAnvil',2]],d:'[New Active] ขว้างดาบลาวาหมุนเป็นดาวหางทะลุแนว ร้อน 2 ทุกตัว ดาบบินกลับชุบอีกรอบ · ร่างมังกร พ่นก้อนลาวาเป็นดาวหางแทน',lv:()=>[`${zdX(ZB.zxComet.dmg)} ไป + ${zdX(ZB.zxComet.back)} กลับ แนว ${ZB.zxComet.len}`,`Cooldown ${ZB.zxComet.cd} วิ`]},
  {key:'zxVeil',id:'ZD-C06',name:"Medusa's Veil",br:'C',col:'B',tier:2,type:'self',pre:[['zbVent',2]],d:'[New Active] ม่านไอหินรอบตัว 5 วิ ศัตรูในม่านร้อน 1 ทุก 1 วิและช้าลง อยู่ในม่านครบ 2 วิถูกชุบ',lv:()=>[`${zdM(ZB.zxVeil.dmg)} ทุก ${ZB.zxVeil.tick} วิ รัศมี ${ZB.zxVeil.R}`,`Cooldown ${ZB.zxVeil.cd} วิ`]},
  {key:'zxWind',id:'ZD-C07',name:"Dragon's Second Wind",br:'C',col:'basic',tier:3,passive:1,pre:[['znCyclops',4]],d:'คืนร่างแล้วฟื้น HP และเลือดมังกรเริ่มที่ 25 (ไม่ใช่ศูนย์)',lv:()=>[`ฟื้น HP = เลเวล × ${ZB.zxWind.heal} · เลือดมังกรเริ่ม ${ZB.zxWind.start}`]},
  {key:'zxPlate',id:'ZD-C08',name:'Lava Plate',br:'C',col:'A',tier:3,passive:1,pre:[['zaGuard',1]],d:'ร่างมังกรลาวา: ศัตรูที่ตีโดนเราร้อน 1 · โล่มังกรหนาขึ้น',lv:()=>[`โล่มังกร + VIT × ${ZB.zxPlate.vit}`]},
  {key:'zxGarden',id:'ZD-C09',name:'Petrified Garden',br:'C',col:'B',tier:3,passive:1,pre:[['zbMono',2]],d:'ศัตรูที่ตายตอนเป็นหิน แตกเป็นเศษหินกระเด็นชุบรอบ ๆ',lv:()=>[`${zdM(ZB.zxGarden.dmg)} รัศมี ${ZB.zxGarden.R}`]},
  {key:'zxAscend',id:'ZD-C10',name:'Primordial Ascension',br:'C',col:'basic',tier:4,type:'self',pre:[['znRoar',3]],d:'[New Active] Signature · ร่างคน: เลือดมังกรเต็มทันที และ 15 วิแรกของร่างมังกรครั้งต่อไปเป็นร่างบรรพกาล · เป็นมังกรอยู่: เข้าร่างบรรพกาลทันที + อยู่นานขึ้น 10 วิ · ร่างบรรพกาลตัวใหญ่ขึ้นอีก ทุกการโจมตีนับทั้งไฟและหิน',lv:()=>[`ร่างบรรพกาล ${ZB.zxAscend.T} วิ`,`Cooldown ${ZB.zxAscend.cd} วิ`]},
- {key:'zxTyphon',id:'ZD-C11',name:"Typhon's Wrath",br:'C',col:'A',tier:4,type:'melee',pre:[['zaUlt',1]],d:'[New Active] ทุบเป้าเดียว 3 ครั้ง ทุกครั้งร้อนเต็มแล้วชุบ (ระเบิดลาวา 3 รอบ) ไว้ทุ่มตอนบอสเปิดช่อง · ร่างมังกร กัด–ตะปบ–ฟาดหาง',lv:()=>[`${zdX(ZB.zxTyphon.dmg)} × ${ZB.zxTyphon.n} + ระเบิดลาวา`,`Cooldown ${ZB.zxTyphon.cd} วิ`]},
+ {key:'zxTyphon',id:'ZD-C11',name:"Typhon's Wrath",br:'C',col:'A',tier:4,type:'melee',pre:[['zaUlt',1]],d:'[New Active] ฟันเป้าเดียว 3 ครั้ง ทุกครั้งร้อนเต็มแล้วชุบ (ระเบิดลาวา 3 รอบ) ไว้ทุ่มตอนบอสเปิดช่อง · ร่างมังกร กัด–ตะปบ–ฟาดหาง',lv:()=>[`${zdX(ZB.zxTyphon.dmg)} × ${ZB.zxTyphon.n} + ระเบิดลาวา`,`Cooldown ${ZB.zxTyphon.cd} วิ`]},
  {key:'zxEmbrace',id:'ZD-C12',name:"Gaia's Embrace",br:'C',col:'B',tier:4,type:'ground',radius:()=>ZB.zxEmbrace.R,pre:[['zbUlt',1]],d:'[New Active] มือหินของไกอาโผล่จากพื้นโอบวง 3 วิ ทุกตัวในวงเป็นหินตลอด (ข้ามกันหิน) · บอส: ร้าว + ลดเกจ KO หนัก',lv:()=>[`${zdM(ZB.zxEmbrace.dmg)} ทุก ${ZB.zxEmbrace.tick} วิ รัศมี ${ZB.zxEmbrace.R}`,`Cooldown ${ZB.zxEmbrace.cd} วิ`]}
 ];
 const ZD_DN={};for(const d of ZD_DEFS)if(d.dn)ZD_DN[d.key]=d.dn;
@@ -268,13 +268,19 @@ class ZdFlash{constructor(o){Object.assign(this,{t:0,life:.16,layer:'top',z:24,r
   draw(){const k=this.t/this.life,[x,y]=P(this.x,this.y,this.z),a=1-k,r=this.r*(.6+.6*eOut(k));zdGlow(x,y,r*1.5,this.col,.55*a);ctx.save();ctx.globalCompositeOperation='lighter';ctx.translate(x,y);ctx.rotate(this.an);ctx.fillStyle=hexA('#ffffff',.9*a);
     for(let i=0;i<4;i++){ctx.rotate(Math.PI/2);ctx.beginPath();ctx.moveTo(0,-r*.13);ctx.lineTo(r,0);ctx.lineTo(0,r*.13);ctx.closePath();ctx.fill();}ctx.restore();}}
 function zdSpark(e,big,col){const z=(e.boss?36:24)+(e.z||0);addFx(new ZdFlash({x:e.x,y:e.y,z,r:big?32:18,col}));zdSparks(e.x,e.y,z,big?6:3,col);}
-/* a heavy hammer arc on the ground plane round the hero (short, thick) */
+/* a sword slash on the ground plane round the hero (2026-11-23: the owner's knight carries a sword): a tapered crescent that sweeps
+   from a thin tail to a pointed tip, white-hot edge, soft glow; heavy = the quench strike (wider, stone colour) */
 class ZdSwing{constructor(o){Object.assign(this,{t:0,life:.26,layer:'top',z:22,span:1.7,R:66,col:ZDC.fire,heavy:0},o);this.x=player.x;this.y=player.y;}update(dt){this.t+=dt;return this.t<this.life;}
-  draw(){const k=this.t/this.life,sw=eOut(Math.min(1,k*2.4)),a=1-Math.max(0,(k-.42)/.58),a0=this.phi-this.span/2,a1=a0+this.span*sw,[cx,cy]=P(this.x,this.y,this.z),w=this.heavy?1.5:1;
-    ctx.save();ctx.globalCompositeOperation='lighter';ctx.translate(cx,cy);ctx.scale(1,K);ctx.lineCap='round';
-    ctx.strokeStyle=hexA(this.col,.26*a);ctx.lineWidth=26*w;ctx.beginPath();ctx.arc(0,0,this.R*.74,a0,a1);ctx.stroke();
-    ctx.strokeStyle=hexA(this.col,.75*a);ctx.lineWidth=9*w;ctx.beginPath();ctx.arc(0,0,this.R*.82,Math.max(a0,a1-1.1),a1);ctx.stroke();
-    ctx.strokeStyle=hexA('#ffffff',.9*a);ctx.lineWidth=3*w;ctx.beginPath();ctx.arc(0,0,this.R*.85,Math.max(a0,a1-.6),a1);ctx.stroke();ctx.restore();}}
+  draw(){const k=this.t/this.life,sw=eOut(Math.min(1,k*2.6)),a=1-Math.max(0,(k-.4)/.6),a0=this.phi-this.span/2,a1=a0+this.span*sw;if(a1-a0<.04||a<=0)return;
+    const [cx,cy]=P(this.x,this.y,this.z),R=this.R*(this.heavy?1.08:1),W=(this.heavy?18:12)*(.55+.45*sw),N=20,sh=u=>Math.pow(u,1.2)*Math.pow(1-u,.35)/.437;
+    const cres=(r,wm)=>{ctx.beginPath();for(let i=0;i<=N;i++){const an=a0+(a1-a0)*i/N;ctx.lineTo(Math.cos(an)*r,Math.sin(an)*r);}
+      for(let i=N;i>=0;i--){const u=i/N,an=a0+(a1-a0)*u,rr=r-W*wm*sh(u);ctx.lineTo(Math.cos(an)*rr,Math.sin(an)*rr);}ctx.closePath();};
+    const stone=this.col===ZDC.stone2||this.col===ZDC.marble,dk=stone?'#4a3c30':'#7a1e0c';   /* dark backing so the cut reads on snow too (VFX_STYLE_REF_TH.md) */
+    ctx.save();ctx.translate(cx,cy);ctx.scale(1,K);
+    ctx.globalCompositeOperation='lighter';ctx.fillStyle=hexA(this.col,.26*a);cres(R+6,1.8);ctx.fill();
+    ctx.globalCompositeOperation='source-over';ctx.fillStyle=hexA(dk,.5*a);cres(R-1,1.25);ctx.fill();
+    ctx.fillStyle=hexA(this.col,.85*a);cres(R,.95);ctx.fill();
+    ctx.fillStyle=hexA('#fff6e8',.92*a);cres(R,.34);ctx.fill();ctx.restore();}}
 /* three claw rakes across a target */
 class ZdClaw{constructor(o){Object.assign(this,{t:0,life:.24,layer:'top',col:ZDC.fire,L:44},o);}update(dt){this.t+=dt;return this.t<this.life;}
   draw(){const k=this.t/this.life,e=this.e,[x,y]=P(e.x,e.y,(e.boss?36:24)+(e.z||0)),sw=eOut(Math.min(1,k*2.6)),a=1-Math.max(0,(k-.45)/.55),ang=this.ang;
@@ -344,7 +350,7 @@ class ZdShot{constructor(o){Object.assign(this,{t:0,T:.45,layer:'top',arc:120,s:
   update(dt){this.t+=dt;const k=Math.min(1,this.t/this.T);if(!this.done&&k>=1){this.done=1;this.onLand&&this.onLand(this.x1,this.y1);}return !this.done;}
   draw(){const k=Math.min(1,this.t/this.T),wx=lerp(this.x0,this.x1,k),wy=lerp(this.y0,this.y1,k),z=30+this.arc*Math.sin(Math.PI*k),[x,y]=P(wx,wy,z),[gx,gy]=P(wx,wy);ctx.save();ctx.globalAlpha=.22;ctx.fillStyle='#000';ctx.beginPath();ctx.ellipse(gx,gy,16*this.s,5*this.s,0,0,TAU);ctx.fill();ctx.restore();
     if(this.kind==='lava'){zdGlow(x,y,26*this.s,ZDC.lava,.8);zdChunk(x,y,9*this.s,this.t*9,ZDC.fire,1,3);}else{zdChunk(x,y,15*this.s,this.t*6,'#bdae94',1,5);zdGlow(x,y,20*this.s,ZDC.amber,.25);}}}
-/* the comet hammer: flies out along a line, then back to the hero (pierces) */
+/* the comet sword: spins out along a line, then back to the hero (pierces) */
 class ZdComet{constructor(o){Object.assign(this,{t:0,layer:'top',speed:820,len:320,back:0,z:40,lava:0},o);this.d=0;this.hits=new Set();this.dir=1;this.x0=this.x;this.y0=this.y;this.trail=[];}
   update(dt){this.t+=dt;const st=this.speed*dt;if(this.dir>0){this.d+=st;const end=this.d>=this.len||!zdFree(this.x0+Math.cos(this.phi)*this.d,this.y0+Math.sin(this.phi)*this.d);this.x=this.x0+Math.cos(this.phi)*this.d;this.y=this.y0+Math.sin(this.phi)*this.d;
       for(const e of enemies){if(e.dead||e.hidden||this.hits.has(e))continue;if(Math.hypot(e.x-this.x,e.y-this.y)<e.r+this.w*.6){this.hits.add(e);this.onOut&&this.onOut(e);}}
@@ -353,10 +359,15 @@ class ZdComet{constructor(o){Object.assign(this,{t:0,layer:'top',speed:820,len:3
       for(const e of enemies){if(e.dead||e.hidden||this.hits.has(e))continue;if(Math.hypot(e.x-this.x,e.y-this.y)<e.r+this.w*.6){this.hits.add(e);this.onBack&&this.onBack(e);}}}
     this.trail.push([this.x,this.y]);if(this.trail.length>10)this.trail.shift();return true;}
   draw(){const n=this.trail.length;ctx.save();ctx.globalCompositeOperation='lighter';ctx.lineCap='round';for(let i=1;i<n;i++){const [ax,ay]=P(this.trail[i-1][0],this.trail[i-1][1],this.z),[bx,by]=P(this.trail[i][0],this.trail[i][1],this.z),k=i/n;ctx.strokeStyle=hexA(ZDC.fire,.55*k);ctx.lineWidth=12*k;ctx.beginPath();ctx.moveTo(ax,ay);ctx.lineTo(bx,by);ctx.stroke();}ctx.restore();
-    const [x,y]=P(this.x,this.y,this.z);zdGlow(x,y,30,ZDC.lava,.8);if(this.lava)zdChunk(x,y,10,this.t*10,ZDC.fire,1,2);else zdHammerPic(x,y,this.t*14,1.1);}}
-/* a code-drawn forge hammer (handle + two-faced head: molten / marble) */
-function zdHammerPic(x,y,rot,s){ctx.save();ctx.translate(x,y);ctx.rotate(rot);ctx.scale(s,s);ctx.strokeStyle='#5a3a1e';ctx.lineWidth=4;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(0,18);ctx.lineTo(0,-6);ctx.stroke();
-  ctx.fillStyle='#4a4038';ctx.strokeStyle='#1e140c';ctx.lineWidth=1.2;ctx.fillRect(-13,-14,26,11);ctx.strokeRect(-13,-14,26,11);ctx.fillStyle=ZDC.fire;ctx.fillRect(7,-14,6,11);ctx.fillStyle=ZDC.marble;ctx.fillRect(-13,-14,6,11);ctx.restore();zdGlow(x,y,14*s,ZDC.fire,.4);}
+    const [x,y]=P(this.x,this.y,this.z);zdGlow(x,y,30,ZDC.lava,.8);if(this.lava)zdChunk(x,y,10,this.t*10,ZDC.fire,1,2);else zdSwordPic(x,y,this.t*14,1.1);}}
+/* a code-drawn forge sword like the owner's knight carries: white marble blade with a lava core, gold crossguard + ruby, dark grip, gold pommel */
+function zdSwordPic(x,y,rot,s){ctx.save();ctx.translate(x,y);ctx.rotate(rot);ctx.scale(s,s);ctx.lineJoin='round';ctx.lineCap='round';
+  ctx.fillStyle='#f6f1e8';ctx.strokeStyle='#2a1a10';ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(-4.2,-2);ctx.lineTo(-3.4,-26);ctx.lineTo(0,-33);ctx.lineTo(3.4,-26);ctx.lineTo(4.2,-2);ctx.closePath();ctx.fill();ctx.stroke();
+  ctx.strokeStyle=ZDC.fire;ctx.lineWidth=1.7;ctx.beginPath();ctx.moveTo(0,-4);ctx.lineTo(0,-27);ctx.stroke();
+  ctx.fillStyle='#e8b23a';ctx.strokeStyle='#2a1a10';ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(-11,-3);ctx.quadraticCurveTo(0,1,11,-3);ctx.lineTo(9,1.5);ctx.quadraticCurveTo(0,4,-9,1.5);ctx.closePath();ctx.fill();ctx.stroke();
+  ctx.fillStyle='#d8242a';ctx.beginPath();ctx.arc(0,-.4,1.8,0,TAU);ctx.fill();
+  ctx.fillStyle='#5a2418';ctx.fillRect(-1.8,2,3.6,10);ctx.strokeRect(-1.8,2,3.6,10);
+  ctx.fillStyle='#e8b23a';ctx.beginPath();ctx.arc(0,13.5,2.6,0,TAU);ctx.fill();ctx.stroke();ctx.restore();zdGlow(x,y,16*s,ZDC.fire,.4);}
 /* Gorgon's eye opening in the sky */
 class ZdEye{constructor(o){Object.assign(this,{t:0,life:1.3,layer:'top',R:240},o);}update(dt){this.t+=dt;return this.t<this.life;}
   draw(){const k=this.t/this.life,op=eOut(Math.min(1,k*2.2)),a=k<.75?1:1-(k-.75)/.25,[x,y]=P(this.x,this.y,170),s=34;ctx.save();ctx.globalAlpha=a;zdGlow(x,y,s*3,ZDC.amber,.45);
@@ -594,7 +605,7 @@ function zdRevert(why){if(!ZD.form)return;const f=ZD.form;ZD.form=null;ZD.revT=g
 /* =====================================================================
    6. SKILL ACTIONS
    ===================================================================== */
-/* hammer swings on the attack clip: n strikes, each lands on its measured contact frame (copied from the raven's thrusts) */
+/* sword swings on the attack clip: n strikes, each lands on its measured contact frame (copied from the raven's thrusts) */
 function zdSwings(o){faceTo(o.phi);const d=atkDir(player.dir),ct=CT(d),sp=(o.speed||1)*aspd();let s=[];const n=o.n||1;
   for(let i=0;i<n;i++){const last=i===n-1;s=s.concat(last?seq('attack',d,Math.max(0,ct-(i>0&&o.lastFrom!=null?o.lastFrom:3)),null,(o.lastSpeed||1.3)*sp):seq('attack',d,ct-2,ct+1,(o.midSpeed||3)*sp));}
   const ks=[];for(let i=0;i<n;i++)ks.push(seqIndex(s,'attack',ct,i));const ev=ks.map((kC,i)=>({t:seqTimeAt(s,kC),f:a=>o.f(a,i,i===n-1)}));
@@ -610,11 +621,11 @@ function zdDash(a,dt,t0,t1,sx,sy,dx,dy,arc,col){if(a.t<t0||a.t>t1+.001)return;co
 function zdMoveAct(o){faceTo(o.phi);const T=o.T,s=seq('walk',player.dir,0,null,seqTotal(seq('walk',player.dir,0,null,1))/(T+(o.tail||.15)));
   return act({key:o.key,name:o.name,seq:s,windup:T,dur:T+(o.tail||.15),hitList:[],update:(a,dt)=>{zdDash(a,dt,0,T,o.sx,o.sy,o.dx,o.dy,o.arc||0,o.col);o.update&&o.update(a,dt);if(a.t>T)player.z=0;},events:o.events||[]});}
 
-/* ---------- normal attack: forge hammer (human) · Magma Claw (A drake) · Quake Stomp (B drake) ---------- */
+/* ---------- normal attack: forge blade (human) · Magma Claw (A drake) · Quake Stomp (B drake) ---------- */
 function mkZdBasic(tgt){zdEnsure();if(ZD.form==='A')return zdClawBasic(tgt);if(ZD.form==='B')return zdStompBasic(tgt);
   const lv=Math.max(1,zdL('znHammer')),chain=ZB.znHammer.chain[lv-1]+(zdL('zxSmith')?1:0);if(gameTime-player.basicLast>1.2||player.basicIdx>=chain)player.basicIdx=0;
   const idx=player.basicIdx,last=idx===chain-1,phi=angTo(tgt),col=last?ZDC.stone2:ZDC.fire;
-  return zdSwings({key:'basic',name:last?'Forge Hammer · Quench':'Forge Hammer '+(idx+1),phi,n:1,lastSpeed:last?1.1:2.0,glow:col,f:a=>{player.basicIdx=idx+1;player.basicLast=gameTime;
+  return zdSwings({key:'basic',name:last?'Forge Blade · Quench':'Forge Blade '+(idx+1),phi,n:1,lastSpeed:last?1.1:2.0,glow:col,f:a=>{player.basicIdx=idx+1;player.basicLast=gameTime;
     if(tgt.dead||dist(player,tgt)>BASIC_RANGE+40+tgt.r)return;addFx(new ZdSwing({phi,col,R:60,heavy:last}));
     const d=hurt(tgt,last?ZB.znHammer.last:ZB.znHammer.hit,{skill:'basic',auto:true,br:'basic',knock:[phi,last?30:14]});
     if(d>0){ZD.fightT=gameTime;zdGain('basic');const C=zdC('basic',{q:'b'});if(last){if(zdL('zxSmith')){for(const e of zdNear(tgt.x,tgt.y,ZB.zxSmith.R))zdQuench(e,C);addFx(new ZdQuake({x:tgt.x,y:tgt.y,R:ZB.zxSmith.R,stone:1}));}else zdQuench(tgt,C);}else zdHeat(tgt,1);}
@@ -639,16 +650,16 @@ function mkZnBreath(c){const t=zdTgt(c,ZB.znBreath.range+60),phi=zdPhi(c,t),R=zd
 function mkZnSkin(c){return zdCast({key:'znSkin',name:'Stone Skin',speed:2.6,glow:ZDC.stone2,f:()=>{addBuff('znSkin',ZB.znSkin.T);addFx(new GRing({x:player.x,y:player.y,r0:10,r1:56,w:6,color:ZDC.stone2,life:.4}));zdRocks(player.x,player.y,8,{spd:60,z:30,up:.6,col:ZDC.marble});}});}
 function mkZnLeap(c){const L=zdLv(ZB.znLeap.dist,'znLeap'),t=zdTgt(c,L);let [gx,gy]=zdGround(c,t,L*.7);const phi=Math.atan2(gy-player.y,gx-player.x),dd=Math.min(L,Math.hypot(gx-player.x,gy-player.y)),[dx,dy]=zdPathEnd(player.x,player.y,phi,dd),
     R=ZB.znLeap.R*(ZD.form?1.3:1),m=zdLv(ZB.znLeap.dmg,'znLeap'),C=zdC('znLeap',{q:'b'}),T=.42;
-  return zdMoveAct({key:'znLeap',name:ZD.form?'Dragon Pounce':'Anvil Leap',phi,T,sx:player.x,sy:player.y,dx,dy,arc:ZD.form?60:90,col:ZDC.fire,events:[{t:T,f:a=>{player.z=0;
+  return zdMoveAct({key:'znLeap',name:ZD.form?'Dragon Pounce':'Quenching Plunge',phi,T,sx:player.x,sy:player.y,dx,dy,arc:ZD.form?60:90,col:ZDC.fire,events:[{t:T,f:a=>{player.z=0;
     for(const e of zdNear(player.x,player.y,R)){if(zdHit(e,m,'znLeap',C,{big:true})>0){zdQuench(e,C);a.hitList.push(e);a.hitConfirmed=true;}}addFx(new ZdQuake({x:player.x,y:player.y,R:R+20,stone:zdQMode(C)==='B'}));shake(2.4);stop(50);}}]});}
 function mkZnRoar(c){return zdCast({key:'znRoar',name:ZD.form?'Dragon Roar · Blood Surge':'Dragon Roar',speed:2.2,glow:ZDC.fire,f:()=>{const R=ZB.znRoar.R,fl=zdLv(ZB.znRoar.flinch,'znRoar');
   for(const e of zdNear(player.x,player.y,R))if(!zdBig(e))applyCC(e,{flinch:fl});
   if(ZD.form)ZD.g=Math.min(ZD_BAL.blood.cap,ZD.g+ZB.znRoar.blood);else zdGain('roar');ZD.fightT=gameTime;
   for(let i=0;i<3;i++)setFxTimer(.001+i*.1,()=>addFx(new GRing({x:player.x,y:player.y,r0:20,r1:R+i*20,w:7-i*2,color:i?ZDC.fire2:ZDC.fire,life:.4})));addFx(new ZdCone({x:player.x,y:player.y,phi:player.phi,R:R,half:1.2,kind:'roar',life:.5}));shake(2);}});}
 
-/* ---------- A · Etna's Magma Hammer (human) ---------- */
+/* ---------- A · Etna's Magma Blade (human) ---------- */
 function mkZaSear(c){const t=zdTgt(c,ZB.zaSear.range);if(!t){msg('ไม่มีเป้าหมาย');return null;}const phi=angTo(t),m=zdLv(ZB.zaSear.dmg,'zaSear'),C=zdC('zaSear',{q:'A'});
-  return zdSwings({key:'zaSear',name:'Searing Hammer',phi,n:2,midSpeed:2.6,lastSpeed:1.5,lastFrom:1,glow:ZDC.lava,f:(a,i,last)=>{if(t.dead||dist(player,t)>ZB.zaSear.range+t.r+40)return;
+  return zdSwings({key:'zaSear',name:'Searing Blade',phi,n:2,midSpeed:2.6,lastSpeed:1.5,lastFrom:1,glow:ZDC.lava,f:(a,i,last)=>{if(t.dead||dist(player,t)>ZB.zaSear.range+t.r+40)return;
     const col=last?ZDC.stone2:ZDC.lava;addFx(new ZdSwing({phi,col,R:66,heavy:last}));if(zdHit(t,m,'zaSear',C,{big:last})>0){if(!last)zdHeat(t,2);else zdQuench(t,C);}zdSpark(t,last,col);a.hitList.push(t);a.hitConfirmed=true;shake(last?1.4:.8);stop(last?40:24);}});}
 function mkZaQuake(c){const R=ZB.zaQuake.R,m=zdLv(ZB.zaQuake.dmg,'zaQuake'),C=zdC('zaQuake',{q:'A'}),t=zdTgt(c,R+60);
   return zdSwings({key:'zaQuake',name:'Forge Quake',phi:zdPhi(c,t),n:1,lastSpeed:1.1,glow:ZDC.lava,f:a=>{for(const e of zdNear(player.x,player.y,R)){if(zdHit(e,m,'zaQuake',C,{big:true})>0){zdQuench(e,C);a.hitList.push(e);a.hitConfirmed=true;}}
@@ -659,7 +670,7 @@ function mkZaRush(c){const t=zdTgt(c,ZB.zaRush.range),phi=zdPhi(c,t),L=ZB.zaRush
     events:[{t:T,f:()=>{zdCinder(sx,sy,player.x,player.y);shake(1);}}]});}
 function zdCinder(x,y,x2,y2){if(!zdL('zaCinder'))return;const C=zdC('zaCinder',{q:'A'});let n=0;zdZone({kind:'cinder',x,y,x2,y2,R:Math.hypot(x2-x,y2-y)/2+30,until:gameTime+ZB.zaCinder.T,tick:ZB.zaCinder.tick,onTick:Zn=>{n++;for(const e of zdSeg(Zn.x,Zn.y,Zn.x2,Zn.y2,ZB.zaCinder.w)){zdHit(e,ZB.zaCinder.dmg,'zaCinder',C,{noTag:1});if(n%2===0)zdHeat(e,1);}}});}
 function mkZaAnvil(c){const t=zdTgt(c,ZB.zaAnvil.range);if(!t){msg('ไม่มีเป้าหมาย');return null;}const phi=angTo(t),m=zdLv(ZB.zaAnvil.dmg,'zaAnvil'),C=zdC('zaAnvil',{q:'A'});
-  return zdSwings({key:'zaAnvil',name:'Anvil Breaker',phi,n:1,lastSpeed:.95,lastFrom:4,glow:ZDC.stone2,f:a=>{if(t.dead||dist(player,t)>ZB.zaAnvil.range+t.r+40)return;addFx(new ZdSwing({phi,col:ZDC.stone2,R:70,heavy:1}));
+  return zdSwings({key:'zaAnvil',name:'Anvil Cleaver',phi,n:1,lastSpeed:.95,lastFrom:4,glow:ZDC.stone2,f:a=>{if(t.dead||dist(player,t)>ZB.zaAnvil.range+t.r+40)return;addFx(new ZdSwing({phi,col:ZDC.stone2,R:70,heavy:1}));
     if(zdHit(t,m,'zaAnvil',C,{big:true})>0)zdQuench(t,C,{dbl:1});addFx(new ZdQuake({x:t.x,y:t.y,R:70,col:ZDC.fire}));zdSpark(t,true,ZDC.stone2);a.hitList.push(t);a.hitConfirmed=true;shake(2.6);stop(70);}});}
 function mkZaGeyser(c){const t=zdTgt(c,ZB.zaGeyser.range),[x,y]=zdGround(c,t,160),R=ZB.zaGeyser.R,m=zdLv(ZB.zaGeyser.dmg,'zaGeyser'),C=zdC('zaGeyser',{q:'A'});
   return zdCast({key:'zaGeyser',name:'Lava Geyser',phi:Math.atan2(y-player.y,x-player.x),speed:2.2,glow:ZDC.lava,f:()=>{for(let i=0;i<ZB.zaGeyser.n;i++)setFxTimer(.001+i*ZB.zaGeyser.gap,()=>{
@@ -891,8 +902,8 @@ function installDrake(){
   Object.assign(BUFFDEF,{znSkin:{n:'Stone Skin',c:ZDC.stone2,i:'SKIN'},zbAegis:{n:'Marble Aegis',c:ZDC.marble,i:'AEGIS'},zdFormA:{n:'ร่างมังกรลาวาเอตนา',c:ZDC.lava,i:'MAGMA'},zdFormB:{n:'ร่างมังกรภูผาแห่งไกอา',c:ZDC.amber,i:'MOUNT'},
     zdShield:{n:'โล่มังกร',c:ZDC.fire2,i:'SHLD'},zdBlood:{n:'เลือดมังกร',c:ZDC.fire,i:'BLOOD'},zdPrim:{n:'ร่างบรรพกาล',c:ZDC.gold,i:'PRIM'},zdHide:{n:'Obsidian Hide',c:ZDC.obs,i:'HIDE'}});
   JOB.name='Forgeborn Hatchling';JOB.hpA=1.6;JOB.hpB=6;JOB.spB=3;
-  ITEMS.forgebornHammer={n:'Forgeborn Hammer',slot:'rhand',two:1,kind:'Forge Hammer',atk:140,matk:130,wlv:3,aspd:156,ref:6,cards:2,w:150,b:{vit:2},size:{small:.75,medium:1,large:1},d:'ค้อนเตาหลอมสองหน้า หน้าหนึ่งลาวา อีกหน้าหินอ่อน VIT +2'};
-  ITEMS.etnaMaul={n:'Etna Maul',slot:'rhand',two:1,kind:'Forge Hammer',atk:160,matk:150,wlv:4,aspd:154,ref:4,cards:1,w:170,b:{str:2,int:2},size:{small:.75,medium:1,large:1},d:'ค้อนจากเตาเฮฟเฟสตัสใต้เอตนา STR +2 INT +2'};
+  ITEMS.forgebornHammer={n:'Forgeborn Blade',slot:'rhand',two:1,kind:'Forge Blade',atk:140,matk:130,wlv:3,aspd:156,ref:6,cards:2,w:150,b:{vit:2},size:{small:.75,medium:1,large:1},d:'ดาบเตาหลอม ใบหินอ่อนขาว แกนลาวา ด้ามทองฝังทับทิม VIT +2'};
+  ITEMS.etnaMaul={n:'Etna Greatsword',slot:'rhand',two:1,kind:'Forge Blade',atk:160,matk:150,wlv:4,aspd:154,ref:4,cards:1,w:170,b:{str:2,int:2},size:{small:.75,medium:1,large:1},d:'ดาบใหญ่จากเตาเฮฟเฟสตัสใต้เอตนา STR +2 INT +2'};
   EQ.rhand='forgebornHammer';INV.length=0;INV.push('etnaMaul','vikinghelm','ringPrec','clipLuck');
   /* hooks */
   window.jgHit=()=>0;window.jgCrit=()=>0;window.jgCritDmg=()=>0;window.jgDmgTaken=()=>1;
@@ -955,6 +966,15 @@ function zdIconSpec(d){const k=d.key,br=d.br,col=br==='A'?'#ffb38a':br==='B'?'#f
     L=(a,b,c,e,cl=col,w=2.6,x='')=>`<path d="M${a} ${b} L${c} ${e}" stroke="${cl}" stroke-width="${w}" stroke-linecap="round" fill="none" ${x}/>`;
   const hammer=(x1,y1,x2,y2,face=fire,w=3.2)=>{const a=Math.atan2(y2-y1,x2-x1),ux=Math.cos(a),uy=Math.sin(a),nx=-uy,ny=ux,hl=8.5,ht=4.6,p=(s,t)=>`${(x2+nx*s+ux*t).toFixed(1)} ${(y2+ny*s+uy*t).toFixed(1)}`;
     return L(x1,y1,x2-ux*2,y2-uy*2,'#8a5a2e',w)+`<path d="M${p(-hl,-ht)} L${p(hl,-ht)} L${p(hl,ht)} L${p(-hl,ht)} Z" fill="#5a5048" stroke="${ink}" stroke-width="1.2"/><path d="M${p(hl-3.6,-ht)} L${p(hl,-ht)} L${p(hl,ht)} L${p(hl-3.6,ht)} Z" fill="${face}"/><path d="M${p(-hl,-ht)} L${p(-hl+3.6,-ht)} L${p(-hl+3.6,ht)} L${p(-hl,ht)} Z" fill="${marble}"/>`;};
+  /* the knight's sword (owner's art 2026-11-23): x1,y1 = pommel end, x2,y2 = tip · white blade, lava core in the glow colour, gold crossguard + ruby */
+  const sword=(x1,y1,x2,y2,glow=fire,w=3.2)=>{const a=Math.atan2(y2-y1,x2-x1),ux=Math.cos(a),uy=Math.sin(a),nx=-uy,ny=ux,Lg=Math.hypot(x2-x1,y2-y1),g=Lg*.26,bw=2.3+w*.25,
+      Q=(t,s2)=>[x1+ux*t+nx*s2,y1+uy*t+ny*s2],q=(t,s2)=>Q(t,s2).map(v=>v.toFixed(1)).join(' '),pm=Q(-.4,0),rb=Q(g,0);
+    return `<path d="M${q(0,0)} L${q(g-1,0)}" stroke="${ink}" stroke-width="${w+1.6}" stroke-linecap="round"/><path d="M${q(0,0)} L${q(g-1,0)}" stroke="#6a2a1c" stroke-width="${w}" stroke-linecap="round"/>`+
+      `<circle cx="${pm[0].toFixed(1)}" cy="${pm[1].toFixed(1)}" r="2.2" fill="${gold}" stroke="${ink}" stroke-width="1"/>`+
+      `<path d="M${q(g+1,-bw)} L${q(Lg-4.5,-bw*.85)} L${q(Lg,0)} L${q(Lg-4.5,bw*.85)} L${q(g+1,bw)} Z" fill="#f4efe6" stroke="${ink}" stroke-width="1.2" stroke-linejoin="round"/>`+
+      `<path d="M${q(g+3,0)} L${q(Lg-6,0)}" stroke="${glow}" stroke-width="1.5" stroke-linecap="round"/>`+
+      `<path d="M${q(g,-6.8)} L${q(g,6.8)}" stroke="${ink}" stroke-width="4.6" stroke-linecap="round"/><path d="M${q(g,-6.8)} L${q(g,6.8)}" stroke="${gold}" stroke-width="2.6" stroke-linecap="round"/>`+
+      `<circle cx="${rb[0].toFixed(1)}" cy="${rb[1].toFixed(1)}" r="1.6" fill="#d8242a" stroke="${ink}" stroke-width=".6"/>`;};
   const flame=(cx,cy,s=1,c1=fire,c2=fire2)=>`<path d="M${cx} ${cy-14*s} C${cx+9*s} ${cy-4*s} ${cx+8*s} ${cy+8*s} ${cx} ${cy+9*s} C${cx-8*s} ${cy+8*s} ${cx-9*s} ${cy-2*s} ${cx-3*s} ${cy-8*s} C${cx-3*s} ${cy-3*s} ${cx} ${cy-3*s} ${cx} ${cy-14*s} Z" fill="${c1}" stroke="${ink}" stroke-width="1"/><path d="M${cx} ${cy-5*s} C${cx+4*s} ${cy} ${cx+3*s} ${cy+6*s} ${cx} ${cy+6*s} C${cx-3*s} ${cy+6*s} ${cx-4*s} ${cy+1*s} ${cx} ${cy-5*s} Z" fill="${c2}"/>`;
   const rock=(cx,cy,s=1,c=stone)=>`<path d="M${cx-9*s} ${cy+6*s} L${cx-7*s} ${cy-4*s} L${cx-1*s} ${cy-8*s} L${cx+7*s} ${cy-5*s} L${cx+9*s} ${cy+4*s} L${cx+2*s} ${cy+8*s} Z" fill="${c}" stroke="${ink}" stroke-width="1.1"/><path d="M${cx-1*s} ${cy-8*s} L${cx+1*s} ${cy} L${cx+9*s} ${cy+4*s} M${cx+1*s} ${cy} L${cx-9*s} ${cy+6*s}" stroke="${ink}" stroke-opacity=".35" stroke-width=".9" fill="none"/>`;
   const head=(cx,cy,s=1,c='#c0402a',eye=fire2)=>`<g transform="translate(${cx} ${cy}) scale(${s})"><path d="M-13 6 Q-14 -4 -6 -8 L-9 -16 L-1 -9 Q6 -10 10 -5 L16 -3 Q17 1 13 3 L16 6 Q11 9 4 8 Q-2 12 -13 6 Z" fill="${c}" stroke="${ink}" stroke-width="1.3" stroke-linejoin="round"/><path d="M-4 -9 L-12 -18 L-3 -12 Z" fill="${gold}" stroke="${ink}" stroke-width=".8"/><circle cx="4" cy="-3" r="1.9" fill="${eye}"/><path d="M8 4 L12 5" stroke="${ink}" stroke-width="1"/></g>`;
@@ -971,21 +991,21 @@ function zdIconSpec(d){const k=d.key,br=d.br,col=br==='A'?'#ffb38a':br==='B'?'#f
   const shield=(c=col,fill=bg)=>`<path d="M22 7 L35 12 Q35 30 22 38 Q9 30 9 12 Z" fill="${fill}" stroke="${c}" stroke-width="2.2"/>`;
   const hand=(x,y,s=1,c=stone)=>`<g transform="translate(${x} ${y}) scale(${s})"><path d="M-6 0 L-6 -10 L-5 -16 L-3 -10 L-2 -18 L0 -10 L1 -17 L3 -10 L4 -15 L6 -9 L8 -11 L8 -5 L6 0 Z" fill="${c}" stroke="${ink}" stroke-width="1"/></g>`;
   const G={
-    znHammer:hammer(10,36,30,14)+flame(34,12,.45),
+    znHammer:sword(9,37,32,12)+flame(35,10,.42),
     znBreath:flame(16,24,.7)+flame(26,18,.8)+flame(33,28,.6)+`<path d="M5 26 L12 22 M5 30 L12 28" stroke="${col}" stroke-width="2"/>`,
     znSkin:`<path d="M22 6 L34 12 L34 26 L22 38 L10 26 L10 12 Z" fill="${marble}" stroke="${ink}" stroke-width="1.4"/><path d="M10 19 L34 19 M16 12 L16 32 M28 12 L28 32 M22 6 L22 38" stroke="#b8ab92" stroke-width="1.1"/>`,
-    znLeap:`<path d="M8 30 Q18 6 34 22" stroke="${col}" stroke-width="1.8" stroke-dasharray="3 3" fill="none"/>`+hammer(26,30,34,20)+crack(),
+    znLeap:`<path d="M5 34 Q6 10 24 6" stroke="${col}" stroke-width="1.8" stroke-dasharray="3 3" fill="none"/><g transform="translate(0 9)">`+crack()+`</g>`+sword(28,3,22,32),
     znCyclops:`<circle cx="22" cy="19" r="11" fill="#e8d8b8" stroke="${ink}" stroke-width="1.3"/>`+eye(22,19,.55)+hammer(26,40,36,30,fire,2.6),
     znCore:`<circle cx="22" cy="22" r="10" fill="${lava}" stroke="${ink}" stroke-width="1.3"/><circle cx="22" cy="22" r="5" fill="${fire2}"/>`+flame(10,16,.4)+flame(34,16,.4)+flame(22,36,.4),
     znRoar:head(20,22,1.05,'#a85a2a')+`<path d="M33 14 Q38 22 33 30 M37 11 Q43 22 37 33" stroke="${col}" stroke-width="2" fill="none"/>`,
     zaHeart:head(22,22,1.1,'#b02a12',fire2)+flame(32,30,.45,lava),
-    zaSear:hammer(9,36,28,15,lava)+star(32,12,5,fire2)+star(36,22,3.5,fire),
+    zaSear:sword(8,37,30,14,lava)+star(32,12,5,fire2)+star(36,22,3.5,fire),
     zaBurst:star(22,22,16,fire)+star(22,22,9,fire2)+`<circle cx="22" cy="22" r="4" fill="#fff"/>`,
-    zaQuake:ground()+hammer(14,8,22,28,lava)+crack(fire),
+    zaQuake:ground()+`<g transform="translate(0 11)">`+crack(fire)+`</g>`+sword(20,1,22,33,lava),
     zaAfter:ring(8,fire,2.4)+ring(14,lava,2,'stroke-dasharray="4 3"')+crack(fire2),
-    zaRush:hammer(22,30,34,16,lava)+`<path d="M4 18 L16 18 M2 24 L14 24 M6 30 L16 30" stroke="${fire}" stroke-width="2.2" stroke-linecap="round"/>`,
+    zaRush:sword(15,33,36,13,lava)+`<path d="M4 18 L16 18 M2 24 L14 24 M6 30 L16 30" stroke="${fire}" stroke-width="2.2" stroke-linecap="round"/>`,
     zaCinder:flame(10,32,.45)+flame(20,28,.5)+flame(30,24,.55)+`<path d="M4 38 L40 24" stroke="${lava}" stroke-width="2.4" stroke-dasharray="4 3"/>`,
-    zaAnvil:`<path d="M8 30 L36 30 L32 24 L14 24 Q8 22 6 18 L16 18 L16 24 Z" fill="#4a4048" stroke="${ink}" stroke-width="1.2"/><path d="M18 30 L16 38 L28 38 L26 30 Z" fill="#3a3038"/>`+hammer(30,6,22,18,lava,2.6),
+    zaAnvil:`<path d="M8 30 L36 30 L32 24 L14 24 Q8 22 6 18 L16 18 L16 24 Z" fill="#4a4048" stroke="${ink}" stroke-width="1.2"/><path d="M18 30 L16 38 L28 38 L26 30 Z" fill="#3a3038"/>`+sword(35,2,23,21,lava,2.6),
     zaCrack:shield(stone,'#3a2a20')+crack(fire),
     zaGeyser:ground('#3a2418')+`<path d="M18 34 Q16 18 20 6 Q22 12 24 6 Q28 18 26 34 Z" fill="${lava}" stroke="${ink}" stroke-width="1.1"/><path d="M20 30 Q20 18 22 12 Q24 18 24 30 Z" fill="${fire2}"/>`,
     zaPool:`<ellipse cx="22" cy="28" rx="16" ry="8" fill="${lava}" stroke="${ink}" stroke-width="1.3"/><ellipse cx="22" cy="27" rx="10" ry="4.5" fill="${fire2}" opacity=".8"/><circle cx="16" cy="25" r="2" fill="#fff3c8"/><circle cx="27" cy="29" r="1.6" fill="#fff3c8"/>`+steam(30,22,fire2),
@@ -1008,17 +1028,17 @@ function zdIconSpec(d){const k=d.key,br=d.br,col=br==='A'?'#ffb38a':br==='B'?'#f
     zbAegis:shield(marble,'#d8cdb8')+`<path d="M15 14 Q22 22 29 14 M14 22 Q22 30 30 22" stroke="#a89878" stroke-width="1.4" fill="none"/>`,
     zbUlt:eye(22,20,1.15)+`<path d="M6 38 L12 30 L18 36 L24 28 L30 36 L38 30" stroke="${stone}" stroke-width="2" fill="none"/>`,
     zbProph:`<path d="M12 36 L22 12 L32 36" stroke="#a89878" stroke-width="2.4" fill="none"/><path d="M14 30 L30 30" stroke="#a89878" stroke-width="2"/>`+eye(22,14,.5)+steam(34,24),
-    zxSmith:hammer(8,36,26,16,fire)+star(30,10,3,fire2)+star(36,16,3,fire2)+star(34,24,3,fire2)+star(28,30,3,marble),
+    zxSmith:sword(8,37,29,14,fire)+star(30,10,3,fire2)+star(36,16,3,fire2)+star(34,24,3,fire2)+star(28,30,3,marble),
     zxWhite:flame(22,24,1.15,'#fff4d0','#ffffff')+`<circle cx="22" cy="24" r="14" fill="none" stroke="${fire2}" stroke-width="1.4"/>`,
     zxStare:eye(16,20,.75)+`<path d="M26 20 L38 14 M26 20 L38 28" stroke="${amber}" stroke-width="2"/>`+rock(36,34,.4),
     zxLiving:`<path d="M22 6 L34 12 L34 26 L22 38 L10 26 L10 12 Z" fill="${marble}" stroke="${ink}" stroke-width="1.3"/>`+star(22,22,9,amber),
-    zxComet:`<path d="M4 38 L22 22" stroke="${fire}" stroke-width="6" stroke-linecap="round" opacity=".5"/>`+hammer(18,28,30,14,lava,3)+star(30,14,5,fire2),
+    zxComet:`<path d="M3 24 L15 13" stroke="${lava}" stroke-width="3.6" stroke-linecap="round" opacity=".75"/><path d="M10 41 L22 30" stroke="${fire}" stroke-width="3.6" stroke-linecap="round" opacity=".75"/><path d="M2 33 L9 27" stroke="${fire2}" stroke-width="2.4" stroke-linecap="round" opacity=".9"/>`+sword(13,33,32,12,lava,3)+star(32,12,5,fire2),
     zxVeil:`<circle cx="22" cy="22" r="15" fill="#d8cdb8" opacity=".35"/>`+ring(15,marble,1.8,'stroke-dasharray="5 3"')+rock(22,24,.7),
     zxWind:head(20,24,.95,'#c0402a')+`<path d="M30 12 Q38 14 34 20 Q30 24 36 26" stroke="${col}" stroke-width="2" fill="none"/>`,
     zxPlate:`<path d="M10 12 L34 12 L32 34 L12 34 Z" fill="#2a1a18" stroke="${ink}" stroke-width="1.3"/><path d="M12 20 L32 20 M13 27 L31 27 M22 12 L22 34" stroke="${lava}" stroke-width="1.6"/>`,
     zxGarden:rock(14,30,.8)+rock(30,30,.7)+rock(22,16,.6)+star(22,26,6,amber),
     zxAscend:head(22,24,1.15,gold,'#ffffff')+`<path d="M10 40 Q22 34 34 40" stroke="${gold}" stroke-width="2" fill="none"/>`+star(36,8,4,'#fff'),
-    zxTyphon:hammer(8,36,24,18,lava)+star(30,12,5,fire2)+star(35,20,4,fire)+star(30,28,3.5,fire2),
+    zxTyphon:sword(8,37,28,16,lava)+star(30,12,5,fire2)+star(35,20,4,fire)+star(30,28,3.5,fire2),
     zxEmbrace:hand(10,34,1.1)+hand(34,34,1.1)+hand(22,30,1.2)+ring(15,amber,1.8)
   };
   const g=G[k]||flame(22,22,1);

@@ -86,7 +86,7 @@ const HERO={
   T('baApep','Coils of Apep','res',[1],{res:'baHex',th:'คำสาป +1 เพิ่ม'}),T('baWrap','Burial Linen','res',[1,2],{res:'baHex',th:'คำสาป +1 / +2 เพิ่ม'}),
   T('bbAnubis','Jackal Howl','res',[1],{res:'bbSoul',th:'วิญญาณ +1'}),T('bbGate','Tomb Door','res',[1,2],{res:'bbSoul',th:'วิญญาณ +1 / +2'})],
  drake:[
-  T('znSkin','Basalt Scales','shield',[4]),T('znLeap','Anvil Shock','cc',[.8],{cc:'stun'}),T('znRoar','Wyrm Call','buff',[30],{T:6}),
+  T('znSkin','Basalt Scales','shield',[4]),T('znLeap','Blade Tremor','cc',[.8],{cc:'stun'}),T('znRoar','Wyrm Call','buff',[30],{T:6}),
   T('zaRush','Ember Wake','splash',[.5],{R:80}),T('zaAnvil','Second Strike','echo',[.6]),T('zaGuard','Obsidian Riposte','buff',[30,55],{T:5}),T('zaUlt','Ash Cloud','cc',[1.5],{cc:'stun'}),
   T('zbChain','Bedrock Bind','sp',[15]),T('zbMono','Shard Rain','splash',[.5],{R:90}),T('zbAegis','Marble Bulwark','shield',[3,5]),T('zbUlt','Stone Gaze','cc',[1.5],{cc:'stun'})],
  wukong:[

@@ -15,12 +15,16 @@ usage:
          for things drawn by code from still views (the drake's dragon forms). Prints a JS table
          {DIR:[w,h,fx,fy]} with the ground point of each view (fx = centre of the feet, fy = bottom of the body
          mass: rows narrower than 18 % of the widest row — a tail tip pointing at the camera — do not count).
-  python3 -I tools/dir8cut.py startv OUT_DIR S=a.png SE=b.png:flip E=c.png NE=d.png N=e.png [size=900] [feet=.84] [ht=450] [clean=0]
-      -> OUT_DIR/start_<DIR>.png like `start`, but from ONE picture per view (the owner sends views as separate
+  python3 -I tools/dir8cut.py startv OUT_DIR S=a.png SE=b.png:flip E=c.png NE=d.png N=e.png [size=900|WxH] [feet=.84] [ht=450] [clean=0] [suf=]
+      -> OUT_DIR/start_<DIR><suf>.png like `start`, but from ONE picture per view (the owner sends views as separate
          images). The first view sets one common scale (its body = ht px tall); ':flip' mirrors a view first
          (a front three-quarter view drawn facing left becomes SE). Room above the head for a staff raised overhead.
          clean=0 skips the green-spot painting: a hero with no green in the design only has small background gaps
          (between laurel leaves, staff and hand) that would turn into dark specks.
+         size=WxH makes a non-square frame. The owner's video tool renders at 480p (short side 480): in a square
+         frame a body at 50 % is only ~240 px tall in the clip and fine details turn to mush (sheep 2026-11-23), so
+         use a TALL 1080x1920 frame for idle / walk / buff (ht 900 feet .88 -> ~400 px in the clip) and a WIDE
+         1920x1080 frame for the attack swing (ht 660 feet .9 -> ~290 px).
 Views are found as the big shapes on the sheet, read left->right, top->bottom (index 0..n-1), like statichero.py."""
 import sys, os, numpy as np
 from PIL import Image
@@ -157,12 +161,13 @@ def pics(sheet, prefix, rest):
     print('{' + ','.join('%s:[%s]' % (n, ','.join(str(v) for v in tab[n])) for n, _ in order) + '}')
 
 def startv(outdir, rest):
-    d = {'size': '900', 'feet': '.84', 'ht': '450', 'clean': '1'}; items = []
+    d = {'size': '900', 'feet': '.84', 'ht': '450', 'clean': '1', 'suf': ''}; items = []
     for s in rest:
         k, _, v = s.partition('=')
         if k in d: d[k] = v
         else: items.append((k, v))
-    S, feet, ht = int(d['size']), float(d['feet']), float(d['ht'])
+    W, _, H = d['size'].partition('x'); W = int(W); H = int(H or W)
+    feet, ht = float(d['feet']), float(d['ht'])
     os.makedirs(outdir, exist_ok=True)
     def body(src):
         im, key, a, lab, views = load(src)
@@ -185,14 +190,16 @@ def startv(outdir, rest):
         al = a[sl] * m[sl]
         cx = (al.sum(0) * np.arange(al.shape[1])).sum() / al.sum()
         bot = ys.max() - sl[0].start
-        can = np.empty((S, S, 3), np.float32); can[:] = key
-        ox, oy = int(round(S / 2 - cx)), int(round(S * feet - bot))
+        can = np.empty((H, W, 3), np.float32); can[:] = key
+        ox, oy = int(round(W / 2 - cx)), int(round(H * feet - bot))
         h, w = crop.shape[:2]
-        X0, Y0 = max(0, ox), max(0, oy); X1, Y1 = min(S, ox + w), min(S, oy + h)
+        X0, Y0 = max(0, ox), max(0, oy); X1, Y1 = min(W, ox + w), min(H, oy + h)
         can[Y0:Y1, X0:X1] = crop[Y0 - oy:Y1 - oy, X0 - ox:X1 - ox]
-        Image.fromarray(np.clip(can, 0, 255).astype(np.uint8)).save(os.path.join(outdir, 'start_%s.png' % name))
-        print(name, path.split('/')[-1], 'flip' if flag == 'flip' else '', 'scale %.3f' % k, 'body', w, 'x', ys.max() - ys.min() + 1,
-              'px, top at', oy + ys.min() - sl[0].start, 'green spots', fixed)
+        Image.fromarray(np.clip(can, 0, 255).astype(np.uint8)).save(os.path.join(outdir, 'start_%s%s.png' % (name, d['suf'])))
+        bh = ys.max() - ys.min() + 1; top = oy + ys.min() - sl[0].start
+        print(name, path.split('/')[-1], 'flip' if flag == 'flip' else '', 'scale %.3f' % k, 'body', w, 'x', bh,
+              'px, top at', top, '| free (body units) above %.2f left %.2f right %.2f' % (top / bh, ox / bh, (W - ox - w) / bh),
+              '| in a 480p clip %d px' % round(bh * 480 / min(W, H)), '| green spots', fixed)
 
 if __name__ == '__main__':
     if sys.argv[1] == 'startv': startv(sys.argv[2], sys.argv[3:]); sys.exit()

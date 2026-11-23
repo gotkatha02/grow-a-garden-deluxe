@@ -164,7 +164,7 @@ const PAIR=g=>[3+1.7*g,2+1.33*g,1+.78*g];
    before, a crafted weapon gave only ATK (or only MATK), so a two-way hero lost ~120 MATK by 'upgrading'. W0 = the starting weapon (EQ.rhand before the save loads). */
 const W0=(()=>{const w=ITEMS[EQ.rhand]||{};return {atk:w.atk||0,matk:w.matk||0};})();
 const wPut=(put,magic,m)=>{if(W0.atk>0&&W0.matk>0){const hi=W0.matk>W0.atk?'matk':'atk',lo=hi==='atk'?'matk':'atk';put(hi,m);put(lo,m*W0[lo]/W0[hi]);}else put(magic?'matk':'atk',m);};                                        // town pair stat 1 / 2 / third stat
-const W_NOUN={wolf:'Greataxe',rhino:'Knuckles',owl:'Crossbow',jaguar:'Fang Daggers',croc:'Spear',axolotl:'Bracelets',cat:'Katana',kitsune:'Staff',bastet:'Tome',anubis:'Flail',dragon:'Knuckles',lion:'Cestus',hippo:'Scepter',sheep:'Crook',raven:'Rune Spear',wukong:'Ringed Staff',drake:'Forge Hammer'};   // crafted / dropped weapon noun per hero (was 'Weapon' for the 8 newer heroes)
+const W_NOUN={wolf:'Greataxe',rhino:'Knuckles',owl:'Crossbow',jaguar:'Fang Daggers',croc:'Spear',axolotl:'Bracelets',cat:'Katana',kitsune:'Staff',bastet:'Tome',anubis:'Flail',dragon:'Knuckles',lion:'Cestus',hippo:'Scepter',sheep:'Crook',raven:'Rune Spear',wukong:'Ringed Staff',drake:'Forge Blade'};   // crafted / dropped weapon noun per hero (was 'Weapon' for the 8 newer heroes)
 
 /* ---------------- special stats (rolled on every craft) ----------------
    value = max × (0.4 + 0.6·grade/9) × random(0.3…1) · count 1 (60%) / 2 (30%) / 3 (10%) · each stat once per item
