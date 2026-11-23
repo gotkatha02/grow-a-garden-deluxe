@@ -37,7 +37,7 @@ const WK_BAL={
     gnHair:{N:[5,4,4,3],dmg:[.9,1.0,1.1,1.2]},
     gnCloud:{dist:[220,260,300],cd:[10,9,8],mp:10,T:3,range:300},
     gnBand:{aspd:[1,1.5,2],cc:[.2,.4,.6]},
-    gnPeach:{heal:[4,6,8],per:[.25,.4,.5],T:8,cd:20,mp:12},
+    gnPeach:{heal:[4,6,8],per:[.25,.4,.5],T:8,cd:20,mp:12,gap:1},   // gap: the per-autospell heal comes at most once a second (OP check 2026-11-22: ~80–125 HP/s ungated)
     gnSub:{T:3,beats:[3,4],cd:[16,14],mp:10,hop:90},
     gnEyes:{hit:[4,8,12]},
     gnForge:{cut:[.15,.3,.45],burn:2},
@@ -102,7 +102,7 @@ const WK_DEFS=[
  {key:'gnHair',id:'WK-B02',name:'Hair Clone',br:'basic',row:1,max:4,passive:1,auto:1,d:'(Passive · ออโต้) ครบจังหวะ ร่างขนทองโผล่ข้างเป้า ฟาดซ้ำ 1 ที แล้วกลับเป็นขน (ท่าออโต้แรก ใช้ได้ทั้งสองสาย)',lv:i=>[`ทุก ${WKS.gnHair.N[i-1]} จังหวะ · ${gX(WKS.gnHair.dmg[i-1])}`]},
  {key:'gnCloud',id:'WK-B03',name:'Somersault Cloud',br:'basic',row:2,max:3,type:'melee',d:'ตีลังกาขึ้นเมฆพุ่งเข้าหาเป้า (ไม่มีเป้า = พุ่งไปข้างหน้า) ลงพื้นแล้ว 3 วิ ตีปกติโดน = 2 จังหวะ',lv:i=>[`ไกล ${WKS.gnCloud.dist[i-1]}`,`Cooldown ${WKS.gnCloud.cd[i-1]} วิ`]},
  {key:'gnBand',id:'WK-B04',name:'Golden Headband',br:'basic',row:2,max:3,passive:1,d:'(Passive) ห่วงทองรัดเกล้าที่วิญญาณหงอคงสิงอยู่ ตีไวขึ้น ติดสตั้น / ชะงักสั้นลง',lv:i=>[`ASPD +${WKS.gnBand.aspd[i-1]}`,`ชะงัก / สตั้นสั้นลง ${WKS.gnBand.cc[i-1]} วิ`]},
- {key:'gnPeach',id:'WK-B05',name:'Peach of Immortality',br:'basic',row:3,max:3,type:'self',d:'กินลูกท้อเซียน ฟื้น HP ทันที แล้ว 8 วิ ท่าออโต้ทุกครั้งฟื้น HP อีกนิด',lv:i=>[`ฟื้น HP เลเวล × ${WKS.gnPeach.heal[i-1]}`,`ต่อท่าออโต้ เลเวล × ${WKS.gnPeach.per[i-1]} นาน ${WKS.gnPeach.T} วิ`,`Cooldown ${WKS.gnPeach.cd} วิ`]},
+ {key:'gnPeach',id:'WK-B05',name:'Peach of Immortality',br:'basic',row:3,max:3,type:'self',d:'กินลูกท้อเซียน ฟื้น HP ทันที แล้ว 8 วิ ท่าออโต้ฟื้น HP อีกนิด (ไม่เกินวิละครั้ง)',lv:i=>[`ฟื้น HP เลเวล × ${WKS.gnPeach.heal[i-1]}`,`ต่อท่าออโต้ เลเวล × ${WKS.gnPeach.per[i-1]} (ไม่เกิน ${WKS.gnPeach.gap} ครั้ง/วิ) นาน ${WKS.gnPeach.T} วิ`,`Cooldown ${WKS.gnPeach.cd} วิ`]},
  {key:'gnSub',id:'WK-B06',name:'Hair Substitute',br:'basic',row:3,max:2,type:'self',d:'3 วิ: การโจมตีครั้งถัดไปที่จะโดนเรา ร่างขนรับแทน (กันเต็ม) เราดีดถอย 90 · ท่าออโต้ทุกท่าได้จังหวะเพิ่ม — ไว้รับท่าใหญ่ของบอส',lv:i=>[`ท่าออโต้ทุกท่า +${WKS.gnSub.beats[i-1]} จังหวะ`,`Cooldown ${WKS.gnSub.cd[i-1]} วิ`]},
  {key:'gnEyes',id:'WK-B07',name:'Fiery Golden Eyes',br:'basic',row:4,max:3,passive:1,d:'(Passive) ตาไฟทองจากเตาแปดทิศ: ตีปกติคริ = 2 จังหวะ · HIT เพิ่ม · บอสที่แยกร่างหลอก: ร่างปลอม 1 ร่างต่อรอบกลไกโดนขีดกากบาทให้เห็น (ช่วย ไม่ข้ามกลไก)',lv:i=>[`HIT +${WKS.gnEyes.hit[i-1]}`]},
  {key:'gnForge',id:'WK-B08',name:'Furnace-Forged Body',br:'basic',row:4,max:3,passive:1,d:'(Passive) กายที่ถูกเผาในเตาแปดทิศ 49 วันแล้วไม่ตาย: ดาเมจที่ได้รับลด ติดไฟสั้นลง',lv:i=>[`ดาเมจที่ได้รับ −เลเวล × ${WKS.gnForge.cut[i-1]} ต่อครั้ง`,`ติดไฟ −${WKS.gnForge.burn} วิ`]},
@@ -160,7 +160,7 @@ const WK_DEFS=[
    --------------------------------------------------------------------- */
 const WK={beats:{},last:{},flash:{},nextFire:0,rp:0,rpE:null,rpT:-99,rpPop:0,lastTgt:null,lastHitT:-99,lastCrit:0,
   swarm:[],slotN:0,growAcc:0,growT:-99,blowT:-99,form:'none',form2:'none',shift:'short',willT:-99,
-  cloudT:-99,peachT:-99,peachAT:-99,subUntil:-99,furnT:-99,furnAcc:0,trN:0,ultA:-99,ultAOn:0,ultB:-99,ultBOn:0,equalT:-99,
+  cloudT:-99,peachT:-99,peachAT:-99,peachHT:-99,subUntil:-99,furnT:-99,furnAcc:0,trN:0,ultA:-99,ultAOn:0,ultB:-99,ultBOn:0,equalT:-99,
   mob:null,cave:null,storm:null,beatPop:0,_v:null};
 const gL=k=>LV[k]||0;
 /* learned and not switched off by the per-branch bench (window.__BENCH_SKIP also rests that branch's passives) */
@@ -243,7 +243,7 @@ function gAutoTick(){if(gameTime<WK.nextFire||player.hp<=0)return;
 function fireAuto(k,t){const br=gCol(k);let giant=0;
   if(br==='A'){WK.trN++;if(gOn('gaTreasure')&&WK.trN%gLv(WKS.gaTreasure.every,'gaTreasure')===0)giant=1;}
   const F=AUTO_FIRE[k];if(F){F(t,{giant});if(br==='A'&&WK.ultA>gameTime)setFxTimer(.09,()=>{if(!t.dead)F(t,{giant,front:1});});}   // Havoc in Heaven: A autospells come in pairs
-  if(WK.peachT>gameTime){const h=Math.round(PS.lv*gLv(WKS.gnPeach.per,'gnPeach')*(gOn('gxPeach')?2:1));if(h>0){player.hp=Math.min(player.maxHp,player.hp+h);peachPop(h);}}
+  if(WK.peachT>gameTime&&gameTime-(WK.peachHT??-99)>=WKS.gnPeach.gap){WK.peachHT=gameTime;const h=Math.round(PS.lv*gLv(WKS.gnPeach.per,'gnPeach')*(gOn('gxPeach')?2:1));if(h>0){player.hp=Math.min(player.maxHp,player.hp+h);peachPop(h);}}
   WK.fired=(WK.fired||0)+1;}
 /* the beats of one landed normal swing: 1 (crit 2 with the Eyes, 3 in the Furnace) · ×2 for 3 s after a Somersault Cloud landing */
 function swingBeats(crit,base=1){let n=base;if(crit&&gOn('gnEyes'))n+=WK.furnT>gameTime?2:1;if(WK.cloudT>gameTime)n*=2;
