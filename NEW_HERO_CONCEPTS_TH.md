@@ -426,24 +426,34 @@ No steam, no snow, no rock, no ground, no shadow, no effects. No green anywhere 
 - 1 ภาพ × 4 พรอมต์ = 4 คลิปต่อทิศ · ไม่ต้องทำทิศซ้าย (เกมกลับด้านเอง) · คลิปละ 3–5 วิ · ส่งเรียงทิศ S → SE → E → NE → N ทิศละ ยืน → เดิน → ตี → ร่าย
 - ทุกพรอมต์ลงท้ายด้วยกติกาเดียวกัน: ภาพนิ่งเดิม (ชิบิ เส้นหนา) · พื้นเขียวตลอด · กล้องห้ามขยับ / ซูม (คลิปทิศ N ของแอคโซลอเติล กับคลิปเดินทิศ S ของมังกรเคยซูมจนต้องแก้) · ตัวอยู่กลางภาพขนาดเท่าเดิม หันทางเดิม · ตัวกับไม้เท้าต้องอยู่ในกรอบ · ไม่มีเงา แสงวาบ ประกาย ควัน (เอฟเฟกต์ใส่ด้วยโค้ดในเกม)
 
+ฉบับปรับ 2026-11-23 10:10 (เจ้าของส่งภาพทีละมุม → ให้พรอมต์ 4 ตัวของมุมนั้น): ทุกพรอมต์ขึ้นต้นด้วยประโยคบอกทิศ (กันโมเดลหมุนตัวหันหากล้อง โดยเฉพาะมุมหลัง) · เดินก้าวเร็ว ~2 ก้าว/วิ (คลิปเดินแอคโซลอเติลช้าจนไถลพื้น) · ตี = ท่าเดียวกันทุกทิศ (ฟาดเฉียงสองมือจากเหนือไหล่ขวา) + ห้ามเบลอ · ตี / ร่ายจบแล้วยืนนิ่งจนจบคลิป (ตัดช่วงท่าง่าย)
+
+| ทิศ | {FACING} |
+|---|---|
+| S | He faces straight toward the viewer (front view), exactly as in the picture. |
+| SE | He is seen in a three-quarter front view, facing down and to the right, exactly as in the picture. |
+| E | He is seen in a side view, facing right, exactly as in the picture. |
+| NE | He is seen in a three-quarter back view, facing away from us up and to the right, exactly as in the picture; we mostly see his back and he never turns toward the viewer. |
+| N | His back faces the viewer (back view), exactly as in the picture; he never turns toward the viewer. |
+
 ยืน (idle · วนลูป)
 ```
-Idle loop: he stands in a relaxed ready stance and breathes slowly; his fur, the sash ends and the pompoms sway a little, the staff rings swing gently, and he blinks once. The last frame matches the first frame so the clip loops. Keep the exact look of the picture: hand-painted chibi cartoon, thick dark-brown outlines, flat cel shading — not realistic, not 3D. The background stays plain flat green for the whole clip. The camera never moves or zooms. He stays in the middle of the frame at the same size and keeps facing the same direction as in the picture; his whole body and the whole staff stay inside the frame. No shadow, no flash, no glow, no particles, no smoke, no text.
+Idle loop of the snow monkey in this picture. {FACING} He stands in a relaxed ready stance holding his ringed staff upright in his right hand and breathes slowly; his fur, the red sash ends, the red pompoms and his short tail sway a little, the staff rings swing gently, and he blinks once. The last frame matches the first frame so the clip loops. Keep the exact look of the picture: hand-painted chibi cartoon, thick dark-brown outlines, flat cel shading — not realistic, not 3D. The background stays plain flat green for the whole clip. The camera never moves or zooms. He stays in the middle of the frame at the same size and never turns to another direction; his whole body and the whole staff stay inside the frame. No shadow, no flash, no glow, no particles, no smoke, no text.
 ```
 
 เดิน (walk · วนลูป)
 ```
-Walk loop: he walks in place, like on a treadmill, toward the way he is facing — a light, bouncy monkey walk, the staff swinging a little in his hand. He does not move across the frame and the ground does not move. The last frame matches the first frame so the clip loops. Keep the exact look of the picture: hand-painted chibi cartoon, thick dark-brown outlines, flat cel shading — not realistic, not 3D. The background stays plain flat green for the whole clip. The camera never moves or zooms. He stays in the middle of the frame at the same size and keeps facing the same direction as in the picture; his whole body and the whole staff stay inside the frame. No shadow, no flash, no glow, no particles, no smoke, no text.
+Walk loop of the snow monkey in this picture. {FACING} He walks in place, like on a treadmill, toward the way he is facing: quick, light, bouncy monkey steps (about two steps per second), the ringed staff held upright in his right hand swinging a little with each step, his tail bobbing. He does not move across the frame and the ground does not move. The last frame matches the first frame so the clip loops. Keep the exact look of the picture: hand-painted chibi cartoon, thick dark-brown outlines, flat cel shading — not realistic, not 3D. The background stays plain flat green for the whole clip. The camera never moves or zooms. He stays in the middle of the frame at the same size and never turns to another direction; his whole body and the whole staff stay inside the frame. No shadow, no flash, no glow, no particles, no smoke, no text.
 ```
 
-ตี (attack · ใช้กับตีปกติ + สกิลประชิด)
+ตี (attack · ใช้กับตีปกติ + สกิลประชิด + ร่างขน)
 ```
-Attack: one quick, powerful staff strike toward the way he is facing — a short wind-up, a fast swing, a brief hold at the moment of the hit, then back to his starting pose. His feet stay in place. Keep the exact look of the picture: hand-painted chibi cartoon, thick dark-brown outlines, flat cel shading — not realistic, not 3D. The background stays plain flat green for the whole clip. The camera never moves or zooms. He stays in the middle of the frame at the same size and keeps facing the same direction as in the picture; his whole body and the whole staff stay inside the frame. No shadow, no flash, no glow, no particles, no smoke, no text.
+Attack of the snow monkey in this picture. {FACING} He grips the ringed staff with both hands, pulls it back over his right shoulder in a short wind-up, then swings it down in a fast diagonal arc in front of him toward the way he is facing, holds the moment of the hit for an instant with the ringed head low in front of him, then returns to his starting pose and stands still for the rest of the clip. The whole strike takes about one second. His feet stay in place. Clean outlines in every frame, no motion blur. Keep the exact look of the picture: hand-painted chibi cartoon, thick dark-brown outlines, flat cel shading — not realistic, not 3D. The background stays plain flat green for the whole clip. The camera never moves or zooms. He stays in the middle of the frame at the same size and never turns to another direction; his whole body and the whole staff stay inside the frame. No shadow, no flash, no glow, no particles, no smoke, no text.
 ```
 
 ร่าย (buff · ใช้กับบัฟ / แปลงร่าง / อัลติ)
 ```
-Power-up: he lifts the staff level above his head with both hands and gives a fierce shout, holds it there for a moment, then brings the staff back down to his side and returns to his starting pose. His feet stay in place. Keep the exact look of the picture: hand-painted chibi cartoon, thick dark-brown outlines, flat cel shading — not realistic, not 3D. The background stays plain flat green for the whole clip. The camera never moves or zooms. He stays in the middle of the frame at the same size and keeps facing the same direction as in the picture; his whole body and the whole staff stay inside the frame. No shadow, no flash, no glow, no particles, no smoke, no text.
+Power-up of the snow monkey in this picture. {FACING} He lifts the ringed staff level above his head with both hands and gives a fierce shout, holds that pose for a moment, then brings the staff back down to his side, returns to his starting pose and stands still for the rest of the clip. His feet stay in place. Clean outlines in every frame, no motion blur. Keep the exact look of the picture: hand-painted chibi cartoon, thick dark-brown outlines, flat cel shading — not realistic, not 3D. The background stays plain flat green for the whole clip. The camera never moves or zooms. He stays in the middle of the frame at the same size and never turns to another direction; his whole body and the whole staff stay inside the frame. No shadow, no flash, no glow, no particles, no smoke, no text.
 ```
 
 ### ขั้นต่อไป (นักพรตหิมะ)

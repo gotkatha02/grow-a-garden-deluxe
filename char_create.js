@@ -73,6 +73,21 @@ const css=document.createElement('style');css.textContent=`
 #ccov .cc-rot{position:absolute;bottom:36px;left:8px;width:34px;height:34px;border-radius:50%;border:2px solid #3a2410;background:linear-gradient(#f6d58a,#c8903e);font:900 18px Sarabun;cursor:pointer}#ccov .cc-rot.r{left:auto;right:8px}
 #ccov .cc-pv .btns{display:flex;justify-content:flex-end;gap:8px}
 #ccov .cc-hint{font-size:12px;color:#7a5a2a;margin-top:6px}
+#ccov .cc-dye{margin-top:8px;border-top:1px dashed #b88a4a;padding-top:6px}
+#ccov .cc-dr{display:flex;align-items:flex-start;gap:6px;margin-bottom:5px;font:800 13px Sarabun,sans-serif;color:#3a2410}
+#ccov .cc-dr>span{flex:none;width:76px;padding-top:2px;line-height:1.15}#ccov .cc-dr>span small{display:block;font-weight:600;font-size:11px;color:#8a5a1e}
+#ccov .cc-dr .sw{display:flex;flex-wrap:wrap;gap:4px}
+#ccov .cc-dr button.s{width:21px;height:21px;border-radius:50%;border:2px solid #5a3a14;padding:0;cursor:pointer;box-shadow:inset 0 -3px 4px rgba(0,0,0,.18)}
+#ccov .cc-dr button.s.on{box-shadow:0 0 0 2px #fff8e8,0 0 0 4px #e2574c}
+#ccov .cc-dr input[type=color]{width:26px;height:23px;border:none;padding:0;background:none;cursor:pointer}
+#ccov .cc-dye .cc-hint{margin-top:2px}
+@media (max-height:520px) and (min-width:761px){#ccov .cc{height:98vh;border-width:4px}#ccov .cc-hd{padding:3px}#ccov .cc-hd b{font-size:16px;padding:1px 26px}#ccov .cc-ft{padding:2px;border-top-width:2px}
+  #ccov .cc-form{max-height:calc(100% - 8px);overflow:auto;padding:8px;gap:10px;margin:4px auto}#ccov .cc-left{padding:8px;width:400px}#ccov .cc-row{margin-bottom:6px}
+  #ccov .cc-radar{width:118px;height:118px}#ccov .cc-stats td{padding:0 5px}#ccov .cc-stats td.v{font-size:15px}#ccov .cc-left>.cc-hint{display:none}
+  #ccov .cc-pv{width:210px}#ccov .cc-card{min-height:190px}#ccov .cc-spr canvas{width:176px;height:220px}#ccov .cc-rot{bottom:30px;width:30px;height:30px}
+  #ccov .cc-left{width:490px}#ccov #ccroll{padding:3px 14px;font-size:13px}#ccov .cc-dye{margin-top:4px;padding-top:4px}
+  #ccov .cc-dr{margin-bottom:3px;font-size:12px}#ccov .cc-dr>span{width:60px}#ccov .cc-dr>span small{font-size:10px}#ccov .cc-dr .sw{gap:3px}
+  #ccov .cc-dr button.s{width:17px;height:17px;border-width:1.5px}#ccov .cc-dr input[type=color]{width:22px;height:18px}#ccov .cc-dye .cc-hint{font-size:11px}}
 @media (max-width:760px){#ccov .cc-arrow{top:28%;width:44px;height:44px}#ccov .cc-info{right:3%;left:3%;width:auto;top:auto;bottom:40px}#ccov .cc-name{font-size:34px}#ccov .cc-name small{font-size:20px}#ccov .cc-info .box{font-size:13px;padding:8px}
   #ccov .cc-form{flex-direction:column;overflow:auto;max-height:100%;padding:10px}#ccov .cc-left{width:auto}#ccov .cc-pv{width:auto}#ccov .cc-card{min-height:160px}#ccov .cc-art{width:92%;opacity:.55}}`;
 document.head.appendChild(css);
@@ -95,15 +110,38 @@ function form(){const h=HEROES[idx],a=art(h.k);
   frame(`<div class="cc-form"><div class="cc-left"><div class="cc-row">Name <input id="ccname" maxlength="16" placeholder="Character Name" value="${(ov.dataset.name||'').replace(/"/g,'')}"></div>
       <div class="cc-stats"><table>${ORDER.map(s=>`<tr><td class="k">${SN[s]}</td><td class="v">${stats[s]}</td></tr>`).join('')}</table>${radar(stats)}</div>
       <div style="text-align:center;margin-top:6px"><button class="cb" id="ccroll">🎲 Random Stats</button></div>
-      <div class="cc-hint">ค่าพื้นฐานของฮีโร่ตัวนี้ (3–12) สุ่มใหม่ได้ไม่จำกัด · เลเวลขึ้นแล้วค่านี้ช่วยให้สถานะโตเร็วขึ้น</div></div>
+      <div class="cc-hint">ค่าพื้นฐานของฮีโร่ตัวนี้ (3–12) สุ่มใหม่ได้ไม่จำกัด · เลเวลขึ้นแล้วค่านี้ช่วยให้สถานะโตเร็วขึ้น</div>${dyeRows(h)}</div>
     <div class="cc-pv"><div class="cc-card cc-spr"><canvas id="cccv" width="240" height="300"></canvas><button class="cc-rot" id="ccrl">‹</button><button class="cc-rot r" id="ccrr">›</button><div class="t">${h.n} · ${h.r}</div></div>
       <div class="btns"><button class="cb" id="ccok">Okay</button><button class="cb dark" id="cccancel">Cancel</button></div></div></div>`,'');
   const nm=ov.querySelector('#ccname');nm.oninput=()=>{ov.dataset.name=nm.value;};
   ov.querySelector('#ccrl').onclick=()=>{spDir=(spDir+1)%8;};ov.querySelector('#ccrr').onclick=()=>{spDir=(spDir+7)%8;};spLoop();
   ov.querySelector('#ccroll').onclick=()=>{stats=roll(h.k);form();};
-  ov.querySelector('#cccancel').onclick=()=>pick();
-  ov.querySelector('#ccok').onclick=()=>{const name=(nm.value||'').trim();if(!name){nm.focus();nm.style.borderColor='#e2574c';return;}create(h,name,stats);};
+  ov.querySelector('#cccancel').onclick=()=>{dyeUndo();pick();};
+  ov.querySelector('#ccok').onclick=()=>{const name=(nm.value||'').trim();if(!name){nm.focus();nm.style.borderColor='#e2574c';return;}dyeKeep(h);create(h,name,stats);};
+  dyeBind(h);
   setTimeout(()=>nm.focus(),50);}
+/* FUR + OUTFIT COLOUR (owner 2026-11-23 'สีขนสีชุดตอนเลือกตัว'): heroes with dye masks (window.HERO_DYE from fashion.js — the wolf
+   for now) pick them here; the face and hands keep their drawn colours. Live on the preview sprite; saved on Okay
+   (af_fur_<hero> / af_cloth_<hero>, the same keys as the wardrobe, Alt+C), undone on Cancel. */
+let dye=null,dyeT=false;
+const DYE=h=>window.HERO_DYE&&HERO_DYE.ok&&h.k===CHAR?HERO_DYE:null;
+const swBg=c=>!c?'linear-gradient(135deg,#f6c8d8 50%,#e8a8b8 50%)':c.includes('|')?`linear-gradient(135deg,${c.split('|')[0]} 50%,${c.split('|')[1]} 50%)`:c;
+function dyeRows(h){const D=DYE(h);if(!D)return '';if(!dye)dye={f:D.fur||'',c:D.cloth||''};
+  const nm=(L,v,def)=>(L.find(x=>x[0]===v)||[0,v?'สีที่เลือกเอง':def])[1];
+  const row=(k,lab,L,cur,def,pk)=>`<div class="cc-dr" data-k="${k}"><span>${lab}<small>${nm(L,cur,def)}</small></span><div class="sw">${L.map(([c,n])=>
+      `<button class="s${c===cur?' on':''}" data-v="${c}" title="${n}" style="background:${k==='c'&&!c?'linear-gradient(135deg,#a0582c 50%,#f0c89a 50%)':swBg(c)}"></button>`).join('')}<input type="color" value="${pk}" title="เลือกสีเอง"></div></div>`;
+  return `<div class="cc-dye">${row('f','สีขน',D.FUR,dye.f,'สีเดิม',dye.f&&!dye.f.includes('|')?dye.f:'#f2c4d4')}${D.CLOTH?row('c','สีชุด',D.CLOTH,dye.c,'หนังเดิม',dye.c||'#a0582c'):''}
+    <div class="cc-hint">หน้ากับมือคงสีเดิม · เปลี่ยนทีหลังได้ที่ตู้เสื้อผ้า</div></div>`;}
+function dyeApply(h){const D=DYE(h);if(!D)return;dyeT=true;window.__DYE_PV=1;D.set(dye.f,dye.c);
+  ov.querySelectorAll('.cc-dr').forEach(r=>{const k=r.dataset.k,cur=k==='f'?dye.f:dye.c,L=k==='f'?D.FUR:D.CLOTH;
+    r.querySelectorAll('button.s').forEach(b=>b.classList.toggle('on',b.dataset.v===cur));
+    r.querySelector('small').textContent=(L.find(x=>x[0]===cur)||[0,cur?'สีที่เลือกเอง':(k==='f'?'สีเดิม':'หนังเดิม')])[1];});}
+function dyeBind(h){if(!DYE(h))return;
+  ov.querySelectorAll('.cc-dr').forEach(r=>{const k=r.dataset.k;
+    r.querySelectorAll('button.s').forEach(b=>b.onclick=()=>{dye[k]=b.dataset.v;dyeApply(h);});
+    const pk=r.querySelector('input[type=color]');if(pk)pk.oninput=e=>{dye[k]=e.target.value;dyeApply(h);};});}
+function dyeKeep(h){if(!DYE(h)||!dyeT)return;try{localStorage.setItem('af_fur_'+h.k,dye.f||'');localStorage.setItem('af_cloth_'+h.k,dye.c||'');}catch(e){}}
+function dyeUndo(){const D=window.HERO_DYE;if(D&&dyeT)D.restore().then(()=>{window.__DYE_PV=0;});else window.__DYE_PV=0;dye=null;dyeT=false;}
 /* sprite preview: the hero's idle animation, turned with the arrows (same drawing as the equipment window) */
 let spDir=0,spRaf=0;const DIRS=['S','SW','W','NW','N','NE','E','SE'];
 function spLoop(){cancelAnimationFrame(spRaf);const cv=document.getElementById('cccv');if(!cv||ov.style.display==='none')return;const g=cv.getContext('2d');
@@ -121,7 +159,8 @@ window.CC_HEROES=HEROES;
 if(!anySave()&&!AFProgress.mode&&!localStorage.getItem('af_cc_pending')){const hide=()=>document.querySelectorAll('body>div').forEach(d=>{if(d.style&&d.style.zIndex==='61'&&d.textContent.includes('เลือกโหมด'))d.style.display='none';});hide();openCreate();}
 /* coming back from 'Create Hero' on another hero: open its form */
 try{const pd=JSON.parse(localStorage.getItem('af_cc_pending')||'null');if(pd&&pd.k===CHAR){localStorage.removeItem('af_cc_pending');document.querySelectorAll('body>div').forEach(d=>{if(d.style&&d.style.zIndex==='61')d.style.display='none';});
-  closable=!!pd.closable;idx=Math.max(0,HEROES.findIndex(h=>h.k===CHAR));stats=roll(CHAR);setTimeout(form,300);}}catch(e){}
+  closable=!!pd.closable;idx=Math.max(0,HEROES.findIndex(h=>h.k===CHAR));stats=roll(CHAR);
+  const open=()=>setTimeout(form,300);if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',open);else open();}}catch(e){}   /* after the page's scripts: fashion.js (colours) loads later than this file */
 /* the hero's name on the HUD */
 try{const o=JSON.parse(localStorage.getItem('af_prog_v1_'+CHAR)||'{}');if(o.name&&o.mode==='play'){const put=()=>{const b=document.querySelector('.nm b');if(b&&b.textContent!==o.name)b.textContent=o.name;};put();const b=document.querySelector('.nm b');if(b)new MutationObserver(put).observe(b,{childList:true,characterData:true,subtree:true});}}catch(e){}
 })();

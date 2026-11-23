@@ -1,0 +1,70 @@
+MINI-BOSS MASTER PICTURES — AZTEC (9 pictures)
+Game: Totem Legend, a 2D isometric fantasy MMORPG (Ragnarok Online feel). Every field and dungeon map of the Aztec lands (jungles, swamps, corn fields, ruined pyramids, sun temples) gets one MINI-BOSS: the leader of that map's monsters — bigger, prouder and more decorated than its kin, with no special powers.
+Attached: the campfire key art (the art style to copy) and the KIN BOARD (a white sheet with the monsters these mini-bosses lead, labelled with the same #numbers as below: #1, #2, #3, #5, #6, #7, #8, #9).
+
+=== HOW TO WORK WITH THIS FILE — READ EVERYTHING FIRST ===
+• This file lists 9 mini-bosses, numbered #1–#9. Draw ONE picture per reply, in order, starting with #1.
+• After each picture write only "#<number> <name> done" and STOP. Wait for me.
+  - "next" = draw the next number.   - "redo" = draw the same number again.   - a number (e.g. "4") = draw that number.
+• Before every picture, re-read STYLE and PICTURE RULES. Every picture must follow them exactly.
+• Never put text, numbers, labels, borders or speech bubbles inside a picture.
+
+=== STYLE (copy the attached pictures) ===
+Friendly hand-painted chibi cartoon, cute-but-dangerous, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft light from the top-left, bright warm colours, clear readable silhouette. Not realistic, not painterly, not 3D. Chibi proportions (big head, short body) even for giants.
+
+=== PICTURE RULES (every picture) ===
+• ONE mini-boss per picture, square 1024×1024, the whole body inside the picture with empty space on every side, nothing cropped.
+• Isometric 3/4 view from about 30° above, facing DOWN-RIGHT (south-east), a proud ready-to-fight pose with its weapon, horns or claws ready.
+• A mini-boss is the LEADER of the monsters of its map: bigger and heavier than them, with one clear leader mark (a crown, a helmet, battle scars, a cape or trophies) and one strong colour accent. Big readable shapes — it must still read clearly when shown small in the game.
+• Background: SOLID FLAT PURE GREEN (#00FF00) — no gradient, no ground, no floor, no shadow, no scenery. NEVER use green on the mini-boss: anything that would normally be green (leaves, moss, jade, frogs, kappa skin) is drawn teal, turquoise, blue, gold, purple or autumn orange instead.
+• No effects floating around it (no smoke clouds, sparkles, motion lines, flying leaves). Small glows ON the body (eyes, runes, lanterns, embers) are fine.
+• Paint everything SOLID — no see-through or half-transparent parts (ghosts, wings, robes, fire and glows are drawn opaque), because the green behind would show through them.
+• The KIN BOARD only shows what the kin look like. Draw the mini-boss alone in its own new pose — never copy the board's labels, frames or white background.
+
+=== MINI-BOSSES IN THIS FILE ===
+  #1 Leafcutter Ant Queen
+  #2 Old Tapir Guardian
+  #3 Macaw Raider Captain
+  #4 Corn Mother
+  #5 Elder Vine Snapper
+  #6 Bog Leech Queen
+  #7 Firefly Queen
+  #8 High Obsidian Priest
+  #9 Sun Sentinel Prime
+
+=== ENTRIES ===
+
+#1 LEAFCUTTER ANT QUEEN — leader of its map's Leafcutter Ant monsters (map Lv 1–6, mini-boss Lv 8)
+   Look: a big glossy rust-red ant queen with a huge head and strong mandibles, a gold Aztec crown plate and turquoise beads, a long striped abdomen, small folded wings, holding a giant yellow-and-orange autumn leaf over her head like a parasol (never green).
+   Kin: shown on the kin board as #1 — keep its species, colours and main features (but no green), make it bigger, older and more decorated.
+
+#2 OLD TAPIR GUARDIAN — leader of its map's Baby Tapir monsters (map Lv 1–9, mini-boss Lv 11)
+   Look: a big gentle old tapir with a dark-brown coat and a few faded cream stripes from its youth, a short flexible snout with a gold nose ring, a woven red-and-yellow blanket on its back with corn cobs and a little stone god idol tied on, sleepy wise eyes.
+   Kin: shown on the kin board as #2 — keep its species, colours and main features (but no green), make it bigger, older and more decorated.
+
+#3 MACAW RAIDER CAPTAIN — leader of its map's Macaw Raider monsters (map Lv 6–12, mini-boss Lv 14)
+   Look: a big scarlet macaw bird-warrior standing on two legs: bright red, yellow and blue feathers, a tall Aztec feather headdress with a gold crest and turquoise discs, gold step-fret armour plates, a feather cape, a red cloth tied round its head like a pirate, an obsidian-edged blade in one claw and a bulging sack of stolen gold in the other, a cocky grin on its big hooked beak.
+   Kin: shown on the kin board as #3 — keep its species, colours and main features (but no green), make it bigger, older and more decorated.
+
+#4 CORN MOTHER — leader of its map's Corn Spirit monsters (map Lv 8–17, mini-boss Lv 19)
+   Look: a tall spirit of the maize fields: her body is a golden ear of corn, long flowing hair of pale corn silk, a dress of dry cream corn husks, a crown of red, blue and yellow corn kernels, a staff wrapped in husks with a gold sun disc on top, glowing amber eyes. Motherly but fierce.
+
+#5 ELDER VINE SNAPPER — leader of its map's Vine Snapper monsters (map Lv 11–17, mini-boss Lv 19)
+   Look: a giant plant-lizard, much bigger than its kin: a long red snapping snout full of sharp white teeth, a body of overlapping teal-blue leaves and coiled teal vines (never green) with crimson spots, thorny vine tail, a big gold Aztec headdress with turquoise discs and teal-blue leaf plumes, a gold ring around its neck, glowing yellow nectar dripping from its jaws.
+   Kin: shown on the kin board as #5 — keep its species, colours and main features (but no green), make it bigger, older and more decorated.
+
+#6 BOG LEECH QUEEN — leader of its map's Swamp Leech monsters (map Lv 15–23, mini-boss Lv 25)
+   Look: a huge fat swamp leech queen: a teal-and-pink striped segmented body, a round pink sucker mouth ringed with tiny teeth, a big Aztec feather headdress with gold discs and turquoise beads, a red patterned blanket with gold trims draped over her back, gold rings along her body, mud dripping from her sides.
+   Kin: shown on the kin board as #6 — keep its species, colours and main features (but no green), make it bigger, older and more decorated.
+
+#7 FIREFLY QUEEN — leader of its map's Glowworm Swarm monsters (map Lv 21–30, mini-boss Lv 32)
+   Look: a giant firefly queen of the bat-god cave: a dark purple bug body standing on thin legs, a big glowing golden abdomen, two long antennae each ending in a glowing lantern bulb, large amber wings (painted solid, not see-through), big round amber eyes, and a gold Aztec crown with turquoise discs.
+   Kin: shown on the kin board as #7 — keep its species, colours and main features (but no green), make it bigger, older and more decorated.
+
+#8 HIGH OBSIDIAN PRIEST — leader of its map's Obsidian Priest monsters (map Lv 55–56, mini-boss Lv 58)
+   Look: a tall high priest in long dark robes with gold trims: a polished black obsidian skull mask with glowing violet eyes, a huge headdress of purple and black feathers with a gold crest, gold ear spools, red body-paint stripes, a tall gold staff topped with a big violet obsidian crystal in one hand and a black obsidian mirror with a gold rim in the other.
+   Kin: shown on the kin board as #8 — keep its species, colours and main features (but no green), make it bigger, older and more decorated.
+
+#9 SUN SENTINEL PRIME — leader of its map's Sun Sentinel monsters (map Lv 56–58, mini-boss Lv 60)
+   Look: a towering guard statue of carved yellow stone with gold inlay: a stern carved face under a tall helmet of carved stone feathers topped with a sun disc, glowing white-gold eyes, a turquoise mosaic chest plate, a big sun-disc shield on one arm and a huge stone longbow with a sun-ray arrow in the other hand.
+   Kin: shown on the kin board as #9 — keep its species, colours and main features (but no green), make it bigger, older and more decorated.

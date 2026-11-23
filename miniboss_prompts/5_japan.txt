@@ -1,0 +1,61 @@
+MINI-BOSS MASTER PICTURES — JAPAN (9 pictures)
+Game: Totem Legend, a 2D isometric fantasy MMORPG (Ragnarok Online feel). Every field and dungeon map of the Japanese lands (sakura hills, rice fields, bamboo groves, hot springs, a pirate coast, a ninja cave, a haunted castle) gets one MINI-BOSS: the leader of that map's monsters — bigger, prouder and more decorated than its kin, with no special powers.
+Attached: the campfire key art (the art style to copy).
+
+=== HOW TO WORK WITH THIS FILE — READ EVERYTHING FIRST ===
+• This file lists 9 mini-bosses, numbered #1–#9. Draw ONE picture per reply, in order, starting with #1.
+• After each picture write only "#<number> <name> done" and STOP. Wait for me.
+  - "next" = draw the next number.   - "redo" = draw the same number again.   - a number (e.g. "4") = draw that number.
+• Before every picture, re-read STYLE and PICTURE RULES. Every picture must follow them exactly.
+• Never put text, numbers, labels, borders or speech bubbles inside a picture.
+
+=== STYLE (copy the attached pictures) ===
+Friendly hand-painted chibi cartoon, cute-but-dangerous, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft light from the top-left, bright warm colours, clear readable silhouette. Not realistic, not painterly, not 3D. Chibi proportions (big head, short body) even for giants.
+
+=== PICTURE RULES (every picture) ===
+• ONE mini-boss per picture, square 1024×1024, the whole body inside the picture with empty space on every side, nothing cropped.
+• Isometric 3/4 view from about 30° above, facing DOWN-RIGHT (south-east), a proud ready-to-fight pose with its weapon, horns or claws ready.
+• A mini-boss is the LEADER of the monsters of its map: bigger and heavier than them, with one clear leader mark (a crown, a helmet, battle scars, a cape or trophies) and one strong colour accent. Big readable shapes — it must still read clearly when shown small in the game.
+• Background: SOLID FLAT PURE GREEN (#00FF00) — no gradient, no ground, no floor, no shadow, no scenery. NEVER use green on the mini-boss: anything that would normally be green (leaves, moss, jade, frogs, kappa skin) is drawn teal, turquoise, blue, gold, purple or autumn orange instead.
+• No effects floating around it (no smoke clouds, sparkles, motion lines, flying leaves). Small glows ON the body (eyes, runes, lanterns, embers) are fine.
+• Paint everything SOLID — no see-through or half-transparent parts (ghosts, wings, robes, fire and glows are drawn opaque), because the green behind would show through them.
+
+=== MINI-BOSSES IN THIS FILE ===
+  #1 Belly-Drum Tanuki
+  #2 Kappa Sumo Champion
+  #3 Great Tengu
+  #4 Red Panda Sensei
+  #5 Octopus Sea Lord
+  #6 Onsen Capybara Master
+  #7 Great Toad Sage
+  #8 Cursed Hina Empress
+  #9 Nue
+
+=== ENTRIES ===
+
+#1 BELLY-DRUM TANUKI — leader of its map's Tanuki monsters (map Lv 1–6, mini-boss Lv 8)
+   Look: a big round tanuki with a huge belly it drums on, a straw kasa hat, a little sake bottle on a cord, a happy squinty face, a fluffy striped tail, and a big yellow leaf on its head (yellow, never green).
+
+#2 KAPPA SUMO CHAMPION — leader of its map's Kappa monsters (map Lv 1–9, mini-boss Lv 11)
+   Look: a strong kappa wrestler with teal-blue skin (never green) and a turtle shell on its back, a water-filled dish on top of its head, a beak, webbed hands, a thick white sumo belt hung with paper zigzag streamers, a proud flexing pose.
+
+#3 GREAT TENGU — leader of its map's Tengu monsters (map Lv 6–12, mini-boss Lv 14)
+   Look: a big mountain tengu with a red face, a long nose, fierce eyes and a white beard, large black feathered wings, dark monk robes with a gold sash, a fan made of seven big feathers, one-tooth wooden geta sandals.
+
+#4 RED PANDA SENSEI — leader of its map's Red Panda monsters (map Lv 8–17, mini-boss Lv 19)
+   Look: an old red panda martial-arts master with rusty-red fur, a fluffy ringed tail, long white eyebrows and moustache, a faded blue gi with a black belt, a staff of pale golden dry bamboo, a calm but sharp stare.
+
+#5 OCTOPUS SEA LORD — leader of its map's Little Octopus monsters (map Lv 11–17, mini-boss Lv 19)
+   Look: a big red-orange octopus pirate lord with a Japanese captain's jinbaori coat, a hachimaki headband, a different weapon in several tentacles (a katana, an oar, a grappling hook), a scar over one eye, a big round head.
+
+#6 ONSEN CAPYBARA MASTER — leader of its map's Onsen Capybara monsters (map Lv 15–23, mini-boss Lv 25)
+   Look: a big calm capybara standing on its back legs, a folded white towel on its head with a yuzu fruit on top, a blue yukata, a wooden bucket in one paw, rosy warm cheeks, unbothered heavy-lidded eyes.
+
+#7 GREAT TOAD SAGE — leader of its map's Giant Toad monsters (map Lv 21–30, mini-boss Lv 32)
+   Look: a huge warty toad with brown and ochre skin, a red bib collar with a gold bell, a stack of old scrolls tied on its back with rope, a straw raincoat cape, a long tongue, wise half-closed golden eyes.
+
+#8 CURSED HINA EMPRESS — leader of its map's Cursed Doll monsters (map Lv 55–56, mini-boss Lv 58)
+   Look: a big creepy-cute hina doll empress with a cracked white porcelain face, long black hair, a gold crown with dangling ornaments, many layers of red, purple and gold kimono, a folding fan, loose puppet strings hanging from her sleeves, one glowing red eye.
+
+#9 NUE — the yokai that rules the haunted castle (map Lv 56–58, mini-boss Lv 60)
+   Look: the castle-haunting chimera yokai: a monkey's face with glowing yellow eyes, a stocky tanuki body, striped tiger legs with claws, and a long snake for a tail with its own head; dark storm-purple fur with lightning-yellow streaks in it.

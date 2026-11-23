@@ -1,0 +1,71 @@
+MINI-BOSS MASTER PICTURES — VIKING (9 pictures)
+Game: Totem Legend, a 2D isometric fantasy MMORPG (Ragnarok Online feel). Every field and dungeon map of the Norse lands (snowy pine woods, fjords, rune moors, Viking ruins, dwarf mines, the wolf cult of Fenrir) gets one MINI-BOSS: the leader of that map's monsters — bigger, prouder and more decorated than its kin, with no special powers.
+Attached: the campfire key art (the art style to copy) and the KIN BOARD (a white sheet with the monsters these mini-bosses lead, labelled with the same #numbers as below: #1, #2, #3, #4, #5, #6, #7, #8, #9).
+
+=== HOW TO WORK WITH THIS FILE — READ EVERYTHING FIRST ===
+• This file lists 9 mini-bosses, numbered #1–#9. Draw ONE picture per reply, in order, starting with #1.
+• After each picture write only "#<number> <name> done" and STOP. Wait for me.
+  - "next" = draw the next number.   - "redo" = draw the same number again.   - a number (e.g. "4") = draw that number.
+• Before every picture, re-read STYLE and PICTURE RULES. Every picture must follow them exactly.
+• Never put text, numbers, labels, borders or speech bubbles inside a picture.
+
+=== STYLE (copy the attached pictures) ===
+Friendly hand-painted chibi cartoon, cute-but-dangerous, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft light from the top-left, bright warm colours, clear readable silhouette. Not realistic, not painterly, not 3D. Chibi proportions (big head, short body) even for giants.
+
+=== PICTURE RULES (every picture) ===
+• ONE mini-boss per picture, square 1024×1024, the whole body inside the picture with empty space on every side, nothing cropped.
+• Isometric 3/4 view from about 30° above, facing DOWN-RIGHT (south-east), a proud ready-to-fight pose with its weapon, horns or claws ready.
+• A mini-boss is the LEADER of the monsters of its map: bigger and heavier than them, with one clear leader mark (a crown, a helmet, battle scars, a cape or trophies) and one strong colour accent. Big readable shapes — it must still read clearly when shown small in the game.
+• Background: SOLID FLAT PURE GREEN (#00FF00) — no gradient, no ground, no floor, no shadow, no scenery. NEVER use green on the mini-boss: anything that would normally be green (leaves, moss, jade, frogs, kappa skin) is drawn teal, turquoise, blue, gold, purple or autumn orange instead.
+• No effects floating around it (no smoke clouds, sparkles, motion lines, flying leaves). Small glows ON the body (eyes, runes, lanterns, embers) are fine.
+• Paint everything SOLID — no see-through or half-transparent parts (ghosts, wings, robes, fire and glows are drawn opaque), because the green behind would show through them.
+• The KIN BOARD only shows what the kin look like. Draw the mini-boss alone in its own new pose — never copy the board's labels, frames or white background.
+
+=== MINI-BOSSES IN THIS FILE ===
+  #1 Alpha Snowfang
+  #2 Frostling King
+  #3 Thatch Troll Chieftain
+  #4 Elder Runestone
+  #5 Avalanche Ram King
+  #6 Narwhal Jarl
+  #7 Mad Foreman Grimbolt
+  #8 Gleipnir Matriarch
+  #9 Draugr Jarl
+
+=== ENTRIES ===
+
+#1 ALPHA SNOWFANG — leader of its map's Snow Pup monsters (map Lv 1–6, mini-boss Lv 8)
+   Look: the mother of the snow pups — a big, very fluffy white she-wolf with ice-blue eyes, ice-blue ear tips and paws like her pups, frost-tipped fur, a carved wooden rune collar with a red wool tassel, a little crown of pinecones and icicles, one torn ear from old fights. Protective and proud, not evil.
+   Kin: shown on the kin board as #1 — keep its species, colours and main features (but no green), make it bigger, older and more decorated.
+
+#2 FROSTLING KING — leader of its map's Big Frostling monsters (map Lv 1–9, mini-boss Lv 11)
+   Look: the king of the frostlings (fluffy white snow-yeti creatures): a huge round body of fluffy white snow-fur with stubby arms and legs, a crest of big blue ice crystals on its head and back, glowing blue eyes, a long beard of blue ice crystals, a crown of icicles, a white fur cape with a blue snowflake pattern, and a big ice-crystal club topped with a glowing snowflake.
+   Kin: shown on the kin board as #2 — keep its species, colours and main features (but no green), make it bigger, older and more decorated.
+
+#3 THATCH TROLL CHIEFTAIN — leader of its map's Thatch Troll monsters (map Lv 6–12, mini-boss Lv 14)
+   Look: a hulking troll with grey-brown warty skin and teal moss patches (never green), a huge pink nose and two tusks, a whole thatched roof of golden straw with a little stone chimney on its back like a shell, a broken wooden door as a shield, a ship's oar as a club, an iron chieftain's arm-ring, and a carved dragon-head from a longship tied to its shoulder as a trophy.
+   Kin: shown on the kin board as #3 — keep its species, colours and main features (but no green), make it bigger, older and more decorated.
+
+#4 ELDER RUNESTONE — leader of its map's Runestone Golem monsters (map Lv 8–17, mini-boss Lv 19)
+   Look: an ancient tall golem built of grey standing stones carved with glowing ice-blue runes, frost-white lichen patches, a crown of five small standing stones on its head, a long beard of frost-white lichen, and a black raven perched on its shoulder. Slow, heavy and wise.
+   Kin: shown on the kin board as #4 — keep its species, colours and main features (but no green), make it bigger, older and more decorated.
+
+#5 AVALANCHE RAM KING — leader of its map's Avalanche Ram monsters (map Lv 11–17, mini-boss Lv 19)
+   Look: a massive mountain ram with enormous spiral horns of clear blue ice crystal, a thick cream-white fleece with snow piled on its back, a grey face, a big brass bell on a leather collar, a bronze ring carved with a rune on one horn, little icicles in its beard, fierce yellow eyes, head lowered ready to charge.
+   Kin: shown on the kin board as #5 — keep its species, colours and main features (but no green), make it bigger, older and more decorated.
+
+#6 NARWHAL JARL — leader of its map's Narwhal Raider monsters (map Lv 15–23, mini-boss Lv 25)
+   Look: a narwhal sea-raider chieftain standing on two flippers: a mottled blue-grey narwhal body with a long spiral ivory tusk, a horned Viking helmet, a fur-trimmed red sea cloak, a round shield painted with a wave, a boarding axe, gold arm rings, and barnacles on its back.
+   Kin: shown on the kin board as #6 — keep its species, colours and main features (but no green), make it bigger, older and more decorated.
+
+#7 MAD FOREMAN GRIMBOLT — leader of its map's Mad Dwarf Ghost monsters (map Lv 21–30, mini-boss Lv 32)
+   Look: the ghost of a dwarf mine foreman: a stout dwarf with dusty brown skin and clothes, wild glowing yellow eyes, a long braided white beard full of ore dust, a dented iron mining helmet with a big lit candle on top, a giant double-headed pickaxe and a ledger of debts chained to his belt; below the waist his body ends in a short curled glowing golden ghost tail (painted solid, not see-through).
+   Kin: shown on the kin board as #7 — keep its species, colours and main features (but no green), make it bigger, older and more decorated.
+
+#8 GLEIPNIR MATRIARCH — leader of its map's Gleipnir Weaver monsters (map Lv 55–56, mini-boss Lv 58)
+   Look: a huge spider matriarch with a midnight-blue carapace etched with glowing silver runes, eight long legs ringed with silver bands, six ice-blue eyes under a crown of silver runes, a shining silver ribbon (the magic chain Gleipnir) streaming from its spinnerets, and a little spindle wound with silver thread on its back.
+   Kin: shown on the kin board as #8 — keep its species, colours and main features (but no green), make it bigger, older and more decorated.
+
+#9 DRAUGR JARL — leader of its map's Draugr monsters (map Lv 56–58, mini-boss Lv 60)
+   Look: an undead Viking chieftain risen from a ship burial: tall and gaunt with grey-blue skin, glowing frost-blue eyes, a rusted gilded helmet with a face mask, a tattered blue cloak embroidered with a gold longship, rusted chainmail, a broad rune sword and a cracked round shield, chains and ship rivets hanging from his belt.
+   Kin: shown on the kin board as #9 — keep its species, colours and main features (but no green), make it bigger, older and more decorated.

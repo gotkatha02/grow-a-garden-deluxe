@@ -567,8 +567,8 @@ body.th-c .ro-st .r span[style]{text-shadow:none}
     'ล้มบอสเก็บเศษ ครบแล้วสร้างวัตถุโบราณของบอสได้ — กด R ใช้พลัง','ใส่ของตราแดนเดียวกัน 2 ชิ้นได้สเตตัสเพิ่ม · 4 ชิ้นปลดพลังตรา'];
   var tip=document.getElementById('bootTip');tip.textContent=TIPS[Math.floor(Math.random()*TIPS.length)];
   var hero='wolf';try{var q=new URLSearchParams(location.search).get('char'),h=(location.hash||'').slice(1);hero=q||(/^[a-z]+$/.test(h)&&h.length>2?h:'')||localStorage.getItem('af_char')||'wolf';}catch(e){}
-  var MB={'assets.js':3.68,'assets_snowwolf.js':.41,'assets_jaguar.js':4.38,'assets_dragon.js':4.67,'assets_owl.js':3.94,'assets_cat.js':4.52,'assets_hippo.js':5.76,'assets_sheep.js':3.38,'assets_axolotl.js':5.68,'assets_rhino.js':3.15,'assets_wukong.js':5.12},SMALL=.033;
-  var total=MB['assets.js']+MB['assets_snowwolf.js']+(MB['assets_'+hero+'.js']||0)+SMALL*76,got=0,lastT=Date.now();
+  var MB={'assets.js':3.68,'assets_snowwolf.js':.41,'assets_jaguar.js':4.38,'assets_dragon.js':4.67,'assets_owl.js':3.94,'assets_cat.js':4.52,'assets_hippo.js':5.76,'assets_sheep.js':3.38,'assets_axolotl.js':5.68,'assets_rhino.js':3.15,'assets_wukong.js':5.12,'assets_fashion.js':.06,'assets_fur.js':.26,'assets_skin.js':.19,'assets_cloth.js':.6},SMALL=.033;
+  var total=MB['assets.js']+MB['assets_snowwolf.js']+(MB['assets_'+hero+'.js']||0)+(hero==='wolf'?1.11:0)+SMALL*76,got=0,lastT=Date.now();   /* the wolf also loads its dye masks */
   function done(e){var t=e.target;if(!t||t.tagName!=='SCRIPT'||!t.src)return;var f=t.src.split('?')[0].split('/').pop();got+=MB[f]||SMALL;lastT=Date.now();}
   document.addEventListener('load',done,true);document.addEventListener('error',done,true);
   var fill=document.getElementById('bootFill'),pct=document.getElementById('bootPct'),shown=0,prev=Date.now(),okT=0,fin=false;
@@ -6096,7 +6096,7 @@ window.AF={levelUp:()=>{if(PS.lv<LV_CAP){PS.lv++;applyStats();player.hp=player.m
 <script src="map_bosses_azt.js?v=2"></script>
 <script src="boss_fenrir.js?v=8"></script>
 <script src="progress.js?v=2"></script>
-<script src="char_create.js?v=2"></script>
+<script src="char_create.js?v=3"></script>
 <script src="skill_shapes.js?v=1"></script>
 <script src="mobile.js?v=6"></script>
 <script src="target_lock.js?v=5"></script>
@@ -6148,6 +6148,6 @@ window.AF={levelUp:()=>{if(PS.lv<LV_CAP){PS.lv++;applyStats();player.hp=player.m
 <script src="guide.js?v=9"></script>
 <script>/* offline cache (sw.js): pictures are kept on the device, so later visits barely download anything; ?nosw=1 removes it */
 if('serviceWorker' in navigator&&location.protocol==='https:'){if(/[?&]nosw=1/.test(location.search))navigator.serviceWorker.getRegistrations().then(a=>a.forEach(r=>r.unregister()));else window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));}</script>
-<script>/* fashion system: wolf sprite only for now */if(CHAR==='wolf')document.write('<script src="assets_fashion.js"><\/script><script src="assets_fur.js"><\/script><script src="assets_skin.js"><\/script><script src="pwing_data.js?v=1"><\/script><script src="fashion.js?v=7"><\/script>');</script>
+<script>/* fashion system: wolf sprite only for now */if(CHAR==='wolf')document.write('<script src="assets_fashion.js"><\/script><script src="assets_fur.js?v=3"><\/script><script src="assets_skin.js"><\/script><script src="assets_cloth.js?v=2"><\/script><script src="pwing_data.js?v=1"><\/script><script src="fashion.js?v=8"><\/script>');</script>
 </body>
 </html>

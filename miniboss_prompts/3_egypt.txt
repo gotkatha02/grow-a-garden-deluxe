@@ -1,0 +1,61 @@
+MINI-BOSS MASTER PICTURES — EGYPT (9 pictures)
+Game: Totem Legend, a 2D isometric fantasy MMORPG (Ragnarok Online feel). Every field and dungeon map of the Egyptian lands (desert dunes, the Nile, oases, ruined temples, royal tombs) gets one MINI-BOSS: the leader of that map's monsters — bigger, prouder and more decorated than its kin, with no special powers.
+Attached: the campfire key art (the art style to copy).
+
+=== HOW TO WORK WITH THIS FILE — READ EVERYTHING FIRST ===
+• This file lists 9 mini-bosses, numbered #1–#9. Draw ONE picture per reply, in order, starting with #1.
+• After each picture write only "#<number> <name> done" and STOP. Wait for me.
+  - "next" = draw the next number.   - "redo" = draw the same number again.   - a number (e.g. "4") = draw that number.
+• Before every picture, re-read STYLE and PICTURE RULES. Every picture must follow them exactly.
+• Never put text, numbers, labels, borders or speech bubbles inside a picture.
+
+=== STYLE (copy the attached pictures) ===
+Friendly hand-painted chibi cartoon, cute-but-dangerous, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft light from the top-left, bright warm colours, clear readable silhouette. Not realistic, not painterly, not 3D. Chibi proportions (big head, short body) even for giants.
+
+=== PICTURE RULES (every picture) ===
+• ONE mini-boss per picture, square 1024×1024, the whole body inside the picture with empty space on every side, nothing cropped.
+• Isometric 3/4 view from about 30° above, facing DOWN-RIGHT (south-east), a proud ready-to-fight pose with its weapon, horns or claws ready.
+• A mini-boss is the LEADER of the monsters of its map: bigger and heavier than them, with one clear leader mark (a crown, a helmet, battle scars, a cape or trophies) and one strong colour accent. Big readable shapes — it must still read clearly when shown small in the game.
+• Background: SOLID FLAT PURE GREEN (#00FF00) — no gradient, no ground, no floor, no shadow, no scenery. NEVER use green on the mini-boss: anything that would normally be green (leaves, moss, jade, frogs, kappa skin) is drawn teal, turquoise, blue, gold, purple or autumn orange instead.
+• No effects floating around it (no smoke clouds, sparkles, motion lines, flying leaves). Small glows ON the body (eyes, runes, lanterns, embers) are fine.
+• Paint everything SOLID — no see-through or half-transparent parts (ghosts, wings, robes, fire and glows are drawn opaque), because the green behind would show through them.
+
+=== MINI-BOSSES IN THIS FILE ===
+  #1 Scarab Roller King
+  #2 Sacred Ibis Elder
+  #3 King Cobra of the Valley
+  #4 Fennec Bandit Chief
+  #5 Vulture Queen
+  #6 Granite Colossus
+  #7 Flesh Beetle Queen
+  #8 Mummy Queen
+  #9 Red Lioness of Sekhmet
+
+=== ENTRIES ===
+
+#1 SCARAB ROLLER KING — leader of its map's Scarab monsters (map Lv 1–6, mini-boss Lv 8)
+   Look: a big glossy lapis-blue scarab beetle with gold edges, standing on its back legs behind a giant ball of shining golden sand that it rolls, a tiny gold sun-disc crown, a proud happy face.
+
+#2 SACRED IBIS ELDER — leader of its map's Ibis monsters (map Lv 1–9, mini-boss Lv 11)
+   Look: a tall white ibis bird with black wing tips, a black head and a long curved black beak, standing upright like a temple scribe, a blue-and-gold collar, a reed pen in one wing and a papyrus scroll in the other, a little gold moon disc on its head.
+
+#3 KING COBRA OF THE VALLEY — leader of its map's Cobra monsters (map Lv 6–12, mini-boss Lv 14)
+   Look: a huge rearing cobra with golden-brown scales and a very wide hood marked with a big blue eye pattern and edged like a blue-and-gold striped pharaoh headdress, glowing ruby eyes, a gold bead collar, long fangs, its body coiled under it.
+
+#4 FENNEC BANDIT CHIEF — leader of its map's Desert Fox monsters (map Lv 8–17, mini-boss Lv 19)
+   Look: a sly fennec fox with enormous ears and cream fur, standing on two legs, a striped desert scarf over its mouth, a curved khopesh sword, a belt hung with stolen gold trinkets, and a pouch spilling scarab amulets.
+
+#5 VULTURE QUEEN — leader of its map's Desert Vulture monsters (map Lv 11–17, mini-boss Lv 19)
+   Look: a big vulture with dark brown wings spread wide, a bald pinkish head with a tall white feathered crown, a gold broad collar, gold caps on its talons, piercing red eyes. Regal and a little creepy.
+
+#6 GRANITE COLOSSUS — leader of its map's Granite Golem monsters (map Lv 15–23, mini-boss Lv 25)
+   Look: a huge walking statue of red granite blocks: a pharaoh's guard with a striped stone headdress, a cracked body with gold-filled cracks and hieroglyph carvings, a stone was-sceptre staff, glowing gold eyes. Heavy and slow.
+
+#7 FLESH BEETLE QUEEN — leader of its map's Flesh Beetle monsters (map Lv 35–44, mini-boss Lv 46)
+   Look: a large dark-red armoured beetle queen with a gold scarab crown, huge snapping jaws, a swollen pale egg-sac abdomen, glowing amber eyes and gold-tipped legs. Creepy tomb vibe, still cartoon.
+
+#8 MUMMY QUEEN — leader of its map's Royal Mummy monsters (map Lv 55–56, mini-boss Lv 58)
+   Look: a tall, elegant mummy queen wrapped in cream bandages with a gold death-mask face, a gold vulture crown with spread wings, a broad turquoise-and-gold collar, a long pleated linen gown, a crook and flail crossed over her chest, one eye glowing cyan.
+
+#9 RED LIONESS OF SEKHMET — leader of its map's Sekhmet Lioness monsters (map Lv 56–58, mini-boss Lv 60)
+   Look: a huge fierce lioness on four legs: red-gold fur with red war paint, a red sun disc with a gold cobra on her head, gold armour bands on her legs, a broad gold collar, burning orange eyes, claws glowing like embers.

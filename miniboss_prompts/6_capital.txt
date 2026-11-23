@@ -1,0 +1,78 @@
+MINI-BOSS MASTER PICTURES — CAPITAL (11 pictures)
+Game: Totem Legend, a 2D isometric fantasy MMORPG (Ragnarok Online feel). Every field and dungeon map of the lands around the capital (meadows, farms, rivers, old catacombs, and the Aether Rift where the sky is broken) gets one MINI-BOSS: the leader of that map's monsters — bigger, prouder and more decorated than its kin, with no special powers.
+Attached: the campfire key art (the art style to copy) and the KIN BOARD (a white sheet with the monsters these mini-bosses lead, labelled with the same #numbers as below: #1, #2, #3, #4, #5, #6, #7, #8).
+
+=== HOW TO WORK WITH THIS FILE — READ EVERYTHING FIRST ===
+• This file lists 11 mini-bosses, numbered #1–#11. Draw ONE picture per reply, in order, starting with #1.
+• After each picture write only "#<number> <name> done" and STOP. Wait for me.
+  - "next" = draw the next number.   - "redo" = draw the same number again.   - a number (e.g. "4") = draw that number.
+• Before every picture, re-read STYLE and PICTURE RULES. Every picture must follow them exactly.
+• Never put text, numbers, labels, borders or speech bubbles inside a picture.
+
+=== STYLE (copy the attached pictures) ===
+Friendly hand-painted chibi cartoon, cute-but-dangerous, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft light from the top-left, bright warm colours, clear readable silhouette. Not realistic, not painterly, not 3D. Chibi proportions (big head, short body) even for giants.
+
+=== PICTURE RULES (every picture) ===
+• ONE mini-boss per picture, square 1024×1024, the whole body inside the picture with empty space on every side, nothing cropped.
+• Isometric 3/4 view from about 30° above, facing DOWN-RIGHT (south-east), a proud ready-to-fight pose with its weapon, horns or claws ready.
+• A mini-boss is the LEADER of the monsters of its map: bigger and heavier than them, with one clear leader mark (a crown, a helmet, battle scars, a cape or trophies) and one strong colour accent. Big readable shapes — it must still read clearly when shown small in the game.
+• Background: SOLID FLAT PURE GREEN (#00FF00) — no gradient, no ground, no floor, no shadow, no scenery. NEVER use green on the mini-boss: anything that would normally be green (leaves, moss, jade, frogs, kappa skin) is drawn teal, turquoise, blue, gold, purple or autumn orange instead.
+• No effects floating around it (no smoke clouds, sparkles, motion lines, flying leaves). Small glows ON the body (eyes, runes, lanterns, embers) are fine.
+• Paint everything SOLID — no see-through or half-transparent parts (ghosts, wings, robes, fire and glows are drawn opaque), because the green behind would show through them.
+• The KIN BOARD only shows what the kin look like. Draw the mini-boss alone in its own new pose — never copy the board's labels, frames or white background.
+
+=== MINI-BOSSES IN THIS FILE ===
+  #1 Windmane Stallion
+  #2 Golden Stag Monarch
+  #3 Giant Bee Queen
+  #4 Sky Lord Hawk
+  #5 Scarecrow Knight Commander
+  #6 Frog Bandit Boss
+  #7 Sewer Rat King
+  #8 Wraith Knight Lord
+  #9 Rift Hound Alpha
+  #10 Shard Seraph Prime
+  #11 Aether Drake Matriarch
+
+=== ENTRIES ===
+
+#1 WINDMANE STALLION — leader of its map's Wild Horse monsters (map Lv 15–21, mini-boss Lv 23)
+   Look: a big chestnut-brown wild stallion with a very long wind-tossed cream mane and tail, white socks on its legs, a white blaze on its face, light-blue eyes, a broken golden bridle hanging from its neck (it escaped the royal stables), rearing proudly.
+   Kin: shown on the kin board as #1 — keep its species, colours and main features (but no green), make it bigger, older and more decorated.
+
+#2 GOLDEN STAG MONARCH — leader of its map's Golden Stag monsters (map Lv 15–21, mini-boss Lv 23)
+   Look: a huge noble stag with a golden-tan coat marked with pale swirls and a cream chest ruff, enormous shining golden antlers decorated with tiny white flowers, red ribbons and little bells, a royal blue cloth with a gold sun emblem draped over its back, calm proud eyes.
+   Kin: shown on the kin board as #2 — keep its species, colours and main features (but no green), make it bigger, older and more decorated.
+
+#3 GIANT BEE QUEEN — leader of its map's Giant Bee monsters (map Lv 15–21, mini-boss Lv 23)
+   Look: a plump bee queen with golden-and-black striped fur, small pale-blue wings (painted solid), a crown made of honeycomb, a royal-jelly sceptre dripping gold honey, a fluffy collar, a long stinger.
+   Kin: shown on the kin board as #3 — keep its species, colours and main features (but no green), make it bigger, older and more decorated.
+
+#4 SKY LORD HAWK — leader of its map's Field Hawk monsters (map Lv 15–21, mini-boss Lv 23)
+   Look: a big brown-and-cream hawk with barred wing feathers that escaped the royal falconer: a leather falconry hood pushed up on its head, gold jesses on its legs, a royal blue-and-gold ribbon, wings half spread, a yellow hooked beak, fierce yellow eyes.
+   Kin: shown on the kin board as #4 — keep its species, colours and main features (but no green), make it bigger, older and more decorated.
+
+#5 SCARECROW KNIGHT COMMANDER — leader of its map's Scarecrow Knight monsters (map Lv 20–27, mini-boss Lv 29)
+   Look: a tall scarecrow knight commander: a carved pumpkin head with glowing orange eyes and a jagged grin under a big battered wide-brimmed straw hat with a broken red plume, a tattered blue scarf and cape, straw poking out of dented old knight armour, a big shield painted with a cross, a sickle-bladed lance, two black crows sitting on its shoulders.
+   Kin: shown on the kin board as #5 — keep its species, colours and main features (but no green), make it bigger, older and more decorated.
+
+#6 FROG BANDIT BOSS — leader of its map's Frog Bandit monsters (map Lv 20–27, mini-boss Lv 29)
+   Look: a fat frog bandit boss with blue-and-yellow skin (never green), a dark brown hooded cloak, a black bandit mask over the eyes, a red bandana, a gold tooth, a big saber, a belt of stolen coins and a bulging loot bag over one shoulder.
+   Kin: shown on the kin board as #6 — keep its species, colours and main features (but no green), make it bigger, older and more decorated.
+
+#7 SEWER RAT KING — leader of its map's Sewer Rat monsters (map Lv 27–32, mini-boss Lv 34)
+   Look: a fat grey-brown sewer rat king with a crown made of a bent tin can, a cape made from an old torn red flag, a sceptre made from a candlestick, a ring of rusty keys on his belt, glowing red eyes, a long pink tail with a bow tied on it.
+   Kin: shown on the kin board as #7 — keep its species, colours and main features (but no green), make it bigger, older and more decorated.
+
+#8 WRAITH KNIGHT LORD — leader of its map's Wraith Knight monsters (map Lv 32–37, mini-boss Lv 39)
+   Look: a tall armoured wraith knight lord: black spiked plate armour with silver trims, a horned great helm with ghostly purple fire glowing inside, a skull on one shoulder, a tattered purple cloak, a huge dark greatsword with glowing purple runes, ghostly chains on the armour.
+   Kin: shown on the kin board as #8 — keep its species, colours and main features (but no green), make it bigger, older and more decorated.
+
+#9 RIFT HOUND ALPHA — leader of its map's Rift Hound monsters (map Lv 55–56, mini-boss Lv 58)
+   Look: a large hound of dark violet void fur with glowing violet cracks across its body, big crystal shards growing along its back, three glowing cyan eyes, dark paws with glowing violet claws, a collar of small crystal shards around its neck.
+
+#10 SHARD SERAPH PRIME — leader of its map's Shard Seraph monsters (map Lv 56–58, mini-boss Lv 60)
+   Look: a tall angel-like being of pale crystal and white light, six wings made of sharp crystal shards, a featureless mask-like face with one glowing violet eye, a halo of small crystal shards close around its head, flowing robes of pale glowing white cloth.
+
+#11 AETHER DRAKE MATRIARCH — leader of its map's Aether Drake monsters (map Lv 58–60, mini-boss Lv 60)
+   Look: a sleek wyvern dragon with dark blue scales, glowing cyan aether wings painted with tiny stars (solid, not see-through), a crown of white crystal horns, glowing cyan eyes, cyan crystal growths along its spine, a long whip tail with a big crystal tip.

@@ -1,0 +1,70 @@
+MINI-BOSS MASTER PICTURES — GREEK (9 pictures)
+Game: Totem Legend, a 2D isometric fantasy MMORPG (Ragnarok Online feel). Every field and dungeon map of the Greek lands (olive hills, marble ruins, sea coasts, the cyclops cave, the labyrinth) gets one MINI-BOSS: the leader of that map's monsters — bigger, prouder and more decorated than its kin, with no special powers.
+Attached: the campfire key art (the art style to copy) and the KIN BOARD (a white sheet with the monsters these mini-bosses lead, labelled with the same #numbers as below: #1, #2, #3, #4, #5, #6, #7, #8).
+
+=== HOW TO WORK WITH THIS FILE — READ EVERYTHING FIRST ===
+• This file lists 9 mini-bosses, numbered #1–#9. Draw ONE picture per reply, in order, starting with #1.
+• After each picture write only "#<number> <name> done" and STOP. Wait for me.
+  - "next" = draw the next number.   - "redo" = draw the same number again.   - a number (e.g. "4") = draw that number.
+• Before every picture, re-read STYLE and PICTURE RULES. Every picture must follow them exactly.
+• Never put text, numbers, labels, borders or speech bubbles inside a picture.
+
+=== STYLE (copy the attached pictures) ===
+Friendly hand-painted chibi cartoon, cute-but-dangerous, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft light from the top-left, bright warm colours, clear readable silhouette. Not realistic, not painterly, not 3D. Chibi proportions (big head, short body) even for giants.
+
+=== PICTURE RULES (every picture) ===
+• ONE mini-boss per picture, square 1024×1024, the whole body inside the picture with empty space on every side, nothing cropped.
+• Isometric 3/4 view from about 30° above, facing DOWN-RIGHT (south-east), a proud ready-to-fight pose with its weapon, horns or claws ready.
+• A mini-boss is the LEADER of the monsters of its map: bigger and heavier than them, with one clear leader mark (a crown, a helmet, battle scars, a cape or trophies) and one strong colour accent. Big readable shapes — it must still read clearly when shown small in the game.
+• Background: SOLID FLAT PURE GREEN (#00FF00) — no gradient, no ground, no floor, no shadow, no scenery. NEVER use green on the mini-boss: anything that would normally be green (leaves, moss, jade, frogs, kappa skin) is drawn teal, turquoise, blue, gold, purple or autumn orange instead.
+• No effects floating around it (no smoke clouds, sparkles, motion lines, flying leaves). Small glows ON the body (eyes, runes, lanterns, embers) are fine.
+• Paint everything SOLID — no see-through or half-transparent parts (ghosts, wings, robes, fire and glows are drawn opaque), because the green behind would show through them.
+• The KIN BOARD only shows what the kin look like. Draw the mini-boss alone in its own new pose — never copy the board's labels, frames or white background.
+
+=== MINI-BOSSES IN THIS FILE ===
+  #1 Mountain Goat King
+  #2 Marble Crab Emperor
+  #3 Harpy Queen
+  #4 Satyr Piper Chief
+  #5 Great Erymanthian Boar
+  #6 Bronze Talos Sentry
+  #7 Bellwether Ram
+  #8 Euryale the Gorgon
+  #9 Khalkotauros
+
+=== ENTRIES ===
+
+#1 MOUNTAIN GOAT KING — leader of its map's Mountain Goat monsters (map Lv 1–6, mini-boss Lv 8)
+   Look: a big shaggy white mountain goat with enormous curled horns, a gold laurel wreath, a bronze bell on a red cord, a long white beard, standing proudly with one hoof raised.
+   Kin: shown on the kin board as #1 — keep its species, colours and main features (but no green), make it bigger, older and more decorated.
+
+#2 MARBLE CRAB EMPEROR — leader of its map's Marble Crab monsters (map Lv 1–9, mini-boss Lv 11)
+   Look: a huge crab with a white-and-grey marble shell, carrying a broken Greek column top on its back like a hermit crab's house, one giant claw and one small claw, gold meander bands on its legs, tiny gold laurel leaves on its eye-stalks.
+   Kin: shown on the kin board as #2 — keep its species, colours and main features (but no green), make it bigger, older and more decorated.
+
+#3 HARPY QUEEN — leader of its map's Harpy monsters (map Lv 6–12, mini-boss Lv 14)
+   Look: a harpy queen with a fierce woman's face, wild brown-and-white feather hair, big brown feathered wings for arms with violet tips, sharp yellow talons capped with bronze, a crown of black feathers, gold earrings, a bronze breastplate, and a stolen gold necklace clutched in her talons.
+   Kin: shown on the kin board as #3 — keep its species, colours and main features (but no green), make it bigger, older and more decorated.
+
+#4 SATYR PIPER CHIEF — leader of its map's Satyr monsters (map Lv 8–17, mini-boss Lv 19)
+   Look: a stocky satyr with goat legs, curled ram horns and a wild beard, a crown of purple grapes and purple-gold grape leaves (never green), panpipes on a cord, a big wooden wine cup, a leopard-skin sash, a mischievous grin.
+   Kin: shown on the kin board as #4 — keep its species, colours and main features (but no green), make it bigger, older and more decorated.
+
+#5 GREAT ERYMANTHIAN BOAR — leader of its map's Erymanthian Boar monsters (map Lv 11–17, mini-boss Lv 19)
+   Look: a colossal boar with dark brown hide and a huge spiky golden-yellow mane along its head and back, gold armour bands with a Greek-key pattern, enormous ivory tusks capped with bronze, a scarred pink snout, old arrow shafts stuck in its hide, a torn hunting net hanging from it, angry red eyes.
+   Kin: shown on the kin board as #5 — keep its species, colours and main features (but no green), make it bigger, older and more decorated.
+
+#6 BRONZE TALOS SENTRY — leader of its map's Bronze Automaton monsters (map Lv 15–23, mini-boss Lv 25)
+   Look: a tall bronze automaton giant made by Hephaestus: a smooth bronze helmeted face with glowing gold eyes under a tall blue horsehair crest and a gold laurel, riveted bronze plates, a big gear on its back, a blue cloth kilt, a single bronze nail on its ankle sealing a glowing gold vein, a round bronze shield and a short spear, gears visible at the joints.
+   Kin: shown on the kin board as #6 — keep its species, colours and main features (but no green), make it bigger, older and more decorated.
+
+#7 BELLWETHER RAM — leader of its map's Giant Ram monsters (map Lv 21–30, mini-boss Lv 32)
+   Look: the cyclops's prize ram: a huge woolly cream-white ram with enormous brown curled horns banded with gold Greek-key rings, a blue-and-gold harness cloth, a big bronze bell on a leather collar, very long fleece hanging almost to the ground, a garland of red poppies, calm but strong eyes.
+   Kin: shown on the kin board as #7 — keep its species, colours and main features (but no green), make it bigger, older and more decorated.
+
+#8 EURYALE THE GORGON — leader of its map's Little Medusa monsters (map Lv 55–56, mini-boss Lv 58)
+   Look: an immortal gorgon sister: a tall woman with pale lilac skin, glowing yellow eyes and a howling open mouth, a crown of living teal-blue snakes for hair, big golden feathered wings, bronze clawed hands, a white chiton with a red sash and gold trims, a gold laurel among the snakes, a round bronze shield.
+   Kin: shown on the kin board as #8 — keep its species, colours and main features (but no green), make it bigger, older and more decorated.
+
+#9 KHALKOTAUROS — leader of its map's Stone Bull monsters (map Lv 56–58, mini-boss Lv 60)
+   Look: a giant fire-breathing bull of grey labyrinth stone wrapped in riveted bronze armour plates engraved with gold maze patterns, orange fire glowing inside its mouth, eyes and the cracks of its chest, glowing orange vents on its back, huge bronze horns, dark iron hooves.
