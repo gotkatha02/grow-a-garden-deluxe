@@ -15,13 +15,20 @@ usage:
          for things drawn by code from still views (the drake's dragon forms). Prints a JS table
          {DIR:[w,h,fx,fy]} with the ground point of each view (fx = centre of the feet, fy = bottom of the body
          mass: rows narrower than 18 % of the widest row — a tail tip pointing at the camera — do not count).
+  python3 -I tools/dir8cut.py startv OUT_DIR S=a.png SE=b.png:flip E=c.png NE=d.png N=e.png [size=900] [feet=.84] [ht=450] [clean=0]
+      -> OUT_DIR/start_<DIR>.png like `start`, but from ONE picture per view (the owner sends views as separate
+         images). The first view sets one common scale (its body = ht px tall); ':flip' mirrors a view first
+         (a front three-quarter view drawn facing left becomes SE). Room above the head for a staff raised overhead.
+         clean=0 skips the green-spot painting: a hero with no green in the design only has small background gaps
+         (between laurel leaves, staff and hand) that would turn into dark specks.
 Views are found as the big shapes on the sheet, read left->right, top->bottom (index 0..n-1), like statichero.py."""
 import sys, os, numpy as np
 from PIL import Image
 from scipy import ndimage as nd
 
 def load(path):
-    im = np.asarray(Image.open(path).convert('RGB')).astype(np.float32)
+    src = path if isinstance(path, Image.Image) else Image.open(path)
+    im = np.asarray(src.convert('RGB')).astype(np.float32)
     key = np.median(np.concatenate([im[:6].reshape(-1, 3), im[:, :6].reshape(-1, 3)]), 0)
     ex = im[..., 1] - np.maximum(im[..., 0], im[..., 2]); kx = key[1] - max(key[0], key[2])
     a = np.clip(1 - (ex - 20) / (kx - 20), 0, 1)
@@ -149,6 +156,45 @@ def pics(sheet, prefix, rest):
     print('green spots painted', fixed, 'px')
     print('{' + ','.join('%s:[%s]' % (n, ','.join(str(v) for v in tab[n])) for n, _ in order) + '}')
 
+def startv(outdir, rest):
+    d = {'size': '900', 'feet': '.84', 'ht': '450', 'clean': '1'}; items = []
+    for s in rest:
+        k, _, v = s.partition('=')
+        if k in d: d[k] = v
+        else: items.append((k, v))
+    S, feet, ht = int(d['size']), float(d['feet']), float(d['ht'])
+    os.makedirs(outdir, exist_ok=True)
+    def body(src):
+        im, key, a, lab, views = load(src)
+        m = np.isin(lab, [li for _, _, li in views])
+        ys = np.nonzero((a * m).max(1) > .3)[0]
+        return im, key, a, m, ys
+    k = None
+    for name, spec in items:
+        path, _, flag = spec.partition(':')
+        src = Image.open(path).convert('RGB')
+        if flag == 'flip': src = src.transpose(Image.FLIP_LEFT_RIGHT)
+        if k is None:
+            ys = body(src)[4]; k = ht / (ys.max() - ys.min() + 1)
+        src = src.resize((round(src.width * k), round(src.height * k)), Image.LANCZOS)
+        im, key, a, m, ys = body(src)
+        im2, fixed = clean_inside(im, key) if d['clean'] != '0' else (im, 0)
+        rows, cols = np.nonzero(m)
+        sl = (slice(rows.min(), rows.max() + 1), slice(cols.min(), cols.max() + 1))
+        crop = np.where(m[sl][..., None], im2[sl], key)
+        al = a[sl] * m[sl]
+        cx = (al.sum(0) * np.arange(al.shape[1])).sum() / al.sum()
+        bot = ys.max() - sl[0].start
+        can = np.empty((S, S, 3), np.float32); can[:] = key
+        ox, oy = int(round(S / 2 - cx)), int(round(S * feet - bot))
+        h, w = crop.shape[:2]
+        X0, Y0 = max(0, ox), max(0, oy); X1, Y1 = min(S, ox + w), min(S, oy + h)
+        can[Y0:Y1, X0:X1] = crop[Y0 - oy:Y1 - oy, X0 - ox:X1 - ox]
+        Image.fromarray(np.clip(can, 0, 255).astype(np.uint8)).save(os.path.join(outdir, 'start_%s.png' % name))
+        print(name, path.split('/')[-1], 'flip' if flag == 'flip' else '', 'scale %.3f' % k, 'body', w, 'x', ys.max() - ys.min() + 1,
+              'px, top at', oy + ys.min() - sl[0].start, 'green spots', fixed)
+
 if __name__ == '__main__':
+    if sys.argv[1] == 'startv': startv(sys.argv[2], sys.argv[3:]); sys.exit()
     mode, sheet, out, rest = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4:]
     {'start': start, 'sit': sit, 'pics': pics}[mode](sheet, out, rest)
