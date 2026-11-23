@@ -10,6 +10,11 @@ usage:
       -> OUT_PREFIX<DIR>.webp : keyed, trimmed sitting pictures for hero_sit.js (all 8 directions: the W side
          is mirrored from the E side when the sheet has no W-side views, NE / NW use `back` when missing).
          Prints the SIT entry: k = ht / height of the standing view `ref` on the SAME sheet, cx per direction.
+  python3 -I tools/dir8cut.py pics SHEET OUT_PREFIX S=0,SE=1,E=2,NE=3,N=4,NW=5,W=6,SW=7 [scale=1] [q=90]
+      -> OUT_PREFIX<DIR>.webp : one keyed, trimmed picture per direction, all at the same scale (sheet px x scale),
+         for things drawn by code from still views (the drake's dragon forms). Prints a JS table
+         {DIR:[w,h,fx,fy]} with the ground point of each view (fx = centre of the feet, fy = bottom of the body
+         mass: rows narrower than 18 % of the widest row — a tail tip pointing at the camera — do not count).
 Views are found as the big shapes on the sheet, read left->right, top->bottom (index 0..n-1), like statichero.py."""
 import sys, os, numpy as np
 from PIL import Image
@@ -36,7 +41,7 @@ def args(rest, defaults):
     d = dict(defaults); order = None
     for s in rest:
         k, _, v = s.partition('=')
-        if k in ('size', 'feet', 'ref', 'ht', 'mirror', 'back'): d[k] = v
+        if k in ('size', 'feet', 'ref', 'ht', 'mirror', 'back', 'scale', 'q'): d[k] = v
         else: order = [(p.split('=')[0], int(p.split('=')[1])) for p in s.split(',')]
     return d, order
 
@@ -122,6 +127,28 @@ def sit(sheet, prefix, rest):
     print("SIT entry: {dir:'%s',k:%s/%d,cx:{%s}}" % (os.path.basename(prefix) and prefix, d['ht'], refh,
           ','.join('%s:%s' % (x, cx[x]) for x in dirs if x in cx)))
 
+def pics(sheet, prefix, rest):
+    d, order = args(rest, {'scale': '1', 'q': '90'})
+    order = order or [(n, i) for i, n in enumerate(['S', 'SE', 'E', 'NE', 'N', 'NW', 'W', 'SW'])]
+    k, q = float(d['scale']), int(d['q'])
+    im, key, a, lab, views = load(sheet)
+    im2, fixed = clean_inside(im, key)
+    tab = {}
+    for name, idx in order:
+        sl, _, li = views[idx]
+        rgba = matte(im2[sl], key, a[sl], lab[sl] == li)
+        ys, xs = np.nonzero(rgba[..., 3] > 8)
+        pic = Image.fromarray(rgba).crop((xs.min(), ys.min(), xs.max() + 1, ys.max() + 1))
+        if k != 1: pic = pic.resize((max(1, round(pic.width * k)), max(1, round(pic.height * k))), Image.LANCZOS)
+        al = np.asarray(pic)[..., 3].astype(np.float32) / 255
+        rs = al.sum(1); wide = np.nonzero(rs >= .18 * rs.max())[0]; fy = int(wide.max())
+        band = al[max(0, fy - int(pic.height * .06)):fy + 1]
+        fx = float((band.sum(0) * np.arange(al.shape[1])).sum() / max(band.sum(), 1e-3))
+        pic.save(prefix + name + '.webp', 'WEBP', quality=q, method=6)
+        tab[name] = [pic.width, pic.height, round(fx), fy]
+    print('green spots painted', fixed, 'px')
+    print('{' + ','.join('%s:[%s]' % (n, ','.join(str(v) for v in tab[n])) for n, _ in order) + '}')
+
 if __name__ == '__main__':
     mode, sheet, out, rest = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4:]
-    (start if mode == 'start' else sit)(sheet, out, rest)
+    {'start': start, 'sit': sit, 'pics': pics}[mode](sheet, out, rest)

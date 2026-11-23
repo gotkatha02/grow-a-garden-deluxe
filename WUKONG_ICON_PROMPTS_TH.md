@@ -12,7 +12,7 @@
 
 วิธีใช้: แนบ 2 ภาพทุกครั้ง = ภาพปกแคมป์ไฟ (สไตล์) + ชีตลิงที่เจ้าของเจน 07:20 (`assets/heroes/wukong/sheet_snow_ascetic.webp` มุมขวาล่าง = วิญญาณหงอคงยักษ์ + ร่างขนทอง) แล้ววางทีละภาพ · ได้ภาพไหนส่งกลับมาตัดก่อน แล้วค่อยภาพต่อไป
 ไฟล์ในเกม: `assets/icons/wukong/<key>.webp` (128×128) · สกิลเสริม = `ex_<สกิลหลัก>.webp` (skill_enh.js โหลดเอง) · ไอคอนสถานะ = `assets/icons/wukong/buff/<key>.webp`
-ตอนใส่เข้าเกม: char_wukong.js ตั้ง `WK_ICONS_PAINTED=true` (บรรทัดเดียวกันจะเลิกใส่ `EX_ICON_SKIP.wukong`) · ไอคอนสถานะผ่าน `BUFF_ART` (wkForm เปลี่ยนรูปตาม WK.form tiger / hornet / stone · wkShift ตาม WK.shift short / long · rest ยังไม่มีสถานะนี้ในลิง ต้องเพิ่มแบบแมว) · ยังไม่มีตัวตัดแผ่นไอคอนกรอบทองใน repo (cuticons.py ของแชตแมวอยู่นอก repo) → เขียน tools ตัวตัดตอนภาพแรกมาถึง
+**ภาพครบแล้ว 2026-11-23 20:13** (เจ้าของส่ง 6 ภาพพร้อมพื้นหลังทรี 4 ภาพ) → ดูหัวข้อ 'ใส่เข้าเกมแล้ว' ท้ายไฟล์
 
 | ภาพ | ช่อง 1–12 (ซ้าย→ขวา บน→ล่าง) |
 |---|---|
@@ -175,3 +175,11 @@ Icons, left to right, top to bottom:
 11. The snow monkey relaxing in a steaming hot spring with snow on his head, eyes closed and happy.
 12. The monkey winking and holding up one glowing golden hair between two fingers.
 ```
+
+---
+
+## ใส่เข้าเกมแล้ว (2026-11-23)
+- ตัดด้วย `python3 -I tools/goldsheet.py <ภาพ> assets/icons/wukong <12 คีย์คั่นด้วยจุลภาค>` (คีย์ตามตารางด้านบน · ช่องสำรอง = `spare/emblem`) → 63 ไอคอนสกิล + 8 ไอคอนสถานะใน `buff/` + `spare/emblem.webp` (ยังไม่ได้ใช้ · รูปหน้า HUD ใช้หัวลิงจากชีต 8 ทิศแทน: `assets/heroes/wukong/face.webp`)
+- ChatGPT วาดช่องกว้างกว่าสูง (≈ 370×330 ในแผ่น 1536×1024) ทั้งที่สั่งสี่เหลี่ยมจัตุรัส · goldsheet.py ทำเป็นจัตุรัสโดยไม่บีบภาพ: กรอบทองต่อจากครึ่งซ้าย + ครึ่งขวาของช่องเดิม (แถบทองบน-ล่างผสมกันตรงรอยต่อ) · ด้านในครอปกลางและบีบข้างได้ไม่เกิน 5 % (env `SQ`) · พื้นนอกกรอบมนกลายเป็นโปร่งใส · `preview=<png>` = แผ่นรวมไว้ตรวจ · แผ่นที่ช่องติดกัน (เรืองแสงล้ำ) ถูกแยกที่คอลัมน์ที่บางที่สุดให้เอง
+- char_wukong.js: `WK_ICONS_PAINTED=true` (ไอคอน SVG ของโค้ดเป็นตัวสำรองตอนภาพยังโหลดไม่เสร็จ) · `BUFF_ART`: บัฟของสกิล (gnCloud gnPeach gxPeach gnSub gaUlt gbUlt gxFurnace gxStorm) = ไอคอนสกิลนั้น · สถานะไม่มีเวลา wkRp / wkSw / rest = `buff/<key>` · wkForm เปลี่ยนรูปตาม WK.form (tiger / hornet / stone) · wkShift ตาม WK.shift (short / long) — gStatusIcons ตั้งทุกเฟรม · สถานะ rest (นั่งพัก ฟื้น ×2) ขึ้นตอนนั่งเหมือนแมว
+- เช็กแล้ว: หน้าต่างสกิล 4 แท็บ, แถบลัด PC, วงล้อมือถือ 844×390, แถบบัฟ, แถบออโต้สเปล #wkBar, ไม่มี error / ไฟล์หาย

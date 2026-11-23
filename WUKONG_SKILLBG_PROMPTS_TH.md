@@ -77,7 +77,8 @@ Layout: the hero full body and big, in the lower middle of the picture (roughly 
 ---
 
 ## ตอนภาพมาถึง (โน้ตสำหรับแชตที่ใส่เข้าเกม)
-- ย่อเป็น 512×768 webp (ครอปให้ได้ 2:3 ถ้า ChatGPT ส่งขนาดอื่นมา) → `assets/inl/assets_skillbg/044_wkbasic.webp` … `047_wkC.webp` แล้วเพิ่ม `"wukong": {"basic": …, "A": …, "B": …, "C": …}` ใน `SKILL_BG_ALL` (assets_skillbg.js เก็บแค่ path แล้ว ไม่ต้องรัน externalize.py)
+- **ใส่แล้ว 2026-11-23 20:13** (เจ้าของส่ง 4 ภาพ): basic `044_5b6761` · A `045_b80cdd` · B `046_9893aa` · C `047_849ff4` (.webp, 512×768 q85, ชื่อแบบเดียวกับไฟล์อื่นในโฟลเดอร์) · หน้าสร้างตัวใช้ภาพ Basic แล้ว (เช็ก PC + มือถือแนวนอน: ตอนนั้นชื่อฮีโร่ตัวใหญ่ทับปุ่มล่างบนจอเตี้ย ≤ 520 px ทุกตัว → char_create.js ย่อกล่อง / ชื่อในจอแบบนั้น)
+- (เดิม) ย่อเป็น 512×768 webp (ครอปให้ได้ 2:3 ถ้า ChatGPT ส่งขนาดอื่นมา) → `assets/inl/assets_skillbg/044_wkbasic.webp` … `047_wkC.webp` แล้วเพิ่ม `"wukong": {"basic": …, "A": …, "B": …, "C": …}` ใน `SKILL_BG_ALL` (assets_skillbg.js เก็บแค่ path แล้ว ไม่ต้องรัน externalize.py)
 - ในเกมแผงทรีกว้าง 236 px สูง ≈ 404 px (`center 30%/cover`) → ขอบซ้าย-ขวาโดนตัดราว 6 % ต่อข้าง · ทั้งความสูงเห็นครบ
 - ภาพ Basic ขึ้นเป็นรูปหน้าสร้างตัวละครเอง (เลิกใช้ `assets/heroes/wukong/portrait.webp`) → เช็กหน้าสร้างตัวด้วย
 - เช็กด้วยภาพจากเกม: หน้าต่างสกิล (K) ทั้ง 4 แท็บ + หน้าสร้างตัว ก่อนบอกว่าเสร็จ

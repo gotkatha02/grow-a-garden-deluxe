@@ -569,7 +569,10 @@ function gStatusIcons(){const b=player.buffs;if(!b)return;const cap=rpCap(),n=li
   if(cap&&!aRest()&&WK.rp>0){b.wkRp=b.wkRp||{t:1e9,total:1e9};b.wkRp.t=1e9;b.wkRp.lbl=Math.floor(WK.rp)+'/'+cap;}else delete b.wkRp;
   if(n>0){b.wkSw=b.wkSw||{t:1e9,total:1e9};b.wkSw.t=1e9;b.wkSw.lbl=realClones().length+'/'+maxClones();}else delete b.wkSw;
   if(gOn('gbForm')&&WK.form!=='none'&&n>0){b.wkForm=b.wkForm||{t:1e9,total:1e9};b.wkForm.t=1e9;b.wkForm.lbl={tiger:'เสือ',hornet:'ผึ้ง',stone:'หิน'}[WK.form];}else delete b.wkForm;
-  if(gOn('gaShift')){b.wkShift=b.wkShift||{t:1e9,total:1e9};b.wkShift.t=1e9;b.wkShift.lbl=WK.shift==='long'?'ยาว':'สั้น';}else delete b.wkShift;}
+  if(gOn('gaShift')){b.wkShift=b.wkShift||{t:1e9,total:1e9};b.wkShift.t=1e9;b.wkShift.lbl=WK.shift==='long'?'ยาว':'สั้น';}else delete b.wkShift;
+  /* sitting (hero_sit.js): shown, not timed — like the cat's */
+  if(player.sitting){if(BUFFDEF.rest!==WK_REST)BUFFDEF.rest=WK_REST;b.rest={t:1e9,total:1e9,lbl:'×2'};}else if(b.rest&&b.rest.lbl!=null)delete b.rest;
+  if(WK_ICONS_PAINTED&&window.BUFF_ART){BUFF_ART.wkForm=WKI+'buff/wkForm_'+({hornet:'hornet',stone:'stone'}[WK.form]||'tiger')+'.webp';BUFF_ART.wkShift=WKI+'buff/wkShift_'+(WK.shift==='long'?'long':'short')+'.webp';}}
 class WkCore{constructor(){this.t=0;this.layer='none';this.tk=0;this.sk=0;this.ui=0;}draw(){}
   update(dt){this.t+=dt;gEnsureVis();
     /* a new map: the swarm, the cave, the mob and Rampage's target stay behind */
@@ -866,6 +869,8 @@ function installWukong(){
   window.jgMove=()=>1;window.jgDetect=()=>1;window.jgRecover=()=>1;window.jgPlayerAlpha=()=>1;window.jgBleedMul=()=>1;window.jgOnSkillHit=()=>{};
   window.wukongAutoTick=wukongAutoTick;
   mkBasic=mkWkBasic;gEnsure();wkPicLoad();
+  /* HUD portrait: his head from the 8-view sheet (index.html drawPortrait reads window.HUD_FACE, the drake's hook) */
+  try{const hf=new Image();hf.src='assets/heroes/wukong/face.webp?v=1';window.HUD_FACE=hf;hf.onload=()=>{try{drawPortrait();}catch(_){}};}catch(_){}
   for(const k in SKILLS){const sk=SKILLS[k];if(sk.make&&!sk.make._gE){const mk=sk.make;sk.make=function(){gEnsure();return mk.apply(this,arguments);};sk.make._gE=1;}}
   try{document.title='Totem Legend — Snow Monkey';const nm=document.querySelector('.nm b'),cl=document.querySelector('.nm .cls');if(nm)nm.textContent='Snow Monkey';if(cl)cl.textContent='Stone Monkey';}catch(e){}
   window.WK=WK;window.WK_DEFS=WK_DEFS;window.WK_BAL=WK_BAL;window.gCol=gCol;window.WK_AUTOS=AUTOS;
@@ -879,8 +884,15 @@ function cdSync(){for(const k of ['gnCloud','gnSub','gaUlt','gbUlt']){const s=SK
 /* =====================================================================
    11. ICONS (code SVG until painted ones exist in assets/icons/wukong — set WK_ICONS_PAINTED then)
    ===================================================================== */
-const WK_ICONS_PAINTED=false;
+const WK_ICONS_PAINTED=true;   /* owner's 6 sheets 2026-11-23 20:13, cut by tools/goldsheet.py (WUKONG_ICON_PROMPTS_TH.md) */
 if(!WK_ICONS_PAINTED)window.EX_ICON_SKIP=Object.assign(window.EX_ICON_SKIP||{},{wukong:1});
+/* buff bar pictures: skill buffs = their skill icon, timerless statuses = assets/icons/wukong/buff (form / shift follow the state, gStatusIcons) */
+const WKI='assets/icons/wukong/';
+if(WK_ICONS_PAINTED){window.BUFF_ART=window.BUFF_ART||{};
+  for(const k of ['gnCloud','gnPeach','gxPeach','gnSub','gaUlt','gbUlt','gxFurnace','gxStorm'])BUFF_ART[k]=WKI+k+'.webp';
+  for(const k of ['wkRp','wkSw','rest'])BUFF_ART[k]=WKI+'buff/'+k+'.webp';
+  BUFF_ART.wkForm=WKI+'buff/wkForm_tiger.webp';BUFF_ART.wkShift=WKI+'buff/wkShift_short.webp';}
+const WK_REST={n:'นั่งพัก — ฟื้น HP/SP ×2',c:'#8fd86a',i:'REST'};
 function gIconSpec(d){const k=d.key,br=d.br,col=br==='A'?'#ffb070':br==='B'?'#ffe27a':br==='C'?'#ffd36a':'#f4e6c8',bg=br==='A'?'#3a1408':br==='B'?'#2a2206':br==='C'?'#2a1430':'#1e2230';
   const ink='#1a0f06',gold='#ffd24a',red='#e8463a',fur='#d8d0cc',face='#ef7a6a',L=(a,b,c,e,cl=col,w=2.6,x='')=>`<path d="M${a} ${b} L${c} ${e}" stroke="${cl}" stroke-width="${w}" stroke-linecap="round" fill="none" ${x}/>`;
   const staff=(x1,y1,x2,y2,w=3.2,hc=gold)=>{const a=Math.atan2(y2-y1,x2-x1),ux=Math.cos(a),uy=Math.sin(a),nx=-uy,ny=ux;let s=L(x1,y1,x2,y2,ink,w+1.6)+L(x1,y1,x2,y2,'#6b4628',w);

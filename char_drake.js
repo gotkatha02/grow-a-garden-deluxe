@@ -429,7 +429,7 @@ class ZdTop{constructor(){this.t=0;this.layer='top';}update(dt){this.t+=dt;retur
       ctx.strokeStyle=hexA(ZDC.amber,.35);for(let i=0;i<6;i++){const an=i/6*TAU+t*.4;ctx.beginPath();ctx.moveTo(ax+Math.cos(an)*r*.3,ay+Math.sin(an)*r*.3);ctx.lineTo(ax+Math.cos(an)*r*.95,ay+Math.sin(an)*r*.88);ctx.stroke();}ctx.restore();}
     if(hasBuff('znSkin')&&!ZD.form&&Math.random()<.2)zdRocks(player.x+rnd(-14,14),player.y+rnd(-8,8),1,{spd:20,z:rnd(20,60),up:.2,col:ZDC.marble});}}
 
-/* ---- the dragon forms: a monster sheet re-tinted once (placeholder art), drawn in place of the hero ---- */
+/* ---- the dragon forms, FALLBACK: a monster sheet re-tinted once (the first placeholder), used only until the owner's pictures below have loaded ---- */
 const ZD_FORM={A:{spr:'Glacier Wyrmling',key:'__zdMagma',flt:'hue-rotate(165deg) saturate(2.8) brightness(.62) contrast(1.35)',glow:ZDC.lava,vis:1.1},
                B:{spr:'Rock Lizard',key:'__zdMount',flt:'sepia(.35) saturate(.6) brightness(1.2) contrast(1.1)',glow:ZDC.amber,vis:1.15}};   /* vis: four-legged sheets read shorter than a standing hero */
 function zdFormDef(f){const F=ZD_FORM[f],M=window.MSPR;if(!M)return null;if(M[F.key])return M[F.key];const src=M[F.spr];if(!src)return null;let cv=null;
@@ -439,14 +439,67 @@ function zdFormDef(f){const F=ZD_FORM[f],M=window.MSPR;if(!M)return null;if(M[F.
   M[F.key]=my;return my;}
 const zdHeroH=()=>228*SPR*CHAR_SCALE;
 const zdFormSize=()=>ZD.form?ZD_BAL.form[ZD.form].size*(ZD.prim>gameTime?ZB.zxAscend.size:1):1;
-function zdPose(dt){const E=ZD.E||(ZD.E={spr:null,boss:true,bsc:1,face:1,bob:0,st:{},atk:0,x:player.x,y:player.y,_mv:0,_px:player.x,_py:player.y});
-  const mv=Math.hypot(player.x-E._px,player.y-E._py);E._px=player.x;E._py=player.y;E._mv=mv>.25?.16:Math.max(0,E._mv-dt);
+function zdPose(dt){const E=ZD.E||(ZD.E={spr:null,boss:true,bsc:1,face:1,bob:0,st:{},atk:0,x:player.x,y:player.y,_mv:0,_px:player.x,_py:player.y,wd:0});
+  const mv=Math.hypot(player.x-E._px,player.y-E._py);E._px=player.x;E._py=player.y;E._mv=mv>.25?.16:Math.max(0,E._mv-dt);E.wd+=Math.min(mv,24);
   const c=Math.cos(player.phi);if(Math.abs(c)>.22)ZD.face=c>0?1:-1;E.face=ZD.face;
   const a=player.action;E.atk=0;
   if(a&&!a.ended&&a.ev&&a.key!=='hurt'){let done=0,next=null;for(const v of a.ev){if(v.done)done++;else if(next==null||v.t<next)next=v.t;}
     if(a._zdDone==null)a._zdDone=0;if(done>a._zdDone){a._zdDone=done;E._hitT=gameTime;}if(next!=null&&next>a.t&&next-a.t<.5)E.atk=next-a.t;}
   else if(player.casting)E.atk=.2;}
-function zdDrawDragon(){const M=zdFormDef(ZD.form);if(!M||!M.ok)return false;const E=ZD.E;if(!E)return false;const F=ZD_FORM[ZD.form];
+/* ---- the dragon forms in the owner's art (2026-11-23 'หน้าตาประมาณนี้'): 8 still views per form
+   (assets/heroes/drake/<magma|mountain>_<DIR>.webp, cut from his sheets by `tools/dir8cut.py pics`), moved by code.
+   P[dir] = [w, h, ground x, ground y] in picture px; one scale for every view (his sheet draws them at one size),
+   the S view's height = the form's height (hero height × ZD_BAL.form size). vis = extra size knob. ---- */
+const ZD_PIC={A:{f:'magma',vis:1,P:{S:[323,297,159,289],SE:[297,290,164,281],E:[453,302,235,292],NE:[314,282,146,278],N:[324,312,162,292],NW:[304,294,142,289],W:[453,285,222,276],SW:[320,299,140,290]}},
+              B:{f:'mountain',vis:1,P:{S:[299,346,148,342],SE:[342,347,170,342],E:[383,332,173,327],NE:[320,334,164,331],N:[313,334,156,331],NW:[348,339,173,337],W:[375,335,187,332],SW:[342,347,173,343]}}};
+const ZD_FWD={S:[0,1],SE:[.75,.55],E:[1,0],NE:[.75,-.55],N:[0,-1],NW:[-.75,-.55],W:[-1,0],SW:[-.75,.55]};
+const ZD_IM={},ZD_CV=new Map();
+function zdPicLoad(){for(const f in ZD_PIC)for(const d in ZD_PIC[f].P){const k=f+d;if(ZD_IM[k])continue;const im=new Image();im.decoding='async';im.src='assets/heroes/drake/'+ZD_PIC[f].f+'_'+d+'.webp?v=1';ZD_IM[k]=im;}}
+const zdPic=(f,d)=>{const im=ZD_IM[f+d];return im&&im.complete&&im.naturalWidth?im:null;};
+/* cached copies: graded by the map's colour (no ctx.filter per frame), white for the hit flash, soft black for the shadow */
+function zdCopy(f,d,kind,flt){const key=kind+f+d+'|'+(flt||'');let c=ZD_CV.get(key);if(c)return c;const im=zdPic(f,d);if(!im)return null;if(ZD_CV.size>40)ZD_CV.clear();
+  const pad=kind==='s'?6:0;c=document.createElement('canvas');c.width=im.naturalWidth+pad*2;c.height=im.naturalHeight+pad*2;c.pad=pad;const g=c.getContext('2d');
+  if(kind==='g'){g.filter=flt;g.drawImage(im,0,0);}
+  else{if(kind==='s')g.filter='blur(3px)';g.drawImage(im,pad,pad);g.filter='none';g.globalCompositeOperation='source-in';g.fillStyle=kind==='s'?'#000':'#fff';g.fillRect(0,0,c.width,c.height);}
+  ZD_CV.set(key,c);return c;}
+function zdDrawDragon(){const f=ZD.form,D=ZD_PIC[f],E=ZD.E;if(!D||!E)return false;
+  const fr=playerFrame(),d=(fr&&D.P[fr.d])?fr.d:(D.P[player.dir]?player.dir:'S'),im=zdPic(f,d);if(!im)return zdDrawDragonOld();
+  const F=ZD_FORM[f],heavy=f==='B',t=gameTime,dt=Math.min(.1,Math.max(0,t-(E.lt||t)));E.lt=t;
+  const pop=Math.min(1,(t-ZD.popT)/.3),sc=.7+.3*eOutBack(pop),H=zdHeroH()*zdFormSize()*(D.vis||1)*sc,[pw,ph,fx,fy]=D.P[d],k=H/D.P.S[1];
+  const fw=ZD_FWD[d]||[0,1],side=Math.abs(fw[0])>.5,lr=fw[0]>=0?1:-1;
+  /* motion: breathing · footfalls (bob + rock on the side views, sway from the front / back) · wind-up crouch → lunge on the hit · rear up for casts · shake when hit */
+  let ox=0,oy=0,sx=1,sy=1,rot=0;
+  const br=Math.sin(t*(heavy?1.7:2.3));sy+=.016*br;sx-=.008*br;
+  const walk=E._mv>0?Math.min(1,E._mv/.12):0;
+  if(walk){const s1=Math.sin(E.wd/(heavy?34:26)*Math.PI),a1=Math.abs(s1);oy-=a1*H*(heavy?.022:.03)*walk;sy-=(1-a1)*.022*walk;sx+=(1-a1)*.011*walk;
+    if(side)rot+=s1*(heavy?.03:.022)*walk*lr;else ox+=s1*H*.018*walk;}
+  const castOn=!!((fr&&fr.st==='buff')||player.casting);E.cu=(E.cu||0)+((castOn?1:0)-(E.cu||0))*Math.min(1,dt*9);
+  const wu=E.atk>0&&!castOn?1-Math.min(1,E.atk/.32):0,hs=E._hitT!=null?Math.max(0,1-(t-E._hitT)/(heavy?.3:.24)):0,lean=(heavy?.055:.075)*(side?lr:0);
+  if(wu>0){const w=wu*wu*(3-2*wu);ox-=fw[0]*H*.05*w;oy-=fw[1]*H*.025*w;sy*=1-.07*w;sx*=1+.035*w;rot-=lean*w;}
+  if(hs>0){const s=hs*hs;ox+=fw[0]*H*.1*s;oy+=fw[1]*H*.045*s;sy*=1+.05*s;sx*=1-.025*s;rot+=lean*1.2*s;}
+  if(E.cu>.01){const u=E.cu;oy-=H*.045*u;sy*=1+.05*u;sx*=1-.02*u;rot-=lean*.5*u;}
+  if(ZD.fl>0)ox+=Math.sin(t*70)*H*.012*ZD.fl;
+  if(player.z>2){const z=Math.min(1,player.z/40);sy*=1+.06*z;sx*=1-.03*z;}
+  const [gx,gy]=P(player.x,player.y,0),[x,y]=P(player.x,player.y,player.z||0),mf=curMap&&mapHost()&&mapHost().charFilter,pa=JH('jgPlayerAlpha')?jgPlayerAlpha():1;
+  const put=(img,pad)=>ctx.drawImage(img,-fx-(pad||0),-fy-(pad||0));
+  /* shadow: the picture laid on the ground like every hero's (castShadow), a soft contact pool under the feet */
+  if(curMap){const lift=Math.min(1,(player.z||0)/60),sil=zdCopy(f,d,'s');if(typeof softShadow==='function')softShadow(gx,gy,pw*k*.3*(1-.4*lift),pw*k*.09*(1-.4*lift),.9*(1-.5*lift));
+    if(sil&&lift<.95){const MH=mapHost(),SU=MH&&MH.sun;ctx.save();ctx.translate(gx,gy);if(SU)ctx.transform(0,SU.kd,-SU.sx*.8,-SU.sy*.8,0,0);else ctx.transform(1,0,-.5,.34,0,0);
+      ctx.globalAlpha*=(SU?.4:.36)*(1-lift)*pa;ctx.scale(k*sx,k*sy);put(sil,sil.pad);ctx.restore();}}
+  else if(player.z>2){ctx.save();ctx.globalAlpha=.25;ctx.fillStyle='#000';ctx.beginPath();ctx.ellipse(gx,gy,pw*k*.3,pw*k*.08,0,0,TAU);ctx.fill();ctx.restore();}
+  /* light behind the body: the magma drake glows; stone does not (an additive amber halo turns white on snow) */
+  const pulse=.5+.5*Math.sin(t*4);if(!heavy||ZD.prim>t)zdGlow(x,y-H*.45,H*.75,F.glow,(heavy?0:.1+.06*pulse)+(ZD.prim>t?.15:0));
+  ctx.save();ctx.translate(x+ox,y+oy);ctx.rotate(rot);ctx.scale(k*sx,k*sy);ctx.globalAlpha*=pa;
+  put((mf&&zdCopy(f,d,'g',mf))||im);
+  if(ZD.fl>0){const wh=zdCopy(f,d,'w');if(wh){ctx.globalAlpha=pa*.55*ZD.fl;put(wh);}}
+  ctx.restore();
+  /* a faint lava light over the magma body, the Ascension ring, embers from the magma drake's back · pebbles shaken off the mountain drake as it walks */
+  if(!heavy){ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha=.06+.04*pulse;zdGlow(x,y-H*.4,H*.5,F.glow,.5);ctx.restore();}
+  if(ZD.prim>t){ctx.save();ctx.globalCompositeOperation='lighter';ctx.strokeStyle=hexA(ZDC.gold,.5+.3*pulse);ctx.lineWidth=2.5;ctx.beginPath();ctx.ellipse(x,y-H*.45,H*.62,H*.55,0,0,TAU);ctx.stroke();ctx.restore();}
+  if(!heavy){if(Math.random()<.3*Q.p){const bx=player.x-fw[0]*pw*k*.25,by=player.y-fw[1]*8;zdEmbers(bx+rnd(-8,8),by+rnd(-4,4),H*rnd(.45,.85),1,{spd:30});}}
+  else if(walk&&Math.random()<.16*Q.p)zdRocks(player.x+rnd(-.25,.25)*pw*k,player.y+rnd(-6,6),1,{spd:40,z:H*rnd(.2,.5),up:.25});
+  return true;}
+function zdDrawDragonOld(){const M=zdFormDef(ZD.form);if(!M||!M.ok)return false;const E=ZD.E;if(!E)return false;const F=ZD_FORM[ZD.form];
   const pop=Math.min(1,(gameTime-ZD.popT)/.3),sc=.7+.3*eOutBack(pop),H=zdHeroH()*zdFormSize()*(F.vis||1)*sc;E.spr=F.key;E.bsc=H/M.h;E.x=player.x;E.y=player.y;
   const [x,y]=P(player.x,player.y,player.z||0),mf=curMap&&mapHost()&&mapHost().charFilter;
   if(player.z>2){const [gx,gy]=P(player.x,player.y,0);ctx.save();ctx.globalAlpha=.25;ctx.fillStyle='#000';ctx.beginPath();ctx.ellipse(gx,gy,M.sw*E.bsc,M.sw*E.bsc*.27,0,0,TAU);ctx.fill();ctx.restore();}
@@ -473,8 +526,7 @@ const zdDrain=()=>ZD.form==='A'&&zdL('zaHeir')?ZB.zaHeir.drain:ZD_BAL.blood.drai
 /* statues: the monster sheet drawn grey and held in one pose (hooked lazily: monster-sprites.js loads after the main script) */
 function zdHookMspr(){const M=window.MSPR_DRAW;if(typeof M!=='function'||M._zd)return;
   window.MSPR_DRAW=function(e,x,y,al,cold,fl){if(!(e&&!e.dead&&e._zSt>gameTime))return M.apply(this,arguments);const bob=e.bob;e.bob=.05-gameTime;ctx.save();ctx.filter='grayscale(1) sepia(.45) brightness(.82) contrast(1.25)';
-    try{return M.call(this,e,x,y,al,0,fl);}finally{ctx.restore();e.bob=bob;}};window.MSPR_DRAW._zd=1;
-  try{for(const f of ['A','B']){const m=zdFormDef(f);if(m)void m.ok;}}catch(_){}}
+    try{return M.call(this,e,x,y,al,0,fl);}finally{ctx.restore();e.bob=bob;}};window.MSPR_DRAW._zd=1;}   /* the old monster-sheet forms are made lazily now (fallback while the painted views load) */
 class ZdCore{constructor(){this.t=0;this.layer='none';this.n=0;this.pr=0;}draw(){}
   update(dt){this.t+=dt;zdEnsureVis();zdHookMspr();
     /* a new map: zones, heat and statues stay behind */
@@ -884,7 +936,9 @@ function installDrake(){
   /* drawing: the dragon in place of the hero · statues are grey stone, not ice */
   if(typeof drawPlayer==='function'&&!drawPlayer._zd){const _dp=drawPlayer;window.drawPlayer=drawPlayer=function(){if(CHAR==='drake'&&ZD.form){try{if(zdDrawDragon())return;}catch(_){}}return _dp.apply(this,arguments);};drawPlayer._zd=1;}
   if(typeof drawPlayerAura==='function'&&!drawPlayerAura._zd){const _da=drawPlayerAura;window.drawPlayerAura=drawPlayerAura=function(){if(CHAR==='drake'&&ZD.form)return;return _da.apply(this,arguments);};drawPlayerAura._zd=1;}
-  mkBasic=mkZdBasic;zdEnsure();
+  mkBasic=mkZdBasic;zdEnsure();zdPicLoad();
+  /* HUD portrait: the knight's head from the owner's sheet (index.html drawPortrait reads window.HUD_FACE) */
+  try{const hf=new Image();hf.src='assets/heroes/drake/face.webp?v=1';window.HUD_FACE=hf;hf.onload=()=>{try{drawPortrait();}catch(_){}};}catch(_){}
   try{document.title='Totem Legend — Forgeborn Drake';const nm=document.querySelector('.nm b'),cl=document.querySelector('.nm .cls');if(nm)nm.textContent='Forgeborn Drake';if(cl)cl.textContent='Forgeborn Hatchling';}catch(e){}
   window.ZD=ZD;window.ZD_DEFS=ZD_DEFS;window.ZD_BAL=ZD_BAL;window.zdCol=zdCol;
   window.ZDK={heat:zdHeat,quench:zdQuench,transform:(f)=>zdTransform(f,f==='A'?'zaHeart':'zbHeart'),revert:zdRevert,gain:v=>{ZD.lockT=-99;ZD.fightT=gameTime;zdAddG(v);},heatOf:zdHeatOf,stoned:zdStoned};

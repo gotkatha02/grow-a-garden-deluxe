@@ -28,7 +28,7 @@ const SN={str:'STR',agi:'AGI',vit:'VIT',int:'INT',dex:'DEX',luk:'LUK'},ORDER=['s
 const anySave=()=>{try{for(const h of HEROES){const o=JSON.parse(localStorage.getItem('af_prog_v1_'+h.k)||'{}');if(o.mode)return true;}}catch(e){}return false;};
 function roll(k){const b=Object.assign({},CLASS_BASE[k]||CLASS_BASE.wolf);for(let i=0;i<3;i++)b[ORDER[Math.floor(Math.random()*6)]]++;for(let i=0;i<3;i++)b[ORDER[Math.floor(Math.random()*6)]]--;
   for(const s of ORDER)b[s]=Math.max(3,Math.min(12,b[s]+1));return b;}
-const PORT={wukong:'assets/heroes/wukong/portrait.webp'};   /* heroes without tree art yet: a crop of the owner's design sheet */
+const PORT={wukong:'assets/heroes/wukong/portrait.webp',drake:'assets/heroes/drake/portrait.webp'};   /* heroes without tree art yet: a crop of the owner's design sheet */
 const art=k=>{try{return (SKILL_BG_ALL[k]&&SKILL_BG_ALL[k].basic)||PORT[k]||null;}catch(e){return PORT[k]||null;}};
 function radar(st){const R=70,c=90,pts=ORDER.map((s,i)=>{const a=-Math.PI/2+i*Math.PI/3,v=(st[s]||0)/12;return [c+Math.cos(a)*R*v,c+Math.sin(a)*R*v];});
   const ring=f=>ORDER.map((s,i)=>{const a=-Math.PI/2+i*Math.PI/3;return `${c+Math.cos(a)*R*f},${c+Math.sin(a)*R*f}`;}).join(' ');
@@ -88,7 +88,9 @@ const css=document.createElement('style');css.textContent=`
   #ccov .cc-pv{width:210px}#ccov .cc-card{min-height:190px}#ccov .cc-spr canvas{width:176px;height:220px}#ccov .cc-rot{bottom:30px;width:30px;height:30px}
   #ccov .cc-left{width:490px}#ccov #ccroll{padding:3px 14px;font-size:13px}#ccov .cc-dye{margin-top:4px;padding-top:4px}
   #ccov .cc-dr{margin-bottom:3px;font-size:12px}#ccov .cc-dr>span{width:60px}#ccov .cc-dr>span small{font-size:10px}#ccov .cc-dr .sw{gap:3px}
-  #ccov .cc-dr button.s{width:17px;height:17px;border-width:1.5px}#ccov .cc-dr input[type=color]{width:22px;height:18px}#ccov .cc-dye .cc-hint{font-size:11px}}
+  #ccov .cc-dr button.s{width:17px;height:17px;border-width:1.5px}#ccov .cc-dr input[type=color]{width:22px;height:18px}#ccov .cc-dye .cc-hint{font-size:11px}
+  /* hero carousel on a phone held sideways: the big name ran into the footer buttons (2026-11-23) */
+  #ccov .cc-info{top:4%;right:9%;width:min(400px,43%)}#ccov .cc-info .box{padding:7px 12px;line-height:1.4;font-size:13px}#ccov .cc-info .st{margin-top:4px;font-size:12px}#ccov .cc-name{font-size:30px;margin-top:5px}#ccov .cc-name small{font-size:17px;margin-top:2px}}
 @media (max-width:760px){#ccov .cc-arrow{top:28%;width:44px;height:44px}#ccov .cc-info{right:3%;left:3%;width:auto;top:auto;bottom:40px}#ccov .cc-name{font-size:34px}#ccov .cc-name small{font-size:20px}#ccov .cc-info .box{font-size:13px;padding:8px}
   #ccov .cc-form{flex-direction:column;overflow:auto;max-height:100%;padding:10px}#ccov .cc-left{width:auto}#ccov .cc-pv{width:auto}#ccov .cc-card{min-height:160px}#ccov .cc-art{width:92%;opacity:.55}}`;
 document.head.appendChild(css);
