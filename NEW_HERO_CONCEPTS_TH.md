@@ -52,7 +52,7 @@
 - A กายภาพ "กระบองวิเศษ": กระบองยืด–หด 3 ระยะ (สั้น ตีเร็ว · ยาว กวาดเป็นแนว) ร่างแยกหมุนกระบองตามทั้งฝูง · ทุกการตีครั้งที่ 4 ทั้งฝูงกระโดดทุบพร้อมกัน (ออโต้กายภาพ) · รอบตัวมีมอนเยอะยิ่งงอกร่างไว
 - B เวท "เนตรทอง · เมฆไฟ": ร่างแยกกลายเป็นวิญญาณเมฆลอยรอบตัว พ่นไฟทองตามเรา · ทุกการตีครั้งที่ 3 ร่ายเวทในช่องออโต้สเปล ทุกร่างร่ายตามแบบอ่อนๆ (ปูพรมทั้งพื้นที่) · เนตรทองช่วยเห็นตัวจริงของบอสที่แยกร่าง / ปลอมตัว / ล่องหนเร็วขึ้น (ตัวช่วย ไม่ข้ามกลไก — กติกาบอสข้อ 6–7)
 - ถ้าไม่อยากเปิดดินแดนจีน (22:40): ย้ายลิงเข้าแอซเท็กได้ — ตำนานพระอาทิตย์ห้ายุคของแอซเท็ก มนุษย์ยุคพระอาทิตย์ที่ 2 (ยุคลม) ถูกลมพายุพัดจนกลายเป็นลิง → ลิงลมที่ "เป่าขน" เป็นร่างแยก เข้ากันพอดี (แต่งตัวเป็นนักรบแอซเท็กแทนชุดไซอิ๋ว)
-- **ออกแบบสกิลแล้ว (2026-11-23 00:53):** เจ้าของขอ "หงอคงเป็นกายภาพ มีร่างแยก เน้นออโต้สเปล (ตีปกติแล้วสกิลออก · อัปตีไว)" → ทรีครบ Basic / A / B / C ใน **WUKONG_SKILLS_TH.md** (ร่างดีไซน์ ยังไม่ได้สร้างในเกม) · สาย B เวท "เนตรทอง · เมฆไฟ" ข้างบนตัดออก — ตอนนี้ทั้งสองสายเป็น ATK: A อาละวาดสวรรค์ (เป้าเดียว ร่างขนโผล่หลังเป้า) · B เจ็ดสิบสองแปลง (ฝูงร่างขนถาวร แปลงเสือ / ผึ้ง / หิน) · ดินแดนเคาะแล้ว 05:24: ผู้หลุดมาจากรอยแยกเอเธอร์ (บ้าน = เมืองหลวง) · เจ้าของถาม "สกิลจะโกงไปไหม" → หัวข้อกันโกงใน WUKONG_SKILLS_TH.md · ลุคอื่นอีก 4 แบบ (05:43): หัวข้อ 'ราชาวานร: ลุคใหม่ 4 แบบ' ท้ายไฟล์นี้
+- **ออกแบบสกิลแล้ว (2026-11-23 00:53):** เจ้าของขอ "หงอคงเป็นกายภาพ มีร่างแยก เน้นออโต้สเปล (ตีปกติแล้วสกิลออก · อัปตีไว)" → ทรีครบ Basic / A / B / C ใน **WUKONG_SKILLS_TH.md** (ร่างดีไซน์ ยังไม่ได้สร้างในเกม) · สาย B เวท "เนตรทอง · เมฆไฟ" ข้างบนตัดออก — ตอนนี้ทั้งสองสายเป็น ATK: A อาละวาดสวรรค์ (เป้าเดียว ร่างขนโผล่หลังเป้า) · B เจ็ดสิบสองแปลง (ฝูงร่างขนถาวร แปลงเสือ / ผึ้ง / หิน) · ดินแดนเคาะแล้ว 05:24: ผู้หลุดมาจากรอยแยกเอเธอร์ (บ้าน = เมืองหลวง) · เจ้าของถาม "สกิลจะโกงไปไหม" → หัวข้อกันโกงใน WUKONG_SKILLS_TH.md · ลุคอื่นอีก 4 แบบ (05:43): หัวข้อ 'ราชาวานร: ลุคใหม่ 4 แบบ' ท้ายไฟล์นี้ · ทางเลือก "ร่างสถิต" (07:07): ลิงตัวอื่นที่สวมห่วงซึ่งวิญญาณหงอคงอาศัยอยู่ — หัวข้อ 'ราชาวานร: แบบ "ร่างสถิต" 4 แบบ'
 
 ## อีก 6 เพลย์สไตล์ (22:40 · ไอเดียสำรอง — เจ้าของขอลุคอีกา ไม่ได้ขอเพลย์สไตล์เพิ่ม)
 ยังเป็นฮีโร่สองทางตามกติกาข้างบน (A = ATK · B = MATK · ร่างแยกตีตามเรา · ออโต้สเปลใช้ตัวนับ) แต่ร่างแยกทำงานและเงื่อนไขออโต้สเปลไม่ซ้ำกับใคร · โค้ดวาดร่างโคลน (KClone / WClone / WGhost) ใช้ต่อได้ทุกตัว
@@ -306,3 +306,73 @@ Design 5 — a mix: the face paint, crown and feathers of design 2 with the shac
 
 ### ขั้นต่อไป (ราชาวานร)
 1. เจ้าของเลือกลุค (หรือผสม) → 2. ชีต 8 ทิศบนพื้นเขียว → 3. สร้างในเกมตาม WUKONG_SKILLS_TH.md (รอเจ้าของสั่ง) → 4. คลิปท่า 20 ตัว (idle / walk / attack / buff × 5 ทิศ) → 5. ไอคอน + พื้นหลังทรี + เอฟเฟกต์ + ท่านั่ง
+
+## ราชาวานร: แบบ "ร่างสถิต" 4 แบบ (2026-11-23 07:07)
+เจ้าของ "มีดีไซน์อื่นไหม … เป็นลิงตัวอื่นที่ไม่ใช่หงอคง แต่มีพลังเป็นร่างสถิตของหงอคง"
+
+เรื่อง: ตอนโทเท็มใหญ่แตก ร่างหงอคงยังถูกทับอยู่ใต้ภูเขาห้านิ้วฝั่งโน้น แต่ "วิญญาณ" หลุดผ่านรอยแยกเอเธอร์มาอาศัยอยู่ในห่วงรัดเกล้าทอง (ของที่เคยใช้คุมเขา กลายเป็นที่ผูกวิญญาณ) · ลิงตัวไหนสวมห่วงก็กลายเป็นร่างสถิต — ฮีโร่คือลิงตัวนั้น ส่วนหงอคงเป็นเสียงในหัว + พลังที่ให้ยืม (ต่อกับไอเดียเควสต์ "ห่วงรัดเกล้าองค์จริง" ใน WUKONG_SKILLS_TH.md ได้พอดี)
+
+สกิลที่ออกแบบไว้ใช้ได้หมด เปลี่ยนแค่ "ใครเป็นคนทำ":
+- ร่างขนทอง = ร่างของลิงตัวเราเองย้อมทอง (โค้ดตั้งใจใช้เฟรมของฮีโร่อยู่แล้ว)
+- ท่าร่างยักษ์ (Sky-Pillar Drop และทุกครั้งที่ 5 ของ Eastern Sea Treasure) = วิญญาณหงอคงโผล่มาฟาดเอง
+- อัลติ 2 สาย (Havoc in Heaven / Flower-Fruit Mountain Army) = หงอคงเข้าสิงเต็มตัว 10 วิ: ตาไฟทอง ปลายขนเรืองทอง วิญญาณยักษ์ลอยอยู่ข้างหลัง
+- Golden Headband = ห่วงที่วิญญาณอาศัยอยู่ · พื้นหลังทรี C = ลิงของเรา + วิญญาณหงอคงยักษ์ข้างหลัง (ตรงกับกติกาภาพทรี C พอดี)
+
+ดินแดน: วิญญาณมาจากรอยแยกเหมือนที่เคาะไว้ 05:24 แต่ร่างเป็นลิงท้องถิ่น → ฮีโร่อยู่ดินแดนของร่าง · ตอนนี้กรีกมี 2 ตัว (แบบ 1 เติมพอดี) · ญี่ปุ่น / อียิปต์ / แอซเท็กมี 3 · นอร์สมี 4 (รวมอีกา) · ถ้าอยากให้ยังเป็นผู้มาเยือนจากรอยแยก (บ้านเมืองหลวง) ใช้ร่างเป็นชะนีส่งของบนหลังคาเมืองหลวง ลูกหลานของ "วานรแขนยาว" ขุนพลเก่าของหงอคงที่เขาดอกไม้ผลไม้ (ยังไม่ได้เขียนพรอมต์)
+
+กันซ้ำ: Black Myth: Wukong ก็เป็นลิงอีกตัวที่ตามเก็บพลังหงอคง → ของเราต่างตรงที่วิญญาณอยู่ในห่วง ร่างมาจาก 5 ดินแดน และเป็นภาพชิบิสดใส · ไม่ทำโทนมืด เกราะหนัก ผ้าขาดรุ่งริ่ง
+
+| แบบ | ร่าง | ดินแดน | ทำไมวิญญาณเลือกตัวนี้ | ลุค | สีตัด | ท่าภาพใหญ่ |
+|---|---|---|---|---|---|---|
+| 1 หัวขโมยโอลิมปัส | เคอร์คอปส์ ลิงหางยาวขนสีทราย | กรีก | ฝาแฝดหัวขโมยที่จะขโมยของเฮราคลีส แล้วซุสสาปเป็นลิง — ขโมยของเทพเหมือนกัน (หงอคงขโมยท้อสวรรค์) | ชุดสั้นเปิดไหล่สีดินเผาขอบลายกรีก · ผ้าพันคอฟ้าอีเจียน · กระบอง = ไม้คานของเฮราคลีสหุ้มสำริด | แดงดินเผา + ฟ้าอีเจียน | กระโดดลงจากเสาหินอ่อนหัก ใช้หางฉกแอปเปิ้ลทอง |
+| 2 นักพรตหิมะ | ลิงหิมะญี่ปุ่น หน้าแดง ขนเงิน หางสั้น | ญี่ปุ่น | ห่วงตกลงบ่อน้ำพุร้อนที่เขาแช่อยู่ | ชุดนักพรตภูเขา (ยามาบุชิ): เสื้อขาว กางเกงคราม ปอมปอมแดงชาด 6 ลูกที่อก หอยสังข์ · ไม้เท้าห่วงกระดิ่ง | คราม + แดงชาด | ยืนบนหินหิมะเหนือบ่อน้ำร้อน หมุนไม้เท้าข้างหลัง ไอน้ำกับหิมะวน |
+| 3 อาลักษณ์จันทรา | บาบูนฮามาดรายัส แผงขนเงินเหมือนผ้าคลุม หน้าชมพูแดง | อียิปต์ | อาลักษณ์ใจเย็นของเทพธอธ โดนวิญญาณป่าเถื่อนสิง — นิสัยตีกันในตัว | ผ้านุ่งลินินขาวจีบ · สร้อยคอกว้างหินลาพิสกับคาร์เนเลียน · กล่องปากกาอ้อ · ไม้เท้าหัวจันทร์เสี้ยวเงิน | น้ำเงินลาพิส + แดงคาร์เนเลียน | ชูแขนทั้งสองรับพระอาทิตย์ขึ้น แบบบาบูนในภาพอียิปต์ |
+| 4 นักเต้นวายุ | ลิงแมงมุม แขนขายาว หางจับของได้ | แอซเท็ก | ตำนานดวงอาทิตย์ยุคลม: คนถูกลมพัดกลายเป็นลิง — วิญญาณหงอคงขี่ลมผ่านรอยแยกมา | นักเต้นวิหาร: ผ้านุ่งแดงขอบฟ้าเทอร์ควอยซ์ · พัดขนนกเล็กหลังหัว · ดอกดาวเรืองทัดหู · กำไลเปลือกหอยที่ข้อเท้า | ฟ้าเทอร์ควอยซ์ + แดงส้ม | หมุนตัวกลางท่าเต้น ใช้หางหมุนไม้เท้า กลีบดาวเรืองปลิว |
+
+แนะนำ: แบบ 1 (เติมกรีกที่ขาด + เรื่องหัวขโมยเข้ากับหงอคงที่สุด) · แบบ 2 (หน้าแดงขนเงินตัดกับร่างขนทองชัดที่สุด)
+
+วิธีใช้: แชต ChatGPT ใหม่ (ไม่ใช่แชตลุคหงอคง) → พรอมต์ 0 ข้างล่าง + แนบภาพปกแคมป์ไฟ + ชีตฮีโร่ที่ว่าเท่ที่สุด → รอ ready → ส่งแบบ 1–4 ทีละข้อความ · ตัวเมีย: ต่อท้ายว่า `Make the hero female, keep the cool look.`
+
+### พรอมต์ 0 — กติการ่างสถิต (ส่งครั้งเดียวต่อแชต พร้อมแนบ 2 ภาพ)
+```
+I will ask you for several character design sheets of ONE new hero for my cute cartoon fantasy MMORPG (animal heroes from Norse, Greek, Egyptian, Japanese and Aztec myths). These rules apply to every sheet in this chat. Do not draw anything yet: reply only "ready", then draw ONE sheet each time I send a design.
+
+Style: copy the first attached image (the game's key art) — friendly hand-painted chibi cartoon, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft cartoon glow, bright and warm. Not realistic, not painterly, not 3D. The second attached image is an existing hero of the game: match its chibi body proportions, outline weight and finish, but do NOT copy that character.
+
+The hero: a monkey from one of our lands who is the VESSEL of the legendary Monkey King's spirit. He is NOT the Monkey King: each design names his own species, homeland, outfit and colours. The Monkey King's spirit slipped into our world through a magic rift and now lives inside a thin gold circlet; whoever wears it carries the spirit. An ORIGINAL design of my own, not based on any game, film, TV show or cartoon. He must look COOL and heroic, like a stylish action-game hero in chibi form, not a cute mascot:
+- a real monkey of his species (face, ears, fur and tail as that species has them) — not a human with a tail
+- the thin gold circlet always on his head; his face, the circlet and both eyes always fully visible: no hat, hood or mask over the face
+- confident eyes in his own colour; only where the layout says so, the spirit surges and his eyes burn gold with a red-orange rim
+- a slim, athletic, agile body with a strong, readable silhouette: no puffy shapes, no long robe
+- a long staff with a gold band at each end (each design gives the rest of its look)
+- fur and outfit in the colours each design names, gold only as trim: the spirit and his clones are made of golden light, and he must stand out from them
+- only a few dangling items
+- no green anywhere on the character, and no letters or writing anywhere
+
+Every sheet: ONE wide image 1536×1024 on a plain soft cream background. No text, no labels, no names, no logo, no watermark.
+Layout: LEFT HALF — the hero large, full body, three-quarter front view, in the pose the design gives, eyes in his own colour. TOP RIGHT — a small turnaround of the same hero standing neutral: front, side facing right, back, all the same height. BOTTOM RIGHT — the spirit surging: the hero swinging his staff overhead with burning gold eyes and glowing fur tips, two small half-transparent golden copies of HIMSELF (his hair clones) swinging in perfect sync at his sides, and behind him the giant half-transparent spirit of the Monkey King rising from golden clouds — only head, shoulders and arms, a fierce monkey face with burning eyes and the same gold circlet, made of glowing golden light — copying the same strike.
+Keep the hero identical in every view of a sheet. Every design I send is a completely new look: reuse nothing from earlier sheets in this chat.
+```
+
+### แบบ 1 — หัวขโมยโอลิมปัส (กรีก)
+```
+Design 1 — "Olympus Thief". A Kerkops from Greek myth: one of the twin thieves who tried to rob Heracles and were turned into monkeys by Zeus. The Monkey King's spirit chose him because both of them stole from the gods. A lean long-tailed monkey with sandy-brown fur and a pale cream face, a cheeky grin, amber eyes. A short terracotta-red one-shoulder tunic with a black Greek-key hem, a leather belt with one small stolen bronze trinket, bronze wrist guards, a short Aegean-blue scarf, bare monkey feet. Accent colours: terracotta red and Aegean blue. Weapon: Heracles' old carrying pole — worn dark wood wrapped in bronze bands, gold caps at both ends, two small leather loops still hanging near one end. Pose: leaping off a broken marble column, snatching a small golden apple with his tail while swinging the pole.
+```
+
+### แบบ 2 — นักพรตหิมะ (ญี่ปุ่น)
+```
+Design 2 — "Snow Ascetic". A Japanese snow monkey from the mountain hot springs who trained as a yamabushi mountain monk; the gold circlet fell into his hot spring through the rift. Thick silver-grey fur, a bright red face, calm sharp brown eyes, a short stubby tail as his species has. Yamabushi outfit: a white short-sleeved jacket over indigo wide trousers tied below the knees, a sash with six fluffy vermilion pompoms down the chest, straw sandals, a large conch-shell horn on a cord at his hip. Wisps of warm steam curl around him. Accent colours: indigo and vermilion. Weapon: a ringed monk's staff — dark wood, a small iron crown of jingling rings at the top, gold bands under the rings and at the foot. Pose: standing on a snowy rock above a steaming hot spring, spinning the ringed staff behind his back, snow and steam swirling.
+```
+
+### แบบ 3 — อาลักษณ์จันทรา (อียิปต์)
+```
+Design 3 — "Moon Scribe". A hamadryas baboon, a scribe-priest of Thoth, the moon god of wisdom: calm and scholarly — until the wild spirit in his circlet wakes up. A long silver-white mane over the shoulders like a cape, grey fur, a pink-red face and muzzle, wise amber eyes, a tail with a small tuft. A white pleated linen kilt, a broad collar of lapis-blue and carnelian-red beads, a reed-pen case and a small scribe's palette on his belt, a silver crescent-moon pendant. Accent colours: lapis blue and carnelian red. Weapon: a tall ebony staff topped with a small silver crescent moon, carved with abstract swirls (nothing that reads as writing), gold bands at both ends. Pose: greeting the sunrise with both arms raised high, the staff lifted in one hand, his mane blowing — the way baboons greet the sun in Egyptian art.
+```
+
+### แบบ 4 — นักเต้นวายุ (แอซเท็ก)
+```
+Design 4 — "Wind Dancer". A spider monkey from the Aztec land, a temple dancer of the monkey day-sign: in Aztec legend the people of the Wind Sun were blown into monkeys, and the Monkey King's spirit rode that same wind through the rift. Very long thin arms and legs, a very long prehensile tail, glossy black-brown fur, a pale ring around the eyes and muzzle, bright playful eyes. A short scarlet loincloth with turquoise-blue trim (blue, not green), a small turquoise-blue and scarlet feather fan at the back of the head that does not hide the face, a marigold flower behind one ear, shell-rattle anklets, painted orange stripes on the arms. Accent colours: turquoise blue and scarlet orange. Weapon: a rattle dance-staff of dark wood with small shell rattles under the gold bands at both ends. Pose: mid-dance spin, the staff whirling in the curl of his tail, arms flung wide, marigold petals swirling.
+```
+
+### ขั้นต่อไป (ร่างสถิต)
+เจ้าของเลือกร่าง (หรือกลับไปใช้ลุคหงอคงเอง) → ถ้าเป็นร่างสถิต: แก้ชื่อ / คำบรรยายสกิลให้เป็นเสียงของหงอคงที่ให้ยืมพลัง (ตัวเลขเดิม) + ดินแดน / บ้านตามร่าง → ชีต 8 ทิศ → คลิปท่า → ไอคอน + ทรี (ทรี C = วิญญาณหงอคงยักษ์ข้างหลัง)
