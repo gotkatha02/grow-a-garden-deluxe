@@ -406,7 +406,7 @@ Bottom row, left to right: back view · three-quarter back view facing left · s
 No steam, no snow, no ground, no shadow, no glow, no effects. No green anywhere on the character. No text, no labels, no watermark.
 ```
 
-### พรอมต์ 2 — ชีตท่านั่ง 8 ทิศ (ส่งหลังได้ชีต 8 ทิศแล้ว แนบทั้ง 2 ภาพ)
+### พรอมต์ 2 — ชีตท่านั่ง 8 ทิศ (ไม่ต้องใช้แล้ว: เจ้าของได้ท่านั่ง 4 ทิศมาในภาพ 07:33)
 ใช้กับระบบนั่งพัก (hero_sit.js: ภาพละทิศ 8 ทิศ ไม่กลับด้าน ขนาดเทียบกับชีตยืน)
 ```
 Same hero, same style, NOT a new design: copy him exactly from the attached sheets. Draw an 8-direction SITTING sheet: he sits cross-legged in calm meditation, back straight, hands resting on his knees, eyes half-closed and peaceful, the ringed staff lying across his lap, the conch horn at his right hip.
@@ -416,5 +416,35 @@ Bottom row, left to right: back view · three-quarter back view facing left · s
 No steam, no snow, no rock, no ground, no shadow, no effects. No green anywhere on the character. No text, no labels, no watermark.
 ```
 
+### ได้ภาพแล้ว (07:30 ชีต 8 ทิศ · 07:33 ชีตยืน 8 + นั่ง 4)
+- `assets/heroes/wukong/dir8_stand.webp` = ชีตยืน 8 ทิศ ตัวใหญ่ (~490 px) → ใช้ทำภาพตั้งต้นคลิป + สไปรต์ชั่วคราว · เข็มขัดใต้ผ้าคาดยังมีเส้นเขียวสว่าง (และแสงเขียวสะท้อนในห่วงไม้เท้า) → `tools/dir8cut.py` ทาเป็นกรมท่า / เทาให้ก่อนทำภาพตั้งต้น
+- `assets/heroes/wukong/dir12_stand_sit.webp` = ยืน 8 ทิศ (ตัวเล็กกว่า ~340 px) + นั่งสมาธิ 4 ทิศ (หน้า · เฉียงหน้า · ข้าง · หลัง ไม้เท้าวางที่พื้นหน้าตัก) → ตัดแล้วเป็น `assets/sit/wukong_<ทิศ>.webp` (ฝั่งซ้ายกลับด้านจากฝั่งขวา, เฉียงหลัง NE / NW ใช้ภาพหลัง) + ใส่ใน hero_sit.js แล้ว (ทำงานเมื่อมีตัวในเกม) · แถวท่านั่งวาดใหญ่กว่าแถวยืน 1.09 เท่า (วัดจากปอมปอมกับหน้า) → k = 230 / 373
+- ถ้าอยากได้ท่านั่งเฉียงหลังจริง ค่อยเจนเพิ่มภาพเดียว ตอนนี้ไม่จำเป็น
+
+### คลิปท่า 20 ตัว (image-to-video)
+- ภาพตั้งต้น 5 ทิศ: `python3 -I tools/dir8cut.py start assets/heroes/wukong/dir8_stand.webp <โฟลเดอร์> size=900` → start_S / SE / E / NE / N.png (900×900 พื้นเขียวเดิม ทุกทิศขนาดเท่ากัน เท้าที่ 80 % ความสูง ตัวกลางภาพ เหลือที่ให้เหวี่ยงไม้เท้า) · ส่งให้เจ้าของแล้ว 2026-11-23
+- 1 ภาพ × 4 พรอมต์ = 4 คลิปต่อทิศ · ไม่ต้องทำทิศซ้าย (เกมกลับด้านเอง) · คลิปละ 3–5 วิ · ส่งเรียงทิศ S → SE → E → NE → N ทิศละ ยืน → เดิน → ตี → ร่าย
+- ทุกพรอมต์ลงท้ายด้วยกติกาเดียวกัน: ภาพนิ่งเดิม (ชิบิ เส้นหนา) · พื้นเขียวตลอด · กล้องห้ามขยับ / ซูม (คลิปทิศ N ของแอคโซลอเติล กับคลิปเดินทิศ S ของมังกรเคยซูมจนต้องแก้) · ตัวอยู่กลางภาพขนาดเท่าเดิม หันทางเดิม · ตัวกับไม้เท้าต้องอยู่ในกรอบ · ไม่มีเงา แสงวาบ ประกาย ควัน (เอฟเฟกต์ใส่ด้วยโค้ดในเกม)
+
+ยืน (idle · วนลูป)
+```
+Idle loop: he stands in a relaxed ready stance and breathes slowly; his fur, the sash ends and the pompoms sway a little, the staff rings swing gently, and he blinks once. The last frame matches the first frame so the clip loops. Keep the exact look of the picture: hand-painted chibi cartoon, thick dark-brown outlines, flat cel shading — not realistic, not 3D. The background stays plain flat green for the whole clip. The camera never moves or zooms. He stays in the middle of the frame at the same size and keeps facing the same direction as in the picture; his whole body and the whole staff stay inside the frame. No shadow, no flash, no glow, no particles, no smoke, no text.
+```
+
+เดิน (walk · วนลูป)
+```
+Walk loop: he walks in place, like on a treadmill, toward the way he is facing — a light, bouncy monkey walk, the staff swinging a little in his hand. He does not move across the frame and the ground does not move. The last frame matches the first frame so the clip loops. Keep the exact look of the picture: hand-painted chibi cartoon, thick dark-brown outlines, flat cel shading — not realistic, not 3D. The background stays plain flat green for the whole clip. The camera never moves or zooms. He stays in the middle of the frame at the same size and keeps facing the same direction as in the picture; his whole body and the whole staff stay inside the frame. No shadow, no flash, no glow, no particles, no smoke, no text.
+```
+
+ตี (attack · ใช้กับตีปกติ + สกิลประชิด)
+```
+Attack: one quick, powerful staff strike toward the way he is facing — a short wind-up, a fast swing, a brief hold at the moment of the hit, then back to his starting pose. His feet stay in place. Keep the exact look of the picture: hand-painted chibi cartoon, thick dark-brown outlines, flat cel shading — not realistic, not 3D. The background stays plain flat green for the whole clip. The camera never moves or zooms. He stays in the middle of the frame at the same size and keeps facing the same direction as in the picture; his whole body and the whole staff stay inside the frame. No shadow, no flash, no glow, no particles, no smoke, no text.
+```
+
+ร่าย (buff · ใช้กับบัฟ / แปลงร่าง / อัลติ)
+```
+Power-up: he lifts the staff level above his head with both hands and gives a fierce shout, holds it there for a moment, then brings the staff back down to his side and returns to his starting pose. His feet stay in place. Keep the exact look of the picture: hand-painted chibi cartoon, thick dark-brown outlines, flat cel shading — not realistic, not 3D. The background stays plain flat green for the whole clip. The camera never moves or zooms. He stays in the middle of the frame at the same size and keeps facing the same direction as in the picture; his whole body and the whole staff stay inside the frame. No shadow, no flash, no glow, no particles, no smoke, no text.
+```
+
 ### ขั้นต่อไป (นักพรตหิมะ)
-ชีต 8 ทิศ → สร้างในเกม (รอเจ้าของสั่ง · ระหว่างรอสไปรต์ใช้หมาป่าย้อมสีแบบอีกา) → คลิปท่า 20 ตัวบนพื้นเขียว (idle / walk / attack / buff × S, SE, E, NE, N · 480×480 24 fps แบบมังกร / แอคโซลอเติล → `tools/cliphero.py`) → ชีตท่านั่ง → ไอคอน 4 ชีต + พื้นหลังทรี 4 ใบ + ภาพหน้าสร้างตัว
+สร้างในเกม (รอเจ้าของสั่ง) — สไปรต์ชั่วคราวใช้ตัวลิงจริงจากชีต 8 ทิศแทนหมาป่า: `python3 -I tools/statichero.py assets/heroes/wukong/dir8_stand.webp assets_wukong.js WKG 0,1,2,3,4` (ลองแล้วใช้ได้ ≈ 5 MB ภาพนิ่งขยับด้วยโค้ด) → คลิป 20 ตัวมาถึง → `tools/cliphero.py` สร้าง assets_wukong.js ใหม่แทน → ไอคอน 4 ชีต + พื้นหลังทรี 4 ใบ + ภาพหน้าสร้างตัว

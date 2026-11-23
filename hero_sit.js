@@ -2,8 +2,12 @@
    twice as fast while sitting (updatePlayer in index.html); moving, attacking or casting stands the hero up.
    One painted picture per direction (assets/sit/<hero>_<S|SE|E|NE|N|NW|W|SW>.webp), cut from the owner's 8-view sheet on green.
    k = sheet px → sprite-cell px (sprite idle height 228 / standing height 475 on the owner's matching standing sheet);
-   cx = body centre across the picture (bottom quarter). Heroes without a SIT entry cannot sit yet. */
-(function(){const SIT={cat:{dir:'assets/sit/cat_',k:228/475,cx:{S:.513,SE:.497,E:.506,NE:.516,N:.516,NW:.509,W:.496,SW:.488}}}[CHAR];
+   cx = body centre across the picture (bottom quarter). Heroes without a SIT entry cannot sit yet.
+   wukong (snow monkey, 2026-11-23): only 4 sitting views on the owner's sheet (S SE E N) → W side mirrored, NE / NW = the back view;
+   cut by `tools/dir8cut.py sit`; cx = head centre (the staff lies across the feet); k = 230 / (342 × 1.09): the sitting row of
+   his sheet is drawn 1.09× bigger than its standing rows (pompom + face size). Waits for char_wukong.js (CHAR 'wukong'). */
+(function(){const SIT={cat:{dir:'assets/sit/cat_',k:228/475,cx:{S:.513,SE:.497,E:.506,NE:.516,N:.516,NW:.509,W:.496,SW:.488}},
+  wukong:{dir:'assets/sit/wukong_',k:230/373,cx:{S:.581,SE:.457,E:.457,NE:.429,N:.429,NW:.429,W:.539,SW:.54}}}[CHAR];
 if(!SIT)return;
 const IM={};for(const d of ['S','SE','E','NE','N','NW','W','SW']){const im=new Image();im.src=SIT.dir+d+'.webp?v=1';IM[d]=im;}
 player.sitting=false;let fade=0;
