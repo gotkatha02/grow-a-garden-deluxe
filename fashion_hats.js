@@ -152,3 +152,24 @@ window.hatIcon=hatIcon;
 const _ii=itemIcon;
 itemIcon=function(it,sz){if(it&&it.hatKey)return `<img src="${hatIcon(it.hatKey,48)}" width="${sz||24}" height="${sz||24}" style="vertical-align:middle">`;return _ii.apply(this,arguments);};
 })();
+
+/* =====================================================================
+   PAINTED hats from the owner's ChatGPT sheets (FASHION_HAT_PROMPTS_TH.md): cut by tools/hat_cut.py into
+   assets/fashion/hats/<key>_<S|SE|E|NE|N>.webp (512² picture, hat bottom-centre at 256,410), drawn by
+   fashion.js drawFashion on the tracked head point: picture centre = head point + off[dir], size × scale.
+   ===================================================================== */
+(function(){
+if(typeof FASHION==='undefined'||!FASHION.items||typeof FASH_VIS==='undefined'||typeof FITEMS==='undefined')return;
+const PHAT={
+  sunfire:{id:'sunfirecrown',n:'Sunfire Plume Crown',w:20,d:'มงกุฎขนนกเพลิง คาดทองสลักลายตะวัน พลอยทับทิมหน้าผาก พัดขนนกสีเพลิงด้านหลัง (แฟชั่น)',
+    size:512,scale:.6,off:{S:[0,-61],SE:[-24,-61],E:[-27,-61],NE:[-37,-61],N:[0,-61]},icon:'SE'},
+};
+const dirs=['S','SE','E','NE','N'];
+for(const k in PHAT){const P=PHAT[k],img={};for(const d of dirs)img[d]='assets/fashion/hats/'+k+'_'+d+'.webp';
+  FASHION.items[k]={size:P.size,scale:P.scale,off:P.off,img};FASH_VIS[P.id]=k;
+  FITEMS[P.id]={n:P.n,slot:'top',kind:'Upper Headgear',def:0,w:P.w,b:{},d:P.d,hatImg:img[P.icon||'S']};
+  if(FINV.indexOf(P.id)<0)FINV.push(P.id);}
+window.PHAT=PHAT;
+const _ii=itemIcon;
+itemIcon=function(it,sz){if(it&&it.hatImg){const s=sz||24;return `<span style="display:inline-block;width:${s}px;height:${s}px;vertical-align:middle;background:url(${it.hatImg}) center 62%/170% no-repeat"></span>`;}return _ii.apply(this,arguments);};
+})();

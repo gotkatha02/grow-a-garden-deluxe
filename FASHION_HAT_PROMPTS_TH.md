@@ -84,3 +84,15 @@ Style: friendly hand-painted chibi cartoon matching the attached art, thick clea
 
 Background: flat solid pure green #00FF00. No shadow on the ground, no glow, no sparkles, no fire, no text, no numbers, no logo, no watermark.
 ```
+
+## 7. ใส่ภาพวาดเข้าเกม (ทำแล้ว 2026-11-23: มงกุฎขนนกเพลิง)
+
+1. ตัดภาพ: `python3 -I tools/hat_cut.py <sheet.png> <key> mirror=SE,E,NE` → `assets/fashion/hats/<key>_<S|SE|E|NE|N>.webp`
+   (512² ต่อมุม, ขนาด 1:1 กับแผ่น, ขอบล่างกลางของหมวกอยู่ที่ 256,410) · คีย์เขียว + ดึงสีเขียวออกจากขอบ (`bg=m` = พื้นบานเย็น)
+   ChatGPT วาดมุม 2–4 หันซ้าย → `mirror=` กลับให้หันขวา (ดูว่ายอด/พลอยหน้าอยู่ฝั่งไหน)
+2. ลงทะเบียน: ตาราง `PHAT` ท้าย `fashion_hats.js` → `{id, n, d, size:512, scale, off:{S,SE,E,NE,N}, icon}`
+   (ไอเทมตู้เสื้อผ้า + `FASH_VIS` + `FASHION.items` ทำให้เอง, ไอคอน = ภาพมุม icon)
+3. ปรับตำแหน่ง: scale = ความกว้างหัวที่หน้าผาก (~120 พิกเซลสไปร์ทหมาป่า) ÷ ความกว้างคาดหน้าผากในภาพ
+   off.y = (ระดับที่อยากให้ขอบล่างอยู่ − 110) − (ขอบล่างในภาพ − 256) × scale (ตาหมาป่าอยู่ y 138–146, จุดหัว y 110)
+   off.x มุมข้าง = −(กลางคาดในภาพ − 256) × scale + HEAD_OFF ของมุมนั้น · เช็ค: /home/claude/work/hat/tune.py <key> <id> out.png 3.2 '<json ทับค่า>'
+4. มงกุฎขนนกเพลิง (`sunfire` / ไอเทม `sunfirecrown`): scale .6 · off S [0,−61] SE [−24,−61] E [−27,−61] NE [−37,−61] N [0,−61]
