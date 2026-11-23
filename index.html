@@ -1547,7 +1547,7 @@ function drawEnemy(e){
     ctx.strokeStyle='rgba(255,255,255,.7)';ctx.beginPath();ctx.moveTo(x-14,y-4);ctx.lineTo(x-10,y-36);ctx.moveTo(x+12,y-6);ctx.lineTo(x+16,y-28);ctx.stroke();ctx.restore();}
   ctx.globalAlpha=al;const top=y-(spr?MSPR_H(e)+8:54*e.sc);
   if(e.atk>0&&!e.dead){ctx.fillStyle='#ff4a3a';ctx.font='900 16px Cinzel, serif';ctx.textAlign='center';ctx.fillText('!',x,top-14);ctx.textAlign='start';ctx.globalCompositeOperation='lighter';ctx.globalAlpha=.25+.2*Math.sin(gameTime*30);ctx.fillStyle='#ff3a2a';ctx.beginPath();ctx.ellipse(x,y-16*e.sc,20*e.sc,17*e.sc,0,0,TAU);ctx.fill();ctx.globalAlpha=al;ctx.globalCompositeOperation='source-over';}
-  if(!e.dead&&(e.hp<e.maxHp||player.attackTarget===e||window.TL&&TL.e===e||e.boss)){const w=e.boss?60:38;ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(x-w/2,top,w,5);ctx.fillStyle=e.hp/e.maxHp>.3?'#5ee06a':'#ff5a4a';ctx.fillRect(x-w/2+1,top+1,(w-2)*e.hp/e.maxHp,3);if(e.koMax){const r=e.koOut?1-(e.st.stun||0)/KO_STUN:e.ko/e.koMax;ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(x-w/2,top+5,w,4);ctx.fillStyle=e.koOut?'#8a94a8':r<.3?'#ff8a2a':'#ffd23a';ctx.fillRect(x-w/2+1,top+6,(w-2)*r,2);}if(e.boss){ctx.fillStyle='#ffd27a';ctx.font='700 10px Cinzel, serif';ctx.textAlign='center';ctx.fillText(e.bossName||'ELDER FROSTLING · BOSS',x,top-4);ctx.textAlign='start';}}
+  if(!e.dead&&(e.hp<e.maxHp||player.attackTarget===e||window.TL&&TL.e===e||e.boss)){const w=e.boss?60:38;ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(x-w/2,top,w,5);ctx.fillStyle=e.hp/e.maxHp>.3?'#5ee06a':'#ff5a4a';ctx.fillRect(x-w/2+1,top+1,(w-2)*e.hp/e.maxHp,3);if(e.koMax){const r=e.koOut?1-(e.st.stun||0)/KO_STUN:e.ko/e.koMax;ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(x-w/2,top+5,w,4);ctx.fillStyle=e.koOut?'#8a94a8':r<.3?'#ff8a2a':'#ffd23a';ctx.fillRect(x-w/2+1,top+6,(w-2)*r,2);}if(e.boss&&!e.mini){ctx.fillStyle='#ffd27a';ctx.font='700 10px Cinzel, serif';ctx.textAlign='center';ctx.fillText(e.bossName||'ELDER FROSTLING · BOSS',x,top-4);ctx.textAlign='start';}}
   let ix=x-18;const iy=top-8;for(const [k,c] of [['bleed','#ff3a4a'],['slow','#7fdcff'],['frozen','#e6f8ff'],['stagger','#ffd23a'],['armor','#d8b45a']]){if(e.st[k]>0&&!e.dead){ctx.fillStyle=c;ctx.beginPath();ctx.moveTo(ix+3,iy-3);ctx.lineTo(ix+6,iy);ctx.lineTo(ix+3,iy+3);ctx.lineTo(ix,iy);ctx.fill();ix+=8;}}
   ctx.globalAlpha=1;}
 
@@ -1778,7 +1778,7 @@ function hitPlayer(e,o={}){const m=e.m||MON.frostling;const a=player.action;cons
   if(player.hp<=0){if(typeof window.onPlayerDeath==='function')window.onPlayerDeath(e);else{player.hp=player.maxHp;msg('HP หมด — ฟื้นอัตโนมัติ (โหมดทดสอบ)');}}}
 /* ---- crowd control on the player: only stun / knock-up / flinch interrupt casting (a normal hit does not) ---- */
 function monsterCC(e){if(player.hp<=0)return;const heavy=e.boss||(typeof MSPR_H==='function'&&MSPR_H(e)>=60)||(e.vdef&&e.vdef.role==='elite');const r=Math.random();
-  if(e.boss){if(r<.12)playerCC('air',.7);else if(r<.3)playerCC('flinch',.45);}
+  if(e.boss&&!e.mini){if(r<.12)playerCC('air',.7);else if(r<.3)playerCC('flinch',.45);}   /* map mini-bosses (mini_bosses.js) only flinch, like other heavy monsters */
   else if(heavy&&r<.18)playerCC('flinch',.4);}
 class PStunStars{constructor(){this.t=0;this.layer='top';}update(dt){this.t+=dt;return player.ccT>0&&player.ccK==='stun';}
   draw(){for(let i=0;i<3;i++){const an=this.t*5+i*TAU/3,[x,y]=P(player.x+Math.cos(an)*13,player.y+Math.sin(an)*5,78);ctx.save();ctx.translate(x,y);ctx.rotate(this.t*4+i);
@@ -5591,7 +5591,7 @@ document.getElementById('mmin').onclick=e=>{e.stopPropagation();mmZoom=Math.min(
 function drawMinimap(){const W=mmc.width,H=mmc.height,sc=.16*mmZoom,cx=W/2,cy=H/2,X=x=>cx+(x-player.x)*sc,Y=y=>cy+(y-player.y)*sc*.8;
   if(curMap)mapMini(W,H,X,Y);else{mmg.fillStyle='#1a2030';mmg.fillRect(0,0,W,H);}
   if(warBanner&&warBanner.t<warBanner.life){mmg.strokeStyle='rgba(255,211,106,.8)';mmg.lineWidth=2;mmg.beginPath();mmg.ellipse(X(warBanner.x),Y(warBanner.y),BANNER_R*sc,BANNER_R*sc*.8,0,0,TAU);mmg.stroke();}
-  for(const e of enemies){if(e.dead)continue;const x=X(e.x),y=Y(e.y);mmg.fillStyle=e.boss?'#ff3a3a':e.aggro>0?'#ff8a5a':'#b98aff';mmg.strokeStyle='#3a2a1f';mmg.lineWidth=1.5;mmg.beginPath();mmg.arc(x,y,e.boss?6:3.6,0,TAU);mmg.fill();mmg.stroke();}
+  for(const e of enemies){if(e.dead)continue;const x=X(e.x),y=Y(e.y);mmg.fillStyle=e.mini?'#ffc83a':e.boss?'#ff3a3a':e.aggro>0?'#ff8a5a':'#b98aff';mmg.strokeStyle='#3a2a1f';mmg.lineWidth=1.5;mmg.beginPath();mmg.arc(x,y,e.boss?6:3.6,0,TAU);mmg.fill();mmg.stroke();}
   if(fenrir&&hasBuff('fenrir')){mmg.fillStyle='#8ff2ff';mmg.beginPath();mmg.arc(X(fenrir.x),Y(fenrir.y),3.5,0,TAU);mmg.fill();}
   mmg.save();mmg.translate(cx,cy);mmg.rotate((player.phi||0)+Math.PI/2);mmg.fillStyle='#fff';mmg.strokeStyle='#3a2a1f';mmg.lineWidth=2;mmg.beginPath();mmg.moveTo(0,-9);mmg.lineTo(7,7);mmg.lineTo(0,3);mmg.lineTo(-7,7);mmg.closePath();mmg.fill();mmg.stroke();mmg.restore();
   document.getElementById('mmxy').textContent=`${Math.round(player.x/20)}, ${Math.round(player.y/20)}`;}
@@ -6076,12 +6076,12 @@ window.AF={levelUp:()=>{if(PS.lv<LV_CAP){PS.lv++;applyStats();player.hp=player.m
 <script src="svg_vfx.js"></script>
 <script src="vfx_rework.js?v=2"></script>
 <script src="croc_vfx.js?v=2"></script>
-<script src="worldmap.js?v=2"></script>
+<script src="worldmap.js?v=3"></script>
 <script src="gem_data.js?v=8"></script>
 <script src="drop_table.js?v=3"></script>
 <script src="pet_data.js?v=1"></script>
 <script src="rune_data.js?v=1"></script>
-<script src="items.js?v=28"></script>
+<script src="items.js?v=29"></script>
 <script src="market.js?v=4"></script>
 <script src="npcs.js?v=12"></script>
 <script src="monsters.js?v=2"></script>
@@ -6094,12 +6094,14 @@ window.AF={levelUp:()=>{if(PS.lv<LV_CAP){PS.lv++;applyStats();player.hp=player.m
 <script src="map_bosses_grk.js?v=6"></script>
 <script src="map_bosses_jpn.js?v=3"></script>
 <script src="map_bosses_azt.js?v=2"></script>
+<script src="mini_boss_data.js?v=1"></script>
+<script src="mini_bosses.js?v=2"></script>
 <script src="boss_fenrir.js?v=8"></script>
 <script src="progress.js?v=2"></script>
 <script src="char_create.js?v=3"></script>
 <script src="skill_shapes.js?v=1"></script>
 <script src="mobile.js?v=6"></script>
-<script src="target_lock.js?v=5"></script>
+<script src="target_lock.js?v=6"></script>
 <script src="sp_rules.js?v=1"></script>
 <script src="totem_gems.js?v=37"></script>
 <script src="seals.js?v=1"></script>
@@ -6114,7 +6116,7 @@ window.AF={levelUp:()=>{if(PS.lv<LV_CAP){PS.lv++;applyStats();player.hp=player.m
 <script src="feel_hits.js?v=1"></script>
 <script src="milestones.js?v=1"></script>
 <script src="stat_help.js?v=1"></script>
-<script src="pets.js?v=1"></script>
+<script src="pets.js?v=2"></script>
 <script src="world_boss.js?v=3"></script>
 <script src="wb_urtok.js?v=1"></script>
 <script src="wb_khepra.js?v=1"></script>
@@ -6145,7 +6147,7 @@ window.AF={levelUp:()=>{if(PS.lv<LV_CAP){PS.lv++;applyStats();player.hp=player.m
 <script src="fx_manifest.js?v=1"></script>
 <script src="fx_cfg.js?v=1"></script>
 <script src="testroom.js?v=2"></script>
-<script src="guide.js?v=9"></script>
+<script src="guide.js?v=10"></script>
 <script>/* offline cache (sw.js): pictures are kept on the device, so later visits barely download anything; ?nosw=1 removes it */
 if('serviceWorker' in navigator&&location.protocol==='https:'){if(/[?&]nosw=1/.test(location.search))navigator.serviceWorker.getRegistrations().then(a=>a.forEach(r=>r.unregister()));else window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));}</script>
 <script>/* fashion system: wolf sprite only for now */if(CHAR==='wolf')document.write('<script src="assets_fashion.js"><\/script><script src="assets_fur.js?v=3"><\/script><script src="assets_skin.js"><\/script><script src="assets_cloth.js?v=2"><\/script><script src="pwing_data.js?v=1"><\/script><script src="fashion.js?v=8"><\/script>');</script>

@@ -228,7 +228,7 @@ const fe={pc:F.querySelector('canvas'),lv:F.querySelector('.lv'),nm:F.querySelec
 fe.x.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();release('rel',true);});
 const FS={e:null,hp:-1,max:-1,fr:1,tr:1,hold:0,sig:'',ko:-1,lvS:'',seenHp:0};
 function lvCol(d){return d<=-10?'#c9ced6':d<=-4?'#a6e88a':d<=3?'#fff3d6':d<=6?'#ffbe6a':'#ff7a64';}
-function nameOf(e){const v=e.vdef||{},m=e.m||{};return {th:e.bossName||v.th||m.th||v.name||m.name||'มอนสเตอร์',en:e.bossName?'':(v.th||m.th)?(v.name||m.name||''):''};}
+function nameOf(e){const v=e.vdef||{},m=e.m||{};if(e.mini)return {th:e.mini.th,en:e.mini.en};return {th:e.bossName||v.th||m.th||v.name||m.name||'มอนสเตอร์',en:e.bossName?'':(v.th||m.th)?(v.name||m.name||''):''};}
 function frameSet(e){FS.e=e;const mt=document.getElementById('mobTgt');if(mt)mt.classList.toggle('lk',!!e);if(!e){F.classList.remove('on');return;}
   const n=nameOf(e),lv=(e.m&&e.m.lv)||e.lv||0,pl=(window.PS&&PS.lv)||1;
   fe.nm.textContent=n.th;fe.en.textContent=n.en;fe.lv.textContent=lv?'Lv.'+lv:'Lv.?';F.style.setProperty('--lc',e.boss?'#ffd86a':lvCol(lv-pl));
@@ -248,10 +248,11 @@ function frameTick(){const e=FS.e;if(!e)return;if(e!==L||e.dead){if(!alive(L))fr
   if(e.koMax){const kr=e.koOut?1-clamp((e.st&&e.st.stun||0)/(G('KO_STUN')||4),0,1):clamp(e.ko/e.koMax,0,1);if(Math.abs(kr-FS.ko)>.004){FS.ko=kr;fe.koI.style.transform='scaleX('+kr.toFixed(3)+')';}fe.ko.classList.toggle('out',!!e.koOut);}
   let sig=(e.vdef&&e.vdef.aggr?'a':'')+(e.hidden?'h':'')+(e.boss?'b':'');const s=e.st||{};for(const [k] of STC)if(s[k]>0)sig+=k[0]+k[1];
   if(sig!==FS.sig){FS.sig=sig;let h='';for(const [k,c,t] of STC)if(s[k]>0)h+=`<i style="--c:${c}" title="${t}"></i>`;
-    if(e.vdef&&e.vdef.aggr)h+='<em class="ag" title="ดุร้าย — เข้าโจมตีก่อน">ดุ</em>';if(e.boss)h+='<em class="bs">บอส</em>';if(e.hidden)h+='<em class="ag" title="หายตัว">หาย</em>';fe.tg.innerHTML=h;}}
+    if(e.vdef&&e.vdef.aggr)h+='<em class="ag" title="ดุร้าย — เข้าโจมตีก่อน">ดุ</em>';if(e.boss)h+=e.mini?'<em class="bs">มินิบอส</em>':'<em class="bs">บอส</em>';if(e.hidden)h+='<em class="ag" title="หายตัว">หาย</em>';fe.tg.innerHTML=h;}}
 /* portrait: the monster's first idle frame, cropped round its head (bbox of the top part of the body), cached per sprite */
 const PCACHE=new Map();
 function sheetOf(e){const M=window.MSPR;if(!M)return null;const m=(e.vdef&&M[e.vdef.name])||(e.spr&&M[e.spr]);if(!m)return null;
+  if(m.pic){const im=m.img;if(!m.ok||!im.naturalWidth)return {wait:1};return {img:im,cw:im.naturalWidth,ch:im.naturalHeight,flip:false,key:'mini:'+m.key};}   /* mini-boss master picture (mini_bosses.js) */
   if(m.clip){const a=m.clip.idle;if(!m.ok||!a||!a.img||!a.img.naturalWidth)return {wait:1};return {img:a.img,cw:a.cw,ch:a.ch,flip:!!m.flip,key:a.f};}
   const im=m.img;if(!im||!im.naturalWidth||!m.ok)return {wait:1};return {img:im,cw:m.cw,ch:m.ch,flip:!!m.flip,key:m.file};}
 function crop(s){let c=PCACHE.get(s.key);if(c)return c;const cv=document.createElement('canvas');cv.width=s.cw;cv.height=s.ch;const g=cv.getContext('2d',{willReadFrequently:true});g.drawImage(s.img,0,0,s.cw,s.ch,0,0,s.cw,s.ch);

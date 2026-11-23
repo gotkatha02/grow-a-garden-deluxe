@@ -106,7 +106,7 @@ if(window.TL&&TL.autoPick){const _ap=TL.autoPick;TL.autoPick=function(){const e=
 if(window.TL&&TL.autoPrime){const _pr=TL.autoPrime;TL.autoPrime=function(){if(TL.e&&TL.e._pt)return;return _pr.apply(this,arguments);};}   /* AUTO's lock shortcut sets attackTarget directly */
 {const _ok=onKill;onKill=function(e){_ok.apply(this,arguments);try{petKill(e);}catch(err){}};}
 function petKill(e){const p=active();if(!p||OFF()||!e||e._tamed)return;dayRoll();
-  if(e.boss||e.bossKey||e.fen){gain(15,'boss');return;}
+  if((e.boss&&!e.mini)||e.bossKey||e.fen){gain(15,'boss');return;}
   const lv=(e.m&&e.m.lv)||1;if(lv<PS.lv-10||S.dk>=KILL_CAP)return;S.dk++;gain(1,'kill');}
 
 /* ---------------- drawing helpers (world, sorted layer) ---------------- */

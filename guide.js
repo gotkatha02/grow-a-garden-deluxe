@@ -258,7 +258,7 @@ const SYS=[
    5. HOOKS — counters (monotonic, saved) + window opens + map visits
    ================================================================ */
 function hooks(){
-  {const f=G('onKill');if(typeof f==='function'){const _ok=f;window.onKill=onKill=function(e){const r=_ok.apply(this,arguments);try{bump('kill');if(e&&(e.boss||(e.m&&e.m.boss)))bump('boss');}catch(x){}return r;};}}
+  {const f=G('onKill');if(typeof f==='function'){const _ok=f;window.onKill=onKill=function(e){const r=_ok.apply(this,arguments);try{bump('kill');if(e&&!e.mini&&(e.boss||(e.m&&e.m.boss)))bump('boss');}catch(x){}return r;};}}
   {const f=G('castSkillNow');if(typeof f==='function'){const _cs=f;castSkillNow=function(key){const r=_cs.apply(this,arguments);try{if(r!==false&&key&&key!==G('BASIC_KEY')){bump('cast');S.kc[key]=(S.kc[key]||0)+1;}}catch(x){}return r;};}}
   if(window.TL&&TL.set){const _set=TL.set;TL.set=function(e){const r=_set.apply(this,arguments);if(e)bump('lock');return r;};}
   {const f=G('mapRouteTo');if(typeof f==='function'){const _mr=f;mapRouteTo=function(){if(!NAV.self&&NAV.on)navStop('');return _mr.apply(this,arguments);};}}}

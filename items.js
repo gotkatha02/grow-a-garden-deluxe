@@ -348,12 +348,13 @@ onKill=function(e){_onKill(e);const xb=B('exp')+(BUFF.manual>Date.now()?CONS.man
   try{dropFor(e);}catch(err){console.warn(err);}};
 function dropFor(e){const m=e.m||{},L=m.lv||1,t=tierOfLv(L),g=gradeOfLv(L),R=Loot.rate,got=[],ch=p=>Math.random()<Math.min(1,p*R);
   let r=regionOf(curMap);if(!TOWNS[r])r=Object.keys(TOWNS)[Math.floor(Math.random()*5)];          // capital monsters drop goods of every town (trade hub)
-  const crit=m.role==='critter'?.5:1,L0=LC.o(L),z=Math.round((DROP.zenyBase+L0*DROP.zenyLv)*rnd(.8,1.2)*crit*(m.boss?10:1)*(1+B('zeny')));ZENY+=z;
+  const crit=m.role==='critter'?.5:1,L0=LC.o(L),z=Math.round((DROP.zenyBase+L0*DROP.zenyLv)*rnd(.8,1.2)*crit*(m.boss?10:e.mini?5:1)*(1+B('zeny')));ZENY+=z;
   const dm=1+B('drop');
-  if(ch(DROP.matA*dm))got.push(matA(r,g));if(ch(DROP.matB*dm))got.push(matB(r,g));
+  for(let i=0,n=e.mini?3:1;i<n;i++){if(ch(DROP.matA*dm))got.push(matA(r,g));if(ch(DROP.matB*dm))got.push(matB(r,g));}   /* mini-boss: map mats ×3 */
   /* special drop (owner 2026-11-22 17:42 — drop_table.js / DROP_TABLE_TH.md): a refine stone OR an orb with the monster's own stat,
      only from the monsters the table names (every monster used to drop refine ore 3 % and a random orb 1.2 %) */
   const DT=window.DROPTAB,sp=DT?DT.of(e):'';if(sp&&ch(DT.rate(sp,m.role||(e.vdef&&e.vdef.role))*dm))got.push(DT.item(sp,t));
+  if(e.mini&&DT){const c=window.MINIB?MINIB.drop(e.mini):DT.code(e.mini.kin);if(c)got.push(DT.item(c,t));if(Math.random()<.1)got.push('tstone'+t);}   /* mini-boss (mini_bosses.js): its kin's special drop for sure (or an orb), totem stone 10 % */
   if(ch(DROP.hpPot))got.push(L0<20?'hp1':L0<45?'hp2':L0<70?'hp3':'hp4');if(ch(DROP.spPot))got.push(L0<30?'sp1':L0<60?'sp2':'sp3');   /* zeny / potions follow the design level (level cap 60) */
   if(ch(DROP.food))got.push(['food_atk','food_def','food_vit','food_agi','food_tal','food_cha'][Math.floor(Math.random()*6)]);
   const dun=/D\d|H\d|E\d|cata|rift/.test(curMap||'');
