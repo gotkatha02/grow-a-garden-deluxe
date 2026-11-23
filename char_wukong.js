@@ -291,13 +291,72 @@ function decoyTick(){if(!gOn('gbDecoy'))return;for(const c of WK.swarm){if(c.gon
   for(const e of enemies){if(e.dead||e.boss||e.mbPart||e.mbOf||e.wbUnit)continue;if(Math.hypot(e.x-c.wx,e.y-c.wy)<R+e.r*.5){e.wkTaunt=gameTime+.5;e.wkTauntBy=c;}}}}
 
 /* ---------------------------------------------------------------------
-   6. VISUALS (code VFX — the owner's painted effects / clips can replace them later)
+   6. VISUALS — the owner's painted pictures (6a) where he made one, code VFX for the rest
    --------------------------------------------------------------------- */
+/* 6a. PAINTED PICTURES (owner 2026-11-23, WUKONG_FX_PROMPTS_TH.md): assets/fx/wukong/wk_<key>.webp, cut from his 10 pictures (their
+   drawn checker background keyed off, the mountain split along its glowing crack). Loaded with the hero; until a picture has loaded —
+   or with ?wkfx=0 — the code look draws instead. Every piece is visual only: hit times are the skills' own. */
+const WKPIC_ON=!/[?&]wkfx=0(&|$)/.test(location.search);
+const WKPIC={};
+const WKPIC_KEYS=['spirit_rise','spirit_plunge','staff','cloud','mountain_l','mountain_r','furnace','cave_pool','cave_falls','peach','poof'];
+function wkPicLoad(){if(!WKPIC_ON||WKPIC._l)return;WKPIC._l=1;for(const k of WKPIC_KEYS){const im=new Image();im.decoding='async';im.src='assets/fx/wukong/wk_'+k+'.webp?v=1';WKPIC[k]=im;}}
+function wkPic(k){if(!WKPIC_ON)return null;const im=WKPIC[k];return im&&im.complete&&im.naturalWidth?im:null;}
+const bOut=k=>{const c=1.70158;k=Math.max(0,Math.min(1,k))-1;return 1+k*k*((c+1)*k+c);};   // ease out with a little overshoot
+/* a picture with its anchor (ax, ay = fractions of its size) on screen point x, y; h = drawn height (world px) */
+function picAt(im,x,y,h,ax,ay,o={}){const w=h*im.naturalWidth/im.naturalHeight;if(!(h>0)||(o.a??1)<=.005)return;ctx.save();ctx.translate(x,y);if(o.rot)ctx.rotate(o.rot);ctx.scale((o.flip?-1:1)*(o.sx||1),o.sy||1);
+  ctx.globalAlpha=Math.min(1,o.a??1);if(o.op)ctx.globalCompositeOperation=o.op;ctx.drawImage(im,-w*ax,-h*ay,w,h);ctx.restore();}
+/* the ringed-staff picture laid from its head (the rings) at hx,hy toward its butt at ex,ey: the plain middle of the shaft stretches,
+   a staff shorter than head + butt is cut off at the hand. wk_staff.webp: head 0–288 · shaft 288–444 · butt 444–768, wood 43 px thick at y 91.5 */
+const STF={h:288,m0:288,m1:444,th:43,cy:91.5};
+function drawStaffPic(im,hx,hy,ex,ey,w,a){const L=Math.hypot(ex-hx,ey-hy);if(L<2||a<=.01)return;const s=w/STF.th,H=im.naturalHeight,Wp=im.naturalWidth,hw=STF.h*s,tl=(Wp-STF.m1)*s,mid=Math.max(0,L-hw-tl),y0=-STF.cy*s,hh=H*s;
+  ctx.save();ctx.translate(hx,hy);ctx.rotate(Math.atan2(ey-hy,ex-hx));ctx.globalAlpha=Math.min(1,a);ctx.beginPath();ctx.rect(-hh,-hh,L+hh+2,hh*2);ctx.clip();
+  ctx.drawImage(im,0,0,STF.h,H,0,y0,hw,hh);if(mid>0)ctx.drawImage(im,STF.m0,0,STF.m1-STF.m0,H,hw-.5,y0,mid+1,hh);ctx.drawImage(im,STF.m1,0,Wp-STF.m1,H,hw+mid,y0,tl,hh);ctx.restore();}
+/* the golden poof a hair clone appears / vanishes in (every hairPuff) */
+class WkPoof{constructor(o){Object.assign(this,{t:0,life:.34,layer:'sorted',S:44,z:24},o);this.rot=rnd(-.15,.15);this.fl=Math.random()<.5;this.__gt='-';}
+  get sy(){return this.y+2;}update(dt){this.t+=dt;return this.t<this.life;}
+  draw(){const im=wkPic('poof');if(!im)return;const t=this.t,u=Math.max(0,(t-.06)/(this.life-.06)),s=t<.06?.45+.6*(t/.06):1.05+.2*u,a=t<.06?1:Math.max(0,1-Math.pow(u,1.4)),[x,y]=P(this.x,this.y,this.z);
+    picAt(im,x,y,this.S*s,.5,.5,{rot:this.rot,flip:this.fl,a:a*.95});}}
+/* Sky-Pillar Drop / Eastern Sea Treasure: the giant Wukong spirit plunges its staff from the sky — the staff's foot lands on the
+   target exactly at T (the skill's own hit time), squashes, holds, then the spirit bursts into a golden poof */
+class WkPlunge{constructor(o){Object.assign(this,{t:0,layer:'sorted',T:.34,H:235,Z0:150,stay:.2,fade:.26},o);this.__gt='-';this._f=0;}
+  get sy(){return this.y+4;}update(dt){this.t+=dt;if(!this._f&&this.t>this.T+this.stay){this._f=1;addFx(new WkPoof({x:this.x,y:this.y,z:this.H*.46,S:this.H*.5,life:.36}));}return this.t<this.T+this.stay+this.fade;}
+  draw(){const im=wkPic('spirit_plunge');if(!im)return;const t=this.t,T=this.T;let z=0,a=1,sx=1,sy=1;
+    if(t<T){const k=t/T;z=(1-k*k)*this.Z0;a=Math.min(1,t/.07);}
+    else{const u=t-T,sq=Math.max(0,1-u/.09);sx=1+.07*sq;sy=1-.08*sq;if(u>this.stay){const f=(u-this.stay)/this.fade;a=Math.max(0,1-f);z=f*26;}}
+    const [gx,gy]=P(this.x,this.y,0),sh=(t<T?t/T:1)*a;ctx.save();ctx.translate(gx,gy);ctx.scale(1,K);ctx.fillStyle=`rgba(20,12,4,${.32*sh})`;ctx.beginPath();ctx.arc(0,0,this.H*.2,0,TAU);ctx.fill();ctx.restore();
+    const [x,y]=P(this.x,this.y,z);picAt(im,x,y,this.H,.497,.955,{sx,sy,a});if(t>=T&&t<T+.12)picAt(im,x,y,this.H,.497,.955,{sx,sy,a:(1-(t-T)/.12)*.6,op:'lighter'});}}
+/* Mountain Splitter / Equal to Heaven: the Five-Finger Mountain bursts out of the ground on the target and splits along its glowing
+   crack — the halves tip apart, rocks fall */
+class WkMountain{constructor(o){Object.assign(this,{t:0,layer:'sorted',H:150,split:.12,life:.78},o);this.__gt='-';this._s=0;}
+  get sy(){return this.y-3;}update(dt){this.t+=dt;if(!this._s&&this.t>=this.split){this._s=1;mountainSplit(this);}return this.t<this.life;}
+  draw(){const L=wkPic('mountain_l'),R=wkPic('mountain_r');if(!L||!R)return;const t=this.t,[x,y]=P(this.x,this.y,0),H=this.H,W=H*L.naturalWidth/L.naturalHeight;
+    if(t<this.split){const k=t/Math.max(.01,this.split),r=Math.min(1,t/.07),s=.55+.45*bOut(r),sh=Math.sin(t*70)*2.2*k;
+      for(const im of [L,R]){picAt(im,x+sh,y,H*s,.5,.99,{a:r});picAt(im,x+sh,y,H*s,.5,.99,{a:.4*k,op:'lighter'});}return;}
+    const k=(t-this.split)/(this.life-this.split),e=1-(1-k)*(1-k),a=Math.max(0,1-k*k*1.15);
+    for(const [im,sd] of [[L,-1],[R,1]]){const px=x+sd*W*.4;ctx.save();ctx.translate(px+sd*e*W*.2,y+e*12);ctx.rotate(sd*e*.45);ctx.translate(-px,-y);picAt(im,x,y,H,.5,.99,{a});ctx.restore();}
+    if(k<.4)gGlow(x,y-H*.5,H*.55,'#ffe9a0',.55*(1-k/.4));}}
+function mountainSplit(m){const b=gBits();if(b)for(let i=0;i<12;i++){const sd=i%2?1:-1;b.add({kind:'rock',x:m.x+rnd(-10,10),y:m.y+rnd(-6,8),z:rnd(.15,.85)*m.H,vx:sd*rnd(40,190),vy:rnd(-30,50),vz:rnd(20,150),g:950,drag:.4,bounce:.3,life:rnd(.75,1.05),s:rnd(.9,1.8),col:Math.random()<.3?'#eef2f8':'#9a8670'});}
+  gDust(m.x,m.y,12,'#cdbfa6',100);gSparks(m.x,m.y,m.H*.5,8,'#ffe08a',240);}
+/* Out of the Furnace: the Eight Trigrams Furnace slams down over the hero, rattles as the fire builds, then bursts open */
+class WkFurnace{constructor(o){Object.assign(this,{t:0,layer:'sorted',H:152,burst:.75,life:.98},o);this.__gt='-';this._b=0;}
+  get sy(){return player.y+3;}update(dt){this.t+=dt;if(!this._b&&this.t>=this.burst){this._b=1;furnaceBurst();}return this.t<this.life&&CHAR==='wukong';}
+  draw(){const im=wkPic('furnace');if(!im)return;const t=this.t;let s=1,a=1,dx=0,rot=0,glow=0;
+    if(t<.12)s=.3+.7*bOut(t/.12);
+    else if(t<this.burst){const k=(t-.12)/(this.burst-.12);s=1+.02*Math.sin(t*40)*k;dx=Math.sin(t*55)*(1+4*k);rot=Math.sin(t*47)*.035*k;glow=k;}
+    else{const k=(t-this.burst)/(this.life-this.burst);s=1+.38*k;a=Math.max(0,1-k);glow=1-k;}
+    const [x,y]=P(player.x+dx,player.y+4,0);picAt(im,x,y,this.H*s,.5,.985,{rot,a});if(glow>0)picAt(im,x,y,this.H*s,.5,.985,{rot,a:glow*.5*a,op:'lighter'});}}
+function furnaceBurst(){addFx(new GRing({x:player.x,y:player.y,r0:10,r1:110,w:12,color:WKC.fire,life:.5}));gSparks(player.x,player.y,60,20,'#ffd27a',320);
+  const b=gBits();if(b)for(let i=0;i<14;i++){const an=rnd(0,TAU),v=rnd(90,230);b.add({kind:'rock',x:player.x+Math.cos(an)*20,y:player.y+Math.sin(an)*12,z:rnd(30,110),vx:Math.cos(an)*v,vy:Math.sin(an)*v*.6,vz:rnd(60,200),g:900,drag:.4,bounce:.3,life:rnd(.7,1),s:rnd(.9,1.7),col:Math.random()<.5?'#c88a3a':'#8a5a2a',hi:'rgba(255,220,120,.55)'});
+    b.add({kind:'flame',x:player.x+Math.cos(an)*rnd(10,40),y:player.y+Math.sin(an)*rnd(6,24),z:rnd(10,60),vz:rnd(40,90),drag:1,life:rnd(.4,.7),s:rnd(1,1.7),col:Math.random()<.5?WKC.fire:WKC.gold});}
+  shake(2);}
+/* one painted spirit behind the hero at a time (the two ults and the Furnace overlap): a second call just lengthens it */
+function giantOn(life){const g=fx.find(f=>f instanceof WkGiant&&f.t<f.life);if(g){g.life=Math.max(g.life,g.t+life);return g;}const g2=new WkGiant({life});addFx(g2);return g2;}
 function gGlow(x,y,r,col,a){if(!(a>0)||!(r>0))return;ctx.save();ctx.globalCompositeOperation='lighter';const g=ctx.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,hexA(col,a));g.addColorStop(1,hexA(col,0));ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,r,0,TAU);ctx.fill();ctx.restore();}
 /* one particle pool: golden hairs (curved strands, never round dots), short sparks, dust, water drops, flame tongues */
 class WkBits{constructor(){this.t=0;this.layer='top';this.p=[];}
   add(o){if(this.p.length>360)this.p.shift();this.p.push(Object.assign({t:0,life:.8,z:0,vx:0,vy:0,vz:0,g:0,drag:1.6,s:1,rot:rnd(0,TAU),vr:rnd(-5,5),col:WKC.gold},o));}
-  update(dt){this.t+=dt;const L=this.p;for(let i=L.length-1;i>=0;i--){const q=L[i];q.t+=dt;if(q.t>=q.life){L.splice(i,1);continue;}const f=Math.max(0,1-q.drag*dt);q.vx*=f;q.vy*=f;q.vz=q.vz*f-q.g*dt;q.x+=q.vx*dt;q.y+=q.vy*dt;q.z=Math.max(0,q.z+q.vz*dt);q.rot+=q.vr*dt;}return CHAR==='wukong';}
+  update(dt){this.t+=dt;const L=this.p;for(let i=L.length-1;i>=0;i--){const q=L[i];q.t+=dt;if(q.t>=q.life){L.splice(i,1);continue;}const f=Math.max(0,1-q.drag*dt);q.vx*=f;q.vy*=f;q.vz=q.vz*f-q.g*dt;q.x+=q.vx*dt;q.y+=q.vy*dt;q.z+=q.vz*dt;
+      if(q.z<0){q.z=0;if(q.bounce&&q.vz<-40){q.vz=-q.vz*q.bounce;q.vx*=.55;q.vy*=.55;q.vr*=.5;}else{q.vz=0;if(q.bounce){q.vx*=.8;q.vy*=.8;q.vr*=.8;}}}q.rot+=q.vr*dt;}return CHAR==='wukong';}
   draw(){if(!this.p.length)return;ctx.save();for(const q of this.p){const k=q.t/q.life,a=Math.min(1,(1-k)*1.6)*(q.a??1),[x,y]=P(q.x,q.y,q.z);if(a<=.01)continue;
     if(q.kind==='hair'){ctx.globalCompositeOperation='source-over';ctx.globalAlpha=a;ctx.save();ctx.translate(x,y);ctx.rotate(q.rot);const L=7*q.s;ctx.lineCap='round';
       ctx.strokeStyle='#8a5a10';ctx.lineWidth=2.4*q.s;ctx.beginPath();ctx.moveTo(-L,0);ctx.quadraticCurveTo(0,-L*.55,L,0);ctx.stroke();ctx.strokeStyle=q.col;ctx.lineWidth=1.3*q.s;ctx.stroke();ctx.restore();
@@ -305,10 +364,14 @@ class WkBits{constructor(){this.t=0;this.layer='top';this.p=[];}
     else if(q.kind==='spark'){ctx.globalCompositeOperation='lighter';ctx.globalAlpha=a;ctx.strokeStyle=q.col;ctx.lineWidth=2*q.s;ctx.lineCap='round';const [x2,y2]=P(q.x-q.vx*.035,q.y-q.vy*.035,q.z-q.vz*.035);ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x2,y2);ctx.stroke();}
     else if(q.kind==='dust'){ctx.globalCompositeOperation='source-over';ctx.globalAlpha=a*.42;const r=(5+k*14)*q.s;const g=ctx.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,hexA(q.col,.9));g.addColorStop(1,hexA(q.col,0));ctx.fillStyle=g;ctx.beginPath();ctx.ellipse(x,y,r,r*.75,0,0,TAU);ctx.fill();}
     else if(q.kind==='drop'){ctx.globalCompositeOperation='source-over';ctx.globalAlpha=a*.9;ctx.fillStyle=q.col;ctx.beginPath();ctx.ellipse(x,y,1.8*q.s,2.8*q.s,0,0,TAU);ctx.fill();}
-    else if(q.kind==='flame'){ctx.globalCompositeOperation='lighter';ctx.globalAlpha=a*.8;const h=(10+12*(1-k))*q.s,w=5*q.s*(1-k*.5);ctx.fillStyle=hexA(q.col,.85);ctx.beginPath();ctx.moveTo(x-w,y);ctx.quadraticCurveTo(x-w*.4,y-h*.6,x+Math.sin(q.rot)*3,y-h);ctx.quadraticCurveTo(x+w*.4,y-h*.6,x+w,y);ctx.closePath();ctx.fill();}}
+    else if(q.kind==='flame'){ctx.globalCompositeOperation='lighter';ctx.globalAlpha=a*.8;const h=(10+12*(1-k))*q.s,w=5*q.s*(1-k*.5);ctx.fillStyle=hexA(q.col,.85);ctx.beginPath();ctx.moveTo(x-w,y);ctx.quadraticCurveTo(x-w*.4,y-h*.6,x+Math.sin(q.rot)*3,y-h);ctx.quadraticCurveTo(x+w*.4,y-h*.6,x+w,y);ctx.closePath();ctx.fill();}
+    else if(q.kind==='rock'){/* a flat-faceted stone / bronze shard with an ink outline (mountain halves, the furnace burst) */
+      ctx.globalCompositeOperation='source-over';ctx.globalAlpha=Math.min(1,a*1.5);ctx.save();ctx.translate(x,y);ctx.rotate(q.rot);const r=3.4*q.s;ctx.fillStyle=q.col;ctx.strokeStyle='#2e2014';ctx.lineWidth=1.1;
+      ctx.beginPath();ctx.moveTo(-r,-r*.35);ctx.lineTo(-r*.25,-r);ctx.lineTo(r*.9,-r*.45);ctx.lineTo(r,r*.5);ctx.lineTo(-r*.35,r*.8);ctx.closePath();ctx.fill();ctx.stroke();
+      ctx.fillStyle=q.hi||'rgba(255,255,255,.42)';ctx.beginPath();ctx.moveTo(-r*.25,-r);ctx.lineTo(r*.9,-r*.45);ctx.lineTo(r*.15,-r*.1);ctx.closePath();ctx.fill();ctx.restore();}}
   ctx.restore();}}
 const gBits=()=>WK._v&&WK._v.b;
-function hairPuff(x,y,z,n,col){const b=gBits();if(!b)return;for(let i=0;i<n;i++){const an=rnd(0,TAU),v=rnd(30,110);b.add({kind:'hair',x:x+rnd(-6,6),y:y+rnd(-4,4),z:z+rnd(-8,10),vx:Math.cos(an)*v,vy:Math.sin(an)*v*.7,vz:rnd(10,70),g:60,drag:2.2,life:rnd(.6,1.1),s:rnd(.8,1.25),col:col||(Math.random()<.3?WKC.gold2:WKC.gold)});}
+function hairPuff(x,y,z,n,col){const b=gBits();if(!b)return;if(wkPic('poof'))addFx(new WkPoof({x,y,z:z*.85,S:30+n*2.4}));for(let i=0;i<n;i++){const an=rnd(0,TAU),v=rnd(30,110);b.add({kind:'hair',x:x+rnd(-6,6),y:y+rnd(-4,4),z:z+rnd(-8,10),vx:Math.cos(an)*v,vy:Math.sin(an)*v*.7,vz:rnd(10,70),g:60,drag:2.2,life:rnd(.6,1.1),s:rnd(.8,1.25),col:col||(Math.random()<.3?WKC.gold2:WKC.gold)});}
   for(let i=0;i<Math.ceil(n/3);i++)b.add({kind:'dust',x:x+rnd(-8,8),y:y+rnd(-5,5),z:z*.5,vx:rnd(-20,20),vy:rnd(-15,15),vz:rnd(5,20),life:rnd(.35,.6),s:.8,col:'#fff1c4'});}
 function gSparks(x,y,z,n,col,spd=220){const b=gBits();if(!b)return;for(let i=0;i<n;i++){const an=rnd(0,TAU),v=rnd(.4,1)*spd;b.add({kind:'spark',x,y,z,vx:Math.cos(an)*v,vy:Math.sin(an)*v*.7,vz:rnd(-40,120),g:200,drag:3,life:rnd(.18,.32),s:rnd(.8,1.2),col:col||WKC.gold2});}}
 function gDust(x,y,n,col='#c8b89a',spd=60){const b=gBits();if(!b)return;for(let i=0;i<n;i++){const an=rnd(0,TAU),v=rnd(.3,1)*spd;b.add({kind:'dust',x:x+rnd(-8,8),y:y+rnd(-5,5),z:rnd(0,6),vx:Math.cos(an)*v,vy:Math.sin(an)*v*.7,vz:rnd(8,30),drag:2.4,life:rnd(.45,.8),s:rnd(1,1.5),col});}}
@@ -336,12 +399,12 @@ function drawStaff(ax,ay,bx,by,w,a,glow,col,butt){const L=Math.hypot(bx-ax,by-ay
   if(butt){ctx.fillStyle='#f2c542';ctx.beginPath();ctx.ellipse(ax,ay,w*.8,w*.45,Math.atan2(uy,ux),0,TAU);ctx.fill();}ctx.restore();}
 class WkStaffFx{constructor(o){Object.assign(this,{t:0,life:.26,layer:'top',w:5,ext:.06,col:WKC.gold,z0:28,z1:28},o);this.__gt='-';}update(dt){this.t+=dt;return this.t<this.life;}
   draw(){const k=this.t<this.ext?this.t/this.ext:1,f=this.t<this.life*.5?1:Math.max(0,1-(this.t-this.life*.5)/(this.life*.5)),[ax,ay]=P(this.x0,this.y0,this.z0),[bx,by]=P(this.x1,this.y1,this.z1);
-    const ex=ax+(bx-ax)*k,ey=ay+(by-ay)*k;drawStaff(ax,ay,ex,ey,this.w,f,1,this.col);gGlow(ex,ey,this.w*5,this.col,.5*f);}}
+    const ex=ax+(bx-ax)*k,ey=ay+(by-ay)*k,im=wkPic('staff');if(im)drawStaffPic(im,ex,ey,ax,ay,this.w*1.15,f);else drawStaff(ax,ay,ex,ey,this.w,f,1,this.col);gGlow(ex,ey,this.w*5,this.col,.5*f);}}
 /* a giant staff plunging from the sky onto a point (Pillar Smash, Sky-Pillar Drop, Jingu Bang): lands at T */
 class WkFall{constructor(o){Object.assign(this,{t:0,layer:'top',T:.3,w:16,H:520,stay:.3,col:WKC.gold},o);this.__gt='-';}update(dt){this.t+=dt;return this.t<this.T+this.stay;}
   draw(){const k=clamp(this.t/this.T,0,1),e=k*k,a=this.t<this.T?Math.min(1,this.t/.06):Math.max(0,1-(this.t-this.T)/this.stay),z=(1-e)*this.H,[bx,by]=P(this.x,this.y,z),[tx,ty]=P(this.x,this.y,z+this.H*1.4);
     if(this.t<this.T){ctx.save();ctx.translate(...P(this.x,this.y,0));ctx.scale(1,.62);ctx.globalCompositeOperation='lighter';const r=this.w*(1.6+2.4*e);const g=ctx.createRadialGradient(0,0,0,0,0,r);g.addColorStop(0,hexA(this.col,.45*e));g.addColorStop(1,hexA(this.col,0));ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,r,0,TAU);ctx.fill();ctx.restore();}
-    drawStaff(bx,by,tx,ty,this.w,a,1.2,this.col,1);}}
+    const im=wkPic('staff');if(im)drawStaffPic(im,tx,ty,bx,by,this.w*1.1,a);else drawStaff(bx,by,tx,ty,this.w,a,1.2,this.col,1);}}
 /* ground crack star after a slam */
 class WkCrack{constructor(o){Object.assign(this,{t:0,life:.9,layer:'ground',R:70,n:7},o);this.rays=[];for(let i=0;i<this.n;i++){const an=i/this.n*TAU+rnd(-.25,.25),L=this.R*rnd(.55,1),pts=[[0,0]];let px=0,py=0;for(let j=1;j<=4;j++){const r=L*j/4,a2=an+rnd(-.22,.22);px=Math.cos(a2)*r;py=Math.sin(a2)*r;pts.push([px,py]);}this.rays.push(pts);}this.__gt='-';}
   update(dt){this.t+=dt;return this.t<this.life;}
@@ -357,8 +420,14 @@ class WkWhirl{constructor(o){Object.assign(this,{t:0,life:.4,layer:'top',R:90,z:
 /* soft cloud puffs (Somersault Cloud under the feet, the giant's cloud) */
 function cloudBlob(x,y,s,a){ctx.save();ctx.globalAlpha=a;for(const [dx,dy,r] of [[-14,2,9],[-4,-4,12],[9,-1,10],[17,4,7],[2,5,10]]){const g=ctx.createRadialGradient(x+dx*s,y+dy*s,0,x+dx*s,y+dy*s,r*s);g.addColorStop(0,'#ffffff');g.addColorStop(.7,'#eef4ff');g.addColorStop(1,hexA('#d8e4ff',0));ctx.fillStyle=g;ctx.beginPath();ctx.arc(x+dx*s,y+dy*s,r*s,0,TAU);ctx.fill();}
   ctx.globalCompositeOperation='lighter';ctx.strokeStyle=hexA(WKC.gold,.5*a);ctx.lineWidth=1.4*s;ctx.beginPath();ctx.arc(x-4*s,y-4*s,12*s,-2.6,-.6);ctx.stroke();ctx.restore();}
-class WkCloud{constructor(o){Object.assign(this,{t:0,life:.6,layer:'top',s:1.6},o);this.__gt='-';}update(dt){this.t+=dt;return this.t<this.life;}
-  draw(){const x0=this.follow?player.x:this.x,y0=this.follow?player.y:this.y,z0=this.follow?(player.z||0):(this.z||0),k=this.t/this.life,a=this.follow?Math.min(1,this.t/.08):1-k,[x,y]=P(x0,y0,z0-2);cloudBlob(x,y+6,this.s*(1+(this.follow?0:k*.5)),a*.92);}}
+/* painted: the somersault cloud (side view, flying right, tail behind) under the feet, mirrored when the dash goes left; drawn just in
+   front of the hero so the feet sink into it. Landing (no follow): it thins, spreads and sinks. */
+class WkCloud{constructor(o){Object.assign(this,{t:0,life:.6,layer:WKPIC_ON?'sorted':'top',s:1.6,dir:1},o);this.__gt='-';}update(dt){this.t+=dt;return this.t<this.life;}
+  get sy(){return (this.follow?player.y:this.y)+.6;}
+  draw(){const x0=this.follow?player.x:this.x,y0=this.follow?player.y:this.y,z0=this.follow?(player.z||0):(this.z||0),k=this.t/this.life,a=this.follow?Math.min(1,this.t/.08):1-k,im=wkPic('cloud');
+    if(im){const al=this.follow?a*Math.min(1,(this.life-this.t)/.06):Math.pow(Math.max(0,1-k),1.3),W=76*this.s*(this.follow?1+.04*Math.sin(this.t*30):1+k*.18),[x,y]=P(x0,y0,z0-2-(this.follow?0:k*6));
+      gGlow(x,y+5,W*.42,WKC.gold,.22*al);picAt(im,x,y,W*im.naturalHeight/im.naturalWidth,.674,.27,{flip:this.dir<0,a:al});return;}
+    const [x,y]=P(x0,y0,z0-2);cloudBlob(x,y+6,this.s*(1+(this.follow?0:k*.5)),a*.92);}}
 /* a momentary golden hair clone (A autospells, Hair Clone, Equal to Heaven): appears, strikes on its frame, bursts into hairs */
 class WkMom{constructor(o){Object.assign(this,{t:0,layer:'sorted',T:.42,sc:.86,z:0,face:0,form:'none',hitAt:.12},o);this.__gt='-';}
   get sy(){return this.y-.4;}
@@ -403,19 +472,37 @@ class WkMonkey{constructor(o){Object.assign(this,{t:0,layer:'sorted',wx:player.x
     if(this.form==='tiger'&&!this.gone){ctx.save();ctx.strokeStyle=hexA('#3a1a06',.55*al);ctx.lineWidth=2;for(const s of [-1,0,1]){ctx.beginPath();ctx.moveTo(x+s*7-4,y-48*sc);ctx.lineTo(x+s*7+3,y-38*sc);ctx.stroke();}ctx.restore();}
     if(!this.wind&&!this.tmp&&!this.gone&&gOn('gbDecoy')&&this.hits<cloneHits(this)){const [hx,hy]=P(this.wx,this.wy,this.z+70*sc);ctx.save();ctx.fillStyle='rgba(20,12,4,.55)';ctx.fillRect(hx-9,hy,18,3);ctx.fillStyle=WKC.gold;ctx.fillRect(hx-9,hy,18*Math.max(0,this.hits)/cloneHits(this),3);ctx.restore();}}}
 /* the vessel's giant Wukong spirit behind the hero (both ultimates, the Furnace) */
-class WkGiant{constructor(o){Object.assign(this,{t:0,layer:'sorted',life:10,sc:2.3},o);this.__gt='-';}get sy(){return player.y-8;}update(dt){this.t+=dt;return this.t<this.life&&CHAR==='wukong';}
-  draw(){const k=this.t/this.life,a=Math.min(1,this.t/.4)*Math.min(1,(this.life-this.t)/.6)*(.26+.06*Math.sin(this.t*3)),fr=playerFrame(),[x,y]=P(player.x-Math.cos(player.phi)*26,player.y-Math.sin(player.phi)*20-6,8+Math.sin(this.t*1.7)*4);
+class WkGiant{constructor(o){Object.assign(this,{t:0,layer:'sorted',life:10,sc:2.3,H:215},o);this.__gt='-';}get sy(){return player.y-8;}update(dt){this.t+=dt;return this.t<this.life&&CHAR==='wukong';}
+  draw(){const im=wkPic('spirit_rise');
+    if(im){/* painted spirit: rises out of its clouds behind the hero (0.45 s), shines, then settles into a calm breathing ghost; fades out rising */
+      const t=this.t,left=this.life-t,rise=Math.min(1,t/.45),s=(.55+.45*bOut(rise))*(1+.012*Math.sin(t*1.6)),
+        a=(t<.45?rise:t<1.6?1-.5*((t-.45)/1.15):.5+.05*Math.sin(t*2.2))*Math.min(1,Math.max(0,left/.6)),
+        z=(1-rise)*-24+(t>.45?3*Math.sin(t*1.3):0)+(left<.6?(1-left/.6)*26:0),[x,y]=P(player.x,player.y-16,z),[gx,gy]=P(player.x,player.y-16,0);
+      gGlow(gx,gy-30,this.H*.42,WKC.gold,.22*a);picAt(im,x,y,this.H*s,.5,.975,{a:a*.9});picAt(im,x,y,this.H*s,.5,.975,{a:a*(t<.9?.45:.18),op:'lighter'});return;}
+    const k=this.t/this.life,a=Math.min(1,this.t/.4)*Math.min(1,(this.life-this.t)/.6)*(.26+.06*Math.sin(this.t*3)),fr=playerFrame(),[x,y]=P(player.x-Math.cos(player.phi)*26,player.y-Math.sin(player.phi)*20-6,8+Math.sin(this.t*1.7)*4);
     try{ctx.save();ctx.translate(x,y);ctx.scale(this.sc*CHAR_SCALE,this.sc*CHAR_SCALE);ctx.globalCompositeOperation='lighter';drawFrame(fr,0,0,a,null,tinted(fr,WKC.gold));drawFrame(fr,0,0,a*.6,null,gradedFrame(fr,FLT.giant));ctx.restore();}catch(_){ctx.restore();}}}
 /* furnace flames round the hero */
 class WkFlames{constructor(o){Object.assign(this,{t:0,layer:'top',life:15},o);this.__gt='-';}update(dt){this.t+=dt;const b=gBits();if(b&&Math.random()<dt*40){const an=rnd(0,TAU),r=rnd(10,26);b.add({kind:'flame',x:player.x+Math.cos(an)*r,y:player.y+Math.sin(an)*r*.6,z:rnd(0,40),vz:rnd(30,70),drag:1,life:rnd(.4,.7),s:rnd(.8,1.4),col:Math.random()<.5?WKC.fire:WKC.gold});}return this.t<this.life&&CHAR==='wukong';}
   draw(){const [x,y]=P(player.x,player.y,30);gGlow(x,y,60,WKC.fire,.22*Math.min(1,this.t/.3)*Math.min(1,(this.life-this.t)/.5));}}
 /* Water Curtain Cave: misty pool + falling curtain on the far rim */
 class WkCave{constructor(o){Object.assign(this,{t:0,layer:'ground'},o);this.__gt='-';}update(dt){this.t+=dt;const C=WK.cave;return !!C&&C.until>gameTime&&CHAR==='wukong';}
-  draw(){const C=WK.cave;if(!C)return;const left=C.until-gameTime,a=Math.min(1,this.t/.3)*Math.min(1,left/.5),R=WKS.gbCave.R,[x,y]=P(C.x,C.y,0);ctx.save();ctx.translate(x,y);ctx.scale(1,.62);
+  draw(){const C=WK.cave;if(!C)return;const left=C.until-gameTime,a=Math.min(1,this.t/.3)*Math.min(1,left/.5),R=WKS.gbCave.R,[x,y]=P(C.x,C.y,0),im=wkPic('cave_pool');
+    if(im){/* painted pool, rock ring ≈ the real circle (a little taller than the picture so it fills the 3/4 ellipse), a few code ripples on the water */
+      const W=2*R*1.14*(.7+.3*bOut(Math.min(1,this.t/.28)));ctx.save();ctx.translate(x,y);ctx.scale(1,1.15);picAt(im,0,0,W*im.naturalHeight/im.naturalWidth,.502,.564,{a});ctx.restore();
+      ctx.save();ctx.translate(x,y+4);ctx.scale(1,.62);ctx.globalCompositeOperation='lighter';ctx.lineWidth=1.6;for(let i=0;i<3;i++){const r=((this.t*34+i*R/3)%(R*.8));ctx.strokeStyle=hexA('#e6f7ff',.32*a*(1-r/(R*.8)));ctx.beginPath();ctx.arc(0,0,r,0,TAU);ctx.stroke();}ctx.restore();return;}
+    ctx.save();ctx.translate(x,y);ctx.scale(1,.62);
     const g=ctx.createRadialGradient(0,0,R*.2,0,0,R);g.addColorStop(0,hexA('#bfe8ff',.18*a));g.addColorStop(.8,hexA(WKC.water,.22*a));g.addColorStop(1,hexA(WKC.water,0));ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,R,0,TAU);ctx.fill();
     ctx.strokeStyle=hexA('#e6f7ff',.5*a);ctx.lineWidth=2;for(let i=0;i<3;i++){const r=((this.t*40+i*R/3)%R);ctx.globalAlpha=1-r/R;ctx.beginPath();ctx.arc(0,0,r,0,TAU);ctx.stroke();}ctx.restore();}}
-class WkCaveTop{constructor(){this.t=0;this.layer='top';this.__gt='-';}update(dt){this.t+=dt;const C=WK.cave;return !!C&&C.until>gameTime&&CHAR==='wukong';}
-  draw(){const C=WK.cave;if(!C)return;const a=Math.min(1,this.t/.3)*Math.min(1,(C.until-gameTime)/.5),R=WKS.gbCave.R;ctx.save();ctx.globalCompositeOperation='lighter';
+/* painted: the snow-capped waterfall curtain stands on the pool's far rim (sorted: whoever is in the pool stands in front of it) */
+class WkCaveTop{constructor(){this.t=0;this.layer=WKPIC_ON?'sorted':'top';this.__gt='-';}update(dt){this.t+=dt;const C=WK.cave;return !!C&&C.until>gameTime&&CHAR==='wukong';}
+  get sy(){const C=WK.cave;return C?C.y-WKS.gbCave.R*.72:player.y;}
+  draw(){const C=WK.cave;if(!C)return;const a=Math.min(1,this.t/.3)*Math.min(1,(C.until-gameTime)/.5),R=WKS.gbCave.R,im=wkPic('cave_falls');
+    if(im){const W=200,h=W*im.naturalHeight/im.naturalWidth,up=bOut(Math.min(1,this.t/.32)),[x,y]=P(C.x,C.y-R*.72,0);picAt(im,x,y,h*(.6+.4*up),.5,.97,{a:a*.96});
+      /* moving water over the painted curtain: falling light streaks + mist where it lands */
+      ctx.save();ctx.globalCompositeOperation='lighter';const top=y-h*.78,bot=y-h*.14;for(let i=0;i<9;i++){const fx=x-W*.2+i/8*W*.4+Math.sin(i*2.3)*3,off=((this.t*190+i*41)%(bot-top));
+        ctx.strokeStyle=hexA('#ffffff',.38*a);ctx.lineWidth=1.6;ctx.beginPath();ctx.moveTo(fx,top+off);ctx.lineTo(fx,Math.min(bot,top+off+12));ctx.stroke();}ctx.restore();
+      gGlow(x,y-h*.12,W*.32,'#d8f2ff',.22*a);return;}
+    ctx.save();ctx.globalCompositeOperation='lighter';
     for(let i=0;i<22;i++){const an=Math.PI+.15+i/21*(Math.PI-.3),x=C.x+Math.cos(an)*R,y=C.y+Math.sin(an)*R,[sx,sy]=P(x,y,0),[tx,ty]=P(x,y,120+Math.sin(i*1.7)*16),off=((this.t*260+i*37)%120);
       const gr=ctx.createLinearGradient(tx,ty,sx,sy);gr.addColorStop(0,hexA('#ffffff',0));gr.addColorStop(.3,hexA('#d8f2ff',.32*a));gr.addColorStop(1,hexA(WKC.water,.12*a));ctx.strokeStyle=gr;ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(tx,ty);ctx.lineTo(sx,sy);ctx.stroke();
       ctx.fillStyle=hexA('#ffffff',.5*a);ctx.fillRect(tx-1,ty+off,2,9);}
@@ -442,19 +529,19 @@ const AUTO_FIRE={
     setFxTimer(.12,()=>{if(t.dead)return;gAuto(t,gLv(WKS.gnHair.dmg,'gnHair'),'gnHair');arcAt(x,y,f,{R:40});flashAt(t,0);});},
   /* Ruyi Rhythm: behind the target, a staff thrust that stretches through it toward us (everyone on the line) */
   gaRhythm(t,o){const [bx,by,bf]=behindPt(t,o.front),six=gOn('gxSix'),n=six?WKS.gxSix.n:1,m=(six?WKS.gxSix.dmg:gLv(WKS.gaRhythm.dmg,'gaRhythm'))*(o.giant?2:1);
-    mom({x:bx,y:by,face:bf,sc:o.giant?1.55:.86,six,T:.38+n*.07});
+    mom({x:bx,y:by,face:bf,sc:o.giant&&!wkPic('spirit_plunge')?1.55:.86,six,T:.38+n*.07});
     for(let i=0;i<n;i++)setFxTimer(.12+i*.07,()=>{if(t.dead&&i>0)return;const ph=bf+(n>1?(i-1)*.16:0),L=Math.max(t.r+70,Math.hypot(player.x-bx,player.y-by)-26),ex=bx+Math.cos(ph)*L,ey=by+Math.sin(ph)*L;
       addFx(new WkStaffFx({x0:bx,y0:by,x1:ex,y1:ey,w:o.giant?9:5}));for(const e of gSeg(bx,by,ex,ey,WKS.gaRhythm.w))gAuto(e,e===t?m:m*WKS.gaRhythm.side,'gaRhythm',{big:e===t});flashAt(t,o.giant);shake(.6);});
-    if(o.giant)setFxTimer(.14,()=>gQuake(t,m*.5,'gaRhythm'));},
+    if(o.giant){if(wkPic('spirit_plunge'))addFx(new WkPlunge({x:t.x,y:t.y,T:.14,H:270,Z0:110}));setFxTimer(.14,()=>gQuake(t,m*.5,'gaRhythm'));}},
   /* Thousand Staves: 3 (5) clones round the target strike together */
   gaThousand(t,o){const n=gOn('gxSky')?WKS.gxSky.n:WKS.gaThousand.n,m=gLv(WKS.gaThousand.dmg,'gaThousand')*(o.giant?2:1),a0=rnd(0,TAU),R=t.r+30;
-    for(let i=0;i<n;i++){const a=a0+i/n*TAU,x=t.x+Math.cos(a)*R,y=t.y+Math.sin(a)*R,f=a+Math.PI;mom({x,y,face:f,sc:o.giant?1.3:.82,T:.46});
+    for(let i=0;i<n;i++){const a=a0+i/n*TAU,x=t.x+Math.cos(a)*R,y=t.y+Math.sin(a)*R,f=a+Math.PI;mom({x,y,face:f,sc:o.giant&&!wkPic('spirit_plunge')?1.3:.82,T:.46});
       setFxTimer(.13+i*.025,()=>{if(t.dead)return;gAuto(t,m,'gaThousand',{big:i===0});arcAt(x,y,f,{R:38,life:.15});if(i%2===0)flashAt(t,o.giant);});}
-    shake(1);if(o.giant)setFxTimer(.18,()=>gQuake(t,m*.5,'gaThousand'));},
+    shake(1);if(o.giant){if(wkPic('spirit_plunge'))addFx(new WkPlunge({x:t.x,y:t.y,T:.18,H:270,Z0:120}));setFxTimer(.18,()=>gQuake(t,m*.5,'gaThousand'));}},
   /* Sky-Pillar Drop: the giant spirit on a cloud plunges the staff through the sky into the target */
   gaPillar(t,o){const x=t.x,y=t.y,m=gLv(WKS.gaPillar.dmg,'gaPillar')*(o.giant?2:1),R=WKS.gaPillar.R*(o.giant?1.3:1),T=.34;
-    mom({x:x-30,y:y-24,z:150,face:Math.atan2(24,30),sc:1.9,form:'giant',T:.75,hitAt:T});addFx(new WkCloud({x:x-30,y:y-24,life:.75,s:3.2,follow:0,z:150}));
-    addFx(new WkFall({x,y,T,w:o.giant?22:16}));
+    if(wkPic('spirit_plunge'))addFx(new WkPlunge({x,y,T,H:o.giant?300:235}));
+    else{mom({x:x-30,y:y-24,z:150,face:Math.atan2(24,30),sc:1.9,form:'giant',T:.75,hitAt:T});addFx(new WkCloud({x:x-30,y:y-24,life:.75,s:3.2,follow:0,z:150,layer:'top'}));addFx(new WkFall({x,y,T,w:o.giant?22:16}));}
     setFxTimer(T,()=>{for(const e of gNear(x,y,R))gAuto(e,e===t?m:m*WKS.gaPillar.side,'gaPillar',{big:e===t});gSlam(x,y,R,{w:11,dust:14,sp:10});addFx(new DText({x,y,z:110,text:o.giant?'GIANT':'',color:WKC.gold,size:14,life:.6}));shake(o.giant?3.6:2.6);stop(50);});},
   /* Monkey Pile-On: every clone jumps on the target and slams (≤ 6 count) */
   gbPile(t){const L=liveClones(),m=gLv(WKS.gbPile.dmg,'gbPile'),R=WKS.gbPile.R;let n=0;
@@ -548,9 +635,9 @@ function mkWkBasic(tgt){gEnsure();const lv=Math.max(1,gL('gnStaff')),chain=WKS.g
 /* ---------- BASIC ---------- */
 function mkGnCloud(c){const t=gTgt(c,WKS.gnCloud.range),phi=gPhi(c,t);faceTo(phi);const sx=player.x,sy=player.y,Lm=gLv(WKS.gnCloud.dist,'gnCloud')+(gOn('gxLi')?WKS.gxLi.dist:0),
     L=t?Math.min(Lm,Math.max(0,dist(player,t)-t.r-14)):Lm,[dx,dy]=gPathEnd(sx,sy,phi,Math.max(10,L)),T=.36,s=seq('buff',player.dir,0,null,seqTotal(seq('buff',player.dir,0,null,1))/(T+.12));
-  addFx(new WkCloud({follow:1,life:T+.06,s:1.7}));
+  const cdir=Math.cos(phi)<-.05?-1:1;addFx(new WkCloud({follow:1,life:T+.06,s:1.7,dir:cdir}));
   return act({key:'gnCloud',name:'Somersault Cloud',seq:s,windup:T,dur:T+.12,hitList:[],update:(a,dt)=>{dashUpd(a,dt,0,T,sx,sy,dx,dy,WKC.gold,58);player.iframes=Math.max(player.iframes||0,a.t<T?.05:0);},
-    events:[{t:T,f:()=>{WK.cloudT=gameTime+WKS.gnCloud.T;addBuff('gnCloud',WKS.gnCloud.T);addFx(new WkCloud({x:player.x,y:player.y,life:.5,s:2.2}));gDust(player.x,player.y,6,'#eef4ff',70);
+    events:[{t:T,f:()=>{WK.cloudT=gameTime+WKS.gnCloud.T;addBuff('gnCloud',WKS.gnCloud.T);addFx(new WkCloud({x:player.x,y:player.y,life:.5,s:2.2,dir:cdir}));gDust(player.x,player.y,6,'#eef4ff',70);
       if(gOn('gxLi')){addBeats(WKS.gxLi.beats);addFx(new DText({x:player.x,y:player.y,z:96,text:'+'+WKS.gxLi.beats+' จังหวะ',color:WKC.gold,size:12,life:.8}));}
       if(t&&!t.dead)player.attackTarget=t;}}]});}
 function mkGnPeach(c){return gBurst({key:'gnPeach',name:'Peach of Immortality',glow:WKC.peach,f:()=>{const h=Math.round(PS.lv*gLv(WKS.gnPeach.heal,'gnPeach'));player.hp=Math.min(player.maxHp,player.hp+h);
@@ -561,8 +648,13 @@ function mkGnSub(c){return gBurst({key:'gnSub',name:'Hair Substitute',speed:2.6,
 function subTakes(e){WK.subUntil=0;delete player.buffs.gnSub;const ph=e?Math.atan2(player.y-e.y,player.x-e.x):player.phi+Math.PI;mom({x:player.x,y:player.y,face:ph+Math.PI,T:.3,hitAt:.05});
   const [x,y]=gPathEnd(player.x,player.y,ph,WKS.gnSub.hop);player.x=x;player.y=y;player.iframes=Math.max(player.iframes||0,.25);const n=gLv(WKS.gnSub.beats,'gnSub');addBeats(n);
   addFx(new DText({x:player.x,y:player.y,z:92,text:'แทนตัว! +'+n+' จังหวะ',color:WKC.gold,size:13,life:1}));hairPuff(player.x,player.y,30,14);}
-class WkPeach{constructor(o){Object.assign(this,{t:0,life:.8,layer:'top'},o);this.__gt='-';}update(dt){this.t+=dt;return this.t<this.life;}
-  draw(){const k=this.t/this.life,[x,y]=P(player.x,player.y,96+k*30),a=k<.7?1:1-(k-.7)/.3,r=9*(1+Math.min(1,this.t*8)*.2);ctx.save();ctx.globalAlpha=a;const g=ctx.createRadialGradient(x-3,y-3,1,x,y,r);g.addColorStop(0,'#fff0e8');g.addColorStop(.5,'#ffb0a8');g.addColorStop(1,'#e8606a');
+class WkPeach{constructor(o){Object.assign(this,{t:0,life:.8,layer:WKPIC_ON?'sorted':'top'},o);this.__gt='-';}update(dt){this.t+=dt;return this.t<this.life;}
+  get sy(){return player.y+1;}
+  draw(){const im=wkPic('peach');
+    if(im){/* painted peach pops up over the head on its cloud, then is gobbled: shrinks down to the mouth */
+      const t=this.t,k=t/this.life,eat=k>.62?(k-.62)/.38:0,s=(t<.14?.3+.7*bOut(t/.14):1)*(1-.65*eat),z=96+Math.min(1,t/.3)*10-eat*30,a=eat>.6?1-(eat-.6)/.4:1,[x,y]=P(player.x,player.y,z);
+      gGlow(x,y,30*s,'#ffe3b0',.32*a);picAt(im,x,y,46*s,.5,.5,{a});if(t<.2)picAt(im,x,y,46*s,.5,.5,{a:(1-t/.2)*.5,op:'lighter'});return;}
+    const k=this.t/this.life,[x,y]=P(player.x,player.y,96+k*30),a=k<.7?1:1-(k-.7)/.3,r=9*(1+Math.min(1,this.t*8)*.2);ctx.save();ctx.globalAlpha=a;const g=ctx.createRadialGradient(x-3,y-3,1,x,y,r);g.addColorStop(0,'#fff0e8');g.addColorStop(.5,'#ffb0a8');g.addColorStop(1,'#e8606a');
     ctx.fillStyle=g;ctx.beginPath();ctx.moveTo(x,y-r);ctx.bezierCurveTo(x+r*1.3,y-r*.8,x+r,y+r,x,y+r);ctx.bezierCurveTo(x-r,y+r,x-r*1.3,y-r*.8,x,y-r);ctx.fill();ctx.fillStyle='#5ac46a';ctx.beginPath();ctx.ellipse(x+4,y-r,5,2.4,-.5,0,TAU);ctx.fill();ctx.restore();gGlow(x,y,24,'#ffd0c0',.3*a);}}
 
 /* ---------- A · Havoc in Heaven ---------- */
@@ -586,7 +678,7 @@ function mkGaLeap(c){const t=gTgt(c,WKS.gaLeap.range);if(!t){msg('ไม่ม�
         gSlam(x,y,WKS.gaLeap.R,{w:12,dust:16,sp:10});if(gOn('gaQuake'))beatsA(WKS.gaQuake.beats);if(!t.dead){rpAdd(WKS.gaLeap.rp,t);WK.lastTgt=t;player.attackTarget=t;}shake(3);stop(60);}}]});}
 function mkGaSplit(c){const t=gTgt(c,WKS.gaSplit.range);if(!t){msg('ไม่มีเป้าหมาย');return null;}const phi=angTo(t);
   return gStrike({key:'gaSplit',name:'Mountain Splitter',phi,I:.55,from:5,to:3,glow:'#ff7a3a',gk:.7,f:a=>{if(t.dead)return;const cap=rpCap(),pts=aRest()?0:WK.rp,full=cap>0&&pts>=cap,m=gLv(WKS.gaSplit.dmg,'gaSplit')+gLv(WKS.gaSplit.per,'gaSplit')*Math.floor(pts);
-    if(!rpLock())WK.rp=0;const ex=t.x+Math.cos(phi)*90,ey=t.y+Math.sin(phi)*90;addFx(new WkFall({x:t.x,y:t.y,T:.06,w:18,H:300,stay:.35,col:'#ff8a3a'}));addFx(new WkCrack({x:t.x,y:t.y,R:110,n:3}));
+    if(!rpLock())WK.rp=0;const ex=t.x+Math.cos(phi)*90,ey=t.y+Math.sin(phi)*90;addFx(new WkFall({x:t.x,y:t.y,T:.06,w:18,H:300,stay:.35,col:'#ff8a3a'}));addFx(new WkCrack({x:t.x,y:t.y,R:110,n:3}));if(wkPic('mountain_l'))addFx(new WkMountain({x:t.x,y:t.y,H:145,split:.12}));
     gHit(t,m,'gaSplit',{big:true});for(const e of gSeg(player.x,player.y,ex,ey,22))if(e!==t)gHit(e,m*.5,'gaSplit');flashAt(t,1,'#ff9a4a');addFx(new DText({x:t.x,y:t.y,z:110,text:Math.floor(pts)>0?'×'+Math.floor(pts):'',color:'#ffb070',size:14,life:.7}));shake(3);stop(70);
     if(full&&gOn('gaUnbound'))setFxTimer(.25,()=>{if(t.dead)return;const [bx,by,bf]=behindPt(t);mom({x:bx,y:by,face:bf,sc:1.05,T:.4,hitAt:.1});setFxTimer(.1,()=>{if(t.dead)return;gHit(t,WKS.gaUnbound.dmg,'gaUnbound',{big:true});addFx(new WkFall({x:t.x,y:t.y,T:.05,w:14,H:240,stay:.3}));flashAt(t,1);shake(2);
       if(!rpLock()&&rpCap())WK.rp=Math.min(rpCap(),WKS.gaUnbound.back);});});
@@ -595,10 +687,11 @@ function mkGaShift(c){const s=hold('buff',player.dir,1,90);return act({key:'gaSh
   addFx(new DText({x:player.x,y:player.y,z:92,text:WK.shift==='long'?'ไม้เท้ายาว':'ไม้เท้าสั้น',color:WKC.gold,size:12,life:.7}));const ph=player.phi;addFx(new WkStaffFx({x0:player.x,y0:player.y,x1:player.x+Math.cos(ph)*(WK.shift==='long'?120:50),y1:player.y+Math.sin(ph)*(WK.shift==='long'?120:50),w:6,life:.25}));
   if(gOn('gaWill')&&gameTime-WK.willT>=WKS.gaWill.gap){WK.willT=gameTime;beatsA(WKS.gaWill.beats);addFx(new DText({x:player.x,y:player.y,z:108,text:'+'+WKS.gaWill.beats+' จังหวะ',color:WKC.gold2,size:11,life:.7}));}}}]});}
 function mkGaUlt(c){const T=WKS.gaUlt.T;return buffAct({key:'gaUlt',name:'Havoc in Heaven',speed:1.5,glow:WKC.amber,events:tP=>[{t:.02,f:()=>{skyDarkT=.4;}},{t:tP,f:()=>{
-  WK.ultA=gameTime+T;WK.ultAOn=1;if(rpCap())WK.rp=rpCap();addBuff('gaUlt',T);addFx(new WkGiant({life:T}));addFx(new GRing({x:player.x,y:player.y,r0:10,r1:120,w:12,color:WKC.amber,life:.5}));hairPuff(player.x,player.y,40,20);
+  WK.ultA=gameTime+T;WK.ultAOn=1;if(rpCap())WK.rp=rpCap();addBuff('gaUlt',T);giantOn(T);addFx(new GRing({x:player.x,y:player.y,r0:10,r1:120,w:12,color:WKC.amber,life:.5}));hairPuff(player.x,player.y,40,20);
   addFx(new DText({x:player.x,y:player.y,z:120,text:'HAVOC IN HEAVEN',color:WKC.gold,size:16,life:1.2}));shake(2.5);skyDarkT=0;}}]});}
 /* Equal to Heaven: the ult ends — we and 3 clones split the mountain together, Rampage stays full 5 s more */
 function equalToHeaven(){const t=(WK.rpE&&!WK.rpE.dead&&dist(player,WK.rpE)<300)?WK.rpE:gNearest(player.x,player.y,260);WK.equalT=gameTime+WKS.gaEqual.T;if(!t)return;
+  if(wkPic('mountain_l'))addFx(new WkMountain({x:t.x,y:t.y,H:190,split:.2,life:.9}));
   for(let i=0;i<3;i++){const a=angTo(t)+Math.PI+(i-1)*1.3,x=t.x+Math.cos(a)*(t.r+34),y=t.y+Math.sin(a)*(t.r+34);mom({x,y,face:Math.atan2(t.y-y,t.x-x),sc:1.1,T:.5,hitAt:.18});addFx(new WkFall({x:(x+t.x)/2,y:(y+t.y)/2,T:.18,w:12,H:260,stay:.3}));}
   setFxTimer(.2,()=>{for(const e of gNear(t.x,t.y,WKS.gaEqual.R))gHit(e,WKS.gaEqual.dmg,'gaEqual',{big:true});gSlam(t.x,t.y,WKS.gaEqual.R,{w:14,dust:18,sp:12});addFx(new DText({x:t.x,y:t.y,z:120,text:'EQUAL TO HEAVEN',color:WKC.gold,size:15,life:1.1}));shake(4);stop(80);});}
 
@@ -634,7 +727,7 @@ function mkGbUlt(c){const T=WKS.gbUlt.T;return buffAct({key:'gbUlt',name:'Flower
   const room=Math.max(0,maxClones()-realClones().length);for(let i=0;i<room;i++){const a=i/Math.max(1,room)*TAU;spawnClone(player.x+Math.cos(a)*60,player.y+Math.sin(a)*40);}
   for(let i=0;i<WKS.gbUlt.wind;i++){const a=(i+.5)/WKS.gbUlt.wind*TAU;spawnClone(player.x+Math.cos(a)*90,player.y+Math.sin(a)*60,{wind:1,life:T+.5});}
   for(const c of liveClones())c.until=Math.max(c.until,gameTime+T+.5);
-  addFx(new WkGiant({life:T}));addFx(new GRing({x:player.x,y:player.y,r0:10,r1:150,w:12,color:WKC.gold,life:.6}));addFx(new DText({x:player.x,y:player.y,z:120,text:'FLOWER-FRUIT MOUNTAIN!',color:WKC.gold,size:15,life:1.2}));shake(2.5);}}]});}
+  giantOn(T);addFx(new GRing({x:player.x,y:player.y,r0:10,r1:150,w:12,color:WKC.gold,life:.6}));addFx(new DText({x:player.x,y:player.y,z:120,text:'FLOWER-FRUIT MOUNTAIN!',color:WKC.gold,size:15,life:1.2}));shake(2.5);}}]});}
 /* the army goes home: wind clones go; Handsome Monkey King: every B autospell fires once, then the swarm returns as hair (+HP) */
 function armyEnds(){const extra=WK.swarm.filter(c=>!c.gone&&c.wind&&!c.tmp);const keep=gOn('gxFur')?WKS.gxFur.plus:0;extra.slice(keep).forEach(c=>popClone(c));
   if(!gOn('gbHandsome'))return;const t=autoTgt();let i=0;if(t)for(const k of ['gbPile','gbWhirl','gbBarrage'])if(gOn(k)){setFxTimer(.05+i*.18,()=>{if(!t.dead&&AUTO_FIRE[k]){AUTO_FIRE[k](t,{});WK.flash[k]=gameTime;}});i++;}
@@ -642,6 +735,7 @@ function armyEnds(){const extra=WK.swarm.filter(c=>!c.gone&&c.wind&&!c.tmp);cons
 
 /* ---------- C · Victorious Fighting Buddha ---------- */
 function mkGxFurnace(c){const T=WKS.gxFurnace.T;return buffAct({key:'gxFurnace',name:'Out of the Furnace',speed:1.6,glow:WKC.fire,events:tP=>[{t:tP,f:()=>{WK.furnT=gameTime+T;WK.furnAcc=0;addBuff('gxFurnace',T);addFx(new WkFlames({life:T}));
+  if(wkPic('furnace')){const F=new WkFurnace({});addFx(F);setFxTimer(F.burst,()=>{if(CHAR==='wukong'&&WK.furnT>gameTime){giantOn(Math.max(.5,WK.furnT-gameTime));addFx(new DText({x:player.x,y:player.y,z:150,text:'OUT OF THE FURNACE',color:WKC.fire,size:15,life:1.1}));}});return;}
   addFx(new GRing({x:player.x,y:player.y,r0:10,r1:110,w:12,color:WKC.fire,life:.5}));addFx(new DText({x:player.x,y:player.y,z:120,text:'OUT OF THE FURNACE',color:WKC.fire,size:15,life:1.1}));shake(2);}}]});}
 function mkGxBang(c){const t=gTgt(c,WKS.gxBang.range);if(!t){msg('ไม่มีเป้าหมาย');return null;}const phi=angTo(t);faceTo(phi);const sx=player.x,sy=player.y,L=Math.max(0,dist(player,t)-t.r-60),[dx,dy]=gPathEnd(sx,sy,phi,L),T=.5,
     s=seq('buff',player.dir,0,null,seqTotal(seq('buff',player.dir,0,null,1))/(T+.2));
@@ -763,7 +857,7 @@ function installWukong(){
   window.jgAspd=()=>{const b=skillAspd();if(!b||!D||!(D.aps>0))return 1;const t=Math.max(100,Math.min(Math.max(aspdCap(),D.aspd),D.aspd+b));return (50/(200-t))/D.aps;};
   window.jgMove=()=>1;window.jgDetect=()=>1;window.jgRecover=()=>1;window.jgPlayerAlpha=()=>1;window.jgBleedMul=()=>1;window.jgOnSkillHit=()=>{};
   window.wukongAutoTick=wukongAutoTick;
-  mkBasic=mkWkBasic;gEnsure();
+  mkBasic=mkWkBasic;gEnsure();wkPicLoad();
   for(const k in SKILLS){const sk=SKILLS[k];if(sk.make&&!sk.make._gE){const mk=sk.make;sk.make=function(){gEnsure();return mk.apply(this,arguments);};sk.make._gE=1;}}
   try{document.title='Totem Legend — Snow Monkey';const nm=document.querySelector('.nm b'),cl=document.querySelector('.nm .cls');if(nm)nm.textContent='Snow Monkey';if(cl)cl.textContent='Stone Monkey';}catch(e){}
   window.WK=WK;window.WK_DEFS=WK_DEFS;window.WK_BAL=WK_BAL;window.gCol=gCol;window.WK_AUTOS=AUTOS;

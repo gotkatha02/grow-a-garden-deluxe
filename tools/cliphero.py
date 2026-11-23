@@ -10,6 +10,9 @@ Optional (2026-11-21, axolotl): "topFade":6 / "sideFade":60 (px faded at the top
   "orb":true (sockets for attack AND buff = centre of the held cyan-blue orb / water burst; grip = the hand just behind it),
   "feetFit":{"buff/N":[16,17]} (frames where the CAMERA zooms: each is scaled back by the width of the feet in the clip's first
   frame ÷ its own, about the feet point — use it only where the stance does not change; the factors are printed).
+Optional (2026-11-23, snow monkey): "flipDirs":["E"] (only these directions are mirrored — his side clips faced west),
+  "loop":{"idle/S":[44,72]} (start frame + period of an idle / walk loop instead of the automatic one — for clips whose first
+  second is a pose change that does not loop).
 Keying: soft green matte + despill + speck removal (keeps the body and anything touching it, e.g. the sword).
 Idle / walk loops are found automatically (period of best self-match); hurt is made from the idle pose."""
 import sys, io, json, base64, math, subprocess, numpy as np
@@ -118,8 +121,9 @@ def frames_for(st, d):
             return place(img, SD[d] * k, (c[0] - (c[0] - anchor0[0]) / k, c[1] - (c[1] - anchor0[1]) / k))
         return place(img, SD[d], anchor0)
     if st in ('idle', 'walk'):
-        P = period([mask_small(f) for f in F], 20 if st == 'walk' else 16, 40 if st == 'walk' else 70) or len(F) // 2
-        n = 8 if st == 'walk' else 12; n = min(n, P); s0 = 12
+        if f'{st}/{d}' in plan.get('loop', {}): s0, P = plan['loop'][f'{st}/{d}']
+        else: P = period([mask_small(f) for f in F], 20 if st == 'walk' else 16, 40 if st == 'walk' else 70) or len(F) // 2; s0 = 12
+        n = 8 if st == 'walk' else 12; n = min(n, P)
         idx = [s0 + round(i * P / n) for i in range(n)]
         return [cell(i) for i in idx], P
     if st == 'attack':

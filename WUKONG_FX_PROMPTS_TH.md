@@ -21,6 +21,41 @@
 
 ไม่ต้องเจน (โค้ดทำต่อ): รอยกระบองฟาด / แทง (WkArc, WkStaffFx เส้นแสง) · ประกายตอนโดน · พายุกระบอง (Staff Whirlwind, Storm of Ten Thousand Monkeys) · ออร่าอาละวาด · เส้นขนลอย · เข็ม · ร่างเสือ / ผึ้ง / หิน (ย้อมสี + ลายเสือ / ปีกผึ้งด้วยโค้ด) · รอยแตกพื้น = ใช้ภาพของแมว `assets/fx/cat/k_crater.webp` (Heaven-Smashing Leap, Quake Landing, ลงพื้นของ Pillar Smash / Jingu Bang)
 
+## ใส่ในเกมแล้ว (2026-11-23 · เจ้าของส่งครบ 10 รูป 13:30)
+
+ตัดพื้นหลัง: 9 รูปมาเป็น RGB ลายตารางหมากรุก → ตัดด้วยสคริปต์ (กลืนสีตามระดับเทาของตาราง · ด้านในเส้นขอบ = ทึบ · แสงฟุ้งนอกเส้น = โปร่งครึ่ง) · wk_spirit_rise มาโปร่งใสจริง (ตัดขอบอย่างเดียว) · ภูเขาผ่าเป็น 2 ไฟล์ตามรอยร้าวกลาง `wk_mountain_l` / `wk_mountain_r` (ขนาดเท่ากัน วางทับกัน = ภูเขาเต็ม) · รวม 11 ไฟล์ ≈ 610 KB
+
+| ภาพ | ในเกม (char_wukong.js ส่วน 6a) |
+|---|---|
+| spirit_rise | `WkGiant`: ผงาดจากเมฆหลังตัวลิง 0.45 วิ → สว่าง → เหลือผีโปร่ง ~50 % หายใจช้าๆ ตลอดบัฟ → จางพร้อมลอยขึ้น · อัลติ A / อัลติ B / ออกจากเตา ใช้ตัวเดียวกัน (`giantOn` ไม่ซ้อน 2 ตัว) |
+| spirit_plunge | `WkPlunge`: ดิ่งจากฟ้า ปลายไม้เท้าแตะเป้าตรงจังหวะดาเมจ (Sky-Pillar 0.34 วิ · ทุกครั้งที่ 5 ของ Ruyi Rhythm 0.14 / Thousand Staves 0.18) → ยุบ-เด้ง → ค้าง 0.2 วิ → แตกเป็นควันทอง · ร่างขนยักษ์เดิมเหลือขนาดปกติ |
+| staff | `drawStaffPic` 3 ท่อน (หัวห่วง 0–288 · ด้ามยืด 288–444 · ปลาย 444–768): ไม้เท้าตกจากฟ้า (Pillar Smash, Needle, Leap, Mountain Splitter, Unbound, Equal to Heaven, Jingu Bang) ปลายทองลงพื้น · ไม้เท้ายืดแทง (Ruyi Rhythm, ไม้สุดท้ายของคอมโบ, Ruyi Shift) หัวห่วงพุ่งไปที่เป้า ไม้สั้นกว่าหัว+ปลาย = ตัดที่มือ |
+| cloud | `WkCloud` (เลเยอร์เรียงลึก หน้าตัวลิง เท้าจมเมฆ): ใต้เท้าตอนพุ่ง หันตามทิศพุ่ง · ตอนลงจางแผ่ออก |
+| mountain_l/_r | `WkMountain` (หลังเป้า/ตัวลิงแถวเดียวกัน): โผล่จากพื้น 0.07 วิ สั่น รอยร้าวสว่าง → แยกซ้าย-ขวา เอียงออก จม จาง + หินร่วงเด้งพื้น · Mountain Splitter สูง 145 · Equal to Heaven 190 แยกตรงจังหวะตี 0.2 วิ |
+| furnace | `WkFurnace`: ครอบตัวลิง (มองไม่เห็นตัว) สั่นแรงขึ้น ไฟเรืองขึ้น 0.75 วิ → ระเบิด (ขยาย+จาง, เศษทองแดง, ไฟ, วงแหวน) → วิญญาณยักษ์ผงาดจนบัฟหมด |
+| cave_pool | `WkCave` เลเยอร์พื้น ขอบหิน≈วงจริง (รัศมี 140) + ระลอกน้ำโค้ด |
+| cave_falls | `WkCaveTop` (เรียงลึกที่ขอบหลังสระ: คนในสระอยู่หน้าม่าน) + เส้นน้ำไหล / ไอน้ำโค้ด |
+| peach | `WkPeach`: เด้งขึ้นเหนือหัว → ถูกกิน หดลงที่ปาก |
+| poof | `WkPoof` ทุก `hairPuff` (ร่างขนโผล่ / หาย / แปลงร่าง / ร่างแทน / ร่างยักษ์จาง) ขนาดตามจำนวนขน |
+
+คำสั่งตัดที่ใช้ (ภาพดิบจากแชต, พิกัดเป็นพิกเซลของภาพดิบ):
+```
+K="python3 -I tools/checker_key.py"
+$K peach.png wk_peach.png maxside=384 "seal=195,740,224,752;1036,757,1002,787"
+$K falls.png wk_cave_falls.png maxside=640
+$K furnace.png wk_furnace.png maxside=512
+$K mountain.png wk_mountain.png maxside=512     # แล้วผ่าตามรอยร้าว: เส้น (257,0)(265,58)(267,64)(263,150)(256,200)(254,250)(250,300)(248,350)(246,400)(250,450)(262,490)(265,ล่างสุด) ขอบนุ่ม 1.5 px → _l / _r
+$K poof.png wk_poof.png maxside=384 abar=0.3 sealw=9 "seal=180,465,220,473" "fillc=978,585,42"
+$K pool.png wk_cave_pool.png maxside=640
+$K cloud.png wk_cloud.png maxside=512
+$K plunge.png wk_spirit_plunge.png maxside=640 abar=0.3
+$K staff.png wk_staff.png maxside=768
+# spirit_rise มาโปร่งใสแล้ว: ตัดขอบ (alpha > 6) + เผื่อ 6 px + ย่อ 640
+```
+แล้วแปลง webp (quality 86, alpha_quality 90)
+
+ดาเมจ / จังหวะตีไม่เปลี่ยน (tools/fxlab.py hits ก่อน-หลังเท่ากัน) · `?wkfx=0` = ลุคโค้ดเดิม · ภาพยังโหลดไม่เสร็จ = วาดโค้ดเดิมแทน
+
 ไฟล์ในเกม: `assets/fx/wukong/<ไฟล์>.webp` · ทีหลังถ้าอยากได้คลิป: วิญญาณยักษ์ (ภาพ 1) ทำเป็นวิดีโอพื้นดำแบบโอนิของแมวได้ ใช้ภาพที่ได้เป็นเฟรมแรก
 
 STYLE (อยู่ในทุกพรอมต์แล้ว) = Friendly hand-painted chibi cartoon game effect matching the attached campfire key art: thick clean dark-brown outlines, cel shading with 2–3 flat tones, soft cartoon glow, bright and warm. Not realistic, not painterly smoke, not 3D. ONE single effect only, centered, transparent PNG background, generous empty space on every side, no text, no logo, no watermark.
