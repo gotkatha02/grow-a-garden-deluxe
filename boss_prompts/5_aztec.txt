@@ -1,0 +1,106 @@
+MAP BOSS SPRITES — AZTEC (7 pictures)
+Game: Totem Legend, a 2D isometric fantasy MMORPG (Ragnarok Online feel). These are the area bosses of the Aztec lands (a cloud forest of pools, a sacrifice plaza, the bat-god cave) and the objects of their arenas.
+
+=== HOW TO WORK WITH THIS FILE — READ EVERYTHING FIRST ===
+• This file lists 7 pictures, numbered #1–#7. Draw ONE image per reply, in order, starting with #1.
+• After each image write only "#<number> <name> done" and STOP. Wait for me.
+  - "next" = draw the next number.   - "redo" = draw the same number again.   - a number (e.g. "4") = draw that number.
+• Every boss has a MASTER PICTURE. Entries that start with "ATTACH" need it: I attach that picture in the same message as my command. Copy the boss exactly from it — same face, colours, outfit, weapon and markings — only the pose changes. If I forgot the picture, ask me for it instead of drawing.
+• Some entries say "NOT in this picture": leave those things out — the game draws them separately.
+• Before every image, re-read STYLE, BACKGROUND and the rules of that sheet type. Every image must follow them exactly.
+• Never put text, numbers, labels, borders or speech bubbles inside an image.
+
+=== STYLE (copy the attached pictures) ===
+Friendly hand-painted chibi cartoon, cute-but-dangerous, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft light from the top-left, bright warm colours, clear readable silhouette. Not realistic, not painterly, not 3D. Chibi proportions (big head, short body) even for giants. Bosses are bigger and more detailed than normal monsters but the same style.
+
+=== BACKGROUND (every picture) ===
+SOLID FLAT PURE GREEN (#00FF00) — no gradient, no ground, no floor, no shadows, no scenery. NEVER use green on a boss or an object: anything that would normally be green (leaves, moss, jade, poison, gems) is drawn teal, turquoise, blue, gold or autumn orange instead.
+
+=== SHEET TYPE 1 — BODY SHEET (1536×1024, 5 rows) ===
+• The SAME boss in every frame: identical design, colours and size, never redesigned between frames.
+• Facing DOWN-RIGHT (south-east), isometric 3/4 view from about 30° above. The whole boss in every frame, nothing cropped.
+• Every frame in its own equal-size cell with empty space around it; feet (or lowest point) on the same baseline within each row; frames never touch or overlap.
+• Row 1 — IDLE, 4 frames: proud calm breathing — neutral, body rises slightly, neutral, body sinks slightly with one detail moving (cloak, tail, flame, hair, banner).
+• Row 2 — WALK, 4 frames: the walk type given in the entry (see WALK TYPES).
+• Row 3 — ATTACK, 5 frames: the attack given in the entry — 1) ready, 2) wind-up, 3) strike at full reach toward down-right, 4) follow-through, 5) back to ready.
+• Row 4 — HURT, 2 frames: 1) hit from the front — head and body jerk back, eyes squeezed shut, 2) recoiling, about to recover.
+• Row 5 — DEATH, 5 frames: 1) staggers back, 2) falling, 3) hits the ground, 4) lying still, 5) the same pose fading away. Cartoon, no blood or gore.
+• No motion lines, dust, sparks, smoke clouds, magic effects or loose objects floating around the boss — the game draws those. Small glows ON the body (eyes, runes, torch flames, ghost fire) are fine.
+
+=== SHEET TYPE 2 — MOVES SHEET (1536×1024, 3 rows) ===
+• The same boss as the BODY sheet you drew just before it: same design, colours, proportions and facing (down-right). Draw it at the same size as in the body sheet — the cells are taller here, so leave the extra space empty. Jumps and dives must stay inside their cell.
+• Row 1 — SIGNATURE MOVE, 5 frames, as described in the entry.
+• Row 2 — POWER MOVE, 5 frames, as described in the entry.
+• Row 3 — OPEN WINDOW, 4 frames, as described in the entry: the moment the boss is beaten for a few seconds and wide open to attacks. Usually 1) falling into the pose, 2) and 3) a gentle loop (swaying one way, then the other), 4) getting back up. Dizzy stars or swirly eyes may sit ON the head.
+• Same cell, baseline and no-effects rules as the body sheet.
+
+=== SHEET TYPE 3 — PROPS SHEET (1536×1024, 6 objects) ===
+• 6 separate objects in a 3×2 grid (3 columns, 2 rows), one per cell, each centred in its cell and as big as the cell allows with a little empty space around it.
+• The same isometric 3/4 view from about 30° above as the bosses, so anything round on the ground looks like a wide flat ellipse.
+• Things that stand on the ground: base at the bottom, no ground or floor under it and no cast shadow (the game adds shadows). Flying things: floating.
+• No characters unless the entry asks for one, no text.
+
+=== WALK TYPES ===
+• TWO LEGS — walking in place, legs MUST alternate: 1) LEFT leg forward and planted, 2) passing pose with the RIGHT leg lifted, 3) RIGHT leg forward and planted, 4) passing pose with the LEFT leg lifted. Frames 1 and 3 clearly show a different leg in front; arms swing opposite to the legs.
+• FOUR LEGS — trotting in place, diagonal pairs MUST alternate: 1) front-LEFT + back-RIGHT legs reach forward, 2) passing pose, legs under the body, 3) front-RIGHT + back-LEFT legs reach forward, 4) passing pose. Frames 1 and 3 clearly show different legs in front; tail swings.
+• MANY LEGS (scorpions, spiders) — legs move in two alternating groups: 1) group A reaches forward, 2) passing pose, 3) group B reaches forward, 4) passing pose. Frames 1 and 3 clearly differ.
+• GLIDING (a long dress or robe hides the feet) — 1) leaning forward, hem sweeping back, 2) middle, 3) upright, 4) middle, hem swaying the other way. The hem and hair move clearly between frames.
+• ROLLING (a statue on wheels that never steps) — 1) level, 2) body tipping slightly forward, banners and crest streaming back, 3) level, 4) body tipping slightly back. The legs never move; only loose parts sway.
+
+=== PICTURES IN THIS FILE ===
+  #1 AHUIZOTL — BODY SHEET
+  #2 AHUIZOTL — MOVES SHEET
+  #3 EAGLE WARLORD — BODY SHEET
+  #4 EAGLE WARLORD — MOVES SHEET
+  #5 CAMAZOTZ — BODY SHEET
+  #6 CAMAZOTZ — MOVES SHEET
+  #7 AZTEC PROPS SHEET
+
+=== ENTRIES ===
+
+#1 AHUIZOTL — BODY SHEET
+   ATTACH: the Ahuizotl master picture (azt1).
+   Look: a water dog-otter beast — sleek dark-navy fur with light-blue water-swirl patterns, a gold Aztec plate headband with blue and white feathers, fierce yellow eyes, a snarling mouth with sharp white teeth and whiskers, a gold Aztec collar and gold leg bands, webbed paws with pink pads, and a long tail that ends in a black clawed hand with a gold band and a pink palm; water drips from its fur.
+   Walk: FOUR LEGS, the tail-hand raised behind it like a scorpion's tail.
+   Attack: a lunging bite.
+
+#2 AHUIZOTL — MOVES SHEET
+   (No new picture: copy the body sheet you just drew.)
+   Row 1 DIVE: 1) crouching at the water's edge, 2) leaping in an arc, 3) nose-diving into a small round splash of blue water, 4) only the tail-hand sticking up out of the water ring, waving, 5) only the small water ring with ripples. (The water ring is part of these frames.)
+   Row 2 BURST OUT: 1) its head bursting up through a water ring, 2) leaping out, water spraying off its fur, 3) in mid-air, shaking like a wet dog, 4) landing, 5) ready, dripping.
+   Row 3 OPEN WINDOW — STRANDED ON LAND: 1) startled, looking around for water, 2) panicking with huge eyes and sweat drops, the tail-hand flailing, 3) panicking the other way, 4) calming down and snarling again.
+
+#3 EAGLE WARLORD — BODY SHEET
+   ATTACH: the Eagle Warlord master picture (azt2).
+   Look: an Aztec eagle warrior with an eagle's head — a hooked yellow beak, fierce gold eyes, a huge headdress of red, teal and white feathers with gold step-fret plates and a gold disc earring, a brown-and-cream feathered body, a gold sun-face pectoral, a red-white-and-gold woven waist cloth, a feather cape that spreads like wings, gold leg bands with turquoise, big yellow talons, a dark obsidian macuahuitl club-sword edged with stone blades and gold step patterns, and a round shield with a gold eagle head and red-and-gold rings.
+   Walk: TWO LEGS — a proud march, the shield in front.
+   Attack: two-beat slash — 1) ready, 2) wind-up, 3) first slash, 4) a second slash back across, 5) ready.
+
+#4 EAGLE WARLORD — MOVES SHEET
+   (No new picture: copy the body sheet you just drew.)
+   Row 1 SKY DIVE: 1) crouching, the feather cape spreading like wings, 2) leaping up, 3) high in the air with wings spread wide, 4) diving down talons first, 5) crashing down, talons striking the ground.
+   Row 2 SUN SHIELD: 1) raising the shield, 2) the shield held up in front, the gold eagle on it gleaming, peeking over it, 3) braced behind the shield, 4) bashing the shield forward in a counter, 5) back to ready.
+   Row 3 OPEN WINDOW — TALONS STUCK: 1) talons stuck deep in a cracked patch of stone floor, his shield dropped on the ground beside him, 2) tugging and flapping, swirly eyes, 3) tugging the other way, 4) pulling free.
+
+#5 CAMAZOTZ — BODY SHEET
+   ATTACH: the Camazotz master picture (azt3).
+   Look: the death-bat god of the underworld — dark purple fur, huge red bat wings with gold step-fret patterns and bone claws, big ears, a pig-like leaf nose, glowing red eyes, sharp fangs, a gold headdress with red feathers, big gold ear spools, a gold necklace of fangs, a red-and-gold feathered waist cloth with a gold demon-face plate, gold arm bands and anklets, clawed feet, and an obsidian macuahuitl edged with spikes.
+   NOT in this picture: the small bats and purple smoke around him.
+   Walk: TWO LEGS — hunched, wings half folded like a cloak.
+   Attack: beheading slash — a wide horizontal macuahuitl swing.
+
+#6 CAMAZOTZ — MOVES SHEET
+   (No new picture: copy the body sheet you just drew.)
+   Row 1 SWOOP: 1) wings spread wide, 2) taking off, 3) gliding forward low and flat with wings stretched, 4) slashing as he swoops past, 5) pulling up, wings beating.
+   Row 2 SCREECH: 1) wings folding in, head pulled back, 2) wings snapping open, 3) screeching with the mouth wide open and ears flat, wings spread wide, 4) still screeching, 5) closing the mouth. (The game draws the sound rings.)
+   Row 3 OPEN WINDOW — BLINDED BY THE LIGHT: 1) falling to the ground, 2) sprawled, one wing over his eyes, swirly eyes, 3) the same with the other wing, 4) shaking his head and getting up.
+
+#7 AZTEC PROPS SHEET
+   (No picture needed.)
+   6 objects for the Aztec boss arenas:
+   (1) a carved Aztec dam stone: a squat block of grey-blue stone with a gold step-fret band and a carved water glyph, wet with water stains;
+   (2) Ahuizotl's grabbing tail on its own: a long dark-navy tail with light-blue swirls rising from below and ending in a black clawed hand with a gold band, fingers closed in a grab around an empty space big enough to hold a small hero;
+   (3) a tall Aztec stone pillar carved with a feathered serpent and step-fret patterns, a gold band at the top, about 3 times as tall as wide;
+   (4) an Aztec stone brazier on a short stepped pedestal carved with a bat face, unlit, cold grey ash inside;
+   (5) the same brazier lit, with a bright orange fire;
+   (6) a small flying bat with red wings and purple fur, wings spread (one of Camazotz's swarm).

@@ -13,7 +13,7 @@
      a normal hit never does. Bosses: stun is halved, knock-up becomes a flinch.
    ===================================================================== */
 (function(){
-const DT_CHAR={wolf:'AB',jaguar:'AB',owl:'AB',rhino:'p',croc:'p',axolotl:'m',cat:'p',hippo:'AB',sheep:'m',dragon:'AB',lion:'AB',kitsune:'m',bastet:'m',anubis:'p',raven:'AB'};
+const DT_CHAR={wolf:'AB',jaguar:'AB',owl:'AB',rhino:'p',croc:'p',axolotl:'m',cat:'p',hippo:'AB',sheep:'m',dragon:'AB',lion:'AB',kitsune:'m',bastet:'m',anubis:'p',raven:'AB',wukong:'p'};
 /* single-skill overrides */
 const SK_DT={
   // wolf C (enhancements / new actives follow the element they belong to)

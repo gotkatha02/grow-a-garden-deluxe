@@ -90,6 +90,7 @@ CAMP_CIRCLE = (.13, .0)   # the stone's glowing respawn circle, from its foot in
 
 # boss stand-ins: the master picture 400 map px wide in the middle (a preview until the real boss exists); flyers hover
 BOSS_W = 400
+PREVIEW_BOSS = False   # True = the old standing boss picture (before the fights existed)
 FLY = {'brontara': 150, 'lumina': 150}
 
 def E(cx, cy, rx, ry): return {'e': [cx, cy, rx, ry]}
@@ -270,7 +271,8 @@ def config(k, seed):
         e = {'n': p[0], 'x': r1(p[1] * S), 'y': r1(p[2] * S)}
         if len(p) > 3 and p[3]: e['flip'] = 1
         land.append(e)
-    if a.get('boss'):
+    # 2026-11-23: the bosses are fought now (world_boss.js draws them, asleep between fights) — no preview picture in the land list
+    if a.get('boss') and PREVIEW_BOSS:
         bx, by = a['boss']; land.append({'n': 'wbBoss' + k.capitalize(), 'x': r1(bx * S), 'y': r1(by * S), 'preview': 1})
         if k in FLY: land.append({'n': 'wbFlyShadow', 'x': r1(bx * S), 'y': r1(by * S), 'preview': 1})
     c['land'] = land

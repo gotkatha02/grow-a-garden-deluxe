@@ -16,6 +16,7 @@ const HEROES=[
  {k:'croc',n:'Crocodile',r:'Lancer',land:'แอซเท็ก',home:'aztT',d:'นักรบหอกแห่งวิหาร แทงไกล ล็อกเหยื่อแล้วงับไม่ปล่อย',A:'Temple Lancer · หอกยาว ระยะ',B:'River Predator · งับ ม้วนตัว ลากลงน้ำ'},
  {k:'cat',n:'Ronin Cat',r:'Samurai',land:'ญี่ปุ่น',home:'jpnT',d:'ซามูไรพเนจรชักดาบเร็วดั่งลม หรือฟันหนักดั่งยักษ์',A:'Kaze Ronin · ชักดาบเร็ว ฟันต่อเนื่อง',B:'Oni Ronin · ฟันหนัก ทุบ'},
  {k:'dragon',n:'Azure Dragon',r:'Monk',land:'ญี่ปุ่น',home:'jpnT',d:'นักมวยมังกรสิงโต หมัดไหลดั่งคลื่น ฝ่ามือดั่งเมฆ',A:'Raging Tide Fist · หมัดต่อเนื่อง สะสมกระแส',B:'Cloud Dragon Palm · ฝ่ามือพลังลม ลูกแก้ว'},
+ {k:'wukong',n:'Snow Monkey',r:'Yamabushi',land:'ญี่ปุ่น',home:'jpnT',d:'ลิงหิมะนักพรตภูเขา สวมห่วงที่วิญญาณหงอคงสิงอยู่ ยิ่งตีไว ร่างขนทองยิ่งปล่อยสกิลแทน',A:'Havoc in Heaven · อาละวาด ร่างขนโผล่หลังเป้า ล่าบอส',B:'Seventy-Two Transformations · ฝูงร่างขน ตีตาม ล่อมอน'},
  {k:'kitsune',n:'Nine-Tail Miko',r:'Shrine Mage',land:'ญี่ปุ่น',home:'jpnT',d:'มิโกะจิ้งจอกเก้าหาง ร่ายไฟจิ้งจอกและแสงจันทร์จากระยะไกล',A:'Kitsune-bi · ไฟจิ้งจอก สะสมหาง',B:'Moon Mirror · ลำแสงจันทร์ กระจก'},
  {k:'hippo',n:'Nile Hippo',r:'Bruiser',land:'อียิปต์',home:'egyT',d:'ฮิปโปจอมพลัง กระแทกด้วยพุงหรือเรียกน้ำท่วมแม่น้ำไนล์',A:'Taweret Guardian · กระแทก ป้องกัน',B:'Nile Flood Priest · น้ำ โคลน ฮีล'},
  {k:'bastet',n:'Bastet Priestess',r:'Curse Mage',land:'อียิปต์',home:'egyT',d:'นักบวชแมวแห่งคำสาป ร่ายคำสาปกัดกิน หรือเรียกผู้รับใช้จากสุสาน',A:'Hexweaver · คำสาปสะสม แล้วระเบิด',B:'Tomb Warden · เรียกมัมมี่ สคารับ อนูบิส'},
@@ -26,7 +27,8 @@ const SN={str:'STR',agi:'AGI',vit:'VIT',int:'INT',dex:'DEX',luk:'LUK'},ORDER=['s
 const anySave=()=>{try{for(const h of HEROES){const o=JSON.parse(localStorage.getItem('af_prog_v1_'+h.k)||'{}');if(o.mode)return true;}}catch(e){}return false;};
 function roll(k){const b=Object.assign({},CLASS_BASE[k]||CLASS_BASE.wolf);for(let i=0;i<3;i++)b[ORDER[Math.floor(Math.random()*6)]]++;for(let i=0;i<3;i++)b[ORDER[Math.floor(Math.random()*6)]]--;
   for(const s of ORDER)b[s]=Math.max(3,Math.min(12,b[s]+1));return b;}
-const art=k=>{try{return SKILL_BG_ALL[k]&&SKILL_BG_ALL[k].basic;}catch(e){return null;}};
+const PORT={wukong:'assets/heroes/wukong/portrait.webp'};   /* heroes without tree art yet: a crop of the owner's design sheet */
+const art=k=>{try{return (SKILL_BG_ALL[k]&&SKILL_BG_ALL[k].basic)||PORT[k]||null;}catch(e){return PORT[k]||null;}};
 function radar(st){const R=70,c=90,pts=ORDER.map((s,i)=>{const a=-Math.PI/2+i*Math.PI/3,v=(st[s]||0)/12;return [c+Math.cos(a)*R*v,c+Math.sin(a)*R*v];});
   const ring=f=>ORDER.map((s,i)=>{const a=-Math.PI/2+i*Math.PI/3;return `${c+Math.cos(a)*R*f},${c+Math.sin(a)*R*f}`;}).join(' ');
   const lab=ORDER.map((s,i)=>{const a=-Math.PI/2+i*Math.PI/3;return `<text x="${c+Math.cos(a)*(R+13)}" y="${c+Math.sin(a)*(R+13)+3}" text-anchor="middle">${SN[s]}</text>`;}).join('');

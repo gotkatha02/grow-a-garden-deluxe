@@ -472,28 +472,18 @@ function gearShop(n,kind){const A=AFItems,lv=(typeof PS!=='undefined'&&PS.lv)||1
     btn.push({html:`<span class="row"><img src="assets/items/${key}.png" onerror="this.style.visibility='hidden'"><span class="m">${nm}<small>${s==='rhand'?'อาวุธ':SLOT_TH[s]} · เซ็ทดรอป Lv${g?g*10:1}</small></span></span><em>${pr.toLocaleString()}z</em>`,dis:A.zeny<pr,
       fn:()=>{const id=A.dropSetItem(g,s);if(A.buyGear(id,pr)){chatLog('sys',`ซื้อ <b>${nm}</b> แล้ว (−${pr.toLocaleString()}z)`);msg('ซื้อแล้ว: '+nm);gearShop(n,kind);}else{A.dropItem(id);msg('Zeny ไม่พอ');}}});}
   hlShow(n,kind==='weapon'?'ร้านอาวุธ · เมืองหลวง':'ร้านชุดเกราะ · เมืองหลวง',`${n.hello}<br><small>มี ${A.zeny.toLocaleString()}z · ขายของเซ็ทดรอปถึงระดับเลเวลของคุณ (อยากได้ของแรงกว่านี้ต้องคราฟที่โรงคราฟ)</small>`,btn);}
-/* ---- guild master: the world boss ---- */
-const WB_CD=20*60*1000,wbKey=()=>'af_wb_'+CHAR,wbLeft=()=>{try{return Math.max(0,(+localStorage.getItem(wbKey())||0)+WB_CD-Date.now());}catch(e){return 0;}};
-let wbPend=false,wbBoss=null;
-function guildMenu(n){const left=wbLeft(),mm=Math.ceil(left/60000);
-  hlShow(n,'กิลด์มาสเตอร์ · กิลด์นักผจญภัย',`${n.hello}<br><small>บอสโลก <b>Aether Wyrm</b> รออยู่ในรังชั้นลึกสุดของรอยแยกเอเธอร์ · แนะนำ Lv ${window.LVC?LVC.n(85):85}+ · ลงได้ทุก 20 นาที</small>`,
-    [{html:`<span>⚔ ลงบอสโลก: Aether Wyrm</span><em>${left?`อีก ${mm} นาที`:'พร้อม'}</em>`,dis:!!left,fn:()=>{hlClose();try{localStorage.setItem(wbKey(),Date.now());}catch(e){}wbPend=true;chatLog('sys','กิลด์ส่งคุณไปยัง <b>รังเอเธอร์เวิร์ม</b>… ระวังตัว!');mapTravel('rift3',null);}},
-     {html:'<span>🗺 ลานบอสโลก 7 ลาน</span><em>ชมลาน</em>',dis:!(window.WB_ARENAS||[]).length,fn:()=>wbArenaMenu(n)},
-     {html:'<span>📜 รางวัลบอสโลก</span><em>ดู</em>',fn:()=>guildInfo(n)}]);}
-/* world-boss arenas (maps/wboss-arenas.js): walk round each themed arena with its boss standing in the middle (a preview —
-   the fights themselves are not built yet, WORLD_BOSS_WEEK_TH.md) */
+/* ---- guild master: the world bosses (world_boss.js, 2026-11-23 — replaces the old Aether Wyrm placeholder) ---- */
+function guildMenu(n){const W=window.WBOSS,I=W&&W.INFO,now=Date.now(),day=['khepra','puijantra','burumba','mayawee','brontara','lumina','urtok'][new Date(now+7*3600e3).getUTCDay()],T=I&&I[day];
+  const nx=W&&W.nextRound?W.nextRound(now):null,cur=W&&W.curRound?W.curRound(now):null,hh=ms=>{const d=new Date(ms+7*3600e3);return String(d.getUTCHours()).padStart(2,'0')+':'+String(d.getUTCMinutes()).padStart(2,'0');};
+  hlShow(n,'กิลด์มาสเตอร์ · กิลด์นักผจญภัย',`${n.hello}<br><small>บอสโลกวันนี้ <b>${T?T.full:'-'}</b> · ตื่นทุกวัน 12:30 และ 20:30 (เวลาไทย) · ${cur?'<b style="color:#ffd36a">ประตูลานเปิดอยู่!</b>':nx?'รอบต่อไป '+hh(nx.st):''} · Lv 20+</small>`,
+    [{html:'<span>⚔ บอสโลก</span><em>'+(cur?'เปิดลาน':'ดูรอบ')+'</em>',dis:!W,fn:()=>{hlClose();W.open();}},
+     {html:'<span>⭐ ร้านเกล็ดดาว</span><em>แลกของ</em>',dis:!W,fn:()=>{hlClose();W.shop();}},
+     {html:'<span>🗺 ลานบอสโลก 7 ลาน</span><em>ชมลาน</em>',dis:!(window.WB_ARENAS||[]).length,fn:()=>wbArenaMenu(n)}]);}
+/* world-boss arenas (maps/wboss-arenas.js): walk round each themed arena; outside a fight its boss sleeps in the middle */
 function wbArenaMenu(n){const DAY={wbKhepra:'อาทิตย์',wbPuijantra:'จันทร์',wbBurumba:'อังคาร',wbMayawee:'พุธ',wbBrontara:'พฤหัส',wbLumina:'ศุกร์',wbLuminaIn:'ศุกร์',wbUrtok:'เสาร์'};
-  hlShow(n,'กิลด์มาสเตอร์ · ลานบอสโลก','ลานของบอสโลกทั้ง 7 วัน · ตอนนี้เข้าไปชมลานได้ (บอสยืนให้ดูเฉยๆ ยังไม่สู้)<br><small>ทางกลับ = วงเรืองแสงหน้าหินจุดเกิดในค่ายกิลด์</small>',
-    [...(window.WB_ARENAS||[]).map(id=>({html:`<span>${DAY[id]?DAY[id]+' · ':''}${(VK_MAPS[id]||{}).name||id}</span><em>ไป</em>`,fn:()=>{hlClose();chatLog('sys','กิลด์พาคุณไปยัง <b>'+((VK_MAPS[id]||{}).name||id)+'</b>');mapTravel(id,null);}})),
+  hlShow(n,'กิลด์มาสเตอร์ · ลานบอสโลก','ลานของบอสโลกทั้ง 7 วัน · นอกเวลาศึก บอสนอนหลับอยู่กลางลาน<br><small>ทางกลับ = วงเรืองแสงหน้าหินจุดเกิดในค่ายกิลด์</small>',
+    [...(window.WB_ARENAS||[]).filter(id=>id!=='wbLuminaIn').map(id=>({html:`<span>${DAY[id]?DAY[id]+' · ':''}${(VK_MAPS[id]||{}).name||id}</span><em>ไป</em>`,fn:()=>{hlClose();chatLog('sys','กิลด์พาคุณไปยัง <b>'+((VK_MAPS[id]||{}).name||id)+'</b>');mapTravel(id,null);}})),
      {html:'<span>← กลับ</span>',fn:()=>guildMenu(n)}]);}
-function guildInfo(n){hlShow(n,'กิลด์มาสเตอร์ · กิลด์นักผจญภัย','ล้มบอสโลกได้: <b>Zeny ก้อนใหญ่</b> + <b>ของเซ็ทดรอปโบราณ (Lv90)</b> 1 ชิ้นแน่นอน<br><small>บอสหลอด KO หนามาก ใช้ท่าทุบ/กระโดดเพื่อ KO มัน</small>',[{html:'<span>← กลับ</span>',fn:()=>guildMenu(n)}]);}
-(function wbTick(){requestAnimationFrame(wbTick);
-  if(wbPend&&curMap==='rift3'&&!mapFadeDir){const h=mapHosts.rift3;if(h&&h.ready){wbPend=false;const [x,y]=M2W({x:1800,y:1380});const e=spawnEnemy(x,y,true);if(!enemies.includes(e))enemies.push(e);
-      e.maxHp=e.hp=Math.round(e.maxHp*6);e.spr='Aether Drake';e.bossName='AETHER WYRM · บอสโลก';e.wb=1;e.aggro=6;e.koMax=600;e.ko=600;wbBoss=e;shake&&shake(4);msg('บอสโลกปรากฏตัว!');chatLog('sys','<b style="color:#ff8a5a">Aether Wyrm</b> ตื่นขึ้นแล้ว!');}}
-  if(wbBoss&&wbBoss.dead&&!wbBoss._paid){wbBoss._paid=1;const A=AFItems,z=50000+Math.round(Math.random()*30000);A.zeny=A.zeny+z;
-    const sl=['rhand','armor','top','shoes','acc'][Math.floor(Math.random()*5)],id=A.dropSetItem(9,sl);A.buyGear(id,0);
-    chatLog('sys',`🏆 ล้ม <b>Aether Wyrm</b> ได้! ได้รับ ${z.toLocaleString()}z + <b>${A.ITEMS[id].n}</b>`);msg('ชนะบอสโลก!');wbBoss=null;}
-  if(wbBoss&&curMap!=='rift3')wbBoss=null;})();
 
 
 })();

@@ -85,6 +85,10 @@ const HERO={
   T('bnGrace','Nine Lives','heal',[1.5]),T('bnVeil','Desert Mirage','sp',[15]),T('bnAnkh','Breath of Ra','shield',[2,4]),T('bnObelisk','Sun Disk','buff',[40],{T:8}),
   T('baApep','Coils of Apep','res',[1],{res:'baHex',th:'คำสาป +1 เพิ่ม'}),T('baWrap','Burial Linen','res',[1,2],{res:'baHex',th:'คำสาป +1 / +2 เพิ่ม'}),
   T('bbAnubis','Jackal Howl','res',[1],{res:'bbSoul',th:'วิญญาณ +1'}),T('bbGate','Tomb Door','res',[1,2],{res:'bbSoul',th:'วิญญาณ +1 / +2'})],
+ wukong:[
+  T('gnCloud','Cloud Trail','buff',[20,35],{T:5}),T('gnPeach','Peach Pit','res',[2,3],{res:'wkBeat',th:'ท่าออโต้ทุกท่า +2 / +3 จังหวะ'}),T('gnSub','Iron Brow','shield',[3,5]),
+  T('gaSmash','Pillar Stun','cc',[.8],{cc:'stun'}),T('gaNeedle','Needle Echo','echo',[.5,.8]),T('gaSplit','Splitter Sweep','splash',[.5,.8],{R:80}),T('gaUlt','Rebel Roar','buff',[40],{T:10}),
+  T('gbForm','Tiger Pounce','res',[1,2],{res:'wkBeatB',th:'ท่าออโต้สาย B +1 / +2 จังหวะ'}),T('gbMob','Hornet Venom','res',[1.5,2.5],{res:'wkVenom',th:'เป้าที่ฝูงเกาะช้าลง 1.5 / 2.5 วิ'}),T('gbCave','Waterfall Mist','shield',[2,4]),T('gbUlt','Army Drums','cdr',[3])],
  anubis:[
   T('anLunge','Jackal Snap','echo',[.4]),T('anWraps','Sealed Linen','heal',[1.5]),T('anRite','Oils of Anubis','shield',[2,4]),T('anStandard','Banner of Ra','sp',[15]),
   T('aaMeteor','Second Orbit','res',[1],{res:'anMom',th:'แรงเหวี่ยง +1 เพิ่ม'}),T('aaGuard','Ring of Chains','res',[2,3],{res:'anMom',th:'แรงเหวี่ยง +2 / +3'}),
@@ -95,7 +99,8 @@ const RES={
  baHex:(n,e)=>{if(e&&typeof bAddHex==='function')bAddHex(e,n);},
  bbSoul:(n)=>{if(typeof bSoul==='function')bSoul(n);},
  anMom:(n)=>{if(typeof uMom==='function')uMom(n);},
- anSin:(n,e)=>{const t=e||(window.ANU&&ANU.cond);if(t&&typeof uSin==='function')uSin(t,n);}};
+ anSin:(n,e)=>{const t=e||(window.ANU&&ANU.cond);if(t&&typeof uSin==='function')uSin(t,n);},
+ wkBeat:(n)=>{if(window.WKB)WKB.add(n);},wkBeatB:(n)=>{if(window.WKB)WKB.addB(n);},wkVenom:(n)=>{if(window.WKB)WKB.venom(n);}};   /* snow monkey: beats for the autospells, Monkey Mob's slow */
 const ENH={byMain:{},list:[],shield:0,shieldT:0,cast:{},castId:0,cdrT:{}};window.ENH=ENH;
 const lvV=(d,lv)=>d.v[Math.min(lv,d.v.length)-1];
 const num=v=>(+v).toFixed(2).replace(/0+$/,'').replace(/\.$/,'');

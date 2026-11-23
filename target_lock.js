@@ -233,14 +233,14 @@ function frameSet(e){FS.e=e;const mt=document.getElementById('mobTgt');if(mt)mt.
   const n=nameOf(e),lv=(e.m&&e.m.lv)||e.lv||0,pl=(window.PS&&PS.lv)||1;
   fe.nm.textContent=n.th;fe.en.textContent=n.en;fe.lv.textContent=lv?'Lv.'+lv:'Lv.?';F.style.setProperty('--lc',e.boss?'#ffd86a':lvCol(lv-pl));
   fe.lv.title=lv?(lv-pl>6?'เลเวลสูงกว่ามาก — อันตราย':lv-pl>3?'เลเวลสูงกว่า':lv-pl<=-10?'เลเวลต่ำกว่ามาก':lv-pl<=-4?'เลเวลต่ำกว่า':'เลเวลใกล้เคียง'):'';
-  F.classList.toggle('boss',!!e.boss);F.classList.toggle('hasko',!!e.koMax);
+  F.classList.toggle('boss',!!e.boss);F.classList.toggle('hasko',!!e.koMax&&!e.noKO);
   {const d=window.AFItems&&AFItems.spDrop&&AFItems.spDrop(e,15);fe.dr.innerHTML=d?d.icon:'';fe.dr.title=d?d.tip:'';}   /* special drop (drop_table.js) */
-  FS.hp=-1;FS.max=-1;FS.sig=null;FS.ko=-1;fe.tg.innerHTML='';const r=e.maxHp?clamp(e.hp/e.maxHp,0,1):1;FS.fr=r;FS.tr=r;FS.hold=0;FS.seenHp=e.hp;
+  FS.hp=-1;FS.max=-1;FS.sig=null;FS.ko=-1;fe.tg.innerHTML='';const tv0=e.tlv&&e.tlv(),r=tv0?clamp(tv0[0]/Math.max(1,tv0[1]),0,1):e.maxHp?clamp(e.hp/e.maxHp,0,1):1;   /* e.tlv(): [value, max] shown instead of HP (world-boss legs show the flip gauge) */FS.fr=r;FS.tr=r;FS.hold=0;FS.seenHp=e.hp;
   fe.fl.style.transform=fe.tr.style.transform='scaleX('+r+')';FS.w1=FS.w2='';
   portrait(e);F.classList.add('on');place();}
 const STC=[['bleed','#ff3a4a','เลือดไหล'],['poison','#7ad05a','พิษ'],['slow','#7fdcff','ช้าลง'],['root','#9a7a4a','ตรึง'],['frozen','#e6f8ff','แช่แข็ง'],['stun','#ffd23a','มึนงง'],['stagger','#ffb347','เสียหลัก'],['armor','#d8b45a','เกราะแตก'],['defdown','#c8a0ff','เกราะลด'],['owBlind','#5a5a7a','ตาบอด']];
 function frameTick(){const e=FS.e;if(!e)return;if(e!==L||e.dead){if(!alive(L))frameSet(null);return;}
-  const max=Math.max(1,e.maxHp||1),hp=Math.max(0,e.hp),r=clamp(hp/max,0,1);
+  const tv=e.tlv&&e.tlv(),max=tv?Math.max(1,tv[1]):Math.max(1,e.maxHp||1),hp=tv?Math.max(0,tv[0]):Math.max(0,e.hp),r=clamp(hp/max,0,1);
   if(hp<FS.seenHp-.01)FS.hold=.38;FS.seenHp=hp;
   FS.fr=lerp(FS.fr,r,Math.min(1,dtR*18));if(FS.tr<FS.fr)FS.tr=FS.fr;if(FS.hold>0)FS.hold-=dtR;else FS.tr=Math.max(FS.fr,FS.tr-dtR*.9);
   const a1=FS.fr.toFixed(3),a2=FS.tr.toFixed(3);if(a1!==FS.w1){FS.w1=a1;fe.fl.style.transform='scaleX('+a1+')';}if(a2!==FS.w2){FS.w2=a2;fe.tr.style.transform='scaleX('+a2+')';}
@@ -275,6 +275,7 @@ function place(){if(!isMob()){F.classList.remove('ph');F.style.left=F.style.top=
       if(row2.length&&mr.right-Math.max(...row2.map(k=>k.right))>=190){x0=Math.max(...row2.map(k=>k.right))+8;x1=mr.right-6;y=row2[0].top+2;}
       else{y=mr.bottom+6;x0=Math.round(mr.left+mr.width/2-125);x1=x0+250;}}}
   const tp=vis(document.getElementById('top'));if(tp&&x0<tp.right+6&&y<tp.bottom){x0=tp.right+8;}
+  if(document.body.classList.contains('wbOn')){x0=6;x1=x0+210;y=(tp?tp.bottom:60)+6;}   /* world boss: its HUD holds the top centre → under the portrait */
   F.style.left=x0+'px';F.style.top=y+'px';F.style.width=Math.max(170,x1-x0)+'px';}
 addEventListener('resize',()=>setTimeout(place,60));setInterval(()=>{if(FS.e)place();},1500);
 

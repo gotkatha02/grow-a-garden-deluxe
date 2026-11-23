@@ -567,7 +567,7 @@ body.th-c .ro-st .r span[style]{text-shadow:none}
     'ล้มบอสเก็บเศษ ครบแล้วสร้างวัตถุโบราณของบอสได้ — กด R ใช้พลัง','ใส่ของตราแดนเดียวกัน 2 ชิ้นได้สเตตัสเพิ่ม · 4 ชิ้นปลดพลังตรา'];
   var tip=document.getElementById('bootTip');tip.textContent=TIPS[Math.floor(Math.random()*TIPS.length)];
   var hero='wolf';try{var q=new URLSearchParams(location.search).get('char'),h=(location.hash||'').slice(1);hero=q||(/^[a-z]+$/.test(h)&&h.length>2?h:'')||localStorage.getItem('af_char')||'wolf';}catch(e){}
-  var MB={'assets.js':3.68,'assets_snowwolf.js':.41,'assets_jaguar.js':4.38,'assets_dragon.js':4.67,'assets_owl.js':3.94,'assets_cat.js':4.52,'assets_hippo.js':5.76,'assets_sheep.js':3.38,'assets_axolotl.js':5.68,'assets_rhino.js':3.15},SMALL=.033;
+  var MB={'assets.js':3.68,'assets_snowwolf.js':.41,'assets_jaguar.js':4.38,'assets_dragon.js':4.67,'assets_owl.js':3.94,'assets_cat.js':4.52,'assets_hippo.js':5.76,'assets_sheep.js':3.38,'assets_axolotl.js':5.68,'assets_rhino.js':3.15,'assets_wukong.js':5.12},SMALL=.033;
   var total=MB['assets.js']+MB['assets_snowwolf.js']+(MB['assets_'+hero+'.js']||0)+SMALL*76,got=0,lastT=Date.now();
   function done(e){var t=e.target;if(!t||t.tagName!=='SCRIPT'||!t.src)return;var f=t.src.split('?')[0].split('/').pop();got+=MB[f]||SMALL;lastT=Date.now();}
   document.addEventListener('load',done,true);document.addEventListener('error',done,true);
@@ -635,7 +635,7 @@ body.th-c .ro-st .r span[style]{text-shadow:none}
   <h3>SKILL LEVELS <span id="spu" style="float:right;color:#cfe"></span></h3>
   <div id="lvls"></div>
   <h3>CHARACTER</h3>
-  <div class="seg" id="chsel"><button data-c="wolf">White Wolf</button><button data-c="jaguar">Black Jaguar</button><button data-c="rhino">Woolly Rhino</button><button data-c="axolotl">Axolotl</button><button data-c="croc">Crocodile</button><button data-c="cat">Ronin Cat</button><button data-c="hippo">Nile Hippo</button><button data-c="sheep">Golden Sheep</button><button data-c="dragon">Azure Dragon</button><button data-c="lion">Olympian Lion</button><button data-c="raven">Odin's Raven</button><button data-c="kitsune">Nine-Tail Miko</button><button data-c="bastet">Bastet Priestess</button><button data-c="anubis">Anubis Jackal</button><button data-c="owl">Snowy Owl</button></div>
+  <div class="seg" id="chsel"><button data-c="wolf">White Wolf</button><button data-c="jaguar">Black Jaguar</button><button data-c="rhino">Woolly Rhino</button><button data-c="axolotl">Axolotl</button><button data-c="croc">Crocodile</button><button data-c="cat">Ronin Cat</button><button data-c="hippo">Nile Hippo</button><button data-c="sheep">Golden Sheep</button><button data-c="dragon">Azure Dragon</button><button data-c="lion">Olympian Lion</button><button data-c="raven">Odin's Raven</button><button data-c="wukong">Snow Monkey</button><button data-c="kitsune">Nine-Tail Miko</button><button data-c="bastet">Bastet Priestess</button><button data-c="anubis">Anubis Jackal</button><button data-c="owl">Snowy Owl</button></div>
   <h3>UI THEME</h3>
   <div class="seg" id="uith"><button data-t="" class="on">เดิม</button><button data-t="th-a">A · Cartoon Deluxe</button><button data-t="th-b">B · Silver Fantasy</button><button data-t="th-c">C · Frost Glass</button></div>
   <h3>VFX QUALITY</h3>
@@ -665,8 +665,8 @@ body.th-c .ro-st .r span[style]{text-shadow:none}
 <script src="ui_emoji.js?v=3"></script>
 <script src="assets.js"></script>
 <script>/* Jaguar has its own sprite set; it is only downloaded when Jaguar is the character being played */
-(function(){var c='';try{c=new URLSearchParams(location.search).get('char')||'';if(!c){var h=(location.hash||'').slice(1);if(['wolf','jaguar','rhino','axolotl','croc','owl','cat','hippo','sheep','dragon','lion','kitsune','bastet','anubis','raven'].indexOf(h)>=0)c=h;}if(!c)c=localStorage.getItem('af_char')||'';}catch(e){}
-document.write('<script src="vfx_layer.js"><\/script>');if(c==='jaguar')document.write('<script src="assets_jaguar.js"><\/script>');if(c==='dragon'){document.write('<script src="assets_dragon.js"><\/script>');document.write('<script src="char_dragon.js?v=5"><\/script>');document.write('<script src="char_dragon_fx.js?v=2"><\/script>');}if(c==='lion'){document.write('<script src="char_lion.js?v=3"><\/script>');document.write('<script src="char_lion_fx.js?v=2"><\/script>');}if(c==='raven')document.write('<script src="char_raven.js?v=1"><\/script>');if(c==='kitsune'){document.write('<script src="char_kitsune.js?v=8"><\/script>');document.write('<script src="char_kitsune_fx.js"><\/script>');}if(c==='bastet')document.write('<script src="char_bastet.js?v=5"><\/script>');if(c==='anubis'){document.write('<script src="char_anubis.js?v=4"><\/script>');document.write('<script src="char_anubis_fx.js"><\/script>');}if(c==='owl'){document.write('<script src="assets_owl.js"><\/script>');document.write('<script src="char_owl.js?v=2"><\/script>');document.write('<script src="char_owl_fx.js"><\/script>');}if(c==='wolf')document.write('<script src="wolf_fx.js?v=72"><\/script>');if(c==='croc'){document.write('<script src="char_croc.js?v=3"><\/script>');document.write('<script src="char_croc_fx.js?v=2"><\/script>');}if(c==='rhino'){document.write('<script src="char_rhino.js?v=2"><\/script>');document.write('<script src="char_rhino_fx.js"><\/script>');}if(c==='jaguar'){document.write('<script src="char_jaguar.js?v=2"><\/script>');document.write('<script src="char_jaguar_fx.js"><\/script>');}if(c==='cat'){document.write('<script src="assets_cat.js"><\/script>');document.write('<script src="char_cat.js?v=7"><\/script>');}if(c==='hippo'){document.write('<script src="assets_hippo.js"><\/script>');document.write('<script src="char_hippo.js?v=2"><\/script>');}if(c==='sheep'){document.write('<script src="assets_sheep.js"><\/script>');document.write('<script src="char_sheep.js?v=5"><\/script>');}if(c==='axolotl')document.write('<script src="assets_axolotl.js?v=2"><\/script>');if(c==='rhino')document.write('<script src="assets_rhino.js"><\/script>');})();</script>
+(function(){var c='';try{c=new URLSearchParams(location.search).get('char')||'';if(!c){var h=(location.hash||'').slice(1);if(['wolf','jaguar','rhino','axolotl','croc','owl','cat','hippo','sheep','dragon','lion','kitsune','bastet','anubis','raven','wukong'].indexOf(h)>=0)c=h;}if(!c)c=localStorage.getItem('af_char')||'';}catch(e){}
+document.write('<script src="vfx_layer.js"><\/script>');if(c==='jaguar')document.write('<script src="assets_jaguar.js"><\/script>');if(c==='dragon'){document.write('<script src="assets_dragon.js"><\/script>');document.write('<script src="char_dragon.js?v=5"><\/script>');document.write('<script src="char_dragon_fx.js?v=2"><\/script>');}if(c==='lion'){document.write('<script src="char_lion.js?v=3"><\/script>');document.write('<script src="char_lion_fx.js?v=2"><\/script>');}if(c==='raven')document.write('<script src="char_raven.js?v=1"><\/script>');if(c==='wukong'){document.write('<script src="assets_wukong.js?v=1"><\/script>');document.write('<script src="char_wukong.js?v=1"><\/script>');}if(c==='kitsune'){document.write('<script src="char_kitsune.js?v=8"><\/script>');document.write('<script src="char_kitsune_fx.js"><\/script>');}if(c==='bastet')document.write('<script src="char_bastet.js?v=5"><\/script>');if(c==='anubis'){document.write('<script src="char_anubis.js?v=4"><\/script>');document.write('<script src="char_anubis_fx.js"><\/script>');}if(c==='owl'){document.write('<script src="assets_owl.js"><\/script>');document.write('<script src="char_owl.js?v=2"><\/script>');document.write('<script src="char_owl_fx.js"><\/script>');}if(c==='wolf')document.write('<script src="wolf_fx.js?v=72"><\/script>');if(c==='croc'){document.write('<script src="char_croc.js?v=3"><\/script>');document.write('<script src="char_croc_fx.js?v=2"><\/script>');}if(c==='rhino'){document.write('<script src="char_rhino.js?v=2"><\/script>');document.write('<script src="char_rhino_fx.js"><\/script>');}if(c==='jaguar'){document.write('<script src="char_jaguar.js?v=2"><\/script>');document.write('<script src="char_jaguar_fx.js"><\/script>');}if(c==='cat'){document.write('<script src="assets_cat.js"><\/script>');document.write('<script src="char_cat.js?v=7"><\/script>');}if(c==='hippo'){document.write('<script src="assets_hippo.js"><\/script>');document.write('<script src="char_hippo.js?v=2"><\/script>');}if(c==='sheep'){document.write('<script src="assets_sheep.js"><\/script>');document.write('<script src="char_sheep.js?v=5"><\/script>');}if(c==='axolotl')document.write('<script src="assets_axolotl.js?v=2"><\/script>');if(c==='rhino')document.write('<script src="assets_rhino.js"><\/script>');})();</script>
 <script src="assets_banner.js"></script>
 <script src="assets_fenrir.js?v=2"></script>
 <script src="assets_snowwolf.js"></script>
@@ -694,7 +694,7 @@ document.write('<script src="vfx_layer.js"><\/script>');if(c==='jaguar')document
 <script src="maps/greek-maps.js"></script>
 <script src="maps/japan-maps.js"></script>
 <script src="maps/capital-maps.js?v=19"></script>
-<script src="maps/wboss-arenas.js?v=1"></script>
+<script src="maps/wboss-arenas.js?v=2"></script>
 <script src="level_cap.js?v=1"></script>
 <script src="maps/level-zones.js?v=2"></script>
 <script src="maps/monster-roster.js"></script>
@@ -704,10 +704,10 @@ document.write('<script src="vfx_layer.js"><\/script>');if(c==='jaguar')document
 <script>
 'use strict';
 /* character: ?char=NAME, or #NAME (hosts that drop query strings), or the saved choice */
-const CHAR=(()=>{const OK=['wolf','jaguar','rhino','axolotl','croc','owl','cat','hippo','sheep','dragon','lion','kitsune','bastet','anubis','raven'];let h='';try{const q=new URLSearchParams(location.search).get('char');if(q)return q;h=(location.hash||'').slice(1);}catch(e){}if(OK.includes(h))return h;try{return localStorage.getItem('af_char')||'wolf';}catch(e){return 'wolf';}})();
-const BASIC_KEY=CHAR==='jaguar'?'jgTwinFang':CHAR==='rhino'?'rhFist':CHAR==='axolotl'?'axFlick':CHAR==='croc'?'crThrust':CHAR==='owl'?'owAuto':CHAR==='cat'?'knCombo':CHAR==='hippo'?'hnCombo':CHAR==='sheep'?'snCombo':CHAR==='dragon'?'dnCombo':CHAR==='lion'?'lnCombo':CHAR==='raven'?'vnSpear':CHAR==='kitsune'?'knStaff':CHAR==='bastet'?'bnTome':CHAR==='anubis'?'anFlail':'wolfCombo';
-const BASIC_RANGE=CHAR==='axolotl'?220:CHAR==='croc'?104:CHAR==='owl'?230:CHAR==='cat'?64:CHAR==='hippo'?66:CHAR==='sheep'?64:CHAR==='dragon'?60:CHAR==='lion'?60:CHAR==='raven'?90:CHAR==='kitsune'?200:CHAR==='bastet'?200:CHAR==='anubis'?90:52;
-const CHAR_SCALE={jaguar:.94,rhino:.96,axolotl:typeof AXL_SPR_META!=='undefined'?1.57:1,croc:1,owl:.97,cat:1.59,hippo:1.39,sheep:1.54,dragon:1.64,lion:1,kitsune:1,bastet:1,anubis:1,raven:1}[CHAR]||1; // every hero drawn as tall as the wolf (owner 2026-11-19)
+const CHAR=(()=>{const OK=['wolf','jaguar','rhino','axolotl','croc','owl','cat','hippo','sheep','dragon','lion','kitsune','bastet','anubis','raven','wukong'];let h='';try{const q=new URLSearchParams(location.search).get('char');if(q)return q;h=(location.hash||'').slice(1);}catch(e){}if(OK.includes(h))return h;try{return localStorage.getItem('af_char')||'wolf';}catch(e){return 'wolf';}})();
+const BASIC_KEY=CHAR==='jaguar'?'jgTwinFang':CHAR==='rhino'?'rhFist':CHAR==='axolotl'?'axFlick':CHAR==='croc'?'crThrust':CHAR==='owl'?'owAuto':CHAR==='cat'?'knCombo':CHAR==='hippo'?'hnCombo':CHAR==='sheep'?'snCombo':CHAR==='dragon'?'dnCombo':CHAR==='lion'?'lnCombo':CHAR==='raven'?'vnSpear':CHAR==='wukong'?'gnStaff':CHAR==='kitsune'?'knStaff':CHAR==='bastet'?'bnTome':CHAR==='anubis'?'anFlail':'wolfCombo';
+const BASIC_RANGE=CHAR==='axolotl'?220:CHAR==='croc'?104:CHAR==='owl'?230:CHAR==='cat'?64:CHAR==='hippo'?66:CHAR==='sheep'?64:CHAR==='dragon'?60:CHAR==='lion'?60:CHAR==='raven'?90:CHAR==='wukong'?70:CHAR==='kitsune'?200:CHAR==='bastet'?200:CHAR==='anubis'?90:52;
+const CHAR_SCALE={jaguar:.94,rhino:.96,axolotl:typeof AXL_SPR_META!=='undefined'?1.57:1,croc:1,owl:.97,cat:1.59,hippo:1.39,sheep:1.54,dragon:1.64,lion:1,kitsune:1,bastet:1,anubis:1,raven:1,wukong:1.55}[CHAR]||1; // every hero drawn as tall as the wolf (owner 2026-11-19)
 /* Jaguar: swap in its own sprite sheets (same schema as the Wolf set). If the file is missing the tinted Wolf sprite is used as before. */
 const JAG_ART=CHAR==='jaguar'&&typeof JAG_SPR_META!=='undefined'&&typeof JAG_SPR_ATLAS!=='undefined';
 if(JAG_ART){Object.assign(SPR_META,JAG_SPR_META,{atkRemap:{}});Object.assign(SPR_ATLAS,JAG_SPR_ATLAS);}
@@ -725,6 +725,8 @@ const DRG_ART=CHAR==='dragon'&&typeof DRG_SPR_META!=='undefined'&&typeof DRG_SPR
 if(DRG_ART){Object.assign(SPR_META,DRG_SPR_META,{atkRemap:{}});Object.assign(SPR_ATLAS,DRG_SPR_ATLAS);}
 const AXL_ART=CHAR==='axolotl'&&typeof AXL_SPR_META!=='undefined'&&typeof AXL_SPR_ATLAS!=='undefined';
 if(AXL_ART){Object.assign(SPR_META,AXL_SPR_META,{atkRemap:{}});Object.assign(SPR_ATLAS,AXL_SPR_ATLAS);}   // Axolotl Tide Priest — owner's 20 clips 2026-11-21 (assets_axolotl.js, tools/cliphero.py; frame times = the wolf sprite's E timings so every cast / hit keeps its timing)   // Azure Dragon-Lion — placeholder sprites (assets_dragon.js)   // Golden Fleece Sheep — placeholder sprites (assets_sheep.js)   // Nile Hippo — placeholder sprites (assets_hippo.js)   // White Ronin Cat — placeholder sprites from the turnaround sheet (assets_cat.js)   // Snowy Owl art (assets_owl.js), crossbow is painted in
+const WKG_ART=CHAR==='wukong'&&typeof WKG_SPR_META!=='undefined'&&typeof WKG_SPR_ATLAS!=='undefined';
+if(WKG_ART){Object.assign(SPR_META,WKG_SPR_META,{atkRemap:{}});Object.assign(SPR_ATLAS,WKG_SPR_ATLAS);}   // Snow Monkey placeholder (assets_wukong.js = tools/statichero.py on the owner's 8-direction sheet 2026-11-23) until his 20 clips arrive
 const CHAR_FILTER={jaguar:JAG_ART?'':'brightness(.42) saturate(.55) contrast(1.2)',rhino:RH_ART?'':'grayscale(.85) brightness(.82) contrast(1.15) sepia(.12)',axolotl:AXL_ART?'':'sepia(.4) hue-rotate(290deg) saturate(1.5) brightness(1.1)',croc:'sepia(.55) hue-rotate(55deg) saturate(1.35) brightness(.8) contrast(1.1)',owl:OW_ART?'':'grayscale(.9) brightness(1.32) contrast(.92) sepia(.1)',raven:'grayscale(.6) brightness(.5) contrast(1.25) sepia(.3) hue-rotate(200deg) saturate(1.6)'}[CHAR]||'';   // owl: PLACEHOLDER tint until Snowy Owl sprites exist
 const JH=k=>typeof window[k]==='function'?window[k]:null;
 /* =========================================================
@@ -1338,11 +1340,11 @@ const pointsUsed=()=>STATK.reduce((n,k)=>n+statTotal(PS[k]),0);
 const pointsLeft=()=>pointsAt(PS.lv)-pointsUsed();
 const effStat=k=>Math.max(1,PS[k]+(BON[k]||0));
 /* base ASPD per character at AGI 1 / DEX 1 (RO scale; higher = faster). AGI and DEX raise it (derive). Jaguar is light and quick, Rhino slow and heavy. */
-const CHAR_ASPD={jaguar:178,owl:170,axolotl:164,wolf:160,croc:158,rhino:150,cat:168,hippo:152,sheep:162,dragon:166,lion:156,kitsune:158,bastet:160,anubis:152,raven:160};
+const CHAR_ASPD={jaguar:178,owl:170,axolotl:164,wolf:160,croc:158,rhino:150,cat:168,hippo:152,sheep:162,dragon:166,lion:156,kitsune:158,bastet:160,anubis:152,raven:160,wukong:170};
 /* class damage modifier — evens out the characters' total damage (all hits, Bleed and Poison).
    Tuned with the fast-forward combat benchmark so no class out-damages the others by much.
    Role targets: damage dealers ≈ 1.0, ranged Owl ≈ 0.95 (safer), healer Axolotl ≈ 0.9, tank Rhino ≈ 0.75. */
-const CHAR_DMG={wolf:.70,jaguar:.82,rhino:3.1,axolotl:1.78,croc:2.32,owl:.73,cat:.8,hippo:1.3,sheep:2,dragon:1,lion:1,kitsune:1,bastet:1,anubis:1,raven:1};   // re-tuned 2026-11-16 for the 12 Tails stat system (Lv99 presets)
+const CHAR_DMG={wolf:.70,jaguar:.82,rhino:3.1,axolotl:1.78,croc:2.32,owl:.73,cat:.8,hippo:1.3,sheep:2,dragon:1,lion:1,kitsune:1,bastet:1,anubis:1,raven:1,wukong:1};   // re-tuned 2026-11-16 for the 12 Tails stat system (Lv99 presets)
 const CLASS_DMG=()=>1;   // no hidden damage multiplier any more: balance lives in the visible skill coefficients (CHAR_COEF)
 /* ---------- RO stat model ----------
    total stat = points you put in + hero bonus (like RO's job bonus: grows with level from the base rolled at creation) + items / buffs
@@ -1364,7 +1366,8 @@ const CLASS_BASE={
   bastet: {str:3,agi:5,vit:5,int:10,dex:7,luk:6},
   anubis: {str:9,agi:5,vit:8,int:3,dex:6,luk:5},
   axolotl:{str:3,agi:5,vit:6,int:9,dex:7,luk:6},
-  raven:  {str:6,agi:6,vit:5,int:7,dex:7,luk:5}};
+  raven:  {str:6,agi:6,vit:5,int:7,dex:7,luk:5},
+  wukong: {str:7,agi:9,vit:5,int:3,dex:6,luk:6}};
 /* ranged physical heroes: status ATK comes from DEX (RO bows) */
 const RANGED={owl:1};
 /* creation roll (12 Tails getNewRandomStat, 6 stats): hero base → +1 on 3 random stats → −1 on 3 random stats → +1 on all, clamp 3…12 */
@@ -1382,7 +1385,7 @@ function defAdjust(d,def){const N=clamp(def,1,512),light=Math.max(Math.trunc(d-.
 const lckRoll=()=>0;   // RO: no luck roll on every hit (LUK gives CRIT / perfect dodge / small ATK instead)
 /* visible coefficient scale per hero / branch: every "ATK×n" / "MATK×n" in a skill text is already multiplied by this.
    Re-tuned 2026-11-22 for the RO stats (RO_STATS_TH.md §10): every branch benches ≈ 2,050 at Lv 60 (tank rhino ≈ 1,880); the 12 Tails values are in git */
-const CHAR_COEF={wolf:{A:0.787,B:2.584,basic:1,all:1.0},jaguar:{A:0.258,B:1.436,basic:0.95,all:.95},owl:{A:1.55,B:1.584,basic:0.5,all:1.4},hippo:{A:1.685,B:0.72,basic:1.67,all:1.67},dragon:{A:0.98,B:1.021,basic:1.4,all:1.4},lion:{A:2.348,B:0.856,basic:1.68,all:1.4},rhino:2.667,croc:1.747,cat:0.489,sheep:2.01,axolotl:1.338,kitsune:0.331,bastet:0.368,anubis:1.5,raven:{A:1.05,B:0.617,basic:1,all:1}};
+const CHAR_COEF={wolf:{A:0.787,B:2.584,basic:1,all:1.0},jaguar:{A:0.258,B:1.436,basic:0.95,all:.95},owl:{A:1.55,B:1.584,basic:0.5,all:1.4},hippo:{A:1.685,B:0.72,basic:1.67,all:1.67},dragon:{A:0.98,B:1.021,basic:1.4,all:1.4},lion:{A:2.348,B:0.856,basic:1.68,all:1.4},rhino:2.667,croc:1.747,cat:0.489,sheep:2.01,axolotl:1.338,kitsune:0.331,bastet:0.368,anubis:1.5,raven:{A:1.05,B:0.617,basic:1,all:1},wukong:{A:0.295,B:0.26,basic:0.55,all:0.55}};
 const coefOf=br=>{const c=CHAR_COEF[CHAR];if(c==null)return 1;return typeof c==='number'?c:(c[br]??c.all??1);};
 function derive(){gearCalc();const s={},lv=PS.lv;for(const k of STATK)s[k]=Math.max(1,PS[k]+growStat(k,lv)+(BON[k]||0));   // total = points + hero bonus + items / buffs
   const f5=v=>Math.floor(v/5),sq=v=>Math.floor(v/10)**2;
@@ -4945,7 +4948,8 @@ if(CHAR==='dragon'&&typeof installDragon==='function')installDragon();
 if(CHAR==='dragon'&&typeof installDragonFx==='function')installDragonFx();
 if(CHAR==='lion'&&typeof installLion==='function')installLion();
 if(CHAR==='lion'&&typeof installLionFx==='function')installLionFx();
-if(CHAR==='raven'&&typeof installRaven==='function')installRaven();   /* Odin's Raven (char_raven.js, owner 2026-11-22) */
+if(CHAR==='raven'&&typeof installRaven==='function')installRaven();
+if(CHAR==='wukong'&&typeof installWukong==='function')installWukong();   /* Snow Monkey, vessel of Sun Wukong (char_wukong.js, owner 2026-11-23) */   /* Odin's Raven (char_raven.js, owner 2026-11-22) */
 if(CHAR==='kitsune'&&typeof installKitsune==='function')installKitsune();
 if(CHAR==='kitsune'&&typeof installKitsuneFx==='function'&&/[?&]vfx3=0/.test(location.search))installKitsuneFx();   /* 2026-11-20: kitsune_vfx.js (SVG + code VFX) is the default; ?vfx3=0 = the painted pictures */
 if(window.TV)TV.attachOld();   /* toon VFX companion for the painted pieces of wolf / cat / hippo / croc / jaguar / owl / rhino */
@@ -5216,6 +5220,7 @@ if(CHAR==='hippo'){for(const k in CAST)delete CAST[k];Object.assign(CAST,{haBehe
 if(CHAR==='sheep'){for(const k in CAST)delete CAST[k];Object.assign(CAST,{saOlympus:.3,sbColchis:.3});}
 if(CHAR==='dragon'){for(const k in CAST)delete CAST[k];Object.assign(CAST,{daTorrent:.2,dkDescend:.4});}
 if(CHAR==='raven'){for(const k in CAST)delete CAST[k];Object.assign(CAST,{vbRunes:.4,vxHavamal:.35,vxGungnir:.3});}
+if(CHAR==='wukong'){for(const k in CAST)delete CAST[k];Object.assign(CAST,{gaUlt:.3,gbUlt:.3,gxFurnace:.3});}
 if(CHAR==='anubis'){for(const k in CAST)delete CAST[k];Object.assign(CAST,{aaWheel:.3,abHall:.4,acWrath:.4,acVerdict:.4});}
 if(CHAR==='bastet'){for(const k in CAST)delete CAST[k];Object.assign(CAST,{baPharaoh:.4,bbArmy:.4,bcSekhmet:.4,bcOsiris:.3});}
 if(CHAR==='kitsune'){for(const k in CAST)delete CAST[k];Object.assign(CAST,{kaInferno:.4,kbNight:.4,kcTamamo:.4,kcTsukuyomi:.3});}
@@ -5476,7 +5481,7 @@ function skRows(br){const rows=[];if(br==='basic'){const ks=Object.keys(SKILLS).
 function skChange(k,d){const s=SKILLS[k];if(d>0){if(!canRaise(k)||skLocked(k))return;}const mx=s.br==='C'?1:s.max;LV[k]=clamp(LV[k]+d,k===BASIC_KEY?1:0,mx);
   for(const q in SKILLS){const r=SKILLS[q].req;if(r&&LV[r[0]]<r[1])LV[q]=0;}buildLevels();buildHotbar();buildSkillWin();}
 /* ---- 12 Tails skill-simulator layout: 4 columns side by side, one icon per skill level (I..IV), linked in a row ---- */
-const SKCOLS=CHAR==='anubis'?[['basic','Basic','Duat Initiate'],['A','Class A','Flail Dervish'],['B','Class B','Judge of the Dead'],['C','Class C','Warden of the Duat']]:CHAR==='bastet'?[['basic','Basic','Temple Kitten'],['A','Class A','Hexweaver of the Dead'],['B','Class B','Tomb Warden'],['C','Class C','Heir of Bastet']]:CHAR==='kitsune'?[['basic','Basic','Shrine Apprentice'],['A','Class A','Kitsune-bi'],['B','Class B','Moon Mirror Priestess'],['C','Class C','Heir of Inari']]:CHAR==='raven'?[['basic','Basic','Wanderer Fledgling'],['A','Class A','Muninn · Keeper of Memory'],['B','Class B','Huginn · Thought of Odin'],['C','Class C','Herald of the Allfather']]:CHAR==='lion'?[['basic','Basic','Olympian Cub'],['A','Class A','Olympian Pankration'],['B','Class B','Thunder King'],['C','Class C','Heir of Zeus']]:CHAR==='dragon'?[['basic','Basic','Azure Pupil'],['A','Class A','Raging Tide Fist'],['B','Class B','Cloud Dragon Palm'],['C','Class C','Shishi-Ryu Sovereign']]:CHAR==='sheep'?[['basic','Basic','Arcadian Lamb'],['A','Class A','Asclepian Healer'],['B','Class B',"Medea's Enchanter"],['C','Class C','Golden Wing']]:CHAR==='hippo'?[['basic','Basic','Nile Calf'],['A','Class A','Taweret Guardian'],['B','Class B','Nile Flood Priest'],['C','Class C','Behemoth of the Nile']]:CHAR==='cat'?[['basic','Basic','Wandering Kitten'],['A','Class A','Kaze Ronin'],['B','Class B','Oni Ronin'],['C','Class C','Two-Tailed Ronin']]:CHAR==='owl'?[['basic','Basic','Frost Owlet'],['A','Class A','Moonlit Marksman'],['B','Class B','Snowstorm Trickster'],['C','Class C','White Night']]:CHAR==='croc'?[['basic','Basic','River Hatchling'],['A','Class A','Temple Lancer'],['B','Class B','River Predator'],['C','Class C','Ancient Maw']]:CHAR==='axolotl'?[['basic','Basic','Little Tide Apprentice'],['A','Class A','Pressure Weaver'],['B','Class B','Springkeeper'],['C','Class C','Eternal Spring']]:CHAR==='rhino'?[['basic','Basic','Snowland Squire'],['A','Class A','Iron Juggernaut'],['B','Class B','Titan Breaker'],['C','Class C','Colossus Awakening']]:CHAR==='jaguar'?[['basic','Basic','Jungle Initiate'],['A','Class A','Jaguar Fang'],['B','Class B','Eclipse Ritual'],['C','Class C','Avatar of the Eclipse']]:[['basic','Basic','Warrior'],['A','Class A','Berserker'],['B','Class B','Runic'],['C','Class C',"Fenrir's Legacy"]];
+const SKCOLS=CHAR==='anubis'?[['basic','Basic','Duat Initiate'],['A','Class A','Flail Dervish'],['B','Class B','Judge of the Dead'],['C','Class C','Warden of the Duat']]:CHAR==='bastet'?[['basic','Basic','Temple Kitten'],['A','Class A','Hexweaver of the Dead'],['B','Class B','Tomb Warden'],['C','Class C','Heir of Bastet']]:CHAR==='kitsune'?[['basic','Basic','Shrine Apprentice'],['A','Class A','Kitsune-bi'],['B','Class B','Moon Mirror Priestess'],['C','Class C','Heir of Inari']]:CHAR==='wukong'?[['basic','Basic','Stone Monkey'],['A','Class A','Havoc in Heaven'],['B','Class B','Seventy-Two Transformations'],['C','Class C','Victorious Fighting Buddha']]:CHAR==='raven'?[['basic','Basic','Wanderer Fledgling'],['A','Class A','Muninn · Keeper of Memory'],['B','Class B','Huginn · Thought of Odin'],['C','Class C','Herald of the Allfather']]:CHAR==='lion'?[['basic','Basic','Olympian Cub'],['A','Class A','Olympian Pankration'],['B','Class B','Thunder King'],['C','Class C','Heir of Zeus']]:CHAR==='dragon'?[['basic','Basic','Azure Pupil'],['A','Class A','Raging Tide Fist'],['B','Class B','Cloud Dragon Palm'],['C','Class C','Shishi-Ryu Sovereign']]:CHAR==='sheep'?[['basic','Basic','Arcadian Lamb'],['A','Class A','Asclepian Healer'],['B','Class B',"Medea's Enchanter"],['C','Class C','Golden Wing']]:CHAR==='hippo'?[['basic','Basic','Nile Calf'],['A','Class A','Taweret Guardian'],['B','Class B','Nile Flood Priest'],['C','Class C','Behemoth of the Nile']]:CHAR==='cat'?[['basic','Basic','Wandering Kitten'],['A','Class A','Kaze Ronin'],['B','Class B','Oni Ronin'],['C','Class C','Two-Tailed Ronin']]:CHAR==='owl'?[['basic','Basic','Frost Owlet'],['A','Class A','Moonlit Marksman'],['B','Class B','Snowstorm Trickster'],['C','Class C','White Night']]:CHAR==='croc'?[['basic','Basic','River Hatchling'],['A','Class A','Temple Lancer'],['B','Class B','River Predator'],['C','Class C','Ancient Maw']]:CHAR==='axolotl'?[['basic','Basic','Little Tide Apprentice'],['A','Class A','Pressure Weaver'],['B','Class B','Springkeeper'],['C','Class C','Eternal Spring']]:CHAR==='rhino'?[['basic','Basic','Snowland Squire'],['A','Class A','Iron Juggernaut'],['B','Class B','Titan Breaker'],['C','Class C','Colossus Awakening']]:CHAR==='jaguar'?[['basic','Basic','Jungle Initiate'],['A','Class A','Jaguar Fang'],['B','Class B','Eclipse Ritual'],['C','Class C','Avatar of the Eclipse']]:[['basic','Basic','Warrior'],['A','Class A','Berserker'],['B','Class B','Runic'],['C','Class C',"Fenrir's Legacy"]];
 const ROMAN=['I','II','III','IV','V'];
 let skBg=null;function skBgArt(){if(skBg)return skBg;try{if(CHAR==='croc'){const c=document.createElement('canvas');c.width=360;c.height=420;const g=c.getContext('2d');g.translate(180,230);g.fillStyle='#4a6a3a';g.beginPath();g.moveTo(-140,-30);g.quadraticCurveTo(-40,-80,150,-40);g.lineTo(150,-20);g.lineTo(-60,-10);g.lineTo(150,10);g.lineTo(150,30);g.quadraticCurveTo(-40,60,-140,30);g.closePath();g.fill();g.fillStyle='#f4ead2';for(let i=0;i<8;i++){g.beginPath();g.moveTo(-40+i*24,-14);g.lineTo(-30+i*24,-2);g.lineTo(-20+i*24,-14);g.fill();}g.strokeStyle='#4a6a3a';g.lineWidth=8;g.beginPath();g.moveTo(-160,140);g.lineTo(160,-140);g.stroke();skBg=c.toDataURL();return skBg;}if(CHAR==='axolotl'){const c=document.createElement('canvas');c.width=360;c.height=420;const g=c.getContext('2d');g.translate(180,230);g.fillStyle='#4fb8e0';g.beginPath();g.moveTo(0,-150);g.bezierCurveTo(90,-40,110,40,0,110);g.bezierCurveTo(-110,40,-90,-40,0,-150);g.fill();g.strokeStyle='#4fb8e0';g.lineWidth=6;for(const r of [140,175]){g.beginPath();g.ellipse(0,130,r,r*.25,0,0,Math.PI*2);g.stroke();}skBg=c.toDataURL();return skBg;}if(CHAR==='rhino'){const c=document.createElement('canvas');c.width=360;c.height=420;const g=c.getContext('2d');g.translate(180,260);g.scale(-.6,.6);g.drawImage(rTex().rhino,-290,-180);skBg=c.toDataURL();return skBg;}if(CHAR==='jaguar'){const c=document.createElement('canvas');c.width=360;c.height=420;const g=c.getContext('2d');g.translate(180,250);g.scale(-.62,.62);g.drawImage(jTex().jag,-270,-200);skBg=c.toDataURL();return skBg;}const c=document.createElement('canvas');c.width=360;c.height=420;const g=c.getContext('2d'),old=ctx;ctx=g;g.setTransform(3.4,0,0,3.4,0,0);drawFrame({st:'attack',d:'E',f:CT('E')},360/3.4/2,410/3.4,1);ctx=old;skBg=c.toDataURL();}catch(e){skBg='';}return skBg;}
 function skMainRows(br){if(br==='C')return null;const rows=[];for(const k in SKILLS){const s=SKILLS[k];if(s.br!==br||s.parent||(s.enh&&SKILLS[s.enh]))continue;   /* enhancements sit in their skill's row, not in a row of their own */const r=[k];for(const f in SKILLS)if(SKILLS[f].parent===k||SKILLS[f].enh===k)r.push(f);rows.push(r);}
@@ -5578,7 +5583,7 @@ function levelUpFx(from,to){const cx=player.x,cy=player.y;
   el.classList.remove('on');void el.offsetWidth;el.classList.add('on');clearTimeout(lvupTimer);lvupTimer=setTimeout(()=>el.classList.remove('on'),3200);}
 function toggleAuto(){autoMode=!autoMode;document.getElementById('autob').classList.toggle('on',autoMode);msg(autoMode?'AUTO: เปิด':'AUTO: ปิด');}
 document.getElementById('autob').onclick=toggleAuto;
-function autoTick(){if(autoMode&&window.TL)TL.autoPrime();if(CHAR==='owl'&&autoMode&&window.owAutoTick&&owAutoTick())return;if(CHAR==='cat'&&autoMode&&window.catAutoTick&&catAutoTick())return;if(CHAR==='hippo'&&autoMode&&window.hippoAutoTick&&hippoAutoTick())return;if(CHAR==='sheep'&&autoMode&&window.sheepAutoTick&&sheepAutoTick())return;if(CHAR==='dragon'&&autoMode&&window.dragonAutoTick&&dragonAutoTick())return;if(CHAR==='lion'&&autoMode&&window.lionAutoTick&&lionAutoTick())return;if(CHAR==='raven'&&autoMode&&window.ravenAutoTick&&ravenAutoTick())return;if(CHAR==='kitsune'&&autoMode&&window.kitsuneAutoTick&&kitsuneAutoTick())return;if(CHAR==='bastet'&&autoMode&&window.bastetAutoTick&&bastetAutoTick())return;if(CHAR==='anubis'&&autoMode&&window.anubisAutoTick&&anubisAutoTick())return;if(CHAR==='croc'&&autoMode&&window.crocAutoTick&&crocAutoTick())return;if(!autoMode||busy()||player.attackTarget||player.moveT||player.pending||targeting||player.casting)return;const t=(window.TL&&TL.autoPick(460))||nearestEnemy(player.x,player.y,460);if(t)command({kind:'attack',e:t});}
+function autoTick(){if(autoMode&&window.TL)TL.autoPrime();if(CHAR==='owl'&&autoMode&&window.owAutoTick&&owAutoTick())return;if(CHAR==='cat'&&autoMode&&window.catAutoTick&&catAutoTick())return;if(CHAR==='hippo'&&autoMode&&window.hippoAutoTick&&hippoAutoTick())return;if(CHAR==='sheep'&&autoMode&&window.sheepAutoTick&&sheepAutoTick())return;if(CHAR==='dragon'&&autoMode&&window.dragonAutoTick&&dragonAutoTick())return;if(CHAR==='lion'&&autoMode&&window.lionAutoTick&&lionAutoTick())return;if(CHAR==='raven'&&autoMode&&window.ravenAutoTick&&ravenAutoTick())return;if(CHAR==='wukong'&&autoMode&&window.wukongAutoTick&&wukongAutoTick())return;if(CHAR==='kitsune'&&autoMode&&window.kitsuneAutoTick&&kitsuneAutoTick())return;if(CHAR==='bastet'&&autoMode&&window.bastetAutoTick&&bastetAutoTick())return;if(CHAR==='anubis'&&autoMode&&window.anubisAutoTick&&anubisAutoTick())return;if(CHAR==='croc'&&autoMode&&window.crocAutoTick&&crocAutoTick())return;if(!autoMode||busy()||player.attackTarget||player.moveT||player.pending||targeting||player.casting)return;const t=(window.TL&&TL.autoPick(460))||nearestEnemy(player.x,player.y,460);if(t)command({kind:'attack',e:t});}
 setInterval(autoTick,250);
 /* minimap */
 const mmc=document.getElementById('mmc'),mmg=mmc.getContext('2d');
@@ -5994,7 +5999,7 @@ function mapMini(Wm,Hm,X,Y){const h=mapHost();const s=mapMS();
 })();
 /* home towns (RO style: each hero theme starts in its own town).
    Start map: ?map=… if given → else this hero's last map → else the hero's home town. */
-const HERO_TOWN={wolf:'frostheim',rhino:'frostheim',owl:'frostheim',jaguar:'aztT',croc:'aztT',axolotl:'aztT',cat:'jpnT',hippo:'egyT',sheep:'grkT',dragon:'jpnT',lion:'grkT',kitsune:'jpnT',bastet:'egyT',anubis:'egyT',raven:'frostheim'};
+const HERO_TOWN={wolf:'frostheim',rhino:'frostheim',owl:'frostheim',jaguar:'aztT',croc:'aztT',axolotl:'aztT',cat:'jpnT',hippo:'egyT',sheep:'grkT',dragon:'jpnT',lion:'grkT',kitsune:'jpnT',bastet:'egyT',anubis:'egyT',raven:'frostheim',wukong:'jpnT'};
 {const q=(()=>{try{const u=new URLSearchParams(location.search).get('map');if(u!=null)return u;const s=localStorage.getItem('af_map_'+CHAR);return s?s:(HERO_TOWN[CHAR]||'frostheim');}catch(e){return HERO_TOWN[CHAR]||null;}})();enterMap(q&&MAPDEF[q]?q:(HERO_TOWN[CHAR]||'frostheim'),null);}
 addEventListener('wheel',e=>{if(!curMap||e.target!==cvs)return;mapZoom=clamp(mapZoom*(e.deltaY>0?.9:1.11),.7,1.6);},{passive:true});
 window.mapTest={enterMap,mapTravel,mapRouteTo,W2M,M2W,get cur(){return curMap},get host(){return mapHost()},set night(v){mapNight=v},set zoom(v){mapZoom=v}};
@@ -6013,7 +6018,8 @@ function frame(now){const raw=(now-last)/1000;let rdt=Math.min(.05,raw);last=now
   if(curMap||mapFadeDir)mapTick(rdt);
   skyDark=lerp(skyDark,skyDarkT,Math.min(1,rdt*3));camZoom=lerp(camZoom,camZoomT,Math.min(1,rdt*4));
   const camOX=window.CAM_OXP?(toWorld(window.CAM_OXP,0)[0]-toWorld(0,0)[0]):0;  /* effect editor open: hero shown left of the panel */
-  cam.x=lerp(cam.x,player.x+camOX,Math.min(1,rdt*5));cam.y=lerp(cam.y,player.y,Math.min(1,rdt*5));
+  const cbx=window.CAM_BIAS;   /* world bosses (world_boss.js): the camera leans toward the giant boss */
+  cam.x=lerp(cam.x,player.x+camOX+(cbx?cbx.x:0),Math.min(1,rdt*5));cam.y=lerp(cam.y,player.y+(cbx?cbx.y:0),Math.min(1,rdt*5));
   const w=toWorld(mouse.sx,mouse.sy);mouse.wx=w[0];mouse.wy=w[1];mouse.over=enemyAt(mouse.sx,mouse.sy);cvs.style.cursor=mouse.over?'pointer':(targeting?'cell':'crosshair');
   insTick(rdt);render();updUI();requestAnimationFrame(frame);}
 updatePlayer(0);requestAnimationFrame(frame);
@@ -6063,7 +6069,7 @@ document.getElementById('inspOpen').onclick=()=>{INS.open=true;insEl.style.displ
 function insTick(rdt){if(!INS.open||!INS.play)return;INS.acc+=rdt*1000;const D=durs(INS.st,INS.d);let moved=false;while(INS.acc>=D[INS.f]){INS.acc-=D[INS.f];INS.f=(INS.f+1)%D.length;moved=true;}if(moved)insDraw();}
 
 /* default test build per hero (12 Tails stats) — a Lv 60 hero since the level cap (presetAt scales the Lv 99 presets) */
-const CHAR_PRESET={wolf:'STR',owl:'DEX',croc:'STR',cat:'AGI',hippo:'STR',sheep:'INT',dragon:'STR',lion:'STR',kitsune:'INT',bastet:'INT',anubis:'STR',jaguar:'AGI',rhino:'VIT',axolotl:'INT',raven:'STR'};
+const CHAR_PRESET={wolf:'STR',owl:'DEX',croc:'STR',cat:'AGI',hippo:'STR',sheep:'INT',dragon:'STR',lion:'STR',kitsune:'INT',bastet:'INT',anubis:'STR',jaguar:'AGI',rhino:'VIT',axolotl:'INT',raven:'STR',wukong:'AGI'};
 PS._pre=CHAR_PRESET[CHAR]||'ตีแรง';Object.assign(PS,presetAt(PS._pre,PS.lv));applyStats();player.hp=player.maxHp;player.mp=player.maxMp;
 window.AF={levelUp:()=>{if(PS.lv<LV_CAP){PS.lv++;applyStats();player.hp=player.maxHp;player.mp=player.maxMp;levelUpFx(PS.lv-1,PS.lv);}},player,enemies,useSlot,useSkill,command,SKILLS,get tab(){return tab;},setTab:i=>{tab=i;buildHotbar();},ground:(x,y,key='icePrison')=>{targeting={key};groundClick(x,y);},setSlow:v=>timeScale=v,LV,fx,get state(){return player.state;}};
 </script>
@@ -6077,7 +6083,7 @@ window.AF={levelUp:()=>{if(PS.lv<LV_CAP){PS.lv++;applyStats();player.hp=player.m
 <script src="rune_data.js?v=1"></script>
 <script src="items.js?v=28"></script>
 <script src="market.js?v=4"></script>
-<script src="npcs.js?v=11"></script>
+<script src="npcs.js?v=12"></script>
 <script src="monsters.js?v=2"></script>
 <script src="monster-sprites.js?v=4"></script>
 <script src="monster-catalog.js"></script>
@@ -6093,7 +6099,7 @@ window.AF={levelUp:()=>{if(PS.lv<LV_CAP){PS.lv++;applyStats();player.hp=player.m
 <script src="char_create.js?v=2"></script>
 <script src="skill_shapes.js?v=1"></script>
 <script src="mobile.js?v=6"></script>
-<script src="target_lock.js?v=3"></script>
+<script src="target_lock.js?v=5"></script>
 <script src="sp_rules.js?v=1"></script>
 <script src="totem_gems.js?v=37"></script>
 <script src="seals.js?v=1"></script>
@@ -6109,6 +6115,14 @@ window.AF={levelUp:()=>{if(PS.lv<LV_CAP){PS.lv++;applyStats();player.hp=player.m
 <script src="milestones.js?v=1"></script>
 <script src="stat_help.js?v=1"></script>
 <script src="pets.js?v=1"></script>
+<script src="world_boss.js?v=3"></script>
+<script src="wb_urtok.js?v=1"></script>
+<script src="wb_khepra.js?v=1"></script>
+<script src="wb_burumba.js?v=1"></script>
+<script src="wb_brontara.js?v=1"></script>
+<script src="wb_puijantra.js?v=1"></script>
+<script src="wb_mayawee.js?v=1"></script>
+<script src="wb_lumina.js?v=1"></script>
 <script src="wolf_vfx3.js?v=70"></script>
 <script src="cat_art.js?v=1"></script>
 <script src="kitsune_art.js?v=1"></script>

@@ -1,0 +1,107 @@
+MAP BOSS SPRITES — GREEK (7 pictures)
+Game: Totem Legend, a 2D isometric fantasy MMORPG (Ragnarok Online feel). These are the area bosses of the Greek lands (moonlit groves, a battlefield, the cyclops cave) and the objects of their arenas.
+
+=== HOW TO WORK WITH THIS FILE — READ EVERYTHING FIRST ===
+• This file lists 7 pictures, numbered #1–#7. Draw ONE image per reply, in order, starting with #1.
+• After each image write only "#<number> <name> done" and STOP. Wait for me.
+  - "next" = draw the next number.   - "redo" = draw the same number again.   - a number (e.g. "4") = draw that number.
+• Every boss has a MASTER PICTURE. Entries that start with "ATTACH" need it: I attach that picture in the same message as my command. Copy the boss exactly from it — same face, colours, outfit, weapon and markings — only the pose changes. If I forgot the picture, ask me for it instead of drawing.
+• Some entries say "NOT in this picture": leave those things out — the game draws them separately.
+• Before every image, re-read STYLE, BACKGROUND and the rules of that sheet type. Every image must follow them exactly.
+• Never put text, numbers, labels, borders or speech bubbles inside an image.
+
+=== STYLE (copy the attached pictures) ===
+Friendly hand-painted chibi cartoon, cute-but-dangerous, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft light from the top-left, bright warm colours, clear readable silhouette. Not realistic, not painterly, not 3D. Chibi proportions (big head, short body) even for giants. Bosses are bigger and more detailed than normal monsters but the same style.
+
+=== BACKGROUND (every picture) ===
+SOLID FLAT PURE GREEN (#00FF00) — no gradient, no ground, no floor, no shadows, no scenery. NEVER use green on a boss or an object: anything that would normally be green (leaves, moss, jade, poison, gems) is drawn teal, turquoise, blue, gold or autumn orange instead.
+
+=== SHEET TYPE 1 — BODY SHEET (1536×1024, 5 rows) ===
+• The SAME boss in every frame: identical design, colours and size, never redesigned between frames.
+• Facing DOWN-RIGHT (south-east), isometric 3/4 view from about 30° above. The whole boss in every frame, nothing cropped.
+• Every frame in its own equal-size cell with empty space around it; feet (or lowest point) on the same baseline within each row; frames never touch or overlap.
+• Row 1 — IDLE, 4 frames: proud calm breathing — neutral, body rises slightly, neutral, body sinks slightly with one detail moving (cloak, tail, flame, hair, banner).
+• Row 2 — WALK, 4 frames: the walk type given in the entry (see WALK TYPES).
+• Row 3 — ATTACK, 5 frames: the attack given in the entry — 1) ready, 2) wind-up, 3) strike at full reach toward down-right, 4) follow-through, 5) back to ready.
+• Row 4 — HURT, 2 frames: 1) hit from the front — head and body jerk back, eyes squeezed shut, 2) recoiling, about to recover.
+• Row 5 — DEATH, 5 frames: 1) staggers back, 2) falling, 3) hits the ground, 4) lying still, 5) the same pose fading away. Cartoon, no blood or gore.
+• No motion lines, dust, sparks, smoke clouds, magic effects or loose objects floating around the boss — the game draws those. Small glows ON the body (eyes, runes, torch flames, ghost fire) are fine.
+
+=== SHEET TYPE 2 — MOVES SHEET (1536×1024, 3 rows) ===
+• The same boss as the BODY sheet you drew just before it: same design, colours, proportions and facing (down-right). Draw it at the same size as in the body sheet — the cells are taller here, so leave the extra space empty. Jumps and dives must stay inside their cell.
+• Row 1 — SIGNATURE MOVE, 5 frames, as described in the entry.
+• Row 2 — POWER MOVE, 5 frames, as described in the entry.
+• Row 3 — OPEN WINDOW, 4 frames, as described in the entry: the moment the boss is beaten for a few seconds and wide open to attacks. Usually 1) falling into the pose, 2) and 3) a gentle loop (swaying one way, then the other), 4) getting back up. Dizzy stars or swirly eyes may sit ON the head.
+• Same cell, baseline and no-effects rules as the body sheet.
+
+=== SHEET TYPE 3 — PROPS SHEET (1536×1024, 6 objects) ===
+• 6 separate objects in a 3×2 grid (3 columns, 2 rows), one per cell, each centred in its cell and as big as the cell allows with a little empty space around it.
+• The same isometric 3/4 view from about 30° above as the bosses, so anything round on the ground looks like a wide flat ellipse.
+• Things that stand on the ground: base at the bottom, no ground or floor under it and no cast shadow (the game adds shadows). Flying things: floating.
+• No characters unless the entry asks for one, no text.
+
+=== WALK TYPES ===
+• TWO LEGS — walking in place, legs MUST alternate: 1) LEFT leg forward and planted, 2) passing pose with the RIGHT leg lifted, 3) RIGHT leg forward and planted, 4) passing pose with the LEFT leg lifted. Frames 1 and 3 clearly show a different leg in front; arms swing opposite to the legs.
+• FOUR LEGS — trotting in place, diagonal pairs MUST alternate: 1) front-LEFT + back-RIGHT legs reach forward, 2) passing pose, legs under the body, 3) front-RIGHT + back-LEFT legs reach forward, 4) passing pose. Frames 1 and 3 clearly show different legs in front; tail swings.
+• MANY LEGS (scorpions, spiders) — legs move in two alternating groups: 1) group A reaches forward, 2) passing pose, 3) group B reaches forward, 4) passing pose. Frames 1 and 3 clearly differ.
+• GLIDING (a long dress or robe hides the feet) — 1) leaning forward, hem sweeping back, 2) middle, 3) upright, 4) middle, hem swaying the other way. The hem and hair move clearly between frames.
+• ROLLING (a statue on wheels that never steps) — 1) level, 2) body tipping slightly forward, banners and crest streaming back, 3) level, 4) body tipping slightly back. The legs never move; only loose parts sway.
+
+=== PICTURES IN THIS FILE ===
+  #1 HECATE — BODY SHEET
+  #2 HECATE — MOVES SHEET
+  #3 TROJAN COLOSSUS — BODY SHEET
+  #4 TROJAN COLOSSUS — MOVES SHEET
+  #5 POLYPHEMUS — BODY SHEET
+  #6 POLYPHEMUS — MOVES SHEET
+  #7 GREEK PROPS SHEET
+
+=== ENTRIES ===
+
+#1 HECATE — BODY SHEET
+   ATTACH: the Hecate master picture (grk1).
+   Look: the triple-faced goddess of the crossroads — one calm front face with violet eyes and two more faces on the sides of her head (one smiling, one stern), long wavy silver-lavender hair, a gold crown of a crescent moon and stars with a thin gold halo ring, a deep purple robe with gold stars and a gold meander hem over a cream shawl, gold bracelets, a chain of old gold keys at her belt with a moon-phase clasp, and a gold torch with a violet flame in each hand.
+   NOT in this picture: her two black hounds and the purple moths — draw her alone (the game adds the hounds).
+   Walk: GLIDING, the robe sweeping.
+   Attack: moon fire — swings one torch forward, its violet flame flaring.
+
+#2 HECATE — MOVES SHEET
+   (No new picture: copy the body sheet you just drew.)
+   Row 1 THE CROSSROADS: 1) both torches lowered, eyes closed, 2) raising her right torch, 3) the right torch held high above her head, all three faces looking up at it, 4) holding it high with the flame blazing tall, the other torch lowered at her side, 5) the same pose, robe stirring.
+   Row 2 THE KEY MOTH: 1) lifting a gold key from her belt chain, 2) blowing gently on it, 3) opening her hand palm-up toward down-right (the moth that flies off is drawn by the game), 4) palm held out, smiling, 5) lowering the hand.
+   Row 3 OPEN WINDOW — OFF BALANCE: 1) stumbling backward, torches dipping, 2) wobbling, all three faces with swirly eyes, 3) wobbling the other way, 4) catching her balance.
+
+#3 TROJAN COLOSSUS — BODY SHEET
+   ATTACH: the Trojan Colossus master picture (grk2).
+   Look: a giant wooden war horse built of planks and gold-bolted bronze bands — a fierce wooden head with a bronze face plate, glowing gold eyes and a tall red horsehair crest, a red horsehair tail, ropes across the body, two round red-and-gold sun shields on its sides, a wooden fortress tower on its back with spears and red banners with a gold laurel, a closed belly hatch, and four stiff wooden legs.
+   NOT in this picture: the wheels. Each leg ends in a short square axle block with a round bronze hub — the game adds the four wheels (they break off in the fight). Keep the four hubs at the same places in every frame.
+   Walk: ROLLING.
+   Attack: battering-ram charge — leaning back, then lunging forward head-down like a battering ram.
+
+#4 TROJAN COLOSSUS — MOVES SHEET
+   (No new picture: copy the body sheet you just drew.)
+   Row 1 BELLY HATCH: 1) hatch closed, 2) the hatch cracking open, glowing eyes inside, 3) half open, 4) wide open as a ramp, the dark belly full of bronze helmets and spear points, 5) the same, wide open. (The soldiers that jump out are drawn by the game.)
+   Row 2 ARROW VOLLEY: tiny bronze archers on the tower — 1) bows rising above the tower walls, 2) drawing, 3) loosing a volley up into the sky, banners whipping, 4) reaching for new arrows, 5) ducking back behind the walls.
+   Row 3 OPEN WINDOW — TOPPLED: 1) tipping over onto its side, 2) lying on its side, the belly hatch hanging open toward the viewer, banners drooping, a few planks popped loose, 3) the same, rocking slightly, 4) heaving itself back upright. (Still no wheels — only the empty hubs.)
+
+#5 POLYPHEMUS — BODY SHEET
+   ATTACH: the Polyphemus master picture (grk3).
+   Look: a cyclops shepherd giant — one huge amber eye, a wild brown mane with a gold laurel, a big brown beard and moustache, two tusks, pointed ears with a gold earring, a white fleece cloak with a cute sleepy sheep sitting on his shoulder, tan skin with a white meander tattoo on one arm, gold meander arm bands, a rope belt with a gold laurel medallion, two clay wine jars hanging from the belt, a fur loincloth with a cream meander-hem cloth, leather sandals, and a huge tree-trunk club tied with rope with a stone wedged in it.
+   Walk: TWO LEGS — heavy stomps, the club on his shoulder.
+   Attack: club sweep — swings the tree club in a wide sideways arc.
+
+#6 POLYPHEMUS — MOVES SHEET
+   (No new picture: copy the body sheet you just drew.)
+   Row 1 "WHO'S THERE?!": 1) roaring with the mouth wide open, 2) one hand shading his eye, the eye glowing bright amber, 3) leaning and peering to the left, 4) peering to the right, 5) peering straight ahead, frowning. (The game draws the beam from his eye.)
+   Row 2 BOULDER THROW: 1) bending to lift a big grey boulder, 2) lifting it overhead with both hands, 3) leaning back, 4) hurling it forward, the boulder just leaving his hands, 5) follow-through, hands empty.
+   Row 3 OPEN WINDOW — DRUNK: 1) a hiccup, cheeks flushing red, 2) wobbling with a goofy grin, his single eye huge, wide open and swirly, 3) wobbling the other way, 4) shaking his head and frowning. (The open eye is his weak point — make it big and clear.)
+
+#7 GREEK PROPS SHEET
+   (No picture needed.)
+   6 objects for the Greek boss arenas:
+   (1) Hecate's key moth: a big purple night moth with silver moon-phase marks on its wings, holding an old gold key in its legs, wings spread, flying;
+   (2) one big spoked wooden war wheel with a bronze rim and a gold hub, standing upright, seen a little from the side;
+   (3) the same wheel broken: snapped spokes, a cracked rim, splinters, falling apart;
+   (4) a big grey cave boulder, rough and rounded, wider than tall, chest-high on a hero (heroes hide behind it);
+   (5) a fluffy white cartoon sheep standing, round wool, black face and legs, sleepy happy eyes (one of Polyphemus's flock);
+   (6) a tall clay Greek wine amphora with black meander bands and a cork, standing upright on its own small base.

@@ -4,7 +4,8 @@ usage (repo root, python3 -I):  ring_parts.py <bg|stump|shard|sock> <picture.png
   stump  : transparent picture (or one colour background, keyed from the border) -> trimmed, max 640 px
   shard  : same; the tip must point UP (rot= turns it first) -> the painted hole is measured (largest dark enclosed region)
   sock   : same, hole measured
-Then add the part to RING_ART and paste the printed numbers into RING_LAY (rune_data.js)."""
+Then add the part to RING_ART and paste the printed numbers into RING_LAY (rune_data.js): hd = hole diameter ÷ picture width,
+hx / hy = hole centre as fractions of the picture, ar = height ÷ width. The game sizes shard / sock so their hole = 0.868 × the socket button."""
 import sys, os, numpy as np
 from PIL import Image
 from scipy import ndimage as nd
@@ -30,16 +31,25 @@ out.thumbnail((mx, mx), Image.LANCZOS); out.save(f'assets/rune/ring/{part}.webp'
 h, w = out.height, out.width; b = np.asarray(out).astype(np.float32)
 lay = {'w': None, 'ar': float(round(h / w, 3))}
 if part in ('shard', 'sock'):
-    v = b[..., :3].max(-1) / 255; dark = (v < .36) & (b[..., 3] > 200)
+    # the hole = the biggest dark region that does not touch the picture edge (its inside may be a lighter gradient:
+    # holes inside the region are filled), measured by its bounding box; a check picture with the circle is saved too
+    v = b[..., :3].max(-1) / 255; dark = (v < float(opt.get('v', .5))) & (b[..., 3] > 200)
+    rr = max(3, w // 70); yk, xk = np.mgrid[-rr:rr + 1, -rr:rr + 1]; disk = (xk * xk + yk * yk) <= rr * rr
+    dark = nd.binary_opening(dark, structure=disk)                            # thin outlines go, the big hole stays
     lab, n = nd.label(dark); best = None
     for i in range(1, n + 1):
-        yy, xx = np.where(lab == i)
+        m = lab == i; yy, xx = np.where(m)
         if yy.min() == 0 or xx.min() == 0 or yy.max() == h - 1 or xx.max() == w - 1: continue
-        if best is None or len(yy) > best[0]: best = (len(yy), xx.mean(), yy.mean())
-    area, cx, cy = best; hd = 2 * np.sqrt(area / np.pi) / w              # hole diameter as a fraction of the picture width
-    target = 16.5 if part == 'shard' else 10.2                               # rune picture size in % of the ring box (19 % / 11.5 % buttons)
-    lay.update(w=float(round(target / hd, 1)), hx=float(round(cx / w, 3)), hy=float(round(cy / h, 3)))
+        if xx.max() - xx.min() > .85 * w or yy.max() - yy.min() > .85 * h: continue   # the outline round the whole piece, not a hole
+        if best is None or len(yy) > best[0]: best = (len(yy), i)
+    reg = nd.binary_dilation(nd.binary_fill_holes(lab == best[1]), structure=disk); yy, xx = np.where(reg)
+    cx, cy = (xx.min() + xx.max()) / 2, (yy.min() + yy.max()) / 2; d = ((xx.max() - xx.min()) + (yy.max() - yy.min())) / 2
+    hd = d / w
+    lay.pop('w'); lay.update(hd=float(round(hd, 3)), hx=float(round(cx / w, 3)), hy=float(round(cy / h, 3)))   # the game sizes the part so the hole = 0.868 × the socket button
     print(f'hole: centre {cx:.0f},{cy:.0f} of {w}x{h}, diameter {hd:.3f} of the width')
+    from PIL import ImageDraw
+    chk = out.copy(); dr = ImageDraw.Draw(chk); dr.ellipse((cx - d / 2, cy - d / 2, cx + d / 2, cy + d / 2), outline=(255, 0, 255, 255), width=3)
+    chk.save(f'/tmp/ring_{part}_hole.png')
 else:
     lay['w'] = 27
 print(f"RING_ART += '{part}'   RING_LAY.{part} = {lay}")

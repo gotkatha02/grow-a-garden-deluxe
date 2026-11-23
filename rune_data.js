@@ -74,7 +74,7 @@ const ART={
    spirit-rune kind, the grade ring + letter stay code; c_<stat> = the whole carved gem) · assets/rune/spirit/<animal>.webp for the effects */
 const ICON_HAVE=new Set(['sr_bearHide','sr_bearStand','sr_bearSleep','sr_owlNight','sr_owlWing','sr_owlMoon','sr_wolfPack','sr_wolfHowl','sr_wolfHunt','sr_eagleEye','sr_eagleSwoop','sr_eagleFeather','sr_tbWing','sr_tbRoar','sr_tbCharge','sr_orcaFlow','sr_orcaDive','sr_orcaWave',
   'c_str','c_dex','c_atk','c_matk','c_hit','c_crit','c_vit','c_agi','c_def','c_mdef','c_flee','c_dred','c_int','c_luk','c_aspd','c_cast','c_cdr','c_spc',
-  'rstone0','rstone1','rstone2','rg1','rg2','rg3','rg4','rmedal','rbag','rfeather','sdust','ring_btn']),   /* painted 2026-11-23 (sheets ก1–3, ข1–3, ง) */
+  'rstone0','rstone1','rstone2','rg1','rg2','rg3','rg4','rmedal','rbag','rfeather','sdust','rsap','rdew','ring_btn']),   /* painted 2026-11-23 (sheets ก1–3, ข1–3, ง, ง2) */
   SPIRIT_HAVE=new Set(['bear','owl','wolf','eagle','tbird','orca']);
 const iconPath=k=>`assets/rune/icons/${k}.webp`;
 /* ring page parts (RUNE_ART_PROMPTS_TH.md จ1–จ4): the page is ASSEMBLED by totem_ring.js from separate pictures — bg (square sky),
@@ -82,8 +82,10 @@ const iconPath=k=>`assets/rune/icons/${k}.webp`;
    sock (small round socket, drawn 12×). Put a key in RING_ART once assets/rune/ring/<key>.webp exists; each part switches on by
    itself. RING_LAY = sizes in % of the ring box + where the painted hole is inside its picture (hx, hy as fractions of the
    picture, ar = height / width) — measure them when the pictures arrive (tools/rune/ring_parts.py). */
-const RING_ART=new Set([]);
-const RING_LAY={stump:{w:27},shard:{w:25.8,ar:1.3,hx:.5,hy:.56},sock:{w:13.8,ar:1,hx:.5,hy:.5}};
+const RING_ART=new Set(['bg','stump','shard','sock']);   /* owner's 4 parts 2026-11-23 07:35 */
+/* R / Ri = radius of the outer / inner socket circle, bB / bS = big / small socket button size (all in % of the ring box);
+   shard / sock: hd hx hy ar measured by ring_parts.py; their width is set so the painted hole = 0.868 × the button */
+const RING_LAY={R:33.5,Ri:20.5,bB:14.2,bS:9.4,sockTurn:1,stump:{w:26,ar:.936},shard:{hd:.482,ar:1.096,hx:.486,hy:.52},sock:{hd:.546,ar:.998,hx:.495,hy:.505}};
 const ringPath=k=>`assets/rune/ring/${k}.webp`;
 /* round rune stone with the animal on it, rim = grade colour (painted medallion inside the ring when it exists) */
 const srIcon=(a,g,k)=>{const G=GRADE[g]||GRADE[0];if(k&&ICON_HAVE.has('sr_'+k))return `<svg viewBox="0 0 64 64"><circle cx="32" cy="33" r="29.5" fill="${O}"/><circle cx="32" cy="32" r="28.5" fill="${G.c}"/><circle cx="32" cy="32" r="25" fill="${G.rim}"/><clipPath id="srClip"><circle cx="32" cy="32" r="25.2"/></clipPath><image href="${iconPath('sr_'+k)}" x="5" y="5" width="54" height="54" clip-path="url(#srClip)"/><text x="52" y="58" text-anchor="middle" font-family="Mali,Sarabun,sans-serif" font-size="13" font-weight="900" fill="${G.rim}" stroke="#fff" stroke-width="2.6" paint-order="stroke">${G.k}</text></svg>`;

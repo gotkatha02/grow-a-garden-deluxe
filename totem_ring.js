@@ -177,9 +177,9 @@ const css=`#rgw{position:fixed;inset:0;z-index:59;display:none;align-items:cente
 .rgHead .rb{margin-left:0;width:auto;border-radius:16px;padding:0 10px;font:700 13px Sarabun}
 .rgBody{flex:1;display:flex;min-height:0}.rgRing{position:relative;flex:none;aspect-ratio:1;height:100%;max-width:58%}
 .rgRing svg.bg{position:absolute;inset:0;width:100%;height:100%}.rgS{position:absolute;transform:translate(-50%,-50%);border-radius:50%;cursor:pointer;padding:0;border:0;background:none}
-.rgS.b{width:19%;height:19%}.rgS.s{width:11.5%;height:11.5%}.rgS .in{position:absolute;inset:0;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.rgS.b{width:var(--bB,19%);height:var(--bB,19%)}.rgS.s{width:var(--bS,11.5%);height:var(--bS,11.5%)}.rgS .in{position:absolute;inset:0;border-radius:50%;display:flex;align-items:center;justify-content:center}
 .rgS.b .in{background:radial-gradient(circle at 40% 35%,#4a3a5a,#1a1020 70%);border:3px solid #7a6a8a;box-shadow:0 0 0 2px #1a0c06,inset 0 0 12px #000}.rgS.s .in{background:radial-gradient(circle at 40% 35%,#3a3040,#140c14 70%);border:2.5px solid #6a5a6a;box-shadow:0 0 0 2px #1a0c06}
-.rgS svg.ic{width:92%;height:92%}.rgRing.artB .rgS.b .in,.rgRing.artS .rgS.s .in{background:none;border-color:transparent!important;box-shadow:none}.rgRing.artB .rgS.b.sel .in,.rgRing.artS .rgS.s.sel .in{box-shadow:0 0 0 2.5px #fff3b8,0 0 18px #ffe08a!important}.rgRing.artB .rgS.b.lock .in,.rgRing.artS .rgS.s.lock .in{opacity:1}.rgRing.artB .rgS.b.lock .lk,.rgRing.artS .rgS.s.lock .lk{text-shadow:0 1px 2px #000,0 0 6px #000}.rgS.sel .in{border-color:#fff3b8!important;box-shadow:0 0 0 2px #1a0c06,0 0 16px #ffe08a}.rgS.lock .in{opacity:.45}
+.rgS svg.ic{width:92%;height:92%}.rgRing.artB .rgS.b .in,.rgRing.artS .rgS.s .in{background:none;border-color:transparent!important;box-shadow:none}.rgRing.artB .rgS.b.sel .in,.rgRing.artS .rgS.s.sel .in{box-shadow:0 0 0 2.5px #fff3b8,0 0 18px #ffe08a!important}.rgRing.artS .rgS.s .bd{bottom:-15%}.rgRing.artB .rgS.b .bd{bottom:-7%}.rgRing.artB .rgS.b.lock .in,.rgRing.artS .rgS.s.lock .in{opacity:1}.rgRing.artB .rgS.b.lock .lk,.rgRing.artS .rgS.s.lock .lk{text-shadow:0 1px 2px #000,0 0 6px #000}.rgS.sel .in{border-color:#fff3b8!important;box-shadow:0 0 0 2px #1a0c06,0 0 16px #ffe08a}.rgS.lock .in{opacity:.45}
 .rgS .bd{position:absolute;left:50%;bottom:-9%;transform:translateX(-50%);font:900 11px Sarabun;padding:0 6px;border-radius:8px;background:#1a0e07;border:1.5px solid #8a6a3a;color:#ffe9a0;white-space:nowrap}
 .rgS.b .bd{bottom:-4%;font-size:12px}.rgS .lk{font:700 11px Sarabun;color:#e8d3a8;text-align:center;line-height:1.1}
 .rgSide{flex:1;min-width:0;display:flex;flex-direction:column;border-left:1.5px solid #6a4a2a}
@@ -194,7 +194,8 @@ const css=`#rgw{position:fixed;inset:0;z-index:59;display:none;align-items:cente
 .rgB:disabled{border-color:#7a6a4a;background:linear-gradient(#5a4a34,#3a2e20);color:#b8a888;cursor:default}.rgB.red{border-color:#ff9a7a;background:linear-gradient(#a8442a,#5a1e10)}.rgB.blue{border-color:#8fd0ff;background:linear-gradient(#3a72b8,#1f3e6e)}
 .rgRow{display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap}.rgRes{min-height:52px;display:flex;align-items:center;gap:10px;background:#120a05;border:1.5px dashed #8a6a3a;border-radius:12px;padding:6px 10px;margin:6px 0}
 .rgRes svg{width:48px;height:48px;flex:none}.rgPop{animation:rgPop .5s ease-out}@keyframes rgPop{0%{transform:scale(.3) rotate(-20deg);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1)}}
-@media (max-width:760px),(max-height:470px){.rgBox{width:100vw;height:100vh;border-radius:0}.rgRing{max-width:50%}.rgHead h3{font-size:17px}.rgHead .sub{display:none}.rgPane{font-size:12.5px}}`;
+@media (max-width:760px),(max-height:470px){.rgBox{width:100vw;height:100vh;border-radius:0}.rgRing{max-width:50%}.rgS .bd{font-size:9px;padding:0 4px;border-radius:7px}.rgS.b .bd{font-size:9.5px}.rgRing.artS .rgS.s .lvw{display:none}.rgRing.artS .rgS.s .bd{bottom:-16%;min-width:15px;text-align:center}.rgHead h3{font-size:17px}.rgHead .sub{display:none}.rgPane{font-size:12.5px}}
+@media (max-aspect-ratio:4/5){.rgBody{flex-direction:column}.rgRing{height:auto;width:min(100%,54vh);max-width:none;align-self:center}.rgSide{border-left:0;border-top:1.5px solid #6a4a2a;min-height:0}.rgTabs button{white-space:nowrap;padding-left:4px;padding-right:4px}}`;
 const st=document.createElement('style');st.textContent=css;document.head.appendChild(st);
 const win=document.createElement('div');win.id='rgw';win.innerHTML=`<div class="rgBox"><div class="rgHead"><h3>🔱 วงเศษโทเท็ม</h3><span class="sub"></span><button class="rb" data-h="roots">🌳 ราก (U)</button><button class="rb" data-h="shop">🧙 ร้าน</button><button data-h="x" title="ปิด (Y / Esc)">✕</button></div>
   <div class="rgBody"><div class="rgRing"></div><div class="rgSide"><div class="rgTabs"></div><div class="rgPane"></div></div></div></div>`;
@@ -202,11 +203,13 @@ document.body.appendChild(win);
 const ringEl=win.querySelector('.rgRing'),tabsEl=win.querySelector('.rgTabs'),pane=win.querySelector('.rgPane');
 let tab='sock',sel='b0',res='',smG=0,smPick={},smK='';
 const ANG=i=>(-90+i*60)*Math.PI/180;
-const POS={};for(let i=0;i<6;i++){POS['b'+i]=[50+38*Math.cos(ANG(i)),50+38*Math.sin(ANG(i))];POS['e'+i]=[50+38*Math.cos(ANG(i)+Math.PI/6),50+38*Math.sin(ANG(i)+Math.PI/6)];POS['i'+i]=[50+21*Math.cos(ANG(i)),50+21*Math.sin(ANG(i))];}
+const POS={},setPOS=(R,Ri)=>{for(let i=0;i<6;i++){POS['b'+i]=[50+R*Math.cos(ANG(i)),50+R*Math.sin(ANG(i))];POS['e'+i]=[50+R*Math.cos(ANG(i)+Math.PI/6),50+R*Math.sin(ANG(i)+Math.PI/6)];POS['i'+i]=[50+Ri*Math.cos(ANG(i)),50+Ri*Math.sin(ANG(i))];}};setPOS(38,21);
+{const L=(window.RUNEDATA||{}).RING_LAY;if(L&&(window.RUNEDATA.RING_ART||new Set()).has('shard'))setPOS(L.R,L.Ri);}   /* painted page: its own circles */
 const C3=RU.C3;
 /* ring background: the code look, or the painted parts assembled at the exact socket spots (RUNEDATA.RING_ART / RING_LAY) */
 const RA=RU.RING_ART||new Set(),RL=RU.RING_LAY||{};
-function partImg(k,x,y,lay,rot,op){const w=lay.w,h=w*(lay.ar||1);return `<g transform="translate(${x} ${y})${rot?` rotate(${rot})`:''}"${op<1?` opacity="${op}"`:''}><image href="${RU.ringPath(k)}" x="${-w*(lay.hx==null?.5:lay.hx)}" y="${-h*(lay.hy==null?.5:lay.hy)}" width="${w}" height="${h}" preserveAspectRatio="none"/></g>`;}
+const partW=k=>RL[k].w||(k==='shard'?RL.bB:RL.bS)*.868/RL[k].hd;   /* the painted hole = 0.868 × the socket button */
+function partImg(k,x,y,lay,rot,op){const w=partW(k),h=w*(lay.ar||1);return `<g transform="translate(${x} ${y})${rot?` rotate(${rot})`:''}"${op<1?` opacity="${op}"`:''}><image href="${RU.ringPath(k)}" x="${-w*(lay.hx==null?.5:lay.hx)}" y="${-h*(lay.hy==null?.5:lay.hy)}" width="${w}" height="${h}" preserveAspectRatio="none"/></g>`;}
 function linkLines(onOnly){let lines='';for(let i=0;i<6;i++){const M=match(i),L=RU.RING.links(i),[bx,by]=POS['b'+i];
     L.forEach((s2,q)=>{const [sx,sy]=POS[s2],c=S.small[s2]&&CRK[S.small[s2]]?C3[CRK[S.small[s2]].c].c:'#5a4a5a',on=!!(M&&S.small[s2]);
       if(onOnly===!on)return;lines+=on?`<line x1="${bx}" y1="${by}" x2="${sx}" y2="${sy}" stroke="${c}" stroke-width="2.6" opacity=".35" stroke-linecap="round"/><line x1="${bx}" y1="${by}" x2="${sx}" y2="${sy}" stroke="${c}" stroke-width="1.1" opacity=".95" stroke-linecap="round"/>`
@@ -214,9 +217,9 @@ function linkLines(onOnly){let lines='';for(let i=0;i<6;i++){const M=match(i),L=
 function ringSVG(){if(!RA.size)return ringSVGcode();
   const code=ringSVGcode();   /* parts that are not painted yet still come from the code look */
   const sky=RA.has('bg')?`<image href="${RU.ringPath('bg')}" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice"/>`:(code.match(/<rect width="100"[\s\S]*?(?=<circle cx="50" cy="50" r="38")/)||[''])[0];
-  const guide=`<circle cx="50" cy="50" r="38" fill="none" stroke="#ffe08a" stroke-width=".35" opacity=".35"/><circle cx="50" cy="50" r="21" fill="none" stroke="#ffe08a" stroke-width=".3" opacity=".3"/>`;
+  const guide=`<circle cx="50" cy="50" r="${RL.R||38}" fill="none" stroke="#ffe08a" stroke-width=".35" opacity=".35"/><circle cx="50" cy="50" r="${RL.Ri||21}" fill="none" stroke="#ffe08a" stroke-width=".3" opacity=".3"/>`;
   const shards=RA.has('shard')?[0,1,2,3,4,5].map(i=>{const [x,y]=POS['b'+i];return partImg('shard',x,y,RL.shard,ANG(i)*180/Math.PI+90,bigOpen(i)?1:.5);}).join(''):'';
-  const socks=RA.has('sock')?SM.map(id=>{const [x,y]=POS[id];return partImg('sock',x,y,RL.sock,0,smOpen(id)?1:.5);}).join(''):'';
+  const socks=RA.has('sock')?SM.map(id=>{const [x,y]=POS[id];return partImg('sock',x,y,RL.sock,RL.sockTurn?Math.atan2(y-50,x-50)*180/Math.PI+90:0,smOpen(id)?1:.5);}).join(''):'';
   const stump=RA.has('stump')?`<ellipse cx="50" cy="53" rx="${RL.stump.w*.5}" ry="${RL.stump.w*.2}" fill="#000" opacity=".4"/>`+partImg('stump',50,50,RL.stump,0,1):'';
   const defs=(code.match(/<defs>[\s\S]*?<\/defs>/)||[''])[0];
   return `<svg class="bg" viewBox="0 0 100 100">${defs}${sky}${guide}${RA.has('shard')?'':(code.match(/<g transform="translate[\s\S]*?<\/g>(?=[^]*<line|[^]*<ellipse)/g)||[]).join('')}${linkLines(false)}${shards}${linkLines(true)}${socks}${stump||(code.match(/<ellipse cx="50" cy="53"[\s\S]*<\/svg>/)||['</svg>'])[0].replace('</svg>','')}</svg>`;}
@@ -237,9 +240,9 @@ function sockHTML(id){const b=id[0]==='b',i=+id.slice(1),open=b?bigOpen(i):smOpe
   if(!open)inner=`<span class="lk">🔒<br>Lv ${b?RU.RING.open[i]:RU.RING.smallOpen(id)}</span>`;
   else if(cur&&ETC[cur])inner=ETC[cur].big.replace('<svg ','<svg class="ic" ');
   if(b&&open&&cur){const M=match(i);bd=`<span class="bd" style="color:${M&&M.t?'#ffe9a0':'#ff9a8a'}">${M&&M.t?'ขั้น '+RU.TIERN[M.t]:'ยังไม่ทำงาน'}</span>`;}
-  else if(!b&&open)bd=crDead(id)?`<span class="bd" style="color:#ff9a8a">ซ้ำเกิน ${RU.RING.sameMax}</span>`:`<span class="bd">Lv ${slv(id)}</span>`;
+  else if(!b&&open)bd=crDead(id)?`<span class="bd" style="color:#ff9a8a">ซ้ำเกิน ${RU.RING.sameMax}</span>`:`<span class="bd"><span class="lvw">Lv </span>${slv(id)}</span>`;
   const [x,y]=POS[id];return `<button class="rgS ${b?'b':'s'} ${open?'':'lock'} ${sel===id?'sel':''}" data-s="${id}" style="left:${x}%;top:${y}%"><span class="in" style="${b&&cur?`border-color:${GR[ETC[cur].grade].c}`:!b&&cur?`border-color:${C3[CRK[cur].c].c}`:''}">${inner}</span>${bd}</button>`;}
-function drawRing(){ringEl.classList.toggle('artB',RA.has('shard'));ringEl.classList.toggle('artS',RA.has('sock'));ringEl.innerHTML=ringSVG()+[...[0,1,2,3,4,5].map(i=>'b'+i),...SM].map(sockHTML).join('');
+function drawRing(){ringEl.classList.toggle('artB',RA.has('shard'));ringEl.classList.toggle('artS',RA.has('sock'));if(RA.has('shard')){ringEl.style.setProperty('--bB',RL.bB+'%');ringEl.style.setProperty('--bS',RL.bS+'%');}ringEl.innerHTML=ringSVG()+[...[0,1,2,3,4,5].map(i=>'b'+i),...SM].map(sockHTML).join('');
   ringEl.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{sel=b.dataset.s;if(tab!=='sock'&&!(tab==='lvl'&&sel[0]!=='b'))tab='sock';if(tab==='lvl'&&sel[0]==='b')tab='sock';build();});}
 const reqHTML=(r,ok)=>r.req.split('').map((c,q)=>`<span class="rgDot" title="${C3[c].th}" style="background:${C3[c].c};${ok&&ok[q]?'box-shadow:0 0 0 2px #bff0a8':''}"></span>`).join('');
 function pouch(kind,filter){const ids=Object.keys(AF.BAG).filter(id=>ETC[id]&&ETC[id].kind===kind&&AF.BAG[id]>0&&(!filter||filter(id)));

@@ -15,7 +15,7 @@ if(typeof PS==='undefined'||typeof pointsLeft!=='function')return;
    The rhino gets two: tank (VIT) and damage (STR, ~35 % more damage, less HP); the cat AGI and STR (STR ~7 % more damage, AGI faster / dodges). */
 const REC={wolf:[['A','STR'],['B','INT']],jaguar:[['A','AGI'],['B','INT']],owl:[['A','DEX'],['B','INT']],hippo:[['A','STR'],['B','INT']],
   dragon:[['A','STR'],['B','INT']],lion:[['A','STR'],['B','INT']],raven:[['A','STR'],['B','INT']],kitsune:[['','INT']],bastet:[['','INT']],sheep:[['','INT']],axolotl:[['','INT']],
-  anubis:[['','STR']],croc:[['','STR']],cat:[['','AGI'],['','STR']],rhino:[['','VIT','ถึก (แทงก์)'],['','STR']]};
+  anubis:[['','STR']],wukong:[['','AGI']],croc:[['','STR']],cat:[['','AGI'],['','STR']],rhino:[['','VIT','ถึก (แทงก์)'],['','STR']]};
 const BNAME={STR:'ตีแรง',AGI:'ว่องไว',INT:'เวท',VIT:'ถึก',DEX:'แม่น',LUK:'ดวง',INTDEX:'เวทแม่น'};
 const PRE=n=>PRESETS[n]?n:(n==='INTDEX'?'INT':'STR');
 const minCost=()=>{let m=1e9;for(const k of STATK)if(PS[k]<SYS.max)m=Math.min(m,statCost(PS[k]));return m;};
