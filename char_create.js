@@ -1,8 +1,9 @@
 /* =====================================================================
    TOTEM LEGEND — CREATE CHARACTER (12 Tails style, owner 2026-11-19). Loaded after progress.js.
-   First visit (no hero saved yet) or "start a new game": pick a hero from a big portrait carousel,
-   then name it and roll its base stats (unlimited rerolls, radar chart), Okay → the game reloads as that hero.
-   Portrait art: the hero's Basic skill-tree picture (SKILL_BG_ALL) until real portraits exist.
+   First visit (no hero saved yet) or "start a new game": pick a hero on the 12 Tails select stage (owner 2026-11-24:
+   the chosen hero big in colour, the others pale black-and-white shadows behind), then name it and roll its base stats
+   (unlimited rerolls, radar chart), Okay → the game reloads as that hero.
+   Stage art: assets/heroes/<hero>/select.webp (tools/select_cut.py, list SELA); without one: tree art vignette / silhouette.
    ===================================================================== */
 (function(){
 if(!window.AFProgress||typeof CLASS_BASE==='undefined')return;
@@ -28,7 +29,7 @@ const SN={str:'STR',agi:'AGI',vit:'VIT',int:'INT',dex:'DEX',luk:'LUK'},ORDER=['s
 const anySave=()=>{try{for(const h of HEROES){const o=JSON.parse(localStorage.getItem('af_prog_v1_'+h.k)||'{}');if(o.mode)return true;}}catch(e){}return false;};
 function roll(k){const b=Object.assign({},CLASS_BASE[k]||CLASS_BASE.wolf);for(let i=0;i<3;i++)b[ORDER[Math.floor(Math.random()*6)]]++;for(let i=0;i<3;i++)b[ORDER[Math.floor(Math.random()*6)]]--;
   for(const s of ORDER)b[s]=Math.max(3,Math.min(12,b[s]+1));return b;}
-const PORT={wukong:'assets/heroes/wukong/portrait.webp',drake:'assets/heroes/drake/portrait.webp'};   /* heroes without tree art yet: a crop of the owner's design sheet */
+const PORT={wukong:'assets/heroes/wukong/portrait.webp',drake:'assets/heroes/drake/portrait.webp',sheep:'assets/heroes/sheep/portrait.webp'};   /* heroes without tree art yet: a crop of the owner's design sheet */
 const art=k=>{try{return (SKILL_BG_ALL[k]&&SKILL_BG_ALL[k].basic)||PORT[k]||null;}catch(e){return PORT[k]||null;}};
 function radar(st){const R=70,c=90,pts=ORDER.map((s,i)=>{const a=-Math.PI/2+i*Math.PI/3,v=(st[s]||0)/12;return [c+Math.cos(a)*R*v,c+Math.sin(a)*R*v];});
   const ring=f=>ORDER.map((s,i)=>{const a=-Math.PI/2+i*Math.PI/3;return `${c+Math.cos(a)*R*f},${c+Math.sin(a)*R*f}`;}).join(' ');
@@ -46,18 +47,49 @@ const css=document.createElement('style');css.textContent=`
 #ccov .cc-ft{flex:none;display:flex;justify-content:center;gap:10px;padding:8px;background:linear-gradient(#8a5a1e,#5a3a14);border-top:4px solid #e8c27a}
 #ccov button.cb{border:3px solid #3a2410;border-radius:10px;background:linear-gradient(#f6d58a,#c8903e);color:#3a2410;font:800 15px Sarabun,sans-serif;padding:6px 22px;cursor:pointer;box-shadow:0 3px 0 #3a2410}
 #ccov button.cb:active{transform:translateY(2px);box-shadow:0 1px 0 #3a2410}#ccov button.cb.dark{background:linear-gradient(#6a4a2a,#3a2410);color:#f6ead0;border-color:#e8c27a}
-#ccov .cc-art{position:absolute;left:4%;top:0;bottom:0;width:58%;background-size:contain;background-repeat:no-repeat;background-position:50% 100%}
-
-#ccov .cc-noart{position:absolute;left:8%;bottom:6%;width:36%;height:80%;display:flex;align-items:center;justify-content:center;border-radius:20px;border:3px dashed #b88a4a;color:#8a6a3a;font:700 16px Sarabun;text-align:center;background:rgba(255,255,255,.35)}
-#ccov .cc-arrow{position:absolute;top:50%;transform:translateY(-50%);width:54px;height:54px;border-radius:50%;border:3px solid #3a2410;background:linear-gradient(#f6d58a,#c8903e);font:900 26px Sarabun;color:#3a2410;cursor:pointer;z-index:3}
-#ccov .cc-info{position:absolute;right:5%;top:12%;width:min(400px,44%);z-index:2;text-align:center}
-#ccov .cc-info .box{background:rgba(255,248,232,.92);border:2px solid #b88a4a;border-radius:12px;padding:14px 16px;color:#3a2410;line-height:1.6;font-size:15px;box-shadow:0 4px 16px rgba(0,0,0,.15)}
-#ccov .cc-info .ln{display:inline-block;margin:0 0 6px;padding:2px 10px;border-radius:20px;background:#3a2410;color:#f6d58a;font-size:12px;font-weight:700}
+/* 12 Tails hero select stage (owner 2026-11-24): the chosen hero big and in colour, the others pale black-and-white shadows behind */
+@font-face{font-family:TLScript;src:url(assets/fonts/Fondamento-Italic-latin.woff2) format('woff2');font-style:italic;font-weight:400;font-display:swap}
+@property --lc{syntax:'<color>';inherits:true;initial-value:#fff3dc}
+#ccov .ccs{position:absolute;inset:0;overflow:hidden;touch-action:pan-y;background:radial-gradient(ellipse 85% 100% at 45% 42%,#fffdf8 0%,#faf1df 50%,#eddcb8 100%);--lc:#fff3dc;transition:--lc .6s}
+#ccov .ccs-glow{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse var(--gw,30%) var(--gh,62%) at var(--gx,34%) var(--gy,46%),var(--lc) 0%,color-mix(in srgb,var(--lc) 45%,transparent) 48%,transparent 74%);transition:background-position .6s}
+#ccov .ccf{position:absolute;left:0;top:0;transform-origin:50% 0;opacity:0;will-change:transform,opacity;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#ccov .ccs.anim .ccf{transition:transform .6s cubic-bezier(.22,.78,.24,1),opacity .5s ease}
+#ccov .ccs.anim .ccf.nt{transition:none}
+#ccov .ccf img,#ccov .ccf>i,#ccov .ccf svg{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;user-select:none;-webkit-user-drag:none;pointer-events:none}
+#ccov .ccf .g{filter:grayscale(1) contrast(.52) brightness(1.24);transition:opacity .5s ease}
+#ccov .ccf .c{opacity:0;transition:opacity .5s ease}
+#ccov .ccf.on{cursor:default}#ccov .ccf.on .g{opacity:0}#ccov .ccf.on .c{opacity:1;animation:ccBr 3.8s ease-in-out .6s infinite}
+#ccov .ccf .sh{inset:auto 22% .4% 22%;height:5%;border-radius:50%;background:radial-gradient(closest-side,rgba(70,45,20,.34),rgba(70,45,20,0));opacity:0;transition:opacity .5s}#ccov .ccf.on .sh{opacity:1}
+@keyframes ccBr{50%{transform:translateY(-.55%)}}
+#ccov .ccf.card>i{inset:3% 1% 1%;background:50% 86%/cover no-repeat;-webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 56%,#000 58%,transparent 100%);mask-image:radial-gradient(ellipse 50% 50% at 50% 56%,#000 58%,transparent 100%)}
+#ccov .ccf.sil svg{opacity:.32;transition:opacity .5s}#ccov .ccf.sil.on svg{opacity:.85}
+#ccov .ccf .todo{position:absolute;left:10%;right:10%;bottom:9%;text-align:center;font:800 14px Sarabun,sans-serif;color:#5a3a14;background:rgba(255,248,232,.85);border:2px dashed #b88a4a;border-radius:10px;padding:4px 6px;opacity:0;transition:opacity .4s}
+#ccov .ccf.on .todo{opacity:1}
+#ccov .cc-arr{position:absolute;top:50%;width:44px;height:68px;margin-top:-40px;border:0;background:none;padding:0;cursor:pointer;z-index:8;filter:drop-shadow(0 2px 2px rgba(40,25,10,.45));transition:transform .15s;-webkit-tap-highlight-color:transparent}
+#ccov .cc-arr svg{width:100%;height:100%;display:block}#ccov .cc-arr.l{left:1.4%}#ccov .cc-arr.r{right:1.4%}#ccov .cc-arr.r svg{transform:scaleX(-1)}
+#ccov .cc-arr:hover{transform:scale(1.1)}#ccov .cc-arr:active{transform:scale(.92)}
+#ccov .cc-info{position:absolute;right:5.5%;top:11%;width:min(410px,37%);z-index:6;text-align:center}
+#ccov .cc-info.in{animation:ccIn .4s ease}
+@keyframes ccIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+#ccov .cc-info .box{background:rgba(255,252,244,.74);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);border:2px solid rgba(176,132,70,.75);border-radius:10px;padding:13px 18px 12px;color:#3a2410;line-height:1.6;font-size:15px;
+  box-shadow:0 0 0 4px rgba(255,255,255,.4),0 6px 18px rgba(60,40,20,.18)}
+#ccov .cc-info .ln{display:inline-block;margin:0 0 6px;padding:2px 12px;border-radius:20px;background:#3a2410;color:#f6d58a;font-size:12px;font-weight:700}
 #ccov .cc-info .st{margin-top:8px;font-size:13px;text-align:left;color:#5a3a14}#ccov .cc-info .st b{color:#a8501c}
-#ccov .cc-name{font:italic 800 52px Cinzel,Georgia,serif;color:#5a3a14;text-shadow:0 2px 0 #fff,0 0 12px rgba(255,255,255,.8);margin-top:10px;line-height:1}
-#ccov .cc-name small{display:block;font-size:30px;margin-top:4px;color:#7a5a2a}
-#ccov .cc-dots{position:absolute;left:0;right:0;bottom:8px;display:flex;justify-content:center;gap:6px;z-index:2}
-#ccov .cc-dots i{width:9px;height:9px;border-radius:50%;background:#c8a878;border:1px solid #5a3a14;cursor:pointer}#ccov .cc-dots i.on{background:#a8501c;transform:scale(1.3)}
+#ccov .cc-info .go{margin-top:10px}#ccov #ccgo{background:linear-gradient(#7a4a1e,#4a2a10);color:#ffe9b8;border-color:#2a1808;box-shadow:0 0 0 2px #c8903e inset,0 3px 0 #2a1808;padding:6px 26px}
+#ccov .cc-name{font:italic 400 64px TLScript,Georgia,serif;color:#5a3a14;text-align:left;padding-left:12%;margin-top:6px;line-height:.92;letter-spacing:.01em;
+  text-shadow:2px 0 0 #fff,-2px 0 0 #fff,0 2px 0 #fff,0 -2px 0 #fff,1.5px 1.5px 0 #fff,-1.5px -1.5px 0 #fff,1.5px -1.5px 0 #fff,-1.5px 1.5px 0 #fff,0 6px 12px rgba(70,45,20,.38)}
+#ccov .cc-name small{display:block;font-size:.56em;padding-left:22%;color:#7a5a2a}
+#ccov .cc-dots{position:absolute;right:5.5%;width:min(410px,37%);bottom:9px;display:flex;flex-wrap:wrap;justify-content:center;gap:6px;z-index:7}
+#ccov .cc-dots i{width:9px;height:9px;border-radius:50%;background:#c8a878;border:1px solid #5a3a14;cursor:pointer;transition:transform .2s,background .2s}#ccov .cc-dots i.on{background:#a8501c;transform:scale(1.35)}
+/* phone held sideways: a short stage */
+#ccov .ccs.short .cc-info{top:4%;right:7.5%;width:min(400px,41%)}#ccov .ccs.short .cc-info .box{padding:6px 12px 7px;line-height:1.38;font-size:12.5px}
+#ccov .ccs.short .cc-info .ln{margin-bottom:3px;font-size:11px}#ccov .ccs.short .cc-info .st{margin-top:4px;font-size:11.5px}#ccov .ccs.short .cc-info .go{margin-top:5px}
+#ccov .ccs.short #ccgo{padding:3px 18px;font-size:13px}#ccov .ccs.short .cc-name{font-size:38px;margin-top:3px}
+#ccov .ccs.short .cc-arr{width:34px;height:52px;margin-top:-30px}#ccov .ccs.short .cc-dots{bottom:5px;gap:5px;right:7.5%;width:min(400px,41%)}#ccov .ccs.short .cc-dots i{width:7px;height:7px}
+/* phone held upright: hero on top, the card below */
+#ccov .ccs.tall .cc-info{left:4%;right:4%;width:auto;top:auto;bottom:24px}#ccov .ccs.tall .cc-dots{left:4%;right:4%;width:auto;bottom:7px}#ccov .ccs.tall .cc-info .box{font-size:13px;padding:8px 12px;line-height:1.45}
+#ccov .ccs.tall .cc-name{position:absolute;left:0;right:0;bottom:100%;margin:0 0 4px;padding-left:6%;font-size:44px}#ccov .ccs.tall .cc-name small{padding-left:24%}
+#ccov .ccs.tall .cc-arr{top:30%;width:36px;height:56px}
 #ccov .cc-form{position:relative;z-index:2;margin:auto;display:flex;gap:16px;padding:16px;border:5px solid #8a5a1e;border-radius:12px;background:linear-gradient(#e9d4a8,#d9bd88);box-shadow:0 0 0 2px #f6e2b6 inset,0 8px 30px rgba(0,0,0,.35)}
 #ccov .cc-left{width:380px;background:rgba(255,248,232,.6);border:2px solid #b88a4a;border-radius:8px;padding:12px}
 #ccov .cc-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;font-weight:800;color:#3a2410}
@@ -89,26 +121,83 @@ const css=document.createElement('style');css.textContent=`
   #ccov .cc-left{width:490px}#ccov #ccroll{padding:3px 14px;font-size:13px}#ccov .cc-dye{margin-top:4px;padding-top:4px}
   #ccov .cc-dr{margin-bottom:3px;font-size:12px}#ccov .cc-dr>span{width:60px}#ccov .cc-dr>span small{font-size:10px}#ccov .cc-dr .sw{gap:3px}
   #ccov .cc-dr button.s{width:17px;height:17px;border-width:1.5px}#ccov .cc-dr input[type=color]{width:22px;height:18px}#ccov .cc-dye .cc-hint{font-size:11px}
-  /* hero carousel on a phone held sideways: the big name ran into the footer buttons (2026-11-23) */
-  #ccov .cc-info{top:4%;right:9%;width:min(400px,43%)}#ccov .cc-info .box{padding:7px 12px;line-height:1.4;font-size:13px}#ccov .cc-info .st{margin-top:4px;font-size:12px}#ccov .cc-name{font-size:30px;margin-top:5px}#ccov .cc-name small{font-size:17px;margin-top:2px}}
-@media (max-width:760px){#ccov .cc-arrow{top:28%;width:44px;height:44px}#ccov .cc-info{right:3%;left:3%;width:auto;top:auto;bottom:40px}#ccov .cc-name{font-size:34px}#ccov .cc-name small{font-size:20px}#ccov .cc-info .box{font-size:13px;padding:8px}
-  #ccov .cc-form{flex-direction:column;overflow:auto;max-height:100%;padding:10px}#ccov .cc-left{width:auto}#ccov .cc-pv{width:auto}#ccov .cc-card{min-height:160px}#ccov .cc-art{width:92%;opacity:.55}}`;
+}
+@media (max-width:760px){#ccov .cc{height:min(900px,97vh)}#ccov .cc-form{flex-direction:column;overflow:auto;max-height:100%;padding:10px}#ccov .cc-left{width:auto}#ccov .cc-pv{width:auto}#ccov .cc-card{min-height:160px}}`;
 document.head.appendChild(css);
 const ov=document.createElement('div');ov.id='ccov';document.body.appendChild(ov);ov.addEventListener('pointerdown',e=>e.stopPropagation());ov.addEventListener('keydown',e=>e.stopPropagation());
 let idx=Math.max(0,HEROES.findIndex(h=>h.k===CHAR)),stats=null,closable=false;
 function frame(body,foot){ov.innerHTML=`<div class="cc"><div class="cc-hd"><b>Create Character</b></div><div class="cc-bd">${body}</div><div class="cc-ft">${foot}</div></div>`;ov.style.display='flex';}
-function pick(){const h=HEROES[idx],a=art(h.k);
-  frame(`${a?`<div class="cc-art" style="background-image:url(${a})"></div>`:`<div class="cc-noart">ภาพ ${h.n}<br>กำลังวาด</div>`}
-    <button class="cc-arrow" id="ccprev" style="left:2%">‹</button><button class="cc-arrow" id="ccnext" style="right:2%">›</button>
-    <div class="cc-info"><div class="box"><span class="ln">${h.land} · ${h.r}</span><br>${h.d}<div class="st">A: ${window.ROLES?ROLES.chip(h.k,'A'):''}<b>${h.A}</b><br>B: ${window.ROLES?ROLES.chip(h.k,'B'):''}<b>${h.B}</b></div>
-      <div style="margin-top:10px"><button class="cb" id="ccgo">Create Hero</button></div></div><div class="cc-name">${h.n.split(' ').slice(-1)[0]}<small>${h.r}</small></div></div>
-    <div class="cc-dots">${HEROES.map((x,i)=>`<i class="${i===idx?'on':''}" data-i="${i}" title="${x.n}"></i>`).join('')}</div>`,
+/* 12 TAILS HERO SELECT (owner 2026-11-24 'ทำหน้าเลือกตัวแบบ12หาง … ตัวไหนไม่ได้เลือกจะเป็นเงาๆขาวดำอยู่ด้านหลัง'):
+   the owner's full-body pictures assets/heroes/<hero>/select.webp (720×960, one scale for all, transparent) stand on a stage —
+   the chosen hero big and in colour, its neighbours as pale black-and-white shadows behind on both sides; ‹ › / swipe /
+   ← → keys / a tap on a shadow / the dots turn the line like a carousel. Heroes without a picture yet: their tree art in a
+   soft vignette (hippo), else a plain silhouette (raven). */
+const SELA=['wolf','rhino','owl','jaguar','axolotl','croc','cat','dragon','wukong','kitsune','bastet','anubis','sheep','lion','drake'];
+const LANDC={'นอร์ส':'#c6e6f8','แอซเท็ก':'#ffd9a0','ญี่ปุ่น':'#fbcfdc','อียิปต์':'#f8de98','กรีก':'#d6defb'};
+const ARR=`<svg viewBox="0 0 44 68"><defs><linearGradient id="ccag" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffeab0"/><stop offset=".48" stop-color="#d9a24a"/><stop offset="1" stop-color="#8e5a1c"/></linearGradient></defs>
+  <path d="M38 4 L5 34 L38 64 L29 34 Z" fill="url(#ccag)" stroke="#3a2410" stroke-width="3.2" stroke-linejoin="round"/><path d="M31 15 L14 34 L31 53" fill="none" stroke="#fff4d2" stroke-width="2" stroke-linecap="round" opacity=".75"/>
+  <circle cx="29" cy="34" r="3.2" fill="#fff4d2" stroke="#3a2410" stroke-width="1.6"/></svg>`;
+const SIL=`<svg viewBox="0 0 300 400"><path fill="#3a2a1a" d="M96 40 L118 92 Q150 78 182 92 L204 40 L214 100 Q232 124 230 150 Q228 196 186 212 L214 236 Q236 252 244 300 L250 352 L206 352 L200 320 L196 378 Q196 392 182 392 L162 392 L158 340 L142 340 L138 392 L118 392 Q104 392 104 378 L100 320 L94 352 L50 352 L56 300 Q64 252 86 236 L114 212 Q72 196 70 150 Q68 124 86 100 Z"/>
+  <text x="150" y="176" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="96" fill="#f6ead0" opacity=".85">?</text></svg>`;
+const selSrc=k=>SELA.includes(k)?`assets/heroes/${k}/select.webp?v=1`:null;
+function selFig(h,i){const s=selSrc(h.k);
+  if(s)return `<div class="ccf" data-i="${i}"><i class="sh"></i><img class="g" src="${s}" alt="" draggable="false" decoding="async"><img class="c" src="${s}" alt="" draggable="false" decoding="async"></div>`;
+  const a=art(h.k);
+  if(a)return `<div class="ccf card" data-i="${i}"><i class="g" style="background-image:url(${a})"></i><i class="c" style="background-image:url(${a})"></i><b class="todo">ภาพเต็มตัวกำลังวาด</b></div>`;
+  return `<div class="ccf sil" data-i="${i}">${SIL}<b class="todo">ภาพ ${h.n}<br>กำลังวาด</b></div>`;}
+let FIGS=[],OFF=[],swT=0;
+function selOff(i){const N=HEROES.length;let o=((i-idx)%N+N)%N;if(o>N/2)o-=N;return o;}
+/* where each figure stands: off 0 = the chosen one; ±1, ±2 = shadows; |off| ≥ 3 = hidden just outside */
+function place(anim){const st=ov.querySelector('#ccs');if(!st)return;const W=st.clientWidth,H=st.clientHeight;if(!W||!H)return;
+  const tall=W/H<1.15;st.classList.toggle('tall',tall);st.classList.toggle('short',!tall&&H<400);
+  let bh,cx0,y0,S;
+  if(tall){bh=Math.min(H*.6,W*1.18);cx0=W*.5;y0=H*.012;const u=bh;
+    S={0:[0,1,0,1,5],1:[.6*u,1.1,-.03*H,.55,3],2:[1.12*u,1.18,-.05*H,0,2],3:[1.6*u,1.24,-.06*H,0,1]};}
+  else{bh=H*.985;const bw=bh*.75;cx0=Math.max(bw*.55,W*(st.classList.contains('short')?.51:.555)-H*.3);y0=H*.012;const u=H;
+    S={0:[0,1,0,1,5],'-1':[-.56*u,1.2,-.075*H,.56,3],'-2':[-1.1*u,1.34,-.13*H,.38,2],'-3':[-1.72*u,1.45,-.16*H,0,1],
+       1:[.88*u,1.2,-.075*H,.56,3],2:[1.52*u,1.34,-.13*H,.38,2],3:[2.2*u,1.45,-.16*H,0,1]};}
+  const bw=bh*.75;
+  FIGS.forEach((f,i)=>{const o=selOff(i),c=Math.max(-3,Math.min(3,o));let p=S[c]||S[Math.abs(c)];if(tall&&c<0)p=[-p[0],p[1],p[2],p[3],p[4]];
+    const cx=cx0+p[0],y=c===0?y0:p[2];
+    const jump=anim&&OFF[i]!==undefined&&Math.abs(OFF[i]-o)>6;f.classList.toggle('nt',jump);
+    f.style.width=bw+'px';f.style.height=bh+'px';f.style.transform=`translate(${(cx-bw/2).toFixed(1)}px,${y.toFixed(1)}px) scale(${p[1]})`;
+    f.style.opacity=p[3];f.style.zIndex=p[4];f.style.pointerEvents=p[3]>0?'auto':'none';f.classList.toggle('on',o===0);OFF[i]=o;});
+  st.style.setProperty('--gx',(cx0/W*100).toFixed(1)+'%');st.style.setProperty('--gy',((y0+bh*.48)/H*100).toFixed(1)+'%');
+  st.style.setProperty('--gw',(bw*.78/W*100).toFixed(1)+'%');st.style.setProperty('--gh',(bh*.56/H*100).toFixed(1)+'%');
+  st.style.setProperty('--lc',LANDC[HEROES[idx].land]||'#fff3dc');}
+function selInfo(anim){const h=HEROES[idx],el=ov.querySelector('#ccinfo');if(!el)return;
+  el.innerHTML=`<div class="box"><span class="ln">${h.land} · ${h.r}</span><div class="ds">${h.d}</div><div class="st">A: ${window.ROLES?ROLES.chip(h.k,'A'):''}<b>${h.A}</b><br>B: ${window.ROLES?ROLES.chip(h.k,'B'):''}<b>${h.B}</b></div>
+    <div class="go"><button class="cb" id="ccgo">Create Hero</button></div></div><div class="cc-name">${h.n.split(' ').slice(-1)[0]}<small>${h.r}</small></div>`;
+  if(anim){el.classList.remove('in');void el.offsetWidth;el.classList.add('in');}
+  ov.querySelectorAll('.cc-dots i').forEach((d,i)=>d.classList.toggle('on',i===idx));
+  el.querySelector('#ccgo').onclick=()=>{const h=HEROES[idx];if(h.k!==CHAR){try{localStorage.setItem('af_cc_pending',JSON.stringify({k:h.k,closable}));}catch(e){}go(h.k);return;}stats=roll(h.k);form();};}   /* the form shows the hero's own sprite, so the game loads that hero first */
+function selGo(i){const N=HEROES.length;i=(i%N+N)%N;if(i===idx)return;idx=i;place(true);selInfo(true);}
+function pick(){
+  frame(`<div class="ccs" id="ccs"><div class="ccs-glow"></div>${HEROES.map(selFig).join('')}
+      <button class="cc-arr l" id="ccprev" aria-label="ก่อนหน้า">${ARR}</button><button class="cc-arr r" id="ccnext" aria-label="ถัดไป">${ARR}</button>
+      <div class="cc-info" id="ccinfo"></div>
+      <div class="cc-dots">${HEROES.map((x,i)=>`<i data-i="${i}" title="${x.n}"></i>`).join('')}</div></div>`,
     `${closable?'<button class="cb dark" id="ccclose">Close</button>':''}<button class="cb dark" data-m="test" id="cctest" title="Lv ${window.LV_CAP||99} ทุกสกิล สำหรับทดสอบ">🧪 โหมดทดสอบ</button>`);
-  ov.querySelector('#ccprev').onclick=()=>{idx=(idx+HEROES.length-1)%HEROES.length;pick();};ov.querySelector('#ccnext').onclick=()=>{idx=(idx+1)%HEROES.length;pick();};
-  ov.querySelectorAll('.cc-dots i').forEach(d=>d.onclick=()=>{idx=+d.dataset.i;pick();});
-  ov.querySelector('#ccgo').onclick=()=>{if(h.k!==CHAR){try{localStorage.setItem('af_cc_pending',JSON.stringify({k:h.k,closable}));}catch(e){}go(h.k);return;}stats=roll(h.k);form();};   /* the form shows the hero's own sprite, so the game loads that hero first */
-  ov.querySelector('#cctest').onclick=()=>startTest(h.k);
-  const c=ov.querySelector('#ccclose');if(c)c.onclick=()=>{ov.style.display='none';};}
+  const st=ov.querySelector('#ccs');FIGS=[...st.querySelectorAll('.ccf')];OFF=[];
+  ov.querySelector('#ccprev').onclick=()=>selGo(idx-1);ov.querySelector('#ccnext').onclick=()=>selGo(idx+1);
+  ov.querySelectorAll('.cc-dots i').forEach(d=>d.onclick=()=>selGo(+d.dataset.i));
+  FIGS.forEach(f=>f.onclick=()=>{if(performance.now()-swT<350)return;selGo(+f.dataset.i);});
+  let sx=null,sy=0;
+  st.addEventListener('pointerdown',e=>{if(e.target.closest('button,.cc-info,.cc-dots'))return;sx=e.clientX;sy=e.clientY;});
+  st.addEventListener('pointerup',e=>{if(sx===null)return;const dx=e.clientX-sx,dy=e.clientY-sy;sx=null;
+    if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.2){swT=performance.now();selGo(idx+(dx<0?1:-1));}});
+  st.addEventListener('pointercancel',()=>{sx=null;});
+  ov.querySelector('#cctest').onclick=()=>startTest(HEROES[idx].k);
+  const c=ov.querySelector('#ccclose');if(c)c.onclick=()=>{ov.style.display='none';};
+  selInfo(false);place(false);requestAnimationFrame(()=>requestAnimationFrame(()=>st.classList.add('anim')));}
+window.addEventListener('keydown',e=>{if(ov.style.display==='none'||!ov.querySelector('#ccs'))return;
+  if(e.target&&/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName))return;
+  if(e.key==='ArrowLeft'||e.key==='ArrowRight')selGo(idx+(e.key==='ArrowLeft'?-1:1));
+  else if(e.key==='Enter'){if(e.target&&e.target.tagName==='BUTTON')return;const b=ov.querySelector('#ccgo');if(b)b.click();}
+  else if(e.key==='Escape'&&closable)ov.style.display='none';
+  else return;
+  e.preventDefault();e.stopPropagation();},true);
+window.addEventListener('resize',()=>{const st=ov.querySelector('#ccs');if(!st||ov.style.display==='none')return;st.classList.remove('anim');place(false);requestAnimationFrame(()=>st.classList.add('anim'));});
 function form(){const h=HEROES[idx],a=art(h.k);
   frame(`<div class="cc-form"><div class="cc-left"><div class="cc-row">Name <input id="ccname" maxlength="16" placeholder="Character Name" value="${(ov.dataset.name||'').replace(/"/g,'')}"></div>
       <div class="cc-stats"><table>${ORDER.map(s=>`<tr><td class="k">${SN[s]}</td><td class="v">${stats[s]}</td></tr>`).join('')}</table>${radar(stats)}</div>
