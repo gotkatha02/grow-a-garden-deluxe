@@ -179,6 +179,85 @@ V=assets/heroes/bastet; python3 -I tools/dir8cut.py startv <โฟลเดอ�
 - sockets: ตำแหน่งหนังสือ / เปลวไฟฟ้า (cliphero 'orb' + orbMask ปรับเป็นสีฟ้าอมเขียว: B สูง G สูง R ต่ำ หรือ orbFix) ทุกท่า (orbAll) → จุดรวมพลังตอนง้าง / จุดปล่อยหน้ากระดาษใน bastet_vfx.js
 - วัด CHAR_SCALE.bastet ใหม่ให้สูงเท่าหมาป่า · หน้า HUD = ตัดหัวจาก view_S ผ่าน window.HUD_FACE (แบบแกะ / ลิง) · หน้าเลือกตัวมีภาพเต็มตัวแล้ว (assets/heroes/bastet/select.webp)
 - ยังไม่มี: ไอคอนสกิล (ใช้โค้ด SVG), พื้นหลังทรี 4 สาย, ท่านั่ง (hero_sit.js)"""),
+ 'hippo': dict(
+  title="ฮิปโป ลุคใหม่ (Hapi · องครักษ์ทาเวเรต · Taweret's Guardian)",
+  who='the chubby little hippo guardian in this picture', P='He', p='he', pos='his', weapon='mace and the whole shield',
+  face="Keep his face exactly as in the picture: the same big brown eyes, the same rosy cheeks, the two small rounded "
+       "tusks and the same friendly, confident smile, mouth closed.",
+  back_face={'NE': "We see him mostly from behind: the back of his round head with the gold headband and the two small horns, "
+                   "one small round ear and only the edge of his cheek and snout, as in the picture; his face never turns "
+                   "toward us.",
+             'N': "We only see the back of his round head: his two small round ears, the two small horns and the back of the "
+                  "gold headband, as in the picture; his face never turns toward us."},
+  keep={d: ("His gold headband with the sun disc and the two small cream horns, the teal cape with the little gold clasp and "
+            "its two tassels, the round bronze-and-teal shield on his forearm and the studded bronze mace stay exactly the same.")
+        for d in ('S', 'SE', 'E')} | {d: ("His gold headband with the two small cream horns, the teal crocodile-tail cape with "
+            "its row of cream spikes, the round shield on his forearm and the studded bronze mace stay exactly the same.")
+            for d in ('NE', 'N')},
+  spos=dict.fromkeys(DIRS, 'upright beside him'),
+  blink=", his small round ears twitch once, and he blinks once",
+  vis=" The mace stays visible beside his body during the whole swing.",
+  nofx="No shadow, no flash, no glow, no sparkles, no dust, no particles, no smoke, no water, no magic effects, no text.",
+  act={
+   'idle': "Idle loop of {who}. {facing} He stands in a sturdy, relaxed pose, the studded mace held {spos} and the round "
+           "shield on his other forearm, and breathes slowly: his round belly rises and falls with a soft bounce, his cheeks "
+           "puff a little and the crocodile-tail cape sways gently{blink}. The last frame matches the first frame so the "
+           "clip loops.",
+   'walk': "Walk loop of {who}. {facing} He walks in place, like on a treadmill, toward the way he is facing: short, stubby, "
+           "bouncy steps (about two steps per second) with a cute little waddle, his round body rocking gently from side to "
+           "side and his belly bouncing with each step, the mace held {spos} and the shield moving with his arm, the "
+           "crocodile-tail cape swinging behind him. He does not move across the frame and the ground does not move. The "
+           "last frame matches the first frame so the clip loops.",
+   'attack': "Attack of {who}. {facing} He lifts the studded mace back over his shoulder in a short wind-up, then swings it "
+             "down in a fast, heavy diagonal smash in front of him toward the way he is facing, the round head of the mace "
+             "first, holds the moment of the hit for an instant with the mace head low in front of him and his belly "
+             "bouncing from the blow, then returns to his starting pose and stands still for the rest of the clip. The whole "
+             "strike takes about one second. His feet stay in place and the shield stays on his other forearm.{vis} Clean "
+             "outlines in every frame, no motion blur.",
+   'buff': "Power-up of {who}. {facing} He raises the studded mace high above his head, the round head pointing to the sky, "
+           "lifts the round shield up beside it and puffs out his chest and round belly proudly, holds that pose still for "
+           "about one second, then lowers the mace back {spos}, returns to his starting pose and stands still for the rest "
+           "of the clip. His feet stay in place. The raised mace stays inside the frame. Clean outlines in every frame, no "
+           "motion blur."},
+  dirname={'S': 'หน้าตรง', 'SE': 'เฉียงหน้า หันขวา', 'E': 'ข้าง หันขวา', 'NE': 'เฉียงหลัง หันขวา', 'N': 'หลัง'},
+  actname={'idle': 'ยืน (idle · วนลูป)', 'walk': 'เดิน (walk · วนลูป · Waddle Rush ก็ใช้คลิปนี้)',
+           'attack': 'ตี (attack · คอมโบกระบอง + จังหวะลงพื้นของท่ากระโดดทับทุกท่า + สกิลที่ใช้ท่าตี)',
+           'buff': 'ชูกระบอง (buff · ตอนย่อ + ลอยกลางอากาศของท่ากระโดดทับ · กิน / หาว / เรอ · ร่ายโคลน น้ำ บัว · บัฟ · อัลติ)'},
+  start='hippo_{n}_{d}.png',
+  header="""เจ้าของเลือกแบบ 4 'องครักษ์ทาเวเรต' 2026-11-24 13:30 ("เอาตัวนี้ ขอพรอมต์ให้ทำแบบแยกท่าทางด้วย") · ชีต `assets/heroes/hippo/sheet_taweret.webp` · หน้าตา + พรอมต์ภาพยืน 5 มุม: `HIPPO_LOOK_PROMPTS_TH.md` หัวข้อ 'เลือกแล้ว'
+
+## ลำดับงาน
+1. **ภาพยืน 5 มุม** (ยังไม่มี) — เจ้าของเจนจากพรอมต์ใน `HIPPO_LOOK_PROMPTS_TH.md` → เก็บเป็น `assets/heroes/hippo/view_S|SE|E|NE|N.webp` (ต้นฉบับพื้นเขียว)
+2. **ภาพตั้งต้น** — ตัดจากภาพ 5 มุม (คำสั่งข้างล่าง) ส่งกลับเป็น `hippo_1_S.png … hippo_5_N.png` (ไม่เก็บในรีโป สร้างใหม่ได้ทุกเมื่อ)
+3. **คลิป 20 ตัว** — พรอมต์ในไฟล์นี้ แนบภาพตั้งต้นของทิศนั้นทุกคลิป
+
+## ภาพตั้งต้น
+- `hippo_<n>_<ทิศ>.png` 900×900 สี่เหลี่ยม แบบบาสเต็ด · ฮิปโปเตี้ยและกว้าง (รวมกระบอง + โล่ กว้างพอๆ กับสูง) → ตัวสูง ~500 (55 % ของกรอบ) ให้เหลือข้างละ ≥ 0.35 เท่าตัวไว้เหวี่ยงกระบอง และเหนือหัว ≥ 0.5 เท่าตัวไว้ชูกระบอง → ในคลิป 480p ตัวสูง ~270 px · ตัวเลขจริงตัดสินตอนได้ภาพ (startv พิมพ์ระยะว่างทุกด้านให้ดู)
+```
+V=assets/heroes/hippo; python3 -I tools/dir8cut.py startv <โฟลเดอร์> S=$V/view_S.webp SE=$V/view_SE.webp E=$V/view_E.webp NE=$V/view_NE.webp N=$V/view_N.webp size=900 feet=.88 ht=500 clean=0
+```
+→ start_<ทิศ>.png → ตั้งชื่อใหม่ hippo_1_S … hippo_5_N · ทุกทิศใช้สเกลของมุมหน้า (ถ้าภาพ 5 มุมวาดตัวมาไม่เท่ากัน ต้องปรับทีละภาพก่อน) · มุมที่วาดหันซ้ายมา ใส่ `:flip` (กระบองจะสลับไปอีกมือในมุมนั้น รับได้) · clean=0 = ไม่ทาจุดเขียวในตัว (ชุดไม่มีสีเขียว เขียวอมฟ้าบนชีต ≈ RGB 50,154,156 น้ำเงิน ≥ เขียว ไม่โดนตัด ช่องว่างระหว่างแขนกับตัวเป็นพื้นหลังจริง)
+
+## วิธีใช้
+แนบภาพตั้งต้นของทิศนั้น + วางพรอมต์ทีละตัว → 4 คลิปต่อทิศ (ยืน · เดิน · ตี · ชูกระบอง) · คลิปละ 3–5 วิ · ไม่ต้องทำทิศซ้าย (เกมกลับด้านเอง) · ส่งกลับเรียง S → SE → E → NE → N ทิศละ ยืน → เดิน → ตี → ชูกระบอง (สลับได้ ดูเองว่าคลิปไหนเป็นท่าอะไร)
+
+## กติกาที่อยู่ในทุกพรอมต์ (บทเรียนจากคลิปลิง / แอคโซลอเติล / มังกร / แกะ)
+- ประโยคบอกทิศขึ้นต้นทุกพรอมต์ กันโมเดลหมุนตัวหันหากล้อง (มุมหลังโดนบ่อย)
+- ล็อกหน้า (ตาน้ำตาลโต แก้มแดง เขี้ยวมนสองซี่ ยิ้มมั่นใจ ปากปิด) ในมุมที่เห็นหน้า · มุมหลัง (NE, N) ใช้ประโยค 'เห็นแค่หลังหัว หน้าไม่หันมา' แทน และไม่มีกะพริบตา
+- ล็อกของติดตัว: คาดผมจานสุริยะ + เขาครีม · ผ้าคลุม + เข็มกลัดทองพู่สองพู่ (มุมหลัง: ผ้าคลุมหางจระเข้หนามครีม) · โล่กลม · กระบองหัวปุ่ม
+- เดินอยู่กับที่แบบลู่วิ่ง ก้าวสั้นป้อมเด้งๆ ต้วมเตี้ยม ~2 ก้าว/วิ ตัวโยกซ้ายขวานิดๆ พุงเด้งทุกก้าว (คลิปเดินช้าจะไถลพื้น)
+- ตี = ท่าเดียวกันทุกทิศ: ง้างกระบองข้ามไหล่ แล้วทุบเฉียงลงหน้าตัวหัวกระบองนำ ค้างจังหวะโดนนิดนึง พุงเด้งตามแรง แล้วยืนนิ่งจนจบคลิป · โล่อยู่แขนอีกข้างตลอด · มุมหลังสั่งให้กระบองยังเห็นข้างตัวตลอด (ไม่งั้นโดนตัวบัง)
+- ชูกระบอง = ชูกระบองเหนือหัว ยกโล่ขึ้นข้างๆ อกพุงยื่นภูมิใจ ค้างนิ่ง ~1 วิ แล้วกลับท่าเดิม — เกมค้างเฟรมนี้ตอนย่อตัว + ลอยกลางอากาศของท่ากระโดดทับ แล้วต่อด้วยท่าตีตอนลงพื้น = 'กระโดดชูกระบอง ลงมาทุบ'
+- ห้ามเบลอ · ห้ามแสง ประกาย ฝุ่น น้ำ วงเวท (เอฟเฟกต์ใส่ด้วยโค้ดในเกม) · กล้องนิ่งไม่ซูม · พื้นเขียวตลอด · ตัว + กระบอง + โล่อยู่ในกรอบตลอด
+- ไม่ระบุมือซ้าย / ขวาในพรอมต์คลิป (ภาพตั้งต้นบอกเองว่าอะไรอยู่มือไหน และมุมที่กลับด้านมาอาวุธจะสลับมือ)""",
+  footer="""## ตอนคลิปมาถึง (โน้ตสำหรับแชตที่ทำต่อ)
+- ตัดด้วย `tools/cliphero.py` + แผนใหม่ `tools/clips/hippo_plan.json` (ดู `tools/clips/sheep_plan.json`: loop, เลือกเฟรมเลี่ยงฝุ่น / แสงที่โมเดลแอบใส่, flipDirs ถ้ามีคลิปหันผิดฝั่ง, perDir ถ้าคลิปบางทิศถ่ายมาเล็ก / ใหญ่กว่า) → เขียนทับ `assets_hippo.js` ด้วย prefix เดิม HIP (index.html สลับ atlas ด้วย HIP_ART อยู่แล้ว) · แก้ขนาดไฟล์ในตาราง MB ของหน้าโหลด + ใส่ ?v= ให้ assets_hippo.js
+- เวลาเฟรมตี / ชูกระบองใช้ของสไปรต์ชั่วคราวเดิม (statichero): attack 12 เฟรม [60 × 8, 70, 80, 90, 100] contact 8 · buff 12 × 80 peak 7 (idle / walk ไม่กระทบดาเมจ) → จังหวะโดน / ปล่อยสกิลเท่าเดิม bench ไม่เปลี่ยน · เช็ก `python3 tools/fxlab.py hits hippo` ก่อน / หลัง
+- ใครใช้เฟรมไหน (char_hippo.js): ตีปกติ = attack ตั้งแต่ contact−3 · hSlam (Belly Flop, Bounce Slam, Sky Belly, Double Drop, Mountain Drop, Meteor Belly, ตัวจบคอมโบ) = ค้างเฟรม buff peak ตอนย่อ + ลอย แล้ว attack ตั้งแต่ contact ตอนลงพื้น · hBurst (Yawn, Feast, Gulp, Burp, Ward, Ground Pound, Gobble) + สกิลสาย B ทั้งหมด = buff · Waddle Rush = walk ×3 · Rolling Hippo / Submerge = ค้าง hurt เฟรม 2 (cliphero ทำ hurt จากเฟรมแรกของ idle)
+- ทีหลังถ้าเจ้าของอยากได้: ชีตท่ากระโดดทับ 8 เฟรมมุมเดียว (แบบท่ากระโดดทุบของลิง / ท่าชาร์จของแมว → `tools/sheet_state.py`) แทนการค้างเฟรมชูกระบองใน hSlam
+- วัด CHAR_SCALE.hippo ใหม่ (ตอนนี้ 1.39 = สไปรต์ชั่วคราว) ให้ยืนสูงเท่าหมาป่า · ตัวโตตามเกจความอิ่มใช้ hSize() ขยายทั้งตัว (+4 % ทุก 20 อิ่ม) — ภาพ 3 ขนาดมุมขวาล่างของชีตเป็นแค่แบบ
+- หน้า HUD = ตัดหัวจาก view_S ผ่าน window.HUD_FACE (แบบแกะ / ลิง) · หน้าเลือกตัว = `assets/heroes/hippo/select.webp` (`tools/select_cut.py` + เพิ่มใน SELA ของ char_create.js; ตอนนี้เป็นพื้นหลังทรีลุคเก่าในวงมัว)
+- ยังเป็นลุคเก่า: ไอคอนสกิล 49 + สกิลเสริม 16, พื้นหลังทรี 4 ภาพ · ยังไม่มี: ท่านั่ง (hero_sit.js)"""),
 }
 
 def build(h, d, a):

@@ -39,7 +39,7 @@ const LUNGE=12;
 const _start=startAction;
 window.startAction=startAction=function(a){_start(a);if(off()||window.__FEEL_NOLUNGE||!a||a.key==='hurt'||!a.seq||!a.seq.length)return;
   const S=G('SKILLS'),sk=a.skill&&S[a.skill];
-  const melee=a.key==='basic'||(sk&&sk.range&&sk.range<=140&&a.seq.every(x=>x.st==='attack'));
+  const melee=a.key==='basic'||(sk&&sk.range&&sk.range<=140&&a.seq.every(x=>x.st==='attack'||x.st==='charge'));   /* 'charge' = the cat's iaido stance in front of a strike (2026-11-24) */
   if(!melee||!(a.windup>0.08))return;
   const pl=G('player');a._lg={phi:pl.phi||0,t0:Math.max(0,a.windup-.12),t1:a.windup+.02,done:0};
   const up=a.update;a.update=function(A,dt){if(up)up(A,dt);lunge(A);};};

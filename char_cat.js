@@ -200,6 +200,21 @@ function ktAddFlow(n){const b=CAT.flow;CAT.flow=Math.min(ktFlowCap(),CAT.flow+n)
 const ktBranch=k=>!k?'':k==='basic'?'N':k.startsWith('ka')||k==='kcSwallows'||k==='kcShadow'||k==='kcLunge'?'A':k.startsWith('kb')||k==='kcStance'||k==='kcOni'||k==='kcAvalanche'||k==='kcCleaveWind'?'B':'N';
 /* charge time for heavy skills (Iron Grip shortens, Ashura makes it instant) */
 function ktChargeT(three){if(CAT.ashura)return 0;let t=three?KT_BAL.charge.t3:KT_BAL.charge.t;if(ktL('kbGrip'))t-=ktLv(KB.kbGrip.cut,'kbGrip');return Math.max(.25,t);}
+/* iaido charge stance (owner's sheet 2026-11-24 'ของแมวท่าที่มันต้องชาร์จก่อนฟันใส่สไปร้ท่านี้ให้หน่อย'): atlas state 'charge'
+   (tools/clips/cat_charge.json) = 0 stand → 1–4 crouch into the stance → 5–7 held stance. One 3/4 view: SE, mirrored to SW by the
+   engine, so it is used when the cat faces down or sideways (S SE E SW W); facing up keeps the old held wind-up frame (back view).
+   The stance REPLACES the held frame and the attack frames before the draw (KT_DRAWF) with the SAME total time → every event,
+   the contact and the action's end stay where they were. ?ktchg=0 = old look. */
+const KT_DRAWF=3,KT_CHG_OK=!/[?&]ktchg=0/.test(location.search);
+const ktChgDir=d=>KT_CHG_OK&&!!(SPR_META.states&&SPR_META.states.charge)&&/^(S|SE|E|SW|W)$/.test(d);
+function ktChargeSeq(ms,phi){const d=Math.cos(phi)>=0?'SE':'SW',o=[],enter=Math.min(330,ms*.42),W=[1,1,1.1,1.2,1.3],sw=W.reduce((a,b)=>a+b,0);
+  W.forEach((w,f)=>o.push({st:'charge',d,f,ms:enter*w/sw}));const L=[5,6,7,6];let left=ms-enter,i=0;
+  while(left>1e-6){const m=left>140?105:left;o.push({st:'charge',d,f:L[i++%4],ms:m});left-=m;}
+  return o;}
+/* swap the held wind-up of a built strike for the stance (s[0] = the hold entry); returns the new sequence or the old one */
+function ktStanceSeq(s,phi,attackToo){if(!s||!s.length||s[0].st!=='attack'||!(s[0].ms>0)||!ktChgDir(s[0].d))return s;let ms=s[0].ms,i=1;
+  if(attackToo)while(i<s.length&&s[i].st==='attack'&&s[i].f<KT_DRAWF){ms+=s[i].ms;i++;}
+  return ktChargeSeq(ms,phi).concat(s.slice(i));}
 /* every damaging hit from this module goes through here */
 function ktHit(e,mult,key,o={}){if(!e||e.dead)return 0;return hurt(e,mult,Object.assign({critOK:true,skill:key},o));}
 const ktNear=(x,y,R)=>enemies.filter(e=>!e.dead&&Math.hypot(e.x-x,e.y-y)<=R+e.r*.5);
@@ -385,6 +400,7 @@ function ktCharged(o){const T=ktChargeT(o.three),mul=o.three?KT_BAL.charge.mul3:
     each:(a,e,i,last)=>o.each(a,e,i,last,mul),extra:Object.assign({ktCharge:T},o.extra||{})}));
   const ev0={t:0,f:a2=>{CAT.charging=1;if(T>0){addFx(new KtCharge({T,a:a2,col:o.three?KTC.oni2:KTC.oni}));if(ktL('kbIron')||CAT.ashura)addBuff('rhSA',T+.1);}}};
   const ev1={t:Math.max(0,a.windup-.01),f:()=>{CAT.charging=0;}};a.events=[ev0,ev1].concat(a.events||[]);
+  if(T>0)a.seq=ktStanceSeq(a.seq,o.phi!=null?o.phi:player.phi,true);
   const _end=a.onEnd;a.onEnd=()=>{CAT.charging=0;_end&&_end();};return a;}
 /* dash helper (used by Cat Step / Mirage / Roll) */
 function ktDash(key,name,phi,L,T,iframe,o={}){faceTo(phi);const d=player.dir,s=seq(o.st||'walk',d,0,null,o.speed||3),sx=player.x,sy=player.y,[dx,dy]=ktPathEnd(sx,sy,phi,L);
@@ -516,7 +532,7 @@ function mkKcStance(c){if(hasBuff('kcStance')){delete player.buffs.kcStance;retu
 function ktStanceRelease(){const B=KB.kcStance,n=Math.min(B.cap,CAT.stanceN),m=B.base+B.per*n;CAT.stanceN=0;if(player.buffs.rhSA)player.buffs.rhSA.t=Math.min(player.buffs.rhSA.t,.2);
   addFx(new DText({x:player.x,y:player.y,z:100,text:'COUNTER ×'+n,color:KTC.oni2,size:14,life:1}));for(const e of ktNear(player.x,player.y,B.R)){ktHit(e,m,'kcStance',{big:true,knock:[angTo(e),160]});ktEmbers(e.x,e.y,26,6);}
   ktV('stanceRelease',n,B.R);  addFx(new KtImg({n:'11_wheel',x:player.x,y:player.y,z:20,w:B.R*2.3,life:.45,s0:.6,s1:1.1,gspin:0,gspinV:-16,glow:.8,vortex:1,ring:1,vc:'#ffe2c0',deb:'ember',dc:'#ff9a4a'}));ktShock(player.x,player.y,B.R*2.4);screenFlash(.2,'#ffcf9a');if(!ktImg('11_wheel'))for(let j=0;j<3;j++)addFx(new KtArc({x:player.x,y:player.y,phi:j*2.1,R:B.R*.85,w:18,col:KTC.oni,core:'#fff2d8'}));shake(3.5);stop(80);}
-function mkKcAvalanche(c){const t=ktTgt(c,KB.kcAvalanche.range);const phi=ktPhi(c,t),B=KB.kcAvalanche,T=CAT.ashura?0:B.charge;faceTo(phi);const d=player.dir,s=[...hold('attack',d,Math.max(0,CT(atkDir(d))-3),T*1000+1),...seq('walk',d,0,null,3),...seq('attack',atkDir(d),CT(atkDir(d)),null,1.2)];
+function mkKcAvalanche(c){const t=ktTgt(c,KB.kcAvalanche.range);const phi=ktPhi(c,t),B=KB.kcAvalanche,T=CAT.ashura?0:B.charge;faceTo(phi);const d=player.dir,s0=[...hold('attack',d,Math.max(0,CT(atkDir(d))-3),T*1000+1),...seq('walk',d,0,null,3),...seq('attack',atkDir(d),CT(atkDir(d)),null,1.2)],s=T>0?ktStanceSeq(s0,phi,false):s0;
   const sx=player.x,sy=player.y,[dx,dy]=ktPathEnd(sx,sy,phi,B.len),tRun=T,tEnd=T+.42,drag=new Map();
   return act({key:'kcAvalanche',name:'Avalanche Rush',seq:s,windup:tRun,dur:seqTotal(s),hitList:[],events:[{t:0,f:a=>{if(T>0){addFx(new KtCharge({T,a,col:KTC.oni}));if(ktL('kbIron'))addBuff('rhSA',T+.5);}CAT.charging=T>0?1:0;}},
     {t:tEnd+.02,f:a=>{CAT.charging=0;for(const e of ktNear(player.x,player.y,B.R)){ktHit(e,B.dmg,'kcAvalanche',{big:true,koMul:1.5});a.hitList.push(e);}a.hitConfirmed=true;ktV('avalancheSlam',B.R);ktCrater(player.x,player.y,180);addFx(new GRing({x:player.x,y:player.y,r0:10,r1:B.R+20,w:14,color:KTC.oni,life:.45}));rocks(player.x,player.y,10,240);shake(5);stop(100);}}],

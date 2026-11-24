@@ -200,7 +200,10 @@ KTV.HIT={};
 const W={t:0,ki:0,ash:0,sak:0,motes:[],acc:{}};
 const every=(k,sec,dt)=>{W.acc[k]=(W.acc[k]||0)+dt;if(W.acc[k]>=sec){W.acc[k]=0;return true;}return false;};
 /* the hand that holds the sword, good enough for glints and gathering light */
-const hand=()=>[player.x+Math.cos(player.phi)*10,player.y+Math.sin(player.phi)*8,44+(player.z||0)];
+/* in the iaido stance (atlas state 'charge', 2026-11-24) the power gathers at the paws on the hilt: cell px from the pivot per frame */
+const CHG_HILT=[[-25,97],[-14,88],[-4,76],[6,64],[8,61],[8,61],[8,61],[8,61]];
+const hand=()=>{let fr=null;try{fr=playerFrame();}catch(_){}if(fr&&fr.st==='charge'){const h=CHG_HILT[fr.f]||CHG_HILT[7],m=isMir(fr.d)?-1:1;return [player.x+m*h[0]*SPR,player.y+1,h[1]*SPR+(player.z||0)];}
+  return [player.x+Math.cos(player.phi)*10,player.y+Math.sin(player.phi)*8,44+(player.z||0)];};
 function kumoAt(i,t,front){const an=t*.45+i*TAU/4,sn=Math.sin(an);if((sn>=0)!==front)return;const [x,y]=P(player.x+Math.cos(an)*46,player.y+sn*30,6+3*Math.sin(t*1.7+i));art('kumo',x,y,38+6*sn,{a:W.ki*(front?.9:.7),ay:.8,under:'#3a5a8a',ua:.28,uy:2});}
 /* ground half (called from the ground layer by KtGroundAura.draw) */
 KTV.groundAura=function(ga,x,y){ensure();if(!W.top||!fx.includes(W.top))W.top=addFx(new KWatchTop());W.ki=ga.ki;W.ash=ga.ash;const t=ga.t,still=typeof ktL==='function'&&ktL('kcStill')>0;

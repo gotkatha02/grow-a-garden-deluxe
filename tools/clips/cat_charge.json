@@ -1,0 +1,63 @@
+{
+ "_note": "White Ronin cat — iaido charge stance (owner's sheet 2026-11-24 12:07 'ของแมวท่าที่มันต้องชาร์จก่อนฟันใส่สไปร้ท่านี้ให้หน่อย'): 8 frames, 2 rows x 4, green, drawn facing down-left (SW) → flip so the stored frames face SE (the engine mirrors them for SW / W). 1 stand, paw on the scabbard · 2 turn · 3-4 crouch into the stance · 5 deep stance · 6-8 held stance (charge loop, ping-pong). Anchor = midpoint between the feet, sandal bottom. Scale .515 = height AND hat width of the idle S frame (226 / 440, 96 / 186). Played by char_cat.js ktChargeSeq. Rebuild: python3 -I tools/sheet_state.py tools/clips/cat_charge.json [preview.png]",
+ "js": "assets_cat.js",
+ "prefix": "CAT",
+ "state": "charge",
+ "sheet": "assets/heroes/cat/charge_sheet.webp",
+ "rows": 2,
+ "cols": 4,
+ "scale": 0.515,
+ "anchors": [
+  [
+   135,
+   436
+  ],
+  [
+   170,
+   425
+  ],
+  [
+   192,
+   393
+  ],
+  [
+   211,
+   365
+  ],
+  [
+   208,
+   347
+  ],
+  [
+   204,
+   324
+  ],
+  [
+   206,
+   324
+  ],
+  [
+   210,
+   325
+  ]
+ ],
+ "dirs": [
+  "S",
+  "SE",
+  "E",
+  "NE",
+  "N"
+ ],
+ "flip": true,
+ "dur": [
+  70,
+  70,
+  70,
+  70,
+  90,
+  110,
+  110,
+  110
+ ],
+ "loop": false
+}
