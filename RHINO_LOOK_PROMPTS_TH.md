@@ -7,9 +7,12 @@
 
 ถ้าไม่ตรงใจ บอกแนวที่อยากได้มาได้เลย (เช่น กลมน่ารักแบบฮิปโป หรือดุดันแบบมังกร)
 
+**เลือกแล้ว: แบบ 1 ไททันธารน้ำแข็ง (2026-11-24 20:56)** → ภาพใหญ่อยู่หน้าเลือกตัวแล้ว · ต่อไปภาพยืน 5 มุม ดูหัวข้อ 'เลือกแล้ว' ท้ายไฟล์ · พรอมต์คลิป 20 ตัว: `RHINO_CLIP_PROMPTS_TH.md`
+
 ## เปลี่ยนแรดกระทบอะไรบ้าง (น้อยกว่าหมาป่ามาก)
 - **สไปร์ท `assets_rhino.js`** (prefix RH) ทำจากคลิป 17 อัน ไม่มีคลิปหันหลัง (N ใช้ภาพ NE แทน) · ใช้กับแรดตัวเดียว → คลิปใหม่ 20 อันเขียนทับไฟล์เดิมได้เลย ฮีโร่ตัวอื่นไม่โดน
-- **ไม่มี** แฟชั่นติดตัว หน้ากากสีขน หน้า HUD ของตัวเอง ท่านั่ง → ไม่มีงานวัดจุดแบบหมาป่า
+- **ไม่มี** แฟชั่นติดตัว หน้ากากสีขน ท่านั่ง → ไม่มีงานวัดจุดแบบหมาป่า
+- **หน้า HUD** ลุคเดิมฝังอยู่ใน `assets_rhino.js` (`RH_PORTRAIT`) → เขียนทับ atlas แล้วหายไปด้วย ต้องตัดหัวใหม่จากภาพหน้าตรง (window.HUD_FACE)
 - **ภาพวาดที่เป็นลุคเดิม:**
   - ไอคอนสกิล 53 (`assets/skill-icons/rhino`) · พื้นหลังผังสกิล 4 ภาพ · ภาพหน้าเลือกตัว
   - ภาพเอฟเฟกต์ที่วาดถุงมือเดิม: หมัดพุ่ง `r01_jab` · หมัดหนัก `r02_heavy` (ถุงมือเหล็ก ขอบขนสัตว์ คาดลายถักทอง)
@@ -71,7 +74,7 @@
 
 | แบบ | ลุค | สีตัด | ท่าภาพใหญ่ | ผูกกับ |
 |---|---|---|---|---|
-| 1 ไททันธารน้ำแข็ง | แรดเต็มตัว ผิวเทาหิน ขนยาวสีน้ำตาลเกาลัดบนหนอกไหล่ · เขาหน้าสีงาช้างรัดห่วงเหล็กสลักรูน ลายสงครามฟ้าที่แก้ม · สายหนังไขว้อก แผ่นทองแดงรูปหัวแรดกลางอก · บ่าเหล็กฝังผลึกน้ำแข็ง + ผ้าคลุมไหล่สั้นสีฟ้าธารน้ำแข็งขอบขนขาว · ถุงมือเหล็กดำหมุดทองแดง สนับข้อนิ้วเป็นผลึกน้ำแข็งเรืองฟ้า ขอบขนน้ำตาล | น้ำตาลเกาลัด + เหล็กดำ + ฟ้าธารน้ำแข็ง + ทองแดง | ชนถุงมือสองข้างเข้าหากันหน้าอก เกล็ดน้ำแข็งแตกกระจาย ยิ้มมั่นใจ | ครบสองสาย · สาย C ธารน้ำแข็ง (Glacier Charge, Frozen Bastion, Glacier Bulwark) + วิญญาณยักษ์น้ำแข็ง · แรดขนยาวเป็นสัตว์ยุคน้ำแข็งจริง |
+| 1 ไททันธารน้ำแข็ง ✓ เลือกแล้ว | แรดเต็มตัว ผิวเทาหิน ขนยาวสีน้ำตาลเกาลัดบนหนอกไหล่ · เขาหน้าสีงาช้างรัดห่วงเหล็กสลักรูน ลายสงครามฟ้าที่แก้ม · สายหนังไขว้อก แผ่นทองแดงรูปหัวแรดกลางอก · บ่าเหล็กฝังผลึกน้ำแข็ง + ผ้าคลุมไหล่สั้นสีฟ้าธารน้ำแข็งขอบขนขาว · ถุงมือเหล็กดำหมุดทองแดง สนับข้อนิ้วเป็นผลึกน้ำแข็งเรืองฟ้า ขอบขนน้ำตาล | น้ำตาลเกาลัด + เหล็กดำ + ฟ้าธารน้ำแข็ง + ทองแดง | ชนถุงมือสองข้างเข้าหากันหน้าอก เกล็ดน้ำแข็งแตกกระจาย ยิ้มมั่นใจ | ครบสองสาย · สาย C ธารน้ำแข็ง (Glacier Charge, Frozen Bastion, Glacier Bulwark) + วิญญาณยักษ์น้ำแข็ง · แรดขนยาวเป็นสัตว์ยุคน้ำแข็งจริง |
 | 2 ป้อมเหล็กเดินได้ | แรดเต็มตัว ผิวเทาเหล็ก ขนสั้นสีเทาถ่าน เขาหน้าหนาครอบปลายเหล็ก แผลเป็นที่จมูก · เกราะแผ่นเหล็กหมุดย้ำ แผ่นบนหนอกไหล่เป็นรูปกำแพงปราสาทมีเชิงเทินเล็กๆ · ปุ่มเหล็กกลมกลางอกสลักหัวแรด · เสื้อบุนวมสีแดงเลือดหมูขอบทองแดง · ถุงมือเหล็กสี่เหลี่ยมใหญ่เหมือนกำแพงพกพา | เหล็กเทา + แดงเลือดหมู + ทองแดง | ย่อตัวกว้าง ยกถุงมือสองข้างชิดกันหน้าอกเหมือนกำแพง ตาโผล่พ้นขอบ ประกายไฟกระเด็น | สาย A แท้งก์ (Iron Skin, Steel Wall, Rhino Fortress, Immovable Colossus, Absolute Fortress) |
 | 3 ไททันผู้ทุบภูเขา | แรดเต็มตัว ผิวเทาหินผุ เขาหน้าใหญ่ปลายบิ่น แผลเป็นรูนเรืองฟ้าที่จมูกกับแขน · แผงขนยาวสีแดงสนิมหนาบนหนอกไหล่ยาวลงหลัง · อกเปลือย สายหนังเส้นเดียว ผ้าพันต้นแขนแดง · กระโปรงหนังแมมมอธสั้น ขอบขนแดงสนิม · ถุงมือก้อนหินยักษ์รัดห่วงเหล็กกับโซ่สั้น รอยแตกเรืองฟ้า | แดงสนิม + เทาหิน + ฟ้าเรือง | โน้มตัวคำราม ชูหมัดหินข้างหนึ่งสูงจะทุบ หินก้อนเล็กลอยขึ้นรอบตัว | สาย B ควบคุม (Heavy Knuckle, Double Hammer Fist, Meteor Knuckle, Earthshaker, Skybreaker, Worldbreaker) |
 | 4 สาวแรดนักชก | ผู้หญิง หน้าแรดน่ารัก ผิวเทานวล เขาหน้ายาวผูกริบบิ้นฟ้า + เขาเล็ก ตาฟ้าโต ขนตายาว แก้มแดง · ขนน้ำตาลบนหนอกไหล่ถักเป็นเปียหนาสองข้าง ห่วงทองแดง · เสื้อน้ำเงินเข้มขอบขนขาว บ่าทองแดงข้างเดียว กระโปรงจีบกรมท่าเหนือเข่า · ถุงมือเหล็กกลมใหญ่ สนับทองแดง ขอบขนขาว | น้ำเงินเข้ม + เหล็ก + ทองแดง | เบ่งกล้ามแขนข้างหนึ่งชูถุงมือ อีกมือเท้าเอว ขยิบตา เปียแกว่ง | ถ้าอยากได้แรดเป็นผู้หญิง (ตัวใหญ่แข็งแรงแบบแท้งก์ ห้ามผอมบาง) |
@@ -154,5 +157,96 @@ Design 6 — a mix: the head and wool of design 1 with the outfit and colours of
      - NE = 50, 50, 50, 50, 79, 79, 79, 480, 50, 276, 158, 53 (437 ms) · N ใช้เวลาของ NE
    - เดิน 8 × 100 ms (E สลับ 110 / 90) · ยืน 12 เฟรม 2.4 วิ · โดนตี 7 เฟรม 550 ms (ทำจากท่ายืน)
    - ตัวยืน S สูงบนจอเท่าเดิม (`CHAR_SCALE.rhino` .96 วัดใหม่) · จุดถุงมือทุกเฟรมของท่าตีกับท่าบัฟ (`sockets` attack + buff)
-4. ตามมา: หน้า HUD (`window.HUD_FACE`) + ภาพหน้าเลือกตัว + ท่านั่ง (`hero_sit.js`)
+4. ตามมา: หน้า HUD (`window.HUD_FACE`, แทน `RH_PORTRAIT` เดิม) + ภาพหน้าเลือกตัว + ท่านั่ง (`hero_sit.js`)
 5. ทีหลัง: ไอคอน 53 + ex_ 11 + ผังสกิล 4 ภาพ + ภาพเอฟเฟกต์ที่มีถุงมือ / ตัวแรดเดิม (r01 r02, colossus-spirit, worldbreaker) + ภาพหน้าโหลด ld1 ld7 ld8 (เขียนพรอมต์ให้ตอนลุคนิ่งแล้ว)
+
+## เลือกแล้ว: แบบ 1 ไททันธารน้ำแข็ง (2026-11-24 20:56)
+- เจ้าของส่งชีต + "เอาอันนี้ภาพซ้ายเอาไปใส่หน้าเลือกตัว" → ชีตเก็บที่ `assets/heroes/rhino/sheet_glacier_titan.webp` (1536×1024 พื้นครีม)
+- ภาพใหญ่ด้านซ้าย: ตัดพื้นครีม + เงาพื้นสีแทนออกด้วย `tools/bigpose_cut.py` (ไล่จากขอบภาพ หยุดที่เส้นขอบตัว · `pockets=0` เพราะไฮไลต์งากับฟันเป็นสีครีมเกือบเท่าพื้น ถ้าเจาะแอ่งครีมงาจะเป็นรู · ประกายของภาพท่าสู้ข้างๆ ไม่ติดมา) → `assets/heroes/rhino/bigpose_glacier_titan.webp` (689×979 พื้นใส) → หน้าเลือกตัว `assets/heroes/rhino/select.webp` (`tools/select_cut.py` สเกลเดียวกับตัวอื่น ตัวกว้างจึงชนกรอบด้านสูง 935 ของ 960 · `char_create.js` SELV rhino 2 = กันแคชภาพเก่า) · ภาพเลือกตัวเดิม (ลุคเก่า) อยู่ในประวัติ git
+- ในเกมตอนนี้: หน้าเลือกตัวเป็นลุคใหม่แล้ว แต่ตัวในเกม หน้า HUD (`RH_PORTRAIT`) ไอคอน ผังสกิล ยังเป็นลุคเดิมจนกว่าคลิป 20 ตัวจะมา
+
+**หน้าตาตามที่วาดออกมา** (ใช้ในพรอมต์ต่อๆ ไปทุกตัว):
+- **หัว:** แรดเต็มตัว ผิวเทาอุ่น หัวยาว · งาหน้ายาวโค้งสีงาช้าง รัดห่วงเหล็กเข้มสลักลายซิกแซกสีเงิน 2 ห่วง · งาที่สองสั้นอยู่หลังงาแรก · หูเล็กตั้ง สีเทา ในหูชมพูเทา · ตาฟ้าน้ำแข็งเล็กดุ คิ้วหนาเข้ม · ลายสงครามสีฟ้าเป็นบั้งซ้อน 2 ขีดบนแก้มทั้งสองข้าง
+- **ขน:** แผงขนแกะยาวสีน้ำตาลเกาลัดอมแดง ฟูยุ่ง คลุมหัว คอ หนอกไหล่ แล้วห้อยลงหลังถึงเอวเหมือนผ้าคลุม · ขนเกาลัดฟูที่ต้นแขน · ขนเกาลัดพันหน้าแข้งเหนือสนับแข้ง · หางเส้นเล็กสีเทา ปลายพู่ขนเกาลัด
+- **อก / เอว:** อกเทา สายหนังเข้มไขว้เป็นกากบาท หมุดทองแดง เหรียญทองแดงกลมสลักหัวแรดกลางอก · เข็มขัดหนังเข้ม หัวเข็มขัดทองแดง**สี่เหลี่ยม** · กระโปรงทูนิกสีน้ำเงินธารน้ำแข็งเหนือเข่า ขอบลายซิกแซกทองแดง ชายหน้าห้อยต่ำกว่านิดหน่อย
+- **ไหล่:** **บ่าขวา** = ผ้าคลุมไหล่สั้นสีน้ำเงินธารน้ำแข็ง ขอบขนขาว · **บ่าซ้าย** = เกราะบ่าเหล็กเข้มเหลี่ยม ฝังผลึกน้ำแข็งสีฟ้า
+- **ถุงมือ:** ถุงมือเหล็กเข้มยักษ์ทั้งสองข้าง ใหญ่เกือบเท่าหัว · แถบรัดทองแดงหมุดทองแดงที่แขน · ข้อนิ้วเป็นแผ่นเหล็กแหลม + ผลึกน้ำแข็งเหลี่ยมสีฟ้าทุกข้อ · ขนเกาลัดที่ข้อศอก
+- **ขา:** ต้นขาเทา · ขนเกาลัดพันแข้ง · สนับแข้งเหล็กเข้มรัดสายทองแดง · บูทหุ้มเหล็กหนัก หัวมนใหญ่ หมุดทองแดง
+- **สี:** น้ำตาลเกาลัด + เทา + น้ำเงินธารน้ำแข็ง + ทองแดง + เหล็กเข้ม + ฟ้าน้ำแข็ง + ขาว (ขอบขน) + งาช้าง · ไม่มีสีเขียวเลย (นับในภาพใหญ่แล้ว 0 จุด · ผลึกน้ำแข็ง ≈ RGB 167, 212, 245 ฟ้ามากกว่าเขียว · ผ้าน้ำเงิน ≈ 64, 83, 136) → ตัดพื้นเขียวได้ปลอดภัย
+
+**บนชีตต้องระวัง** (ใส่ไว้ในพรอมต์ข้างล่างแล้ว):
+- ภาพใหญ่ยิ้มเห็นฟัน + ท่าสู้อ้าปากคำราม → ภาพยืนปากปิด สีหน้ามั่นใจ (ภาพหน้าตรงบนชีตปากปิดอยู่แล้ว)
+- ห่วงที่งา: ภาพใหญ่มี 2 ห่วง ภาพหมุนรอบตัวเหลือห่วงเดียว → พรอมต์ใช้ **2 ห่วง** ตามภาพใหญ่ (= ภาพหน้าเลือกตัว)
+- ภาพใหญ่ชนหมัดกันหน้าอก น้ำแข็งแตกกระจาย → ภาพยืนให้หมัดห้อยข้างตัว ไม่มีเอฟเฟกต์
+- ภาพหลังบนชีตมีผลึกฟ้าโผล่ที่บ่าขวาด้วย (ไม่ตรงกับภาพหน้า) → พรอมต์บอกฝั่งของเกราะบ่า / ผ้าน้ำเงินทุกมุม (มุมเฉียงหลังหันขวา = เห็นข้างขวาของตัว → ผ้าน้ำเงินอยู่บ่าใกล้ทางขวาภาพ เกราะบ่าอยู่บ่าไกลทางซ้าย)
+- ท่าสู้มีกำแพงเหล็ก หินแตก น้ำแข็งพุ่ง ประกายไฟ → ภาพยืนห้ามเอฟเฟกต์ (ใส่ด้วยโค้ดในเกม)
+- ถุงมือใหญ่ แผงขนฟู ตัวกว้างมาก → สั่งให้อยู่ในกรอบหมด มีพื้นเขียวเหลือรอบตัว
+- หัวเข็มขัด: พรอมต์ออกแบบสั่งกลม แต่วาดออกมาสี่เหลี่ยม → ใช้สี่เหลี่ยมตามภาพ · รอยบิ่นที่หูตามพรอมต์ออกแบบไม่ได้วาด → ไม่ใส่
+
+### ขั้น 1 — ภาพยืน 5 มุม ภาพละมุม พื้นเขียว · รอภาพ
+วิธีใช้:
+1. ส่งต่อในแชต ChatGPT เดิมที่เจนชีตนี้ (มันจำตัวได้) แนบชีตไปกับพรอมต์ 0 อีกครั้ง · ถ้าเปิดแชตใหม่ แนบชีต + ภาพปกแคมป์ไฟ (`keyart_campfire_ld5.jpg`)
+2. ส่งพรอมต์ 0 → รอมันตอบ ready
+3. ส่งภาพ 1–5 ทีละข้อความ (ข้อความละ 1 ภาพ)
+4. ครบแล้วส่ง 5 ภาพมาให้ผม
+
+ทำไมแยกภาพละมุม: ภาพใหญ่ = รายละเอียดชัดในคลิป (480p) · ทุกภาพท่ายืนเดียวกัน ขนาดเท่ากัน · บอกว่าเกราะบ่า ผ้าน้ำเงิน หาง ต้องอยู่ฝั่งไหนของภาพ · มุมไหนหันซ้ายมาไม่ต้องแก้ ผมกลับด้านให้
+
+แก้ภาพ (ต่อท้ายแล้วส่ง):
+- หันผิดทาง → `Redo picture 2: he must face the RIGHT side of the picture.`
+- มุมหลังเห็นหน้า → `Redo picture 4: turn him further away, we must not see his eyes or his face.`
+- ขนาดไม่เท่ากัน → `Redo picture 3: draw him the same size as in picture 1.`
+- มีหลายตัว → `Redo picture 1: only ONE rhino in the picture, nothing else.`
+- เกราะบ่ากับผ้าน้ำเงินสลับข้าง (มุมหน้า) → `Redo picture 1: the blue cloth with the white fur must be on the shoulder on the LEFT side of the picture and the iron pauldron with the ice crystal on the RIGHT side.`
+- ถุงมือเล็กลง / หายไปข้างหนึ่ง → `Redo picture 3: keep both huge gauntlets exactly as big as on the sheet; the near one must be fully visible.`
+- งาเหลือห่วงเดียว → `Redo picture 2: the long front horn has TWO dark-iron rings with silver zigzag runes, as in the big pose on the sheet.`
+- มีเอฟเฟกต์ติดมา → `Redo picture 2: no frost, no ice shards, no glow, no rocks, no sparkles — just the rhino standing.`
+- ยิ้มเห็นฟัน / คำราม → `Redo picture 1: his mouth closed, a calm, confident look.`
+- งา / แผงขน / ถุงมือล้นกรอบ → `Redo picture 3: draw him a little smaller so both horns, his whole mane and both gauntlets fit inside the picture.`
+- แก้แค่บางส่วน → ใช้แปรงเลือกเฉพาะจุดใน ChatGPT (สั่งแก้ทั้งภาพ มันจะวาดใหม่หมด)
+
+#### พรอมต์ 0 — กติกา (ส่งครั้งเดียว พร้อมแนบชีต)
+```
+Next I need this same hero — the woolly rhino warrior on the attached sheet — drawn standing in 5 directions for my game's animation, ONE picture per message. Do not draw anything yet: reply only "ready", then draw one picture each time I send a direction.
+
+Every picture:
+- ONE rhino alone in a square picture on a plain flat pure green background (#00FF00): no gradient, no floor, no shadow under him, no other views, no text, no logo, no watermark.
+- exactly the same character and drawing style as the sheet, nothing added and nothing left out: friendly hand-painted chibi cartoon, thick clean dark-brown outlines, flat cel shading with 2–3 tones. A huge, heavy woolly rhino with warm grey skin and a long rhino head: a long curved ivory front horn with TWO dark-iron rings carved with silver zigzag runes, a short ivory second horn just behind it, small upright grey ears with pinkish-grey insides, small fierce frost-blue eyes under heavy dark brows, and frost-blue war paint — two stacked chevron stripes — on each cheek. A thick shaggy dark chestnut-brown wool mane covers the top of his head, his neck and the hump of his shoulders and hangs down his back to the waist like a cape; shaggy chestnut fur on his upper arms. Dark leather harness straps cross in an X over his grey chest, with copper rivets and a round copper medallion carved with a rhino head in the middle. On his RIGHT shoulder a short deep glacier-blue cloth capelet with a white fur trim; on his LEFT shoulder a big angular dark-iron pauldron with a pale ice-blue crystal set in it. A dark leather belt with a square copper buckle. A deep glacier-blue tunic skirt that ends above the knee, with an angular copper zigzag border. On BOTH hands huge dark-iron gauntlets, almost as big as his head, with wide copper bands and copper rivets around the forearms, iron spike plates over the knuckles and a blocky pale ice-blue crystal on every knuckle. Chestnut fur wraps on his shins above dark-iron greaves with copper straps, and heavy iron-shod boots with big rounded toe caps and copper rivets. A thin grey tail with a chestnut fur tuft at its tip.
+- no weapon and no shield: his two gauntlets are his weapons, and both are visible in every picture.
+- the same standing pose in every picture: standing tall and heavy in a firm, wide stance, feet about shoulder-width apart, both huge gauntlets hanging at his sides with the fists loosely closed and the crystal knuckles facing forward; a calm, confident look with his mouth closed (no grin, no roar).
+- the same size in every picture: from the tip of his front horn to the soles of his boots he fills about three quarters of the picture's height, his feet near the bottom with a small margin; both horns, his whole mane, both gauntlets and his tail inside the picture with green space all round.
+- no green anywhere on him: the blues are glacier blue and pale ice blue. The crystals look exactly as on the sheet but give off no light around them. No frost burst, no ice shards, no glow, no rocks, no sparkles, no motion lines, no effects.
+```
+
+#### ภาพ 1 — หน้าตรง
+```
+Picture 1 — FRONT view: he faces straight toward us, like the front view on the sheet. The blue capelet with its white fur trim is on the shoulder on the LEFT side of the picture, and the dark-iron pauldron with the ice crystal on the shoulder on the RIGHT side of the picture. His long front horn points up in the middle of his face with the two dark-iron rings on it. Both huge gauntlets hang at his sides, one on each side of the picture, the crystal knuckles toward us.
+```
+
+#### ภาพ 2 — เฉียงหน้า หันขวา
+```
+Picture 2 — FRONT THREE-QUARTER view: he is turned toward the RIGHT side of the picture, facing down and to the right, like the big pose on the sheet but standing calmly. We see his face with his horns pointing to the right and mostly his right side: the blue capelet with its white fur trim on his near shoulder, on the LEFT side of the picture, and the dark-iron pauldron with the ice crystal on his far shoulder, on the right. His near gauntlet hangs at his side on the left of the picture; his far gauntlet hangs on the right, partly behind his body. His tail hangs out behind him on the left side of the picture.
+```
+
+#### ภาพ 3 — ข้าง หันขวา
+```
+Picture 3 — SIDE view facing RIGHT, like the side view on the sheet: his horns point to the right edge of the picture and we see his right side — one ear, one eye, the blue war paint on that cheek, both horns with the two dark-iron rings on the front horn, and the blue capelet with its white fur trim on his near shoulder; his shaggy mane hangs down his back on the left. His near gauntlet hangs at his side, fully visible; his far gauntlet is mostly hidden behind his body. His tail hangs down behind him on the left side of the picture.
+```
+
+#### ภาพ 4 — เฉียงหลัง หันขวา
+```
+Picture 4 — BACK THREE-QUARTER view: he is turned away from us, facing up and to the RIGHT. We see mostly his back: his shaggy chestnut mane hanging down his back to the waist, the back of his head with both ears, and the tips of his horns pointing to the right; of his face only the edge of his snout on the right — not his eyes and not his face. The blue capelet with its white fur trim is on his near shoulder, on the RIGHT side of the picture; the dark-iron pauldron with the ice crystal shows on his far shoulder, on the left side, partly hidden by his mane. His near gauntlet hangs on the right side of the picture, his far gauntlet on the left, partly behind his body. His tail hangs down behind him.
+```
+
+#### ภาพ 5 — หลัง
+```
+Picture 5 — BACK view: his back faces us, like the back view on the sheet: the back of his head with both ears and the tips of his horns, his shaggy chestnut mane hanging down his back to the waist, the back of the harness and the belt, and the back of the blue tunic skirt; no face. The dark-iron pauldron with the ice crystal is on the shoulder on the LEFT side of the picture and the blue capelet with its white fur trim on the shoulder on the RIGHT side. Both huge gauntlets hang at his sides, one on each side of the picture. His tail hangs down behind him.
+```
+
+### ขั้น 2 — ภาพตั้งต้น + คลิปท่า 20 ตัว (รอภาพ 5 มุม)
+ภาพ 5 มุมมาแล้ว → ตัดภาพตั้งต้น `rhino_1_S.png … rhino_5_N.png` (`tools/dir8cut.py startv`, คำสั่งอยู่ใน `RHINO_CLIP_PROMPTS_TH.md`) ส่งพร้อม `RHINO_CLIP_PROMPTS_TH.md` (คลิป 20 ตัว ยืน · เดิน · ทุบสองหมัด · ชูสองหมัด × 5 ทิศ สร้างจาก `python3 tools/clip_prompts.py rhino`)
+
+### ขั้น 3 เป็นต้นไป
+3. **สไปร์ทจากคลิป** — `cliphero.py` → เขียนทับ `assets_rhino.js` (prefix RH เดิม ใช้กับแรดตัวเดียว) · เวลาเฟรมเท่าเดิมทุกทิศ (ตารางอยู่ในหัวข้อ 'เลือกแล้วทำอะไรต่อ' ข้างบน + ท้าย `RHINO_CLIP_PROMPTS_TH.md`) · ได้คลิปหันหลัง N ครั้งแรก · ตัวยืนสูงบนจอเท่าเดิม (วัด `CHAR_SCALE.rhino` ใหม่)
+4. **ของที่ผูกกับสไปร์ท** — จุดถุงมือทุกเฟรมของท่าทุบกับท่าชู (sockets) · หน้า HUD (ตัดหัวจาก view_S ผ่าน window.HUD_FACE — `RH_PORTRAIT` เดิมหายไปตอนเขียนทับ atlas) · ท่านั่ง (`hero_sit.js`)
+5. **ทีหลัง** — ไอคอน 53 + ex_ 11 + ผังสกิล 4 ภาพ + ภาพเอฟเฟกต์ที่มีถุงมือ / ตัวแรดเดิม (r01 r02, colossus-spirit, worldbreaker) + ภาพหน้าโหลด ld1 ld7 ld8

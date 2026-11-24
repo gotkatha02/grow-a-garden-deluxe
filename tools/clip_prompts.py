@@ -441,8 +441,9 @@ V=assets/heroes/dragon; python3 -I tools/dir8cut.py startv <โฟลเดอ�
   who='the white wolf warrior in this picture', P='He', p='he', pos='his', weapon='greataxe',
   face="Keep his face exactly as in the picture: the same bright ice-blue eyes under the same strong brows, the same red "
        "scar over one brow, the same muzzle and the same calm, confident look, mouth closed.",
-  back_face={'NE': "We see him mostly from behind: the back of his head with both pointed ears, the crimson cape with its "
-                   "white fur edge and only the edge of his muzzle, as in the picture; his face never turns toward us.",
+  back_face={'NE': "We see him mostly from behind: the back of his head with both pointed ears and the crimson cape with "
+                   "its white fur edge; his head is turned to the right, so we see only the side of his face with one "
+                   "ice-blue eye, the red scar and his muzzle, as in the picture; his face never turns toward us.",
              'N': "We only see the back of his head with both pointed ears and the crimson cape with its white fur edge "
                   "across his back, as in the picture; his face never turns toward us."},
   keep={d: ("His crimson fur-lined cape with the cream fur collar, the dark-steel wolf-head pauldron, the deep-navy tunic "
@@ -489,8 +490,8 @@ V=assets/heroes/dragon; python3 -I tools/dir8cut.py startv <โฟลเดอ�
   header="""เจ้าของเลือกแบบ 1 'ทายาทเฟนรีร์' 2026-11-24 20:28 ("เอาอันนี้ เก็บภาพซ้ายไว้ด้วย จะเอาไปทำภาพในหน้าเลือกตัวละคร") · ชีต `assets/heroes/wolf/sheet_fenrir_heir.webp` · ภาพใหญ่ = หน้าเลือกตัวแล้ว · หน้าตา + พรอมต์ภาพยืน 5 มุม: `WOLF_LOOK_PROMPTS_TH.md` หัวข้อ 'เลือกแล้ว'
 
 ## ลำดับงาน
-1. **ภาพยืน 5 มุม** — เจนจากพรอมต์ใน `WOLF_LOOK_PROMPTS_TH.md` ขั้น 1 → เก็บเป็น `assets/heroes/wolf/view_S|SE|E|NE|N.webp`
-2. **ภาพตั้งต้น** — ตัดจากภาพ 5 มุม (คำสั่งข้างล่าง) เป็น `wolf_1_S.png … wolf_5_N.png` (ไม่เก็บในรีโป สร้างใหม่ได้ทุกเมื่อ)
+1. **ภาพยืน 5 มุม** ✓ ครบแล้ว — 4 มุมมา 2026-11-24 20:50 (หลัง · ข้าง · เฉียงหน้า · หน้า) + มุมเฉียงหลังมา 20:57 ('ลืมรูปนึง') · 1254² พื้นเขียว หันขวา ถือขวานทุกมุม ไม่มีสีเขียวบนตัว → `assets/heroes/wolf/view_S|SE|E|NE|N.webp`
+2. **ภาพตั้งต้น** ✓ ส่งครบ 5 ทิศแล้ว 2026-11-24 (`wolf_1_S` `wolf_2_SE` `wolf_3_E` `wolf_5_N` 20:50 · `wolf_4_NE` 20:57 สเกลเดียวกัน) — คำสั่งข้างล่าง · ไม่เก็บในรีโป สร้างใหม่ได้ทุกเมื่อ
 3. **คลิป 20 ตัว** — พรอมต์ในไฟล์นี้ แนบภาพตั้งต้นของทิศนั้นทุกคลิป
 
 ## ภาพตั้งต้น
@@ -498,14 +499,16 @@ V=assets/heroes/dragon; python3 -I tools/dir8cut.py startv <โฟลเดอ�
 ```
 V=assets/heroes/wolf; python3 -I tools/dir8cut.py startv <โฟลเดอร์> S=$V/view_S.webp SE=$V/view_SE.webp E=$V/view_E.webp NE=$V/view_NE.webp N=$V/view_N.webp size=900 feet=.9 ht=480 clean=0
 ```
-→ start_<ทิศ>.png → ตั้งชื่อใหม่ wolf_1_S … wolf_5_N · ทุกทิศใช้สเกลของมุมหน้า · clean=0 = ไม่ทาจุดเขียวในตัว (ชุดไม่มีสีเขียวเลย นับบนชีตแล้ว 0 จุด · ช่องระหว่างด้ามขวาน แขน หาง เป็นพื้นหลังจริง)
+→ start_<ทิศ>.png → ตั้งชื่อใหม่ wolf_1_S … wolf_5_N · ทุกทิศใช้สเกลของมุมหน้า (ใส่ S ก่อนเสมอ ตอนเพิ่ม NE ทีหลังก็รัน S + NE ด้วยกัน) · clean=0 = ไม่ทาจุดเขียวในตัว (ชุดไม่มีสีเขียวเลย · ช่องระหว่างด้ามขวานกับตัว ใต้แขน ระหว่างข้อโซ่ เป็นพื้นหลังจริง)
+- ที่ตัดจริง (สเกล .392 ของภาพ 1254², ภาพยืน 5 มุมสูงต่างกัน ≤ 2 %): ตัวรวมขวานสูง 471–482 px · เหนือหัวว่าง .69–.72 เท่าตัว (ง้างขวานข้ามไหล่ได้) · ซ้าย .54–.59 · ขวา .52–.56 (เลยใบขวานที่ถืออยู่ไปอีก ฟันลงข้างหน้าพอดี) · ในคลิป 480p ~251–257 px
+- ภาพยืนที่ได้: แผลเป็นมุมหน้าเป็นขีดเดียว แต่มุมเฉียงหน้า / ข้าง / เฉียงหลังวาดเป็นกากบาท (เล็กมาก ไม่ต้องแก้) · เปียห้อยหลังหูขวาตรงทุกมุม · มุมข้างถือขวานแล้ว · มุมเฉียงหลังหันหัวไปทางขวาจนเห็นข้างหน้า (ตาฟ้าข้างเดียว แผลเป็น ปาก) → พรอมต์คลิป NE เขียนตามภาพ ไม่สั่งให้ซ่อนตา · เศษโซ่ขาด 2 ชิ้นลอยใต้ข้อมือในมุมเฉียงหลัง ติดมาในภาพตั้งต้นด้วย
 
 ## วิธีใช้
 แนบภาพตั้งต้นของทิศนั้น + วางพรอมต์ทีละตัว → 4 คลิปต่อทิศ (ยืน · เดิน · ฟันขวาน · ชูขวาน) · คลิปละ 3–5 วิ · ไม่ต้องทำทิศซ้าย (เกมกลับด้านเอง) · ส่งกลับเรียง S → SE → E → NE → N ทิศละ ยืน → เดิน → ฟัน → ชู (สลับได้ ดูเองว่าคลิปไหนเป็นท่าอะไร)
 
 ## กติกาที่อยู่ในทุกพรอมต์ (บทเรียนจากคลิปลิง / แอคโซลอเติล / มังกรลุคเดิม / แกะ / บาสเต็ด / ฮิปโป / จากัวร์)
 - ประโยคบอกทิศขึ้นต้นทุกพรอมต์ กันโมเดลหมุนตัวหันหากล้อง (มุมหลังโดนบ่อย)
-- ล็อกหน้า (ตาฟ้า คิ้วเข้ม แผลเป็นแดง ปากปิด สีหน้ามั่นใจ — บนชีตภาพใหญ่ยิ้มอ้าปาก ห้ามติดมา) ในมุมที่เห็นหน้า · มุมหลัง (NE, N) ใช้ประโยค 'เห็นแค่หลังหัว หน้าไม่หันมา' แทน ไม่มีกะพริบตา
+- ล็อกหน้า (ตาฟ้า คิ้วเข้ม แผลเป็นแดง ปากปิด สีหน้ามั่นใจ — บนชีตภาพใหญ่ยิ้มอ้าปาก ห้ามติดมา) ในมุมที่เห็นหน้า · มุมเฉียงหลัง NE: เห็นหลังเป็นหลัก หัวหันข้างเห็นตาฟ้าข้างเดียว แผลเป็น ปาก ตามภาพ แต่หน้าไม่หันมา · มุมหลัง N: เห็นแค่หลังหัว · สองมุมนี้ไม่มีกะพริบตา
 - ล็อกของติดตัว: ผ้าคลุมแดงบุขน ปลอกคอขนครีม · เกราะบ่าหัวหมาป่า · เสื้อกรมแถบลายปมเงิน · หัวเข็มขัดเงินกลม · กำไลโซ่ขาด · ปลอกแขนหนัง · บูทขอบขน · หางพวงขาว · ขวานใบเงินสลักหัวหมาป่า
 - เดินอยู่กับที่แบบลู่วิ่ง ~2 ก้าว/วิ ถือขวานตั้งข้างตัว ปลายด้ามลอยเหนือพื้นนิดๆ
 - ฟันขวาน = ยกขวานข้ามไหล่ แล้วฟันลงทแยงไปข้างหน้าจนหัวขวานต่ำอยู่หน้าตัว ค้างนิดนึง ยกกลับ ยืนนิ่งจนจบคลิป · **ไม่ใช้คำว่า attack / slash ในพรอมต์** (คลิปแรกของจากัวร์: โมเดลวาดรอยฟันสีแดง แสงขาว ตัว X ทับท่า) + สั่งให้อากาศรอบขวานเป็นพื้นเขียวเปล่าทุกเฟรม · มุมหลังสั่งให้แขนกับขวานยังเห็นข้างตัว
@@ -525,6 +528,99 @@ V=assets/heroes/wolf; python3 -I tools/dir8cut.py startv <โฟลเดอร�
 - **สีขน / สีชุดตอนสร้างตัว:** หน้ากาก `assets_fur.js` / `assets_cloth.js` / `assets_skin.js` ทำจาก atlas เดิม (`tools/dye/wolf_masks.py`) → ซ่อนแถบสี (window.HERO_DYE) จนกว่าจะทำหน้ากากใหม่ · เจ้าของเคยสั่งพักงานหน้ากากสีเพราะเสียเวลา — ถามก่อนทำ
 - หน้า HUD = ตัดหัวจาก view_S ผ่าน window.HUD_FACE (หน้า default ของเกมยังเป็นหมาป่าเดิม ให้ตัวที่ยังไม่มีหน้าตัวเองใช้ต่อ) · หน้าเลือกตัว = ภาพใหญ่ของชีตแล้ว (`select.webp`, SELV wolf 2)
 - ยังเป็นลุคเก่า: ไอคอนสกิล 63, พื้นหลังผังสกิล 4 ภาพ, ภาพหน้าโหลด 7 จาก 8 ภาพ · ยังไม่มี: ท่านั่ง (hero_sit.js) · ร่างโคลนทองของ Valhalla's Wrath ใช้สไปร์ทหมาป่าเอง → เปลี่ยนตามเอง"""),
+ 'rhino': dict(
+  title='แรดขนยาว ลุคใหม่ (ไททันธารน้ำแข็ง · Glacier Titan)',
+  who='the woolly rhino warrior in this picture', P='He', p='he', pos='his', weapon='gauntlets',
+  face="Keep his face exactly as in the picture: the same small fierce frost-blue eyes under the same heavy brows, the same "
+       "blue war paint on his cheeks, the same two ivory horns and the same calm, confident look, mouth closed.",
+  back_face={'NE': "We see him mostly from behind: his shaggy chestnut mane hanging down his back and the back of his head "
+                   "with both ears; of his face only the edge of his snout and his horns pointing to the right, as in the "
+                   "picture; his face never turns toward us.",
+             'N': "We only see the back of his head with both ears and the tips of his horns, and his shaggy chestnut mane "
+                  "hanging down his back, as in the picture; his face never turns toward us."},
+  keep={d: ("His two ivory horns with the dark-iron rings, his shaggy chestnut mane, the X harness with the round copper "
+            "rhino medallion, the blue capelet with the white fur trim, the dark-iron pauldron with the ice crystal, the "
+            "blue tunic skirt with the copper zigzag border, the two huge dark-iron gauntlets with the ice-crystal knuckles, "
+            "the fur-wrapped greaves, the iron-shod boots and his tufted tail stay exactly the same.") for d in ('S', 'SE', 'E')}
+       | {d: ("His horns, his shaggy chestnut mane, the back of the harness and the belt, the blue capelet with the white fur "
+              "trim, the dark-iron pauldron with the ice crystal, the back of the blue tunic skirt, the two huge dark-iron "
+              "gauntlets, the iron-shod boots and his tufted tail stay exactly the same.") for d in ('NE', 'N')},
+  spos=dict.fromkeys(DIRS, 'hanging at his sides with the fists loosely closed'),
+  blink=", his ears twitch once, and he blinks once",
+  vis=" Both of his arms and gauntlets stay visible beside his body during the whole move.",
+  fmt={'pvis': ('', " Both raised fists stay visible above his head while he holds the pose."),
+       'chin': (', lifting his chin proudly', '')},
+  inframe="his whole body, both gauntlets, both horns, his whole mane and his tail stay inside the frame.",
+  nofx="No shadow, no flash, no glow, no sparkles, no particles, no smoke, no dust, no flying rocks, no cracks in the "
+       "ground, no ice, no frost, no speed lines, no shockwave, no magic effects, no text. The ice crystals on his knuckles "
+       "and his pauldron stay as drawn and never light up.",
+  act={
+   'idle': "Idle loop of {who}. {facing} He stands tall and heavy in a firm, wide stance, both huge gauntlets {spos}, and "
+           "breathes slowly and deeply: his broad chest rises and falls, his shaggy mane stirs, the blue capelet and the hem "
+           "of his skirt sway a little and his tufted tail swings slowly{blink}. The last frame matches the first frame so "
+           "the clip loops.",
+   'walk': "Walk loop of {who}. {facing} He walks in place, like on a treadmill, toward the way he is facing: heavy, "
+           "powerful steps (about two steps per second) in his iron-shod boots, his big body rocking a little from side to "
+           "side, both huge gauntlets swinging a little at his sides, his shaggy mane bouncing and his tail swaying behind "
+           "him. He does not move across the frame and the ground does not move. The last frame matches the first frame so "
+           "the clip loops.",
+   'attack': "Double-fist overhead blow of {who}. {facing} He raises both huge gauntlets together high over his head in a "
+             "short wind-up, then brings them down hard in front of him toward the way he is facing, bending forward, until "
+             "both fists touch the ground just in front of his feet; he holds that pose for a moment, then straightens up, "
+             "returns to his starting pose and stands still for the rest of the clip. The whole move takes about one "
+             "second. His feet stay in place.{vis} The gauntlets stay exactly as drawn, and the air and the ground around "
+             "his fists stay empty and plain green in every frame: nothing breaks and nothing flies up. Clean outlines in "
+             "every frame, no motion blur.",
+   'buff': "Power-up of {who}. {facing} He crouches a little and pulls both huge gauntlets together in front of his chest "
+           "like a guard, gathering strength for a moment, then stands up tall and raises both fists high above his head, "
+           "his chest out{chin}; he holds that pose still for about one second, then lowers his fists back to his sides, "
+           "returns to his starting pose and stands still for the rest of the clip. His feet stay in place.{pvis} Clean "
+           "outlines in every frame, no motion blur."},
+  dirname={'S': 'หน้าตรง', 'SE': 'เฉียงหน้า หันขวา', 'E': 'ข้าง หันขวา', 'NE': 'เฉียงหลัง หันขวา', 'N': 'หลัง'},
+  actname={'idle': 'ยืน (idle · วนลูป)',
+           'walk': 'เดิน (walk · วนลูป · Rhino Charge / Glacier Charge ก็ใช้คลิปนี้เร่ง ×3.2 ตอนพุ่ง)',
+           'attack': 'ทุบสองหมัด (attack · ตีปกติ + หมัดทุกท่า — หมัดชุดเล่นช่วงยกหมัด → หมัดถึงพื้นซ้ำเร็วๆ · ท่าทุบพื้นต่อจากท่าชูหมัดตรงเฟรมหมัดถึงพื้น)',
+           'buff': 'ชูสองหมัด (buff · บัฟ ป้อม คำราม · Iron Guard ค้างเฟรมย่อตัวตั้งการ์ด · ท่าทุบพื้นใช้ช่วงยกหมัดขึ้นเหนือหัว)'},
+  start='rhino_{n}_{d}.png',
+  header="""เจ้าของเลือกแบบ 1 'ไททันธารน้ำแข็ง' 2026-11-24 20:56 ("เอาอันนี้ภาพซ้ายเอาไปใส่หน้าเลือกตัว") · ชีต `assets/heroes/rhino/sheet_glacier_titan.webp` · ภาพใหญ่ = หน้าเลือกตัวแล้ว · หน้าตา + พรอมต์ภาพยืน 5 มุม: `RHINO_LOOK_PROMPTS_TH.md` หัวข้อ 'เลือกแล้ว'
+
+## ลำดับงาน
+1. **ภาพยืน 5 มุม** — รอภาพ (พรอมต์ใน `RHINO_LOOK_PROMPTS_TH.md` หัวข้อ 'เลือกแล้ว') → `assets/heroes/rhino/view_S|SE|E|NE|N.webp`
+2. **ภาพตั้งต้น** — ตัดจากภาพ 5 มุม (คำสั่งข้างล่าง) เป็น `rhino_1_S.png … rhino_5_N.png` (ไม่เก็บในรีโป สร้างใหม่ได้ทุกเมื่อ)
+3. **คลิป 20 ตัว** — พรอมต์ในไฟล์นี้ แนบภาพตั้งต้นของทิศนั้นทุกคลิป
+
+## ภาพตั้งต้น
+- `rhino_<n>_<ทิศ>.png` 900×900 สี่เหลี่ยม แบบฮิปโป / จากัวร์ / มังกร / หมาป่า · แรดตัวกว้างมาก (ถุงมือใหญ่ + แผงขน มุมหน้ากว้างเกือบเท่าสูง) และต้องมีที่ให้ชูสองหมัดเหนือหัว + ก้มทุบหมัดลงพื้นข้างหน้า → เริ่มที่ ht ~480 (ในคลิป 480p ตัวสูง ~255 px) แล้วดูว่าซ้าย / ขวา / เหนือหัวว่างพอไหม
+```
+V=assets/heroes/rhino; python3 -I tools/dir8cut.py startv <โฟลเดอร์> S=$V/view_S.webp SE=$V/view_SE.webp E=$V/view_E.webp NE=$V/view_NE.webp N=$V/view_N.webp size=900 feet=.9 ht=480 clean=0
+```
+→ start_<ทิศ>.png → ตั้งชื่อใหม่ rhino_1_S … rhino_5_N · ทุกทิศใช้สเกลของมุมหน้า (ใส่ S ก่อนเสมอ) · clean=0 = ไม่ทาจุดเขียวในตัว (ชุดไม่มีสีเขียวเลย · ผลึกน้ำแข็ง ≈ RGB 167, 212, 245 ฟ้ามากกว่าเขียว · ช่องระหว่างแขนกับตัว ระหว่างขา เป็นพื้นหลังจริง)
+
+## วิธีใช้
+แนบภาพตั้งต้นของทิศนั้น + วางพรอมต์ทีละตัว → 4 คลิปต่อทิศ (ยืน · เดิน · ทุบสองหมัด · ชูสองหมัด) · คลิปละ 3–5 วิ · ไม่ต้องทำทิศซ้าย (เกมกลับด้านเอง) · ส่งกลับเรียง S → SE → E → NE → N ทิศละ ยืน → เดิน → ทุบ → ชู (สลับได้ ดูเองว่าคลิปไหนเป็นท่าอะไร)
+
+## กติกาที่อยู่ในทุกพรอมต์ (บทเรียนจากคลิปลิง / แอคโซลอเติล / มังกรลุคเดิม / แกะ / บาสเต็ด / ฮิปโป / จากัวร์)
+- ประโยคบอกทิศขึ้นต้นทุกพรอมต์ กันโมเดลหมุนตัวหันหากล้อง (มุมหลังโดนบ่อย)
+- ล็อกหน้า (ตาฟ้าน้ำแข็งเล็กดุ คิ้วหนา ลายสงครามฟ้า งาสองอัน ปากปิด สีหน้ามั่นใจ — บนชีตภาพใหญ่ยิ้มเห็นฟัน ท่าสู้อ้าปาก ห้ามติดมา) ในมุมที่เห็นหน้า · มุมหลัง (NE, N) ใช้ประโยค 'เห็นแค่หลังหัว หน้าไม่หันมา' แทน ไม่มีกะพริบตา
+- ล็อกของติดตัว: ห่วงเหล็กที่งา · แผงขนเกาลัด · สายหนังไขว้ + เหรียญทองแดงหัวแรด · ผ้าคลุมไหล่น้ำเงินขอบขนขาว · เกราะบ่าฝังผลึก · กระโปรงน้ำเงินขอบซิกแซกทองแดง · ถุงมือยักษ์ข้อนิ้วผลึก · สนับแข้งพันขน · บูทหุ้มเหล็ก · หางพู่
+- ไม่มีอาวุธ: หมัดห้อยข้างตัวทุกคลิป ยกเว้นตอนทุบ / ชู
+- เดินอยู่กับที่แบบลู่วิ่ง ก้าวหนัก ~2 ก้าว/วิ ตัวโยกซ้ายขวานิดๆ
+- ทุบสองหมัด = ยกสองหมัดเหนือหัว แล้วทุบลงข้างหน้าจนหมัดแตะพื้นหน้าเท้า ค้างนิดนึง ยืดตัว ยืนนิ่งจนจบคลิป — ท่าเดียวกันทุกทิศ · เกมเอา 4 เฟรมรอบจังหวะหมัดถึงพื้นมาเล่นซ้ำเร็วๆ เป็นหมัดรัว และท่าทุบพื้นต่อจากท่าชูหมัดตรงเฟรมหมัดถึงพื้น → ช่วงนี้ต้องคมชัดไม่เบลอ · **ไม่ใช้คำว่า attack / smash / slam ในพรอมต์** (คลิปแรกของจากัวร์: โมเดลวาดรอยฟัน แสงขาว ตัว X ทับท่า · แรดทุบพื้นเสี่ยงได้หินแตก ฝุ่น น้ำแข็งพุ่ง) + สั่งให้อากาศกับพื้นรอบหมัดเป็นพื้นเขียวเปล่าทุกเฟรม · มุมหลังสั่งให้แขนกับถุงมือยังเห็นข้างตัว
+- ชูสองหมัด = ย่อตัวรวบสองหมัดไว้หน้าอกแบบตั้งการ์ด (เกมค้างเฟรมนี้เป็นท่า Iron Guard และตอนชาร์จ) แล้วยืดตัวชูสองหมัดเหนือหัว อกผาย ค้างนิ่ง ~1 วิ แล้ววางลง · ไม่คำราม (ปากเปิดจะชนกับล็อกหน้า)
+- ห้ามเบลอ · ห้ามน้ำแข็ง หิน ฝุ่น แสง แบบในชีต (เอฟเฟกต์ใส่ด้วยโค้ดในเกม `char_rhino_fx.js` + index.html) · กล้องนิ่งไม่ซูม · พื้นเขียวตลอด · ตัว + ถุงมือ + งา + แผงขน + หางอยู่ในกรอบตลอด
+- ไม่ระบุมือซ้าย / ขวาในพรอมต์คลิป (ภาพตั้งต้นบอกเองว่าอะไรอยู่ฝั่งไหน)""",
+  footer="""## ตอนคลิปมาถึง (โน้ตสำหรับแชตที่ทำต่อ)
+- ตัดด้วย `tools/cliphero.py` + แผนใหม่ `tools/clips/rhino_plan.json` (ดู `hippo_plan.json` / `bastet_plan.json`: loop ช่วงที่ลืมตา, เลือกเฟรมเลี่ยงฝุ่น / หิน / น้ำแข็ง / แสงที่โมเดลแอบใส่, flipDirs ถ้ามีคลิปหันผิดฝั่ง, perDir ถ้าคลิปบางทิศถ่ายมาเล็ก / ใหญ่กว่า, "unstreak") → **เขียนทับ `assets_rhino.js`** ด้วย prefix เดิม RH (index.html สลับ atlas ด้วย RH_ART อยู่แล้ว · atkRemap {}) · ใส่ ?v= ให้ assets_rhino.js ใน index.html (ตอนนี้ไม่มี) + แก้ขนาดในตาราง MB ของหน้าโหลด (ตอนนี้ 3.15) · atlas ลุคเดิมอยู่ในประวัติ git
+- **เวลาเฟรมต้องเท่า atlas เดิมทุกทิศ** → จังหวะโดน / ปล่อยสกิลเท่าเดิม bench ไม่เปลี่ยน · เช็ก `python3 tools/fxlab.py hits rhino` ก่อน / หลัง:
+  - attack 12 เฟรม · S [50,50,50,50,50,50,160,73,146,146,109,110] contact 6 (โดนที่ 300 ms) · SE [84,56,56,56,56,50,50,160,84,169,84,110] contact 7 (408) · E [94,50,94,71,50,142,50,160,71,71,71,110] contact 7 (551) · NE [50,50,50,160,50,50,50,56,180,50,50,110] contact 3 (150) · N: atlas เดิมไม่มีคลิปหันหลัง (ทุกท่าใช้ภาพ NE) → คลิป N ใหม่ใช้เวลาเฟรม + contact ของ NE · เฟรม contact = สองหมัดถึงพื้นพอดี · contact−3 … contact−1 = หมัดเหนือหัว → กำลังทุบลง · หลังจากนั้น = ค้าง + ยืดตัว + ยืน
+  - buff 12 เฟรม peak 7 ค้าง 480 ms · S [65,65,65,130,65,50,65,480,227,65,97,50] (ถึง peak 505 ms) · SE [75,75,75,113,50,50,75,480,188,75,50,50] (513) · E [90,50,50,50,90,90,90,480,226,50,90,60] (510) · NE = N [50,50,50,50,79,79,79,480,50,276,158,53] (437) → เฟรม 0–2 = ย่อตัวรวบหมัดหน้าอก (เฟรม 2 = ท่าการ์ด) · 3–6 = ยืดตัวยกหมัด · 7 = ชูสุด · 8–11 = วางหมัดลง
+  - walk 8 × 100 ms (E [110,90,90,110,110,90,90,110]) รอบละ 0.8 วิ · idle 12 เฟรม 2.4 วิ (S [190,190,250,190,190,220,190,190,190,190,220,190] · SE [210,180,210,210,180,210,210,180,210,210,180,210] · E [170,190,210,210,190,210,210,190,210,210,190,210] · NE = N 12 × 200) · hurt 7 เฟรม 550 ms (ทำจากเฟรมยืน)
+- ใครใช้เฟรมไหน (index.html ส่วนแรด): mkRhBasic = ตีปกติ (หมัดสุดท้ายของชุด = ทั้งคลิป ×1.05, หมัดอื่นเล่นจาก contact−3 ×2.1) · rhPunches = Counter Punch, Armor Crusher, Crushing Counter, Revenge Fist, Heavy Knuckle, Double Hammer Fist, Rising Uppercut, Titan Combo, Meteor Knuckle, Bone Crusher, Breaker Rush, Avalanche Punch, Colossus Grip → หมัดกลางคอมโบเล่นเฟรม contact−2 … contact+1 เร็ว ×2.6–3.2, หมัดสุดท้ายเล่นจาก contact−3 (หมัดเดียว = จากเฟรมแรก) ถึงจบ, windHold ค้างเฟรม contact−3 · rhSlam = Iron Retribution, Fortress Quake, Earthshaker, Seismic Follow-up, Crushing Finale, Glacier Bulwark → buff 0 → peak ค้าง แล้วต่อ attack จาก contact · Skybreaker Fist / Worldbreaker Impact → buff ถึง peak แล้วต่อ attack จาก contact+1 (Worldbreaker ค้าง buff เฟรม 2 ก่อน 0.9 วิ) · Iron Guard ค้าง buff เฟรม 2 ทั้งท่า · Absolute Fortress ค้างเฟรม 2 แล้วชูต่อ · rhCharge (Rhino Charge, Glacier Charge) = buff 0–2 แล้ว walk ×3.2 · บัฟอื่น (Battle Roar, Iron Skin, Guardian Stance, Steel Wall, Shielding Pulse, Rhino Fortress, Ground Anchor, Immovable Colossus …) = buff ทั้งคลิป
+- **socket ถุงมือ** (SPR_META.sockets attack + buff ใน atlas เดิม → index.html liveSocket → player.socket) → cliphero 'orb' จับผลึกน้ำแข็งฟ้าที่ข้อนิ้ว หรือ orbFix อ่านด้วยตาทุกเฟรมของท่าทุบ / ท่าชู
+- วัด CHAR_SCALE.rhino ใหม่ (ตอนนี้ .96 = คลิปลุคเดิม) ให้ยืนสูงเท่าหมาป่า
+- **หน้า HUD:** atlas เดิมมี `RH_PORTRAIT` (หน้าแรดลุคเดิม) — cliphero ไม่สร้าง → ตัดหัวจาก view_S เป็น `assets/heroes/rhino/face.webp` แล้วตั้ง window.HUD_FACE (แบบลิง / แกะ / ฮิปโป / บาสเต็ด) ไม่งั้นหน้า HUD จะกลับเป็นหน้า default
+- `CHAR_FILTER.rhino` เป็น '' เมื่อมี RH_ART (ไม่ต้องแก้) · หน้าเลือกตัว = ภาพใหญ่ของชีตแล้ว (`select.webp`, SELV rhino 2)
+- ยังเป็นลุคเก่า: ไอคอนสกิล 53 + ex_ 11, พื้นหลังผังสกิล 4 ภาพ, ภาพเอฟเฟกต์ที่มีถุงมือเดิม (`assets/fx/rhino` r01_jab, r02_heavy) / ตัวแรดเดิม (`assets/skill-vfx/rhino` colossus-spirit, worldbreaker), ภาพหน้าโหลด ld1 ld7 ld8 · ยังไม่มี: ท่านั่ง (hero_sit.js)"""),
 }
 
 def build(h, d, a):

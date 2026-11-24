@@ -7,7 +7,7 @@
 
 ถ้าไม่ตรงใจ บอกแนวที่อยากได้มาได้เลย
 
-**เลือกแล้ว 2026-11-24 20:28: แบบ 1 ทายาทเฟนรีร์** ("เอาอันนี้ เก็บภาพซ้ายไว้ด้วย จะเอาไปทำภาพในหน้าเลือกตัวละคร") → ชีต `assets/heroes/wolf/sheet_fenrir_heir.webp` · ภาพใหญ่ด้านซ้ายตัดพื้นออกแล้ว `assets/heroes/wolf/bigpose_fenrir_heir.webp` และเป็นภาพหน้าเลือกตัวแล้ว (`select.webp`) · หน้าตา + พรอมต์ภาพยืน 5 มุม: หัวข้อ 'เลือกแล้ว' ท้ายไฟล์ · คลิปท่า 20 ตัว: `WOLF_CLIP_PROMPTS_TH.md`
+**เลือกแล้ว 2026-11-24 20:28: แบบ 1 ทายาทเฟนรีร์** ("เอาอันนี้ เก็บภาพซ้ายไว้ด้วย จะเอาไปทำภาพในหน้าเลือกตัวละคร") → ชีต `assets/heroes/wolf/sheet_fenrir_heir.webp` · ภาพใหญ่ด้านซ้ายตัดพื้นออกแล้ว `assets/heroes/wolf/bigpose_fenrir_heir.webp` และเป็นภาพหน้าเลือกตัวแล้ว (`select.webp`) · หน้าตา + พรอมต์ภาพยืน 5 มุม: หัวข้อ 'เลือกแล้ว' ท้ายไฟล์ · คลิปท่า 20 ตัว: `WOLF_CLIP_PROMPTS_TH.md` · ภาพยืน 5 มุมครบแล้ว (20:50 สี่มุม + 20:57 มุมเฉียงหลัง → `assets/heroes/wolf/view_S|SE|E|NE|N.webp`) · ภาพตั้งต้นส่งครบ 5 ทิศแล้ว → รอคลิป 20 อัน
 
 ## หมาป่าผูกกับลุคเดิมมากกว่าทุกตัว
 - **สไปร์ท `assets.js`** เป็นร่างของหมาป่า และเป็นร่างชั่วคราวของอีก 5 ตัว (จิ้งจอก อนูบิส สิงโต จระเข้ อีกา) · ความสูงของหมาป่าเป็นไม้บรรทัดของฮีโร่ทุกตัว (`CHAR_SCALE` วัดเทียบหมาป่า)
@@ -178,7 +178,9 @@ Design 6 — a mix: the head and fur of design 1 with the outfit and colours of 
 - ท่าสู้มีแสงแดง สายฟ้า น้ำแข็ง รูน → ภาพยืนห้ามเอฟเฟกต์ (ใส่ด้วยโค้ดในเกม)
 - ขวานยาวเกือบเท่าตัว + หางใหญ่ → สั่งให้อยู่ในกรอบหมด มีพื้นเขียวเหลือรอบตัว
 
-### ขั้น 1 — ภาพยืน 5 มุม ภาพละมุม พื้นเขียว
+### ขั้น 1 — ภาพยืน 5 มุม ภาพละมุม พื้นเขียว · ✓ ครบแล้ว 2026-11-24 (4 มุม 20:50 + เฉียงหลัง 20:57)
+เจ้าของส่ง 4 ภาพ (หลัง · ข้าง · เฉียงหน้า · หน้า, 1254² พื้นเขียว หันขวาทุกภาพ ถือขวานทุกมุม รวมมุมข้าง · ไม่มีสีเขียวบนตัว · ตัวสูงต่างกัน ≤ 2 %) → `assets/heroes/wolf/view_S|SE|E|N.webp` · แผลเป็นมุมหน้าเป็นขีดเดียว มุมเฉียงหน้า / ข้างเป็นกากบาท (เล็ก ไม่ต้องแก้) · ภาพ 4 มุมเฉียงหลังมาทีหลัง 20:57 ('ลืมรูปนึง') → `view_NE.webp` (สูง 1,219 px อยู่ในช่วงเดียวกับอีก 4 มุม · ตัวไม่มีสีเขียว) · ในภาพนี้หัวหันไปทางขวาจนเห็นข้างหน้า (ตาฟ้าข้างเดียว แผลเป็นกากบาท ปาก) ไม่ใช่แค่ขอบปากแบบที่พรอมต์ขอ → ใช้ได้ (มุมเฉียงหลังของมังกรก็เห็นตาข้างเดียว) พรอมต์คลิป NE เขียนตามภาพแทน · เศษโซ่ขาด 2 ชิ้นลอยใต้ข้อมือ
+
 วิธีใช้:
 1. ส่งต่อในแชต ChatGPT เดิมที่เจนชีตนี้ (มันจำตัวได้) แนบชีตไปกับพรอมต์ 0 อีกครั้ง · ถ้าเปิดแชตใหม่ แนบชีต + ภาพแมวตีกลอง (`keyart_style_ld3.jpg`)
 2. ส่งพรอมต์ 0 → รอมันตอบ ready
@@ -237,7 +239,7 @@ Picture 4 — BACK THREE-QUARTER view: he is turned away from us, facing up and 
 Picture 5 — BACK view: his back faces us, like the back view on the sheet: the back of his head with both ears, the crimson cape with its white fur edge across his shoulders and down to the middle of his back, the back of the belt and tunic, and his bushy tail hanging down behind him; no face. The greataxe stands upright on the RIGHT side of the picture, in his right hand; his left fist with the broken chain is on the LEFT side, and the wolf-head pauldron sits on the shoulder on the left side of the picture.
 ```
 
-### ขั้น 2 — ภาพตั้งต้น + คลิปท่า 20 ตัว
+### ขั้น 2 — ภาพตั้งต้น + คลิปท่า 20 ตัว (ส่งภาพตั้งต้นครบ 5 ทิศแล้ว 2026-11-24 · รอคลิป)
 ภาพ 5 มุมมาแล้ว → ตัดภาพตั้งต้น `wolf_1_S.png … wolf_5_N.png` (`tools/dir8cut.py startv`) ส่งพร้อม `WOLF_CLIP_PROMPTS_TH.md` (คลิป 20 ตัว ยืน · เดิน · ฟันขวาน · ชูขวาน × 5 ทิศ สร้างจาก `python3 tools/clip_prompts.py wolf`)
 
 ### ขั้น 3 เป็นต้นไป

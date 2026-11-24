@@ -139,7 +139,7 @@ const ARR=`<svg viewBox="0 0 44 68"><defs><linearGradient id="ccag" x1="0" y1="0
   <circle cx="29" cy="34" r="3.2" fill="#fff4d2" stroke="#3a2410" stroke-width="1.6"/></svg>`;
 const SIL=`<svg viewBox="0 0 300 400"><path fill="#3a2a1a" d="M96 40 L118 92 Q150 78 182 92 L204 40 L214 100 Q232 124 230 150 Q228 196 186 212 L214 236 Q236 252 244 300 L250 352 L206 352 L200 320 L196 378 Q196 392 182 392 L162 392 L158 340 L142 340 L138 392 L118 392 Q104 392 104 378 L100 320 L94 352 L50 352 L56 300 Q64 252 86 236 L114 212 Q72 196 70 150 Q68 124 86 100 Z"/>
   <text x="150" y="176" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="96" fill="#f6ead0" opacity=".85">?</text></svg>`;
-const SELV={wolf:2};   /* bump a hero's number when its select.webp is replaced (cache) — wolf 2 = Fenrir's Heir big pose, 2026-11-24 */
+const SELV={wolf:2,rhino:2};   /* bump a hero's number when its select.webp is replaced (cache) — wolf 2 = Fenrir's Heir big pose, rhino 2 = Glacier Titan big pose, 2026-11-24 */
 const selSrc=k=>SELA.includes(k)?`assets/heroes/${k}/select.webp?v=${SELV[k]||1}`:null;
 function selFig(h,i){const s=selSrc(h.k);
   if(s)return `<div class="ccf" data-i="${i}"><i class="sh"></i><img class="g" src="${s}" alt="" draggable="false" decoding="async"><img class="c" src="${s}" alt="" draggable="false" decoding="async"></div>`;
