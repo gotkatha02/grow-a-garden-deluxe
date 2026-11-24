@@ -2,7 +2,7 @@
 
 เจ้าของ: "อยากเปลี่ยนดีไซน์มังกรด้วย" → ถามแล้วว่ามังกรตัวไหน ตอบ **Azure Dragon (มังกรญี่ปุ่น)** ไม่ใช่ Forgeborn Drake · แนวที่เลือก **เท่ ดุดัน** = มังกรหนุ่มที่ดูออกทันทีว่าเป็นมังกร มีเกล็ด เขา หนวดมังกร ท่าทางนักสู้
 
-**เลือกแล้ว 2026-11-24 16:51: แบบ 3 ปรมาจารย์ฝ่ามือสายฟ้า** ("อันนี้เท่ แต่ติดตรงผ้าลายเสือ") → เปลี่ยนผ้าคาดลายเสือก่อน → หัวข้อ 'เลือกแล้ว' ท้ายไฟล์
+**เลือกแล้ว 2026-11-24 16:51: แบบ 3 ปรมาจารย์ฝ่ามือสายฟ้า** ("อันนี้เท่ แต่ติดตรงผ้าลายเสือ") → 17:10 เจ้าของส่งชีตใหม่ (v2) ไม่มีผ้าลายเสือแล้ว → หัวข้อ 'เลือกแล้ว' ท้ายไฟล์ (หน้าตาตามที่วาด + พรอมต์ภาพยืน 5 มุม) → 17:28 ภาพยืน 5 มุมมาแล้ว (`assets/heroes/dragon/view_*.webp`) · ภาพตั้งต้น + คลิปท่า 20 ตัว: `DRAGON_CLIP_PROMPTS_TH.md`
 
 ตัวในเกมตอนนี้เป็นลุคเดิมทั้งชุด:
 - สไปร์ทจากคลิป 20 ตัว (`assets_dragon.js`)
@@ -131,51 +131,94 @@ Design 6 — a mix: the head and mane of design 4 with the outfit and colours of
 4. วัด `CHAR_SCALE.dragon` ใหม่ (ตอนนี้ 1.64) · ตำแหน่งกำปั้นของแต่ละเฟรม (ให้หมัดน้ำ / ฝ่ามือลมออกจากมือจริง) · หน้า HUD (`window.HUD_FACE` ตัวนี้ยังไม่มี) · ภาพหน้าเลือกตัวใหม่
 5. ทีหลัง: ไอคอน 56 อัน + พื้นหลังผังสกิล 4 ภาพตามลุคใหม่ (เขียนพรอมต์ให้ตอนลุคนิ่งแล้ว) · ภาพเอฟเฟกต์วาด 26 ภาพไม่ต้องทำใหม่ (ใช้เฉพาะ `?vfx3=0`)
 
-## เลือกแล้ว: แบบ 3 ปรมาจารย์ฝ่ามือสายฟ้า (2026-11-24 16:51)
-เจ้าของส่งชีตที่เจนจากแบบ 3 + "อันนี้เท่ แต่ติดตรงผ้าลายเสือ" → ชีตเก็บที่ `assets/heroes/dragon/sheet_thunder_palm.webp` (ยังเป็นผ้าลายเสือ ได้ชีตที่แก้แล้วค่อยเขียนทับ)
-- ภาพใหญ่: ยืนหันข้าง ผลักฝ่ามือมีสายฟ้า อีกมือชูสองนิ้ว
-- หมุนรอบตัว: หน้า / ข้างหันขวา / หลัง กำหมัด
-- ท่าสู้ 2 ท่า: ต่อยมีสายฟ้าทอง (สั่งเป็นน้ำ มันวาดเป็นสายฟ้า ไม่เป็นไร เอฟเฟกต์ในเกมเป็นโค้ด) + ผลักฝ่ามือปล่อยมังกรปราณทองกับเมฆ
+## เลือกแล้ว: แบบ 3 ปรมาจารย์ฝ่ามือสายฟ้า (2026-11-24 16:51 → ชีต v2 17:10)
+- 16:51 เจ้าของส่งชีต v1 + "อันนี้เท่ แต่ติดตรงผ้าลายเสือ" (v1 = เสื้อกิโมโนแขนเดียว ผ้าคาดลายเสือ รองเท้าฟาง) → ให้พรอมต์เปลี่ยนผ้า 3 แบบ
+- 17:10 เจ้าของส่งชีต v2 มาแทน (ไม่มีข้อความ เจนใหม่ทั้งชีต) → เก็บทับ `assets/heroes/dragon/sheet_thunder_palm.webp` (v1 อยู่ในประวัติ git)
+- v2 ต่างจาก v1: เสื้อกั๊กแขนกุด เห็นแขนทั้งสองข้าง (หมัดอ่านง่ายกว่า) · ผ้าลายเสือ → เชือกแดงหัวเข็มขัดทอง · รองเท้าฟาง → เกี๊ยะ + ผ้าพันแข้ง · ท่าสู้ตรงตามที่สั่ง (หมัดเกลียวน้ำทะเล + ฝ่ามือปล่อยมังกรปราณสีฟ้า สายฟ้าทอง เมฆ)
 
-**หน้าตาตามที่วาดออกมา** (ใช้ในพรอมต์ต่อๆ ไป):
-- **หัว:** หน้ามังกรเกล็ดน้ำเงินโคบอลต์ ปากยาว เขี้ยวเล็ก ขนขาวฟูที่แก้มและกราม · ตาทองเรืองแสง คิ้วหนาดุ · หนวดมังกรขาวเส้นเล็กยาวม้วน · เขาทองสองข้างรูปสายฟ้าหยัก
-- **แผงคอ:** ขาวอมเงิน ฟูเป็นลอนใหญ่ ยาวคลุมหลังถึงเอว (มุมหลังเห็นแต่แผงคอ ชายแขนเสื้อ และหาง)
-- **ตัวบน:** อกกับท้องสีครีม มีกล้าม · แขนเกล็ดน้ำเงิน · เสื้อกิโมโนสีครามเปิดอก มีแขนเสื้อกว้างแค่แขนซ้ายของเขา (มุมหน้า = ขวาของภาพ) ขอบลายสายฟ้าทอง · แขนขวาเปลือยเห็นเกล็ด
-- **มือ:** สนับมือทองมีลูกแก้วขาวทองเรืองแสงบนหลังมือทั้งสองข้าง · ปลอกข้อมือทองกว้าง
-- **เอว:** ผ้าคาดกว้าง ปมใหญ่ด้านหน้า ชายผ้ายาวปลิว (ตอนนี้ลายเสือ → เปลี่ยน) · เชือกบิดแดงมีลูกปัดทอง ห้อยพู่แดงสองพู่ด้านหน้า
-- **ขา:** กางเกงครามกว้างมีลายเมฆทอง รัดใต้เข่าด้วยเชือกแดงผูกโบ · หน้าแข้งเกล็ดน้ำเงิน · เท้าครีมมีกรงเล็บ · รองเท้าฟางพื้นทอง สายทอง
-- **หาง:** ยาวแบบงู ด้านบนเกล็ดน้ำเงิน ด้านล่างเกล็ดครีม ปลายเป็นพู่ขนขาวฟู
-- **สี:** ไม่มีสีเขียวเลย (นับแล้ว 0 จุด) · น้ำเงิน ≈ RGB 73,69,137 → ตัดพื้นเขียวได้ปลอดภัย
+**หน้าตาตามที่วาดออกมา (v2)** (ใช้ในพรอมต์ต่อๆ ไปทุกตัว):
+- **หัว:** หน้ามังกรเกล็ดน้ำเงินโคบอลต์ ปากยาว ใต้คางกับคอสีครีม เขี้ยวเล็กคม · ตาทองเรือง คิ้วหนาดุ · หนวดมังกรขาวเส้นเล็กยาวม้วนออกสองข้าง · เขาทองสองข้างรูปสายฟ้าหยัก โค้งไปข้างหลัง · ขนขาวฟูที่แก้ม
+- **แผงคอ:** ขาวอมเงิน เงาม่วงอ่อน ฟูเป็นลอนใหญ่ ยาวคลุมหลังถึงเอว
+- **ตัวบน:** อกกับท้องเกล็ดครีม มีกล้าม · แขนกับไหล่เกล็ดน้ำเงิน · เสื้อกั๊กแขนกุดสีครามเข้มเปิดอก ขอบทอง ชายเสื้อมีลายเมฆคลื่นทอง บ่ามีแผ่นทองลายก้นหอยกลม
+- **มือ:** ผ้าพันข้อมือสีขาว + ปลอกข้อมือทอง · สนับมือทองมีปุ่มทองกลมเรียงบนสันหมัดทั้งสองข้าง · เล็บครีม
+- **เอว:** เชือกบิดสีแดงเส้นหนา หัวเข็มขัดทองกลมมีรูปดาวตรงกลาง พู่แดงหัวทองห้อยหน้าสองพู่
+- **ขา:** กางเกงครามเข้มทรงกว้าง ลายเมฆคลื่นทอง รวบใต้เข่า · ผ้าพันแข้งสีขาว · เท้าเกล็ดน้ำเงิน เล็บครีมใหญ่ · เกี๊ยะไม้สีน้ำตาลเข้ม สายทอง
+- **หาง:** ยาวแบบงู ด้านบนเกล็ดน้ำเงิน ด้านล่างครีม ปลายเป็นพู่ขนขาวฟู
+- **สี:** ไม่มีสีเขียวเลย (นับแล้ว 0 จุด) · น้ำเงิน ≈ RGB 59,81,183 → ตัดพื้นเขียวได้ปลอดภัย
 
-### ขั้น 0 — เปลี่ยนผ้าคาดลายเสือ (ตอนนี้)
-วิธีแก้ใน ChatGPT:
-1. เปิดภาพในแชต ChatGPT เดิมที่วาดชีตนี้ → กดเลือกแก้บางส่วน (แปรง)
-2. ระบายเฉพาะผ้าคาดของตัวใหญ่ตัวเดียว: แถบรอบเอว ปมใหญ่ และชายผ้าที่ปลิว → วางพรอมต์ข้างล่าง → ส่ง
-3. ได้แล้วแก้ต่อจากภาพล่าสุด ทีละตัว: ภาพหมุนรอบตัว 3 ตัว · 2 ท่าสู้ด้านล่างแก้หรือไม่ก็ได้ (ใช้เป็นแบบไอคอนทีหลังเท่านั้น)
-4. ระบายทีละตัว (หลายตัวพร้อมกันมักเพี้ยน) และอย่าสั่งแก้ทั้งภาพ (มันวาดใหม่หมด หน้าตาที่ชอบจะเปลี่ยน)
+**บนชีตต้องระวัง** (ใส่ไว้ในพรอมต์ข้างล่างแล้ว):
+- ภาพใหญ่กับท่าสู้อ้าปากคำราม → ภาพยืนปากปิด เห็นแค่ปลายเขี้ยว (ทุกภาพหน้าเหมือนกัน คลิปไม่กระตุก)
+- ท่าสู้มีน้ำ สายฟ้า เมฆ มังกรปราณ → ภาพยืนห้ามเอฟเฟกต์ (ใส่ด้วยโค้ดในเกม)
+- แผงคอใหญ่ หางยาว เขาสูง → สั่งให้ทั้งหมดอยู่ในกรอบ มีพื้นเขียวเหลือรอบตัว
+- รายละเอียดเล็กที่ต้องคงไว้: หนวดสองเส้น ปุ่มทองบนสนับมือ ดาวบนหัวเข็มขัด พู่สองพู่ เกี๊ยะ
 
-| ผ้าใหม่ | ข้อดี |
-|---|---|
-| 1 ทองเรียบ ขอบเส้นสายฟ้าคราม (แนะนำ) | สีเดิมไม่เปลี่ยน ในเกมยังเห็นเอวเป็นแถบทองชัด เข้ากับเขาและสนับมือทอง และกลับด้านกับขอบเสื้อ (เสื้อคราม ขอบทอง ↔ ผ้าทอง ขอบคราม) |
-| 2 ขาวเงิน ขอบเส้นสายฟ้าทอง | เข้ากับแผงคอ เชือกและพู่แดงเด่นขึ้น |
-| 3 ดำแบบสายดำปรมาจารย์ ขอบทอง | ดุที่สุด แต่ตัวเล็กในเกมเอวจะกลืนกับเสื้อและกางเกงสีคราม |
+### ขั้น 1 — ภาพยืน 5 มุม ภาพละมุม พื้นเขียว ✓ มาแล้ว 2026-11-24 17:28
+เจ้าของส่ง 5 ภาพ (1254² พื้นเขียว หันขวาทุกภาพ ปากปิดเห็นปลายเขี้ยว กำหมัดข้างตัว ไม่มีเอฟเฟกต์ ตัวสูงต่างกัน ≤ 1.3 %) → `assets/heroes/dragon/view_S|SE|E|NE|N.webp` · พรอมต์ข้างล่างเก็บไว้เผื่อแก้ / ทำใหม่
 
-#### ผ้าแบบ 1 — ทองเรียบ ขอบเส้นสายฟ้าคราม (แนะนำ)
+วิธีใช้:
+1. ส่งต่อในแชต ChatGPT เดิมที่เจนชีต v2 (มันจำตัวได้) แนบชีต v2 ไปกับพรอมต์ 0 อีกครั้ง · ถ้าเปิดแชตใหม่ แนบชีต v2 + ภาพปกแคมป์ไฟ
+2. ส่งพรอมต์ 0 → รอมันตอบ ready
+3. ส่งภาพ 1–5 ทีละข้อความ (ข้อความละ 1 ภาพ)
+4. ครบแล้วส่ง 5 ภาพมาให้ผม
+
+ทำไมแยกภาพละมุม: ภาพใหญ่ = รายละเอียดชัดในคลิป (480p) · ทุกภาพท่ายืนเดียวกัน ขนาดเท่ากัน · บอกว่าหาง แผงคอ หมัด ต้องอยู่ฝั่งไหนของภาพ · มุมไหนหันซ้ายมาไม่ต้องแก้ ผมกลับด้านให้
+
+แก้ภาพ (ต่อท้ายแล้วส่ง):
+- หันผิดทาง → `Redo picture 2: he must face the RIGHT side of the picture.`
+- มุมหลังเห็นหน้า → `Redo picture 4: turn him further away, we must not see his eyes or his face.`
+- ขนาดไม่เท่ากัน → `Redo picture 3: draw him the same size as in picture 1.`
+- มีหลายตัว → `Redo picture 1: only ONE dragon in the picture, nothing else.`
+- มีเอฟเฟกต์ติดมา → `Redo picture 2: no lightning, no water, no clouds, no glow — just the dragon standing.`
+- อ้าปากคำราม → `Redo picture 1: his mouth closed with only the tips of his fangs showing, a fierce confident look.`
+- แผงคอ / หาง / เขาล้นกรอบ → `Redo picture 3: draw him a little smaller so his whole mane, both horns and his whole tail fit inside the picture.`
+- สีน้ำเงินออกเขียว → `Redo picture 3: every blue part must be clear cobalt blue or indigo, never green or teal.`
+- แก้แค่บางส่วน → ใช้แปรงเลือกเฉพาะจุดใน ChatGPT (สั่งแก้ทั้งภาพ มันจะวาดใหม่หมด)
+
+#### พรอมต์ 0 — กติกา (ส่งครั้งเดียว พร้อมแนบชีต v2)
 ```
-Change only the selected area — his sash: the band around his waist, its big knot and its long flowing end. Remove the black tiger stripes completely and make it a plain golden silk sash with a thin indigo lightning-zigzag line along both edges, the knot plain gold too. No stripes, no tiger pattern. Keep exactly the same shape and folds, and the same red cords and tassels. Do not change anything else.
+Next I need this same hero — the blue dragon martial artist on the attached sheet — drawn standing in 5 directions for my game's animation, ONE picture per message. Do not draw anything yet: reply only "ready", then draw one picture each time I send a direction.
+
+Every picture:
+- ONE dragon alone in a square picture on a plain flat pure green background (#00FF00): no gradient, no floor, no shadow under him, no other views, no text, no logo, no watermark.
+- exactly the same character and drawing style as the sheet, nothing added and nothing left out: friendly hand-painted chibi cartoon, thick clean dark-brown outlines, flat cel shading with 2–3 tones. A cobalt-blue scaled dragon head with a long snout, a cream underside on his jaw and throat, small sharp fangs, glowing golden eyes under heavy brows, white fur tufts on his cheeks, and two long thin white whiskers curling out from his upper lip. Two big gold horns shaped like jagged lightning bolts, sweeping back. A huge wavy silver-white mane with soft lavender shading, framing his head and falling down his back to his waist. Cream belly scales on his throat, chest and stomach, with strong chest and stomach muscles. Blue-scaled shoulders and arms with cream claws. A dark-indigo sleeveless open vest with gold trim, gold wave-cloud patterns on its lower panels and round gold spiral shoulder pieces. White cloth wraps and gold cuffs on his wrists, and gold knuckle guards with a row of round gold studs on both fists. A thick red twisted rope belt with a round gold clasp bearing a small star, and two red tassels with gold caps hanging in front. Wide dark-indigo trousers with gold wave-cloud emblems, gathered below the knee; white cloth wraps on his shins; blue-scaled feet with big cream claws in dark wooden geta sandals with gold straps. A long dragon tail with blue scales on top and cream scales underneath, ending in a white fluffy tuft.
+- no weapon: he fights with his bare fists. Both fists are always visible, loosely clenched at his sides at hip height with the gold knuckle studs showing.
+- the same standing pose in every picture: a firm, ready martial-arts stance, feet about shoulder-width apart, standing tall, his tail curving out behind him; a fierce, confident look with his mouth closed and only the tips of his fangs showing (no roar, no open mouth).
+- the same size in every picture: from the tips of his horns to the soles of his sandals he fills about three quarters of the picture's height, his feet near the bottom with a small margin; his whole mane, both horns, both whiskers and his whole tail inside the picture with green space all round.
+- the blue parts are clear cobalt blue and indigo, never green or teal. No glow, no lightning, no water, no clouds, no ki dragon, no sparkles, no motion lines, no effects.
 ```
 
-#### ผ้าแบบ 2 — ขาวเงิน ขอบเส้นสายฟ้าทอง
+#### ภาพ 1 — หน้าตรง
 ```
-Change only the selected area — his sash: the band around his waist, its big knot and its long flowing end. Remove the black tiger stripes completely and make it a plain silver-white silk sash with a thin gold lightning-zigzag line along both edges, the knot silver-white too. No stripes, no tiger pattern. Keep exactly the same shape and folds, and the same red cords and tassels. Do not change anything else.
-```
-
-#### ผ้าแบบ 3 — ดำ สายดำปรมาจารย์ ขอบทอง
-```
-Change only the selected area — his sash: the band around his waist, its big knot and its long flowing end. Remove the tiger stripes completely and make it a plain black silk sash like a martial-arts master's black belt, with thin gold edges, the knot black too. No stripes, no tiger pattern. Keep exactly the same shape and folds, and the same red cords and tassels. Do not change anything else.
+Picture 1 — FRONT view: he faces straight toward us, like the front view on the sheet. His mane spreads out around his head, his two whiskers curl out to both sides, one fist hangs at each side of the picture, and his tail curves out behind him on one side.
 ```
 
-### ขั้นต่อไป
-1. ได้ชีตที่แก้ผ้าแล้ว → เก็บทับ `sheet_thunder_palm.webp` → เขียนพรอมต์ภาพยืน 5 มุมบนพื้นเขียว (S SE E NE N ด้านข้างหันขวา กำหมัดทุกมุม ห้ามเอฟเฟกต์ ผ้าแบบที่เลือก ห้ามลายเสือ) แบบเดียวกับฮิปโปและเสือจากัวร์
-2. ภาพยืนมา → ภาพตั้งต้น + พรอมต์คลิป 20 ตัว (`tools/clip_prompts.py` เพิ่มรายการ dragon)
-3. คลิปมา → สไปร์ทใหม่ คงเวลาเฟรมตามหัวข้อ 'เลือกแล้วทำอะไรต่อ' ข้อ 3
+#### ภาพ 2 — เฉียงหน้า หันขวา
+```
+Picture 2 — FRONT THREE-QUARTER view: he is turned toward the RIGHT side of the picture, facing down and to the right, like the big pose on the sheet but in the standing pose. We see his face with his snout pointing to the right and his right side; his near fist hangs at his side on the left side of the picture, his far fist on the right, partly behind his body. His mane and his tail are behind him on the left side of the picture.
+```
+
+#### ภาพ 3 — ข้าง หันขวา
+```
+Picture 3 — SIDE view facing RIGHT, like the side view on the sheet: his long snout points to the right edge of the picture and we see his right side, his near horn, one eye and one whisker. His mane flows down behind him on the left and his tail curves out behind him on the left. His near fist hangs at his hip; his far fist shows a little in front of his body.
+```
+
+#### ภาพ 4 — เฉียงหลัง หันขวา
+```
+Picture 4 — BACK THREE-QUARTER view: he is turned away from us, facing up and to the RIGHT. We see mostly his back covered by his mane, the backs of both gold horns, the back of the vest and his tail curving out toward the left, and of his head only the back and the edge of his snout with one whisker on the right — not his eyes and not his face. One fist hangs at each side of his body.
+```
+
+#### ภาพ 5 — หลัง
+```
+Picture 5 — BACK view: his back faces us, like the back view on the sheet. We see the back of his head with his huge silver-white mane falling down his back to his waist, the backs of both gold horns sticking out above it, the back of the red rope belt and trousers, and his tail curving out to one side; no face. One fist hangs at each side of the picture.
+```
+
+### ขั้น 2 — ภาพตั้งต้น + คลิปท่า 20 ตัว (ตอนนี้: ภาพตั้งต้นส่งแล้ว 2026-11-24 รอคลิป)
+ตัดภาพตั้งต้น `dragon_1_S.png … dragon_5_N.png` จากภาพ 5 มุม (`tools/dir8cut.py startv`) แล้วส่งให้พร้อม `DRAGON_CLIP_PROMPTS_TH.md` (คลิป 20 ตัว ยืน · เดิน · ต่อย · ฝ่ามือ × 5 ทิศ สร้างจาก `python3 tools/clip_prompts.py dragon`)
+
+### ในเกมตอนนี้
+ยังเป็นสไปร์ทลุคเดิม (คลิปเคลื่อนไหวครบทุกท่า) · ไม่ทำสไปร์ทชั่วคราวจากภาพนิ่งแบบฮิปโป เพราะจะเสียท่าทางที่มีอยู่ · เปลี่ยนทีเดียวตอนคลิปใหม่มา
+
+### ขั้น 3 เป็นต้นไป
+3. **สไปร์ทจากคลิป** — `cliphero.py` เขียนทับ `assets_dragon.js` (prefix DRG) เวลาเฟรมเท่า atlas เดิมทุกทิศ = ดาเมจ / จังหวะไม่เปลี่ยน (ตารางอยู่ท้าย `DRAGON_CLIP_PROMPTS_TH.md`) · วัด CHAR_SCALE.dragon ใหม่ (ตอนนี้ 1.64)
+4. **ภาพประกอบตัว** — หน้า HUD (ตัดหัวจากภาพหน้าตรง ตอนนี้ยังไม่มี) · ภาพหน้าเลือกตัวใหม่ (`assets/heroes/dragon/select.webp`) · คำโปรยในหน้าเลือกตัว "นักมวยมังกรสิงโต" → "นักมวยมังกร" ได้ถ้าเจ้าของต้องการ
+5. **ทีหลัง** — ไอคอนสกิล 56 อัน + พื้นหลังผังสกิล 4 ภาพตามลุคใหม่ · ท่านั่ง 8 ทิศ · ภาพเอฟเฟกต์วาด 26 ภาพไม่ต้องทำ (ใช้เฉพาะ `?vfx3=0`)

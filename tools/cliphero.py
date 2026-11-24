@@ -24,6 +24,10 @@ Optional (2026-11-24, sheep priestess): "orbMask":{"b":140,"br":70,"bg":40,"g":0
   "orbLerp":true (a frame without an orb sits on the line between the nearest frames that have one, instead of borrowing one).
 Optional (2026-11-24, Bastet): "orbMask":{…,"r":70} = red > r too (her orb is the PALE cyan flame over her book, B ≈ G, red
   80–140, while the turquoise gems are red < 50 — "bg" may then be negative, e.g. -20); default -1 = no red test.
+Optional (2026-11-24, jaguar): "unstreak":{"attack/SE":[16,18]} = after keying, baked effect streaks are removed from these
+  frames: saturated red pieces with (almost) no dark outline whose rim touches the transparent background, plus their soft
+  edge, then whatever no longer touches the body (the video model drew a red crescent behind her raised dagger; painted red
+  parts of a hero always sit inside dark-brown outlines). Only for streaks on the background, not ones drawn over the body.
 Keying: soft green matte + despill + speck removal (keeps the body and anything touching it, e.g. the sword).
 Idle / walk loops are found automatically (period of best self-match); hurt is made from the idle pose."""
 import sys, io, json, base64, math, subprocess, numpy as np
@@ -105,6 +109,27 @@ def clip(path, d='S'):
         CACHE[k] = [key(f, d in FLIPDIRS) for f in RAW[path]]
     return CACHE[k]
 STRICT = plan.get('strict', {})
+UNS = plan.get('unstreak', {})
+def unstreak(img):
+    A = np.asarray(img).astype(np.float32); col = A[..., :3]; a = A[..., 3] / 255
+    R, G, B = col[..., 0], col[..., 1], col[..., 2]
+    red = (a > .3) & (R > 150) & (R - G > 80) & (R - B > 60)
+    dark = (a > .5) & (col.max(-1) < 95)
+    lab, n = nd.label(nd.binary_closing(red, iterations=1)); kill = np.zeros_like(red)
+    for i in range(1, n + 1):
+        m = lab == i
+        if m.sum() < 12: continue
+        ring = nd.binary_dilation(m, iterations=2) & ~m; tot = max(1, ring.sum())
+        if (ring & dark).sum() / tot < .04 and (ring & (a < .15)).sum() / tot > .05: kill |= nd.binary_dilation(m, iterations=1)
+    if not kill.any(): return img
+    ring = nd.binary_dilation(kill, iterations=4) & ~kill
+    kill |= ring & ((a < .8) | ((R - G > 50) & (R > 140)))   # the streak's soft / reddish edge
+    a = np.where(kill, 0, a)
+    lab, n = nd.label(a > .05)
+    if n > 1:
+        sizes = nd.sum(np.ones_like(a), lab, range(1, n + 1)); a = a * np.isin(lab, [i + 1 for i, s in enumerate(sizes) if s > sizes.max() * .02])
+    print(f'  unstreak: {int(kill.sum())} px removed')
+    return Image.fromarray(np.dstack([col, a * 255]).astype(np.uint8))
 FIT = plan.get('feetFit', {})
 def fspan(img):
     """width of the feet: alpha extent of the bottom 15 rows (camera-zoom gauge where the stance stays the same)"""
@@ -125,6 +150,7 @@ def frames_for(st, d):
     anchor0 = feet(F[0]); fit = FIT.get(f'{st}/{d}', []); span0 = fspan(F[0]) if fit else None
     def cell(i):
         img = F[i] if i not in STRICT.get(f'{st}/{d}', []) else key(RAW[path][i], d in FLIPDIRS, True)
+        if i in UNS.get(f'{st}/{d}', []): img = unstreak(img)
         if norm:
             bb = bbox(img); s = HT / (bb[3] - bb[1]); return place(img, s, feet(img))
         if i in fit:   # undo the camera zoom about the feet: video point p -> c + (p - c)·k, then placed like every other frame

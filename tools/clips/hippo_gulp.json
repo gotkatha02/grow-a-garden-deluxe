@@ -1,5 +1,5 @@
 {
- "_note": "Hippo gulp (inhale) pose (owner's picture 2026-11-24 13:53, 'ท่าดูด'): one still, mouth wide open sucking air in (his white air lines kept), facing right (SE; mirrored for SW). 3 frames by 'variants' = normal · puffing up · fully puffed, leaning back; char_hippo.js hGulpPose plays them for Gulp and Gobble Up (inhale until the swallow, then back). Same atlas note as hippo_jump.json. Rebuild: python3 -I tools/sheet_state.py tools/clips/hippo_gulp.json [preview.png]",
+ "_note": "Hippo gulp (inhale) pose (owner's picture 2026-11-24 13:53, 'ท่าดูด'): one still, mouth wide open sucking air in (his white air lines kept), facing right (SE; mirrored for SW). 3 frames by 'variants' = normal · puffing up · fully puffed, leaning back; char_hippo.js hGulpPose plays them for Gulp and Gobble Up (inhale until the swallow, then back). Same atlas note as hippo_jump.json (clip atlas since 2026-11-24, re-run after every rebuild). Rebuild: python3 -I tools/sheet_state.py tools/clips/hippo_gulp.json [preview.png]",
  "js": "assets_hippo.js",
  "prefix": "HIP",
  "state": "gulp",

@@ -1,0 +1,391 @@
+{
+ "_note": "Hippo (Taweret's Guardian) sprite plan — owner's 20 clips 2026-11-24 17:58 (no words), 480x480 24 fps green, made from hippo_1_S … hippo_5_N.png (900², body 520); uploads 1000001224–1229 + 1235–1248 came buff, attack, walk, idle per direction SE, S, E, NE, N (all facing right, one scale: first-frame heights 275–283 video px, feet at y 431 in every clip, no camera zoom). attack / buff frame TIMES = the statichero placeholder the kit was benched on: attack [60×8,70,80,90,100] contact 8, buff 12×80 peak 7 → every hit / release keeps its time. Frame indices are 0-based video frames. Attack: stand → wind-up (mace back over the shoulder) → last wind-up / swing start (7: S and E use the held wind-up — their swing frames are all smear / arc) → impact = first CLEAN frame with the mace on the ground (8) → hold (9) → recover (10, 11); skipped baked effects: S 23–33 swoosh arc + white ground flash / lines, SE 11–18 white-blue arc, E 47–68 orange arc + white dust, NE 24–38 pale dome + yellow sparks, N 41–50 blue-white splash. Buff: stand → slight squat → raise → top pose (7 = mace overhead + shield up, the pose hSlam holds while crouching) → hold → lower → stand; NE buff 1–21 is covered by a gold sunburst flash, so its raise is the lowering 51–56 played backwards. Idle loops = rest → breathing → rest (best wrap match; NE starts after the yellow '!' lines of frames 3–15): S 4+63, SE 2+64, E 28+48, NE 37+50, N 26+49; walk loops by best self-match, 2 steps a second: S 18+22, SE 28+24, E 53+24, NE 64+24, N 52+24. No orb (mace hero): attack sockets are cliphero's synthetic ones (char_hippo.js reads none). After a rebuild re-run the two pose states: python3 -I tools/sheet_state.py tools/clips/hippo_jump.json && python3 -I tools/sheet_state.py tools/clips/hippo_gulp.json. Rebuild: python3 -I tools/cliphero.py tools/clips/hippo_plan.json assets_hippo.js HIP (clip paths = that chat's uploads).",
+ "height": 230,
+ "flip": false,
+ "loop": {
+  "idle/S": [
+   4,
+   63
+  ],
+  "idle/SE": [
+   2,
+   64
+  ],
+  "idle/E": [
+   28,
+   48
+  ],
+  "idle/NE": [
+   37,
+   50
+  ],
+  "idle/N": [
+   26,
+   49
+  ],
+  "walk/S": [
+   18,
+   22
+  ],
+  "walk/SE": [
+   28,
+   24
+  ],
+  "walk/E": [
+   53,
+   24
+  ],
+  "walk/NE": [
+   64,
+   24
+  ],
+  "walk/N": [
+   52,
+   24
+  ]
+ },
+ "attack": {
+  "S": {
+   "frames": [
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    18,
+    21,
+    33,
+    41,
+    59,
+    62
+   ],
+   "contact": 8,
+   "dur": [
+    60,
+    60,
+    60,
+    60,
+    60,
+    60,
+    60,
+    60,
+    70,
+    80,
+    90,
+    100
+   ]
+  },
+  "SE": {
+   "frames": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    18,
+    29,
+    75,
+    78
+   ],
+   "contact": 8,
+   "dur": [
+    60,
+    60,
+    60,
+    60,
+    60,
+    60,
+    60,
+    60,
+    70,
+    80,
+    90,
+    100
+   ]
+  },
+  "E": {
+   "frames": [
+    17,
+    19,
+    21,
+    23,
+    27,
+    35,
+    43,
+    45,
+    69,
+    79,
+    87,
+    91
+   ],
+   "contact": 8,
+   "dur": [
+    60,
+    60,
+    60,
+    60,
+    60,
+    60,
+    60,
+    60,
+    70,
+    80,
+    90,
+    100
+   ]
+  },
+  "NE": {
+   "frames": [
+    3,
+    7,
+    10,
+    13,
+    16,
+    19,
+    21,
+    23,
+    39,
+    49,
+    61,
+    67
+   ],
+   "contact": 8,
+   "dur": [
+    60,
+    60,
+    60,
+    60,
+    60,
+    60,
+    60,
+    60,
+    70,
+    80,
+    90,
+    100
+   ]
+  },
+  "N": {
+   "frames": [
+    9,
+    15,
+    17,
+    19,
+    23,
+    29,
+    35,
+    39,
+    51,
+    59,
+    71,
+    75
+   ],
+   "contact": 8,
+   "dur": [
+    60,
+    60,
+    60,
+    60,
+    60,
+    60,
+    60,
+    60,
+    70,
+    80,
+    90,
+    100
+   ]
+  }
+ },
+ "buff": {
+  "S": {
+   "frames": [
+    3,
+    5,
+    7,
+    8,
+    9,
+    10,
+    11,
+    13,
+    29,
+    52,
+    54,
+    56
+   ],
+   "peak": 7,
+   "dur": [
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80
+   ]
+  },
+  "SE": {
+   "frames": [
+    3,
+    5,
+    7,
+    8,
+    9,
+    10,
+    11,
+    13,
+    29,
+    54,
+    56,
+    58
+   ],
+   "peak": 7,
+   "dur": [
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80
+   ]
+  },
+  "E": {
+   "frames": [
+    3,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    12,
+    29,
+    55,
+    57,
+    59
+   ],
+   "peak": 7,
+   "dur": [
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80
+   ]
+  },
+  "NE": {
+   "frames": [
+    0,
+    56,
+    55,
+    54,
+    53,
+    52,
+    51,
+    25,
+    39,
+    52,
+    54,
+    56
+   ],
+   "peak": 7,
+   "dur": [
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80
+   ]
+  },
+  "N": {
+   "frames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    8,
+    29,
+    47,
+    49,
+    51
+   ],
+   "peak": 7,
+   "dur": [
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80
+   ]
+  }
+ },
+ "clips": {
+  "idle": {
+   "SE": "/mnt/user-data/uploads/a8d785de-1000001227.mp4",
+   "S": "/mnt/user-data/uploads/1d2d50a3-1000001236.mp4",
+   "E": "/mnt/user-data/uploads/f1d4e418-1000001240.mp4",
+   "NE": "/mnt/user-data/uploads/d3c07730-1000001244.mp4",
+   "N": "/mnt/user-data/uploads/028ac94a-1000001248.mp4"
+  },
+  "walk": {
+   "SE": "/mnt/user-data/uploads/4fe650f6-1000001226.mp4",
+   "S": "/mnt/user-data/uploads/553f2024-1000001235.mp4",
+   "E": "/mnt/user-data/uploads/311cbd5c-1000001239.mp4",
+   "NE": "/mnt/user-data/uploads/14a1ba56-1000001243.mp4",
+   "N": "/mnt/user-data/uploads/63f03559-1000001247.mp4"
+  },
+  "attack": {
+   "SE": "/mnt/user-data/uploads/69c15472-1000001225.mp4",
+   "S": "/mnt/user-data/uploads/65d6b11d-1000001229.mp4",
+   "E": "/mnt/user-data/uploads/fa0913cc-1000001238.mp4",
+   "NE": "/mnt/user-data/uploads/dec1197f-1000001242.mp4",
+   "N": "/mnt/user-data/uploads/e365d086-1000001246.mp4"
+  },
+  "buff": {
+   "SE": "/mnt/user-data/uploads/f39b93e2-1000001224.mp4",
+   "S": "/mnt/user-data/uploads/c6cf9475-1000001228.mp4",
+   "E": "/mnt/user-data/uploads/de9287d5-1000001237.mp4",
+   "NE": "/mnt/user-data/uploads/74eaaf02-1000001241.mp4",
+   "N": "/mnt/user-data/uploads/47bd4218-1000001245.mp4"
+  }
+ }
+}

@@ -230,8 +230,8 @@ V=assets/heroes/bastet; python3 -I tools/dir8cut.py startv <โฟลเดอ�
 
 ## ลำดับงาน
 1. **ภาพยืน 5 มุม** ✓ มาแล้ว 2026-11-24 13:53 (เจนจากพรอมต์ใน `HIPPO_LOOK_PROMPTS_TH.md`) → `assets/heroes/hippo/view_S|SE|E|NE|N.webp` (ต้นฉบับพื้นเขียว 1254×1254 ทุกมุมหันขวาแล้ว ไม่ต้องกลับด้าน) · มาพร้อมภาพท่าพิเศษ 2 ภาพ (`pose_jump.webp` กระโดดทับ · `pose_gulp.webp` ดูด) ใช้ในเกมเป็นสไปรต์ ไม่เกี่ยวกับคลิป
-2. **ภาพตั้งต้น** — ตัดจากภาพ 5 มุม (คำสั่งข้างล่าง) ส่งกลับเป็น `hippo_1_S.png … hippo_5_N.png` (ไม่เก็บในรีโป สร้างใหม่ได้ทุกเมื่อ)
-3. **คลิป 20 ตัว** — พรอมต์ในไฟล์นี้ แนบภาพตั้งต้นของทิศนั้นทุกคลิป
+2. **ภาพตั้งต้น** ✓ ส่งแล้ว 2026-11-24 — ตัดจากภาพ 5 มุม (คำสั่งข้างล่าง) เป็น `hippo_1_S.png … hippo_5_N.png` (ไม่เก็บในรีโป สร้างใหม่ได้ทุกเมื่อ)
+3. **คลิป 20 ตัว** ✓ มาแล้ว 2026-11-24 17:58 (เจ้าของส่ง 20 คลิป ไม่มีข้อความ) → ในเกมแล้ว 18:12 = สไปรต์จากคลิป (หัวข้อ 'สร้างแล้ว' ท้ายไฟล์)
 
 ## ภาพตั้งต้น
 - `hippo_<n>_<ทิศ>.png` 900×900 สี่เหลี่ยม แบบบาสเต็ด · ตัวสูง 520 (58 % ของกรอบ) เท้าที่ 90 % → เหนือหัวว่าง 0.52–0.56 เท่าตัวไว้ชูกระบอง ข้างละ 0.38–0.50 เท่าตัวไว้เหวี่ยง → ในคลิป 480p ตัวสูง ~280 px (แกะ 240 · บาสเต็ด 290)
@@ -252,14 +252,15 @@ V=assets/heroes/hippo; python3 -I tools/dir8cut.py startv <โฟลเดอร
 - ชูกระบอง = ชูกระบองเหนือหัว ยกโล่ขึ้นข้างๆ อกพุงยื่นภูมิใจ ค้างนิ่ง ~1 วิ แล้วกลับท่าเดิม — เกมค้างเฟรมนี้ตอนย่อตัว + ลอยกลางอากาศของท่ากระโดดทับ แล้วต่อด้วยท่าตีตอนลงพื้น = 'กระโดดชูกระบอง ลงมาทุบ'
 - ห้ามเบลอ · ห้ามแสง ประกาย ฝุ่น น้ำ วงเวท (เอฟเฟกต์ใส่ด้วยโค้ดในเกม) · กล้องนิ่งไม่ซูม · พื้นเขียวตลอด · ตัว + กระบอง + โล่อยู่ในกรอบตลอด
 - ไม่ระบุมือซ้าย / ขวาในพรอมต์คลิป (ภาพตั้งต้นบอกเองว่าอะไรอยู่มือไหน และมุมที่กลับด้านมาอาวุธจะสลับมือ)""",
-  footer="""## ตอนคลิปมาถึง (โน้ตสำหรับแชตที่ทำต่อ)
-- ตัดด้วย `tools/cliphero.py` + แผนใหม่ `tools/clips/hippo_plan.json` (ดู `tools/clips/sheep_plan.json`: loop, เลือกเฟรมเลี่ยงฝุ่น / แสงที่โมเดลแอบใส่, flipDirs ถ้ามีคลิปหันผิดฝั่ง, perDir ถ้าคลิปบางทิศถ่ายมาเล็ก / ใหญ่กว่า) → เขียนทับ `assets_hippo.js` ด้วย prefix เดิม HIP (index.html สลับ atlas ด้วย HIP_ART อยู่แล้ว) · แก้ขนาดไฟล์ในตาราง MB ของหน้าโหลด + ใส่ ?v= ให้ assets_hippo.js
-- เวลาเฟรมตี / ชูกระบองใช้ของสไปรต์ชั่วคราวเดิม (statichero): attack 12 เฟรม [60 × 8, 70, 80, 90, 100] contact 8 · buff 12 × 80 peak 7 (idle / walk ไม่กระทบดาเมจ) → จังหวะโดน / ปล่อยสกิลเท่าเดิม bench ไม่เปลี่ยน · เช็ก `python3 tools/fxlab.py hits hippo` ก่อน / หลัง
-- ใครใช้เฟรมไหน (char_hippo.js): ตีปกติ = attack ตั้งแต่ contact−3 · hSlam (Belly Flop, Bounce Slam, Sky Belly, Double Drop, Mountain Drop, Meteor Belly, ตัวจบคอมโบ) = ค้างเฟรม buff peak ตอนย่อ + ลอย แล้ว attack ตั้งแต่ contact ตอนลงพื้น · hBurst (Yawn, Feast, Gulp, Burp, Ward, Ground Pound, Gobble) + สกิลสาย B ทั้งหมด = buff · Waddle Rush = walk ×3 · Rolling Hippo / Submerge = ค้าง hurt เฟรม 2 (cliphero ทำ hurt จากเฟรมแรกของ idle)
-- ท่ากระโดดทับ + ท่าดูด = ภาพนิ่งของเจ้าของ 2 ภาพ (`pose_jump.webp` / `pose_gulp.webp`) เป็น state 'jump' / 'gulp' ใน atlas (`tools/sheet_state.py tools/clips/hippo_jump.json` / `hippo_gulp.json`) → **atlas ใหม่จากคลิปต้องรัน 2 สเปกนี้ซ้ำ** (cell 720×540 ของ cliphero: ปรับ scale ในสเปกให้ตัวสูงเท่าท่ายืนของ atlas ใหม่)
-- วัด CHAR_SCALE.hippo ใหม่ (ตอนนี้ 1.39 = สไปรต์ชั่วคราว) ให้ยืนสูงเท่าหมาป่า · ตัวโตตามเกจความอิ่มใช้ hSize() ขยายทั้งตัว (+4 % ทุก 20 อิ่ม) — ภาพ 3 ขนาดมุมขวาล่างของชีตเป็นแค่แบบ
-- หน้า HUD = ตัดหัวจาก view_S ผ่าน window.HUD_FACE (แบบแกะ / ลิง) · หน้าเลือกตัว = `assets/heroes/hippo/select.webp` (`tools/select_cut.py` + เพิ่มใน SELA ของ char_create.js; ตอนนี้เป็นพื้นหลังทรีลุคเก่าในวงมัว)
-- ยังเป็นลุคเก่า: ไอคอนสกิล 49 + สกิลเสริม 16, พื้นหลังทรี 4 ภาพ · ยังไม่มี: ท่านั่ง (hero_sit.js)"""),
+  footer="""## สร้างแล้ว 2026-11-24 18:12 (โน้ตสำหรับแชตที่ทำต่อ)
+- คลิปที่ได้: 480×480 24 fps พื้นเขียว 5.2 วิ (124 เฟรม) ทุกอัน · อัปโหลด 1000001224–1229 + 1235–1248 เรียง ร่าย · ตี · เดิน · ยืน ต่อทิศ SE → S → E → NE → N · หันขวาทุกคลิป สเกลเดียวกัน (ตัวสูงเฟรมแรก 275–283 px เท้าที่ y 431 ทุกคลิป) กล้องไม่ซูม
+- `assets_hippo.js` (prefix HIP เดิม, 6.62 MB, ?v=3) สร้างด้วย `python3 -I tools/cliphero.py tools/clips/hippo_plan.json assets_hippo.js HIP` แล้วรัน `tools/sheet_state.py tools/clips/hippo_jump.json` + `hippo_gulp.json` ซ้ำ (ท่ากระโดดทับ / ท่าดูดกลับเข้า atlas ใหม่ สเกล .2 เดิมพอดี เพราะตัวยืนสูง 231 เท่าของเดิม 230) — **สร้าง atlas ใหม่เมื่อไหร่ต้องรัน 2 สเปกนี้ซ้ำทุกครั้ง**
+- เวลาเฟรมตี / ชูกระบองเท่าสไปรต์ชั่วคราวเดิม: attack [60×8, 70, 80, 90, 100] contact 8 · buff 12 × 80 peak 7 → `tools/fxlab.py hits hippo` 12 สกิลเท่าเดิมหมด (Belly Flop ขยับ 1 เฟรมระหว่างรอบ = ตีพลาด / จังหวะชน ไม่เกี่ยวกับสไปรต์) · herosweep / lostev / combo / leak ไม่มี error
+- เลือกเฟรม (เลขเฟรมนับจาก 0 ในแผน `tools/clips/hippo_plan.json` _note มีรายละเอียดครบ): ตี = ยืน → ง้างกระบอง → เฟรม 7 ง้างสุด / เริ่มเหวี่ยง → เฟรม 8 (จังหวะโดน) = เฟรมแรกที่กระบองกระแทกพื้นแบบสะอาด → ค้าง → ลุกกลับ · ข้ามเอฟเฟกต์ที่โมเดลแอบใส่: S โค้งแสง + วงขาวที่พื้น, SE โค้งขาวฟ้า, E โค้งส้ม + ฝุ่นขาว, NE โดมใส + ประกายเหลือง, N น้ำกระเซ็นฟ้าขาว (S / E ใช้ท่าง้างค้างเป็นเฟรม 7 เพราะเฟรมเหวี่ยงเป็นรอยเบลอทั้งหมด) · ชูกระบอง = ยืน → ย่อนิดๆ → ยก → เฟรม 7 = กระบองเหนือหัว + โล่ยก (ท่าที่ hSlam ค้างตอนย่อตัวก่อนกระโดด) → ค้าง → ลดลง → ยืน · NE ช่วงยกมีแสงระเบิดสีทองบัง (เฟรม 1–21) → ใช้ช่วงลดกระบอง 51–56 เล่นกลับหลังเป็นช่วงยก
+- ยืน = ลูปพัก → หายใจ → พัก (S 4+63 · SE 2+64 · E 28+48 · NE 37+50 เลี่ยงเครื่องหมาย '!' สีเหลืองเฟรม 3–15 · N 26+49 → รอบละ 2.0–2.7 วิ) · เดิน = รอบละ 24 เฟรม (1 วิ, 2 ก้าว/วิ) S 22 เฟรม
+- ใครใช้เฟรมไหน (char_hippo.js): ตีปกติ = attack ตั้งแต่ contact−3 · hSlam (Belly Flop, Bounce Slam, Sky Belly, Double Drop, Mountain Drop, Meteor Belly, ตัวจบคอมโบ) = ค้าง buff peak ตอนย่อ → ท่า 'jump' ตอนลอย → attack ตั้งแต่ contact ตอนลงพื้น · Chomp = attack 7–9 ซ้ำ · Gulp / Gobble Up = ท่า 'gulp' · hBurst + สกิลสาย B = buff · Waddle Rush = walk ×3 · Rolling Hippo / Submerge = ค้าง hurt เฟรม 2 (cliphero ทำ hurt จากเฟรมแรกของ idle)
+- CHAR_SCALE.hippo 1.39 เท่าเดิม (ตัวยืนสูงเท่าเดิม) · หน้า HUD `face.webp` + ภาพหน้าเลือกตัว `select.webp` ตัดจากภาพยืน 5 มุมไว้แล้ว ใช้ต่อได้
+- ยังเป็นลุคเก่า: ไอคอนสกิล 49 + สกิลเสริม 16, พื้นหลังทรี 4 ภาพ · ยังไม่มี: ท่านั่ง (hero_sit.js) · ภาพหน้าเลือกตัวแบบท่ามีชีวิตชีวา (พรอมต์อยู่ใน `HIPPO_LOOK_PROMPTS_TH.md`)"""),
  'jaguar': dict(
   title='เสือจากัวร์ ลุคใหม่ (นางระบำสุริยคราส · Eclipse Dancer)',
   who='the little jaguar dancer girl in this picture', P='She', p='she', pos='her', weapon='daggers',
@@ -278,10 +279,10 @@ V=assets/heroes/hippo; python3 -I tools/dir8cut.py startv <โฟลเดอร
               "stay exactly the same.") for d in ('NE', 'N')},
   spos=dict.fromkeys(DIRS, 'low at her sides'),
   blink=", her round ears twitch once, and she blinks once",
-  vis=" Both daggers stay visible beside her body during the whole slash.",
+  vis=" Both daggers stay visible beside her body during the whole move.",
   fmt={'chin': (', lifting her chin proudly', '')},
   inframe="her whole body, both daggers, all of her long hair and her tail stay inside the frame.",
-  nofx="No shadow, no flash, no glow, no sparkles, no particles, no smoke, no slash trails, no colour streaks, no magic "
+  nofx="No shadow, no flash, no glow, no sparkles, no particles, no smoke, no light trails, no streaks of colour, no magic "
        "effects, no text.",
   act={
    'idle': "Idle loop of {who}. {facing} She stands light on her feet like a dancer, one obsidian dagger in each hand held "
@@ -293,18 +294,19 @@ V=assets/heroes/hippo; python3 -I tools/dir8cut.py startv <โฟลเดอร
            "daggers held {spos} swinging a little with her arms, her ponytail and skirt bouncing and her tail swaying "
            "behind her. She does not move across the frame and the ground does not move. The last frame matches the first "
            "frame so the clip loops.",
-   'attack': "Attack of {who}. {facing} She pulls both daggers back beside her shoulders in a short wind-up, then slashes "
-             "them forward across each other in a fast X in front of her toward the way she is facing, holds the crossed "
-             "finish for an instant, then returns to her starting pose and stands still for the rest of the clip. The whole "
-             "slash takes about one second. Her feet stay in place.{vis} Clean outlines in every frame, no motion blur; the "
-             "blades never leave a trail of light or colour.",
+   'attack': "Quick double-dagger swing of {who}. {facing} She lifts both daggers up above her head in a short wind-up, then "
+             "swings both arms quickly down and forward toward the way she is facing until both arms reach straight out in "
+             "front of her, the two daggers pointing ahead; she holds that pose for a moment, then lowers her arms, returns "
+             "to her starting pose and stands still for the rest of the clip. The whole move takes about one second. Her feet "
+             "stay in place.{vis} The daggers are plain black stone, and the air around them stays empty and plain green in "
+             "every frame. Clean outlines in every frame, no motion blur.",
    'buff': "Spell cast of {who}. {facing} She raises one dagger high above her head, the blade pointing to the sky, and "
            "holds the other dagger low behind her{chin}; she holds that pose still for about one second, then lowers the "
            "raised dagger back down to her side, returns to her starting pose and stands still for the rest of the clip. Her feet "
            "stay in place. The raised dagger stays inside the frame. Clean outlines in every frame, no motion blur."},
   dirname={'S': 'หน้าตรง', 'SE': 'เฉียงหน้า หันขวา', 'E': 'ข้าง หันขวา', 'NE': 'เฉียงหลัง หันขวา', 'N': 'หลัง'},
   actname={'idle': 'ยืน (idle · วนลูป)', 'walk': 'เดิน (walk · วนลูป · Blood Chase ก็ใช้คลิปนี้)',
-           'attack': 'ฟันไขว้ (attack · ตีปกติ + สกิลฟันมีดทั้งสาย A และ B + Jaguar Cyclone + จังหวะลงฟันของ Predator Drop)',
+           'attack': 'ฟันมีดคู่ (attack · ตีปกติ + สกิลฟันมีดทั้งสาย A และ B + Jaguar Cyclone + จังหวะลงฟันของ Predator Drop)',
            'buff': 'ชูมีด (buff · บัฟ / เวท / อัลติ / ปัดป้อง + ตอนลอยของ Predator Drop — เกมค้างเฟรมชูมีดตอนร่ายยาว)'},
   start='jaguar_{n}_{d}.png',
   header="""เจ้าของเลือกแบบ 1 'นางระบำสุริยคราส' 2026-11-24 14:28 ("ชอบแบบนี้") · ชีต `assets/heroes/jaguar/sheet_eclipse_dancer.webp` · หน้าตา + พรอมต์ภาพยืน 5 มุม: `JAGUAR_LOOK_PROMPTS_TH.md` หัวข้อ 'เลือกแล้ว'
@@ -315,7 +317,7 @@ V=assets/heroes/hippo; python3 -I tools/dir8cut.py startv <โฟลเดอร
 3. **คลิป 20 ตัว** — พรอมต์ในไฟล์นี้ แนบภาพตั้งต้นของทิศนั้นทุกคลิป
 
 ## ภาพตั้งต้น
-- `jaguar_<n>_<ทิศ>.png` 900×900 สี่เหลี่ยม แบบฮิปโป / บาสเต็ด · ตัวสูง ~520 (58 % ของกรอบ วัดจากยอดหางม้าถึงเท้า) เท้าที่ 90 % → เหนือหัวว่าง ~0.55 เท่าตัวไว้ชูมีด ข้างละ ~0.5 เท่าตัวไว้ฟันไขว้ → ในคลิป 480p ตัวสูง ~280 px · ผมเธอฟูยาว: ถ้ามุมข้างผมล้นกรอบให้ลด ht
+- `jaguar_<n>_<ทิศ>.png` 900×900 สี่เหลี่ยม แบบฮิปโป / บาสเต็ด · ตัวสูง ~520 (58 % ของกรอบ วัดจากยอดหางม้าถึงเท้า) เท้าที่ 90 % → เหนือหัวว่าง ~0.55 เท่าตัวไว้ชูมีด ข้างละ ~0.5 เท่าตัวไว้เหวี่ยงมีด → ในคลิป 480p ตัวสูง ~280 px · ผมเธอฟูยาว: ถ้ามุมข้างผมล้นกรอบให้ลด ht
 ```
 V=assets/heroes/jaguar; python3 -I tools/dir8cut.py startv <โฟลเดอร์> S=$V/view_S.webp SE=$V/view_SE.webp E=$V/view_E.webp NE=$V/view_NE.webp N=$V/view_N.webp size=900 feet=.9 ht=520 clean=0
 ```
@@ -324,18 +326,20 @@ V=assets/heroes/jaguar; python3 -I tools/dir8cut.py startv <โฟลเดอ�
 - สีเทอร์ควอยซ์บนชีต ≈ RGB 56,180,174 = เขียวเกินน้ำเงินนิดหน่อย (ฮิปโป 50,154,156 น้ำเงิน ≥ เขียว) → พรอมต์ภาพยืนสั่ง 'ฟ้าเทอร์ควอยซ์ น้ำเงินมากกว่าเขียวนิดๆ' · คีย์ของ cliphero ทนเขียวเกินได้ ~18 แล้ว despill ดันกลับเป็นฟ้า · ภาพยืนที่ได้: เทอร์ควอยซ์เฉลี่ย ≈ 20,193,195 (น้ำเงิน ≥ เขียว ผ่าน) · จุดในตัวที่คีย์จะทำให้โปร่ง 100–345 px จาก ~85–106k px ต่อภาพ (< 0.4 % ปลายขนนก / ขอบพลอย) → ไม่ต้องแก้ · ถ้าคลิปออกมาเขียวกว่านี้ (ขนนก พลอย ลูกปัด กำไล) ดูตอนตัด
 
 ## วิธีใช้
-แนบภาพตั้งต้นของทิศนั้น + วางพรอมต์ทีละตัว → 4 คลิปต่อทิศ (ยืน · เดิน · ฟันไขว้ · ชูมีด) · คลิปละ 3–5 วิ · ไม่ต้องทำทิศซ้าย (เกมกลับด้านเอง) · ส่งกลับเรียง S → SE → E → NE → N ทิศละ ยืน → เดิน → ฟันไขว้ → ชูมีด (สลับได้ ดูเองว่าคลิปไหนเป็นท่าอะไร)
+แนบภาพตั้งต้นของทิศนั้น + วางพรอมต์ทีละตัว → 4 คลิปต่อทิศ (ยืน · เดิน · ฟันมีดคู่ · ชูมีด) · คลิปละ 3–5 วิ · ไม่ต้องทำทิศซ้าย (เกมกลับด้านเอง) · ส่งกลับเรียง S → SE → E → NE → N ทิศละ ยืน → เดิน → ฟันมีดคู่ → ชูมีด (สลับได้ ดูเองว่าคลิปไหนเป็นท่าอะไร)
 
 ## กติกาที่อยู่ในทุกพรอมต์ (บทเรียนจากคลิปลิง / แอคโซลอเติล / มังกร / แกะ)
 - ประโยคบอกทิศขึ้นต้นทุกพรอมต์ กันโมเดลหมุนตัวหันหากล้อง (มุมหลังโดนบ่อย)
 - ล็อกหน้า (ตาทองอำพันโต ลืมทั้งสองข้าง จมูกแมว ยิ้มหวานมั่นใจ ปากปิด — บนชีตภาพใหญ่ขยิบตาอ้าปาก ห้ามติดมา) ในมุมที่เห็นหน้า · มุมหลัง (NE, N) ใช้ประโยค 'เห็นแค่หลังหัว หน้าไม่หันมา' แทน ไม่มีกะพริบตา ไม่มีเชิดคาง
 - ล็อกของติดตัว: จานสุริยะทอง + พัดขนนกแดง / ฟ้า + กระดิ่งทอง · ต่างหูห่วงทอง · สร้อยคอทองพลอยเทอร์ควอยซ์ · เสื้อดำ · กระโปรงแดง–ครีมขอบทอง · มีดออบซิเดียนการ์ดเสี้ยวจันทร์ทอง · หางลายจุด
 - เดินอยู่กับที่แบบลู่วิ่ง ก้าวเบาแบบนักเต้น ~2 ก้าว/วิ สะโพกส่ายนิดๆ (คลิปเดินช้าจะไถลพื้น)
-- ฟันไขว้ = ท่าเดียวกันทุกทิศ: ง้างมีดสองเล่มข้างไหล่ แล้วฟันไขว้เป็นรูป X ไปข้างหน้า ค้างนิดนึง แล้วยืนนิ่งจนจบคลิป · มุมหลังสั่งให้มีดยังเห็นข้างตัว (ไม่งั้นโดนตัวบัง)
+- ฟันมีดคู่ = ท่าเดียวกันทุกทิศ: ยกมีดสองเล่มขึ้นเหนือหัว แล้วเหวี่ยงลงมาข้างหน้าจนแขนสองข้างเหยียดตรง มีดชี้ไปข้างหน้า ค้างนิดนึง แล้วยืนนิ่งจนจบคลิป · มุมหลังสั่งให้มีดยังเห็นข้างตัว (ไม่งั้นโดนตัวบัง)
+- 2026-11-24 19:41 คลิปแรกที่ได้ (ตี SE) ทำจากพรอมต์เดิม 'Attack … slashes … in a fast X' → โมเดลวาดรอยโค้งแดง + แสงขาว + กากบาท X ใหญ่ทับตัวทั้งที่สั่งห้าม (คำว่า Attack / slash / X น่าจะดึงเอฟเฟกต์มา) → พรอมต์ตีใหม่ไม่มีคำพวกนี้ บอกแค่การเคลื่อนไหว ซึ่งเป็นท่าเดียวกับที่โมเดลทำในคลิป SE (ยกมีดเหนือหัว → เหวี่ยงไปข้างหน้า) · คลิป SE เดิมใช้ได้ ไม่ต้องทำใหม่ · ถ้าคลิปใหม่ยังมีเอฟเฟกต์ติดมาก็ส่งมาได้เลย เลือกเฟรมเลี่ยงเอาได้
 - ชูมีด = ชูมีดเล่มหนึ่งเหนือหัว ใบชี้ฟ้า อีกเล่มลดต่ำไว้ข้างหลัง (มุมหน้าเชิดคางนิดๆ) ค้างนิ่ง ~1 วิ แล้วกลับท่าเดิม — เกมค้างเฟรมนี้ตอนร่ายยาว และตอนลอยของ Predator Drop ก่อนลงฟัน · บนชีตท่าเวทยกมือเปล่า แต่ในคลิปมีดต้องอยู่ในมือทั้งสองเล่มตลอด จึงชูมีดแทน
 - ห้ามเบลอ · ห้ามรอยฟันสีแดง / แสงที่ใบมีด / ดวงอาทิตย์ดำ / ควันม่วงแบบในชีต (เอฟเฟกต์ใส่ด้วยโค้ดในเกม) · กล้องนิ่งไม่ซูม · พื้นเขียวตลอด · ตัว + มีดสองเล่ม + ผม + หางอยู่ในกรอบตลอด
 - ไม่ระบุมือซ้าย / ขวาในพรอมต์คลิป (ภาพตั้งต้นบอกเองว่าอะไรอยู่ฝั่งไหน)""",
   footer="""## ตอนคลิปมาถึง (โน้ตสำหรับแชตที่ทำต่อ)
+- คลิปตี SE (เจ้าของส่ง 2026-11-24 19:41, `…1000001250.mp4`, 480² 24 fps 124 เฟรม, พรอมต์เดิม): ยืน 0–8 · กางแขน 9–13 · ยกมีดเหนือหัว 14–21 (มีดเล่มหลังลากรอยโค้งแดง: 15–18 ลบได้ด้วยตัวเลือก `unstreak` ของ cliphero, 19–21 รอยทับผม ห้ามใช้) · เหวี่ยง 22–24 + รอยโค้งแดงขาว 22–35 · แสงขาว + กากบาท 36–46 · ท่าจบมีดชี้หน้า 47–59 (47–51 มีจุดประกายเล็ก คีย์ลบเอง) · กลับ 60–67 · ยืน 68+ → แถว SE 12 เฟรม = 9, 12, 16u, 18u, **47** (contact), 52, 56, 60, 62, 64, 66, 69 (u = `"unstreak":{"attack/SE":[16,18]}`) ตรวจด้วยภาพแล้ว · ท่าจบไม่มีเฟรมเหวี่ยงกลางทาง (ทุกเฟรมเหวี่ยงโดนรอยแดงทับ) → กระโดดจากท่ายกมีดไปท่าจบตรงจังหวะโดน แล้วให้เอฟเฟกต์ฟันของเกมเล่นตรงนั้น
 - ตัดด้วย `tools/cliphero.py` + แผนใหม่ `tools/clips/jaguar_plan.json` (ดู `tools/clips/sheep_plan.json` / `wukong_plan.json`: loop ช่วงที่ลืมตา, เลือกเฟรมเลี่ยงแสง / รอยฟันที่โมเดลแอบใส่, flipDirs ถ้ามีคลิปหันผิดฝั่ง, perDir ถ้าคลิปบางทิศถ่ายมาเล็ก / ใหญ่กว่า) → เขียนทับ `assets_jaguar.js` ด้วย prefix เดิม JAG (index.html สลับ atlas ด้วย JAG_ART อยู่แล้ว atkRemap {}) · แก้ขนาดไฟล์ในตาราง MB ของหน้าโหลด + ใส่ ?v= ให้ assets_jaguar.js
 - **เวลาเฟรมต้องเท่า atlas เดิมทุกทิศ** (ลุคเดิมจากคลิป) → จังหวะโดน / ปล่อยสกิลเท่าเดิม bench ไม่เปลี่ยน · เช็ก `python3 tools/fxlab.py hits jaguar` ก่อน / หลัง:
   - attack 12 เฟรม 900 ms · N [110,120,50,50,70,50,120,70,50,50,50,110] contact 6 (โดนที่ 450 ms) · NE = E [80,50,50,100,50,120,60,120,50,50,50,120] contact 6 (450) · SE [50,50,190,70,90,50,50,50,50,50,90,110] contact 4 (360) · S [80,50,90,50,50,50,70,200,50,50,50,110] contact 6 (370)
@@ -345,6 +349,93 @@ V=assets/heroes/jaguar; python3 -I tools/dir8cut.py startv <โฟลเดอ�
 - วัด CHAR_SCALE.jaguar ใหม่ (ตอนนี้ .94 = คลิปลุคเดิม) ให้ยืนสูงเท่าหมาป่า
 - หน้า HUD = ตัดหัวจาก view_S ผ่าน window.HUD_FACE (แบบแกะ / ลิง / ฮิปโป) · หน้าเลือกตัว = `assets/heroes/jaguar/select.webp` ใหม่จาก view_SE (`tools/select_cut.py`; ตอนนี้เป็นลุคเดิม) · ชื่อในหน้าเลือกตัวยังเป็น 'Black Jaguar' (char_create.js) — เจ้าของจะเปลี่ยนเป็น 'Eclipse Jaguar' หรือไม่ ยังไม่ได้ถาม
 - ยังเป็นลุคเก่า: ไอคอนสกิล 53 + สกิลเสริม 10, พื้นหลังผังสกิล 4 ภาพ, ภาพเอฟเฟกต์ 36 ภาพ · ยังไม่มี: ท่านั่ง (hero_sit.js)"""),
+ 'dragon': dict(
+  title='มังกรคราม ลุคใหม่ (ปรมาจารย์ฝ่ามือสายฟ้า · Thunder Palm Sage)',
+  who='the blue dragon martial artist in this picture', P='He', p='he', pos='his', weapon='fists',
+  face="Keep his face exactly as in the picture: the same glowing golden eyes under the same heavy brows, the same long "
+       "snout and the same fierce, confident look, mouth closed with only the tips of his fangs showing.",
+  back_face={'NE': "We see him mostly from behind: the back of his head with the huge silver-white mane, the backs of the two "
+                   "gold horns and only the edge of his snout with one eye and one whisker, as in the picture; his face never "
+                   "turns toward us.",
+             'N': "We only see the back of his head: his huge silver-white mane falling down his back and the backs of the "
+                  "two gold horns, as in the picture; his face never turns toward us."},
+  keep={d: ("His two gold lightning-bolt horns, his two long white whiskers, his huge silver-white mane, the dark-indigo "
+            "sleeveless vest with gold trim, the red rope belt with its round gold clasp and two red tassels, the gold "
+            "studded knuckle guards on both fists and his long blue tail with the white tuft stay exactly the same.")
+        for d in ('S', 'SE', 'E')}
+       | {d: ("His two gold lightning-bolt horns, the silver-white mane, the back of the dark-indigo vest, the red rope belt, "
+              "the gold knuckle guards on both fists and his long blue tail with the white tuft stay exactly the same.")
+          for d in ('NE', 'N')},
+  spos=dict.fromkeys(DIRS, 'loosely clenched at his sides'),
+  blink=", and he blinks once",
+  vis=" His punching arm stays visible beside his body during the whole punch.",
+  fmt={'pvis': ('', " His open palm stays visible beside his body while he holds the pose.")},
+  inframe="his whole body, both fists, his whole mane, both horns, both whiskers and his whole tail stay inside the frame.",
+  nofx="No shadow, no flash, no glow, no sparkles, no particles, no smoke, no water, no lightning, no clouds, no spirit "
+       "dragon, no speed lines, no magic effects, no text.",
+  act={
+   'idle': "Idle loop of {who}. {facing} He stands in a firm, ready martial-arts stance, both fists {spos}, and breathes "
+           "slowly: his chest rises and falls, his long mane and his two whiskers drift gently and the red tassels and his "
+           "tail sway slowly{blink}. The last frame matches the first frame so the clip loops.",
+   'walk': "Walk loop of {who}. {facing} He walks in place, like on a treadmill, toward the way he is facing: firm, springy "
+           "steps (about two steps per second) in his wooden geta sandals, both fists {spos} swinging a little with his "
+           "arms, his mane and whiskers bouncing, the red tassels swinging and his tail swaying behind him. He does not move "
+           "across the frame and the ground does not move. The last frame matches the first frame so the clip loops.",
+   'attack': "Attack of {who}. {facing} He pulls one fist back to his side in a short, quick wind-up, then shoots a fast, "
+             "straight punch forward toward the way he is facing, his arm fully extended with the gold knuckle guard "
+             "leading, holds the punch for an instant, then pulls the fist back, returns to his starting pose and stands "
+             "still for the rest of the clip. The whole punch takes less than one second. His feet stay in place.{vis} "
+             "Clean outlines in every frame, no motion blur.",
+   'buff': "Power move of {who}. {facing} He bends his knees a little and draws both hands back to one hip, gathering "
+           "strength, then thrusts one open palm forward toward the way he is facing, fingers pointing up, with his other "
+           "hand pulled back to his hip in a fist; he holds that palm-strike pose still for about one second, then returns "
+           "to his starting pose and stands still for the rest of the clip. His feet stay in place.{pvis} Clean outlines in "
+           "every frame, no motion blur."},
+  dirname={'S': 'หน้าตรง', 'SE': 'เฉียงหน้า หันขวา', 'E': 'ข้าง หันขวา', 'NE': 'เฉียงหลัง หันขวา', 'N': 'หลัง'},
+  actname={'idle': 'ยืน (idle · วนลูป)', 'walk': 'เดิน (walk · วนลูป · ท่าพุ่ง Horn Rush / Riptide Step / Cloud Step ก็ใช้คลิปนี้เร่ง ×3.2)',
+           'attack': 'ต่อย (attack · ตีปกติ + สกิลหมัด / ฝ่ามือทุกท่า — เกมเล่นช่วงง้าง → ยืดสุดซ้ำเร็วๆ เป็นหมัดรัว)',
+           'buff': 'ผลักฝ่ามือ (buff · Heaven Push / คำราม / ร่ายน้ำวน ลมหายใจมังกร / บัฟ / อัลติ — เกมค้างเฟรมผลักสุดตอนท่ายาว)'},
+  start='dragon_{n}_{d}.png',
+  header="""เจ้าของเลือกแบบ 3 'ปรมาจารย์ฝ่ามือสายฟ้า' 2026-11-24 16:51 ("อันนี้เท่ แต่ติดตรงผ้าลายเสือ") แล้วส่งชีต v2 ที่ไม่มีผ้าลายเสือมา 17:10 · ชีต `assets/heroes/dragon/sheet_thunder_palm.webp` · หน้าตา + พรอมต์ภาพยืน 5 มุม: `DRAGON_LOOK_PROMPTS_TH.md` หัวข้อ 'เลือกแล้ว'
+
+## ลำดับงาน
+1. **ภาพยืน 5 มุม** ✓ มาแล้ว 2026-11-24 17:28 (เจ้าของส่ง 5 ภาพ 1254² พื้นเขียว เรียง หลัง · เฉียงหลัง · หน้า · เฉียงหน้า · ข้าง ไม่มีข้อความ · หันขวาทุกภาพ กำหมัดข้างตัว ปากปิดเห็นปลายเขี้ยว ไม่มีเอฟเฟกต์ หางอยู่ซ้ายภาพทุกมุม) → `assets/heroes/dragon/view_S|SE|E|NE|N.webp`
+2. **ภาพตั้งต้น** ✓ ส่งแล้ว 2026-11-24 — ตัดจากภาพ 5 มุม (คำสั่งข้างล่าง) เป็น `dragon_1_S.png … dragon_5_N.png` (ไม่เก็บในรีโป สร้างใหม่ได้ทุกเมื่อ)
+3. **คลิป 20 ตัว** — พรอมต์ในไฟล์นี้ แนบภาพตั้งต้นของทิศนั้นทุกคลิป
+
+## ภาพตั้งต้น
+- `dragon_<n>_<ทิศ>.png` 900×900 สี่เหลี่ยม แบบฮิปโป / จากัวร์ · ตัวสูง ~520 (58 % ของกรอบ วัดจากปลายเขาถึงพื้นรองเท้า) เท้าที่ 90 % → ในคลิป 480p ตัวสูง ~280 px · เขาสูง แผงคอฟู หางยาว และหมัดต้องยื่นสุดแขนได้: ถ้ามุมข้าง (หางข้างหลัง + หมัดข้างหน้า) ชิดขอบ ให้ลด ht
+```
+V=assets/heroes/dragon; python3 -I tools/dir8cut.py startv <โฟลเดอร์> S=$V/view_S.webp SE=$V/view_SE.webp E=$V/view_E.webp NE=$V/view_NE.webp N=$V/view_N.webp size=900 feet=.9 ht=520 clean=0
+```
+→ start_<ทิศ>.png → ตั้งชื่อใหม่ dragon_1_S … dragon_5_N · ทุกทิศใช้สเกลของมุมหน้า · clean=0 = ไม่ทาจุดเขียวในตัว (ชุดไม่มีสีเขียวเลย ช่องระหว่างแขน หนวด แผงคอ เป็นพื้นหลังจริง) · น้ำเงินบนชีต ≈ RGB 59,81,183 ตัดพื้นเขียวได้สะอาด
+- ที่ตัดจริง (สเกล .430 ของภาพ 1254², ภาพ 5 มุมสูงต่างกันแค่ ≤ 1.3 %): ตัวสูง 520–527 px · เหนือปลายเขาว่าง .54–.56 เท่าตัว · ซ้าย .46–.52 · ขวา .54–.58 (หมัดยื่นสุดแขนยังอยู่ในกรอบ) · ในคลิป 480p ~277–281 px · แผงคอ เขา หนวด หาง อยู่ในกรอบครบทุกทิศ
+- เขียวในภาพยืน: แอ่งเขียวใหญ่ที่ถูกล้อม (ระหว่างหางกับขา ใต้แขน ในวงหนวด) = พื้นหลังจริง ~93 % เป็นสีพื้นเป๊ะ · จุดเขียวเข้มเล็กๆ 15–155 px ข้างวงหนวด = พื้นหลังที่มองผ่านช่องแคบ · ตัวมังกรไม่มีสีเขียวเลย → ไม่ต้องแก้
+
+## วิธีใช้
+แนบภาพตั้งต้นของทิศนั้น + วางพรอมต์ทีละตัว → 4 คลิปต่อทิศ (ยืน · เดิน · ต่อย · ผลักฝ่ามือ) · คลิปละ 3–5 วิ · ไม่ต้องทำทิศซ้าย (เกมกลับด้านเอง) · ส่งกลับเรียง S → SE → E → NE → N ทิศละ ยืน → เดิน → ต่อย → ผลักฝ่ามือ (สลับได้ ดูเองว่าคลิปไหนเป็นท่าอะไร)
+
+## กติกาที่อยู่ในทุกพรอมต์ (บทเรียนจากคลิปลิง / แอคโซลอเติล / มังกรลุคเดิม / แกะ)
+- ประโยคบอกทิศขึ้นต้นทุกพรอมต์ กันโมเดลหมุนตัวหันหากล้อง (มุมหลังโดนบ่อย)
+- ล็อกหน้า (ตาทองเรือง คิ้วหนา ปากยาว สีหน้าดุมั่นใจ ปากปิดเห็นแค่ปลายเขี้ยว — บนชีตภาพใหญ่อ้าปากคำราม ห้ามติดมา) ในมุมที่เห็นหน้า · มุมหลัง (NE, N) ใช้ประโยค 'เห็นแค่หลังหัว หน้าไม่หันมา' แทน ไม่มีกะพริบตา
+- ล็อกของติดตัว: เขาทองรูปสายฟ้า · หนวดขาวสองเส้น · แผงคอขาวเงิน · เสื้อกั๊กครามขอบทอง · เชือกแดงหัวเข็มขัดทอง + พู่แดงสองพู่ · สนับมือทองปุ่มกลม · หางน้ำเงินปลายพู่ขาว
+- ไม่มีอาวุธ: กำหมัดหลวมๆ ข้างตัวทุกคลิป ยกเว้นตอนต่อย / ผลักฝ่ามือ
+- เดินอยู่กับที่แบบลู่วิ่ง ก้าวหนักแน่นเด้งๆ ~2 ก้าว/วิ (คลิปเดินช้าจะไถลพื้น · คลิปเดิน S ของมังกรลุคเดิมกล้องซูมเข้า — ห้ามซูม)
+- ต่อย = หมัดตรงเร็ว ท่าเดียวกันทุกทิศ: ง้างหมัดข้างเอว พุ่งหมัดตรงยืดสุดแขน สนับมือทองนำ ค้างนิดนึง ดึงกลับ ยืนนิ่งจนจบคลิป — เกมเอา 4 เฟรมรอบจังหวะยืดสุด (ง้าง → พุ่ง → ยืดสุด → เริ่มดึงกลับ) มาเล่นซ้ำเร็วๆ เป็นหมัดรัว ช่วงนี้ต้องคมชัดไม่เบลอ · มุมหลังสั่งให้แขนที่ต่อยยังเห็นข้างตัว (ไม่งั้นโดนแผงคอ / ตัวบัง)
+- ผลักฝ่ามือ = ย่อเข่านิดๆ ดึงมือสองข้างมาข้างเอว แล้วผลักฝ่ามือเปิดไปข้างหน้า นิ้วชี้ขึ้น อีกมือกำไว้ข้างเอว ค้างนิ่ง ~1 วิ แล้วกลับท่าเดิม — เกมใช้ทั้งคลิปกับฝ่ามือผลัก คำราม ร่าย บัฟ อัลติ และค้างเฟรมผลักสุดตอนท่ายาว (Calm Breath)
+- ห้ามเบลอ · ห้ามน้ำวน สายฟ้า เมฆ มังกรปราณ แบบในชีต (เอฟเฟกต์ใส่ด้วยโค้ดในเกม `dragon_vfx.js`) · กล้องนิ่งไม่ซูม · พื้นเขียวตลอด · ตัว + หมัด + แผงคอ + เขา + หนวด + หางอยู่ในกรอบตลอด
+- ไม่ระบุมือซ้าย / ขวาในพรอมต์คลิป (ภาพตั้งต้นบอกเองว่าอะไรอยู่ฝั่งไหน)""",
+  footer="""## ตอนคลิปมาถึง (โน้ตสำหรับแชตที่ทำต่อ)
+- ตัดด้วย `tools/cliphero.py` + แผนใหม่ `tools/clips/dragon_plan.json` (ดู `tools/clips/sheep_plan.json` / `wukong_plan.json`: loop ช่วงที่ลืมตา, เลือกเฟรมเลี่ยงแสง / น้ำ / สายฟ้าที่โมเดลแอบใส่, flipDirs ถ้ามีคลิปหันผิดฝั่ง, perDir ถ้าคลิปบางทิศถ่ายมาเล็ก / ใหญ่กว่า) → เขียนทับ `assets_dragon.js` ด้วย prefix เดิม DRG (index.html สลับ atlas ด้วย DRG_ART อยู่แล้ว atkRemap {}) · แก้ขนาดไฟล์ในตาราง MB ของหน้าโหลด + ใส่ ?v= ให้ assets_dragon.js · atlas ลุคเดิมอยู่ในประวัติ git
+- **เวลาเฟรมต้องเท่า atlas เดิมทุกทิศ** → จังหวะโดน / ปล่อยสกิลเท่าเดิม bench ไม่เปลี่ยน · เช็ก `python3 tools/fxlab.py hits dragon` ก่อน / หลัง:
+  - attack 12 เฟรม · S = E = NE [55,40,40,40,75×8] contact 2 (โดนที่ 95 ms ยาว 775) · SE [55×4,40×3,75×5] contact 5 (260 ms ยาว 715) · N [55,55,40,40,40,75×7] contact 3 (150 ms ยาว 755) → เฟรม contact = หมัดยืดสุด, ก่อนหน้า = ง้าง / กำลังพุ่ง, หลังจากนั้น = ค้าง + ดึงกลับ + ยืน
+  - buff 12 × 70 ms · peak S 2 (140 ms) · SE 3 (210) · E 6 (420) · NE 5 (350) · N 5 (350) → เฟรม peak = ผลักฝ่ามือสุด, ก่อนหน้า = ดึงมือมาข้างเอว, หลังจากนั้น = ค้างท่า + กลับท่าเดิม
+  - walk 8 เฟรม · S 125 · SE 135 · E 151 · NE 151 · N 146 ms ต่อเฟรม (รอบละ 1.0–1.2 วิ) · idle 12 เฟรม · S 94 · SE 167 · E 177 · NE 90 · N 132 ms · hurt 7 × 70
+- ใครใช้เฟรมไหน (char_dragon.js): dPunches = ตีปกติ (Azure Fist / Dragon Chain / Dragon Tail Sweep) + Tide Jab, Hundred Waves, Whirlpool Hook, Tsunami Uppercut, Wind Palm, Thunder Seal Palm, Twin Dragon Palms, Abyssal Torrent → หมัดกลางคอมโบเล่นเฟรม contact−2 … contact+1 เร็ว ×3.2 หมัดสุดท้ายเล่นจาก contact−3 (หรือเฟรมแรก) ถึงจบ · Great Azure Torrent ค้างเฟรม contact · Komainu Guard + Ebb and Flow ค้าง buff เฟรม 2 · Calm Breath ค้าง buff peak · dBurst / buffAct (Lion's Roar, Heaven Push, Mirror Pond, Maelstrom, Dragon's Breath, Shishi Awakening, Storm Sovereign, Azure Dragon Descends) = buff ทั้งคลิป · dDash (Horn Rush, Riptide Step, Cloud Step) = walk ×3.2
+- เอฟเฟกต์ไม่อ่าน socket: หมัดน้ำ / ฝ่ามือใน `dragon_vfx.js` ออกจาก hand() = 17 px หน้าตัว สูง z 38 คงที่ → ถ้าแขนตัวใหม่ยาว / ตัวสูงต่างจากเดิม ปรับ hand() ให้ตรงหมัดจริง (ดูช็อตตอนต่อย 5 ทิศ) · atlas เดิมมี socket ท่าตีแบบสังเคราะห์ (cliphero ทำให้เหมือนเดิม)
+- วัด CHAR_SCALE.dragon ใหม่ (ตอนนี้ 1.64 = คลิปลุคเดิม) ให้ยืนสูงเท่าหมาป่า
+- หน้า HUD = ตัดหัวจาก view_S ผ่าน window.HUD_FACE (แบบแกะ / ลิง / ฮิปโป — มังกรยังไม่มีเลย ใช้หน้า default) · หน้าเลือกตัว = `assets/heroes/dragon/select.webp` ใหม่ (`tools/select_cut.py`; ตอนนี้เป็นลุคเดิม) · คำโปรยหน้าเลือกตัว 'นักมวยมังกรสิงโต' (char_create.js) — ลุคใหม่ไม่มีสิงโตแล้ว เปลี่ยนเป็น 'นักมวยมังกร' ได้ถ้าเจ้าของโอเค
+- ยังเป็นลุคเก่า: ไอคอนสกิล 56, พื้นหลังผังสกิล 4 ภาพ, ภาพเอฟเฟกต์วาด 26 ภาพ (ใช้แค่ ?vfx3=0) · ยังไม่มี: ท่านั่ง (hero_sit.js)"""),
 }
 
 def build(h, d, a):
