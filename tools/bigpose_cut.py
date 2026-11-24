@@ -8,7 +8,8 @@ usage: python3 -I tools/bigpose_cut.py SHEET OUT.png [xmax=585] [ymin_shadow=900
   when the hero has parts in the cream colour (rhino 2026-11-24: horn highlights and teeth were taken as pockets)
 - pockbox=x0,y0,x1,y1;x0,y0,x1,y1 (quote it in the shell): ONLY enclosed cream pockets whose centre lies in one of these
   boxes are background (any size >= 4, any shade of the cream) — for heroes with cream costume parts AND see-through gaps
-  (anubis 2026-11-24: cream collar / kilt underlayer / shin wraps kept, chain-link holes + arm and leg gaps removed)
+  (anubis 2026-11-24: cream collar / kilt underlayer / shin wraps kept, chain-link holes + arm and leg gaps removed;
+  dragon 2026-11-24: pockets=1 would have holed the cream abs, jaw fur and tail belly -> pockbox on the 4 real gaps only)
 - kept: the biggest piece + small pieces whose box lies left of xmax (sparkles / chips of the big pose; the right-hand
   figures' bits stay out) · specks under minpiece px dropped
 - rim pixels (<= 2 px from the background) are un-mixed against the background colour they sit on (cream or tan), using
