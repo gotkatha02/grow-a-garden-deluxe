@@ -436,6 +436,95 @@ V=assets/heroes/dragon; python3 -I tools/dir8cut.py startv <โฟลเดอ�
 - วัด CHAR_SCALE.dragon ใหม่ (ตอนนี้ 1.64 = คลิปลุคเดิม) ให้ยืนสูงเท่าหมาป่า
 - หน้า HUD = ตัดหัวจาก view_S ผ่าน window.HUD_FACE (แบบแกะ / ลิง / ฮิปโป — มังกรยังไม่มีเลย ใช้หน้า default) · หน้าเลือกตัว = `assets/heroes/dragon/select.webp` ใหม่ (`tools/select_cut.py`; ตอนนี้เป็นลุคเดิม) · คำโปรยหน้าเลือกตัว 'นักมวยมังกรสิงโต' (char_create.js) — ลุคใหม่ไม่มีสิงโตแล้ว เปลี่ยนเป็น 'นักมวยมังกร' ได้ถ้าเจ้าของโอเค
 - ยังเป็นลุคเก่า: ไอคอนสกิล 56, พื้นหลังผังสกิล 4 ภาพ, ภาพเอฟเฟกต์วาด 26 ภาพ (ใช้แค่ ?vfx3=0) · ยังไม่มี: ท่านั่ง (hero_sit.js)"""),
+ 'wolf': dict(
+  title="หมาป่าขาว ลุคใหม่ (ทายาทเฟนรีร์ · Fenrir's Heir)",
+  who='the white wolf warrior in this picture', P='He', p='he', pos='his', weapon='greataxe',
+  face="Keep his face exactly as in the picture: the same bright ice-blue eyes under the same strong brows, the same red "
+       "scar over one brow, the same muzzle and the same calm, confident look, mouth closed.",
+  back_face={'NE': "We see him mostly from behind: the back of his head with both pointed ears, the crimson cape with its "
+                   "white fur edge and only the edge of his muzzle, as in the picture; his face never turns toward us.",
+             'N': "We only see the back of his head with both pointed ears and the crimson cape with its white fur edge "
+                  "across his back, as in the picture; his face never turns toward us."},
+  keep={d: ("His crimson fur-lined cape with the cream fur collar, the dark-steel wolf-head pauldron, the deep-navy tunic "
+            "with the silver knotwork band, the round silver belt buckle, the steel cuff with the broken chain, the leather "
+            "bracers, the fur-cuffed boots, his huge bushy white tail and the greataxe with its silver blade carved with a "
+            "wolf head stay exactly the same.") for d in ('S', 'SE', 'E')}
+       | {d: ("His crimson cape with the white fur edge, the dark-steel wolf-head pauldron, the back of the navy tunic and "
+              "the belt, the broken chain, the fur-cuffed boots, his huge bushy white tail and the greataxe with its silver "
+              "blade stay exactly the same.") for d in ('NE', 'N')},
+  spos=dict.fromkeys(DIRS, 'upright in his hand beside him, its end resting on the ground'),
+  blink=", his ears twitch once, and he blinks once",
+  vis=" His swinging arm and the whole axe stay visible beside his body during the whole swing.",
+  fmt={'pvis': ('', " The raised axe stays visible above his head while he holds the pose."),
+       'chin': (', lifting his chin proudly', '')},
+  inframe="his whole body, the whole greataxe, both ears and his whole tail stay inside the frame.",
+  nofx="No shadow, no flash, no glow, no sparkles, no particles, no smoke, no light trails, no streaks of colour, no red "
+       "energy, no ice, no lightning, no runes in the air, no magic effects, no text.",
+  act={
+   'idle': "Idle loop of {who}. {facing} He stands tall in a firm, ready stance, the greataxe {spos}, his other fist "
+           "clenched at his side with the broken chain hanging from its cuff, and breathes slowly: his chest rises and "
+           "falls, the fur of his collar stirs, the broken chain and the cape sway a little and his big bushy tail sways "
+           "slowly{blink}. The last frame matches the first frame so the clip loops.",
+   'walk': "Walk loop of {who}. {facing} He walks in place, like on a treadmill, toward the way he is facing: firm, springy "
+           "steps (about two steps per second) in his fur-cuffed boots, the greataxe carried upright in his hand beside "
+           "him with its end just above the ground, his other arm swinging a little with the broken chain, his cape and "
+           "his bushy tail bouncing behind him. He does not move across the frame and the ground does not move. The last "
+           "frame matches the first frame so the clip loops.",
+   'attack': "Overhead axe chop of {who}. {facing} He lifts the greataxe up and back over his shoulder in a short wind-up, "
+             "then swings it down and forward toward the way he is facing in one powerful chop until the axe head is low "
+             "in front of him; he holds that pose for a moment, then lifts the axe back up, returns to his starting pose "
+             "and stands still for the rest of the clip. The whole move takes about one second. His feet stay in "
+             "place.{vis} The axe stays exactly as drawn, and the air around it stays empty and plain green in every "
+             "frame. Clean outlines in every frame, no motion blur.",
+   'buff': "Battle pose of {who}. {facing} He grips the greataxe with both hands and raises it high above his head, holding "
+           "the haft level like a bar with the blade at one end, his chest out{chin}; he holds that pose still for about "
+           "one second, then lowers the axe back down to his side, returns to his starting pose and stands still for the "
+           "rest of the clip. His feet stay in place.{pvis} The raised axe stays inside the frame. Clean outlines in "
+           "every frame, no motion blur."},
+  dirname={'S': 'หน้าตรง', 'SE': 'เฉียงหน้า หันขวา', 'E': 'ข้าง หันขวา', 'NE': 'เฉียงหลัง หันขวา', 'N': 'หลัง'},
+  actname={'idle': 'ยืน (idle · วนลูป)', 'walk': 'เดิน (walk · วนลูป)',
+           'attack': 'ฟันขวาน (attack · ตีปกติ + สกิลฟันขวานทุกท่า — เอฟเฟกต์ฟันวิ่งตามหัวขวานทุกเฟรม)',
+           'buff': 'ชูขวาน (buff · บัฟ หอน ร่ายรูน พายุ อัลติ — เกมปล่อยสกิลที่เฟรมชูสุด)'},
+  start='wolf_{n}_{d}.png',
+  header="""เจ้าของเลือกแบบ 1 'ทายาทเฟนรีร์' 2026-11-24 20:28 ("เอาอันนี้ เก็บภาพซ้ายไว้ด้วย จะเอาไปทำภาพในหน้าเลือกตัวละคร") · ชีต `assets/heroes/wolf/sheet_fenrir_heir.webp` · ภาพใหญ่ = หน้าเลือกตัวแล้ว · หน้าตา + พรอมต์ภาพยืน 5 มุม: `WOLF_LOOK_PROMPTS_TH.md` หัวข้อ 'เลือกแล้ว'
+
+## ลำดับงาน
+1. **ภาพยืน 5 มุม** — เจนจากพรอมต์ใน `WOLF_LOOK_PROMPTS_TH.md` ขั้น 1 → เก็บเป็น `assets/heroes/wolf/view_S|SE|E|NE|N.webp`
+2. **ภาพตั้งต้น** — ตัดจากภาพ 5 มุม (คำสั่งข้างล่าง) เป็น `wolf_1_S.png … wolf_5_N.png` (ไม่เก็บในรีโป สร้างใหม่ได้ทุกเมื่อ)
+3. **คลิป 20 ตัว** — พรอมต์ในไฟล์นี้ แนบภาพตั้งต้นของทิศนั้นทุกคลิป
+
+## ภาพตั้งต้น
+- `wolf_<n>_<ทิศ>.png` 900×900 สี่เหลี่ยม แบบฮิปโป / จากัวร์ / มังกร · ขวานยาวเกือบเท่าตัว: ยกข้ามไหล่ตอนง้าง + ยื่นไปข้างหน้าตอนฟัน + ชูเหนือหัวตอนบัฟ → ต้องมีที่ว่างเหนือหัวและสองข้างมากกว่าตัวอื่น · เริ่มที่ ht ~480 (ในคลิป 480p ตัวสูง ~255 px) แล้วดูว่าที่ว่างพอไหม
+```
+V=assets/heroes/wolf; python3 -I tools/dir8cut.py startv <โฟลเดอร์> S=$V/view_S.webp SE=$V/view_SE.webp E=$V/view_E.webp NE=$V/view_NE.webp N=$V/view_N.webp size=900 feet=.9 ht=480 clean=0
+```
+→ start_<ทิศ>.png → ตั้งชื่อใหม่ wolf_1_S … wolf_5_N · ทุกทิศใช้สเกลของมุมหน้า · clean=0 = ไม่ทาจุดเขียวในตัว (ชุดไม่มีสีเขียวเลย นับบนชีตแล้ว 0 จุด · ช่องระหว่างด้ามขวาน แขน หาง เป็นพื้นหลังจริง)
+
+## วิธีใช้
+แนบภาพตั้งต้นของทิศนั้น + วางพรอมต์ทีละตัว → 4 คลิปต่อทิศ (ยืน · เดิน · ฟันขวาน · ชูขวาน) · คลิปละ 3–5 วิ · ไม่ต้องทำทิศซ้าย (เกมกลับด้านเอง) · ส่งกลับเรียง S → SE → E → NE → N ทิศละ ยืน → เดิน → ฟัน → ชู (สลับได้ ดูเองว่าคลิปไหนเป็นท่าอะไร)
+
+## กติกาที่อยู่ในทุกพรอมต์ (บทเรียนจากคลิปลิง / แอคโซลอเติล / มังกรลุคเดิม / แกะ / บาสเต็ด / ฮิปโป / จากัวร์)
+- ประโยคบอกทิศขึ้นต้นทุกพรอมต์ กันโมเดลหมุนตัวหันหากล้อง (มุมหลังโดนบ่อย)
+- ล็อกหน้า (ตาฟ้า คิ้วเข้ม แผลเป็นแดง ปากปิด สีหน้ามั่นใจ — บนชีตภาพใหญ่ยิ้มอ้าปาก ห้ามติดมา) ในมุมที่เห็นหน้า · มุมหลัง (NE, N) ใช้ประโยค 'เห็นแค่หลังหัว หน้าไม่หันมา' แทน ไม่มีกะพริบตา
+- ล็อกของติดตัว: ผ้าคลุมแดงบุขน ปลอกคอขนครีม · เกราะบ่าหัวหมาป่า · เสื้อกรมแถบลายปมเงิน · หัวเข็มขัดเงินกลม · กำไลโซ่ขาด · ปลอกแขนหนัง · บูทขอบขน · หางพวงขาว · ขวานใบเงินสลักหัวหมาป่า
+- เดินอยู่กับที่แบบลู่วิ่ง ~2 ก้าว/วิ ถือขวานตั้งข้างตัว ปลายด้ามลอยเหนือพื้นนิดๆ
+- ฟันขวาน = ยกขวานข้ามไหล่ แล้วฟันลงทแยงไปข้างหน้าจนหัวขวานต่ำอยู่หน้าตัว ค้างนิดนึง ยกกลับ ยืนนิ่งจนจบคลิป · **ไม่ใช้คำว่า attack / slash ในพรอมต์** (คลิปแรกของจากัวร์: โมเดลวาดรอยฟันสีแดง แสงขาว ตัว X ทับท่า) + สั่งให้อากาศรอบขวานเป็นพื้นเขียวเปล่าทุกเฟรม · มุมหลังสั่งให้แขนกับขวานยังเห็นข้างตัว
+- ชูขวาน = จับขวานสองมือ ยกขึ้นเหนือหัว **ด้ามขนานพื้น** (ถ้าชี้ฟ้า ขวานยาวจะล้นกรอบ) ค้างนิ่ง ~1 วิ แล้ววางลงข้างตัว — เกมใช้ทั้งคลิปกับบัฟ หอน ร่ายรูน พายุ อัลติ
+- ห้ามเบลอ · ห้ามแสงแดง น้ำแข็ง สายฟ้า รูนลอย แบบในชีต (เอฟเฟกต์ใส่ด้วยโค้ดในเกม `wolf_fx.js` / `wolf_vfx3.js`) · กล้องนิ่งไม่ซูม · พื้นเขียวตลอด · ตัว + ขวานทั้งเล่ม + หู + หางอยู่ในกรอบตลอด
+- ไม่ระบุมือซ้าย / ขวาในพรอมต์คลิป (ภาพตั้งต้นบอกเองว่าขวาน / โซ่อยู่ฝั่งไหน)""",
+  footer="""## ตอนคลิปมาถึง (โน้ตสำหรับแชตที่ทำต่อ)
+- ตัดด้วย `tools/cliphero.py` + แผนใหม่ `tools/clips/wolf_plan.json` (ดู `hippo_plan.json` / `bastet_plan.json`: loop ช่วงที่ลืมตา, เลือกเฟรมเลี่ยงรอยฟัน / แสง / ฝุ่นที่โมเดลแอบใส่, flipDirs ถ้ามีคลิปหันผิดฝั่ง, perDir ถ้าคลิปบางทิศถ่ายมาเล็ก / ใหญ่กว่า, "unstreak" ลบรอยสีแดงไม่มีเส้นขอบ)
+- **เขียนเป็นไฟล์ใหม่ `assets_wolf.js`** (prefix ใหม่ เช่น WLF + สลับเข้าใน index.html แบบ BST_ART / HIP_ART เฉพาะ `?char=wolf` + รายการ document.write + ตาราง MB ของหน้าโหลด) · **ห้ามเขียนทับ `assets.js`**: มันคือร่างชั่วคราวของจิ้งจอก อนูบิส สิงโต จระเข้ อีกา และ atlas ฐานที่ทุกตัวโหลด
+- **เวลาเฟรมต้องเท่า `assets.js` ทุกทิศ** → จังหวะโดน / ปล่อยสกิลเท่าเดิม bench ไม่เปลี่ยน · เช็ก `python3 tools/fxlab.py hits wolf` ก่อน / หลัง:
+  - attack 12 เฟรม 900 ms · S [80,50,90,50,50,50,70,200,50,50,50,110] contact 6 (โดนที่ 370 ms) · SE [50,50,190,70,90,50,50,50,50,50,90,110] contact 4 (360 ms) · E [80,50,50,100,50,120,60,120,50,50,50,120] contact 6 (450 ms) · N [110,120,50,50,70,50,120,70,50,50,50,110] contact 6 (450 ms) · NE: atlas เดิมให้เกมเล่นแถว E แทน (atkRemap NE→E) → คลิป NE ใหม่ใช้เวลาเฟรม + contact ของ E แล้วตั้ง atkRemap {} (แบบบาสเต็ด) · เฟรม contact = ใบขวานลงถึงจุดฟัน
+  - buff 12 เฟรม 1.4 วิ peak 7 · S [170,50,50,230,50,110,390,50,50,50,50,150] (1,050 ms) · E [70,50,50,50,50,70,170,580,50,50,50,160] (510) · NE [80,60,50,50,50,50,120,160,480,60,60,180] (460) · N [130,50,50,50,50,110,260,450,60,50,50,90] (700) · SE 6 เฟรม [220×6] peak 3 (660) → เฟรม peak = ชูขวานสุด
+  - walk 8 × 100 ms (E สลับ 110 / 90) รอบละ 0.8 วิ · idle 12 เฟรม 2.4 วิ · hurt 7 เฟรม 550 ms
+- **ตำแหน่งหัวขวานทุกเฟรม** (SPR_META.sockets ของท่า attack + buff ใน atlas เดิม; index.html liveSocket → wolf_fx.js spriteSlash / W.slash / เส้นตามอาวุธ / รอยฟันโค้ดของ wolf_vfx3.js วิ่งตามหัวขวาน) → cliphero 'orb' จับเส้นรูนฟ้าที่คมขวาน หรือ orbFix อ่านด้วยตาทุกเฟรมของท่าตี / ท่าชู
+- **ขนาด:** CHAR_SCALE ไม่มีรายการหมาป่า (= 1) และ CHAR_SCALE ของทุกตัววัดเทียบความสูงตอนยืนของหมาป่าเดิม (S idle 196 cell px ที่สเกล atlas .55) → atlas ใหม่ต้องได้ความสูงบนจอเท่าเดิม (เลือก height ของ cliphero ให้ idle S × สเกล META ≈ 108 หรือใส่ CHAR_SCALE.wolf)
+- **แฟชั่น:** `FASHION.head` ใน `assets_fashion.js` = จุดหัวทุกเฟรมของ atlas เดิม (ไม่มีเครื่องมือสร้างในรีโป) → ต้องวัดจุดหัว / หลัง / มือใหม่ แล้วจูนหมวกวาด (PHAT ใน fashion_hats.js: sunfirecrown), หมวกโค้ด (ลอเรล มงกุฎเควทซัล หมวกเก่า Aetherfall), ปีก 12 แบบ (PWING จุดโคนปีก), ผ้าคลุม / ของหลัง, สกินขวาน (วาดทับขวานเดิม → ทำใหม่หรือเอาออก)
+- **สีขน / สีชุดตอนสร้างตัว:** หน้ากาก `assets_fur.js` / `assets_cloth.js` / `assets_skin.js` ทำจาก atlas เดิม (`tools/dye/wolf_masks.py`) → ซ่อนแถบสี (window.HERO_DYE) จนกว่าจะทำหน้ากากใหม่ · เจ้าของเคยสั่งพักงานหน้ากากสีเพราะเสียเวลา — ถามก่อนทำ
+- หน้า HUD = ตัดหัวจาก view_S ผ่าน window.HUD_FACE (หน้า default ของเกมยังเป็นหมาป่าเดิม ให้ตัวที่ยังไม่มีหน้าตัวเองใช้ต่อ) · หน้าเลือกตัว = ภาพใหญ่ของชีตแล้ว (`select.webp`, SELV wolf 2)
+- ยังเป็นลุคเก่า: ไอคอนสกิล 63, พื้นหลังผังสกิล 4 ภาพ, ภาพหน้าโหลด 7 จาก 8 ภาพ · ยังไม่มี: ท่านั่ง (hero_sit.js) · ร่างโคลนทองของ Valhalla's Wrath ใช้สไปร์ทหมาป่าเอง → เปลี่ยนตามเอง"""),
 }
 
 def build(h, d, a):
