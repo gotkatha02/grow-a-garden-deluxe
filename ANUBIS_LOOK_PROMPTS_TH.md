@@ -175,7 +175,9 @@ Design 6 — a mix: the fur and face of design 3 with the outfit of design 1, in
 - หูสูงมาก + ลูกตุ้มห้อย + หางพวงใหญ่ → สั่งให้อยู่ในกรอบหมด มีพื้นเขียวเหลือรอบตัว
 - พรอมต์ออกแบบบอก 'ลูกตุ้มบรอนซ์เข้ม' + 'โซ่พันแขน' แต่วาดเป็นเหล็กสีน้ำตาลเข้ม + โซ่พันกำปั้น → ใช้ตามภาพ
 
-### ขั้น 1 — ภาพยืน 5 มุม ภาพละมุม พื้นเขียว · รอภาพ
+### ขั้น 1 — ภาพยืน 5 มุม ภาพละมุม พื้นเขียว · ✓ มาแล้ว 2026-11-24 21:58
+ได้ภาพครบ 5 มุม (ไม่มีข้อความ) → `assets/heroes/anubis/view_S|SE|E|NE|N.webp` · 1254² พื้นเขียว หันขวาทุกภาพ ตัวสูงเท่ากัน (ต่างกัน 2 %) · ไม่มีสีเขียวบนตัว · กำปั้นพันโซ่อยู่ฝั่งที่สั่งทุกมุม ลูกตุ้มห้อยระดับเข่า มือว่างกำหลวมๆ · ไม่มีตะขอ ไม่มีเอฟเฟกต์ · มุมเฉียงหลังเห็นข้างปาก + ปลายเส้นตาทองนิดเดียว (พรอมต์คลิปบอกตามนี้) · มุมหลังเห็นแค่หูสองข้าง ผ้าโพก ผ้าคลุมไหล่ · ข้างล่างเก็บไว้ถ้าจะเจนใหม่
+
 วิธีใช้:
 1. ส่งต่อในแชต ChatGPT เดิมที่เจนชีตนี้ (มันจำตัวได้) แนบชีตไปกับพรอมต์ 0 อีกครั้ง · ถ้าเปิดแชตใหม่ แนบชีต + ภาพปกแคมป์ไฟ (`keyart_campfire_ld5.jpg`)
 2. ส่งพรอมต์ 0 → รอมันตอบ ready
@@ -236,7 +238,7 @@ Picture 4 — BACK THREE-QUARTER view: he is turned away from us, facing up and 
 Picture 5 — BACK view: his back faces us, like the back view on the sheet: the back of his head with both tall ears, the striped headcloth covering the back of his head down to the white shoulder cape, the cape with its gold zigzag band across his upper back, the back of the gold belt and of the navy kilt, and his bushy tail hanging down in the middle; no face. His right fist with the gold chain is on the RIGHT side of the picture, with the spiked ball hanging beside his leg; his empty hand is on the LEFT side.
 ```
 
-### ขั้น 2 — ภาพตั้งต้น + คลิปท่า 20 ตัว (รอภาพ 5 มุม)
+### ขั้น 2 — ภาพตั้งต้น + คลิปท่า 20 ตัว · ภาพตั้งต้นส่งแล้ว 2026-11-24 (เท้าที่ 88 % แบบแรด) · รอคลิป
 ภาพ 5 มุมมาแล้ว → ตัดภาพตั้งต้น `anubis_1_S.png … anubis_5_N.png` (`tools/dir8cut.py startv`, คำสั่งอยู่ใน `ANUBIS_CLIP_PROMPTS_TH.md`) ส่งพร้อม `ANUBIS_CLIP_PROMPTS_TH.md` (คลิป 20 ตัว ยืน · เดิน · เหวี่ยงลูกตุ้ม · ชูกำปั้น × 5 ทิศ สร้างจาก `python3 tools/clip_prompts.py anubis`)
 
 ### ขั้น 3 เป็นต้นไป

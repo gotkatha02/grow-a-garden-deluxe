@@ -628,8 +628,8 @@ V=assets/heroes/rhino; python3 -I tools/dir8cut.py startv <โฟลเดอร
   face="Keep his face exactly as in the picture: the same narrow gold eyes with the gold kohl lines, the same thin gold "
        "band across his brow, the same black muzzle and the same calm, confident small smile, mouth closed.",
   back_face={'NE': "We see him mostly from behind: the back of his head with both tall ears, the striped headcloth covering "
-                   "the back of his head and the white shoulder cape; of his face only the edge of his muzzle on the right, "
-                   "as in the picture; his face never turns toward us.",
+                   "the back of his head and the white shoulder cape; of his face only the side of his muzzle and the tip of "
+                   "one gold eye line on the right, as in the picture; his face never turns toward us.",
              'N': "We only see the back of his head with both tall ears, the striped headcloth covering the back of his "
                   "head and the white shoulder cape across his upper back, as in the picture; his face never turns toward us."},
   keep={d: ("His tall ears, the thin gold band across his brow, the deep-blue-and-gold striped headcloth, the white shoulder "
@@ -678,14 +678,14 @@ V=assets/heroes/rhino; python3 -I tools/dir8cut.py startv <โฟลเดอร
   header="""เจ้าของเลือกแบบ 5 'อนูบิสโฉมใหม่' 2026-11-24 21:27 ("รูปซ้ายเอาไว้ทำ หน้าเลิอกตัวด้วย") · ชีต `assets/heroes/anubis/sheet_reborn.webp` · ภาพใหญ่ = หน้าเลือกตัวแล้ว · หน้าตา + พรอมต์ภาพยืน 5 มุม: `ANUBIS_LOOK_PROMPTS_TH.md` หัวข้อ 'เลือกแล้ว'
 
 ## ลำดับงาน
-1. **ภาพยืน 5 มุม** — รอภาพ (พรอมต์ใน `ANUBIS_LOOK_PROMPTS_TH.md` หัวข้อ 'เลือกแล้ว') → `assets/heroes/anubis/view_S|SE|E|NE|N.webp`
-2. **ภาพตั้งต้น** — ตัดจากภาพ 5 มุม (คำสั่งข้างล่าง) เป็น `anubis_1_S.png … anubis_5_N.png` (ไม่เก็บในรีโป สร้างใหม่ได้ทุกเมื่อ)
-3. **คลิป 20 ตัว** — พรอมต์ในไฟล์นี้ แนบภาพตั้งต้นของทิศนั้นทุกคลิป
+1. **ภาพยืน 5 มุม ✓** (2026-11-24 21:58 เจ้าของส่งมา 5 ภาพ ไม่มีข้อความ) → `assets/heroes/anubis/view_S|SE|E|NE|N.webp` · 1254² พื้นเขียว หันขวาทุกภาพ ตัวสูง 1173–1196 px (ต่างกัน 2 %) · ไม่มีสีเขียวบนตัว (จุดเขียวอ่อนๆ = ขอบเส้นที่ติดพื้นหลัง · ช่องเขียวในตัว = รูห่วงโซ่ / ระหว่างแขนกับตัว เป็นพื้นหลังจริง) · กำปั้นพันโซ่อยู่ฝั่งถูกทุกมุม (หน้า / เฉียงหน้า: ซ้ายภาพ · ข้าง: ฝั่งใกล้ · เฉียงหลัง / หลัง: ขวาภาพ) ลูกตุ้มห้อยระดับเข่า มือว่างกำหลวมๆ · มุมเฉียงหลังเห็นข้างปากด้านขวา + ปลายเส้นตาทองนิดเดียว · มุมหลังเห็นหูสองข้าง ผ้าโพกคลุมหลังหัวลงมาถึงผ้าคลุมไหล่ · ไม่มีตะขอ ไม่มีเอฟเฟกต์
+2. **ภาพตั้งต้น ✓** ส่งแล้ว 2026-11-24 → `anubis_1_S.png … anubis_5_N.png` (ไม่เก็บในรีโป สร้างใหม่ด้วยคำสั่งข้างล่างได้ทุกเมื่อ)
+3. **คลิป 20 ตัว** — รอคลิป · พรอมต์ในไฟล์นี้ แนบภาพตั้งต้นของทิศนั้นทุกคลิป
 
 ## ภาพตั้งต้น
-- `anubis_<n>_<ทิศ>.png` 900×900 สี่เหลี่ยม แบบฮิปโป / จากัวร์ / หมาป่า / แรด · หูสูงมาก + ต้องมีที่ให้เหวี่ยงลูกตุ้มข้ามไหล่ ฟาดไปข้างหน้า และชูกำปั้นเหนือหัว (ลูกตุ้มห้อยข้างหัว) → เริ่มที่ ht ~480 (ในคลิป 480p ตัวสูง ~255 px) แล้วดูว่าซ้าย / ขวา / เหนือหูว่างพอไหม
+- `anubis_<n>_<ทิศ>.png` 900×900 สี่เหลี่ยม แบบฮิปโป / จากัวร์ / หมาป่า / แรด · หูสูงมาก + ต้องมีที่ให้เหวี่ยงลูกตุ้มข้ามไหล่ ฟาดไปข้างหน้า และชูกำปั้นเหนือหัว (ลูกตุ้มห้อยข้างหัว) → ht 480 · เท้าที่ 88 % แบบแรด (มุมหน้า 'ต่ำตรงหน้า' อยู่ต่ำกว่าเท้าในภาพ ลูกตุ้มต้องมีที่ลง) · ผลที่วัดได้ (สเกล .404 ทุกทิศ): ตัวสูง 475–483 px = ~253–258 px ในคลิป 480p · เหนือหูว่าง .64–.67 เท่าตัว · ซ้าย / ขวา S .62 / .70 · SE .65 / .69 · E .69 / .73 · NE .70 / .64 · N .69 / .65 · ใต้เท้า 107–108 px = .22 เท่าตัว
 ```
-V=assets/heroes/anubis; python3 -I tools/dir8cut.py startv <โฟลเดอร์> S=$V/view_S.webp SE=$V/view_SE.webp E=$V/view_E.webp NE=$V/view_NE.webp N=$V/view_N.webp size=900 feet=.9 ht=480 clean=0
+V=assets/heroes/anubis; python3 -I tools/dir8cut.py startv <โฟลเดอร์> S=$V/view_S.webp SE=$V/view_SE.webp E=$V/view_E.webp NE=$V/view_NE.webp N=$V/view_N.webp size=900 feet=.88 ht=480 clean=0
 ```
 → start_<ทิศ>.png → ตั้งชื่อใหม่ anubis_1_S … anubis_5_N · ทุกทิศใช้สเกลของมุมหน้า (ใส่ S ก่อนเสมอ) · clean=0 = ไม่ทาจุดเขียวในตัว (ชุดไม่มีสีเขียวเลย · แถบผ้า / กระโปรงน้ำเงินมากกว่าเขียวทุกจุด · ช่องในห่วงโซ่ ระหว่างแขนกับตัว ระหว่างขา เป็นพื้นหลังจริง)
 
