@@ -1,0 +1,522 @@
+{
+ "_note": "Bastet curse priestess sprite plan — owner's 20 clips 2026-11-24 16:23 ('ของบาสเตดเพิ่มเข้าเกมให้หน่อย'), 480x640 24 fps green, made from bastet_1_S … bastet_5_N.png (900², body 540); uploads 1000001199–1215 + 1221–1223 came buff, attack, walk, idle per direction SE, S, E, NE, N. All face right, one scale (no perDir), no camera zoom (feet widths constant). attack / buff frame counts, contact / peak and frame TIMES = the wolf atlas (assets.js) she was benched on, per direction: attack contact 6 (SE 4), NE gets E's row because the wolf atlas remapped NE attacks to E (Bastet's atlas sets atkRemap {}); buff peak 7 (SE: 6 frames, peak 3) — every hit / cast release keeps its time. Only the normal attack uses the attack clip (bStaff plays it from contact−3): pull the free hand back, thrust the open palm at the contact frame. Frames skip the baked effects (attack: E 25–32 blue streaks, NE 27–30 flash, N 25–33 cyan ring; buff: E 17–26 gold halo, N 0–3 cyan swirl) and blinks (S buff 58, SE buff 5–7 / 72). Idle loops with the eyes open (S 19–28, SE 7–12 / 51–55 / 103–108, E 14–36 have closed eyes): S 57+46, SE 57+29, E 46+59, NE 81+42, N 67+36; walk loops by best self-match: S 92+24, SE 68+28, E 72+29, NE 50+30, N 81+25. Sockets = the pale cyan flame over her book in every state (orbAll; orbMask with a red floor so the turquoise gems are not taken), attack frames from the pull-back to the hold = her PALM, read by eye (orbFix, placed-cell px of this build) — the page of her normal attack forms in the hand and is flung from the thrust. Rebuild: python3 -I tools/cliphero.py tools/clips/bastet_plan.json assets_bastet.js BST (clip paths = that chat's uploads).",
+ "height": 230,
+ "flip": false,
+ "orb": true,
+ "orbAll": true,
+ "orbMask": {
+  "b": 200,
+  "g": 190,
+  "r": 70,
+  "br": 20,
+  "bg": -20,
+  "min": 60
+ },
+ "orbLerp": true,
+ "loop": {
+  "idle/S": [
+   57,
+   46
+  ],
+  "idle/SE": [
+   57,
+   29
+  ],
+  "idle/E": [
+   46,
+   59
+  ],
+  "idle/NE": [
+   81,
+   42
+  ],
+  "idle/N": [
+   67,
+   36
+  ],
+  "walk/S": [
+   92,
+   24
+  ],
+  "walk/SE": [
+   68,
+   28
+  ],
+  "walk/E": [
+   72,
+   29
+  ],
+  "walk/NE": [
+   50,
+   30
+  ],
+  "walk/N": [
+   81,
+   25
+  ]
+ },
+ "attack": {
+  "SE": {
+   "frames": [
+    14,
+    18,
+    22,
+    25,
+    28,
+    30,
+    34,
+    40,
+    78,
+    82,
+    86,
+    90
+   ],
+   "contact": 4,
+   "dur": [
+    50,
+    50,
+    190,
+    70,
+    90,
+    50,
+    50,
+    50,
+    50,
+    50,
+    90,
+    110
+   ]
+  },
+  "S": {
+   "frames": [
+    15,
+    17,
+    20,
+    23,
+    25,
+    28,
+    31,
+    34,
+    38,
+    76,
+    80,
+    86
+   ],
+   "contact": 6,
+   "dur": [
+    80,
+    50,
+    90,
+    50,
+    50,
+    50,
+    70,
+    200,
+    50,
+    50,
+    50,
+    110
+   ]
+  },
+  "E": {
+   "frames": [
+    10,
+    13,
+    15,
+    17,
+    19,
+    21,
+    33,
+    36,
+    46,
+    62,
+    66,
+    72
+   ],
+   "contact": 6,
+   "dur": [
+    80,
+    50,
+    50,
+    100,
+    50,
+    120,
+    60,
+    120,
+    50,
+    50,
+    50,
+    120
+   ]
+  },
+  "NE": {
+   "frames": [
+    10,
+    14,
+    16,
+    18,
+    20,
+    22,
+    25,
+    31,
+    34,
+    58,
+    62,
+    66
+   ],
+   "contact": 6,
+   "dur": [
+    80,
+    50,
+    50,
+    100,
+    50,
+    120,
+    60,
+    120,
+    50,
+    50,
+    50,
+    120
+   ]
+  },
+  "N": {
+   "frames": [
+    13,
+    16,
+    18,
+    20,
+    22,
+    24,
+    34,
+    36,
+    40,
+    80,
+    84,
+    88
+   ],
+   "contact": 6,
+   "dur": [
+    110,
+    120,
+    50,
+    50,
+    70,
+    50,
+    120,
+    70,
+    50,
+    50,
+    50,
+    110
+   ]
+  }
+ },
+ "buff": {
+  "SE": {
+   "frames": [
+    4,
+    11,
+    14,
+    18,
+    68,
+    76
+   ],
+   "peak": 3,
+   "dur": [
+    220,
+    220,
+    220,
+    220,
+    220,
+    220
+   ]
+  },
+  "S": {
+   "frames": [
+    3,
+    6,
+    12,
+    13,
+    15,
+    16,
+    18,
+    40,
+    56,
+    61,
+    63,
+    66
+   ],
+   "peak": 7,
+   "dur": [
+    170,
+    50,
+    50,
+    230,
+    50,
+    110,
+    390,
+    50,
+    50,
+    50,
+    50,
+    150
+   ]
+  },
+  "E": {
+   "frames": [
+    4,
+    8,
+    10,
+    12,
+    13,
+    14,
+    16,
+    44,
+    14,
+    12,
+    10,
+    90
+   ],
+   "peak": 7,
+   "dur": [
+    70,
+    50,
+    50,
+    50,
+    50,
+    70,
+    170,
+    580,
+    50,
+    50,
+    50,
+    160
+   ]
+  },
+  "NE": {
+   "frames": [
+    4,
+    9,
+    10,
+    11,
+    12,
+    13,
+    15,
+    18,
+    40,
+    58,
+    62,
+    68
+   ],
+   "peak": 7,
+   "dur": [
+    80,
+    60,
+    50,
+    50,
+    50,
+    50,
+    120,
+    160,
+    480,
+    60,
+    60,
+    180
+   ]
+  },
+  "N": {
+   "frames": [
+    6,
+    10,
+    12,
+    13,
+    14,
+    15,
+    16,
+    18,
+    60,
+    64,
+    68,
+    72
+   ],
+   "peak": 7,
+   "dur": [
+    130,
+    50,
+    50,
+    50,
+    50,
+    110,
+    260,
+    450,
+    60,
+    50,
+    50,
+    90
+   ]
+  }
+ },
+ "clips": {
+  "idle": {
+   "SE": "/mnt/user-data/uploads/ae379f54-1000001202.mp4",
+   "S": "/mnt/user-data/uploads/a5b2a338-1000001206.mp4",
+   "E": "/mnt/user-data/uploads/5c7ca1d1-1000001210.mp4",
+   "NE": "/mnt/user-data/uploads/6895cf51-1000001214.mp4",
+   "N": "/mnt/user-data/uploads/ae6c8be8-1000001223.mp4"
+  },
+  "walk": {
+   "SE": "/mnt/user-data/uploads/7823416b-1000001201.mp4",
+   "S": "/mnt/user-data/uploads/54fd09c2-1000001205.mp4",
+   "E": "/mnt/user-data/uploads/69f5acf9-1000001209.mp4",
+   "NE": "/mnt/user-data/uploads/baa7d75a-1000001213.mp4",
+   "N": "/mnt/user-data/uploads/ff30939e-1000001222.mp4"
+  },
+  "attack": {
+   "SE": "/mnt/user-data/uploads/590a87a7-1000001200.mp4",
+   "S": "/mnt/user-data/uploads/ff880a71-1000001204.mp4",
+   "E": "/mnt/user-data/uploads/de1a82e4-1000001208.mp4",
+   "NE": "/mnt/user-data/uploads/5cbd31ec-1000001212.mp4",
+   "N": "/mnt/user-data/uploads/c3f1a85b-1000001221.mp4"
+  },
+  "buff": {
+   "SE": "/mnt/user-data/uploads/ddf47620-1000001199.mp4",
+   "S": "/mnt/user-data/uploads/8ecdae14-1000001203.mp4",
+   "E": "/mnt/user-data/uploads/d312dbfc-1000001207.mp4",
+   "NE": "/mnt/user-data/uploads/34f7bf8f-1000001211.mp4",
+   "N": "/mnt/user-data/uploads/632d3c97-1000001215.mp4"
+  }
+ },
+ "orbFix": {
+  "attack/S": {
+   "3": [
+    314,
+    328
+   ],
+   "4": [
+    321,
+    327
+   ],
+   "5": [
+    334,
+    316
+   ],
+   "6": [
+    330,
+    315
+   ],
+   "7": [
+    333,
+    315
+   ],
+   "8": [
+    333,
+    317
+   ]
+  },
+  "attack/SE": {
+   "1": [
+    312,
+    338
+   ],
+   "2": [
+    321,
+    313
+   ],
+   "3": [
+    347,
+    315
+   ],
+   "4": [
+    415,
+    288
+   ],
+   "5": [
+    414,
+    291
+   ],
+   "6": [
+    415,
+    290
+   ]
+  },
+  "attack/E": {
+   "3": [
+    338,
+    320
+   ],
+   "4": [
+    339,
+    319
+   ],
+   "5": [
+    333,
+    321
+   ],
+   "6": [
+    416,
+    285
+   ],
+   "7": [
+    419,
+    285
+   ],
+   "8": [
+    419,
+    283
+   ]
+  },
+  "attack/NE": {
+   "3": [
+    372,
+    330
+   ],
+   "4": [
+    372,
+    330
+   ],
+   "5": [
+    374,
+    330
+   ],
+   "6": [
+    419,
+    273
+   ],
+   "7": [
+    428,
+    273
+   ],
+   "8": [
+    430,
+    271
+   ]
+  },
+  "attack/N": {
+   "3": [
+    309,
+    345
+   ],
+   "4": [
+    305,
+    345
+   ],
+   "5": [
+    305,
+    312
+   ],
+   "6": [
+    304,
+    298
+   ],
+   "7": [
+    306,
+    298
+   ],
+   "8": [
+    308,
+    298
+   ]
+  }
+ }
+}

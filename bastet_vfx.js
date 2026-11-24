@@ -56,9 +56,21 @@ const self=f=>{const o=window.__BASELF;window.__BASELF=1;try{return f();}finally
 /* one particle system per layer and skill (an element gem on a skill tints its own particles only) */
 const SC={};function S1(l='top'){const k=l+'|'+(window.SKCTX||'');let s=SC[k];if(!s||!s.p||!fx.includes(s))s=SC[k]=sys(l,.25);return s;}
 const CS=()=>typeof CHAR_SCALE==='number'?CHAR_SCALE:1;
-/* the hand (the placeholder sprite's weapon socket = the tome / staff head) and the top of her head */
-const tip=()=>{const s=player.socket&&player.socket.w;return s&&isFinite(s[0])&&isFinite(s[2])?[s[0],s[1],s[2]]:[player.x+Math.cos(player.phi)*12,player.y+Math.sin(player.phi)*9,56+(player.z||0)];};
-const headZ=()=>(player.z||0)+80*CS();
+/* the hand and the top of her head. Her own sprite (assets_bastet.js = the owner's clips 2026-11-24, BST_ART) has a socket on
+   every frame: the blue flame over her book, and her palm while the normal attack pulls back and thrusts. The sprite is drawn
+   CHAR_SCALE× about her feet but the engine's live socket is not scaled, so it is scaled here (the hand glow and every piece that
+   starts at tip() then sit on the flame / the palm). Without her sprite: the placeholder's weapon socket, as before. */
+const OWN=typeof BST_ART!=='undefined'&&!!BST_ART;
+if(OWN&&typeof liveSocket==='function'){const LS0=liveSocket;liveSocket=function(){const s=LS0.apply(this,arguments),k=CS();if(!s||k===1)return s;
+  const [x,y]=P(player.x,player.y,player.z||0),f=q=>[x+(q[0]-x)*k,y+(q[1]-y)*k],head=f(s.head),grip=f(s.grip);return {head,grip,w:r2w(head),inner:[(head[0]+grip[0])/2,(head[1]+grip[1])/2]};};}
+/* her painted sprite has fine detail: the coloured rim the engine draws round the hero during an action (player.glow) is softened ×.45,
+   as the dragon / lion do (the hand glow at the socket stays) */
+if(OWN&&typeof drawPlayerAura==='function'){const DPA0=drawPlayerAura;drawPlayerAura=function(){const g=player.glow;if(!g||!g.k)return DPA0.apply(this,arguments);
+  const k0=g.k;g.k=k0*.45;try{return DPA0.apply(this,arguments);}finally{g.k=k0;}};}
+function ownSock(){try{const fr=playerFrame(),q=fr&&sockAt(fr.st,fr.d,fr.f);if(!q||!q.head)return null;const k=SPR*CS(),pv=SPR_META.pivot,m=isMir(fr.d)?-1:1;
+    return [player.x+(q.head[0]-pv.x)*k*m,player.y+.5,(player.z||0)+(pv.y-q.head[1])*k];}catch(_){return null;}}
+const tip=()=>{const s=player.socket&&player.socket.w;if(s&&isFinite(s[0])&&isFinite(s[2]))return [s[0],s[1],s[2]];const o=OWN&&ownSock();return o||[player.x+Math.cos(player.phi)*12,player.y+Math.sin(player.phi)*9,56+(player.z||0)];};
+const headZ=()=>{if(OWN){let hy=247;try{hy=SPR_META.states.idle.dirs.S.f[0][5]+6;}catch(_){}return (player.z||0)+(SPR_META.pivot.y-hy)*SPR*CS();}return (player.z||0)+80*CS();};
 const nearAt=(x,y,r=36)=>{let b=null,d=r;for(const e of enemies){if(e.dead)continue;const q=Math.hypot(e.x-x,e.y-y);if(q<d){d=q;b=e;}}return b;};
 const bA=k=>{const b=player.buffs&&player.buffs[k];if(!b)return 0;return cl((b.total-b.t)/.25,0,1)*cl(b.t/.4,0,1);};   /* a buff piece fades in .25 s, out over its last .4 s */
 
@@ -615,11 +627,12 @@ class SunMark{constructor(o){Object.assign(this,{t:0,layer:'ground',life:.4},o);
     ctx.globalCompositeOperation='lighter';ctx.globalAlpha=.6*k;ctx.strokeStyle='#ff5a3a';ctx.lineWidth=3;ctx.beginPath();ctx.arc(0,0,R,0,TAU);ctx.stroke();ctx.restore();}}
 
 /* ---------------------------------------------------------------------
-   11. NORMAL ATTACK — a quick cast (the 'buff' clip timed like the axe swing it replaces): a page forms at her hand and flies
+   11. NORMAL ATTACK — her own sprite: the palm pulls back and thrusts (attack clip); the placeholder: a quick cast (the 'buff' clip timed
+   like the axe swing it replaces). A page forms at her hand and flies
    --------------------------------------------------------------------- */
 const MB0=mkBasic;mkBasic=function(tgt){const a=MB0.apply(this,arguments);if(!a||!a.seq||a.key!=='basic')return a;try{
     const tC=a.windup,tot=seqTotal(a.seq),d2=player.dir,b=seq('buff',d2,0,null,1),pk=bPeak(d2),t1=Math.max(.001,seqTimeAt(b,pk)),t2=Math.max(.001,seqTotal(b)-t1);
-    if(b.length>pk&&tot>tC)a.seq=b.map((q,i)=>({st:q.st,d:q.d,f:q.f,ms:q.ms*(i<pk?tC/t1:(tot-tC)/t2)}));
+    if(!OWN&&b.length>pk&&tot>tC)a.seq=b.map((q,i)=>({st:q.st,d:q.d,f:q.f,ms:q.ms*(i<pk?tC/t1:(tot-tC)/t2)}));   /* her own sprite keeps its palm thrust (the page forms in the hand) */
     const T=rt(tC),gd=bAvatar(),big=/Nine Pages/.test(a.name||'');
     a.events.push({t:0,f:()=>{sprite({layer:'top',follow:player,life:T+.03,fi:.03,fo:.03,paint:f=>{const h=tip(),[x,y]=P(h[0],h[1],h[2]),s=cl(f.t/Math.max(.04,T),0,1);orb(x,y,1.5+3.5*eO(s),gd?GOLD:SOUL,f.t,1);art(gd?'pageG':'page',x,y-2,6+8*eO(s),{a:s,rot:f.t*4});}});
         if(big)gather({life:T,pal:gd?GOLD:SOUL,R1:10,n:18,rad:50,pics:['scrap0','scrap1','scrap2']});}},

@@ -22,6 +22,8 @@ Optional (2026-11-24, sheep priestess): "orbMask":{"b":140,"br":70,"bg":40,"g":0
   "orbFix":{"attack/S":{"4":[x,y], …}} (orb read by eye where the clip blurs / turns / hides it, in PLACED-CELL px of this
   build — re-read them after changing height / perDir / frames; null = treat as not found),
   "orbLerp":true (a frame without an orb sits on the line between the nearest frames that have one, instead of borrowing one).
+Optional (2026-11-24, Bastet): "orbMask":{…,"r":70} = red > r too (her orb is the PALE cyan flame over her book, B ≈ G, red
+  80–140, while the turquoise gems are red < 50 — "bg" may then be negative, e.g. -20); default -1 = no red test.
 Keying: soft green matte + despill + speck removal (keeps the body and anything touching it, e.g. the sword).
 Idle / walk loops are found automatically (period of best self-match); hurt is made from the idle pose."""
 import sys, io, json, base64, math, subprocess, numpy as np
@@ -149,7 +151,7 @@ def hurt_from(c, d):
     return F
 
 CELLS = {}
-OM = dict({'b': 165, 'br': 60, 'bg': 15, 'g': 110, 'min': 40}, **plan.get('orbMask', {}))
+OM = dict({'b': 165, 'br': 60, 'bg': 15, 'g': 110, 'min': 40, 'r': -1}, **plan.get('orbMask', {}))
 ORB_ALL = plan.get('orb') and plan.get('orbAll')
 OPv = plan.get('orbPale'); OP = dict({'b': 205, 'g': 190, 'br': 8, 'gb': -4, 'min': 25}, **(OPv if isinstance(OPv, dict) else {})) if OPv else None
 def orb_pick(m, mn, prev):
@@ -167,7 +169,7 @@ def orb_at(c_, prev):
     """centre of the held orb / water burst in a placed cell: compact cyan-blue blob (rings and spray are thin or tiny);
     with "orbPale" a white / pale-blue glowing orb is tried when no blue one is found"""
     A = np.asarray(c_).astype(np.int16)
-    m = (A[..., 3] > 120) & (A[..., 2] > OM['b']) & (A[..., 2] - A[..., 0] > OM['br']) & (A[..., 1] > OM['g']) & (A[..., 2] - A[..., 1] > OM['bg'])   # blue, not the teal gems
+    m = (A[..., 3] > 120) & (A[..., 2] > OM['b']) & (A[..., 2] - A[..., 0] > OM['br']) & (A[..., 1] > OM['g']) & (A[..., 2] - A[..., 1] > OM['bg']) & (A[..., 0] > OM['r'])   # blue, not the teal gems
     best = orb_pick(m, OM['min'], prev)
     if best is None and OP:
         m = (A[..., 3] > 120) & (A[..., 2] > OP['b']) & (A[..., 1] > OP['g']) & (A[..., 2] - A[..., 0] >= OP['br']) & (A[..., 2] - A[..., 1] >= OP['gb'])
