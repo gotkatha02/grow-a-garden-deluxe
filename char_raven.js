@@ -29,7 +29,7 @@ const RV_BAL={
     vnSpear:{chain:[2,3,3,4],hit:1.0},
     vnEcho:{dmg:[.3,.45,.6]},
     vnCloak:{T:4,block:[15,25,35],cd:16,mp:12},
-    vnDive:{dist:[180,210,240],dmg:1.5,R:70,cd:9,mp:12,range:240},
+    vnDive:{dist:[180,210,240],dmg:1.5,R:95,cd:9,mp:12,range:240},
     vnNights:{T:6,hp:[1.0,1.5],cd:24,mp:10},
     vnMimir:{sp:[.5,1,1.5,2]},
     vnEye:{R:180,T:8,flat:[15,25,35],cd:20,mp:14},
@@ -38,7 +38,7 @@ const RV_BAL={
     vaShadow:{dmg:[.4,.6,.8],max:3},
     vaRecall:{dmg:[.5,.8],gap:.12,cd:12,mp:14,range:220},
     vaVivid:{dmg:[1.2,1.8],R:120},
-    vaSweep:{dmg:[1.3,1.7],R:120,cd:8,mp:14,range:110},
+    vaSweep:{dmg:[1.3,1.7],R:150,cd:8,mp:14,range:110},
     vaWing:{slow:[1.5,2.5],push:60},
     vaSwap:{dmg:[1.4,1.8],mun:[.6,.8],cd:10,mp:14,range:260},
     vaPincer:{},
@@ -46,22 +46,22 @@ const RV_BAL={
     vaReturn:{dmg:[.8,1.1]},
     vaWar:{atk:[8,14,20]},
     vaParry:{T:1,dmg:2.4,cd:14,mp:12},
-    vaValhalla:{n:10,R:220,dmg:[1.0,1.4],fin:2.5,cd:60,mp:50},
+    vaValhalla:{n:14,R:260,sp:70,dmg:[.72,1.0],fin:2.5,cd:60,mp:50},
     vaEternal:{m:1.6},
     // ---- B · Huginn
     vbBolt:{dmg:[1.2,1.4,1.6,1.8],copy:[.5,.6,.7,.8],cd:4,mp:10,range:360},
     vbScribe:{dmg:[1.2,1.6,2.0],R:110},
-    vbFlight:{dmg:[1.0,1.4],R:90,cd:8,mp:12,range:360},
+    vbFlight:{dmg:[1.0,1.4],R:120,cd:8,mp:12,range:360},
     vbPerch:{dmg:[.35,.5],R:220},
-    vbCircle:{dmg:[1.8,2.4],copy:[.8,1.0],R:90,delay:.6,cd:9,mp:14,range:320},
+    vbCircle:{dmg:[1.8,2.4],copy:[.8,1.0],R:120,delay:.6,cd:9,mp:14,range:320},
     vbBind:{root:[1,1.5]},
-    vbStorm:{dmg:[.5,.7],R:120,T:4,tick:.5,cd:16,mp:20},
+    vbStorm:{dmg:[.5,.7],R:155,T:4,tick:.5,cd:16,mp:20},
     vbGale:{scale:1.4,slow:1},
     vbTether:{dmg:[.4,.55],T:3,tick:.3,w:24,cd:14,mp:18},
     vbSnap:{dmg:2.0},
     vbMind:{matk:[8,14,20]},
     vbWard:{n:2,cd:18,mp:14},
-    vbRunes:{n:9,R:240,dmg:[1.6,2.2],gap:.16,cd:60,mp:50},
+    vbRunes:{n:9,R:280,sp:75,dmg:[1.6,2.2],gap:.16,cd:60,mp:50},
     vbFinal:{dmg:3.0,R:140},
     // ---- C · Herald of the Allfather
     vxSpear:{dmg:1.8,len:150},
@@ -107,7 +107,7 @@ const RV_DEFS=[
  {key:'vaReturn',id:'RV-A10',name:'Returning Spear',br:'A',row:6,max:2,passive:1,enh:'vaGungnir',pre:[['vaGungnir',1]],d:'(ต่อยอด Gungnir Throw) มูนินรับหอกที่ปลายแนวแล้วขว้างกลับ โดนซ้ำทั้งแนว',lv:i=>[`${vX(RB.vaReturn.dmg[i-1])}`]},
  {key:'vaWar',id:'RV-A11',name:'Raven of War',br:'A',row:7,max:3,passive:1,d:'(Passive) ทุกความทรงจำที่ถืออยู่ ATK เพิ่ม',lv:i=>[`ATK +${RB.vaWar.atk[i-1]} ต่อความทรงจำ`]},
  {key:'vaParry',id:'RV-A12',name:'Wing Parry',br:'A',row:7,max:1,type:'self',d:'ตั้งปีกรับ 1 วิ ถ้าโดนตีประชิด ปัดแล้วแทงสวน และจดท่าสวนลงความทรงจำ',lv:()=>[`สวน ${vX(RB.vaParry.dmg)}`,`Cooldown ${RB.vaParry.cd} วิ`]},
- {key:'vaValhalla',id:'RV-A13',name:'Memories of Valhalla',br:'A',row:8,max:2,type:'self',ult:1,d:'ULTIMATE A · มูนินปลุกความทรงจำของเหล่าวีรชนแห่งวัลฮัลลา หอกวิญญาณแทง 10 ครั้งรอบตัว จบด้วยมูนินแทงใหญ่กลางวง',lv:i=>[`${vX(RB.vaValhalla.dmg[i-1])} × ${RB.vaValhalla.n} รัศมี ${RB.vaValhalla.R}`,`แทงสุดท้าย ${vX(RB.vaValhalla.fin)}`,`Cooldown ${RB.vaValhalla.cd} วิ`]},
+ {key:'vaValhalla',id:'RV-A13',name:'Memories of Valhalla',br:'A',row:8,max:2,type:'self',ult:1,d:'ULTIMATE A · มูนินปลุกความทรงจำของเหล่าวีรชนแห่งวัลฮัลลา หอกวิญญาณแทงรัว 14 ครั้งรอบตัววงกว้าง (แต่ละครั้งกระแทกรอบเป้าด้วย) จบด้วยมูนินแทงใหญ่กลางวง',lv:i=>[`${vX(RB.vaValhalla.dmg[i-1])} × ${RB.vaValhalla.n} รัศมี ${RB.vaValhalla.R}`,`แทงสุดท้าย ${vX(RB.vaValhalla.fin)}`,`Cooldown ${RB.vaValhalla.cd} วิ`]},
  {key:'vaEternal',id:'RV-A14',name:'Eternal Memory',br:'A',row:8,max:1,passive:1,enh:'vaValhalla',pre:[['vaValhalla',1]],d:'(ต่อยอด Memories of Valhalla) จบอัลติ ความทรงจำเต็มทุกช่องด้วยท่าวัลฮัลลา',lv:()=>[`ความทรงจำละ ${vX(RB.vaEternal.m)}`]},
  // ---------------- B · HUGINN, THOUGHT OF ODIN ----------------
  {key:'vbBolt',id:'RV-G01',name:'Rune Bolt',br:'B',row:1,max:4,type:'melee',d:"ยิงกระสุนรูนติดตามเป้า ฮูกินยิงอีกลูกใส่ตัวที่ใกล้เขาที่สุด (อัปสลับเลเวลกับ Huginn's Flight)",lv:i=>[`เรา ${vM(RB.vbBolt.dmg[i-1])} · ฮูกิน ${vM(RB.vbBolt.copy[i-1])}`,`Cooldown ${RB.vbBolt.cd} วิ`]},
@@ -488,9 +488,9 @@ function mkVaParry(c){const T=RB.vaParry.T,s=hold('buff',player.dir,2,T*1000);RV
 function mkVaValhalla(c){const n=RB.vaValhalla.n,gap=.12,R=RB.vaValhalla.R;
   return buffAct({key:'vaValhalla',name:'Memories of Valhalla',speed:1.4,glow:RVC.violet,events:tP=>{const k=1/(ACTION_TEMPO||.75);return [{t:.02,f:()=>{skyDarkT=.6;}},{t:tP,f:()=>{
     for(let i=0;i<n;i++)setFxTimer(.001+i*gap*k,()=>{const L=vNear(player.x,player.y,R).sort((a,b)=>dist(a,player)-dist(b,player));if(!L.length)return;const e=L[i%L.length];addFx(new RvPhantom({e,an:i*2.4}));
-      setFxTimer(.08,()=>{if(e.dead)return;vHit(e,vLv(RB.vaValhalla.dmg,'vaValhalla'),'vaValhalla',{big:true});vSpark(e,false,RVC.gold);});});
+      setFxTimer(.08,()=>{if(e.dead)return;const m=vLv(RB.vaValhalla.dmg,'vaValhalla');vHit(e,m,'vaValhalla',i?{big:true,dot:1}:{big:true});vSpark(e,false,RVC.gold);for(const q of vNear(e.x,e.y,RB.vaValhalla.sp))if(q!==e)vHit(q,m,'vaValhalla',{dot:1});});});
     setFxTimer((n*gap+.2)*k,()=>{skyDarkT=0;const x=player.x,y=player.y;RV.munOv={x:x+Math.cos(player.phi)*30,y:y+Math.sin(player.phi)*30,t0:gameTime,T:.4,face:player.phi,pose:'atk'};
-      for(const e of vNear(x,y,R*.65))vHit(e,RB.vaValhalla.fin,'vaValhalla',{big:true});vBurstFx(x,y,R*.65,RVC.violet,{feathers:22,gold:1});addFx(new DText({x,y,z:120,text:'VALHALLA',color:RVC.gold,size:16,life:1}));shake(3.5);stop(70);
+      for(const e of vNear(x,y,R))vHit(e,RB.vaValhalla.fin,'vaValhalla',{big:true});vBurstFx(x,y,R,RVC.violet,{feathers:26,gold:1});addFx(new DText({x,y,z:120,text:'VALHALLA',color:RVC.gold,size:16,life:1}));shake(3.5);stop(70);
       if(vL('vaEternal')){RV.mem.length=0;for(let j=0;j<vMemCap();j++)RV.mem.push({key:'vaValhalla',name:'Valhalla',m:RB.vaEternal.m,aoe:0,t:gameTime});RV.memPop=1;}});}}];}});}
 
 /* ---------- B · Huginn, Thought of Odin ---------- */
@@ -515,7 +515,7 @@ function mkVbWard(c){return vBurst({key:'vbWard',name:'Algiz Ward',glow:RVC.fros
 function mkVbRunes(c){const n=RB.vbRunes.n,R=RB.vbRunes.R,gap=RB.vbRunes.gap;
   return buffAct({key:'vbRunes',name:'Runes of the Allfather',speed:1.4,glow:RVC.frost,events:tP=>{const k=1/(ACTION_TEMPO||.75);return [{t:.02,f:()=>{skyDarkT=.6;RV.hugSoar=gameTime+2.2;}},{t:tP,f:()=>{const cx=player.x,cy=player.y,C=vC('vbRunes');vHugCast();
     for(let i=0;i<n;i++){const an=i/n*TAU-Math.PI/2,x=cx+Math.cos(an)*R*.72,y=cy+Math.sin(an)*R*.72,T=.25+i*gap*k;addFx(new RvRuneMark({x,y,g:i,T}));
-      setFxTimer(T,()=>{const L=vNear(cx,cy,R);let e=null,bd=1e9;for(const q of L){const dd=Math.hypot(q.x-x,q.y-y);if(dd<bd){bd=dd;e=q;}}if(e){addFx(new RvZap({a:[x,y,26],e}));vHitB(e,vLv(RB.vbRunes.dmg,'vbRunes'),'vbRunes',C,{big:true});}vBurstFx(x,y,44,RVC.frost);shake(.9);});}
+      setFxTimer(T,()=>{const L=vNear(cx,cy,R);let e=null,bd=1e9;for(const q of L){const dd=Math.hypot(q.x-x,q.y-y);if(dd<bd){bd=dd;e=q;}}if(e){const m=vLv(RB.vbRunes.dmg,'vbRunes');addFx(new RvZap({a:[x,y,26],e}));vHitB(e,m,'vbRunes',C,i?{big:true,dot:1}:{big:true});for(const q of vNear(e.x,e.y,RB.vbRunes.sp))if(q!==e)vHit(q,m*.6,'vbRunes',{dot:1});vBurstFx(e.x,e.y,RB.vbRunes.sp,RVC.frost);}vBurstFx(x,y,44,RVC.frost);shake(.9);});}
     setFxTimer(.25+(n*gap+.3)*k,()=>{skyDarkT=0;if(!vL('vbFinal'))return;const [x,y]=vHugXY();addFx(new RvGreatRune({x,y,R:RB.vbFinal.R,delay:.3,g:7,boom:()=>{for(const e of vNear(x,y,RB.vbFinal.R))vHit(e,RB.vbFinal.dmg,'vbFinal',{big:true});shake(3);stop(70);vCarve(3);}}));});}}];}});}
 
 /* ---------- C · Herald of the Allfather ---------- */

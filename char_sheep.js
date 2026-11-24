@@ -43,7 +43,7 @@ const SP_BAL={
     saHermes:{move:40,dur:8,heal:.05,cd:25,mp:12},
     saCup:{cap:[300,600]},
     saHand:{heal:4.0,per:.8,hot:1.5,T:5,cd:45,mp:30},
-    saOlympus:{dur:12,heal:.3,block:20,fin:3.0,dmg:5.0,R:160,cd:70,mp:60},
+    saOlympus:{dur:12,heal:.3,block:20,fin:3.0,dmg:5.0,R:260,pulses:8,pR:300,pHeal:.25,pDmg:.3,cd:70,mp:60},
     // ---- B · Medea's Enchanter
     sbThread:{dmg:[1.5,1.8,2.0,2.3],len:240,cd:5,mp:10,range:240},
     sbLore:{tal:[8,16]},
@@ -59,7 +59,7 @@ const SP_BAL={
     sbSiren:{R:200,dmg:1.8,cd:16,mp:20,range:260},
     sbHarmony:{per:[6,10]},
     sbCauldron:{dmg:4.2,R:120,cd:20,mp:28,range:260},
-    sbColchis:{dur:12,bolt:1.5,tal:40,fin:4.0,R:80,cd:70,mp:60},
+    sbColchis:{dur:12,bolt:1.5,tal:40,fin:4.0,R:110,curseR:300,curse:.25,cd:70,mp:60},
     // ---- C · Golden Wing (Additions)
     scPrism:{n:3,mul:.5},
     scLasting:{hot:1.0,T:3,sp:40},
@@ -81,8 +81,8 @@ const SB=SP_BAL.sk;
    here to each branch's damage numbers, so every tooltip shows the real MATK×n. Bench: HERO=sheep COL=sBranch tools/qa/bench_branch.py all,A,B 8 */
 const SP_SCALE={A:0.671,B:0.116};   /* re-tuned at the Lv 60 cap 2026-11-22 (≈ 2,050 per branch, LEVEL_CAP_TH.md); older values in git */
 (()=>{const sc=(k,f,keys)=>{for(const q of keys){const v=SB[k][q];SB[k][q]=Array.isArray(v)?v.map(x=>+(x*f).toFixed(3)):+(v*f).toFixed(3);}};
-  for(const [k,q] of [['saSun',['dmg']],['saEcho',['dmg']],['saPurify',['dmg']],['saRain',['dmg']],['saOlympus',['dmg']],['scChariot',['dmg']],['scGorgon',['dmg']]])sc(k,SP_SCALE.A,q);
-  for(const [k,q] of [['sbThread',['dmg']],['sbLullaby',['dmg']],['sbShatter',['dmg','per']],['sbRam',['dmg']],['sbSiren',['dmg']],['sbCauldron',['dmg']],['sbColchis',['bolt','fin']],['sbMirror',['dmg']],['scCharm',['hit']],['scSirens',['dmg']]])sc(k,SP_SCALE.B,q);})();
+  for(const [k,q] of [['saSun',['dmg']],['saEcho',['dmg']],['saPurify',['dmg']],['saRain',['dmg']],['saOlympus',['dmg','pDmg']],['scChariot',['dmg']],['scGorgon',['dmg']]])sc(k,SP_SCALE.A,q);
+  for(const [k,q] of [['sbThread',['dmg']],['sbLullaby',['dmg']],['sbShatter',['dmg','per']],['sbRam',['dmg']],['sbSiren',['dmg']],['sbCauldron',['dmg']],['sbColchis',['bolt','fin','curse']],['sbMirror',['dmg']],['scCharm',['hit']],['scSirens',['dmg']]])sc(k,SP_SCALE.B,q);})();
 const sT=n=>'MATK×'+(+n).toFixed(2).replace(/0+$/,'').replace(/\.$/,'');
 
 /* ---------------------------------------------------------------------
@@ -272,7 +272,7 @@ class SCore{constructor(){this.t=0;this.layer='none';this.tk=0;}draw(){}
       if(e.charmT>gameTime){e.aggro=0;e.atk=0;const o=enemies.filter(q=>q!==e&&!q.dead).sort((p,q)=>Math.hypot(p.x-e.x,p.y-e.y)-Math.hypot(q.x-e.x,q.y-e.y))[0];
         if(o){const d=Math.hypot(o.x-e.x,o.y-e.y);if(d>e.r+o.r+10){e.x+=(o.x-e.x)/d*Math.min(d,40);e.y+=(o.y-e.y)/d*Math.min(d,40);}else{sHit(o,SB.scCharm.hit,'scCharm',{noFate:true});sPow(o,false);}}}}
     /* Colchis fleece */
-    const C=SHP.colchis;if(C){if(C.until<gameTime)sColchisEnd();else if((C.tk=(C.tk||0)+dt)>=1){C.tk=0;const L=sNear(player.x,player.y,320);if(L.length){const e=L[(Math.random()*L.length)|0];
+    const C=SHP.colchis;if(C){if(C.until<gameTime)sColchisEnd();else if((C.tk=(C.tk||0)+dt)>=1){C.tk=0;{const B=SB.sbColchis;addFx(new GRing({x:player.x,y:player.y,r0:40,r1:B.curseR,w:7,color:SPC.pink,life:.4}));for(const q of sNear(player.x,player.y,B.curseR)){sHit(q,B.curse,'sbColchis',{dot:1});sEnc(q,1);q.st.slow=Math.max(q.st.slow||0,1.2);}}const L=sNear(player.x,player.y,320);if(L.length){const e=L[(Math.random()*L.length)|0];
       addFx(new SBolt({x:player.x,y:player.y-20,z:110,phi:angTo(e),len:Math.hypot(e.x-player.x,e.y-player.y)+10,R:12,speed:800,onHit:t=>{sHit(t,SB.sbColchis.bolt,'sbColchis');sEnc(t,1);sSparks(t.x,t.y,30,6);}}));}}}
     /* Chorus of Sirens */
     const Sr=SHP.sirens;if(Sr){if(Sr.until<gameTime)SHP.sirens=null;else if((Sr.tk=(Sr.tk||0)+dt)>=1){Sr.tk=0;const L=sNear(player.x,player.y,SB.scSirens.R).slice(0,SB.scSirens.n);
@@ -325,7 +325,8 @@ function mkSaHermes(c){return sBurst({key:'saHermes',name:"Hermes' Sandals",glow
 function mkSaHand(c){return sBurst({key:'saHand',name:'Hand of Asclepius',speed:1.6,glow:SPC.green,f:()=>{const n=sShear(sL('scWell')?1:0);sHeal(SB.saHand.heal+SB.saHand.per*n);sHot(SB.saHand.hot,SB.saHand.T);sHealFx();addFx(new SPillar({x:player.x,y:player.y,R:70,col:SPC.green}));
   addFx(new DText({x:player.x,y:player.y,z:110,text:'หัตถ์แอสคลีปิอุส',color:SPC.green,size:13,life:1}));}});}
 function mkSaOlympus(c){return buffAct({key:'saOlympus',name:'Blessing of Olympus',speed:1.4,glow:SPC.gold,events:tP=>[{t:.05,f:()=>{skyDarkT=.4;addFx(new DText({x:player.x,y:player.y,z:120,text:'OLYMPUS',color:SPC.gold,size:18,life:1.6}));}},
-  {t:tP,f:()=>{addBuff('saOlympus',SB.saOlympus.dur);SHP.olympus=true;skyDarkT=0;addFx(new SPillar({x:player.x,y:player.y,R:100}));sSparks(player.x,player.y,40,30,200);}}]});}
+  {t:tP,f:()=>{addBuff('saOlympus',SB.saOlympus.dur);SHP.olympus=true;skyDarkT=0;addFx(new SPillar({x:player.x,y:player.y,R:100}));sSparks(player.x,player.y,40,30,200);
+    const B=SB.saOlympus;for(let k=0;k<B.pulses;k++)setFxTimer(.1+k*.2,()=>{const x=player.x,y=player.y;addFx(new GRing({x,y,r0:30,r1:B.pR,w:9,color:k%2?SPC.gold:'#fff6d0',life:.36}));sHeal(B.pHeal);for(const e of sNear(x,y,B.pR))sHit(e,B.pDmg,'saOlympus',{dot:1});if(k%2)sSparks(x,y,30,8,160);});}}]});}   /* roles 2026-11-24: support ult = healing pulses */
 function sOlympusEnd(){const B=SB.saOlympus;sHeal(B.fin);sHealFx();for(let i=0;i<6;i++){const a=i*TAU/6,x=player.x+Math.cos(a)*B.R*.6,y=player.y+Math.sin(a)*B.R*.6;addFx(new SPillar({x,y,R:50}));}
   for(const e of sNear(player.x,player.y,B.R))sHit(e,B.dmg,'saOlympus',{cc:{air:1},big:true,koMul:2});shake(5);if(typeof screenFlash==='function')screenFlash(.2,'#fff2b8');}
 
@@ -397,6 +398,8 @@ function sheepAutoTick(){if(busy()||player.casting||targeting||player.pending)re
   return false;}
 
 function installSheep(){
+  /* HUD portrait: her head from the owner's front view (index.html drawPortrait reads window.HUD_FACE) */
+  try{const hf=new Image();hf.src='assets/heroes/sheep/face.webp?v=1';window.HUD_FACE=hf;hf.onload=()=>{try{drawPortrait();}catch(_){}};}catch(_){}
   for(const k in SKILLS)delete SKILLS[k];for(const k in LV)delete LV[k];for(const k in CSK)delete CSK[k];
   setTimeout(()=>{try{CTIER_LV[1]=LVC.g(55);CTIER_LV[2]=LVC.g(60);CTIER_LV[3]=LVC.g(70);CTIER_LV[4]=LVC.g(80);}catch(_){}},0);
   for(const d of SP_DEFS){const b=SB[d.key]||{};const sk={id:d.id,name:d.name,br:d.br,row:d.row||d.tier,max:d.br==='C'?1:d.max,type:d.type,icon:sIconSpec(d),th:d.d.replace(/^\([^)]*\)\s*/,'').slice(0,40),characterId:'golden_fleece_sheep'};

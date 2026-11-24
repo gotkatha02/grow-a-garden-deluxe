@@ -47,13 +47,22 @@ const SC={};function S1(l='top'){let s=SC[l];if(!s||!s.p||!fx.includes(s)){s=SC[
 const mine=()=>!!(window.SKCTX||window.__ACTEV||window.__SHTICK||window.__SHSELF);
 const self=f=>{const o=window.__SHSELF;window.__SHSELF=1;try{return f();}finally{window.__SHSELF=o;}};
 
-/* where the crook's hook is (measured on every frame of the placeholder sprite: cell 306,204 in S / SE / E / NE; N = behind her) */
+/* where her staff's orb is: the sprite's own socket of the frame on screen (assets_sheep.js = the owner's clips 2026-11-24,
+   tools/cliphero.py found the orb in every frame of every state), blended into the next frame while an action plays;
+   CROOK = the old placeholder's crook hook (cell 306,204 around ITS pivot 248,405) when a frame has no socket */
 const CROOK=[306,204];
-function crook(){const sc=SPR*(typeof CHAR_SCALE==='number'?CHAR_SCALE:1),pv=SPR_META.pivot,mir=typeof isMir==='function'&&isMir(player.dir);
-  return [player.x+(CROOK[0]-pv.x)*sc*(mir?-1:1),player.y+.5,(player.z||0)+(pv.y-CROOK[1])*sc];}
-/* just above the crook's hook (lights born at the crook sit here so the hero cut-out of the effect layer does not hide them) */
-function tip(){const c=crook(),mir=typeof isMir==='function'&&isMir(player.dir);return [c[0]+(mir?-5:5),c[1],c[2]+13];}
-const headZ=()=>(SPR_META.pivot.y-182)*SPR*(typeof CHAR_SCALE==='number'?CHAR_SCALE:1)+(player.z||0);   /* top of her head */
+function orbCell(){try{const a=player.action;
+    if(a&&a.seq&&typeof seqAt==='function'){const r=seqAt(a.seq,a.t),e=r.e,s0=sockAt(e.st,e.d,e.f);if(s0&&s0.head){
+      const n=a.seq[r.i+1],s1=(n&&n.st===e.st&&n.d===e.d&&n.f===e.f+1)?sockAt(n.st,n.d,n.f):null,k=s1&&s1.head?r.k:0;
+      return [s0.head[0]+(k?(s1.head[0]-s0.head[0])*k:0),s0.head[1]+(k?(s1.head[1]-s0.head[1])*k:0)];}}
+    const fr=playerFrame(),q=fr&&sockAt(fr.st,fr.d,fr.f);if(q&&q.head)return q.head;}catch(_){}
+  const pv=SPR_META.pivot;return [pv.x+CROOK[0]-248,pv.y-(405-CROOK[1])];}
+function crook(){const sc=SPR*(typeof CHAR_SCALE==='number'?CHAR_SCALE:1),pv=SPR_META.pivot,mir=typeof isMir==='function'&&isMir(player.dir),h=orbCell();
+  return [player.x+(h[0]-pv.x)*sc*(mir?-1:1),player.y+.5,(player.z||0)+(pv.y-h[1])*sc];}
+/* the top edge of the orb (lights born at the staff sit here so the hero cut-out of the effect layer does not hide them) */
+function tip(){const c=crook(),mir=typeof isMir==='function'&&isMir(player.dir);return [c[0]+(mir?-2:2),c[1],c[2]+6];}
+/* top of her head: the front idle pose's top edge (+6 cell px, as on the placeholder) */
+const headZ=()=>{let hy=182;try{hy=SPR_META.states.idle.dirs.S.f[0][5]+6;}catch(_){}return (SPR_META.pivot.y-hy)*SPR*(typeof CHAR_SCALE==='number'?CHAR_SCALE:1)+(player.z||0);};
 
 /* ---------------------------------------------------------------------
    1. SMALL PIECES

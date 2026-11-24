@@ -1,0 +1,139 @@
+{
+ "_note": "Sheep priestess sprite plan — owner's 20 clips 2026-11-24 09:27 (no words), 480x480 24 fps green, made from the FIRST square start frames (sheep_1_S … sheep_5_N.png, body 450/900); uploads 1000001138–1161 came buff, attack, walk, idle per direction S, SE, E, NE, N (1142 / 1147 / 1152 / 1153 were not sent). All face right, one scale (no perDir: every start frame had the same scale). attack / buff frame counts, contact (8) / peak (7) and times = the placeholder statichero atlas the kit was tuned on (attack 12 frames [60x8,70,80,90,100] with the hit at 480 ms, buff 12 x 80 ms peak 7), so every cast / hit keeps its timing. Frames skip the baked effects: attack swooshes / impact bursts / sparks (S 22-28, SE 28-38, E 12-24, NE 30-36, N 36-52), buff flashes (S 15-40, E 16+, NE 12-30, N 18-44). E buff lowers with its raise frames reversed (the rest of that clip is one long flash). Orb sockets for every state (orbAll, deep-blue orbMask); after the swing and at the cast peak the orb glows white → orbPale; where the swing blurs / turns / hides it the orb was read by eye (orbFix, placed-cell px of this build), the rest interpolated (orbLerp). Idle loops: S / SE / E have long closed-eye stretches → loop windows with the eyes open (S 36+34, SE 45+36, E 73+49); hurt is made from the first idle frame, so it has open eyes too. Rebuild: python3 -I tools/cliphero.py tools/clips/sheep_plan.json assets_sheep.js SHE (clip paths = that chat's uploads).",
+ "height": 230,
+ "flip": false,
+ "orb": true,
+ "orbAll": true,
+ "orbMask": {
+  "b": 140,
+  "br": 70,
+  "bg": 40,
+  "g": 0,
+  "min": 90
+ },
+ "attack": {
+  "S": {
+   "frames": [8,12,14,16,18,19,20,21,30,76,84,92],
+   "contact": 8,
+   "dur": [60,60,60,60,60,60,60,60,70,80,90,100]
+  },
+  "SE": {
+   "frames": [6,10,14,16,18,22,26,27,44,80,82,84],
+   "contact": 8,
+   "dur": [60,60,60,60,60,60,60,60,70,80,90,100]
+  },
+  "E": {
+   "frames": [2,4,5,6,7,8,10,11,28,48,50,52],
+   "contact": 8,
+   "dur": [60,60,60,60,60,60,60,60,70,80,90,100]
+  },
+  "NE": {
+   "frames": [6,10,12,14,16,20,24,28,42,64,68,72],
+   "contact": 8,
+   "dur": [60,60,60,60,60,60,60,60,70,80,90,100]
+  },
+  "N": {
+   "frames": [10,16,18,20,22,26,30,34,58,96,100,104],
+   "contact": 8,
+   "dur": [60,60,60,60,60,60,60,60,70,80,90,100]
+  }
+ },
+ "buff": {
+  "S": {
+   "frames": [4,6,8,10,11,12,13,14,50,52,54,58],
+   "peak": 7,
+   "dur": [80,80,80,80,80,80,80,80,80,80,80,80]
+  },
+  "SE": {
+   "frames": [4,6,7,8,9,10,11,12,56,58,60,62],
+   "peak": 7,
+   "dur": [80,80,80,80,80,80,80,80,80,80,80,80]
+  },
+  "E": {
+   "frames": [8,10,11,12,13,14,15,16,15,14,12,10],
+   "peak": 7,
+   "dur": [80,80,80,80,80,80,80,80,80,80,80,80]
+  },
+  "NE": {
+   "frames": [2,4,5,6,7,8,9,10,56,58,60,62],
+   "peak": 7,
+   "dur": [80,80,80,80,80,80,80,80,80,80,80,80]
+  },
+  "N": {
+   "frames": [4,6,8,9,10,11,12,14,50,56,60,62],
+   "peak": 7,
+   "dur": [80,80,80,80,80,80,80,80,80,80,80,80]
+  }
+ },
+ "clips": {
+  "buff": {
+   "S": "/mnt/user-data/uploads/dd920960-1000001138.mp4",
+   "SE": "/mnt/user-data/uploads/117a5d6d-1000001143.mp4",
+   "E": "/mnt/user-data/uploads/e6de71c4-1000001148.mp4",
+   "NE": "/mnt/user-data/uploads/15e508f8-1000001154.mp4",
+   "N": "/mnt/user-data/uploads/c7aa70f4-1000001158.mp4"
+  },
+  "attack": {
+   "S": "/mnt/user-data/uploads/ee36ae7a-1000001139.mp4",
+   "SE": "/mnt/user-data/uploads/44528af9-1000001144.mp4",
+   "E": "/mnt/user-data/uploads/1abc5f3b-1000001149.mp4",
+   "NE": "/mnt/user-data/uploads/a90435e4-1000001155.mp4",
+   "N": "/mnt/user-data/uploads/7844137e-1000001159.mp4"
+  },
+  "walk": {
+   "S": "/mnt/user-data/uploads/7e4733f3-1000001140.mp4",
+   "SE": "/mnt/user-data/uploads/5549271b-1000001145.mp4",
+   "E": "/mnt/user-data/uploads/e5423ed0-1000001150.mp4",
+   "NE": "/mnt/user-data/uploads/7abbc9db-1000001156.mp4",
+   "N": "/mnt/user-data/uploads/cb84c830-1000001160.mp4"
+  },
+  "idle": {
+   "S": "/mnt/user-data/uploads/7d76f37d-1000001141.mp4",
+   "SE": "/mnt/user-data/uploads/14729905-1000001146.mp4",
+   "E": "/mnt/user-data/uploads/d4000641-1000001151.mp4",
+   "NE": "/mnt/user-data/uploads/789dc8cc-1000001157.mp4",
+   "N": "/mnt/user-data/uploads/5c27730e-1000001161.mp4"
+  }
+ },
+ "orbPale": true,
+ "orbLerp": true,
+ "orbFix": {
+  "attack/S": {
+   "1": [350,290],
+   "2": [455,292],
+   "4": [476,352],
+   "5": [474,348],
+   "6": [404,207],
+   "7": [399,215]
+  },
+  "attack/SE": {
+   "4": [290,240],
+   "5": [300,250],
+   "6": [300,255],
+   "7": [318,240]
+  },
+  "attack/E": {
+   "1": [335,272],
+   "2": [289,253]
+  },
+  "attack/NE": {
+   "7": [280,278]
+  },
+  "attack/N": {
+   "2": [394,262],
+   "9": [290,330],
+   "10": [360,288]
+  },
+  "buff/SE": {
+   "2": [426,300]
+  },
+  "buff/N": {
+   "11": [417,290]
+  }
+ },
+ "loop": {
+  "idle/S": [36,34],
+  "idle/SE": [45,36],
+  "idle/E": [73,49]
+ }
+}

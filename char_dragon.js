@@ -25,48 +25,48 @@ const DG_BAL={
   sk:{
     // ---- Basic
     dnCombo:{chain:[2,3,4,4],hit:1.0},
-    dnSweep:{dmg:[1.2,1.4,1.6],R:90},
+    dnSweep:{dmg:[1.2,1.4,1.6],R:115},
     dnGuard:{T:1,atk:[30,50,70],cd:10,mp:8},
     dnRush:{dist:[140,170,200],dmg:1.5,cd:8,mp:10},
     dnBreath:{T:2,hp:[4,6],sp:[15,25],cd:25,mp:0},
     dnMane:{block:[3,6,9,12]},
-    dnRoar:{R:160,taunt:4,atk:[20,35,50],dur:10,cd:24,mp:14},
+    dnRoar:{R:200,taunt:4,atk:[20,35,50],dur:10,cd:24,mp:14},
     // ---- A · Raging Tide Fist
     daJab:{n:3,dmg:[.7,.75,.8,.85],cd:5,mp:8,range:110},
     daRising:{every:4,dmg:[.8,1.0,1.2]},
     daHook:{dmg:[1.8,2.2],flow:2,cd:8,mp:12,range:200},
-    daUndertow:{R:[90,120]},
+    daUndertow:{R:[115,150]},
     daStep:{dmg:[1.6,2.0],cd:9,mp:12,range:220},
     daCounter:{dmg:[2.0,2.6]},
     daHundred:{n:10,dmg:[.45,.55],cd:14,mp:20,range:110},
     daEndless:{extra:4},
     daTsunami:{dmg:[2.5,3.0],per:.6,cd:12,mp:20,range:110},
-    daCrash:{dmg:[1.6,2.0],R:100},
+    daCrash:{dmg:[1.6,2.0],R:130},
     daFlowBody:{block:[6,10,14]},
     daEbb:{T:2,base:2.0,cap:3,cd:18,mp:16},
-    daTorrent:{n:6,dmg:[3.0,4.0],per:.5,cd:60,mp:50,range:320},
+    daTorrent:{n:8,dmg:[3.0,4.0],per:.5,sp:85,whirl:[.35,.45],wR:240,cd:60,mp:50,range:340},
     daOcean:{T:8},
     // ---- B · Cloud Dragon Palm
     dkPalm:{dmg:[1.2,1.4,1.6,1.8],len:260,cd:5,mp:10,range:260},
-    dkOrbit:{dmg:[.3,.4,.5],R:100},
+    dkOrbit:{dmg:[.3,.4,.5],R:120},
     dkSeal:{dmg:[1.4,1.8],bolt:3.0,cd:8,mp:12,range:240},
     dkStorm:{jump:[1,2]},
-    dkCloud:{dist:120,R:70,slow:[3,4],cd:12,mp:12},
+    dkCloud:{dist:120,R:100,slow:[3,4],cd:12,mp:12},
     dkRain:{dmg:[.5,.7]},
     dkTwin:{dmg:[2.0,2.5],len:300,cd:12,mp:20,range:300},
     dkCoil:{T:4,block:15},
-    dkPush:{dmg:[2.2,2.8],per:.8,R:130,cd:14,mp:20},
+    dkPush:{dmg:[2.2,2.8],per:.8,R:165,cd:14,mp:20},
     dkWall:{T:4,len:140},
     dkStill:{T:1,tal:[20,35,50]},
     dkMirror:{T:2,dmg:1.5,cd:20,mp:14},
-    dkDescend:{R:180,T:6,dmg:[1.6,2.2],cd:60,mp:50,range:300},
+    dkDescend:{R:260,T:6,dmg:[1.6,2.2],cd:60,mp:50,range:300},
     dkKingRain:{per:1.0},
     // ---- C
     dcChain:{dmg:1.6,len:120},
     dcBarrage:{n:5},
     dcFan:{n:3,spread:.35},
-    dcStone:{dmg:1.5,R:110},
-    dcMaelstrom:{R:150,T:2,dmg:2.4,cd:20,mp:24},
+    dcStone:{dmg:1.5,R:140},
+    dcMaelstrom:{R:190,T:2,dmg:2.4,cd:20,mp:24},
     dcThunder:{n:3,fall:[.7,.5,.35]},
     dcBreath:{dmg:2.6,R:170,cd:18,mp:20},
     dcThousand:{dmg:2.0,len:220},
@@ -248,7 +248,7 @@ function dPunches(o){faceTo(o.phi);const d=atkDir(player.dir),ct=CT(d),sp=(o.spe
   const kL=ks[ks.length-1];return act({key:o.key,name:o.name,seq:s,windup:seqTimeAt(s,ks[0]),dur:seqTimeAt(s,kL+2),hitList:[],
     update:(a,dt)=>{player.glow={color:o.glow||DGC.sea,k:a.t<seqTimeAt(s,kL)?.7:Math.max(0,1-(a.t-seqTimeAt(s,kL))/.3)};o.update&&o.update(a,dt);},events:ev.concat(o.events||[])});}
 /* cone punch: hit everything in front, return the list */
-function dCone(a,phi,key,mult,o={}){const L=enemiesInCone(player.x,player.y,phi,o.range||(BASIC_RANGE+30),o.half||.7);for(const e of L){dHit(e,mult,key,o.hurt||{});if(!a.hitList.includes(e))a.hitList.push(e);if(o.each)o.each(e);dPow(e,o.big,o.col);}
+function dCone(a,phi,key,mult,o={}){const L=enemiesInCone(player.x,player.y,phi,(o.range||(BASIC_RANGE+30))*1.3,Math.min(1.3,(o.half||.7)*1.3));   /* roles 2026-11-24: punch cones ×1.3 */for(const e of L){dHit(e,mult,key,o.hurt||{});if(!a.hitList.includes(e))a.hitList.push(e);if(o.each)o.each(e);dPow(e,o.big,o.col);}
   if(L.length){a.hitConfirmed=true;shake(o.big?2.6:1);stop(o.big?60:24);}return L;}
 function dBurst(o){return buffAct({key:o.key,name:o.name,phi:o.phi,speed:o.speed||2,glow:o.glow||DGC.sea,events:tP=>[{t:tP,f:()=>o.f()}]});}
 function dDash(o){faceTo(o.phi);const sx=player.x,sy=player.y,[dx,dy]=dPathEnd(sx,sy,o.phi,o.L),T=o.T||.24,s=seq('walk',player.dir,0,null,3.2);
@@ -299,8 +299,9 @@ function mkDaEbb(c){const T=DB.daEbb.T,s=hold('buff',player.dir,2,T*1000);DG.ebb
 function mkDaTorrent(c){const lv=dL('daTorrent'),n0=DB.daTorrent.n,sx=player.x,sy=player.y,flow=dSpendFlow(),m=dLv(DB.daTorrent.dmg,'daTorrent')+DB.daTorrent.per*flow;
   const L=enemies.filter(e=>!e.dead&&dist(e,player)<DB.daTorrent.range).sort((a,b)=>dist(a,player)-dist(b,player)).slice(0,n0);if(!L.length){msg('ไม่มีเป้าหมาย');return null;}
   const gap=.16,T=L.length*gap+.25,s=hold('attack',atkDir(player.dir),CT(atkDir(player.dir)),T*1000);
-  const ev=L.map((e,i)=>({t:.05+i*gap,f:a=>{if(e.dead)return;const an=rnd(0,TAU);player.x=e.x+Math.cos(an)*(e.r+26);player.y=e.y+Math.sin(an)*(e.r+26);faceTo(angTo(e));dHit(e,m,'daTorrent',{big:true});dPow(e,true,DGC.sea);dSplash(e.x,e.y,6);a.hitConfirmed=true;shake(2);stop(40);}}));
-  ev.push({t:T-.05,f:()=>{player.x=sx;player.y=sy;if(dL('daOcean')){DG.flowLock=gameTime+DB.daOcean.T;DG.flow=DG_BAL.flow.cap;}}});
+  const ev=L.map((e,i)=>({t:.05+i*gap,f:a=>{if(e.dead)return;const an=rnd(0,TAU);player.x=e.x+Math.cos(an)*(e.r+26);player.y=e.y+Math.sin(an)*(e.r+26);faceTo(angTo(e));dHit(e,m,'daTorrent',i?{big:true,dot:1}:{big:true});dPow(e,true,DGC.sea);dSplash(e.x,e.y,8);for(const q of enemiesInCircle(e.x,e.y,DB.daTorrent.sp))if(q!==e&&!q.dead)dHit(q,m*.5,'daTorrent',{dot:1});a.hitConfirmed=true;shake(2);stop(40);}}));
+  ev.push({t:T-.05,f:()=>{player.x=sx;player.y=sy;if(dL('daOcean')){DG.flowLock=gameTime+DB.daOcean.T;DG.flow=DG_BAL.flow.cap;}
+    const wm=dLv(DB.daTorrent.whirl,'daTorrent'),WR=DB.daTorrent.wR;for(let k=0;k<3;k++)setFxTimer(.001+k*.13,()=>{addFx(new GRing({x:sx,y:sy,r0:30,r1:WR,w:10,color:k%2?DGC.sea:'#e8fbff',life:.32}));dSplash(sx+rnd(-60,60),sy+rnd(-40,40),5);for(const q of enemiesInCircle(sx,sy,WR))dHit(q,wm,'daTorrent',{dot:1});shake(1.5);});}});   /* roles 2026-11-24: fighter ult = a wide whirlpool after the dashes */
   return act({key:'daTorrent',name:'Great Azure Torrent',seq:s,windup:.05,dur:T,hitList:[],update:a=>{player.iframes=.06;player.glow={color:DGC.sea,k:.9};},onInterrupt:()=>{player.x=sx;player.y=sy;},events:ev});}
 
 /* ---------- B · Cloud Dragon Palm ---------- */

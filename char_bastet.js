@@ -56,7 +56,7 @@ const BA_BAL={
     bbReturn:{back:[2,3]},
     bbGuardian:{block:[4,6,8],cap:4},
     bbGate:{plus:3,cd:16,mp:12},
-    bbArmy:{n:6,T:8,dmg:[.8,1.1],iv:1,cd:60,mp:50},
+    bbArmy:{n:10,T:8,dmg:[.55,.75],iv:1,rise:3,riseR:220,riseDmg:.3,cd:60,mp:50},
     bbAmmit:{dmg:3.0,R:160,souls:3},
     // ---- C
     bcPages:{dmg:1.6,R:120},
@@ -78,7 +78,7 @@ const BB=BA_BAL.sk;
 const BA_SCALE={A:1.356,B:0.82};   /* re-tuned at the Lv 60 cap 2026-11-22 (≈ 2,050 per branch, LEVEL_CAP_TH.md); older values in git */
 (()=>{const r2=v=>Math.round(v*100)/100,sc=(o,f,m)=>{if(o[f]==null)return;o[f]=Array.isArray(o[f])?o[f].map(v=>r2(v*m)):r2(o[f]*m);};
   const colOf=k=>k.startsWith('ba')||['bcTriple','bcStorm','bcApep','bcSekhmet'].includes(k)?'A':k.startsWith('bb')||['bcTether','bcLord','bcPack','bcOsiris'].includes(k)?'B':null;
-  for(const k in BB){const c=colOf(k);if(!c)continue;for(const f of ['dmg','per','dot'])sc(BB[k],f,BA_SCALE[c]);}
+  for(const k in BB){const c=colOf(k);if(!c)continue;for(const f of ['dmg','per','dot','riseDmg'])sc(BB[k],f,BA_SCALE[c]);}
   BA_BAL.hex.dot=r2(BA_BAL.hex.dot*BA_SCALE.A);})();
 const bT=n=>'MATK×'+(+n).toFixed(2).replace(/0+$/,'').replace(/\.$/,'');
 
@@ -333,9 +333,10 @@ function mkBbHarvest(c){return bCast({key:'bbHarvest',name:'Soul Harvest',speed:
 function mkBbGate(c){return bCast({key:'bbGate',name:'Duat Gate',speed:2.6,glow:BAC.soul,f:()=>{const M=bMinions();for(const m of M)m.life+=BB.bbGate.plus;
   const far=M.slice().sort((a,b)=>dist(b,player)-dist(a,player))[0];if(far){const px=player.x,py=player.y;bBurst(px,py,40,BAC.soul);player.x=far.x;player.y=far.y;far.x=px;far.y=py;bBurst(player.x,player.y,40,BAC.soul);}}});}
 function mkBbArmy(c){return bCast({key:'bbArmy',name:'Army of the Duat',speed:1.4,glow:BAC.gold,f:()=>{const t=bTgt(c,300),cx=t?t.x:player.x+Math.cos(player.phi)*100,cy=t?t.y:player.y+Math.sin(player.phi)*100;
-  BA.armyAt={x:cx,y:cy};BA.armyEnd=gameTime+BB.bbArmy.T;BA.armyAmmit=bL('bbAmmit')>0;addFx(new GRing({x:cx,y:cy,r0:10,r1:130,w:12,color:BAC.gold,life:.6}));shake(2.4);
+  BA.armyAt={x:cx,y:cy};BA.armyEnd=gameTime+BB.bbArmy.T;BA.armyAmmit=bL('bbAmmit')>0;addFx(new GRing({x:cx,y:cy,r0:10,r1:BB.bbArmy.riseR,w:12,color:BAC.gold,life:.6}));shake(2.4);
+  for(let k=0;k<BB.bbArmy.rise;k++)setFxTimer(.05+k*.2,()=>{addFx(new GRing({x:cx,y:cy,r0:30,r1:BB.bbArmy.riseR,w:8,color:k%2?BAC.sand:BAC.gold,life:.32}));for(const e of enemiesInCircle(cx,cy,BB.bbArmy.riseR))bHit(e,BB.bbArmy.riseDmg,'bbArmy',{dot:1});shake(1.2);});   /* roles 2026-11-24: the army rises in 3 sand waves */
   addFx(new DText({x:player.x,y:player.y,z:110,text:'ARMY OF THE DUAT',color:BAC.gold,size:15,life:1.1}));
-  for(let i=0;i<BB.bbArmy.n;i++){const an=i*TAU/BB.bbArmy.n;addFx(new BaMinion({kind:'army',x:cx+Math.cos(an)*70,y:cy+Math.sin(an)*50,life:BB.bbArmy.T,iv:BB.bbArmy.iv,cd:.3+i*.1,dmg:bLv(BB.bbArmy.dmg,'bbArmy'),key:'bbArmy',slot:i}));}}});}
+  for(let i=0;i<BB.bbArmy.n;i++){const an=i*TAU/BB.bbArmy.n,rr=i%2?130:80;addFx(new BaMinion({kind:'army',x:cx+Math.cos(an)*rr,y:cy+Math.sin(an)*rr*.7,life:BB.bbArmy.T,iv:BB.bbArmy.iv,cd:.3+i*.1,dmg:bLv(BB.bbArmy.dmg,'bbArmy'),key:'bbArmy',slot:i}));}}});}
 
 /* ---------- C ---------- */
 function mkBcStorm(c){const t=bTgt(c,BB.bcStorm.range),phi=bPhi(c,t);return bCast({key:'bcStorm',name:'Locust Storm',phi,f:()=>{addFx(new BaShot({x:player.x,y:player.y,phi,len:BB.bcStorm.len,speed:440,w:34,z:30,kind:'storm',hit:e=>{bHit(e,BB.bcStorm.dmg,'bcStorm',{big:true});bAddHex(e,2);bPow(e,true,BAC.sand);}}));}});}

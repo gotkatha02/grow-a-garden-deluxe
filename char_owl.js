@@ -46,7 +46,7 @@ const OW_BAL={
     obVeil:{dur:[3,5],crit:30,cd:16,mp:12},
     obWhite:{dur:[6,9],cd:40,mp:30},
     obSnare:{dur:[2,3],dmg:.8,cd:12,mp:14,range:300},
-    obSkyfall:{n:10,dmg:[.7,.9],R:80,cd:14,mp:22,range:300},
+    obSkyfall:{n:12,dmg:[.6,.75],R:120,cd:14,mp:22,range:300},
     obFrost:{every:[6,5,4,3]},
     obDeep:{cap:[2,3,4],dur:[8,10,12]},
     obBrittle:{per:18},
@@ -54,7 +54,7 @@ const OW_BAL={
     obShatter:{dmg:[.6,.9],R:240,cd:12,mp:20},
     obCircle:{hits:[3,5],dmg:1.0,cd:14,mp:22,range:260},
     obFlash:{miss:2,R:130,dur:3,cd:18,mp:14},
-    obCage:{R:110,dur:[6,9],cd:45,mp:40,range:320},
+    obCage:{R:230,pulls:6,pull:22,dur:[6,9],cd:45,mp:40,range:340},
     obRain:{dmg:2.6,cd:20,mp:30},
     // ---- C · White Night
     ocMastery:{dmg:45},ocExtra:{n:10},ocDouble:{},
@@ -127,7 +127,7 @@ const OW_DEFS=[
  {key:'obSnare',id:'OW-G04',name:'Snow Snare',br:'B',row:3,max:2,type:'melee',shot:1,pre:[['obFlurry',1]],
   d:'ยิงลูกดอกกับดัก วงเกล็ดน้ำแข็งตรึงเป้าไว้กับที่ +2 ความเย็น (บอสโดนชะลอแทน) · อัปสลับเลเวลกับ Flurry Bolts',lv:i=>[`ตรึง ${OB.obSnare.dur[i-1]} วิ`,`${owX(OB.obSnare.dmg)}`,'Cooldown 12 วิ']},
  {key:'obSkyfall',id:'OW-G05',name:'Skyfall Volley',br:'B',row:3,max:2,type:'ground',radius:()=>OB.obSkyfall.R,
-  d:'กระโดดหลบขึ้นกลางอากาศ ยิงฝนลูกดอก 10 ดอกลงพื้นที่เป้าหมาย (แบบ Mass Shot)',lv:i=>[`10 ดอก × ${owX(OB.obSkyfall.dmg[i-1])}`,'รัศมี 80 · Cooldown 14 วิ']},
+  d:'กระโดดหลบขึ้นกลางอากาศ ยิงฝนลูกดอก 12 ดอกลงพื้นที่เป้าหมายวงกว้าง (แบบ Mass Shot)',lv:i=>[`10 ดอก × ${owX(OB.obSkyfall.dmg[i-1])}`,'รัศมี 80 · Cooldown 14 วิ']},
  {key:'obFrost',id:'OW-G06',name:'Frostbite',br:'B',row:4,max:4,passive:1,
   d:'(Passive) ตีปกติโดนครบจำนวนนัด ติด [ความเย็น] 1 ชั้น ซ้อนชั้นได้ (แบบพิษ) · ติดเย็นจะช้าลง · ซ้อนเต็มเพดาน = แช่แข็ง 1 วิ',lv:i=>[`ทุกนัดที่ ${OB.obFrost.every[i-1]} ติดความเย็น`,'เพดาน 1 ชั้น (เพิ่มด้วย Deep Chill)']},
  {key:'obDeep',id:'OW-G07',name:'Deep Chill',br:'B',row:5,max:3,passive:1,
@@ -143,7 +143,7 @@ const OW_DEFS=[
  {key:'obFlash',id:'OW-G12',name:'Feather Flash',br:'B',row:7,max:1,type:'self',
   d:'สะบัดม่านขนนกใส่ศัตรูรอบตัว ตาพร่า การโจมตี 2 ครั้งถัดไปของศัตรูพลาดแน่นอน',lv:()=>[`ศัตรูตีพลาด ${OB.obFlash.miss} ครั้ง · ภายใน ${OB.obFlash.dur} วิ`,'รัศมี 130 · Cooldown 18 วิ']},
  {key:'obCage',id:'OW-G13',name:'Blizzard Cage',br:'B',row:8,max:2,type:'ground',ult:1,radius:()=>OB.obCage.R,
-  d:'ULTIMATE B · ปักเสาน้ำแข็งเป็นกรงพายุหิมะ ศัตรูในกรงออกไม่ได้และถูกตรึง (บอส: ชะลอ) · ทุกวิเพิ่มความเย็น 1 ชั้น',lv:i=>[`กรง ${OB.obCage.dur[i-1]} วิ`,'รัศมี 110 · Cooldown 45 วิ']},
+  d:'ULTIMATE B · ปักเสาน้ำแข็งเป็นกรงพายุหิมะวงกว้าง ลมหิมะ 6 ระลอกดูดศัตรูเข้ากลางกรง แล้วศัตรูในกรงออกไม่ได้และถูกตรึง (บอส: ชะลอ) · ทุกวิเพิ่มความเย็น 1 ชั้น',lv:i=>[`กรง ${OB.obCage.dur[i-1]} วิ`,'รัศมี 230 · ดูดเข้ากลาง 6 ระลอก · Cooldown 45 วิ']},
  {key:'obRain',id:'OW-G14',name:'Moonwind Rain',br:'B',row:8,max:1,type:'self',enh:'obCage',pre:[['obCage',1]],
   d:'(ต่อยอด Blizzard Cage) ยิงฝนลูกดอกจันทร์ลงศัตรูทุกตัวในกรง ตัวละ 1 ครั้ง (ใช้ได้เฉพาะตอนกรงยังอยู่ · แบบ Torment Rain)',lv:()=>[`${owX(OB.obRain.dmg)} ต่อเป้า`,'Cooldown 20 วิ']},
  // ---------------- CLASS C — WHITE NIGHT (12 nodes · Lv 55/60/70/80 · columns Basic / A / B) ----------------
@@ -368,7 +368,7 @@ class OwTentObj{constructor(o){Object.assign(this,{t:0,life:7,layer:'sorted'},o)
     if(this.t>.6){ctx.font='bold 10px sans-serif';ctx.fillStyle='rgba(230,240,255,.9)';for(let i=0;i<2;i++){const k=((this.t*.6+i*.5)%1);ctx.globalAlpha=a*(1-k);ctx.fillText('z',x+8+k*10,y-H-6-k*18);}}
     ctx.restore();ctx.globalAlpha=1;}}
 /* Blizzard Cage: ice pillars ring + swirling snow band. Enemies inside cannot leave, get rooted and chilled. */
-class OwCageObj{constructor(o){Object.assign(this,{t:0,life:6,layer:'ground',R:110,acc:0,alive:true},o);this.pil=[];const n=12;for(let i=0;i<n;i++){const an=i/n*TAU;this.pil.push(addFx(new Crystal({x:this.x+Math.cos(an)*this.R,y:this.y+Math.sin(an)*this.R,h:rnd(34,48),w:rnd(9,12),lean:Math.cos(an)*.15,life:this.life,delay:i*.025,rise:.14,melt:.35})));}
+class OwCageObj{constructor(o){Object.assign(this,{t:0,life:6,layer:'ground',R:110,acc:0,alive:true},o);this.pil=[];const n=Math.round(12*Math.max(1,this.R/110)*.75);for(let i=0;i<n;i++){const an=i/n*TAU;this.pil.push(addFx(new Crystal({x:this.x+Math.cos(an)*this.R,y:this.y+Math.sin(an)*this.R,h:rnd(34,48),w:rnd(9,12),lean:Math.cos(an)*.15,life:this.life,delay:i*.025,rise:.14,melt:.35})));}
     addFx(new FrostGround({x:this.x,y:this.y,r:this.R*1.05,life:this.life+.3,grow:.35}));this.inside=new Set(enemiesInCircle(this.x,this.y,this.R));}
   update(dt){this.t+=dt;if(this.t>=this.life){this.alive=false;if(!this.broke){this.broke=true;for(const p of this.pil)p.shatter&&p.shatter(this.x,this.y);}return false;}
     for(const e of enemies){if(e.dead)continue;const dx=e.x-this.x,dy=e.y-this.y,d=Math.hypot(dx,dy)||1;if(this.inside.has(e)){if(d>this.R-e.r){e.x=this.x+dx/d*(this.R-e.r);e.y=this.y+dy/d*(this.R-e.r);}if(e.boss)e.st.slow=Math.max(e.st.slow,.3);else e.st.root=Math.max(e.st.root,.3);}
@@ -503,7 +503,7 @@ function mkOaRico(c){const t=owTgt(c,owRange('oaRico'));return owShotAction({key
     const b=owFire(a,ctx,{target:t,mult:OB.oaRico.dmg,bolt:{kind:'std',tint:OWC.moon,glow:.8,trailN:8}});if(b)b.onHit=onHit;}});}
 /* Ultimate A — Silent Execution */
 function mkOaExec(c){const lv=owL('oaExec'),T=OB.oaExec.aim,d=player.dir,pk=bPeak(d),t0=c.target&&!c.target.dead?c.target:nearestEnemy(player.x,player.y,owRange('oaExec'));
-  let list=[...OW.log.keys()].filter(e=>!e.dead).slice(0,OB.oaExec.maxT);if(!list.length&&t0)list=[t0];if(!list.length){msg('ยังไม่มีเป้าที่โดนสกิล');return null;}
+  let list=[...OW.log.keys()].filter(e=>!e.dead);if(t0){if(!list.includes(t0))list.unshift(t0);for(const e of enemiesInCircle(t0.x,t0.y,260))if(!list.includes(e))list.push(e);}list=list.slice(0,OB.oaExec.maxT);   /* roles 2026-11-24: + every enemy round the main target */if(!list.length){msg('ยังไม่มีเป้าที่โดนสกิล');return null;}
   const s=[...seq('buff',d,0,pk,1.4),...hold('buff',d,pk,Math.max(0,T-.3)*1000),...seq('attack',atkDir(d),CT(atkDir(d)),null,1.2)],tF=T+.1;
   const ev=[{t:.02,f:()=>{skyDarkT=.55;addFx(new OwMoon({life:T+1.1}));owFeathers(player.x,player.y,58,3,{spd:20});}},{t:T*.6,f:()=>{for(const e of list)if(!e.dead)addFx(new OwSight({tg:e,T:T*.4+.1}));}}];
   list.forEach((e,i)=>ev.push({t:tF+i*.06,f:a=>{if(e.dead)return;const ctx=owCtx(a,{key:'oaExec'});let m=OB.oaExec.dmg[lv-1];if(owL('oaLast')){if(e.hp<e.maxHp*OB.oaLast.low)m+=OB.oaLast.add;m+=OB.oaLast.perMark*owTakeMarks(e);}
@@ -527,7 +527,7 @@ function mkObSkyfall(c){const gx=c.gx??player.x+Math.cos(player.phi)*120,gy=c.gy
   return act({key:'obSkyfall',name:'Skyfall Volley',seq:s,windup:T,dur:T+.66,hitList:[],owShot:true,
     events:[{t:.01,f:()=>{player.iframes=Math.max(player.iframes,.9);dustPuff(player.x,player.y,4,'#eef2f6',40,6);owFeathers(player.x,player.y,20,3,{spd:60});addFx(new DropShadowOw({x:gx,y:gy,R,T:.75}));}},
       {t:T,f:a=>{const ctx=owCtx(a,{key:'obSkyfall'});owSnap(phi,true,OWC.ice);for(let i=0;i<OB.obSkyfall.n;i++){const an=rnd(0,TAU),r=R*Math.sqrt(Math.random())*.85,x=gx+Math.cos(an)*r,y=gy+Math.sin(an)*r;
-        addFx(new OwSkyBolt({x,y,delay:i*.05,T:.22,tint:OWC.ice,onLand:()=>{for(const e of enemiesInCircle(x,y,24)){owHurt(e,OB.obSkyfall.dmg[lv-1],ctx);a.hitConfirmed=true;}dustPuff(x,y,2,'#e8f2fa',50,6);if(window.svgFx)svgFx('snow_crown',{x,y,z:0,s:.3,ay:.86,layer:'sorted',sortOff:3,life:.5,grow:[.3,1],growT:.1,fadeOut:.55,flip:Math.random()<.5?-1:1});else addFx(new OwPop({x,y,z:2,R:14,col:OWC.ice,life:.25}));for(let k=0;k<3;k++)emit({type:'snow',x,y,z:2,vx:rnd(-60,60),vy:rnd(-30,30),vz:rnd(60,120),g:300,drag:1,life:.5,size:rnd(1,2),color:'#ffffff'});}}));}
+        addFx(new OwSkyBolt({x,y,delay:i*.05,T:.22,tint:OWC.ice,onLand:()=>{for(const e of enemiesInCircle(x,y,34)){owHurt(e,OB.obSkyfall.dmg[lv-1],ctx);a.hitConfirmed=true;}dustPuff(x,y,2,'#e8f2fa',50,6);if(window.svgFx)svgFx('snow_crown',{x,y,z:0,s:.3,ay:.86,layer:'sorted',sortOff:3,life:.5,grow:[.3,1],growT:.1,fadeOut:.55,flip:Math.random()<.5?-1:1});else addFx(new OwPop({x,y,z:2,R:14,col:OWC.ice,life:.25}));for(let k=0;k<3;k++)emit({type:'snow',x,y,z:2,vx:rnd(-60,60),vy:rnd(-30,30),vz:rnd(60,120),g:300,drag:1,life:.5,size:rnd(1,2),color:'#ffffff'});}}));}
         setFxTimer(.55,()=>shake(2));}}],
     update:(a)=>{const k=a.t/(T+.66);player.z=Math.sin(Math.PI*Math.min(1,k))*46;}});}
 function mkObVolley(c){const lv=owL('obVolley'),d=player.dir;return act({key:'obVolley',name:'Frost Volley',seq:[...seq('buff',d,0,bPeak(d),2.2),...hold('buff',d,bPeak(d),200)],windup:.18,dur:.4,hitList:[],
@@ -555,6 +555,7 @@ function mkObFlash(c){const d=player.dir,R=OB.obFlash.R;return act({key:'obFlash
 function mkObCage(c){const gx=c.gx,gy=c.gy,lv=owL('obCage'),dur=OB.obCage.dur[lv-1]+(owL('ocPerma')?OB.ocPerma.cage:0);return buffAct({key:'obCage',name:'Blizzard Cage',speed:1.6,glow:OWC.ice,phi:Math.atan2(gy-player.y,gx-player.x),
   events:tP=>[{t:.02,f:()=>{for(let i=0;i<qn(18);i++){const an=rnd(0,TAU),r=OB.obCage.R*Math.sqrt(Math.random());emit({type:'snow',x:gx+Math.cos(an)*r,y:gy+Math.sin(an)*r,z:rnd(60,110),vz:-rnd(40,80),drag:.3,life:rnd(.6,1),size:rnd(1,2),color:'#ffffff'});}}},
     {t:tP,f:a=>{if(OW.cage&&OW.cage.alive)OW.cage.life=Math.min(OW.cage.life,OW.cage.t+.2);OW.cage=addFx(new OwCageObj({x:gx,y:gy,R:OB.obCage.R,life:dur}));a.hitConfirmed=true;owFrostBurst(gx,gy,10,1.2);owGust(gx,gy,OB.obCage.R);shake(3);stop(60);
+      {const cg=OW.cage;for(let k=0;k<OB.obCage.pulls;k++)setFxTimer(.05+k*.2,()=>{if(!cg.alive)return;owGust(gx,gy,OB.obCage.R*(1-k*.1));for(const e of cg.inside){if(e.dead||e.boss)continue;const dd=Math.hypot(e.x-gx,e.y-gy);if(dd>40){const kk=Math.min(OB.obCage.pull,dd-40)/dd;e.x-=(e.x-gx)*kk;e.y-=(e.y-gy)*kk;}if(k%2===0)owChill(e,1);}shake(.8);});}   /* roles 2026-11-24: controller ult = wide + pulls */
       for(const e of OW.cage.inside)owRemember(e);}}]});}
 function mkObRain(c){const cg=OW.cage;if(!cg||!cg.alive){msg('ต้องมี Blizzard Cage อยู่');return null;}if(dist(player,cg)>420){msg('อยู่ห่างกรงเกินไป');return null;}
   const tg=[...cg.inside].filter(e=>!e.dead);return buffAct({key:'obRain',name:'Moonwind Rain',speed:1.8,glow:OWC.moon,phi:Math.atan2(cg.y-player.y,cg.x-player.x),

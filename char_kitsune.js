@@ -22,7 +22,7 @@ const KI_BAL={
   sk:{
     // ---- Basic
     knStaff:{chain:[2,3,4,4],hit:1.0},
-    knBell:{every:4,dmg:[.6,.8,1.0],R:80},
+    knBell:{every:4,dmg:[.6,.8,1.0],R:100},
     knStep:{dist:[150,180,210],cd:10,mp:8},
     knWard:{shield:[4,6,8],T:6,cd:18,mp:12},
     knBless:{hp:[5,8],sp:[15,25],cd:25,mp:0},
@@ -30,18 +30,18 @@ const KI_BAL={
     knTorii:{R:110,T:8,sp:[3,4,5],tal:[20,30,40],cd:30,mp:16},
     // ---- A · Kitsune-bi
     kaOrb:{n:3,dmg:[.7,.8,.9,1.0],cd:5,mp:10,range:320},
-    kaWisp:{dmg:[.4,.5,.6],R:90},
-    kaPillar:{dmg:[2.2,2.8],R:80,cd:8,mp:14,range:300},
+    kaWisp:{dmg:[.4,.5,.6],R:110},
+    kaPillar:{dmg:[2.2,2.8],R:115,cd:8,mp:14,range:300},
     kaTwin:{dmg:[1.0,1.4]},
-    kaLantern:{n:4,dmg:[1.0,1.3],R:60,back:110,T:10,cd:12,mp:14},
+    kaLantern:{n:4,dmg:[1.0,1.3],R:80,back:110,T:10,cd:12,mp:14},
     kaFestival:{n:3,dmg:[.4,.6]},
-    kaRain:{n:10,dmg:[.5,.6],R:130,cd:12,mp:18,range:300},
+    kaRain:{n:14,dmg:[.36,.43],R:165,cd:12,mp:18,range:300},
     kaPetals:{dmg:.3,T:3},
     kaBurst:{dmg:[2.4,3.0],per:.5,R:150,cd:12,mp:18},
     kaAfterglow:{back:[2,3]},
     kaWisdom:{tal:[4,6,8]},
-    kaVeil:{T:4,dmg:.6,R:80,cd:16,mp:12},
-    kaInferno:{n:9,dmg:[1.6,2.2],R:300,cd:60,mp:50},
+    kaVeil:{T:4,dmg:.6,R:110,cd:16,mp:12},
+    kaInferno:{n:9,dmg:[1.6,2.2],R:300,sp:85,cd:60,mp:50},
     kaCelestial:{T:8},
     // ---- B · Moon Mirror Priestess
     kbBeam:{dmg:[1.2,1.4,1.6,1.8],len:320,w:22,cd:5,mp:10,range:320},
@@ -49,17 +49,17 @@ const KI_BAL={
     kbCrescent:{dmg:[1.6,2.0],len:240,cd:8,mp:14,range:240},
     kbHalf:{dmg:[1.0,1.4]},
     kbMirror:{T:8,split:[.8,1.0],cd:14,mp:14,range:260},
-    kbShards:{dmg:[1.2,1.6],R:100},
-    kbCircle:{R:130,T:4,dmg:[.6,.8],cd:14,mp:18,range:300},
+    kbShards:{dmg:[1.2,1.6],R:130},
+    kbCircle:{R:165,T:4,dmg:[.6,.8],cd:14,mp:18,range:300},
     kbEclipse:{dmg:1.5,stun:1},
     kbStar:{n:6,dmg:[.9,1.1],cd:10,mp:16,range:340},
     kbShooting:{dmg:.5},
     kbGrace:{tal:[15,25,35]},
     kbMoonlight:{T:2,cd:18,mp:12},
     kbNight:{T:6,R:260,dmg:[1.2,1.6],cd:60,mp:50},
-    kbMoonrise:{dmg:3.0,R:160},
+    kbMoonrise:{dmg:3.0,R:200},
     // ---- C
-    kcChime:{dmg:1.6,R:120},
+    kcChime:{dmg:1.6,R:150},
     kcSwarm:{n:5},
     kcPrism:{n:3,spread:.3},
     kcPhantom:{dmg:1.4,R:90},
@@ -100,7 +100,7 @@ const KI_DEFS=[
  {key:'kaTwin',id:'KN-A04',name:'Twin Pillars',br:'A',row:3,max:2,passive:1,enh:'kaPillar',pre:[['kaPillar',1]],d:'(ต่อยอด Spirit Flame Pillar) เกิดเสาที่สองข้าง ๆ หลัง 0.4 วิ',lv:i=>[`${kT(KB.kaTwin.dmg[i-1])}`]},
  {key:'kaLantern',id:'KN-A05',name:'Fox Lantern Trail',br:'A',row:4,max:2,type:'self',d:'วิ่งถอยทิ้งโคมไฟจิ้งจอก 4 ดวง ระเบิดเมื่อศัตรูเหยียบ',lv:i=>[`${kT(KB.kaLantern.dmg[i-1])} ต่อดวง`,`Cooldown ${KB.kaLantern.cd} วิ`]},
  {key:'kaFestival',id:'KN-A06',name:'Lantern Festival',br:'A',row:4,max:2,passive:1,enh:'kaLantern',pre:[['kaLantern',1]],d:'(ต่อยอด Fox Lantern Trail) โคมระเบิดแตกเป็นไฟเล็ก 3 ดวงวิ่งหาเป้า',lv:i=>[`${kT(KB.kaFestival.dmg[i-1])} ต่อดวง`]},
- {key:'kaRain',id:'KN-A07',name:"Will-o'-Wisp Rain",br:'A',row:5,max:2,type:'ground',radius:()=>KB.kaRain.R,d:'ฝนไฟจิ้งจอก 10 ลูกตกลงพื้นที่ หาง +2',lv:i=>[`${kT(KB.kaRain.dmg[i-1])} × ${KB.kaRain.n}`,`Cooldown ${KB.kaRain.cd} วิ`]},
+ {key:'kaRain',id:'KN-A07',name:"Will-o'-Wisp Rain",br:'A',row:5,max:2,type:'ground',radius:()=>KB.kaRain.R,d:'ฝนไฟจิ้งจอก 14 ลูกตกลงพื้นที่ หาง +2',lv:i=>[`${kT(KB.kaRain.dmg[i-1])} × ${KB.kaRain.n}`,`Cooldown ${KB.kaRain.cd} วิ`]},
  {key:'kaPetals',id:'KN-A08',name:'Burning Petals',br:'A',row:5,max:1,passive:1,enh:'kaRain',pre:[['kaRain',1]],d:'(ต่อยอด Will-o\'-Wisp Rain) ทิ้งกลีบซากุระไฟ ศัตรูที่เหยียบโดนต่อเนื่อง',lv:()=>[`${kT(KB.kaPetals.dmg)} ทุก 0.5 วิ นาน ${KB.kaPetals.T} วิ`]},
  {key:'kaBurst',id:'KN-A09',name:'Tail Burst',br:'A',row:6,max:2,type:'self',d:'ปล่อยไฟจากหางทั้งหมดเป็นคลื่นรอบตัว ใช้หางทั้งหมด',lv:i=>[`${kT(KB.kaBurst.dmg[i-1])} + ${kT(KB.kaBurst.per)} ต่อหาง`,`Cooldown ${KB.kaBurst.cd} วิ`]},
  {key:'kaAfterglow',id:'KN-A10',name:'Afterglow',br:'A',row:6,max:2,passive:1,enh:'kaBurst',pre:[['kaBurst',1]],d:'(ต่อยอด Tail Burst) หลังปล่อยคืนหาง',lv:i=>[`คืน ${KB.kaAfterglow.back[i-1]} หาง`]},
@@ -294,7 +294,8 @@ function mkKaBurst(c){return kCast({key:'kaBurst',name:'Tail Burst',speed:1.6,f:
   if(n)addFx(new DText({x:player.x,y:player.y,z:100,text:'TAILS ×'+n,color:KIC.fire,size:13,life:.8}));if(kL('kaAfterglow'))setFxTimer(.1,()=>kTail(kLv(KB.kaAfterglow.back,'kaAfterglow')));}});}
 function mkKaVeil(c){return kCast({key:'kaVeil',name:'Foxfire Veil',f:()=>{addBuff('kaVeil',KB.kaVeil.T);kFireBurst(player.x,player.y,KB.kaVeil.R);}});}
 function mkKaInferno(c){return buffAct({key:'kaInferno',name:'Nine-Tailed Inferno',speed:1.4,glow:KIC.fire,events:(tP,s)=>{const TT=seqTotal(s)-.02,sp=Math.min(.08,(TT-tP)/9);const ev=[{t:0,f:()=>kiV('infernoStart',tP)}];for(let i=0;i<9;i++)ev.push({t:tP+i*sp,f:()=>{const L=kNear(player.x,player.y,KB.kaInferno.R).sort((a,b)=>dist(a,player)-dist(b,player));if(!L.length)return;const e=L[i%L.length];
-    addFx(new KiBeam({x:player.x,y:player.y,phi:angTo(e),L:dist(player,e),col:KIC.fire,w:8}));kHit(e,kLv(KB.kaInferno.dmg,'kaInferno'),'kaInferno',{big:true});kPow(e,true);}});
+    addFx(new KiBeam({x:player.x,y:player.y,phi:angTo(e),L:dist(player,e),col:KIC.fire,w:8}));const m=kLv(KB.kaInferno.dmg,'kaInferno'),full=i===0||i===8;kHit(e,m,'kaInferno',full?{big:true}:{big:true,dot:1});kPow(e,true);
+    for(const q of kNear(e.x,e.y,KB.kaInferno.sp))if(q!==e)kHit(q,m,'kaInferno',{dot:1});if(typeof kFireBurst==='function')kFireBurst(e.x,e.y,KB.kaInferno.sp*.5,KIC.fire);}});   /* roles 2026-11-24: each tail explodes round its target */
     ev.push({t:TT,f:()=>{if(kL('kaCelestial')){KI.tails=KI_BAL.tails.cap;addBuff('kaCelestial',KB.kaCelestial.T);kiV('celestialOn');}}});return ev;},
     extra:{dur:1e9}});}   // 2026-11-22: the 9 beams run to the clip's end, past buffAct's dur (tP+.15) → a queued key press dropped the last beams + Celestial Fox; now the whole clip is the action
 

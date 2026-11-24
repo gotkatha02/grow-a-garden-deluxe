@@ -27,49 +27,49 @@ const LI_BAL={
     lnCombo:{chain:[2,3,4,4],hit:1.0},
     lnKnuckle:{every:4,dmg:[.8,1.0,1.2],R:180},
     lnHide:{T:4,block:[15,25,35],cd:16,mp:12},
-    lnPounce:{dist:[160,190,220],dmg:1.5,R:70,cd:9,mp:12,range:220},
+    lnPounce:{dist:[160,190,220],dmg:1.5,R:95,cd:9,mp:12,range:220},
     lnRest:{T:6,hp:[1.0,1.5],cd:24,mp:10},
     lnMane:{hp:[1,2,3,4]},
-    lnRoar:{R:160,weak:[10,20,30],dur:8,cd:20,mp:14},
+    lnRoar:{R:200,weak:[10,20,30],dur:8,cd:20,mp:14},
     // ---- A · Olympian Pankration
     laGrab:{dmg:[1.0,1.2,1.4,1.6],knee:1.8,cd:6,mp:8,range:110},
     laBody:{block:[8,14,20],after:2},
-    laSuplex:{dmg:[2.2,2.8],land:1.0,R:80,cd:8,mp:14,range:110},
+    laSuplex:{dmg:[2.2,2.8],land:1.0,R:110,cd:8,mp:14,range:110},
     laPile:{add:[1.0,1.5]},
     laShove:{dmg:[1.6,2.0],push:180,cd:9,mp:12,range:110},
     laDomino:{dmg:[1.0,1.4]},
-    laSpin:{dmg:[.8,1.0],R:120,turns:3,cd:13,mp:18,range:110},
+    laSpin:{dmg:[.8,1.0],R:150,turns:3,cd:13,mp:18,range:110},
     laHurricane:{turns:5},
     laLift:{dmg:[2.6,3.2],per:.8,cd:12,mp:20,range:110},
     laCrack:{dmg:[1.2,1.6],len:200},
     laPride:{atk:[10,15,20],block:[3,5,6]},
     laCounter:{T:1,dmg:2.4,cd:14,mp:12},
-    laLabors:{n:12,dmg:[1.0,1.4],per:.4,fin:3.0,R:220,cd:60,mp:50},
+    laLabors:{n:12,dmg:[1.0,1.4],per:.4,fin:3.0,R:260,sp:70,shield:8,cd:60,mp:50},
     laLegend:{T:8,block:25},
     // ---- B · Thunder King
     lbJavelin:{dmg:[1.4,1.6,1.8,2.0],len:380,pierce:2,cd:5,mp:10,range:380},
     lbStatic:{every:5,dmg:[.8,1.0,1.2],R:120},
-    lbSky:{dmg:[2.2,2.8],R:80,cd:8,mp:14,range:320},
+    lbSky:{dmg:[2.2,2.8],R:115,cd:8,mp:14,range:320},
     lbTwin:{dmg:[1.0,1.4]},
     lbEagle:{n:3,dmg:[.9,1.2],cd:11,mp:16,range:360},
     lbAetos:{T:[6,8]},
-    lbCloud:{R:110,T:5,dmg:[.6,.8],cd:16,mp:20,range:320},
+    lbCloud:{R:145,T:5,dmg:[.6,.8],cd:16,mp:20,range:320},
     lbThunderhead:{scale:1.5},
     lbOver:{T:8,tal:[40,60],cd:20,mp:10},
-    lbField:{dmg:.5,R:110},
+    lbField:{dmg:.5,R:140},
     lbConductor:{keep:[7,9,11],sp:[2,4,6]},
     lbAegis:{n:2,cd:18,mp:14},
-    lbWrath:{n:12,R:260,dmg:[1.6,2.2],cd:60,mp:50},
+    lbWrath:{n:12,R:280,sp:65,dmg:[1.6,2.2],cd:60,mp:50},
     lbKing:{dmg:3.0,per:.4},
     // ---- C
     lcCombo:{dmg:1.8},
     lcClinch:{T:2.5,boss:.6},
     lcFork:{n:3,spread:.3},
     lcReflect:{dmg:.8},
-    lcToss:{len:300,R:100,dmg:3.0,cd:18,mp:24},
+    lcToss:{len:300,R:130,dmg:3.0,cd:18,mp:24},
     lcRain:{n:3,gap:90},
     lcCrown:{T:12,hp:1,flat:30,cd:40,mp:20},
-    lcAtlas:{dmg:2.4,R:140},
+    lcAtlas:{dmg:2.4,R:175},
     lcSupercell:{},
     lcAscend:{T:15,atk:60,cd:90,mp:40},
     lcTwelfth:{dmg:6.0,per:1.0,cd:50,mp:40,range:120},
@@ -301,8 +301,9 @@ function mkLaCounter(c){const T=LB.laCounter.T,s=hold('buff',player.dir,2,T*1000
 function mkLaLabors(c){const n=LB.laLabors.n,gap=.15,T=n*gap+.4,sx=player.x,sy=player.y,g=LI.glory,m=lLv(LB.laLabors.dmg,'laLabors')+LB.laLabors.per*g;
   const L0=lNear(player.x,player.y,LB.laLabors.R);if(!L0.length){msg('ไม่มีเป้าหมาย');return null;}const s=hold('attack',atkDir(player.dir),CT(atkDir(player.dir)),T*1000);
   const ev=[];for(let i=0;i<n;i++)ev.push({t:.05+i*gap,f:a=>{const L=lNear(sx,sy,LB.laLabors.R);if(!L.length)return;const e=L[i%L.length];const an=rnd(0,TAU);player.x=e.x+Math.cos(an)*(e.r+24);player.y=e.y+Math.sin(an)*(e.r+24);faceTo(angTo(e));
-    lHit(e,m,'laLabors',{big:true});lPow(e,true,LIC.gold);if(!e.boss){e.x=sx+(e.x-sx)*.85;e.y=sy+(e.y-sy)*.85;}a.hitConfirmed=true;shake(1.6);stop(30);if(i===n-1)addFx(new DText({x:sx,y:sy,z:120,text:'XII',color:LIC.gold,size:18,life:1}));}});
-  ev.push({t:T-.15,f:()=>{player.x=sx;player.y=sy;for(const e of lNear(sx,sy,LB.laLabors.R*.7))lHit(e,LB.laLabors.fin,'laLabors',{big:true,knock:[angTo(e),120]});lSlamFx(sx,sy,LB.laLabors.R*.7);
+    lHit(e,m,'laLabors',i?{big:true,dot:1}:{big:true});lPow(e,true,LIC.gold);for(const q of lNear(e.x,e.y,LB.laLabors.sp))if(q!==e)lHit(q,m,'laLabors',{dot:1});if(!e.boss){e.x=sx+(e.x-sx)*.85;e.y=sy+(e.y-sy)*.85;}a.hitConfirmed=true;shake(1.6);stop(30);if(i===n-1)addFx(new DText({x:sx,y:sy,z:120,text:'XII',color:LIC.gold,size:18,life:1}));}});
+  ev.push({t:T-.15,f:()=>{player.x=sx;player.y=sy;for(const e of lNear(sx,sy,LB.laLabors.R))lHit(e,LB.laLabors.fin,'laLabors',{big:true,knock:[angTo(e),120]});lSlamFx(sx,sy,LB.laLabors.R);
+    if(typeof ENH!=='undefined'){ENH.shield=Math.max(ENH.shield||0,PS.lv*LB.laLabors.shield);ENH.shieldT=gameTime+6;addFx(new GRing({x:sx,y:sy,r0:30,r1:70,w:8,color:LIC.gold,life:.5}));}
     if(lL('laLegend')){addBuff('laLegend',LB.laLegend.T);addBuff('rhSA',LB.laLegend.T);LI.glory=LI_BAL.glory.cap;LI.gloryT=gameTime+LI_BAL.glory.dur;}}});
   return act({key:'laLabors',name:'Labors of Heracles',seq:s,windup:.05,dur:T,hitList:[],update:()=>{player.iframes=.06;player.glow={color:LIC.gold,k:.9};},onInterrupt:()=>{player.x=sx;player.y=sy;},events:ev});}
 
@@ -326,9 +327,9 @@ function mkLbWrath(c){const n=LB.lbWrath.n,gap=.18,R=LB.lbWrath.R;
   /* 2026-11-21 bug fix: the 12 bolts were action events up to tP+2.3 s, but the buff clip ends at ~1.0 s, so only 4 bolts fell and King of the Gods
      never came. They are now timers started on the release (same rhythm: gap in action seconds = gap/ACTION_TEMPO real seconds); the lion is free to move. */
   return buffAct({key:'lbWrath',name:'Wrath of Olympus',speed:1.4,glow:LIC.bolt,events:tP=>{const ev=[{t:.02,f:()=>{skyDarkT=.8;}}],k=1/(ACTION_TEMPO||.75);ev.push({t:tP,f:()=>{for(let i=0;i<n;i++)setFxTimer(.001+i*gap*k,()=>{const L=lNear(player.x,player.y,R).sort((a,b)=>dist(a,player)-dist(b,player));
-      if(L.length){const e=L[i%L.length];lBolt(e,lLv(LB.lbWrath.dmg,'lbWrath'),'lbWrath');}else{const an=i*2.4;lBoltAt(player.x+Math.cos(an)*R*.6,player.y+Math.sin(an)*R*.6);}lCharge(1);});
+      if(L.length){const e=L[i%L.length],m=lLv(LB.lbWrath.dmg,'lbWrath');lBolt(e,m,'lbWrath',i?{dot:1}:{});for(const q of lNear(e.x,e.y,LB.lbWrath.sp))if(q!==e)lHit(q,m,'lbWrath',{dot:1});addFx(new GRing({x:e.x,y:e.y,r0:8,r1:LB.lbWrath.sp,w:6,color:LIC.bolt,life:.25}));}else{const an=i*2.4;lBoltAt(player.x+Math.cos(an)*R*.6,player.y+Math.sin(an)*R*.6);}lCharge(1);});
     setFxTimer((n*gap+(lL('lbKing')?.5:.25))*k,()=>{skyDarkT=0;});   /* the sky was left dark after the ult */
-    if(lL('lbKing'))setFxTimer(.001+(n*gap+.15)*k,()=>{const ch=lSpendCharge(),m=LB.lbKing.dmg+LB.lbKing.per*ch;addFx(new LiBolt({x:player.x,y:player.y,w:12,life:.5}));for(const e of lNear(player.x,player.y,R*.6))lHit(e,m,'lbKing',{big:true});addFx(new GRing({x:player.x,y:player.y,r0:20,r1:R*.6,w:16,color:LIC.bolt,life:.5}));shake(4);stop(80);});}});
+    if(lL('lbKing'))setFxTimer(.001+(n*gap+.15)*k,()=>{const ch=lSpendCharge(),m=LB.lbKing.dmg+LB.lbKing.per*ch;addFx(new LiBolt({x:player.x,y:player.y,w:12,life:.5}));for(const e of lNear(player.x,player.y,R*.85))lHit(e,m,'lbKing',{big:true});addFx(new GRing({x:player.x,y:player.y,r0:20,r1:R*.85,w:16,color:LIC.bolt,life:.5}));shake(4);stop(80);});}});
     return ev;}});}
 
 /* ---------- C ---------- */

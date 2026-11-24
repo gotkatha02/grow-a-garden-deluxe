@@ -24,7 +24,7 @@ const HP_BAL={
     // ---- Basic
     hnCombo:{chain:[2,3,4,4],hit:1.15,fin:1.8,finR:70},
     hnWaddle:{dist:100,dmg:.6,cd:[7,5],mp:6},
-    hnYawn:{dmg:.5,R:120,half:.8,taunt:[3,5],cd:12,mp:10},
+    hnYawn:{dmg:.5,R:150,half:.8,taunt:[3,5],cd:12,mp:10},
     hnNap:{sp:[3,6,10],dur:8,cd:12,mp:0},
     hnFeast:{heal:[3,4.5,6],full:20,atk:15,dur:20,cd:30,mp:12},
     hnSweat:{regen:[.4,.8],every:5,icd:[20,14]},
@@ -37,14 +37,14 @@ const HP_BAL={
     haBounce:{dmg:[1.6,1.6,1.6],hop:1.0,n:[1,2,3],R:90,cd:9,mp:16,range:220},
     haBelly:{every:[6,5,4,3],dmg:1.0},
     haWard:{block:[8,14],dur:12,cd:30,mp:16},
-    haPound:{dmg:[1.6,1.8],R:130,cd:8,mp:14},
-    haSky:{dmg:[2.4,2.6,2.8],R:110,air:.8,cd:12,mp:18,range:260},
+    haPound:{dmg:[1.6,1.8],R:160,cd:8,mp:14},
+    haSky:{dmg:[2.4,2.6,2.8],R:140,air:.8,cd:12,mp:18,range:260},
     haDouble:{dmg:2.2,R:110,mp:10},
     haHeavy:{atk:[20,40]},
     haRoll:{dmg:.5,n:5,fin:1.6,len:300,cd:14,mp:20},
     haLast:{block:[15,25],heal:[1,1.5]},
-    haMountain:{dmg:4.0,R:140,air:1.2,burn:60,per:.02,cd:20,mp:28,range:260},
-    haBehemoth:{dur:10,block:25,size:1.35,R:1.5,fin:8.0,finR:240,cd:70,mp:60},
+    haMountain:{dmg:4.0,R:175,air:1.2,burn:60,per:.02,cd:20,mp:28,range:260},
+    haBehemoth:{dur:10,block:25,size:1.35,R:1.5,fin:8.0,finR:280,quakes:6,qR:260,qDmg:.3,cd:70,mp:60},
     // ---- B · Nile Flood Priest (magic)
     hbMud:{dmg:[1.4,1.6,1.8,2.0],len:240,poolR:60,poolT:4,cd:5,mp:10,range:240},
     hbBless:{regen:[.25,.4]},
@@ -53,11 +53,11 @@ const HP_BAL={
     hbWave:{dmg:[1.8,1.8,1.8],len:260,cd:9,mp:14,range:260},
     hbSilt:{t:[2,4],r:[10,20]},
     hbBounty:{heal:[4,6],mud:2,full:10,T:6,cd:25,mp:16},
-    hbGeyser:{dmg:[2.5,2.5],dry:1.5,R:80,cd:10,mp:16,range:300},
+    hbGeyser:{dmg:[2.5,2.5],dry:1.5,R:110,cd:10,mp:16,range:300},
     hbLotus:{dmg:[.8,.8,.8],n:3,cd:12,mp:18},
     hbLotusStorm:{dmg:3.0,R:90,heal:1,mp:10},
     hbInund:{tal:[15,30]},
-    hbQuick:{R:150,T:6,tick:.4,cd:18,mp:20,range:300},
+    hbQuick:{R:180,T:6,tick:.4,cd:18,mp:20,range:300},
     hbFlood:{per:[5,8]},
     hbWrath:{dmg:4.5,len:320,cd:20,mp:28,range:300},
     hbSea:{dur:8,R:300,move:60,regen:.8,geyser:2.0,fin:6.0,cd:70,mp:60},
@@ -351,7 +351,8 @@ function mkHaMountain(c){const [x,y]=hPt(c,HB.haMountain.range);let mult=HB.haMo
   return hSlam({key:'haMountain',name:'Mountain Drop',to:[x,y],pre:.24,air:HB.haMountain.air,h:340,hide:true,big:true,R:HB.haMountain.R,get mult(){return mult;},
     events:[{t:.2,f:()=>{const b=hBurn(HB.haMountain.burn);mult=HB.haMountain.dmg+b*HB.haMountain.per;addFx(new DText({x:player.x,y:player.y,z:110,text:'เผาความอิ่ม '+Math.round(b),color:'#ff9a5a',size:13,life:1}));}}]});}
 function mkHaBehemoth(c){return buffAct({key:'haBehemoth',name:'Behemoth Drop',speed:1.4,glow:HPC.gold,events:tP=>[{t:.05,f:()=>{skyDarkT=.4;addFx(new DText({x:player.x,y:player.y,z:120,text:'BEHEMOTH',color:HPC.gold,size:18,life:1.6}));}},
-  {t:tP,f:()=>{HIP.full=hCap();hRefreshHP();addBuff('haBehemoth',HB.haBehemoth.dur);addBuff('rhSA',HB.haBehemoth.dur);HIP.behemoth=true;skyDarkT=0;hLand(player.x,player.y,120,true);}}]});}
+  {t:tP,f:()=>{HIP.full=hCap();hRefreshHP();addBuff('haBehemoth',HB.haBehemoth.dur);addBuff('rhSA',HB.haBehemoth.dur);HIP.behemoth=true;skyDarkT=0;hLand(player.x,player.y,120,true);
+    {const B=HB.haBehemoth;for(let k=1;k<=B.quakes;k++)setFxTimer(.16*k,()=>{const x=player.x,y=player.y;addFx(new GRing({x,y,r0:40,r1:B.qR,w:9,color:k%2?HPC.gold:'#f4e6c8',life:.34}));for(const e of hNear(x,y,B.qR)){hHit(e,B.qDmg,'haBehemoth',{dot:1});e.st.slow=Math.max(e.st.slow||0,1.2);e.aggro=8;}shake(1.6);});}}}]});}   /* roles 2026-11-24: tank ult = belly quakes */
 function hBehemothEnd(){const R=HB.haBehemoth.finR;addFx(new DText({x:player.x,y:player.y,z:120,text:'ทับยักษ์!',color:HPC.gold,size:17,life:1.2}));for(const e of hNear(player.x,player.y,R))hHit(e,HB.haBehemoth.fin,'haBehemoth',{hpSlam:1,big:true,cc:{air:1},koMul:2});hLand(player.x,player.y,R,true);}
 
 /* ---------- B · mud & water (magic) ---------- */

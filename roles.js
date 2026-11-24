@@ -36,8 +36,8 @@ const DEF={
   sup:  {th:'ซัพพอร์ต',en:'Support',c:'#7ce88a',k:.68,ko:.5, hp:3, n:1,d:'ฮีล บัฟ ทนทาน ตายยาก · ตีเบา'},
   summ: {th:'อัญเชิญ',en:'Summoner',c:'#e8b87a',k:.95,ko:.8, hp:0, n:1,d:'ลูกน้องสู้แทน ล่อมอน · ตัวเองบาง'}};
 /* per-branch calibration so every branch lands on its role target (measured with tools/roles/role_bench.py) */
-const CAL={rhino:{B:.55},wolf:{B:.869},cat:{B:.882},dragon:{A:1.105},axolotl:{B:3.27},jaguar:{A:1.058,B:1.066},sheep:{B:1.067},
-  lion:{A:1.052},raven:{A:1.045},hippo:{B:.946},owl:{B:.955}};   /* 2026-11-24 role bench RUNS 3 (tools/roles/role_bench.py); axolotl B = a pure healer: aimed at 1,100 (+ the biggest heal) */
+const CAL={rhino:{B:.52},wolf:{B:.9},cat:{A:.97,B:.882},dragon:{A:1.0,B:.955},axolotl:{B:3.27},jaguar:{A:1.058,B:1.066},sheep:{B:1.067},
+  lion:{A:.887,B:.873},raven:{A:.932},hippo:{B:.946},owl:{B:.955},anubis:{B:.93}};   /* 2026-11-24 role bench RUNS 3 (tools/roles/role_bench.py); axolotl B = a pure healer: aimed at 1,100 (+ the biggest heal) */
 const role=b=>{const h=R[CHAR];return (h&&h[b==='B'?'B':'A'])||'fight';};
 const brOf=k=>{if(!k||k==='basic')return 'basic';const s=SKILLS[k];if(!s)return 'basic';let b=s.br;
   if(b==='C')b=s.col||(typeof skCol==='function'&&skCol(k))||'basic';return b==='A'||b==='B'?b:'basic';};

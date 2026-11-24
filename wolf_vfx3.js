@@ -573,7 +573,7 @@ window.wV3={
  ragnarok(x,y,R,life){addFx(new CClip({x,y,z:0,w:R*2*1.05/.953,life,loop:'ragna_loop',fps:12,ground:1,sky:.46,cx:.497,cy:.79,fin:.35,fout:.4}));return true;},
  mjolnir(x,y,R){addFx(new CClip({x,y,z:0,w:R*1.4,cy:.77,loop:'mjolnir_hit',groundAt:24,seq:Array(46).fill(1/14)}));return true;},
  tempest(x,y,r,dur){addFx(new CClip({x,y,z:0,w:r*2*1.04/.962,life:dur+.3,loop:'tempest_loop',fps:12,ground:1,sky:.44,cx:.498,cy:.738,fin:.3,fout:.45}));return true;},
- cyclone(a){addFx(new CClip({x:player.x,y:player.y,follow:1,w:215,life:Math.max(.6,(a.dur||1)*.95),loop:'cyc_loop',io:'cyc_io'}));return true;},
+ cyclone(a){addFx(new CClip({x:player.x,y:player.y,follow:1,w:270,life:Math.max(.6,(a.dur||1)*.95),loop:'cyc_loop',io:'cyc_io'}));return true;},
 
  /* Storm Step trail (code): electric ribbon laid on the floor from the dash start to the wolf, white core, cyan glow, crawling zigzag arcs */
  stormTrail(ax,ay,bx,by,a,t){const dx=bx-ax,dy=by-ay,L=Math.hypot(dx,dy),an=Math.atan2(dy,dx);ctx.save();ctx.translate(ax,ay);ctx.rotate(an);ctx.globalAlpha=a;

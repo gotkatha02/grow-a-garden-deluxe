@@ -22,48 +22,48 @@ const ANU_BAL={
   sk:{
     // ---- Basic
     anFlail:{chain:[2,3,4,4],hit:1.0},
-    anSpike:{every:4,dmg:[.6,.8,1.0],R:70},
+    anSpike:{every:4,dmg:[.6,.8,1.0],R:90},
     anLunge:{dist:[150,180,210],dmg:1.4,cd:9,mp:10},
     anWraps:{shield:[4,6,8],T:6,cd:18,mp:12},
     anRite:{hp:[5,8],sp:[15,25],cd:25,mp:0},
     anHide:{block:[3,6,9,12]},
-    anStandard:{R:110,T:8,sp:[3,4,5],atk:[20,30,40],cd:30,mp:16},
+    anStandard:{R:140,T:8,sp:[3,4,5],atk:[20,30,40],cd:30,mp:16},
     // ---- A · Flail Dervish
     aaSweep:{dmg:[1.2,1.4,1.6,1.8],R:140,cd:4,mp:10,range:140},
     aaRolling:{atk:[4,6,8]},
-    aaSpin:{dmg:[.4,.5],R:120,T:2,cd:10,mp:16,range:140},
+    aaSpin:{dmg:[.4,.5],R:150,T:2,cd:10,mp:16,range:140},
     aaEye:{pull:[40,60]},
     aaLasso:{dmg:[1.6,2.0],len:220,cd:8,mp:14,range:220},
     aaRicochet:{dmg:[.8,1.2],n:2},
-    aaMeteor:{dmg:[2.4,3.0],R:110,cd:10,mp:16,range:260},
+    aaMeteor:{dmg:[2.4,3.0],R:140,cd:10,mp:16,range:260},
     aaShock:{dmg:1.0,R:180},
-    aaCyclone:{dmg:[2.4,3.0],per:.6,R:160,cd:12,mp:20},
+    aaCyclone:{dmg:[2.4,3.0],per:.6,R:190,cd:12,mp:20},
     aaOrbit:{back:[2,3]},
     aaIron:{block:[2,3,4]},
     aaGuard:{n:3,T:4,cd:16,mp:12},
-    aaWheel:{dmg:[.7,.9],R:180,T:4,cd:60,mp:50},
-    aaFlare:{dmg:4.0,R:200},
+    aaWheel:{dmg:[.7,.9],R:250,T:4,cd:60,mp:50},
+    aaFlare:{dmg:4.0,R:250},
     // ---- B · Judge of the Dead
     abHook:{dmg:[1.2,1.4,1.6,1.8],cd:5,mp:10,range:260},
     abGaze:{atk:[6,9,12]},
     abCrush:{dmg:[2.6,3.2],cd:7,mp:14,range:110},
     abFeather:{stun:[.6,1]},
     abBind:{dmg:[1.0,1.4],root:2,cd:12,mp:14,range:260},
-    abSpread:{n:[1,2],R:140},
+    abSpread:{n:[1,2],R:170},
     abPounce:{dmg:[1.8,2.2],cd:9,mp:14,range:260},
     abDoor:{dmg:1.5},
     abJudge:{dmg:[2.8,3.4],per:1.0,cd:12,mp:20,range:140},
     abVerdict:{dmg:[1.2,1.6]},
     abKeeper:{block:[8,12,16]},
     abGate:{T:1.5,cd:16,mp:12},
-    abHall:{n:5,dmg:[1.6,2.2],T:3,cd:60,mp:50,range:320},
+    abHall:{n:10,gap:.25,dmg:[.8,1.1],sp:130,spm:.6,T:3,cd:60,mp:50,range:320},
     abSeal:{dmg:4.0},
     // ---- C
-    acFrenzy:{dmg:1.6,R:110},
+    acFrenzy:{dmg:1.6,R:140},
     acTwin:{},
     acBarbed:{root:1,sin:2},
     acRush:{},
-    acDevil:{dmg:.6,R:90,T:4,cd:14,mp:18,range:260},
+    acDevil:{dmg:.6,R:115,T:4,cd:14,mp:18,range:260},
     acBreaker:{dmg:3.0,len:220,w:30,cd:14,mp:20,range:220},
     acRebirth:{T:10,hp:1,atk:30,cd:40,mp:20},
     acTwinMeteor:{dmg:2.0},
@@ -121,7 +121,7 @@ const ANU_DEFS=[
  {key:'abVerdict',id:'AN-G10',name:'Second Verdict',br:'B',row:6,max:2,passive:1,enh:'abJudge',pre:[['abJudge',1]],d:'(ต่อยอด Final Judgment) 0.5 วิหลังตัดสิน ตาชั่งตกซ้ำ',lv:i=>[`${uA(UK.abVerdict.dmg[i-1])}`]},
  {key:'abKeeper',id:'AN-G11',name:'Keeper of Thresholds',br:'B',row:7,max:3,passive:1,d:'(Passive) ดาเมจที่ได้รับจากผู้ถูกตัดสินลดลง',lv:i=>[`−${UK.abKeeper.block[i-1]} ต่อครั้ง`]},
  {key:'abGate',id:'AN-G12',name:'Underworld Gate',br:'B',row:7,max:1,type:'self',d:'จมลงเงา ไม่โดนโจมตี แล้วโผล่ด้านหลังผู้ถูกตัดสิน',lv:()=>[`${UK.abGate.T} วิ`,`Cooldown ${UK.abGate.cd} วิ`]},
- {key:'abHall',id:'AN-G13',name:'Hall of Two Truths',br:'B',row:8,max:2,type:'melee',ult:1,d:'ULTIMATE B · ตาชั่งยักษ์ ตรึงผู้ถูกตัดสิน ทุบโซ่ 5 ครั้ง บาปเต็ม 3',lv:i=>[`${uA(UK.abHall.dmg[i-1])} × ${UK.abHall.n} · ตรึง ${UK.abHall.T} วิ`,`Cooldown ${UK.abHall.cd} วิ`]},
+ {key:'abHall',id:'AN-G13',name:'Hall of Two Truths',br:'B',row:8,max:2,type:'melee',ult:1,d:'ULTIMATE B · ตาชั่งยักษ์ ตรึงผู้ถูกตัดสิน ทุบโซ่รัว 10 ครั้ง แต่ละครั้งกระแทกรอบตัวเป้าด้วย บาปเต็ม 3',lv:i=>[`${uA(UK.abHall.dmg[i-1])} × ${UK.abHall.n} · ตรึง ${UK.abHall.T} วิ`,`Cooldown ${UK.abHall.cd} วิ`]},
  {key:'abSeal',id:'AN-G14',name:"Osiris's Seal",br:'B',row:8,max:1,passive:1,enh:'abHall',pre:[['abHall',1]],d:'(ต่อยอด Hall of Two Truths) จบอัลติ ตราโอซิริสประทับ บาปกลับเป็น 3',lv:()=>[`${uA(UK.abSeal.dmg)}`]},
  // ---------------- C · WARDEN OF THE DUAT ----------------
  {key:'acFrenzy',id:'AN-C01',name:'Chain Frenzy',br:'C',col:'basic',tier:1,passive:1,pre:[['anFlail',4]],d:'ตีปกติต่อ 5 จังหวะ จังหวะที่ 5 หมุนลูกตุ้มรอบตัว',lv:()=>[`${uA(UK.acFrenzy.dmg)} รัศมี ${UK.acFrenzy.R}`]},
@@ -299,8 +299,9 @@ function mkAbJudge(c){const t=ANU.cond&&!ANU.cond.dead&&dist(player,ANU.cond)<UK
 function mkAbGate(c){return uCast({key:'abGate',name:'Underworld Gate',speed:2.6,glow:'#6a3aa8',f:()=>{player.iframes=Math.max(player.iframes||0,UK.abGate.T);ANU.gateT=gameTime+UK.abGate.T;ANU.gateEnd=gameTime+UK.abGate.T;uBurst(player.x,player.y,50,'#6a3aa8');}});}
 function mkAbHall(c){const t=ANU.cond&&!ANU.cond.dead&&dist(player,ANU.cond)<UK.abHall.range?ANU.cond:uTgt(c,UK.abHall.range);if(!t){msg('ไม่มีเป้าหมาย');return null;}
   return uCast({key:'abHall',name:'Hall of Two Truths',speed:1.4,glow:UC.gold,f:()=>{uCondemn(t);uRoot(t,UK.abHall.T);skyDarkT=.5;addFx(new DText({x:player.x,y:player.y,z:110,text:'HALL OF TWO TRUTHS',color:UC.gold,size:15,life:1.1}));
-    for(let i=0;i<UK.abHall.n;i++)setFxTimer(.3+i*.5,()=>{if(t.dead)return;addFx(new UPillar({x:t.x,y:t.y,w:30,col:UC.gold,life:.3}));uHit(t,uLv(UK.abHall.dmg,'abHall'),'abHall',{big:true});uPow(t,true,UC.gold);shake(1.6);uCondemn(t);ANU.sin=ANU_BAL.sin.cap;});
-    setFxTimer(.3+UK.abHall.n*.5,()=>{skyDarkT=0;if(t.dead||!uL('abSeal'))return;addFx(new UPillar({x:t.x,y:t.y,w:80,col:UC.sun,life:.5}));uHit(t,UK.abSeal.dmg,'abSeal',{big:true});uCondemn(t);ANU.sin=ANU_BAL.sin.cap;shake(3.6);stop(80);});}});}
+    for(let i=0;i<UK.abHall.n;i++)setFxTimer(.3+i*UK.abHall.gap,()=>{if(t.dead)return;const m=uLv(UK.abHall.dmg,'abHall');addFx(new UPillar({x:t.x,y:t.y,w:30,col:UC.gold,life:.3}));uHit(t,m,'abHall',i?{big:true,dot:1}:{big:true});
+      for(const q of enemiesInCircle(t.x,t.y,UK.abHall.sp))if(q!==t&&!q.dead)uHit(q,m*UK.abHall.spm,'abHall',{dot:1});if(i%2===0)addFx(new GRing({x:t.x,y:t.y,r0:20,r1:UK.abHall.sp,w:6,color:UC.gold,life:.28}));uPow(t,true,UC.gold);shake(1.6);uCondemn(t);ANU.sin=ANU_BAL.sin.cap;});
+    setFxTimer(.3+UK.abHall.n*UK.abHall.gap,()=>{skyDarkT=0;if(t.dead||!uL('abSeal'))return;addFx(new UPillar({x:t.x,y:t.y,w:80,col:UC.sun,life:.5}));uHit(t,UK.abSeal.dmg,'abSeal',{big:true});uCondemn(t);ANU.sin=ANU_BAL.sin.cap;shake(3.6);stop(80);});}});}
 
 /* ---------- C ---------- */
 function mkAcDevil(c){const [x,y]=uPt(c,UK.acDevil.range);return uCast({key:'acDevil',name:'Dust Devil',phi:Math.atan2(y-player.y,x-player.x),f:()=>{ANU.devils.push({x,y,tk:.3,mt:0,until:gameTime+UK.acDevil.T});uBurst(x,y,UK.acDevil.R,UC.sand);}});}
