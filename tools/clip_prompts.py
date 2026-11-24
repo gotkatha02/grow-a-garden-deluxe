@@ -20,12 +20,13 @@ def facing(d, P, p, pos):
                   f"we mostly see {pos} back and {p} never turns toward the viewer.",
             'N': f"{pos.capitalize()} back faces the viewer (back view), exactly as in the picture; {p} never turns toward the viewer."}[d]
 
-def tail(P, pos, weapon):
+NOFX = "No shadow, no flash, no glow, no sparkles, no particles, no smoke, no magic effects, no text."
+
+def tail(P, pos, weapon, nofx=None):
     return ("Keep the exact look of the picture: hand-painted chibi cartoon, thick dark-brown outlines, flat cel shading — "
             "not realistic, not 3D. The background stays plain flat green for the whole clip. The camera never moves or zooms. "
             f"{P} stays in the middle of the frame at the same size and never turns to another direction; {pos} whole body "
-            f"and the whole {weapon} stay inside the frame. No shadow, no flash, no glow, no sparkles, no particles, no smoke, "
-            "no magic effects, no text.")
+            f"and the whole {weapon} stay inside the frame. " + (nofx or NOFX))
 
 HEROES = {
  'sheep': dict(
@@ -102,14 +103,91 @@ python3 -I tools/dir8cut.py startv <โฟลเดอร์> S=$V/view_S.webp S
 - sockets: ลูกแก้วฟ้าบนหัวไม้ (cliphero 'orb' แบบแอคโซลอเติล) → แก้ crook() / tip() ใน sheep_vfx.js ให้ใช้ตำแหน่งลูกแก้วแทนปลายไม้ข้อของสไปรต์ชั่วคราว (cell 306,204)
 - วัด CHAR_SCALE.sheep ใหม่ (ตอนนี้ 1.54 = สไปรต์ชั่วคราว) ให้สูงเท่าหมาป่า · เช็ก hit times ด้วย tools/fxlab.py hits sheep ก่อน / หลัง (ต้องเท่าเดิม)
 - ยังไม่มี: หน้า HUD / หน้าสร้างตัว (ตัดหัวจาก view_S ผ่าน window.HUD_FACE แบบลิง / มังกรอัศวินได้เลย), ไอคอนสกิล (assets/icons/sheep ยังไม่มี), พื้นหลังทรี 4 สาย, ท่านั่ง (hero_sit.js)"""),
+ 'bastet': dict(
+  title='บาสเต็ด (Bastet Priestess · นักบวชแมวแห่งคำสาป)',
+  who='the little cat priestess in this picture', P='She', p='she', pos='her', weapon='book',
+  face="Keep her face exactly as in the picture: the same big amber cat eyes with the same calm, slightly sly look, "
+       "the same little cat smile, mouth closed.",
+  back_face={'NE': "We see her mostly from behind: the back of her head with the cream veil, her tall cat ears and only the "
+                   "edge of her face with one eye, as in the picture; her face never turns toward us.",
+             'N': "We only see the back of her head: her tall cat ears, the gold headband and the long cream veil with the "
+                  "gold key pattern, as in the picture; her face never turns toward us."},
+  keep={d: ("Her tall brown cat ears, the gold headband with its big turquoise gem, the gold tassel earrings, her long brown "
+            "braids, her ringed brown cat tail and the dark-blue apron with the gold ankh stay exactly the same.")
+        for d in ('S', 'SE', 'E')} | {d: ("Her tall brown cat ears, the gold headband, the long cream veil, her braids with "
+            "gold tassels and her ringed brown cat tail stay exactly the same.") for d in ('NE', 'N')},
+  spos={'S': 'just above her open palm', 'SE': 'just above her open palm', 'E': 'in front of her, just above her open palm',
+        'NE': 'in front of her, just above her open palm', 'N': 'beside her shoulder'},
+  blink=", and she blinks once",
+  vis=" Her thrusting hand stays visible beside her head during the thrust.",
+  fmt={'look': (', looking up at it', '')},
+  nofx="The little blue flame over the open book is part of her design: it stays small and only flickers gently. Nothing "
+       "else glows: no shadow, no flash, no sparkles, no particles, no smoke, no other magic effects, no text.",
+  act={
+   'idle': "Idle loop of {who}. {facing} She stands in a relaxed pose; a small open dark-blue book with a gold ankh on its "
+           "cover floats {spos}, a little blue flame curling over its pages, and the book bobs gently up and down. She "
+           "breathes slowly; her long braids, the gold tassels, her veil and the cloth of her skirt sway a little, her tail "
+           "swishes slowly, her ears twitch once{blink}. The last frame matches the first frame so the clip loops.",
+   'walk': "Walk loop of {who}. {facing} She walks in place, like on a treadmill, toward the way she is facing: light little "
+           "steps (about two steps per second), the small open book floating {spos} and moving along with her, her braids "
+           "and tassels bouncing, her tail and veil swaying. She does not move across the frame and the ground does not "
+           "move. The last frame matches the first frame so the clip loops.",
+   'attack': "Attack of {who}. {facing} The small open book stays floating {spos}. She pulls her free hand back beside her "
+             "shoulder in a short wind-up, then thrusts it forward and a little upward toward the way she is facing, palm "
+             "open and fingers spread like a cat's claw, holds that pose for an instant, then lowers her hand back to her "
+             "starting pose and stands still for the rest of the clip. The whole move takes about one second. Her feet "
+             "stay in place.{vis} Clean outlines in every frame, no motion blur.",
+   'buff': "Spell cast of {who}. {facing} She lifts the open book high above her head on her open palm and raises her "
+           "other hand beside it{look}, holds that pose still for about one second, then lowers the book back {spos}, "
+           "returns to her starting pose and stands still for the rest of the clip. Her feet stay in place. The raised book "
+           "stays inside the frame. Clean outlines in every frame, no motion blur."},
+  dirname={'S': 'หน้าตรง', 'SE': 'เฉียงหน้า หันขวา', 'E': 'ข้าง หันขวา', 'NE': 'เฉียงหลัง หันขวา', 'N': 'หลัง'},
+  actname={'idle': 'ยืน (idle · วนลูป)', 'walk': 'เดิน (walk · วนลูป)',
+           'attack': 'ตี (attack · ตีปกติ = ปาหน้ากระดาษคำสาป + สกิลที่ใช้ท่าตี)',
+           'buff': 'ร่าย (buff · คำสาป / เรียกผู้รับใช้ / บัฟ / อัลติ — เกมค้างเฟรมตอนชูหนังสือไว้ตอนร่ายยาว)'},
+  start='bastet_{n}_{d}.png',
+  header="""เจ้าของส่งภาพ 5 มุม 2026-11-24 11:56 (หน้า · เฉียงหน้าหันขวา · ข้างหันขวา · เฉียงหลังหันขวา · หลัง) + 'ขอพร้อมทำท่าทางหน่อย'
+
+## ภาพที่ได้
+- `assets/heroes/bastet/view_S|SE|E|NE|N.webp` = ต้นฉบับบนพื้นเขียว ภาพละมุม (1086×1448) · ทุกมุมหันขวาอยู่แล้ว ไม่ต้องกลับด้าน
+- หน้าตา: แมวสาวนักบวชอียิปต์ หูแมวน้ำตาลตั้งสูง ตาอำพันโต ลายเสือที่แก้ม ยิ้มแบบแมว ผมน้ำตาลยาวถักเปียปลายพู่ทอง คาดผมทองมีเพชรเทอร์ควอยซ์ใหญ่ ต่างหูพู่ทอง ผ้าคลุมผมสีครีมขอบลายทอง ปลอกคอทอง เสื้อเกาะอกน้ำเงินเข้ม กำไลทอง กระโปรงครีมผ่าข้าง ผ้าห้อยหน้าสีน้ำเงินลายอังค์ทอง กำไลข้อเท้าทอง รองเท้าแตะ หางแมวน้ำตาลมีวงทอง · หนังสือเปิดปกน้ำเงินลายอังค์ทองลอยเหนือฝ่ามือ มีเปลวไฟสีฟ้าเล็กๆ เหนือหน้ากระดาษ (มุมหลัง: ลอยข้างไหล่) · ไม่มีสีเขียวในชุด (เพชรเป็นสีเทอร์ควอยซ์ฟ้า) → ตัดพื้นเขียวได้สะอาด
+- มุมหน้าหนังสืออยู่มือซ้าย มุมหลังหนังสืออยู่ฝั่งขวา → พรอมต์ไม่ระบุมือซ้าย / ขวาเลย ใช้ 'มือที่รองหนังสือ' กับ 'มือว่าง'
+
+## ภาพตั้งต้น (แนบภาพของทิศนั้นทุกคลิป)
+- `bastet_<n>_<ทิศ>.png` 900×900 สี่เหลี่ยม (แบบเดียวกับที่ใช้ทำคลิปแกะได้) · ตัวสูง 540 = 60 % ของกรอบ (แกะ 50 %) → ในคลิป 480p ตัวสูง ~290 px (แกะ ~240) รายละเอียดชัดขึ้น · เท้าที่ 88 % เหลือเหนือหัว 0.40–0.48 เท่าตัวให้ชูหนังสือ ข้างละ ~0.45 เท่าตัวให้ผลักมือ
+```
+V=assets/heroes/bastet; python3 -I tools/dir8cut.py startv <โฟลเดอร์> S=$V/view_S.webp SE=$V/view_SE.webp E=$V/view_E.webp NE=$V/view_NE.webp N=$V/view_N.webp size=900 feet=.88 ht=540 clean=0
+```
+→ start_<ทิศ>.png ทุกทิศสเกลเดียวกัน (สเกลจากมุมหน้า) · clean=0 = ไม่ทาจุดเขียวในตัว (ช่องว่างระหว่างเปีย / แขนกับตัวเป็นพื้นหลังจริง) · ถ้าแอปเลือกความละเอียดได้ 720p ขึ้นไป ช่วยอีก
+
+## วิธีใช้
+แนบภาพตั้งต้นของทิศนั้น + วางพรอมต์ทีละตัว → 4 คลิปต่อทิศ (ยืน · เดิน · ตี · ร่าย) · คลิปละ 3–5 วิ · ไม่ต้องทำทิศซ้าย (เกมกลับด้านเอง) · ส่งกลับเรียง S → SE → E → NE → N ทิศละ ยืน → เดิน → ตี → ร่าย (สลับได้ ดูเองว่าคลิปไหนเป็นท่าอะไร)
+
+## กติกาที่อยู่ในทุกพรอมต์ (บทเรียนจากคลิปลิง / แอคโซลอเติล / มังกร / แกะ)
+- ประโยคบอกทิศขึ้นต้นทุกพรอมต์ กันโมเดลหมุนตัวหันหากล้อง (มุมหลังโดนบ่อย)
+- ล็อกหน้า (ตาอำพันโต ยิ้มแมว ปากปิด) ในมุมที่เห็นหน้า · มุมหลัง (NE, N) ใช้ประโยค 'เห็นแค่หลังหัว หน้าไม่หันมา' แทน และไม่มีกะพริบตา / ไม่มีเงยหน้ามองหนังสือ
+- ล็อกของติดตัว: หูแมว คาดผมเพชร ต่างหูพู่ เปีย หาง ผ้าห้อยลายอังค์ (มุมหลัง: ผ้าคลุมผม)
+- หนังสือลอยอยู่ที่เดิมตลอด (เหนือฝ่ามือ / ข้างไหล่ในมุมหลัง) · เปลวไฟฟ้าเหนือหนังสือเป็นส่วนของดีไซน์ ให้เล็กเท่าเดิม ไหววูบนิดเดียว ห้ามแสงอื่น
+- เดินอยู่กับที่แบบลู่วิ่ง ก้าวเร็ว ~2 ก้าว/วิ (คลิปเดินช้าจะไถลพื้น)
+- ตี = ท่าเดียวกันทุกทิศ: ง้างมือว่างข้างไหล่ แล้วผลักฝ่ามือกางนิ้วเหมือนกรงเล็บแมวไปข้างหน้าเฉียงขึ้นนิดๆ ค้างจังหวะนิดนึง แล้วยืนนิ่งจนจบคลิป (หนังสือลอยที่เดิม) · มุมหลังสั่งให้มือที่ผลักยังเห็นข้างหัว (ไม่งั้นโดนตัวบัง)
+- ร่าย = ชูหนังสือเหนือหัวบนฝ่ามือ อีกมือยกข้างๆ ค้างนิ่ง ~1 วิ แล้วกลับท่าเดิม (เกมค้างเฟรมนี้ตอนร่ายยาว)
+- ห้ามเบลอ · ห้ามแสง ประกาย วงเวท (เอฟเฟกต์ใส่ด้วยโค้ดในเกม) · กล้องนิ่งไม่ซูม · พื้นเขียวตลอด · ตัว + หนังสืออยู่ในกรอบตลอด""",
+  footer="""## ตอนคลิปมาถึง (โน้ตสำหรับแชตที่ทำต่อ)
+- ตัดด้วย `tools/cliphero.py` + แผนใหม่ `tools/clips/bastet_plan.json` (ดู `tools/clips/sheep_plan.json` เป็นตัวอย่าง: loop ช่วงที่ลืมตา, เลือกเฟรมเลี่ยงแสงที่โมเดลแอบใส่, flipDirs ถ้ามีคลิปหันผิดฝั่ง, perDir ถ้าคลิปบางทิศถ่ายมาเล็ก / ใหญ่กว่า) → `assets_bastet.js` ใหม่ (prefix ใหม่ เช่น BST) + index.html: โหลดเฉพาะ `?char=bastet` และสลับ atlas แบบ SHE_ART / AXL_ART (atkRemap {}), CHAR_FILTER '' , เพิ่มขนาดไฟล์ในตาราง MB ของหน้าโหลด
+- ตอนนี้เธอใช้สไปรต์หมาป่า (assets.js) → ให้คลิปใหม่ใช้เวลาเฟรมตี / ร่ายของหมาป่า: จำนวนเฟรม + เวลาแต่ละเฟรม + contact / peak ต่อทิศ (statichero.py timing=assets.js ทำแบบนี้ให้มังกรหลอมเพลิง — cliphero ยังไม่มีออปชันนี้ เพิ่มเอง หรือเขียนลง 'dur' / 'contact' / 'peak' ในแผน) จังหวะโดน / ปล่อยสกิลจะเท่าเดิม bench ไม่เปลี่ยน · เช็ก `python3 tools/fxlab.py hits bastet` ก่อน / หลัง
+- ตีปกติ: bastet_vfx.js (ส่วน 11 NORMAL ATTACK, mkBasic) เล่นคลิป 'buff' แทนท่าตี เพราะท่าตีหมาป่าเป็นฟันขวาน → พอมีคลิปของเธอเอง ให้ใช้คลิปตี (ผลักฝ่ามือ) แบบที่ axolotl_vfx.js เลิกสลับเมื่อ AXL_ART
+- sockets: ตำแหน่งหนังสือ / เปลวไฟฟ้า (cliphero 'orb' + orbMask ปรับเป็นสีฟ้าอมเขียว: B สูง G สูง R ต่ำ หรือ orbFix) ทุกท่า (orbAll) → จุดรวมพลังตอนง้าง / จุดปล่อยหน้ากระดาษใน bastet_vfx.js
+- วัด CHAR_SCALE.bastet ใหม่ให้สูงเท่าหมาป่า · หน้า HUD = ตัดหัวจาก view_S ผ่าน window.HUD_FACE (แบบแกะ / ลิง) · หน้าเลือกตัวมีภาพเต็มตัวแล้ว (assets/heroes/bastet/select.webp)
+- ยังไม่มี: ไอคอนสกิล (ใช้โค้ด SVG), พื้นหลังทรี 4 สาย, ท่านั่ง (hero_sit.js)"""),
 }
 
 def build(h, d, a):
     H = HEROES[h]; back = d in BACK
+    ex = {k: (v[d] if isinstance(v, dict) else v[1 if back else 0]) for k, v in H.get('fmt', {}).items()}
     txt = H['act'][a].format(who=H['who'], facing=facing(d, H['P'], H['p'], H['pos']), spos=H['spos'][d],
-                             blink='' if back else H['blink'], vis=H['vis'] if back else '')
+                             blink='' if back else H['blink'], vis=H['vis'] if back else '', **ex)
     face = H['back_face'][d] if back else H['face']
-    return ' '.join([txt, face, H['keep'][d], tail(H['P'], H['pos'], H['weapon'])])
+    return ' '.join([txt, face, H['keep'][d], tail(H['P'], H['pos'], H['weapon'], H.get('nofx'))])
 
 def doc(h):
     H = HEROES[h]
