@@ -101,7 +101,7 @@ Gem 12 "Worldstorm": a dark indigo crystal sphere containing a whole spinning st
 
 ---
 
-## 2) ของกลาง (ใช้ทุกฮีโร่) — หินโทเท็มดิบ 4 ขั้น + แก่นโทเท็ม — แผ่นเดียว 3×2 (1536×1024)
+## 2) ของกลาง (ใช้ทุกฮีโร่) — หินโทเท็ม 4 ขั้น + แก่นโทเท็ม — แผ่นเดียว 3×2 (1536×1024)
 
 ```
 Make a 3x2 sheet of 6 game item icons, 1536x1024, for my 2D RPG "Totem Legend". Copy the art style of the attached campfire key art: friendly hand-painted chibi cartoon, thick clean dark-brown outlines, cel shading with 2-3 flat tones, soft cartoon glow, bright and warm. Not realistic, not painterly smoke, not 3D.
@@ -118,10 +118,10 @@ Each icon is one single object, centered in its own perfect square cell, equal c
 
 | ช่อง | ไฟล์ (`assets/items/`) | ของ |
 |---|---|---|
-| 1 | `totem_stone1.png` | หินโทเท็มดิบ ขั้น 1 (มินิบอส / มอนดันเจี้ยน) |
-| 2 | `totem_stone2.png` | หินโทเท็มดิบ ขั้น 2 (ผู้พิทักษ์ / บอสพื้นที่) |
-| 3 | `totem_stone3.png` | หินโทเท็มดิบ ขั้น 3 (MVP ชั้นลึกสุด) |
-| 4 | `totem_stone4.png` | หินโทเท็มดิบ ขั้น 4 (MVP ปลายดินแดน / Aether Wyrm) |
+| 1 | `totem_stone1.png` | หินโทเท็ม ขั้น 1 (มินิบอส / มอนดันเจี้ยน) |
+| 2 | `totem_stone2.png` | หินโทเท็ม ขั้น 2 (ผู้พิทักษ์ / บอสพื้นที่) |
+| 3 | `totem_stone3.png` | หินโทเท็ม ขั้น 3 (MVP ชั้นลึกสุด) |
+| 4 | `totem_stone4.png` | หินโทเท็ม ขั้น 4 (MVP ปลายดินแดน / Aether Wyrm) |
 | 5 | `totem_essence.png` | แก่นโทเท็ม (อัปเลเวลเจม) |
 | 6 | `totem_chisel.png` | สิ่วแกะโทเท็ม (ไอคอนปุ่ม "แกะเจม") |
 

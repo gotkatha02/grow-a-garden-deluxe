@@ -5506,7 +5506,7 @@ function skMainRows(br){if(br==='C')return null;const rows=[];for(const k in SKI
 function skSet(k,n){const s=SKILLS[k],mx=s.br==='C'?1:s.max,lo=k===BASIC_KEY?1:0;n=clamp(n,lo,mx);
   while(LV[k]<n){if(!canRaise(k)||skLocked(k))break;LV[k]++;}if(LV[k]>n)LV[k]=n;
   skValidate();buildLevels();buildHotbar();buildSkillWin();}
-function skTip(k,lvl){const s=SKILLS[k],mx=s.br==='C'?1:s.max,ct=CAST[k]||0,rl=reqList(k,lvl),SD=SKILL_DESC[k]||JG_DESC[k]||{d:s.th||'',lv:{}};
+function skTip(k,lvl){const s=SKILLS[k],mx=s.br==='C'?1:s.max,ct=CAST[k]||0,rl=reqList(k,lvl),CRT=s.br==='C'&&!!(window.ROOTS&&ROOTS.ready)&&!window.__GEMS_ALL,   /* C skills are lit in the roots: the old C-point rows go (the roots line below says the real steps) */SD=SKILL_DESC[k]||JG_DESC[k]||{d:s.th||'',lv:{}};
   const DT0=skDT(k),MG=DT0==='m'||(DT0==='b'&&D.mag>D.patk),MX=DT0==='x',cf=coefOf(s.br==='C'&&s.col?s.col:s.br)*(window.ROLES?ROLES.kOfSkill(k):1),pw=MG?D.mag:MX?MIX.atk*D.patk+MIX.tal*D.mag:D.patk,PN=MG?'MATK':MX?'ผสม':'ATK',
     sc=n=>{const v=+(n*cf).toFixed(2);return `${PN} ×${v} <span style="color:#9aa6b8">(≈${Math.round(v*pw)})</span>`;},
     fixT=t=>String(t).replace(/ATK\s*×\s*(\d+(?:\.\d+)?)/g,(_,n)=>sc(+n)).replace(/ATK (\d+(?:\.\d+)?)%/g,(_,n)=>sc(n/100)).replace(/ดาเมจ ATK/g,MG?'ดาเมจเวท':'ดาเมจ ATK').replace(/MATK×(\d+(?:\.\d+)?)/g,(m0,n)=>/ฟื้น|ฮีล|โล่|เกราะ|HP/.test(String(t))?`MATK×${n} <span style="color:#9aa6b8">(≈${Math.round(n*D.mag)})</span>`:`MATK×${+(n*cf).toFixed(2)} <span style="color:#9aa6b8">(≈${Math.round(n*cf*D.mag)})</span>`);   /* coefficients shown already include the hero's scale; ≈ = before enemy DEF */
@@ -5515,8 +5515,8 @@ function skTip(k,lvl){const s=SKILLS[k],mx=s.br==='C'?1:s.max,ct=CAST[k]||0,rl=r
    ${skTypeHTML(k)}<div class="td">${fixT(SD.d)}</div>
    <div class="tb"><small style="color:#ffd36a">เลเวล ${R(lvl)}${LV[k]>=lvl?' (เรียนแล้ว)':''}</small>${lines(lvl)}</div>
    ${LV[k]>0&&LV[k]!==lvl&&SD.lv[LV[k]]?`<div class="tb cur"><small style="color:#9fd8ff">ตอนนี้ เลเวล ${R(LV[k])}</small>${lines(LV[k])}</div>`:''}
-   <div class="tb"><small style="color:#ffd36a">เงื่อนไขเลเวล ${R(lvl)}</small>${rl.map(x=>`<div class="tl" style="color:${x.ok||testMode?'#9fe8a0':'#ff9a8a'}">${x.ok||testMode?'✔':'✖'} ${x.t}</div>`).join('')}</div>
-   <small style="opacity:.7">คลิก = ตั้งเลเวลนี้ · คลิกขวา = ลด${testMode?' · (Test: ข้ามเงื่อนไข)':''}</small>`;}
+   <div class="tb"><small style="color:#ffd36a">เงื่อนไขเลเวล ${R(lvl)}</small>${(CRT?rl.slice(2):rl).map(x=>`<div class="tl" style="color:${x.ok||testMode?'#9fe8a0':'#ff9a8a'}">${x.ok||testMode?'✔':'✖'} ${x.t}</div>`).join('')}</div>
+   <small style="opacity:.7">${CRT?'คลิก = ไปที่ปมของสกิลนี้ในรากโทเท็ม (U)':`คลิก = ตั้งเลเวลนี้ · คลิกขวา = ลด${testMode?' · (Test: ข้ามเงื่อนไข)':''}`}</small>`;}
 function skIconCell(k,lvl,{c=false}={}){const s=SKILLS[k],on=LV[k]>=lvl,lk=!on&&!testMode&&!reqOK(k,lvl),nxt=!on&&LV[k]===lvl-1&&!lk&&canRaise(k);
   return `<div class="tc${s.ult?' ult':''}${on?' on':''}${nxt?' nx':''}${lk?' lk':''}" data-k="${k}" data-l="${lvl}">${skIcon(s)}<span class="rn${c?' c':''}">${c?'C':ROMAN[lvl-1]}</span></div>`;}
 function skArt(br){const A=typeof SKILL_BG_ALL!=='undefined'&&SKILL_BG_ALL[CHAR];return A&&A[br]?A[br]:null;}
@@ -6117,9 +6117,9 @@ window.AF={levelUp:()=>{if(PS.lv<LV_CAP){PS.lv++;applyStats();player.hp=player.m
 <script src="gem_data.js?v=8"></script>
 <script src="drop_table.js?v=3"></script>
 <script src="pet_data.js?v=1"></script>
-<script src="rune_data.js?v=1"></script>
-<script src="items.js?v=30"></script>
-<script src="market.js?v=4"></script>
+<script src="rune_data.js?v=2"></script>
+<script src="items.js?v=31"></script>
+<script src="market.js?v=5"></script>
 <script src="npcs.js?v=12"></script>
 <script src="monsters.js?v=2"></script>
 <script src="monster-sprites.js?v=4"></script>
@@ -6141,12 +6141,12 @@ window.AF={levelUp:()=>{if(PS.lv<LV_CAP){PS.lv++;applyStats();player.hp=player.m
 <script src="mobile.js?v=7"></script>
 <script src="target_lock.js?v=7"></script>
 <script src="sp_rules.js?v=1"></script>
-<script src="totem_gems.js?v=37"></script>
+<script src="totem_gems.js?v=38"></script>
 <script src="seals.js?v=1"></script>
 <script src="relics.js?v=3"></script>
 <script src="rune_roots_data.js?v=1"></script>
-<script src="totem_roots.js?v=1"></script>
-<script src="totem_ring.js?v=1"></script>
+<script src="totem_roots.js?v=2"></script>
+<script src="totem_ring.js?v=2"></script>
 <script src="gem_fx.js?v=3"></script>
 <script src="gem_mut_fx.js?v=3"></script>
 <script src="gem_sup_fx.js?v=2"></script>
@@ -6154,8 +6154,8 @@ window.AF={levelUp:()=>{if(PS.lv<LV_CAP){PS.lv++;applyStats();player.hp=player.m
 <script src="feel_hits.js?v=2"></script>
 <script src="milestones.js?v=1"></script>
 <script src="stat_help.js?v=1"></script>
-<script src="pets.js?v=3"></script>
-<script src="world_boss.js?v=3"></script>
+<script src="pets.js?v=4"></script>
+<script src="world_boss.js?v=4"></script>
 <script src="wb_urtok.js?v=1"></script>
 <script src="wb_khepra.js?v=1"></script>
 <script src="wb_burumba.js?v=1"></script>
@@ -6187,7 +6187,8 @@ window.AF={levelUp:()=>{if(PS.lv<LV_CAP){PS.lv++;applyStats();player.hp=player.m
 <script src="fx_manifest.js?v=1"></script>
 <script src="fx_cfg.js?v=1"></script>
 <script src="testroom.js?v=2"></script>
-<script src="guide.js?v=11"></script>
+<script src="guide.js?v=12"></script>
+<script src="unlocks.js?v=1"></script>
 <script src="fashion_aura.js?v=2"></script>
 <script src="fashion_companion.js?v=1"></script>
 <script>/* offline cache (sw.js): pictures are kept on the device, so later visits barely download anything; ?nosw=1 removes it */

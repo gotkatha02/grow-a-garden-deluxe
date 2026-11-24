@@ -61,7 +61,7 @@ function needs(n){const c=n.$||{},o=[];if(n.k==='h')return o;
   if(c.ma){const g=matG(n.b);o.push({x:'ma',n:c.ma,ids:LANDS().map(r=>`m_${r}_${g}_a`),nm:`วัตถุดิบมอนธรรมดา ระดับ ${g+1}`,wh:`มอน ${gLv(g)} เขตไหนก็ได้ · ตลาดกลาง`});}
   if(c.mb){const g=matG(n.b);o.push({x:'mb',n:c.mb,ids:LANDS().map(r=>`m_${r}_${g}_b`),nm:`วัตถุดิบมอนหายาก ระดับ ${g+1}`,wh:`มอน ${gLv(g)} เขตไหนก็ได้ · ตลาดกลาง`});}
   if(c.medal)o.push({x:'medal',n:c.medal,ids:['rmedal'],nm:'เหรียญโทเท็มทอง'});
-  if(c.rg)o.push({x:'rg',n:c.rg,ids:['rg'+(n.t||1)],nm:`เจมสกิลราก ขั้น ${n.t||1}`});
+  if(c.rg)o.push({x:'rg',n:c.rg,ids:['rg'+(n.t||1)],nm:`เมล็ดราก ขั้น ${n.t||1}`});
   if(c.z)o.push({x:'z',n:c.z,nm:'Zeny'});
   return o;}
 const have=e=>e.x==='pt'?ptsLeft():e.x==='z'?zeny():e.ids.reduce((a,id)=>a+bagN(id),0);
@@ -351,14 +351,14 @@ const BT={map:'บอสประจำแมพ',mvp:'MVP',main:'บอสใ�
 function exOK(req,z){return req.every(([bt,n])=>partN(bt)>=n)&&zeny()>=z;}
 function exDo(t,alt){const E=RU.COST.ex[t],req=alt?E.alt:E.parts;if(!req||!exOK(req,E.z)||!payZ(E.z))return;
   for(const [bt,n] of req){let left=n;for(const id of partsOf(bt).sort((a,b)=>bagN(b)-bagN(a))){const q=Math.min(left,bagN(id));if(q>0){bagAdd(id,-q);left-=q;}if(!left)break;}}
-  bagAdd('rg'+t,1);bagSave();say(`ได้ เจมสกิลราก ขั้น ${t}`);refresh();}
+  bagAdd('rg'+t,1);bagSave();say(`ได้ เมล็ดราก ขั้น ${t}`);refresh();}
 function shamBuild(){if(!sham.classList.contains('open'))return;let b='';
-  if(shTab==='ex')b=[1,2,3,4].map(t=>{const E=RU.COST.ex[t],row=(req,alt)=>`<div class="rtEx"><div><span class="rtIc">${eIcon('rg'+t,22)}</span><b>เจมสกิลราก ขั้น ${t}</b> ← ${req.map(([bt,n])=>`ชิ้นส่วน${BT[bt]} <b class="${partN(bt)>=n?'ok':'no'}">${partN(bt)}/${n}</b>`).join(' + ')} + <b class="${zeny()>=E.z?'ok':'no'}">${fmt(E.z)}z</b></div><button class="rtB s" data-ex="${t}" data-alt="${alt?1:0}" ${exOK(req,E.z)?'':'disabled'}>แลก</button></div>`;
-      return row(E.parts,0)+(E.alt?row(E.alt,1):'');}).join('')+`<div class="rtNote">ชิ้นส่วนบอสของบอสตัวไหนก็ได้ในระดับนั้น (ใช้ตัวที่มีมากสุดก่อน) · มีอยู่: แมพ ${partN('map')} · MVP ${partN('mvp')} · บอสใหญ่ ${partN('main')} · เจมสกิลรากยังดรอปจากบอสตรงๆ และซื้อขายในตลาดกลางได้</div>`;
+  if(shTab==='ex')b=[1,2,3,4].map(t=>{const E=RU.COST.ex[t],row=(req,alt)=>`<div class="rtEx"><div><span class="rtIc">${eIcon('rg'+t,22)}</span><b>เมล็ดราก ขั้น ${t}</b> ← ${req.map(([bt,n])=>`ชิ้นส่วน${BT[bt]} <b class="${partN(bt)>=n?'ok':'no'}">${partN(bt)}/${n}</b>`).join(' + ')} + <b class="${zeny()>=E.z?'ok':'no'}">${fmt(E.z)}z</b></div><button class="rtB s" data-ex="${t}" data-alt="${alt?1:0}" ${exOK(req,E.z)?'':'disabled'}>แลก</button></div>`;
+      return row(E.parts,0)+(E.alt?row(E.alt,1):'');}).join('')+`<div class="rtNote">ชิ้นส่วนบอสของบอสตัวไหนก็ได้ในระดับนั้น (ใช้ตัวที่มีมากสุดก่อน) · มีอยู่: แมพ ${partN('map')} · MVP ${partN('mvp')} · บอสใหญ่ ${partN('main')} · เมล็ดรากยังดรอปจากบอสตรงๆ และซื้อขายในตลาดกลางได้</div>`;
   else b=[['rfeather','คัมภีร์หมอผี — อ่านหินรูนดิบ (วงเศษโทเท็ม Y)'],['rdew','น้ำค้างราก — รีเซ็ตรากทั้งต้น คืนของครบ']].map(([id,d])=>{const p=RU.COST.shop[id];
       return `<div class="rtEx"><div><span class="rtIc">${eIcon(id,22)}</span><b>${AF.ETC[id].th}</b> · ${fmt(p)}z · มี ${bagN(id)}<br><small style="color:#c9b48a">${d}</small></div><div><button class="rtB s" data-buy="${id}" data-n="1" ${zeny()>=p?'':'disabled'}>×1</button><button class="rtB s" data-buy="${id}" data-n="10" ${zeny()>=p*10?'':'disabled'}>×10</button></div></div>`;}).join('');
   sham.innerHTML=`<div style="display:flex;align-items:center;gap:8px"><h4 style="margin:0;font:700 19px Mali,Sarabun;color:#ffd77a">🧙 หมอผีราก</h4><span class="rtNote" style="margin:0 0 0 auto">${fmt(zeny())}z</span><button class="rtB s" data-x="1" style="margin:0">✕</button></div>
-    <div class="rtTabs"><button data-t="ex" class="${shTab==='ex'?'on':''}">แลกเจมสกิลราก</button><button data-t="shop" class="${shTab==='shop'?'on':''}">ร้าน</button></div>${b}`;
+    <div class="rtTabs"><button data-t="ex" class="${shTab==='ex'?'on':''}">แลกเมล็ดราก</button><button data-t="shop" class="${shTab==='shop'?'on':''}">ร้าน</button></div>${b}`;
   sham.querySelector('[data-x]').onclick=()=>{sham.classList.remove('open');};
   sham.querySelectorAll('[data-t]').forEach(x=>x.onclick=()=>{shTab=x.dataset.t;shamBuild();});
   sham.querySelectorAll('[data-ex]').forEach(x=>x.onclick=()=>exDo(+x.dataset.ex,x.dataset.alt==='1'));
@@ -407,7 +407,8 @@ addEventListener('keydown',e=>{const tg=(e.target&&e.target.tagName)||'';if(/INP
 /* the skill tree's C nodes open the roots; tooltips say how the C skill is unlocked */
 {const _skc=window.skChange;if(typeof _skc==='function')window.skChange=skChange=function(k,d){const s=SKILLS[k];if(s&&s.br==='C'&&!window.__GEMS_ALL){open(k);return;}return _skc(k,d);};}
 {const _tip=window.skTip;if(typeof _tip==='function')window.skTip=skTip=function(k,l){const h=_tip(k,l);const s=SKILLS[k];if(!s||s.br!=='C'||!CNODE[k])return h;const id=CNODE[k],n=N[id];
-  return h+`<div style="margin-top:6px;padding:5px 8px;border-radius:8px;background:#2a1a0c;border:1.5px solid #8a6a3a;color:#ffe9a0;font-size:12.5px">🌳 <b>รากโทเท็ม</b>: ${R.lit[id]?'✓ ปลดแล้ว':`ยังไม่ปลด — ${TIERT[n.t]} · Lv ${n.lv} · จุดรวม ${n.n} ดวง + เจมสกิลราก ขั้น ${n.t} (กด U)`}</div>`;};}
+  return h+`<div style="margin-top:6px;padding:5px 8px;border-radius:8px;background:#2a1a0c;border:1.5px solid #8a6a3a;color:#ffe9a0;font-size:12.5px">🌳 <b>รากโทเท็ม</b>: ${R.lit[id]?'✓ ปลดแล้ว ใช้ได้เลย<br><span style="color:#d8c8a0">อยากแต่งเพิ่ม: สกัดเป็นเจม C ที่ศาลโทเท็ม (G → ⛏ ศาล) แล้ววางบนเสาโทเท็ม</span>'
+    :`ยังไม่ปลด (${TIERT[n.t]})<br><span style="color:#d8c8a0">① Lv ${n.lv} ② จุดรากรวม ${n.n} ดวง ③ จุดโหนดรอบปมครบ 3 ใน 6 ④ เมล็ดราก ขั้น ${n.t} 1 เมล็ด (บอสดรอป / แลกที่หมอผีราก)</span>`}</div>`;};}   /* 2026-11-24: the steps spelled out */
 /* ticker: level-ups (Lv 31 notice), menu dot, owed refunds, the status-length hook (milestones.js loads after this file) */
 let tk=0,lastLv=PLV();
 setInterval(()=>{hookRes();const lv=PLV();if(lv!==lastLv){lastLv=lv;dirtySt();if(win.classList.contains('open'))refresh();}

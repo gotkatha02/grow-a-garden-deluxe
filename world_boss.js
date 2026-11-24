@@ -430,10 +430,10 @@ function giveRewards(S,res){const out=[],L=PS.lv||1,t=tierOfLv(L),pts=Math.round
   const wk=weekId(Date.now());if(SV.wk.id!==wk)SV.wk={id:wk,done:{},got:0};SV.wk.done[S.key]=1;save();
   return out;}
 WB.claimWeek=function(){const wk=weekId(Date.now());if(SV.wk.id!==wk||SV.wk.got||Object.keys(SV.wk.done).length<5)return false;SV.wk.got=1;AF.add('sore',2);AF.add('tstone'+tierOfLv(PS.lv||1),3);SV.sc+=30;save();
-  chat('🎁 รับหีบประจำสัปดาห์: แร่ดาวตก ×2 · หินโทเท็มดิบ ×3 · เกล็ดดาว +30');return true;};
+  chat('🎁 รับหีบประจำสัปดาห์: แร่ดาวตก ×2 · หินโทเท็ม ×3 · เกล็ดดาว +30');return true;};
 
 /* ---------------- star-scale shop (เกล็ดดาว) ---------------- */
-const SHOP=[['tstone',1,4,'หินโทเท็มดิบ (ขั้นตามเลเวล)'],['tfrag',5,3,'ชิ้นส่วนเจม ×5 (ขั้นตามเลเวล)'],['tess',5,4,'แก่นโทเท็ม ×5'],['sore',1,25,'แร่ดาวตก'],['wore',1,6,'หินตีบวกอาวุธ (ขั้นตามเลเวล)'],['ore',1,6,'หินตีบวกชุด (ขั้นตามเลเวล)']];
+const SHOP=[['tstone',1,4,'หินโทเท็ม (ขั้นตามเลเวล)'],['tfrag',5,3,'ชิ้นส่วนเจม ×5 (ขั้นตามเลเวล)'],['tess',5,4,'แก่นโทเท็ม ×5'],['sore',1,25,'แร่ดาวตก'],['wore',1,6,'หินตีบวกอาวุธ (ขั้นตามเลเวล)'],['ore',1,6,'หินตีบวกชุด (ขั้นตามเลเวล)']];
 WB.buy=function(i){const r=SHOP[i];if(!r||SV.sc<r[2])return false;const t=tierOfLv(PS.lv||1),id=(r[0]==='tess'||r[0]==='sore')?r[0]:r[0]+t;if(!AF.ETC[id])return false;SV.sc-=r[2];AF.add(id,r[1]);save();chat(`⭐ แลก <b>${(AF.ETC[id].th||id)}</b> ×${r[1]} (−${r[2]} เกล็ดดาว)`);return true;};
 
 /* ---------------- the frame ---------------- */

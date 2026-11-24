@@ -60,7 +60,12 @@ const ptsLeft=()=>{const f=G('pointsLeft');return f?f():0;};
 const eqIt=sl=>{const id=EQ[sl];return id&&A().ITEMS[id];};
 const TG=()=>{try{return window.totemGems&&totemGems.data();}catch(e){return null;}};
 const gemSkill=()=>{const d=TG();return d&&d.ss&&d.ss[0];};
-const CH=[['ก้าวแรกของนักผจญภัย','Lv 1–5'],['เตรียมตัวให้พร้อม','Lv 5–10'],['พลังแห่งโทเท็ม','Lv 10–12'],['โลกกว้าง','Lv 12–20'],['ผู้ท้าชิง','Lv 20–30']];
+const RG=()=>{try{return window.RING&&RING.data();}catch(e){return null;}};
+const RT=()=>{try{return window.ROOTS&&ROOTS.data();}catch(e){return null;}};
+const ringTier=()=>{let m=0;try{for(let i=0;i<6;i++){const M=RING.match(i);if(M&&M.t>m)m=M.t;}}catch(e){}return m;};
+const cLit=()=>{try{const L=RT().lit||{};return Object.values(ROOTS.CNODE||{}).filter(id=>L[id]).length;}catch(e){return 0;}};
+const CH=[['ก้าวแรกของนักผจญภัย','Lv 1–5'],['เตรียมตัวให้พร้อม','Lv 5–10'],['พลังแห่งโทเท็ม','Lv 10–12'],['โลกกว้าง','Lv 12–20'],['ผู้ท้าชิง','Lv 20–30'],
+  ['รูนและราก','Lv 30–40'],['ตำนานแห่งดินแดน','Lv 40–60']];   /* chapters 6–7 added 2026-11-24 (owner 'แก้ให้เป็นมิตรกับผู้เล่น'): the systems that open after Lv 30 */
 const Q=[
  {id:'stat',ch:0,lv:1,t:'ปลุกพลังในตัว',d:'ฮีโร่ใหม่มีแต้มสเตตัสรอใช้ — แต้มกำหนดว่าจะตีแรง ร่ายเวทเก่ง ถึก หรือหลบเก่ง',
   g:'ใช้แต้มสเตตัสให้เหลือไม่ถึง 10',goal:()=>ptsLeft()<10?1:0,max:1,
@@ -134,8 +139,39 @@ const Q=[
  {id:'seal',ch:4,lv:20,t:'ตราแห่งดินแดน',d:'อุปกรณ์มีตราของดินแดน — ใส่ตราเดียวกัน 2 ชิ้นได้สเตตัสคู่ · 4 ชิ้นได้พลังพิเศษ',
   g:'สวมอุปกรณ์ตราเดียวกัน 2 ชิ้น',goal:()=>{const n={};for(const id of Object.values(EQ)){const it=id&&A().ITEMS[id];if(it&&it.seal)n[it.seal]=(n[it.seal]||0)+1;}return Math.min(2,Math.max(0,...Object.values(n),0));},max:2,
   pc:'คราฟต์ที่ช่าง (B) เลือกตราได้ หรือเปลี่ยนตราที่แท็บ ตรา',ph:'ช่าง → คราฟต์ / แท็บ ตรา',tut:'seal',rew:[['z',3000]]},
- {id:'end',ch:4,lv:1,t:'เส้นทางต่อจากนี้',d:'ยินดีด้วย! ต่อจากนี้: MVP เฟนเรียร์ · วัตถุโบราณจากบอส (R) · ตีบวก +10 ขึ้นไป · สเตตัสแตะ 99 ได้พลังพิเศษ · หลอมเจม 3→1 · หน้าโทเท็ม 3 หน้า',
-  g:'เปิดคู่มือ (📖) อ่านระบบที่เหลือ',goal:()=>since('book')>0?1:0,max:1,pc:'กด J หรือปุ่ม 📖',ph:'แตะ 📖 บนการ์ดนี้',rew:[['tstone2',2],['z',5000]]}];
+ {id:'end',ch:4,lv:1,t:'เส้นทางต่อจากนี้',d:'ยินดีด้วย! บทต่อไป: วงเศษโทเท็ม (Lv 30) · รากโทเท็ม (Lv 31) · สกิล C (Lv 51) — คู่มือ (📖) มีวิธีใช้ทุกระบบ และแท็บ ✨ บอกว่าตอนนี้อัปอะไรได้บ้าง',
+  g:'เปิดคู่มือ (📖) 1 ครั้ง',goal:()=>since('book')>0?1:0,max:1,pc:'กด J หรือปุ่ม 📖',ph:'แตะ 📖 บนการ์ดนี้',rew:[['rstone0',1],['rfeather',1],['z',5000]]},
+
+ {id:'ring',ch:5,lv:30,t:'วงเศษโทเท็ม',d:'อ่านหินรูนดิบด้วยคัมภีร์หมอผีได้รูนวิญญาณสัตว์ — ฝังในช่องใหญ่แล้วได้ความสามารถพิเศษที่ใช้ได้ทุกสกิล',
+  g:'ฝังรูนวิญญาณ 1 อัน',goal:()=>{const d=RG();return d&&d.big.some(Boolean)?1:0;},max:1,
+  pc:'กด Y → แท็บ 📜 อ่านรูน → อ่าน → แท็บ 💎 ฝังรูน → แตะช่องใหญ่ → แตะรูน',ph:'แตะ 🔱 → 📜 อ่านรูน → 💎 ฝังรูน → แตะช่องใหญ่ → แตะรูน',tut:'ring',rew:[['rbag',3],['z',3000]]},
+ {id:'runecol',ch:5,lv:30,t:'รูนสีให้ตรงสี',d:'รูนวิญญาณต่อกับช่องเล็ก 3 ช่อง — ใส่รูนสีที่สีตรงกับที่มันต้องการ รูนวิญญาณจะแรงขึ้นเป็นขั้น I / II / III',
+  g:'ทำให้รูนวิญญาณ 1 อันถึงขั้น I',goal:()=>ringTier()>=1?1:0,max:1,
+  pc:'เปิดถุงรูนสี (ดับเบิลคลิกในกระเป๋ารูน) → แตะช่องเล็กที่มีเส้นต่อกับรูนวิญญาณ → ใส่รูนสีที่สีตรง',ph:'เปิดถุงรูนสี → แตะช่องเล็กที่ต่อกับรูนวิญญาณ → ใส่รูนสีที่สีตรง',tut:'ring',rew:[['rsap',30],['z',3000]]},
+ {id:'roots',ch:5,lv:31,t:'รากโทเท็ม',d:'Lv 31 ได้แต้มรากเลเวลละ 4 แต้ม — จุดโหนดต่อออกจากหัวใจ ได้สเตตัสทีละนิด ปลายรากคือปม C ที่ปลดสกิล C',
+  g:'จุดราก 5 โหนด',goal:()=>{const d=RT();return d?Object.keys(d.lit||{}).length:0;},max:5,
+  pc:'กด U → แตะโหนดที่ติดกับหัวใจ → ✦ จุดราก',ph:'แตะ 🌳 → แตะโหนดที่ติดหัวใจ → ✦ จุดราก',tut:'roots',rew:[['rsap',40],['z',5000]]},
+ {id:'pages',ch:5,lv:32,t:'จัดเจมไว้หลายแบบ',d:'ศาลโทเท็มมี 3 หน้า (ฟาร์ม · บอส · ปาร์ตี้) — จัดเจมแต่ละหน้าไม่เหมือนกัน แล้วสลับตามงาน เจมย้ายตามหน้าเอง',
+  g:'สลับไปหน้า 2 แล้วกลับมา',goal:()=>{const d=TG();return d&&d.pg&&(d.pg.c||(d.pg.L||[]).some(Boolean))?1:0;},max:1,
+  pc:'กด G → แตะแถบ หน้า 2 ด้านบนซ้าย (ในเมือง หรือหลังไม่ได้สู้ 5 วินาที)',ph:'แตะ G → แตะแถบ หน้า 2 ด้านบนซ้าย',tut:'pages',rew:[['tess',20],['z',3000]]},
+ {id:'lv40',ch:5,lv:1,t:'ผ่านครึ่งทาง',d:'ทุ่งและดันเจี้ยนเลเวล 40 ให้หินตีบวกขั้น 3 — ตีบวกเกิน +5 ต้องลุ้น ใช้หินกันแตกช่วย',
+  g:'ถึง Lv 40',goal:()=>Math.min(lv(),40),max:40,pc:'🧭 พาไปทุ่งที่เหมาะกับเลเวล',ph:'แตะ 🧭',nav:'field',rew:[['guard',2],['wore3',2]]},
+
+ {id:'ref7',ch:6,lv:40,t:'ตีบวก +7',d:'อุปกรณ์ +7 / +10 / +12 / +15 ได้ความสามารถพิเศษตามชิ้น — +6 ขึ้นไปพลาดแล้วแตก (ซ่อมได้) · หินกันแตกกันไม่ให้แตก',
+  g:'ตีบวกอาวุธถึง +7',goal:()=>{const w=eqIt('rhand');return w&&(w.ref||0)>=7?1:0;},max:1,
+  pc:'กด B → แท็บ ตีบวก → ติ๊กหินกันแตก → ตีบวก',ph:'ช่าง → แท็บ ตีบวก → ติ๊กหินกันแตก → ตีบวก',tut:'refine',rew:[['tstone2',3],['z',10000]]},
+ {id:'boss3',ch:6,lv:40,t:'นักล่าบอส',d:'บอสประจำแมพดรอปเจมแปรสภาพ เจมเสริม ชิ้นส่วนบอส และเมล็ดราก (ใช้ปลดสกิล C) — ชิ้นส่วนบอสแลกเมล็ดรากได้ที่หมอผีราก',
+  g:'ล้มบอส 3 ตัว',goal:()=>since('boss'),max:3,pc:'🧭 พาไปบอสที่เหมาะกับเลเวล',ph:'แตะ 🧭',nav:'boss',tut:'boss',rew:[['rg1',1],['z',10000]]},
+ {id:'lv50',ch:6,lv:1,t:'ใกล้ตำนาน',d:'Lv 51 ปลดสกิล C ได้ — ระหว่างนี้จุดรากเข้าใกล้ปม C ไว้ก่อน (ต้องจุดรอบปมครบ 3 ใน 6)',
+  g:'ถึง Lv 50',goal:()=>Math.min(lv(),50),max:50,pc:'🧭 พาไปทุ่งที่เหมาะกับเลเวล · U ดูเส้นทางไปปม C',ph:'แตะ 🧭',nav:'field',rew:[['rsap',50],['rmedal',2]]},
+ {id:'cskill',ch:6,lv:51,t:'ปลุกสกิล C',d:'ร่างตำนานของฮีโร่ — ในรากโทเท็ม จุดรอบปม C ให้ครบ 3 ใน 6 แล้วปลูกเมล็ดราก สกิล C ใช้ได้ทันที',
+  g:'ปลดสกิล C 1 สกิล',goal:()=>cLit()?1:0,max:1,pc:'กด U → แตะปม C (กรอบทอง) → 🧭 วางเส้นทาง → จุดตามทาง → ✦ ปลดสกิล C',ph:'แตะ 🌳 → แตะปม C → 🧭 → จุดตามทาง → ✦ ปลดสกิล C',tut:'cskill',
+  rew:[['tstone1',3],['tstone3',3],['tess',50],['z',20000]]},
+ {id:'cgem',ch:6,lv:52,t:'เจม C บนเสาโทเท็ม',d:'สกัดสกิล C เป็นเจม แล้ววางบนเสาโทเท็มชั้นแรก — ใส่เจมแปรสภาพ / เสริมข้าง ๆ แต่งสกิล C ได้เหมือนสกิลอื่น',
+  g:'วางเจม C บนเสา 1 เม็ด',goal:()=>{const d=TG();return d&&(d.sock||[]).some(Boolean)?1:0;},max:1,
+  pc:'G → ⛏ ศาล → ⚗ สกัดเจม C · แตะชั้นล่างของเสา → ⛏ สลักเปิด → วางเจม C',ph:'G → ⛏ ศาล → สกัดเจม C · แตะชั้นล่างของเสา → สลักเปิด → วางเจม',tut:'cgem',rew:[['tfrag3',4],['sore',1],['z',20000]]},
+ {id:'lv60',ch:6,lv:1,t:'ตำนานแห่งดินแดน',d:'เลเวลสูงสุดตอนนี้คือ 60 — ต่อจากนี้: MVP เฟนเรียร์ · บอสโลกทุกวัน · ตีบวก +10 ขึ้นไป · สเตตัสแตะ 99 ได้พลังพิเศษ · สกิล C ให้ครบ',
+  g:'ถึง Lv 60',goal:()=>Math.min(lv(),60),max:60,pc:'🧭 พาไปทุ่งที่เหมาะกับเลเวล',ph:'แตะ 🧭',nav:'field',rew:[['sore',3],['z',50000]]}];
 
 /* ================================================================
    3. TUTORIALS (coach marks) — each step: el (selector or fn → element) · t text · pc / ph per platform ·
@@ -152,6 +188,13 @@ const openSmith=tab=>{if(!open('#smw'))A().openSmith();if(tab){const b=$(`#smw [
 const openTotem=()=>{if(!open('#totemWin')&&window.totemGems)totemGems.open();};
 const tgTab=t=>{const b=$(`#tgRight [data-tab="${t}"]`);if(b&&!b.classList.contains('on'))b.click();};
 const closeTotem=()=>{try{window.totemGems&&totemGems.close();}catch(e){}};
+const openRing=()=>{if(!open('#rgw')&&window.RING)RING.open();};
+const openRoots=f=>{if(window.ROOTS&&(f||!open('#rtw')))ROOTS.open(f);};
+const openPets=()=>{if(!open('#petw')&&window.PETS)PETS.open();};
+/* the nearest C knot that is not lit yet (lowest tier first) — the C-skill tutorial focuses it with its planned path */
+const firstC=()=>{try{const C=ROOTS.CNODE||{},L=RT().lit||{};let best=null,bt=9;for(const k in C){const n=ROOTS.N[C[k]];if(!n||L[C[k]])continue;if((n.t||1)<bt){bt=n.t||1;best=k;}}return best;}catch(e){return null;}};
+const noWs=()=>{const x=$('#wsX');if(x&&vis(x))x.click();};
+const openWs=t=>{openTotem();const b=$('#tgWsB');if(b&&!vis($('#wsX')))b.click();setTimeout(()=>{const w=$(`[data-wt="${t}"]`);if(w&&!w.classList.contains('on'))w.click();},80);};
 const TUT={
  stat:{t:'สเตตัส',s:[
   {el:mg('statb'),t:'ปุ่มนี้เปิดหน้าต่างสเตตัส (PC: Alt+A)',wait:()=>open('#stw')},
@@ -226,7 +269,40 @@ const TUT={
   {el:null,t:'ของบอส: เจมแปรสภาพ เจมเสริม ชิ้นส่วนบอส หินโทเท็ม — ชิ้นส่วนบอสใช้หลอมเจม 3→1 ที่ศาลโทเท็ม หรือขายในตลาดกลาง'}]},
  seal:{t:'ตราแห่งดินแดน',s:[
   {el:mg('eqb'),t:'อุปกรณ์ (ยกเว้นเครื่องประดับ) มีตราของดินแดน: กา งูขนนก ม้าบิน สคารับ กระเรียน — ดูที่มุมซ้ายล่างของไอคอน'},
-  {el:null,t:'ตราเดียวกัน 2 ชิ้น = สเตตัสคู่ของดินแดนนั้น · 4 ชิ้น = เลือกพลังพิเศษ 1 ใน 3 (หน้าต่างอุปกรณ์) · เปลี่ยนตราที่ช่าง แท็บ ตรา'}]}};
+  {el:null,t:'ตราเดียวกัน 2 ชิ้น = สเตตัสคู่ของดินแดนนั้น · 4 ชิ้น = เลือกพลังพิเศษ 1 ใน 3 (หน้าต่างอุปกรณ์) · เปลี่ยนตราที่ช่าง แท็บ ตรา'}]},
+ /* 2026-11-24: tutorials for the systems after Lv 30 + pets */
+ pet:{t:'สัตว์เลี้ยง',s:[
+  {el:mg('mgpet'),t:'ปุ่ม 🐾 เปิดหน้าต่างสัตว์เลี้ยง (PC: P)',wait:()=>open('#petw')},
+  {el:'#petw [data-t="cx"]',go:openPets,t:'สมุดสัตว์: สัตว์แต่ละชนิดอยู่แมพไหน ใช้เครื่องรางแดนไหน และให้สเตตัสอะไร'},
+  {el:null,pc:'จับ: คลิกมอนที่มี 🐾 ในกรอบเป้า → กดปุ่ม 🐾 ผูกใจ ใต้กรอบเป้าซ้ำ ๆ จนหัวใจเต็ม (ห้ามตีมัน) → ได้ไข่ · เครื่องรางผูกใจขายในร้านทุกเมือง',
+   ph:'จับ: แตะมอนที่มี 🐾 → แตะ 🐾 ผูกใจ ใต้กรอบเป้าซ้ำ ๆ จนหัวใจเต็ม (ห้ามตีมัน) → ได้ไข่ · เครื่องรางผูกใจขายในร้านทุกเมือง'},
+  {el:'#petw [data-t="egg"]',go:openPets,t:'ฟักไข่ได้ระดับสุ่ม (สีเหมือนเจม) → แท็บ สัตว์ของฉัน กด พาออกเดินทาง = ได้สเตตัสทันที · ความผูกพันเพิ่มจากการล่าด้วยกันและลูบหัว (แตะตัวมัน)'}]},
+ ring:{t:'วงเศษโทเท็ม',s:[
+  {el:mg('mgring'),t:'ปุ่ม 🔱 เปิดวงเศษโทเท็ม (PC: Y)',wait:()=>open('#rgw')},
+  {el:'#rgw [data-t="read"]',go:openRing,t:'อ่านรูน: หินรูนดิบ 1 ก้อน + คัมภีร์หมอผี 1 ม้วน = รูนวิญญาณสุ่ม 1 อัน (เกรด B / A / S ตามหิน) · หินดรอปจากมอน Lv 28 ขึ้นไปและบอส'},
+  {el:()=>$('#rgw .rgS.b'),go:openRing,t:'ช่องใหญ่ 6 ช่อง = รูนวิญญาณสัตว์ ความสามารถพิเศษที่ใช้ได้ทุกสกิล (เปิดทีละคู่ที่ Lv 30 / 40 / 50) · แตะช่อง แล้วแตะรูนในแท็บ 💎 ฝังรูน'},
+  {el:()=>$('#rgw .rgS.s'),t:'ช่องเล็ก 12 ช่อง = รูนสี แดง · ฟ้า · ทอง เพิ่มสเตตัส · รูนวิญญาณแต่ละอันต่อกับช่องเล็ก 3 ช่อง — สีตรงกับที่มันต้องการ 1 / 2 / 3 เส้น = แรงขั้น I / II / III'},
+  {el:'#rgw [data-t="lvl"]',t:'⬆ อัปช่อง: ป้อนรูนสีให้ช่องเล็กเลเวลขึ้น (สูงสุด 10) — เลเวลอยู่กับช่อง เปลี่ยนรูนไม่เสียเลเวล'}]},
+ roots:{t:'รากโทเท็ม',s:[
+  {el:mg('mgroots'),t:'ปุ่ม 🌳 เปิดรากโทเท็ม (PC: U)',wait:()=>open('#rtw')},
+  {el:'#rtTop',go:()=>openRoots(),t:'แต้มราก: ได้เลเวลละ 4 แต้มตั้งแต่ Lv 31 — ด้านบนบอกแต้มที่เหลือ'},
+  {el:'#rtC',t:'เริ่มที่หัวใจตรงกลาง: จุดได้เฉพาะโหนดที่ติดกับโหนดที่จุดแล้ว · โหนดเล็ก = สเตตัสทีละนิด · โหนดใหญ่ = แรงกว่า · ปลายรากมีปม C (กรอบทอง) ไว้ปลดสกิล C'},
+  {el:'#rtSide',t:'แตะโหนด → ดูของที่ต้องใช้ (แต้มราก ยางวิญญาณ วัตถุดิบมอน เงิน) → ✦ จุดราก · 🧭 วางเส้นทาง = เกมหาทางที่ใช้แต้มน้อยสุดไปโหนดที่เลือก'},
+  {el:'#rtBar [data-b="sham"]',t:'🧙 หมอผีราก: เอาชิ้นส่วนบอสแลกเมล็ดราก (ใช้ปลดสกิล C) · ขายคัมภีร์หมอผี และน้ำค้างราก (รีเซ็ตต้น — ครั้งแรกฟรี)'}]},
+ cskill:{t:'ปลดสกิล C',s:[
+  {el:'#rtC',go:()=>openRoots(firstC()),t:'ปม C 1 ปม = สกิล C 1 สกิล (ร่างตำนานของฮีโร่) — เลือกปมที่ใกล้ที่สุดให้แล้ว เส้นสีฟ้าคือทางที่ต้องจุด'},
+  {el:'#rtSide',t:'ปลดได้เมื่อ: เลเวลถึง · จุดโหนดรอบปมครบ 3 ใน 6 · จุดรากรวมครบตามขั้น · มีเมล็ดราก ขั้นเดียวกัน 1 เมล็ด (บอสดรอป / แลกที่หมอผีราก)'},
+  {el:null,t:'ปลดแล้วสกิล C ใช้ได้ทันที (อยู่ในต้นสกิล K) · อยากแต่งต่อ: สกัดเป็นเจม C ที่ศาลโทเท็ม (G) แล้ววางบนเสา ใส่เจมแปรสภาพ / เสริมข้าง ๆ ได้'}]},
+ cgem:{t:'เจม C บนเสาโทเท็ม',s:[
+  {el:'#tgWsB',go:()=>{openTotem();noWs();},t:'⛏ ศาล → แท็บ ⚗ สกัดเจม C: สกิล C ที่ปลดในรากแล้ว + หินโทเท็ม 3 ก้อนขั้นเดียวกัน = เจม C (สุ่มระดับความหายาก)'},
+  {el:()=>$('#tgBoard .tgN.mn'),go:noWs,t:'หลุมใหญ่กลางชั้นเสา = เจม C (ชั้นเปิด Lv 52 / 54 / 56 / 58 / 60) · ทุกชั้นต้องสลักเปิดก่อน (แตะหลุมดูของ) · หลุมด้านในปีก = เจมแปรสภาพ · หลุมนอกสุด = เจมเสริม'},
+  {el:()=>$('#tgRight [data-tab="gem"]'),go:()=>tgTab('gem'),t:'แท็บ 💠 เจม C: แตะหลุมใหญ่ แล้วแตะเจม C ที่จะวาง'}]},
+ pages:{t:'หน้าโทเท็ม 3 หน้า',s:[
+  {el:'#tgPg',go:()=>{openTotem();noWs();},t:'หน้า 1–3 = จัดเจมเก็บไว้ 3 แบบ (ฟาร์ม · บอส · ปาร์ตี้) — สลับหน้าแล้วเจมทุกเม็ดย้ายไปตามหน้านั้นเอง'},
+  {el:'#tgPg',t:'หน้าที่ยังไม่เคยใช้ = คัดลอกหน้าปัจจุบันไปก่อน · แตะหน้าที่เปิดอยู่ = เปลี่ยนชื่อ / คัดลอก · สลับได้ในเมือง หรือหลังไม่ได้สู้ 5 วินาที'}]},
+ fuse:{t:'หลอมเจม 3→1',s:[
+  {el:'#tgWsB',go:()=>{openTotem();noWs();},t:'⛏ ศาล = ที่สกัดเจม C · ย่อยเจมซ้ำ · หลอมเจม'},
+  {el:()=>$('[data-wt="fuse"]'),go:()=>openWs('fuse'),t:'🔮 หลอมเจม: เจมแปรสภาพ 3 เม็ดที่ไม่ใช้ + ชิ้นส่วนบอส 2 ชิ้น + เงิน = เลือกเจมแปรสภาพที่อยากได้ 1 เม็ด (เจมเสริม: 3 เม็ด + ชิ้นส่วนบอส 1 ชิ้น)'}]}};
 
 /* ================================================================
    4. SYSTEMS for the book — icon · name · what · how · window opener · tutorial
@@ -243,15 +319,19 @@ const SYS=[
  ['🧘','พักฟื้น + ยา','นั่งฟื้นเร็ว 2 เท่า · ยาอัตโนมัติตั้งที่ ⚙',null,'rest'],
  ['🛒','ร้านค้า','ยา หินตีบวกขั้น 1–2 ของใช้ · ขายวัตถุดิบ / หินออฟ',()=>A().openShop(),'shop'],
  ['📦','คลัง','ใช้ร่วมทุกฮีโร่ · ในเมืองเท่านั้น (H)',()=>A().openStorage(),'storage'],
- ['🗿','ศาลโทเท็ม','สกัดสกิลเป็นเจม → วางบนแท่น → ใส่เจมแปรสภาพ (ได้อย่าง เสียอย่าง) + เจมเสริม · สลักหลุมใหม่ด้วยของ · หลอมเจม 3→1 · 3 หน้า สลับตามงาน',openTotem,'totem1'],
- ['🗿','วางเจม','หลุมสกิล · หลุมทอง (แปรสภาพ) · หลุมฟ้า (เสริม ครึ่งแรง) · เจมชนิดเดียวกัน 2 เม็ด = เรโซแนนซ์',openTotem,'totem2'],
- ['⛏','สลักหลุม','ทุกหลุมเปิดด้วยของ (ฟรีแค่หลุมแรก) · แถวแดงบอกของที่ขาดและที่หา',openTotem,'carve'],
- ['🌳','รากโทเท็ม','ปลดสกิล C ที่นี่ (Lv 31+) · เดินรากจากหัวใจ จุดโหนดด้วยแต้มราก + ยางวิญญาณ / วัตถุดิบ / เหรียญทอง · ปม C ต้องจุดรอบปม 3/6 + เจมสกิลราก (U)',()=>{try{ROOTS.open();}catch(e){}},null],
- ['🔱','วงเศษโทเท็ม','รูนวิญญาณสัตว์ 6 ช่อง (ความสามารถพิเศษทั้งชุดสกิล) + รูนสลัก 3 สี 12 ช่อง · สีตรง 1/2/3 เส้น = ขั้น I/II/III · อ่านหินรูนดิบด้วยคัมภีร์หมอผี (Y)',()=>{try{RING.open();}catch(e){}},null],
+ ['🗿','ศาลโทเท็ม','สกัดสกิลเป็นเจม → วางบนแท่น → ใส่เจมแปรสภาพ (ได้อย่าง เสียอย่าง) + เจมเสริม · สลักหลุมใหม่ด้วยของ · หลอมเจม 3→1 · 3 หน้า สลับตามงาน',openTotem,'totem1','totem'],
+ ['🗿','วางเจม','หลุมสกิล · หลุมทอง (แปรสภาพ) · หลุมฟ้า (เสริม ครึ่งแรง) · เจมชนิดเดียวกัน 2 เม็ด = เรโซแนนซ์',openTotem,'totem2','totem'],
+ ['⛏','สลักหลุม','ทุกหลุมเปิดด้วยของ (ฟรีแค่หลุมแรก) · แถวแดงบอกของที่ขาดและที่หา',openTotem,'carve','totem'],
+ ['🌳','รากโทเท็ม','ปลดสกิล C ที่นี่ (Lv 31+) · เดินรากจากหัวใจ จุดโหนดด้วยแต้มราก + ยางวิญญาณ / วัตถุดิบ / เหรียญทอง · ปม C ต้องจุดรอบปม 3/6 + เมล็ดราก (U)',()=>openRoots(),'roots','roots'],
+ ['✨','สกิล C','ร่างตำนานของฮีโร่ Lv 51+ · ปลดที่ปม C ในรากโทเท็ม: จุดรอบปมครบ 3 ใน 6 + เมล็ดราก · ปลดแล้วใช้ได้ทันที',()=>openRoots(firstC()),'cskill','cskill'],
+ ['💠','เจม C บนเสา','สกัดสกิล C ที่ปลดแล้วเป็นเจม (หินโทเท็ม 3 ก้อน) → วางบนเสาโทเท็ม (ชั้นละ Lv 52–60) → ใส่เจมแปรสภาพ / เสริมข้าง ๆ',openTotem,'cgem','cgem'],
+ ['🔱','วงเศษโทเท็ม','รูนวิญญาณสัตว์ 6 ช่อง (ความสามารถพิเศษทั้งชุดสกิล) + รูนสี (แดง · ฟ้า · ทอง) 12 ช่อง · สีตรง 1/2/3 เส้น = ขั้น I/II/III · อ่านหินรูนดิบด้วยคัมภีร์หมอผี (Y)',()=>openRing(),'ring','ring'],
  ['🏺','ตราแห่งดินแดน','ตราเดียวกัน 2 ชิ้น = สเตตัสคู่ · 4 ชิ้น = พลังพิเศษ',()=>{const f=G('toggleWin'),b=G('buildEquip');if(f&&b&&!open('#eqw'))f('eqw',b);},'seal'],
  ['🏛','ตลาดกลาง','ราคากลางตามคนซื้อคนขาย · รอบจอง 1 ชั่วโมงเมื่อของหายากหมด',()=>A().openMarket(),'market'],
  ['👑','บอส','บอสประจำแมพ 15 ตัว · MVP เฟนเรียร์ · ของดรอปเจมและชิ้นส่วนบอส',null,'boss'],
- ['🐾','สัตว์เลี้ยง','จับมอน 🐾 ด้วยเครื่องรางผูกใจ (ไม่สุ่ม: เติมหัวใจจนเต็ม ห้ามตีมัน) → ไข่ → ฟักสุ่มระดับ → พาออกเดินทางได้สเตตัส · ความผูกพัน 1–10 จากการสู้ด้วยกัน ลูบหัว · ไม่ช่วยตี ไม่ต้องให้อาหาร',()=>window.PETS&&PETS.open(),null],
+ ['🐾','สัตว์เลี้ยง','จับมอน 🐾 ด้วยเครื่องรางผูกใจ (ไม่สุ่ม: เติมหัวใจจนเต็ม ห้ามตีมัน) → ไข่ → ฟักสุ่มระดับ → พาออกเดินทางได้สเตตัส · ความผูกพัน 1–10 จากการสู้ด้วยกัน ลูบหัว · ไม่ช่วยตี ไม่ต้องให้อาหาร',()=>window.PETS&&PETS.open(),'pet','pet'],
+ ['📑','หน้าโทเท็ม 3 หน้า','จัดเจมเก็บไว้ 3 แบบ (ฟาร์ม · บอส · ปาร์ตี้) แล้วสลับตามงาน · สลับในเมือง หรือหลังไม่ได้สู้ 5 วินาที',openTotem,'pages','pages'],
+ ['🔮','หลอมเจม 3→1','เจมแปรสภาพ 3 เม็ดที่ไม่ใช้ + ชิ้นส่วนบอส 2 ชิ้น = เลือกเจมที่อยากได้ 1 เม็ด (⛏ ศาล ในหน้าศาลโทเท็ม)',()=>openWs('fuse'),'fuse','shrine'],
  ['🐺','วัตถุโบราณ','ของจากบอส ใส่ช่องเครื่องประดับ · ใช้ด้วยปุ่ม R · เพิ่มดาวด้วยเศษวัตถุโบราณ',()=>{window.RELIC&&RELIC.open&&RELIC.open();},null]];
 
 /* ================================================================
@@ -417,6 +497,13 @@ body.mob #gdC .tip{font-size:12px;padding:8px 10px 7px}body.mob #gdC .tip .bt bu
 #gdBook .sc button,#gdBook .opt button{height:28px;padding:0 10px;border-radius:9px;border:2px solid #8a4e24;background:linear-gradient(#fff1c9,#f2bf4e);color:#3a1f14;font:600 12px Mitr,sans-serif;cursor:pointer}
 #gdBook .sc button.o{background:rgba(255,255,255,.65);border-color:#c98953}
 #gdBook .opt{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px;padding-top:8px;border-top:1px dashed rgba(138,78,36,.4);font:500 12px Mitr,sans-serif;color:#6a4026}
+#gdBook .gtabs .nb{display:inline-block;min-width:18px;height:18px;line-height:18px;border-radius:9px;background:#e2574c;color:#fff;font:700 11px Mitr,sans-serif;margin-left:3px}
+#gdBook .ar{display:flex;gap:9px;align-items:center;padding:8px 9px;border-radius:11px;background:rgba(255,250,238,.6);border:1px solid rgba(201,137,83,.5);margin-bottom:5px;font:400 12px/1.45 Prompt,sans-serif}
+#gdBook .ar>i{flex:none;width:30px;text-align:center;font-style:normal;font-size:22px}#gdBook .ar>div{flex:1;min-width:0}#gdBook .ar b{font:600 13px Mitr,sans-serif;color:#4a2a16}
+#gdBook .ar small{font:500 11px Mitr,sans-serif;color:#9e3a2f}
+#gdBook .ar button{flex:none;height:30px;padding:0 12px;border-radius:9px;border:2px solid #8a4e24;background:linear-gradient(#fff1c9,#f2bf4e);color:#3a1f14;font:600 12px Mitr,sans-serif;cursor:pointer;white-space:nowrap}
+#gdBook .ar.lk{opacity:.7;background:rgba(255,250,238,.35);border-style:dashed}
+#gdBook .sc.lk{opacity:.62;border-style:dashed}#gdBook .sc .lv{margin-left:auto;font:500 11px Mitr,sans-serif;color:#9e3a2f}
 #mgrid button.gdNew::after{content:'';position:absolute;right:-3px;top:-3px;width:11px;height:11px;border-radius:50%;background:#ff4b3a;border:2px solid #fff}
 `;
 const st=document.createElement('style');st.id='gdCSS';st.textContent=CSS;document.head.appendChild(st);
@@ -482,19 +569,28 @@ function coachTick(){if(!CO.on)return;const s=CO.steps[CO.i];if(!s)return;place(
 
 /* ---------------- the book ---------------- */
 let bookTab='q';
-function openBook(){bump('book');const a=A();if(!a||!a.ui)return;a.ui.ttWin('gdBook','📖 คู่มือนักผจญภัย');const w=$('#gdBook');w.classList.add('open');document.querySelectorAll('.ro').forEach(o=>o.style.zIndex=30);w.style.zIndex=59;buildBook();
+const TODO=()=>{try{return window.UNLOCK?UNLOCK.todo():[];}catch(e){return [];}};
+const ULK=id=>!id||!window.UNLOCK||UNLOCK.ok(id);
+function openBook(tab){bump('book');const a=A();if(!a||!a.ui)return;bookTab=tab||(TODO().length?'a':bookTab==='a'?'q':bookTab);a.ui.ttWin('gdBook','📖 คู่มือนักผจญภัย');const w=$('#gdBook');w.classList.add('open');document.querySelectorAll('.ro').forEach(o=>o.style.zIndex=30);w.style.zIndex=59;buildBook();
   const b=$(mg('mgguide'));if(b)b.classList.remove('gdNew');}
 function buildBook(){const w=$('#gdBook');if(!w||!w.classList.contains('open'))return;const bd=w.querySelector('.ttbd');const L=lv();
-  let h=`<div class="gtabs"><button data-bt="q" class="${bookTab==='q'?'on':''}">📜 เส้นทางนักผจญภัย</button><button data-bt="s" class="${bookTab==='s'?'on':''}">📚 สอนระบบต่าง ๆ</button></div>`;
-  if(bookTab==='q'){let last=-1;Q.forEach((q,i)=>{if(q.ch!==last){last=q.ch;h+=`<div class="chh">บทที่ ${q.ch+1} · ${CH[q.ch][0]} <small>(${CH[q.ch][1]})</small></div>`;}
+  const TD=TODO();
+  let h=`<div class="gtabs"><button data-bt="a" class="${bookTab==='a'?'on':''}">✨ ทำอะไรต่อดี${TD.length?` <b class="nb">${TD.length}</b>`:''}</button><button data-bt="q" class="${bookTab==='q'?'on':''}">📜 เส้นทางนักผจญภัย</button><button data-bt="s" class="${bookTab==='s'?'on':''}">📚 สอนระบบต่าง ๆ</button></div>`;
+  if(bookTab==='a'){
+    h+=TD.length?`<div class="chh">ทำได้ตอนนี้ (${TD.length})</div>${TD.map((x,i)=>`<div class="ar"><i>${x.ic}</i><div><b>${x.t}</b><br>${x.d}</div><button data-ad="${i}">${x.b}</button></div>`).join('')}`
+      :'<div class="qr cur"><span class="m">✔</span><div><b>ตอนนี้ไม่มีอะไรค้าง</b><br>ออกล่ามอนเก็บเลเวลต่อได้เลย — การ์ดเควสต์บอกเป้าหมายถัดไป</div></div>';
+    const nx=window.UNLOCK?UNLOCK.SY.filter(x=>!UNLOCK.ok(x.id)).sort((p,q)=>p.lv-q.lv)[0]:null;
+    if(nx)h+=`<div class="chh">ระบบถัดไป</div><div class="ar lk"><i>${nx.ic}</i><div><b>${nx.n}</b> <small>เปิดที่ Lv ${nx.lv}</small><br>${nx.d}</div></div>`;}
+  else if(bookTab==='q'){let last=-1;Q.forEach((q,i)=>{if(q.ch!==last){last=q.ch;h+=`<div class="chh">บทที่ ${q.ch+1} · ${CH[q.ch][0]} <small>(${CH[q.ch][1]})</small></div>`;}
       const dn=!!S.done[q.id],isCur=i===S.q,lk=!dn&&!isCur&&i>S.q;
       h+=`<div class="qr${isCur?' cur':''}${lk?' lock':''}"><span class="m">${dn?(S.done[q.id]==='skip'?'⏭':'✔'):isCur?(S.st==='done'?'🎁':'▶'):'🔒'}</span><div><b>${q.t}</b>${q.lv>1?` <small>Lv ${q.lv}+</small>`:''}<br>${lk?'':q.d+'<br>'}<span style="color:#9e3a2f">▸ ${q.g}</span></div></div>`;});
     if(S.q>=Q.length)h+='<div class="qr cur"><span class="m">🎉</span><div><b>จบเส้นทางนักผจญภัยแล้ว</b><br>ระบบอื่น ๆ ดูได้ในแท็บ สอนระบบต่าง ๆ</div></div>';}
-  else{h+=`<div class="sg">${SYS.map(([ic,n,d,op,tu],i)=>`<div class="sc"><div class="n"><i>${ic}</i>${n}</div><div>${d}</div><div class="bb">${tu&&TUT[tu]?`<button data-tu="${tu}">▶ สอนวิธีใช้</button>`:''}${op?`<button class="o" data-op="${i}">เปิด</button>`:''}</div></div>`).join('')}</div>`;}
+  else{h+=`<div class="sg">${SYS.map(([ic,n,d,op,tu,ul],i)=>{const ok=ULK(ul);return `<div class="sc${ok?'':' lk'}"><div class="n"><i>${ic}</i>${n}${ok?'':`<small class="lv">🔒 Lv ${UNLOCK.lv(ul)}</small>`}</div><div>${d}</div><div class="bb">${ok&&tu&&TUT[tu]?`<button data-tu="${tu}">▶ สอนวิธีใช้</button>`:''}${op?`<button class="o" data-op="${i}">${ok?'เปิด':'ดูตัวอย่าง'}</button>`:''}</div></div>`;}).join('')}</div>`;}
   h+=`<div class="opt"><label><input type="checkbox" id="gdOn" ${S.on?'checked':''}> แสดงการ์ดเควสต์นำทาง</label>${MODE()==='test'?'<button id="gdRe">↺ เริ่มเส้นทางใหม่ (ทดสอบ)</button>':''}<span style="margin-left:auto">เปิดคู่มือ: J หรือ 📖</span></div>`;
   bd.innerHTML=h;
   bd.querySelectorAll('[data-bt]').forEach(b=>b.onclick=()=>{bookTab=b.dataset.bt;buildBook();});
   bd.querySelectorAll('[data-tu]').forEach(b=>b.onclick=()=>{w.classList.remove('open');setTimeout(()=>runTut(b.dataset.tu),120);});
+  bd.querySelectorAll('[data-ad]').forEach(b=>b.onclick=()=>{const x=TD[+b.dataset.ad];if(!x)return;if(x.k!=='quest')w.classList.remove('open');try{x.go&&x.go();}catch(e){}setTimeout(buildBook,150);});
   bd.querySelectorAll('[data-op]').forEach(b=>b.onclick=()=>{const f=SYS[+b.dataset.op][3];w.classList.remove('open');try{f&&f();}catch(e){}});
   const on=bd.querySelector('#gdOn');if(on)on.onchange=()=>{S.on=on.checked;if(S.on&&S.st==='new')begin();dirty=1;render(true);};
   const re=bd.querySelector('#gdRe');if(re)re.onclick=()=>{const keepOn=S.on;S=fresh();S.on=keepOn;begin();save();render(true);buildBook();};}

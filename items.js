@@ -83,7 +83,7 @@ const refOre=(it,t)=>((it&&(it.cslot||it.slot))==='rhand'?'wore':'ore')+t;
    (RUNE_SYSTEM_TH.md §2) and used to craft its boss set · only parts of bosses that are in the game trade in the central market */
 {const DT=window.DROPTAB;if(DT)for(const k in DT.BOSSES){const [land,slot,boss,en,th,live]=DT.BOSSES[k],bt=DT.SLOT_TIER[slot];
   ETC['bm_'+k]={n:en,th,price:{map:3000,mvp:8000,main:15000}[bt],kind:'bpart',boss:k,btier:bt,live:!!live,col:(TOWNS[land]||{}).col||'#c9a46a',
-    d:`ชิ้นส่วนบอส · ดรอปจาก${boss} (${DT.BOSS[bt].th}) · ใช้หลอมเจมแปรสภาพ / เจมเสริม 3→1 ที่ศาลโทเท็ม (G → ⛏ ศาล) · ต่อไปใช้แลกเจมสกิลราก (ระบบรากโทเท็ม) และคราฟต์ชุดบอส · ขายร้าน NPC ไม่ได้ ซื้อขายกับผู้เล่นในตลาดกลาง`};}}
+    d:`ชิ้นส่วนบอส · ดรอปจาก${boss} (${DT.BOSS[bt].th}) · ใช้หลอมเจมแปรสภาพ / เจมเสริม 3→1 ที่ศาลโทเท็ม (G → ⛏ ศาล) · ต่อไปใช้แลกเมล็ดราก (ระบบรากโทเท็ม) และคราฟต์ชุดบอส · ขายร้าน NPC ไม่ได้ ซื้อขายกับผู้เล่นในตลาดกลาง`};}}
 /* pets (pet_data.js, owner 2026-11-22): eggs per species, bond charms per land × tier, spirit fluff, personality treat */
 {const PD=window.PETDATA;if(PD)PD.goods(ETC);}
 ETC.drill={n:'Drill',th:'สว่านเจาะรู',price:3000,kind:'tool',col:'#c9a46a',d:'เจาะรูอุปกรณ์ สุ่ม 1–4 รู (เจาะใหม่ หินเดิมหายหมด)'};
@@ -93,11 +93,11 @@ ETC.guard={n:'Guard Stone',th:'หินกันแตก',price:50000,kind:'to
 ETC.sore={n:'Star Ore',th:'แร่ดาวตก',price:50000,kind:'ore',tier:5,col:'#ff7ad8',d:'ตีบวก +11 ถึง +15 · ใช้ครั้งละ 1/2/3/4/5 ก้อน (ไป +11/+12/+13/+14/+15) · ดรอปจากมอน Lv '+LC.nc(70)+'+ (ดันเจี้ยนบ่อยกว่า) และบอส'};
 /* totem gem goods (owner 2026-11-21): all tradable in the central market — the way to the gem you want */
 {const GD=window.GEMDATA||{MUT:[],SUP:[]},SC=['#c9b48a','#8fd0c8','#c08aff','#ffcf5a'],LB=[0,1,2,3].map(i=>`Lv ${ORE_LV[i]}${i<3?'–'+(ORE_LV[i+1]-1):'+'}`);
-  [2000,6000,15000,40000].forEach((p,i)=>ETC['tstone'+(i+1)]={n:`Totem Stone T${i+1}`,th:`หินโทเท็มดิบ ขั้น ${i+1}`,price:p,kind:'tstone',tier:i+1,col:SC[i],d:`3 ก้อน = สกัดเจม C ขั้น ${i+1} จากสกิล C ที่ปลดในรากโทเท็มแล้ว (G → ⛏ ศาล) · สลักหลุมบนเสา / สกัดเจมสกิล · ดรอปจากมอน ${LB[i]} (ดันเจี้ยนบ่อยกว่า) และบอส`});
-  [800,2400,6000,16000].forEach((p,i)=>ETC['tfrag'+(i+1)]={n:`Gem Shard T${i+1}`,th:`ชิ้นส่วนเจม ขั้น ${i+1}`,price:p,kind:'tfrag',tier:i+1,col:SC[i],d:`ใช้สลักหลุมบนเสาโทเท็ม · ได้จากการย่อยเจมซ้ำ (เจม C เลือกชนิดเองได้แล้วตอนสกัด — 2026-11-23 รากโทเท็ม)`});
+  [2000,6000,15000,40000].forEach((p,i)=>ETC['tstone'+(i+1)]={n:`Totem Stone T${i+1}`,th:`หินโทเท็ม ขั้น ${i+1}`,price:p,kind:'tstone',tier:i+1,col:SC[i],d:`3 ก้อน = สกัดเจม C ขั้น ${i+1} จากสกิล C ที่ปลดในรากโทเท็มแล้ว (G → ⛏ ศาล) · สลักหลุมบนเสา / สกัดเจมสกิล · ดรอปจากมอน ${LB[i]} (ดันเจี้ยนบ่อยกว่า) และบอส`});
+  [800,2400,6000,16000].forEach((p,i)=>ETC['tfrag'+(i+1)]={n:`Gem Shard T${i+1}`,th:`ชิ้นส่วนเจม ขั้น ${i+1}`,price:p,kind:'tfrag',tier:i+1,col:SC[i],d:`ใช้สลักเปิดหลุมนอกสุดบนเสาโทเท็ม (ศาลโทเท็ม G) · ได้จากการย่อยเจมที่ซ้ำ · ขายในตลาดกลาง`});
   ETC.tess={n:'Totem Essence',th:'แก่นโทเท็ม',price:2500,kind:'tess',col:'#ffb84a',d:'อัปเลเวลเจม · อัปขั้น/ล้างบรรทัดเจม · ดรอปจากมอนทั่วไป และได้จากการย่อยเจมซ้ำ'};
-  for(const m of GD.MUT)ETC['gmut_'+m[0]]={n:`${m[6]} Mutation Gem`,th:`เจมแปรสภาพ ${m[1]}`,price:25000,kind:'gmut',gem:m[0],col:m[3],d:`ได้: ${m[4]} · เสีย: ${m[5]} · ใส่ที่ดาวกลางข้างเจมหลัก (G) · ใช้ได้ทุกฮีโร่`};
-  for(const m of GD.SUP)ETC['gsup_'+m[0]]={n:`${m[5]} Support Gem`,th:`เจมเสริม ${m[1]}`,price:12000,kind:'gsup',gem:m[0],col:m[3],d:`${m[4]} · ใส่ที่ดาวเล็กข้างเจมหลัก (G) · ใช้ได้ทุกฮีโร่`};}
+  for(const m of GD.MUT)ETC['gmut_'+m[0]]={n:`${m[6]} Mutation Gem`,th:`เจมแปรสภาพ ${m[1]}`,price:25000,kind:'gmut',gem:m[0],col:m[3],d:`ได้: ${m[4]} · เสีย: ${m[5]} · ใส่ในหลุมทองใต้เจมสกิล หรือหลุมข้างเจม C บนเสา (ศาลโทเท็ม G) · ใช้ได้ทุกฮีโร่`};
+  for(const m of GD.SUP)ETC['gsup_'+m[0]]={n:`${m[5]} Support Gem`,th:`เจมเสริม ${m[1]}`,price:12000,kind:'gsup',gem:m[0],col:m[3],d:`${m[4]} · ใส่ในหลุมฟ้าข้างเจมสกิล (แรงครึ่งเดียว) หรือหลุมนอกสุดข้างเจม C บนเสา (ศาลโทเท็ม G) · ใช้ได้ทุกฮีโร่`};}
 /* rune goods (owner 2026-11-23, rune_data.js): Totem Roots (sap, medals, root skill gems, dew) + Ring of Totem Shards (raw rune stones,
    shaman feathers, carved-rune pouches, spirit dust, spirit runes 18 × B/A/S, carved runes 18). Spirit / carved runes stay in the bag
    (so the market can trade them) but sit in the ring's own pouch view and do not count against the bag's 60 kinds. */

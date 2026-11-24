@@ -222,7 +222,8 @@ function petPet(){const p=active();if(!p)return;dayRoll();emote('heart',1.4);con
 let TB=null;
 function tameBtn(){const F=$('#tlf');if(!F)return;if(!TB||!F.contains(TB)){TB=document.createElement('button');TB.id='petTame';TB.type='button';F.appendChild(TB);
     ['pointerdown','mousedown','touchstart','click'].forEach(ev=>TB.addEventListener(ev,e=>e.stopPropagation()));TB.addEventListener('pointerdown',e=>{e.preventDefault();throwCharm();});}
-  const e=window.TL&&TL.e,s=specOf(e);if(!s||!F.classList.contains('on')){if(TB.style.display!=='none')TB.style.display='none';return;}
+  const e=window.TL&&TL.e,s=specOf(e);if(!s||!F.classList.contains('on')||(window.UNLOCK&&!UNLOCK.ok('pet'))){   /* unlocks.js: pets open at Lv 15 in play mode */
+  if(TB.style.display!=='none')TB.style.display='none';return;}
   const pt=e._pt,id=charmFor(s),n=id?A.BAG[id]:0,have=!!id||TEST(),h=pt?`${'♥'.repeat(pt.h)}${'♡'.repeat(pt.need-pt.h)}`:`${'♡'.repeat(s.hearts)}`,
     lab=`<b>🐾 <span class="ptw">ผูกใจ</span></b><span>${h}</span><small>${have?(id?`×${n}`:'ทดสอบ'):'ไม่มีเครื่องราง'}</small>`,cls=(have?'':'no ')+(pt?'calm':'');
   if(TB.dataset.l!==lab||TB.className!==cls){TB.dataset.l=lab;TB.className=cls;TB.innerHTML=lab;TB.title=`${s.th} · ต้องใช้ ${charmNeed(s)} · ${s.hearts} ดวง`;}
