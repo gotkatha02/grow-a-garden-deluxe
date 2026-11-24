@@ -714,6 +714,97 @@ V=assets/heroes/anubis; python3 -I tools/dir8cut.py startv <โฟลเดอ�
 - **หน้า HUD:** ตอนนี้ใช้หน้า default (หมาป่า) → ตัดหัวจาก view_S เป็น `assets/heroes/anubis/face.webp` แล้วตั้ง window.HUD_FACE ใน installAnubis (แบบลิง / แกะ / ฮิปโป / บาสเต็ด)
 - อนูบิสไม่มี CHAR_FILTER (ไม่ต้องแก้) · หน้าเลือกตัว = ภาพใหญ่ของชีตแล้ว (`select.webp`, SELV anubis 2)
 - ยังเป็นลุคเก่า: ไอคอนสกิลที่มีตัวอนูบิส (~2 ใน 3 ของ 55 + ex_ 8), พื้นหลังผังสกิล 4 ภาพ, ภาพเอฟเฟกต์ `anubis_head` / `avatar_aura` (เทพหมาจิ้งจอกทองโพกผ้าลายทาง ยังพอเข้ากัน), ภาพหน้าโหลด ld1 ld8 · ยังไม่มี: ท่านั่ง (hero_sit.js)"""),
+ 'owl': dict(
+  title='นกฮูกหิมะ ลุคใหม่ (นกฮูกหิมะโฉมใหม่ · Snowy Owl Reborn)',
+  who='the snowy owl crossbowman in this picture', P='He', p='he', pos='his', weapon='crossbow',
+  face="Keep his face exactly as in the picture: the same big round golden-orange eyes under the same sharp feathered "
+       "brows, the same small grey hooked beak and the same focused, determined look.",
+  back_face={'NE': "We see him mostly from behind: the back of his head with its slate-blue spots and two feather tufts, "
+                   "the cream fur collar and his folded white wings; of his face only the edge of his face and the tip of "
+                   "his beak on the right, as in the picture; his head never turns around toward us like a real owl's.",
+             'N': "We only see the back of his head with its slate-blue spots and both feather tufts, the cream fur "
+                  "collar, the blue shoulder cape and his folded white wings, as in the picture; his head never turns "
+                  "around toward us like a real owl's."},
+  keep={d: ("His crown of spiky white feathers with the two tall tufts and the slate-blue spots, the cream fur collar, the "
+            "blue scarf, the royal-blue shoulder cape with its cream zigzag pattern, the round snowflake brooch with its two "
+            "little white feathers, the brown leather jerkin with its chest strap, the brown gloves with cream fur cuffs, "
+            "the wide belt with its big square silver buckle, the brown pouches, the blue snowflake banner, the tall brown "
+            "boots with cream fur cuffs and silver buckles, his folded white wings and the wooden crossbow with its blue "
+            "cord and big blue crystal point stay exactly the same.") for d in ('S', 'SE', 'E')}
+       | {d: ("His crown of spiky white feathers with the slate-blue spots, the cream fur collar, the royal-blue shoulder "
+              "cape with its cream zigzag pattern, his folded white wings, the tall brown boots with cream fur cuffs and the "
+              "wooden crossbow stay exactly the same.") for d in ('NE', 'N')},
+  spos=dict.fromkeys(DIRS, 'low in front of his waist'),
+  blink=", the two little feathers under his brooch sway, and he blinks once",
+  vis=" The ends of the crossbow's bow arms stay visible beside his head while he aims.",
+  fmt={'pvis': (" His spread wings and the raised crossbow stay inside the frame.",
+                " His raised crossbow and his spread wings stay visible and inside the frame while he holds the pose.")},
+  inframe="his whole body, both feather tufts, his whole wings and the whole crossbow stay inside the frame.",
+  nofx="No shadow, no flash, no glow, no sparkles, no particles, no smoke, no snow, no frost, no ice crystals, no moon, "
+       "no stars, no bolt or arrow, no light trails, no streaks of colour, no magic effects, no text.",
+  act={
+   'idle': "Idle loop of {who}. {facing} He stands in a relaxed, ready stance holding his wooden crossbow {spos} with both "
+           "hands, and breathes slowly: his chest feathers rise and fall, the feather tufts on his head and the tips of his "
+           "folded wings stir a little{blink}. The last frame matches the first frame so the clip loops.",
+   'walk': "Walk loop of {who}. {facing} He walks in place, like on a treadmill, toward the way he is facing: short, steady "
+           "steps (about two steps per second) in his big boots, the crossbow held {spos} with both hands bobbing a little "
+           "with each step, his folded wings and the blue banner swaying. He does not move across the frame and the ground "
+           "does not move. The last frame matches the first frame so the clip loops.",
+   'attack': "Crossbow aim of {who}. {facing} He lifts his crossbow with both hands up to his shoulder and aims along it "
+             "toward the way he is facing, holds that aim perfectly still for a moment, then the crossbow jerks back a "
+             "little in one small recoil, he holds the aim still for an instant again, then lowers the crossbow to hold it {spos} "
+             "again, returns to his starting pose and stands still for the rest of the clip. The whole move takes about one and a "
+             "half seconds. His feet stay in place.{vis} Nothing leaves the crossbow: it keeps its size and shape, and the "
+             "air in front of it stays empty and plain green in every frame. Clean outlines in every frame, no motion blur.",
+   'buff': "Power pose of {who}. {facing} He crouches down a little, then rises tall, opens his folded white wings wide on "
+           "both sides of his body and lifts his crossbow high above his head with both hands; he holds that pose still for "
+           "about one second with his wings spread, then folds his wings back down, lowers the crossbow to hold it {spos} again, "
+           "returns to his starting pose and stands still for the rest of the clip. His feet stay on the ground.{pvis} Clean outlines in every frame, no motion blur."},
+  dirname={'S': 'หน้าตรง', 'SE': 'เฉียงหน้า หันขวา', 'E': 'ข้าง หันขวา', 'NE': 'เฉียงหลัง หันขวา', 'N': 'หลัง'},
+  actname={'idle': 'ยืน (idle · วนลูป)', 'walk': 'เดิน (walk · วนลูป)',
+           'attack': 'เล็งหน้าไม้ (attack · ยิงปกติ + สกิลยิงทุกท่า — เกมค้างเฟรมเล็งนิ่งตอนเล็ง และเฟรมสะบัดตอนยิงแต่ละนัด)',
+           'buff': 'กางปีกชูหน้าไม้ (buff · บัฟ กระโดด ล่องหน อัลติ — เกมใช้เฟรมย่อตัว เฟรมกำลังลอย และเฟรมชูสุด)'},
+  start='owl_{n}_{d}.png',
+  header="""เจ้าของเลือกแบบ 5 'นกฮูกหิมะโฉมใหม่' 2026-11-24 22:25 ("ทำภาพซ้ายเป็นภาพตอนเลือกตัวให้หน่อย") · ชีต `assets/heroes/owl/sheet_reborn.webp` · ภาพใหญ่ = หน้าเลือกตัวแล้ว · หน้าตา + พรอมต์ภาพยืน 5 มุม: `OWL_LOOK_PROMPTS_TH.md` หัวข้อ 'เลือกแล้ว'
+
+## ลำดับงาน
+1. **ภาพยืน 5 มุม** — รอภาพ (พรอมต์ใน `OWL_LOOK_PROMPTS_TH.md` ขั้น 1) → `assets/heroes/owl/view_S|SE|E|NE|N.webp`
+2. **ภาพตั้งต้น** — ตัดเมื่อภาพยืนมา (คำสั่งข้างล่าง) → `owl_1_S.png … owl_5_N.png` (ไม่เก็บในรีโป)
+3. **คลิป 20 ตัว** — พรอมต์ในไฟล์นี้ (เขียนรอไว้ตามแบบที่สั่ง: ตอนภาพยืนมา ปรับประโยคหน้า / มุมหลังให้ตรงภาพจริงแล้วรันใหม่) แนบภาพตั้งต้นของทิศนั้นทุกคลิป
+
+## ภาพตั้งต้น (แผน)
+- `owl_<n>_<ทิศ>.png` 900×900 สี่เหลี่ยม แบบฮิปโป / จากัวร์ / หมาป่า / แรด / อนูบิส · ต้องมีที่ให้กางปีกออกสองข้าง ชูหน้าไม้เหนือหัว และยกหน้าไม้ประทับไหล่เล็ง → ตัวเล็กกว่าตัวอื่นนิดนึง (ht ~450) · เท้าที่ 90 % · วัดที่ว่างจริงตอนภาพมา
+```
+V=assets/heroes/owl; python3 -I tools/dir8cut.py startv <โฟลเดอร์> S=$V/view_S.webp SE=$V/view_SE.webp E=$V/view_E.webp NE=$V/view_NE.webp N=$V/view_N.webp size=900 feet=.9 ht=450 clean=0
+```
+→ start_<ทิศ>.png → ตั้งชื่อใหม่ owl_1_S … owl_5_N · ทุกทิศใช้สเกลของมุมหน้า (ใส่ S ก่อนเสมอ) · clean=0 = ไม่ทาจุดเขียวในตัว (ชุดไม่มีสีเขียว: ฟ้า / น้ำเงินทุกจุดน้ำเงินมากกว่าเขียว · ช่องระหว่างแขน ตัว หน้าไม้ ปีก ขา เป็นพื้นหลังจริง)
+
+## วิธีใช้
+แนบภาพตั้งต้นของทิศนั้น + วางพรอมต์ทีละตัว → 4 คลิปต่อทิศ (ยืน · เดิน · เล็งหน้าไม้ · กางปีกชูหน้าไม้) · คลิปละ 3–5 วิ · ไม่ต้องทำทิศซ้าย (เกมกลับด้านเอง) · ส่งกลับเรียง S → SE → E → NE → N ทิศละ ยืน → เดิน → เล็ง → กางปีก (สลับได้ ดูเองว่าคลิปไหนเป็นท่าอะไร)
+
+## กติกาที่อยู่ในทุกพรอมต์ (บทเรียนจากคลิปลิง / แอคโซลอเติล / มังกรลุคเดิม / แกะ / บาสเต็ด / ฮิปโป / จากัวร์)
+- ประโยคบอกทิศขึ้นต้นทุกพรอมต์ กันโมเดลหมุนตัวหันหากล้อง (มุมหลังโดนบ่อย) · นกฮูกหมุนหัวได้รอบ → มุมหลังสั่งเพิ่มว่าหัวไม่หันกลับมาหาคนดูแบบนกฮูกจริง
+- ล็อกหน้า (ตากลมทองส้ม คิ้วขนแหลม จะงอยปากเทา สีหน้ามุ่งมั่น) ในมุมที่เห็นหน้า · มุมหลัง (NE, N) ใช้ประโยค 'เห็นแค่หลังหัว' แทน ไม่มีกะพริบตา
+- ล็อกของติดตัว: แผงขนแหลม + จุกขนสองข้าง + จุดฟ้าอมม่วง · ปลอกคอขนครีม · ผ้าพันคอน้ำเงิน · ผ้าคลุมไหล่น้ำเงินลายซิกแซกครีม · เข็มกลัดเกล็ดหิมะ + ขนนกเล็ก 2 เส้น · เสื้อหนัง + สายพาดอก · ถุงมือขอบขนครีม · เข็มขัดหัวเงินสี่เหลี่ยม · กระเป๋า · ธงเกล็ดหิมะ · บูตขอบขนครีมหัวเข็มขัดเงิน · ปีกพับ · หน้าไม้ไม้เชือกน้ำเงินหัวคริสตัล
+- เดินอยู่กับที่แบบลู่วิ่ง ~2 ก้าว/วิ หน้าไม้ในมือขยับนิดๆ ปีกกับธงแกว่ง
+- เล็งหน้าไม้ = ยกหน้าไม้ประทับไหล่ เล็งนิ่ง → สะบัดถอยนิดเดียว 1 ครั้ง → เล็งนิ่งอีกนิด → ลดลง ยืนนิ่งจนจบคลิป · **ไม่ใช้คำว่า attack / shoot / fire ในพรอมต์** (คลิปแรกของจากัวร์: คำว่า attack ทำให้โมเดลวาดรอยฟัน แสงขาว ตัว X ทับท่า) + สั่งว่าไม่มีอะไรออกจากหน้าไม้ อากาศหน้าหน้าไม้เป็นพื้นเขียวเปล่าทุกเฟรม (ลูกดอกเกมวาดเอง) · มุมหลังสั่งให้ปลายคันศรยังเห็นข้างหัว
+- กางปีกชูหน้าไม้ = ย่อตัวนิดนึง → ยืดตัวขึ้น กางปีกออกกว้างสองข้าง ชูหน้าไม้เหนือหัวด้วยสองมือ ค้างนิ่ง ~1 วิ → หุบปีก ลดหน้าไม้ · เท้าติดพื้น (ถ้าบอก 'กระโดด' โมเดลจะพาตัวหลุดกรอบ) — เกมใช้ทั้งคลิปกับสกิลบัฟ / กระโดด / อัลติ
+- ห้ามเบลอ · ห้ามจันทร์เสี้ยว ดาว หิมะ ผลึกน้ำแข็ง แบบท่าสู้ในชีต (เอฟเฟกต์ใส่ในเกม: `char_owl.js` + ภาพ `char_owl_fx.js`) · กล้องนิ่งไม่ซูม · พื้นเขียวตลอด · ตัว + จุกขน + ปีก + หน้าไม้อยู่ในกรอบตลอด
+- ไม่ระบุมือซ้าย / ขวาในพรอมต์คลิป (ภาพตั้งต้นบอกเองว่าเข็มกลัด / หน้าไม้อยู่ฝั่งไหน)""",
+  footer="""## ตอนคลิปมาถึง (โน้ตสำหรับแชตที่ทำต่อ)
+- ตัดด้วย `tools/cliphero.py` + แผนใหม่ `tools/clips/owl_plan.json` (ดู `hippo_plan.json` / `bastet_plan.json`: loop ช่วงที่ลืมตา, เลือกเฟรมเลี่ยงแสง / ประกาย / ลูกดอกที่โมเดลแอบใส่, flipDirs ถ้ามีคลิปหันผิดฝั่ง, perDir ถ้าคลิปบางทิศถ่ายมาเล็ก / ใหญ่กว่า, "unstreak")
+- **เขียนทับ `assets_owl.js`** (prefix OW เดิม ใช้กับนกฮูกตัวเดียว · index.html สลับเข้าด้วย OW_ART อยู่แล้ว · atkRemap {} = ทุกทิศใช้ท่าตีของตัวเอง) · อัปเดตขนาดไฟล์ในตาราง MB ของหน้าโหลด + เพิ่ม ?v ให้ assets_owl.js ใน index.html (ตอนนี้ไม่มี ?v)
+- **เวลาเฟรมต้องเท่าเดิมทุกทิศ** (นกฮูกถูก bench กับเวลานี้) → เช็ก `python3 tools/fxlab.py hits owl` ก่อน / หลัง:
+  - attack 12 เฟรม contact 8 ทุกทิศ · S [50,50,50,50,50,50,50,121,160,180,121,110] (โดนที่ 471 ms) · SE [69,50,50,69,69,69,69,69,160,104,104,110] (514) · E [85,50,50,50,50,50,50,50,160,171,128,110] (435) · NE [69,50,50,69,69,50,50,69,160,173,104,110] (476) · N [72,72,50,50,50,50,50,72,160,143,143,110] (466)
+  - **เฟรมที่เกมใช้จริงในท่าตี** (`owShotAction`): เฟรม 6 (contact−2) = เล็งนิ่งประทับไหล่ → ค้างตลอดเวลาเล็งของสกิล · เฟรม 7 (contact−1) = สะบัดตอนยิง → ค้างทุกนัด (ตีปกติ + Piercing, Aimed Shot, Deadeye, Hunter's Mark, Heavy Bolt, Armor Drill, Ricochet, Flurry, Snow Snare, Circling Hunt) · จังหวะยิงมาจากเวลาเล็งของสกิลเอง ไม่ขึ้นกับเวลาเฟรมข้างบน · Silent Execution เล่นต่อตั้งแต่เฟรม 8 จนจบ → เฟรม 8–11 = ลดหน้าไม้ลงสวยๆ · เฟรม 0–5 = ยกหน้าไม้ขึ้น (ไม่ค่อยได้เห็น)
+  - buff 12 เฟรม peak 7 ค้าง 480 ms · S [76,76,76,76,76,76,76,480,189,76,76,50] (ถึง peak 532 ms) · SE [50,50,79,79,79,79,79,480,158,79,79,52] (495) · E [50,50,90,90,90,90,90,480,181,90,50,60] (550) · NE [82,50,82,82,82,82,82,480,165,124,50,55] (542) · N [79,50,79,79,79,79,79,480,158,118,79,53] (524)
+  - **เฟรมที่เกมใช้จริงในท่าบัฟ**: เฟรม 1 = ย่อตัว (ค้างตอน Wing Hop, Snow Veil, Skyfall ตอนกระโดดขึ้น · Snow Tent ค้างตลอดเวลาพัก) · เฟรม 3 = กำลังยืดตัว ปีกเริ่มกาง (ค้างตอน Skyfall ลอยกลางอากาศ 0.42 วิ, Feather Flash — เกมยกตัวด้วย player.z เอง) · เฟรม 7 = กางปีกชูหน้าไม้สุด (บัฟ + อัลติทั้งหมด + Silent Execution ค้างท่านี้ตอนเล็ง) → เลือกเฟรม 1 / 3 / 7 จากคลิปให้ดี
+  - walk 8 × 100 ms (E สลับ 110 / 90) · idle 12 เฟรม 2.4 วิ · hurt 7 เฟรม 550 ms (ทำจากท่ายืน)
+- **socket:** `sockets` attack + buff (head / grip) ใช้แค่ประกายตอนร่าย · ลูกดอกออกจาก `owMuzzle` (จุดคงที่ 14 px หน้าตัว สูง 30 × CHAR_SCALE) ไม่อ่าน socket · cliphero 'orb' จับคริสตัลฟ้าหัวหน้าไม้ได้ถ้าอยากให้ประกายตรงหัวหน้าไม้
+- **ขนาด:** CHAR_SCALE.owl ตอนนี้ .97 · วัดใหม่ให้ยืนสูงเท่าหมาป่า (จุกขนนับรวม)
+- **หน้า HUD:** ตอนนี้ใช้ `OW_PORTRAIT` ที่ฝังใน `assets_owl.js` เดิม (หายไปเมื่อเขียน atlas ใหม่ถ้าไม่ใส่) → ตัดหัวจาก view_S เป็น `assets/heroes/owl/face.webp` แล้วตั้ง window.HUD_FACE ใน installOwl (แบบลิง / แกะ / ฮิปโป / บาสเต็ด) · CHAR_FILTER ของนกฮูกเป็น '' อยู่แล้วเมื่อมี OW_ART
+- หน้าเลือกตัว = ภาพใหญ่ของชีตแล้ว (`select.webp`, SELV owl 2)
+- ยังเป็นลุคเก่า: ไอคอนสกิล 48 (+ ex_ 7 เป็นโค้ด), พื้นหลังผังสกิล 4 ภาพ, ภาพหน้าโหลด ld1 ld4 ld8 · ภาพเอฟเฟกต์ 36 ภาพไม่มีตัวนกฮูก ใช้ต่อได้ · ยังไม่มี: ท่านั่ง (hero_sit.js)"""),
 }
 
 def build(h, d, a):

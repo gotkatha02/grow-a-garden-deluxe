@@ -142,7 +142,7 @@ Design 6 — a mix: the head and feathers of design 1 with the outfit and colour
 ```
 
 ## เลือกแล้วทำอะไรต่อ
-1. ส่งชีตที่เลือกมา → เขียนหัวข้อ 'เลือกแล้ว' ในไฟล์นี้ (หน้าตาตามที่วาด + พรอมต์ภาพยืน 5 มุมบนพื้นเขียว S SE E NE N ด้านข้างหันขวา ท่าเดียวกัน ขนาดเท่ากัน ถือหน้าไม้ต่ำด้วยสองมือทุกมุม) · ภาพใหญ่ของชีต → หน้าเลือกตัว (`tools/bigpose_cut.py` แล้ว `select_cut.py` แบบหมาป่า / แรด / อนูบิส)
+1. ส่งชีตที่เลือกมา → เขียนหัวข้อ 'เลือกแล้ว' ในไฟล์นี้ (หน้าตาตามที่วาด + พรอมต์ภาพยืน 5 มุมบนพื้นเขียว S SE E NE N ด้านข้างหันขวา ท่าเดียวกัน ขนาดเท่ากัน ถือหน้าไม้ต่ำด้วยสองมือทุกมุม) · ภาพใหญ่ของชีต → หน้าเลือกตัว (`tools/bigpose_cut.py` แล้ว `select_cut.py` แบบหมาป่า / แรด / อนูบิส) — ทำแล้ว 2026-11-24 22:25 (แบบ 5, ดูหัวข้อ 'เลือกแล้ว' ท้ายไฟล์)
 2. ภาพตั้งต้น (`tools/dir8cut.py startv` size=900 feet .9 clean=0 · เว้นที่ด้านหน้าให้ยกหน้าไม้ประทับไหล่ และด้านข้างให้กางปีก) + พรอมต์คลิป 20 อัน (`tools/clip_prompts.py` เพิ่มรายการ owl) — ท่าที่เกมใช้:
    - **ท่าตี** = ยกหน้าไม้ขึ้นประทับไหล่ เล็งนิ่ง ยิง (สะบัดนิดเดียว) แล้วลดลง · เกมใช้ 2 เฟรมเป็นหลัก: เฟรม 'โดน−2' (เฟรม 6) = เล็งนิ่ง ค้างตอนเล็ง · เฟรม 'โดน−1' (เฟรม 7) = จังหวะยิง ค้างทุกนัด → ใช้กับตีปกติและสกิลยิงทุกสกิล (Piercing, Aimed Shot, Deadeye, Hunter's Mark, Heavy Bolt, Armor Drill, Ricochet, Flurry, Snow Snare, Circling Hunt) · Silent Execution เล่นต่อตั้งแต่เฟรมโดนจนจบ → เฟรมหลังยิงต้องลดหน้าไม้ลงสวย
    - **ท่าบัฟ** = ย่อตัว → กางปีกที่พับอยู่ออกกว้าง ชูหน้าไม้ขึ้นเหนือหัว ค้างราว 1 วิ (แนะนำ):
@@ -166,3 +166,103 @@ Design 6 — a mix: the head and feathers of design 1 with the outfit and colour
    - ตัวยืน S สูงบนจอเท่าเดิม (`CHAR_SCALE.owl` .97 วัดใหม่) · จุดหน้าไม้ทุกเฟรมของท่าตีกับท่าบัฟ (`sockets` attack + buff, head / grip) — ลูกดอกออกจากจุดคงที่หน้าตัว (`owMuzzle`) ไม่ได้อ่านจุดนี้ จุดนี้ใช้แค่ประกายตอนร่าย
 4. ตามมา: หน้า HUD (`window.HUD_FACE`, แทน `OW_PORTRAIT` เดิม) + ภาพหน้าเลือกตัว + ท่านั่ง (`hero_sit.js`)
 5. ทีหลัง: ไอคอน 48 + ex_ 7 + ผังสกิล 4 ภาพ + ภาพหน้าโหลด ld1 ld4 ld8 (เขียนพรอมต์ให้ตอนลุคนิ่งแล้ว)
+
+## เลือกแล้ว: แบบ 5 นกฮูกหิมะโฉมใหม่ (2026-11-24 22:25)
+- เจ้าของส่งชีต + "ทำภาพซ้ายเป็นภาพตอนเลือกตัวให้หน่อย" → ชีตเก็บที่ `assets/heroes/owl/sheet_reborn.webp` (1536×1024 พื้นครีม: ภาพใหญ่ยกหน้าไม้เล็ง · หมุนรอบตัว หน้า / ข้างหันขวา / หลัง · ท่าสู้ 2 ท่า: คุกเข่ายิงใต้จันทร์เสี้ยว + กระโดดถอยเหนือผลึกน้ำแข็ง)
+- ภาพใหญ่ด้านซ้าย → หน้าเลือกตัว: ตัดด้วย `tools/bigpose_cut.py` + ตัวเลือกใหม่ที่เพิ่มรอบนี้
+  - `shadow=224,182,186` = สีเงาพื้นที่วัดเอง: เงาใต้เท้าชีตนี้สีชมพูอมม่วง ไม่ใช่สีแทนแบบชีตก่อนๆ → แบบอัตโนมัติไปจับสีไฮไลต์รองเท้าแทน เหลือเศษชมพูใต้เท้า
+  - `pockbox=540,290,630,336` = เจาะช่องพื้นในวงคันหน้าไม้ (ระหว่างคันศร ราง กับสาย) · `pockgrow=28` = เจาะขอบครีมหม่นรอบช่องนั้นด้วย (ครีมเข้มขึ้นใกล้เส้น กว้างเกินขอบ 2 px เลยเหลือเป็นเศษขาว)
+  - `wedge=26` = เจาะปลายร่องแคบระหว่างขนนก (ครีมตรงปลายร่องขาวกว่าพื้น เหลือเป็นสามเหลี่ยมขาวเล็กๆ บนพื้นมืด) · ชิ้นที่ใหญ่เกิน 60 px ไม่เจาะ กันทะลุเข้าขนขาว
+  - `rimfix=1` = ขอบเส้นที่หลังเส้นเป็นขนครีม (แยกกับพื้นไม่ออก) → แยกกับเส้นเข้มข้างๆ แทน
+  - ขนขาวของนกฮูกสีใกล้พื้นครีมมาก (ห่างแค่ ~10–14) → ห้ามใช้ `pockets=1` (ขนจะเป็นรู) · เส้นขอบหนาปิดรอบตัว น้ำท่วมจากขอบภาพเลยไม่ทะลุเข้าขน
+  - คำสั่ง: `python3 -I tools/bigpose_cut.py <ชีต> OUT.png xmax=722 pockets=0 'pockbox=540,290,630,336' pockgrow=28 shadow=224,182,186 rimfix=1 wedge=26`
+  - → `assets/heroes/owl/bigpose_reborn.webp` (708×971 พื้นใส) → `assets/heroes/owl/select.webp` (`tools/select_cut.py` สเกลเดียวกับตัวอื่น สูง 935 ของ 960 · กว้าง 682 = กว้างสุดในหน้านี้ เพราะหน้าไม้ยื่นไปทางขวา · `char_create.js` SELV owl 2 = กันแคชภาพเก่า) · ภาพเลือกตัวเดิม (ลุคเก่า) อยู่ในประวัติ git
+  - เช็กแล้ว PC 1280×720 (ปลายคริสตัลหน้าไม้แตะขอบกล่องข้อมูลพอดี) · มือถือแนวนอน 844×390 (ปลายคริสตัลเข้าใต้กล่องข้อมูล ~8 px)
+- ในเกมตอนนี้: หน้าเลือกตัวเป็นลุคใหม่แล้ว · ตัวในเกม (`assets_owl.js` ลุคเดิม) หน้า HUD ไอคอน ผังสกิล ยังเป็นลุคเดิมจนกว่าคลิป 20 ตัวจะมา
+
+**หน้าตาตามที่วาดออกมา** (ใช้ในพรอมต์ต่อๆ ไปทุกตัว):
+- **หัว:** นกฮูกหิมะขนขาว เงาฟ้าลาเวนเดอร์ ปลายขนสีฟ้าอมม่วง (slate blue) · ขนแหลมเป็นแผงหยักรอบหัว + จุกขนแหลมสูงสองข้างบนหัว (เหมือนหู) · จุดหยดน้ำสีฟ้าอมม่วงบนกระหม่อม (3 จุดเรียงสามเหลี่ยม + จุดเล็กๆ) และขีดสั้นข้างหน้า · ตากลมโตสีทองส้ม รูม่านตาดำ มีจุดแสงขาว ใต้คิ้วขนแหลม สีหน้าจริงจัง มุ่งมั่น · จะงอยปากงุ้มเล็กสีเทา
+- **คอ / ไหล่:** ปลอกคอขนสัตว์สีครีมฟูใหญ่คลุมไหล่ · ผ้าพันคอน้ำเงินใต้ขนสัตว์ · ผ้าคลุมไหล่สั้นสีน้ำเงิน ลายซิกแซก (ภูเขา) สีครีม ขอบครีม ใต้ขนสัตว์ · **เข็มกลัดกลม** ที่อกขวาของเขา (ขอบครีม กลางน้ำเงินมีเกล็ดหิมะขาว ลูกปัดทอง 2 เม็ด + ขนนกขาวเล็ก 2 เส้นห้อยใต้)
+- **ปีก:** ปีกขาวพับห้อยลงเป็นผ้าคลุมขนนกยาวถึงน่อง ขนใหญ่ปลายมน ขาว เงาฟ้าลาเวนเดอร์ · มองหน้าห้อยสองข้างตัว · มองหลังคลุมทั้งหลัง มีแถบผ้าน้ำเงินลายซิกแซกพาดบ่าด้านบน
+- **ตัว:** เสื้อหนังน้ำตาลเข้ม สายหนังพาดเฉียงอก หัวเข็มขัดเงินเล็ก · แขนเสื้อหนังน้ำตาลเข้ม · ถุงมือหนังน้ำตาลเข้มหนา ข้อมือขนครีม · เข็มขัดหนังน้ำตาลเข้มกว้าง หัวเข็มขัดเงินสี่เหลี่ยมใหญ่ · กระเป๋าหนังน้ำตาลหมุดเงินที่สะโพกทั้งสองข้าง · ธงผ้าน้ำเงินห้อยหน้าจากเข็มขัด ขอบครีม เกล็ดหิมะขาวกลาง ปลายแหลม · ผ้าครีมขอบรุ่ยห้อยข้างๆ ใต้กระเป๋า
+- **ขา:** กางเกงหนังน้ำตาลเข้มพอง · บูตหนังน้ำตาลสูง ปากบูตขนครีมหนา สายหัวเข็มขัดเงินสี่เหลี่ยมคาดหน้าแข้ง หัวบูตมน พื้นสีเข้ม
+- **หน้าไม้:** ตัวไม้น้ำตาลอ่อน ด้านบนมีเชือกถักสีน้ำเงิน · ปลอกเงินสี่เหลี่ยมมีช่องฟ้าใกล้ปลาย · หัวคริสตัลฟ้าเหลี่ยมใหญ่ที่ปลาย · คันศรไม้โค้งสองข้าง ปลายหุ้มเงิน · สายเชือกน้ำตาล · ใหญ่เกือบเท่าความกว้างตัว
+- **สี:** ขาว (ขน) + ฟ้าลาเวนเดอร์ / ฟ้าอมม่วง (เงา จุด ปลายขน) + น้ำเงิน (ผ้า) + ครีม (ขนสัตว์) + น้ำตาลเข้ม / น้ำตาลอ่อน (หนัง ไม้) + เงิน + ทองนิดหน่อย (ลูกปัด) + ฟ้าคริสตัล · ไม่มีสีเขียวเลย (นับทั้งชีต 0 จุด · ฟ้า / น้ำเงินทุกจุดน้ำเงินมากกว่าเขียว: ผ้าพันคอ ≈ 49, 45, 76 · แถบไหล่ ≈ 41, 45, 95 · คริสตัล ≈ 140, 188, 254) → ตัดพื้นเขียวได้ปลอดภัย
+
+**บนชีตต้องระวัง** (ใส่ไว้ในพรอมต์ข้างล่างแล้ว):
+- ภาพใหญ่ยกหน้าไม้เล็งระดับอก มือหลังจับลูกดอกง้างสายแบบธนู → ภาพยืนให้ถือหน้าไม้ต่ำหน้าเอวด้วยสองมือ (แบบภาพหมุนรอบตัว) · ไม่วาดลูกดอก (เกมวาดลูกดอกเอง: `OwBolt` ออกจากจุดหน้าตัว `owMuzzle`)
+- ภาพหมุนรอบตัว: มุมหน้าปลายคริสตัลชี้ลงหาคนดู · มุมข้างชี้ไปข้างหน้าเฉียงลง · มุมหลังไม่เห็นหน้าไม้เลย → พรอมต์มุมหลังสั่งให้ปลายคันศรโผล่ข้างตัว (ให้โมเดลวิดีโอรู้ว่ามีหน้าไม้ ตอนยกขึ้นเล็ง)
+- แบบที่สั่ง (ขนขาวล้วนไม่มีลาเวนเดอร์ ไม่มีจุด ปลอกคอขนเล็ก ไม่มีกระเป๋า เท้ามีกรงเล็บ ถุงมือน้ำเงิน) กับที่วาดไม่ตรงหลายจุด → ใช้ตามภาพที่วาด (เจ้าของเลือกแล้ว)
+- ขนขาวบนชีตอมชมพูจางๆ (≈ 255, 230, 230) → พรอมต์เขียน 'snow-white' กันชมพูขึ้น (ตัวเดิมในเกมออกชมพู)
+- ท่าสู้มีจันทร์เสี้ยว ดาว ลูกดอกน้ำแข็ง คลื่นหิมะ ผลึกน้ำแข็ง → ภาพยืนห้ามเอฟเฟกต์ (ใส่ในเกมด้วยโค้ด / ภาพ `assets/fx/owl`)
+- นกฮูกหมุนหัวได้รอบ → มุมหลังสั่งให้หัวหันทางเดียวกับตัว ไม่หันกลับมามองคนดู
+- จุกขนบนหัว ปีกยาว หน้าไม้ใหญ่ → สั่งให้อยู่ในกรอบหมด มีพื้นเขียวเหลือรอบตัว
+
+### ขั้น 1 — ภาพยืน 5 มุม ภาพละมุม พื้นเขียว · รอภาพ
+วิธีใช้:
+1. ส่งต่อในแชต ChatGPT เดิมที่เจนชีตนี้ (มันจำตัวได้) แนบชีตไปกับพรอมต์ 0 อีกครั้ง · ถ้าเปิดแชตใหม่ แนบชีต + ภาพปกแคมป์ไฟ (`keyart_campfire_ld5.jpg`)
+2. ส่งพรอมต์ 0 → รอมันตอบ ready
+3. ส่งภาพ 1–5 ทีละข้อความ (ข้อความละ 1 ภาพ)
+4. ครบแล้วส่ง 5 ภาพมาให้ผม
+
+ทำไมแยกภาพละมุม: ภาพใหญ่ = รายละเอียดชัดในคลิป (480p) · ทุกภาพท่ายืนเดียวกัน ขนาดเท่ากัน · บอกว่าเข็มกลัด หน้าไม้ ปีก ต้องอยู่ฝั่งไหนของภาพ · มุมไหนหันซ้ายมาไม่ต้องแก้ ผมกลับด้านให้
+
+แก้ภาพ (ต่อท้ายแล้วส่ง):
+- หันผิดทาง → `Redo picture 2: he must face the RIGHT side of the picture.`
+- มุมหลังเห็นหน้า → `Redo picture 4: turn him further away, we must not see his eyes or his face.`
+- หัวหมุนกลับมามองแบบนกฮูกจริง → `Redo picture 5: his head faces the same way as his body — he does not turn his head around toward us.`
+- ขนาดไม่เท่ากัน → `Redo picture 3: draw him the same size as in picture 1.`
+- มีหลายตัว → `Redo picture 1: only ONE owl in the picture, nothing else.`
+- หน้าไม้หาย / ถือมือเดียว → `Redo picture 3: he holds the wooden crossbow low in front of his waist with BOTH hands, exactly as on the sheet.`
+- มีลูกดอกติดมา → `Redo picture 2: no bolt and no arrow on the crossbow.`
+- ขนออกชมพู → `Redo picture 1: his feathers are snow-white with soft lavender-blue shading — not pink.`
+- กางปีก → `Redo picture 1: his wings stay folded down his back and sides like a long feather cape.`
+- มีเอฟเฟกต์ติดมา → `Redo picture 2: no moon, no stars, no snow, no ice, no glow, no sparkles — just the owl standing.`
+- จุกขน / ปีก / หน้าไม้ล้นกรอบ → `Redo picture 3: draw him a little smaller so his feather tufts, his whole wings and the whole crossbow fit inside the picture.`
+- แก้แค่บางส่วน → ใช้แปรงเลือกเฉพาะจุดใน ChatGPT (สั่งแก้ทั้งภาพ มันจะวาดใหม่หมด)
+
+#### พรอมต์ 0 — กติกา (ส่งครั้งเดียว พร้อมแนบชีต)
+```
+Next I need this same hero — the snowy owl crossbowman on the attached sheet — drawn standing in 5 directions for my game's animation, ONE picture per message. Do not draw anything yet: reply only "ready", then draw one picture each time I send a direction.
+
+Every picture:
+- ONE owl alone in a square picture on a plain flat pure green background (#00FF00): no gradient, no floor, no shadow under him, no other views, no text, no logo, no watermark.
+- exactly the same character and drawing style as the sheet, nothing added and nothing left out: friendly hand-painted chibi cartoon, thick clean dark-brown outlines, flat cel shading with 2–3 tones. A snowy owl with snow-white feathers, soft lavender-blue shading and slate-blue feather tips; a crown of spiky white feathers around his head with two tall pointed feather tufts on top like ears; slate-blue teardrop spots on the top of his head (three in a triangle and a few smaller ones) and short slate-blue streaks at the sides of his face; big round golden-orange eyes with dark pupils and a white shine under sharp feathered brows, a focused, determined look; a small grey hooked beak. A big shaggy cream fur collar over his shoulders, a deep blue scarf around his neck under it, and a short royal-blue shoulder cape with a cream zigzag pattern and cream edges just below the fur. On his right chest a round brooch with a cream rim and a white snowflake on blue, with two gold beads and two small white feathers hanging under it. His white wings fold down his back and sides like a long feather cape that reaches his calves. A dark brown leather jerkin with one leather strap across his chest with a small silver buckle, dark brown leather sleeves, thick dark brown leather gloves with cream fur cuffs. A wide dark brown belt with a big square silver buckle, brown leather pouches with silver studs on both hips, and a blue banner hanging down the front from the belt: cream border, a white snowflake in the middle and a pointed bottom, with ragged cream cloth flaps at its sides. Baggy dark brown trousers. Tall brown leather boots with thick cream fur cuffs at the top, a strap with a square silver buckle across each shin, rounded toes and dark soles.
+- his weapon, always held in both hands: a big wooden crossbow — a light-brown wooden stock with a twisted blue cord along its top, a square silver fitting with a small blue window near the front, a large faceted blue crystal point at the front end, two curved wooden bow arms with silver caps on their tips and a thin brown string. No bolt, no arrow, no quiver, no other weapon.
+- the same standing pose in every picture: standing tall in a relaxed, ready stance, feet about shoulder-width apart, holding the crossbow low in front of his waist with both hands, its crystal point aimed forward and down. His wings stay folded and his head faces the same way as his body.
+- the same size in every picture: from the tips of his feather tufts to the soles of his boots he fills about three quarters of the picture's height, his feet near the bottom with a small margin; his feather tufts, his whole wings and the whole crossbow inside the picture with green space all round.
+- no green anywhere on him: the blues are royal blue, slate blue and crystal blue. No moon, no stars, no snow, no ice crystals, no frost, no glow, no sparkles, no motion lines, no effects.
+```
+
+#### ภาพ 1 — หน้าตรง
+```
+Picture 1 — FRONT view: he faces straight toward us, like the front view on the sheet. He holds the crossbow low in front of his waist with both hands, its curved bow arms spread level across his hips and its blue crystal point aimed toward us and down, between his knees. The round snowflake brooch with its two little white feathers is on the LEFT side of the picture (his right chest), and his folded white wings hang down on both sides of his body.
+```
+
+#### ภาพ 2 — เฉียงหน้า หันขวา
+```
+Picture 2 — FRONT THREE-QUARTER view: he is turned toward the RIGHT side of the picture, facing down and to the right. We see his face turned to the right and mostly his right side: the round snowflake brooch is on his near chest, on the left part of his chest in the picture. He holds the crossbow low in front of his waist with both hands, its blue crystal point aimed forward and down toward the lower right of the picture. His folded white wings hang behind him like a cape, on the left side of the picture.
+```
+
+#### ภาพ 3 — ข้าง หันขวา
+```
+Picture 3 — SIDE view facing RIGHT, like the side view on the sheet: his beak points to the right edge of the picture and we see his right side — one golden eye, his feather tufts, the cream fur collar, the round snowflake brooch at the front of his chest and the blue shoulder cape. He holds the crossbow low at his waist with both hands, its blue crystal point aimed forward and down toward the right, the whole crossbow fully visible. His folded white wing hangs down behind him on the left side of the picture.
+```
+
+#### ภาพ 4 — เฉียงหลัง หันขวา
+```
+Picture 4 — BACK THREE-QUARTER view: he is turned away from us, facing up and to the RIGHT. We see mostly his back: the back of his head with its slate-blue spots and two feather tufts, the cream fur collar, the blue shoulder cape with its cream zigzag across his shoulders, and his folded white wings covering his back like a feather cape; of his face only the edge of his face and the tip of his beak on the right — not his eyes. He holds the crossbow in front of him with both hands, so only its blue crystal point and the end of one bow arm stick out past his body on the right side of the picture.
+```
+
+#### ภาพ 5 — หลัง
+```
+Picture 5 — BACK view: his back faces us, like the back view on the sheet: the back of his head with its slate-blue spots and both feather tufts, the cream fur collar, the blue shoulder cape with its cream zigzag across his shoulders, his folded white wings covering his whole back down to his calves, and the backs of his boots; no face — his head faces the same way as his body. He holds the crossbow in front of him with both hands, so only the silver-capped tips of its two bow arms stick out at his left and right sides at waist height.
+```
+
+### ขั้น 2 — ภาพตั้งต้น + คลิปท่า 20 ตัว · รอภาพยืน
+ภาพ 5 มุมมาแล้ว → ตัดภาพตั้งต้น `owl_1_S.png … owl_5_N.png` (`tools/dir8cut.py startv`, คำสั่งอยู่ใน `OWL_CLIP_PROMPTS_TH.md`) ส่งพร้อม `OWL_CLIP_PROMPTS_TH.md` (คลิป 20 ตัว ยืน · เดิน · เล็งหน้าไม้ · กางปีกชูหน้าไม้ × 5 ทิศ สร้างจาก `python3 tools/clip_prompts.py owl` · เขียนรอไว้แล้ว ปรับประโยคหน้า / มุมหลังให้ตรงภาพจริงตอนภาพมา)
+
+### ขั้น 3 เป็นต้นไป
+3. **สไปร์ทจากคลิป** — `cliphero.py` → **เขียนทับ `assets_owl.js`** (prefix OW เดิม ใช้กับนกฮูกตัวเดียว · ไม่กระทบตัวอื่น) · เวลาเฟรมเท่าเดิมทุกทิศ (ตารางในหัวข้อ 'เลือกแล้วทำอะไรต่อ' ข้างบน + ท้าย `OWL_CLIP_PROMPTS_TH.md`) · ตัวยืนสูงบนจอเท่าเดิม (วัด `CHAR_SCALE.owl` ใหม่)
+4. **ของที่ผูกกับสไปร์ท** — หน้า HUD (ตัดหัวจาก view_S ผ่าน `window.HUD_FACE`, แทน `OW_PORTRAIT` ที่ฝังใน `assets_owl.js` เดิม) · ท่านั่ง (`hero_sit.js`) · จุดหน้าไม้ (sockets) ใช้แค่ประกายตอนร่าย
+5. **ทีหลัง** — ไอคอน 48 + ex_ 7 + ผังสกิล 4 ภาพ + ภาพหน้าโหลด ld1 ld4 ld8 (ภาพเอฟเฟกต์ 36 ภาพไม่มีตัวนกฮูก ใช้ต่อได้: ขนยังขาว ตายังทอง)
