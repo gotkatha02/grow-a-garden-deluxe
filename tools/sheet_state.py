@@ -9,23 +9,32 @@ SPEC (JSON):
   "rows": 2, "cols": 4,                       frame order = row by row, left to right
   "centers": [[180,560,980,1360], [...]],     optional: x centre of every frame per row — loose pieces (swooshes, rocks, sparks)
                                               go to the nearest one (default: equal columns)
-  "scale": 0.6,                               sheet px -> cell px (cell 720x540, feet pivot 360,470)
-  "anchors": [[x,y], ...],                    per frame, in that frame's own cut box (the tool prints the boxes): the point that
+  "scale": 0.6,                               sheet px -> cell px (the atlas's own cell + feet pivot are read from its META:
+                                              cliphero 720x540 / 360,470, statichero placeholders 498x466 / 248,405)
+  "anchors": [[x,y], ...] | "auto",           per frame, in that frame's own cut box (the tool prints the boxes): the point that
                                               sits on the pivot = body centre x, feet y. In-air frames: the lowest foot — the game
                                               lifts the hero itself (player.z), so the drawn jump height must not be in the frame.
+                                              "auto" (or left out) = centre of the lowest 8 % of the figure, its bottom row.
+  "variants": [[sx,sy,deg], ...],             optional, for ONE picture (rows 1, cols 1 — the hippo's jump / gulp poses
+                                              2026-11-24): the picture becomes one frame per variant, scaled sx / sy and turned
+                                              deg (+ = clockwise) about its anchor — a little life for a single still.
   "dirs": ["S","SE","E","NE","N"],            source directions that get these frames (the engine mirrors SW / W / NW)
   "flip": false,                              true when the sheet faces left (it is mirrored so the frames face right)
   "dur": [ms, ...], "loop": false             default frame times (skills usually build their own timed sequence)
 The state is replaced when it already exists; nothing else in the file changes. A preview (every frame on the pivot, with
 the idle pose of the first listed direction beside it for size) is written when a second argument is given."""
-import sys, io, json, base64
+import sys, io, json, base64, math
 import numpy as np
 from PIL import Image, ImageDraw
 from scipy import ndimage as nd
 
 spec = json.load(open(sys.argv[1]))
 PREV = sys.argv[2] if len(sys.argv) > 2 else None
-CW, CH, PX, PY = 720, 540, 360, 470
+_m0 = open(spec['js']).read(); _t0 = f"const {spec['prefix']}_SPR_META="
+_meta0 = json.JSONDecoder().raw_decode(_m0[_m0.index(_t0) + len(_t0):])[0]
+CW, CH = _meta0.get('cell', {}).get('w', 720), _meta0.get('cell', {}).get('h', 540)
+PX, PY = _meta0.get('pivot', {}).get('x', 360), _meta0.get('pivot', {}).get('y', 470)
+del _m0
 
 # ---- key the sheet -------------------------------------------------------------------------------------------------
 im = np.asarray(Image.open(spec['sheet']).convert('RGB')).astype(np.float32)
@@ -58,15 +67,31 @@ for i, sl in enumerate(nd.find_objects(lab)):
     ys, xs = np.nonzero(m); cy = ys.mean() + sl[0].start; cx = xs.mean() + sl[1].start
     r = min(R - 1, int(cy * R / Hs)); c = int(np.argmin([abs(cx - q) for q in cen[r]]))
     masks[r * C + c][sl] |= m
-S = spec['scale']; anchors = spec['anchors']; flip = spec.get('flip', False)
-pieces = []
+S = spec['scale']; anchors = spec.get('anchors', 'auto'); flip = spec.get('flip', False); VAR = spec.get('variants')
+def autoanchor(fr):        # centre of the lowest 8 % of the opaque pixels, bottom row (like statichero.py feet())
+    A = np.asarray(fr)[..., 3] > 60; ys, xs = np.where(A); lo = ys.max() - int(fr.height * .08)
+    return round(float(xs[ys >= lo].mean()), 1), float(ys.max())
+def vary(fr, ax_, ay_, sx, sy, deg):   # scale sx / sy about the anchor, then turn deg (+ = clockwise) about it
+    q = fr.resize((max(1, round(fr.width * sx)), max(1, round(fr.height * sy))), Image.LANCZOS); ax2, ay2 = ax_ * sx, ay_ * sy
+    if deg:
+        R = int(math.hypot(q.width, q.height)) + 4
+        big = Image.new('RGBA', (2 * R, 2 * R), (0, 0, 0, 0)); big.paste(q, (round(R - ax2), round(R - ay2)), q)
+        big = big.rotate(-deg, resample=Image.BICUBIC, center=(R, R))
+        bb = big.getchannel('A').getbbox(); q = big.crop(bb); ax2, ay2 = R - bb[0], R - bb[1]
+    return q, ax2, ay2
+frames = []
 for i, m in enumerate(masks):
     m = m & (a > 0); ys, xs = np.nonzero(m)
     x0, x1, y0, y1 = xs.min(), xs.max(), ys.min(), ys.max()
     cut = rgba[y0:y1 + 1, x0:x1 + 1].copy(); cut[..., 3] = np.where(m[y0:y1 + 1, x0:x1 + 1], cut[..., 3], 0)
-    fr = Image.fromarray(cut); ax_, ay_ = anchors[i]
+    fr = Image.fromarray(cut)
+    ax_, ay_ = anchors[i] if isinstance(anchors, list) and i < len(anchors) else autoanchor(fr)
     print(f'frame {i + 1}: cut box {x0},{y0} - {x1},{y1} ({x1 - x0 + 1}x{y1 - y0 + 1}), anchor {ax_},{ay_}')
     if flip: fr = fr.transpose(Image.FLIP_LEFT_RIGHT); ax_ = fr.width - 1 - ax_
+    frames.append((fr, ax_, ay_))
+if VAR: frames = [vary(frames[0][0], frames[0][1], frames[0][2], *v) for v in VAR]
+pieces = []
+for i, (fr, ax_, ay_) in enumerate(frames):
     q = fr.resize((max(1, round(fr.width * S)), max(1, round(fr.height * S))), Image.LANCZOS)
     cell = Image.new('RGBA', (CW, CH), (0, 0, 0, 0)); cell.paste(q, (round(PX - ax_ * S), round(PY - ay_ * S)), q)
     bb = cell.getchannel('A').point(lambda v: 255 if v > 0 else 0).getbbox()

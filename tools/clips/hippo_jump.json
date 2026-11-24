@@ -1,0 +1,16 @@
+{
+ "_note": "Hippo jump-slam pose (owner's picture 2026-11-24 13:53 'สไปร้2สุดท้ายเอาไว้ตอนท่ากระโดดทับกับท่าดูด'): one still, in the air, mace up, legs forward, facing down-right (SE; the engine mirrors it for SW). 3 frames made from it by 'variants' = rising (stretched, leaning back) · apex · falling (squashed, leaning in); char_hippo.js hJumpSeq plays them over the flight of every hSlam skill. Atlas = the statichero placeholder (cell 498x466) — when the clip atlas (cliphero, 720x540) replaces it, re-run this spec with the scale matched to the new standing height. Rebuild: python3 -I tools/sheet_state.py tools/clips/hippo_jump.json [preview.png]",
+ "js": "assets_hippo.js",
+ "prefix": "HIP",
+ "state": "jump",
+ "sheet": "assets/heroes/hippo/pose_jump.webp",
+ "rows": 1,
+ "cols": 1,
+ "scale": 0.2,
+ "anchors": "auto",
+ "variants": [[0.95, 1.06, -4], [1, 1, 0], [1.04, 0.95, 5]],
+ "dirs": ["S", "SE", "E", "NE", "N"],
+ "flip": false,
+ "dur": [120, 120, 120],
+ "loop": false
+}

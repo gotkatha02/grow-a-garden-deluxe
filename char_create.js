@@ -131,8 +131,8 @@ function frame(body,foot){ov.innerHTML=`<div class="cc"><div class="cc-hd"><b>Cr
    the owner's full-body pictures assets/heroes/<hero>/select.webp (720×960, one scale for all, transparent) stand on a stage —
    the chosen hero big and in colour, its neighbours as pale black-and-white shadows behind on both sides; ‹ › / swipe /
    ← → keys / a tap on a shadow / the dots turn the line like a carousel. Heroes without a picture yet: their tree art in a
-   soft vignette (hippo), else a plain silhouette (raven). */
-const SELA=['wolf','rhino','owl','jaguar','axolotl','croc','cat','dragon','wukong','kitsune','bastet','anubis','sheep','lion','drake'];
+   soft vignette, else a plain silhouette (raven). Hippo 2026-11-24: his front three-quarter view of the new look. */
+const SELA=['wolf','rhino','owl','jaguar','axolotl','croc','cat','dragon','wukong','kitsune','bastet','anubis','sheep','lion','drake','hippo'];
 const LANDC={'นอร์ส':'#c6e6f8','แอซเท็ก':'#ffd9a0','ญี่ปุ่น':'#fbcfdc','อียิปต์':'#f8de98','กรีก':'#d6defb'};
 const ARR=`<svg viewBox="0 0 44 68"><defs><linearGradient id="ccag" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffeab0"/><stop offset=".48" stop-color="#d9a24a"/><stop offset="1" stop-color="#8e5a1c"/></linearGradient></defs>
   <path d="M38 4 L5 34 L38 64 L29 34 Z" fill="url(#ccag)" stroke="#3a2410" stroke-width="3.2" stroke-linejoin="round"/><path d="M31 15 L14 34 L31 53" fill="none" stroke="#fff4d2" stroke-width="2" stroke-linecap="round" opacity=".75"/>

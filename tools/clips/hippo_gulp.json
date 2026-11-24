@@ -1,0 +1,16 @@
+{
+ "_note": "Hippo gulp (inhale) pose (owner's picture 2026-11-24 13:53, 'ท่าดูด'): one still, mouth wide open sucking air in (his white air lines kept), facing right (SE; mirrored for SW). 3 frames by 'variants' = normal · puffing up · fully puffed, leaning back; char_hippo.js hGulpPose plays them for Gulp and Gobble Up (inhale until the swallow, then back). Same atlas note as hippo_jump.json. Rebuild: python3 -I tools/sheet_state.py tools/clips/hippo_gulp.json [preview.png]",
+ "js": "assets_hippo.js",
+ "prefix": "HIP",
+ "state": "gulp",
+ "sheet": "assets/heroes/hippo/pose_gulp.webp",
+ "rows": 1,
+ "cols": 1,
+ "scale": 0.2,
+ "anchors": "auto",
+ "variants": [[1, 1, 0], [1.03, 1.025, -2], [1.06, 1.045, -3.5]],
+ "dirs": ["S", "SE", "E", "NE", "N"],
+ "flip": false,
+ "dur": [120, 120, 120],
+ "loop": false
+}

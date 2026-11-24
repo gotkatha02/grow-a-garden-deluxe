@@ -2,6 +2,8 @@
 
 เจ้าของ: "อยากทำโมเดลตัวละครของจากั้วใหม่ เอาให้ดูสวยๆแบบผุ้หญิง"
 
+**เลือกแล้ว 2026-11-24 14:28: แบบ 1 นางระบำสุริยคราส** → หัวข้อ 'เลือกแล้ว' ท้ายไฟล์ (หน้าตาตามที่วาด + พรอมต์ภาพยืน 5 มุม) · พรอมต์คลิป 20 ตัว: `JAGUAR_CLIP_PROMPTS_TH.md`
+
 ตัวในเกมตอนนี้เป็นลุคเดิมทั้งชุด:
 - สไปร์ทจากคลิป 20 ตัว (`assets_jaguar.js`)
 - ไอคอนสกิล 53 อัน (`assets/skill-icons/jaguar`)
@@ -118,66 +120,100 @@ Design 5 — "Black Jaguar Reborn". The jaguar hero my game already has, redrawn
 Design 6 — a mix: the face and hair of design 4 with the outfit and colours of design 1, in the pose of design 3. Same rules and layout.
 ```
 
-## ขั้นต่อไป
-1. **เลือกลุค** — ส่งชีตที่ชอบมาให้ผม แล้วผมจะทำ 3 อย่าง:
-   - เก็บชีตไว้ที่ `assets/heroes/jaguar/sheet_<ชื่อแบบ>.webp`
-   - จดหน้าตาตามที่วาดออกมาจริง
-   - เขียนพรอมต์ภาพยืน 5 มุมแบบระบุชุดทุกชิ้น (แบบที่ทำให้ฮิปโป กันชุดเพี้ยน)
-   - ถ้าไม่อยากรอ ใช้ "ทางลัด" ข้างล่างต่อในแชตเดิมได้เลย
-2. **ภาพยืน 5 มุม** — ภาพละมุม บนพื้นเขียว → `assets/heroes/jaguar/view_S|SE|E|NE|N.webp`
-3. **คลิปท่า 20 ตัว** — ตัดภาพตั้งต้นด้วย `tools/dir8cut.py startv` แล้วเพิ่ม jaguar ใน `tools/clip_prompts.py` → ได้พรอมต์คลิป 20 ตัว (ยืน · เดิน · ฟันมีดคู่ · ร่ายเวท × 5 ทิศ)
-4. **สไปร์ทใหม่** — `cliphero.py` เขียนทับ `assets_jaguar.js` (prefix JAG) โดยคงเวลาเฟรมของสไปร์ทเดิม ดาเมจ / จังหวะจะไม่เปลี่ยน:
-   - attack: 12 เฟรม 900 ms · เฟรมโดน = เฟรม 6 (SE = เฟรม 4)
-   - buff: 12 เฟรม 1,400 ms · จุดสูงสุด = เฟรม 7 (SE: 6 เฟรม 1,320 ms จุดสูงสุดเฟรม 3)
-   - walk: 8 เฟรม 800 ms · idle: 12 เฟรม 2.4 วิ
-   - ตารางเวลาต่อเฟรมทุกทิศ: `JAG_SPR_META` ในไฟล์เดิม
-   - แล้ววัด CHAR_SCALE.jaguar ใหม่ (ตอนนี้ .94)
-5. **ภาพประกอบตัว** — หน้า HUD (ตัดหัวจากภาพหน้าตรง) · ภาพหน้าเลือกตัว (`assets/heroes/jaguar/select.webp`) · ชื่อใหม่ถ้าเลือกขนทอง
-6. **ทีหลัง** — ไอคอนสกิล 53 + สกิลเสริม 10 และพื้นหลังผังสกิล 4 ภาพตามลุคใหม่ · ท่านั่ง 8 ทิศ
+## เลือกแล้ว: แบบ 1 นางระบำสุริยคราส (2026-11-24 14:28)
+เจ้าของส่งชีตที่เจนจากแบบ 1 + "ชอบแบบนี้" → ชีตเก็บที่ `assets/heroes/jaguar/sheet_eclipse_dancer.webp`
+- ภาพใหญ่: หมุนตัวกลางระบำ
+- หมุนรอบตัว: หน้า / ข้างหันขวา / หลัง ถือมีดครบ
+- ท่าสู้ 2 ท่า: ฟันไขว้ทิ้งรอยแดง + ชูมือหาดวงอาทิตย์ดำ มีควันม่วง
 
-### ทางลัด — ภาพยืน 5 มุมแบบไม่ระบุรายละเอียด
-ส่งต่อในแชต ChatGPT เดิมที่เจนชีตที่เลือก และแนบชีตนั้นไปกับพรอมต์ 0 ข้างล่าง → รอ ready → ส่งภาพ 1–5 ทีละข้อความ
+**หน้าตาตามที่วาดออกมา** (ใช้ในพรอมต์ต่อๆ ไปทุกตัว):
+- **ตัว / หน้า:** ขนทองอำพัน ลายจุด / ดอกสีน้ำตาลเข้ม · ปากคางสีครีม · ตาทองอำพันโต ขนตายาว · จมูกแมวเล็ก · จุดเล็กๆ ที่หน้าผากกับแก้ม
+- **หู:** กลมแบบจากัวร์ ในหูขนฟูสีครีม หลังหูทองมีจุดเข้ม
+- **ผม:** ช็อกโกแลตเข้มเงา ยาวถึงเอว หน้าม้า ปอยข้างยาว มัดหางม้าสูง โคนหางม้ามีห่วงทอง
+- **ข้างหัวด้านขวาของเธอ** (มุมหน้า = ซ้ายของภาพ): จานสุริยะทองแฉกแหลม พัดขนนกแดง + ฟ้าเทอร์ควอยซ์ข้างหลัง กระดิ่งทองห้อยลูกปัดเทอร์ควอยซ์
+- **คอ / ตัวบน:** ต่างหูห่วงทองมีลูกปัดเทอร์ควอยซ์ · โชกเกอร์แดง · สร้อยคอทองกว้างฝังเทอร์ควอยซ์ พลอยกลมใหญ่ตรงกลาง แผ่นทองขั้นบันไดห้อย · เสื้อเกาะอกสั้นสีดำ ขอบล่างลายแดง
+- **แขน:** ปลอกแขนทองฝังเทอร์ควอยซ์ · ปลอกข้อมือทองกว้างมีพลอยเทอร์ควอยซ์ · มือสีน้ำตาลเข้ม
+- **เอว / กระโปรง:** เข็มขัดทองกว้างลายขั้นบันได พลอยเทอร์ควอยซ์รูปไข่ตรงกลาง · ผ้าคาดแดงผูกข้างสะโพก พู่ทองเล็ก · กระโปรงระบำซ้อนชั้น แผ่นหน้าสีครีมทับชั้นแดง ขอบลายขั้นบันไดทองทุกชั้น
+- **ขา / หาง:** ผ้าแดงรัดข้อเท้า (ภาพใหญ่ผูกโบ) รองเท้าแตะทอง · หางยาวลายจุด ปลายมีปล้องน้ำตาลเข้ม
+- **มีดคู่ออบซิเดียน:** ใบโค้งยาวสีดำเหลือบม่วง การ์ดทองรูปเสี้ยวจันทร์มีหนามเล็ก ด้ามสั้นสีเข้ม · ท่ายืนถือห้อยต่ำข้างตัว ใบชี้ลงโค้งออก
+
+**บนชีตต้องระวัง** (แก้ไว้ในพรอมต์ข้างล่างแล้ว):
+- ภาพใหญ่ขยิบตาอ้าปากเห็นเขี้ยว · ท่าฟันขมวดคิ้ว → ทุกภาพลืมตาทั้งสองข้าง ยิ้มหวานปากปิด
+- ท่าสู้มีรอยฟันแดง ดวงอาทิตย์ดำ ควันม่วง และท่าเวทยกมือเปล่า (มีดหายไปเล่มหนึ่ง) → ภาพยืนห้ามเอฟเฟกต์ ถือมีดครบสองมือทุกภาพ
+- แผ่นหน้ากระโปรงในภาพหน้าตรงมีลายแดงคล้ายตัวอักษร → สั่งให้มีแค่ลายขั้นบันไดทอง
+- สีเทอร์ควอยซ์ ≈ RGB 56,180,174 เขียวเกินน้ำเงินนิดหน่อย (ฮิปโป 50,154,156) → สั่งเป็นฟ้าเทอร์ควอยซ์ กันการตัดพื้นเขียวกินขนนก / พลอย
+- จานสุริยะอยู่ข้างหัวด้านขวาของเธอ ตำแหน่งในภาพบอกไว้ทุกภาพ:
+  - มุมหน้า: ซ้ายของภาพ เห็นแค่ขนนกโผล่
+  - มุมเฉียงหน้า / ข้าง / เฉียงหลัง (หันขวาทุกภาพ): ฝั่งใกล้กล้อง เห็นเต็ม
+  - มุมหลัง: ขวาของภาพ ขนนกโผล่
+  - ในเกม ทิศซ้ายเป็นภาพกลับด้าน จานสุริยะจะย้ายข้าง (เหมือนฮีโร่ทุกตัว)
+- ภาพหมุนรอบตัวหันขวาและถือมีดครบแล้ว ✓ · ของห้อยเยอะ (หางม้า ต่างหู กระดิ่ง พู่ ผ้าคาด) ขยับในคลิปได้ ไม่เป็นไร
+
+### ขั้น 1 — ภาพยืน 5 มุม ภาพละมุม พื้นเขียว (รอภาพ)
+วิธีใช้:
+1. ส่งต่อในแชต ChatGPT เดิมที่เจนชีตนี้ (มันจำตัวได้) แนบชีตนี้ไปกับพรอมต์ 0 อีกครั้ง · ถ้าเปิดแชตใหม่ แนบชีตนี้ + ภาพปกแคมป์ไฟ
+2. ส่งพรอมต์ 0 → รอมันตอบ ready
+3. ส่งภาพ 1–5 ทีละข้อความ (ข้อความละ 1 ภาพ)
+4. ครบแล้วส่ง 5 ภาพมาให้ผม
+
+ทำไมแยกภาพละมุม: ภาพใหญ่ = รายละเอียดชัดในคลิป (480p) · ทุกภาพท่ายืนเดียวกัน ขนาดเท่ากัน · บอกว่ามีด จานสุริยะ หาง ต้องอยู่ฝั่งไหนของภาพ · มุมไหนหันซ้ายมาไม่ต้องแก้ ผมกลับด้านให้
 
 แก้ภาพ (ต่อท้ายแล้วส่ง):
-- `Redo picture 2: she must face the RIGHT side of the picture.`
-- `Redo picture 4: turn her further away, we must not see her eyes or her face.`
-- `Redo picture 3: draw her the same size as in picture 1.`
-- `Redo picture 1: only ONE jaguar girl in the picture, nothing else.`
+- หันผิดทาง → `Redo picture 2: she must face the RIGHT side of the picture.`
+- มุมหลังเห็นหน้า → `Redo picture 4: turn her further away, we must not see her eyes or her face.`
+- ขนาดไม่เท่ากัน → `Redo picture 3: draw her the same size as in picture 1.`
+- มีหลายตัว → `Redo picture 1: only ONE jaguar girl in the picture, nothing else.`
+- มีดไม่ครบ → `Redo picture 2: she must hold one dagger in EACH hand, both blades pointing down.`
+- ขยิบตา / อ้าปาก → `Redo picture 1: both eyes open and her mouth closed, a sweet smile.`
+- เทอร์ควอยซ์ออกเขียว → `Redo picture 3: the turquoise feathers and gems must be sky-blue turquoise, not green.`
+- แก้แค่บางส่วน → ใช้แปรงเลือกเฉพาะจุดใน ChatGPT (สั่งแก้ทั้งภาพ มันจะวาดใหม่หมด)
 
 #### พรอมต์ 0 — กติกา (ส่งครั้งเดียว พร้อมแนบชีต)
 ```
-This is NOT a new design: draw the SAME jaguar girl as the attached sheet and copy her exactly. I need her standing in 5 directions for my game's animation, ONE picture per message. Do not draw anything yet: reply only "ready", then draw one picture each time I send a direction.
+Next I need this same hero — the jaguar dancer girl on the attached sheet — drawn standing in 5 directions for my game's animation, ONE picture per message. Do not draw anything yet: reply only "ready", then draw one picture each time I send a direction.
 
 Every picture:
 - ONE jaguar girl alone in a square picture on a plain flat pure green background (#00FF00): no gradient, no floor, no shadow under her, no other views, no text, no logo, no watermark.
-- exactly the same character, hair, outfit, colours, rosettes and drawing style as the attached sheet, nothing added and nothing left out: friendly hand-painted chibi cartoon, thick clean dark-brown outlines, flat cel shading with 2–3 tones.
-- her twin obsidian daggers in every picture, one in each hand, held low beside her hips with the blades pointing down and a little outward, never in front of her body or face.
-- the same relaxed ready stance in every picture: feet a little apart, standing straight, her tail curving out behind her to one side; a sweet, confident smile with her mouth closed.
-- the same size in every picture: from the tips of her ears (or the top of her headpiece, whichever is higher) to the soles of her feet she fills about three quarters of the picture's height, her feet near the bottom with a small margin; both daggers, her whole tail and her hair inside the picture with green space all round.
-- turquoise parts stay blue, never green. No glow, no sparkles, no shadow wisps, no motion lines, no effects.
+- exactly the same character and drawing style as the sheet, nothing added and nothing left out: friendly hand-painted chibi cartoon, thick clean dark-brown outlines, flat cel shading with 2–3 tones. Warm golden-amber fur with dark-brown jaguar spots and rosettes, a cream muzzle, big golden-amber eyes with long lashes, a small cat nose, little spots on her forehead and cheeks, round jaguar ears with fluffy cream insides. Long glossy dark-chocolate hair with soft bangs and long side locks, gathered in a high ponytail with a gold ring at its base. On her own right side of her head: a round gold sun-disc ornament with short spiky rays, a small fan of scarlet and turquoise feathers behind it, and a little gold bell pendant with a turquoise bead hanging below it. Small gold hoop earrings with turquoise beads. A thin crimson choker and a wide gold collar inlaid with turquoise, with a big round turquoise gem in the middle. A fitted black crop top with crimson trim. Gold armbands with turquoise inlay, wide gold wrist cuffs with a turquoise gem, dark-brown hands. A wide gold belt with a big oval turquoise gem, a crimson sash tied at her hip and small gold tassels. A layered dancer's skirt: a cream front panel over crimson layers, every hem with a gold step-pattern border. Crimson bands round her ankles and gold sandals. Her long golden tail with dark-brown spots and dark-brown rings toward the tip.
+- her twin obsidian daggers in every picture, one in each hand: long curved black blades with a violet sheen and gold crescent-shaped guards, held low at her sides with the blades pointing down and curving outward, never in front of her body or face.
+- the same standing pose in every picture: feet a little apart, standing straight and light like a dancer, her tail curving out behind her; both eyes open and a sweet, confident smile with her mouth closed (no wink).
+- the same size in every picture: from the top of her ponytail to the soles of her feet she fills about three quarters of the picture's height, her feet near the bottom with a small margin; both daggers, her whole tail and all of her hair inside the picture with green space all round.
+- the front panel of her skirt shows only the gold step pattern: no letters, no symbols.
+- the turquoise parts are a clear sky-blue turquoise, a little more blue than green, never green or mint. No glow, no sparkles, no slash trails, no black sun, no shadow wisps, no motion lines, no effects.
 ```
 
 #### ภาพ 1 — หน้าตรง
 ```
-Picture 1 — FRONT view: she faces straight toward us.
+Picture 1 — FRONT view: she faces straight toward us, like the front view on the sheet. The sun-disc ornament is on the left side of her head in the picture (her own right side), mostly behind her hair, with its feathers and bell peeking out. One dagger hangs on each side of the picture, the blades curving outward; her tail curves out behind her on one side.
 ```
 
 #### ภาพ 2 — เฉียงหน้า หันขวา
 ```
-Picture 2 — FRONT THREE-QUARTER view: she is turned toward the RIGHT side of the picture, facing down and to the right, like the big pose on the sheet but in the standing pose. We see her face and her right side; her tail shows behind her on the left.
+Picture 2 — FRONT THREE-QUARTER view: she is turned toward the RIGHT side of the picture, facing down and to the right, like the big pose on the sheet but in the standing pose. We see her face and her right side; the gold sun-disc ornament with its feathers and bell shows clearly on the side of her head nearest to us. Her near hand holds one dagger on the left side of the picture; her far hand holds the other on the right, partly behind her body. Her ponytail and her tail are behind her on the left side of the picture.
 ```
 
 #### ภาพ 3 — ข้าง หันขวา
 ```
-Picture 3 — SIDE view facing RIGHT (even if the side view on the sheet faces left): her nose points to the right edge of the picture and we see her right side; her tail curves out behind her on the left.
+Picture 3 — SIDE view facing RIGHT, like the side view on the sheet: her nose points to the right edge of the picture and we see her right side, with the gold sun-disc ornament, its feathers and bell on the side of her head. Her high ponytail flows down behind her on the left and her tail curves out behind her on the left. One dagger hangs beside her hip, the other shows a little in front of her body, both blades pointing down.
 ```
 
 #### ภาพ 4 — เฉียงหลัง หันขวา
 ```
-Picture 4 — BACK THREE-QUARTER view: she is turned away from us, facing up and to the RIGHT. We see mostly her back, her hair and her tail, and of her head only the back, one ear and the edge of her cheek — not her eyes and not her face.
+Picture 4 — BACK THREE-QUARTER view: she is turned away from us, facing up and to the RIGHT. We see mostly her back, her long ponytail and her tail curving out toward the left, and of her head only the back, one ear, the sun-disc ornament with its feathers and the edge of her cheek on the right — not her eyes and not her face. One dagger hangs on each side of her body, the blades pointing down.
 ```
 
 #### ภาพ 5 — หลัง
 ```
-Picture 5 — BACK view: her back faces us. We see the back of her head and hair, the backs of both ears with their pale spots, and her tail curving out to one side; no face. Both daggers show at her sides.
+Picture 5 — BACK view: her back faces us, like the back view on the sheet. We see the back of her head with her long dark-chocolate hair falling down her back, the backs of both round spotted ears, the feathers of the sun-disc ornament peeking out on the right side of her head, the back of the skirt and her tail curving out to one side; no face. One dagger hangs on each side of the picture, the blades curving outward.
 ```
+
+### ขั้น 2 — ภาพตั้งต้น + คลิปท่า 20 ตัว (พรอมต์พร้อมแล้ว รอภาพยืน)
+ได้ภาพ 5 มุม → เก็บเป็น `assets/heroes/jaguar/view_S|SE|E|NE|N.webp` → ตัดภาพตั้งต้น `jaguar_1_S.png … jaguar_5_N.png` (`tools/dir8cut.py startv`, คำสั่งอยู่ในไฟล์คลิป) ส่งให้เจ้าของ → พรอมต์คลิป 20 ตัว (ยืน · เดิน · ฟันไขว้ · ชูมีด × 5 ทิศ) อยู่ใน `JAGUAR_CLIP_PROMPTS_TH.md` แล้ว (สร้างจาก `python3 tools/clip_prompts.py jaguar`)
+
+### ในเกมตอนนี้
+ยังเป็นสไปร์ทลุคเดิม (คลิปเคลื่อนไหวครบทุกท่า) · ไม่ทำสไปร์ทชั่วคราวจากภาพนิ่งแบบฮิปโป เพราะจะเสียท่าทางที่มีอยู่ · เปลี่ยนทีเดียวตอนคลิปใหม่มา
+
+### ขั้น 3 เป็นต้นไป
+3. **สไปร์ทจากคลิป** — `cliphero.py` เขียนทับ `assets_jaguar.js` (prefix JAG) เวลาเฟรมเท่า atlas เดิมทุกทิศ = ดาเมจ / จังหวะไม่เปลี่ยน · ตารางเวลาเฟรม + โน้ต socket มีดอยู่ท้าย `JAGUAR_CLIP_PROMPTS_TH.md` · วัด CHAR_SCALE.jaguar ใหม่ (ตอนนี้ .94)
+4. **ภาพประกอบตัว** — หน้า HUD (ตัดหัวจากภาพหน้าตรง) · ภาพหน้าเลือกตัวใหม่ (`assets/heroes/jaguar/select.webp`) · ชื่อ 'Black Jaguar' เปลี่ยนเป็น 'Eclipse Jaguar' ได้ถ้าเจ้าของต้องการ
+5. **ทีหลัง** — ไอคอนสกิล 53 + สกิลเสริม 10 และพื้นหลังผังสกิล 4 ภาพตามลุคใหม่ · ภาพเอฟเฟกต์ 36 ภาพ (โทนแดง / ม่วง / ทองยังเข้ากัน) · ท่านั่ง 8 ทิศ

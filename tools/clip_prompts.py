@@ -22,11 +22,11 @@ def facing(d, P, p, pos):
 
 NOFX = "No shadow, no flash, no glow, no sparkles, no particles, no smoke, no magic effects, no text."
 
-def tail(P, pos, weapon, nofx=None):
+def tail(P, pos, weapon, nofx=None, inframe=None):
     return ("Keep the exact look of the picture: hand-painted chibi cartoon, thick dark-brown outlines, flat cel shading — "
             "not realistic, not 3D. The background stays plain flat green for the whole clip. The camera never moves or zooms. "
-            f"{P} stays in the middle of the frame at the same size and never turns to another direction; {pos} whole body "
-            f"and the whole {weapon} stay inside the frame. " + (nofx or NOFX))
+            f"{P} stays in the middle of the frame at the same size and never turns to another direction; "
+            + (inframe or f"{pos} whole body and the whole {weapon} stay inside the frame.") + " " + (nofx or NOFX))
 
 HEROES = {
  'sheep': dict(
@@ -182,8 +182,8 @@ V=assets/heroes/bastet; python3 -I tools/dir8cut.py startv <โฟลเดอ�
  'hippo': dict(
   title="ฮิปโป ลุคใหม่ (Hapi · องครักษ์ทาเวเรต · Taweret's Guardian)",
   who='the chubby little hippo guardian in this picture', P='He', p='he', pos='his', weapon='mace and the whole shield',
-  face="Keep his face exactly as in the picture: the same big brown eyes, the same rosy cheeks, the two small rounded "
-       "tusks and the same friendly, confident smile, mouth closed.",
+  face="Keep his face exactly as in the picture: the same big brown eyes under the same bold, determined brows, the same "
+       "rosy cheeks, the two small rounded tusks and the same confident smile, mouth closed.",
   back_face={'NE': "We see him mostly from behind: the back of his round head with the gold headband and the two small horns, "
                    "one small round ear and only the edge of his cheek and snout, as in the picture; his face never turns "
                    "toward us.",
@@ -227,16 +227,16 @@ V=assets/heroes/bastet; python3 -I tools/dir8cut.py startv <โฟลเดอ�
   header="""เจ้าของเลือกแบบ 4 'องครักษ์ทาเวเรต' 2026-11-24 13:30 ("เอาตัวนี้ ขอพรอมต์ให้ทำแบบแยกท่าทางด้วย") · ชีต `assets/heroes/hippo/sheet_taweret.webp` · หน้าตา + พรอมต์ภาพยืน 5 มุม: `HIPPO_LOOK_PROMPTS_TH.md` หัวข้อ 'เลือกแล้ว'
 
 ## ลำดับงาน
-1. **ภาพยืน 5 มุม** (ยังไม่มี) — เจ้าของเจนจากพรอมต์ใน `HIPPO_LOOK_PROMPTS_TH.md` → เก็บเป็น `assets/heroes/hippo/view_S|SE|E|NE|N.webp` (ต้นฉบับพื้นเขียว)
+1. **ภาพยืน 5 มุม** ✓ มาแล้ว 2026-11-24 13:53 (เจนจากพรอมต์ใน `HIPPO_LOOK_PROMPTS_TH.md`) → `assets/heroes/hippo/view_S|SE|E|NE|N.webp` (ต้นฉบับพื้นเขียว 1254×1254 ทุกมุมหันขวาแล้ว ไม่ต้องกลับด้าน) · มาพร้อมภาพท่าพิเศษ 2 ภาพ (`pose_jump.webp` กระโดดทับ · `pose_gulp.webp` ดูด) ใช้ในเกมเป็นสไปรต์ ไม่เกี่ยวกับคลิป
 2. **ภาพตั้งต้น** — ตัดจากภาพ 5 มุม (คำสั่งข้างล่าง) ส่งกลับเป็น `hippo_1_S.png … hippo_5_N.png` (ไม่เก็บในรีโป สร้างใหม่ได้ทุกเมื่อ)
 3. **คลิป 20 ตัว** — พรอมต์ในไฟล์นี้ แนบภาพตั้งต้นของทิศนั้นทุกคลิป
 
 ## ภาพตั้งต้น
-- `hippo_<n>_<ทิศ>.png` 900×900 สี่เหลี่ยม แบบบาสเต็ด · ฮิปโปเตี้ยและกว้าง (รวมกระบอง + โล่ กว้างพอๆ กับสูง) → ตัวสูง ~500 (55 % ของกรอบ) ให้เหลือข้างละ ≥ 0.35 เท่าตัวไว้เหวี่ยงกระบอง และเหนือหัว ≥ 0.5 เท่าตัวไว้ชูกระบอง → ในคลิป 480p ตัวสูง ~270 px · ตัวเลขจริงตัดสินตอนได้ภาพ (startv พิมพ์ระยะว่างทุกด้านให้ดู)
+- `hippo_<n>_<ทิศ>.png` 900×900 สี่เหลี่ยม แบบบาสเต็ด · ตัวสูง 520 (58 % ของกรอบ) เท้าที่ 90 % → เหนือหัวว่าง 0.52–0.56 เท่าตัวไว้ชูกระบอง ข้างละ 0.38–0.50 เท่าตัวไว้เหวี่ยง → ในคลิป 480p ตัวสูง ~280 px (แกะ 240 · บาสเต็ด 290)
 ```
-V=assets/heroes/hippo; python3 -I tools/dir8cut.py startv <โฟลเดอร์> S=$V/view_S.webp SE=$V/view_SE.webp E=$V/view_E.webp NE=$V/view_NE.webp N=$V/view_N.webp size=900 feet=.88 ht=500 clean=0
+V=assets/heroes/hippo; python3 -I tools/dir8cut.py startv <โฟลเดอร์> S=$V/view_S.webp SE=$V/view_SE.webp E=$V/view_E.webp NE=$V/view_NE.webp N=$V/view_N.webp size=900 feet=.9 ht=520 clean=0
 ```
-→ start_<ทิศ>.png → ตั้งชื่อใหม่ hippo_1_S … hippo_5_N · ทุกทิศใช้สเกลของมุมหน้า (ถ้าภาพ 5 มุมวาดตัวมาไม่เท่ากัน ต้องปรับทีละภาพก่อน) · มุมที่วาดหันซ้ายมา ใส่ `:flip` (กระบองจะสลับไปอีกมือในมุมนั้น รับได้) · clean=0 = ไม่ทาจุดเขียวในตัว (ชุดไม่มีสีเขียว เขียวอมฟ้าบนชีต ≈ RGB 50,154,156 น้ำเงิน ≥ เขียว ไม่โดนตัด ช่องว่างระหว่างแขนกับตัวเป็นพื้นหลังจริง)
+→ start_<ทิศ>.png → ตั้งชื่อใหม่ hippo_1_S … hippo_5_N · ทุกทิศใช้สเกลของมุมหน้า (ภาพ 5 มุมวาดตัวสูงต่างกันแค่ ≤ 3 % ใช้ได้เลย) · clean=0 = ไม่ทาจุดเขียวในตัว (ชุดไม่มีสีเขียว เขียวอมฟ้าบนชีต ≈ RGB 50,154,156 น้ำเงิน ≥ เขียว ไม่โดนตัด ช่องว่างระหว่างแขนกับตัวเป็นพื้นหลังจริง)
 
 ## วิธีใช้
 แนบภาพตั้งต้นของทิศนั้น + วางพรอมต์ทีละตัว → 4 คลิปต่อทิศ (ยืน · เดิน · ตี · ชูกระบอง) · คลิปละ 3–5 วิ · ไม่ต้องทำทิศซ้าย (เกมกลับด้านเอง) · ส่งกลับเรียง S → SE → E → NE → N ทิศละ ยืน → เดิน → ตี → ชูกระบอง (สลับได้ ดูเองว่าคลิปไหนเป็นท่าอะไร)
@@ -254,10 +254,94 @@ V=assets/heroes/hippo; python3 -I tools/dir8cut.py startv <โฟลเดอร
 - ตัดด้วย `tools/cliphero.py` + แผนใหม่ `tools/clips/hippo_plan.json` (ดู `tools/clips/sheep_plan.json`: loop, เลือกเฟรมเลี่ยงฝุ่น / แสงที่โมเดลแอบใส่, flipDirs ถ้ามีคลิปหันผิดฝั่ง, perDir ถ้าคลิปบางทิศถ่ายมาเล็ก / ใหญ่กว่า) → เขียนทับ `assets_hippo.js` ด้วย prefix เดิม HIP (index.html สลับ atlas ด้วย HIP_ART อยู่แล้ว) · แก้ขนาดไฟล์ในตาราง MB ของหน้าโหลด + ใส่ ?v= ให้ assets_hippo.js
 - เวลาเฟรมตี / ชูกระบองใช้ของสไปรต์ชั่วคราวเดิม (statichero): attack 12 เฟรม [60 × 8, 70, 80, 90, 100] contact 8 · buff 12 × 80 peak 7 (idle / walk ไม่กระทบดาเมจ) → จังหวะโดน / ปล่อยสกิลเท่าเดิม bench ไม่เปลี่ยน · เช็ก `python3 tools/fxlab.py hits hippo` ก่อน / หลัง
 - ใครใช้เฟรมไหน (char_hippo.js): ตีปกติ = attack ตั้งแต่ contact−3 · hSlam (Belly Flop, Bounce Slam, Sky Belly, Double Drop, Mountain Drop, Meteor Belly, ตัวจบคอมโบ) = ค้างเฟรม buff peak ตอนย่อ + ลอย แล้ว attack ตั้งแต่ contact ตอนลงพื้น · hBurst (Yawn, Feast, Gulp, Burp, Ward, Ground Pound, Gobble) + สกิลสาย B ทั้งหมด = buff · Waddle Rush = walk ×3 · Rolling Hippo / Submerge = ค้าง hurt เฟรม 2 (cliphero ทำ hurt จากเฟรมแรกของ idle)
-- ทีหลังถ้าเจ้าของอยากได้: ชีตท่ากระโดดทับ 8 เฟรมมุมเดียว (แบบท่ากระโดดทุบของลิง / ท่าชาร์จของแมว → `tools/sheet_state.py`) แทนการค้างเฟรมชูกระบองใน hSlam
+- ท่ากระโดดทับ + ท่าดูด = ภาพนิ่งของเจ้าของ 2 ภาพ (`pose_jump.webp` / `pose_gulp.webp`) เป็น state 'jump' / 'gulp' ใน atlas (`tools/sheet_state.py tools/clips/hippo_jump.json` / `hippo_gulp.json`) → **atlas ใหม่จากคลิปต้องรัน 2 สเปกนี้ซ้ำ** (cell 720×540 ของ cliphero: ปรับ scale ในสเปกให้ตัวสูงเท่าท่ายืนของ atlas ใหม่)
 - วัด CHAR_SCALE.hippo ใหม่ (ตอนนี้ 1.39 = สไปรต์ชั่วคราว) ให้ยืนสูงเท่าหมาป่า · ตัวโตตามเกจความอิ่มใช้ hSize() ขยายทั้งตัว (+4 % ทุก 20 อิ่ม) — ภาพ 3 ขนาดมุมขวาล่างของชีตเป็นแค่แบบ
 - หน้า HUD = ตัดหัวจาก view_S ผ่าน window.HUD_FACE (แบบแกะ / ลิง) · หน้าเลือกตัว = `assets/heroes/hippo/select.webp` (`tools/select_cut.py` + เพิ่มใน SELA ของ char_create.js; ตอนนี้เป็นพื้นหลังทรีลุคเก่าในวงมัว)
 - ยังเป็นลุคเก่า: ไอคอนสกิล 49 + สกิลเสริม 16, พื้นหลังทรี 4 ภาพ · ยังไม่มี: ท่านั่ง (hero_sit.js)"""),
+ 'jaguar': dict(
+  title='เสือจากัวร์ ลุคใหม่ (นางระบำสุริยคราส · Eclipse Dancer)',
+  who='the little jaguar dancer girl in this picture', P='She', p='she', pos='her', weapon='daggers',
+  face="Keep her face exactly as in the picture: the same big golden-amber eyes, both open, the same small cat nose and "
+       "the same sweet, confident smile, mouth closed.",
+  back_face={'NE': "We see her mostly from behind: the back of her head with the high ponytail, one round ear, the sun-disc "
+                   "ornament and only the edge of her cheek, as in the picture; her face never turns toward us.",
+             'N': "We only see the back of her head: her long dark-chocolate hair falling down her back and the backs of "
+                  "her two round spotted ears, as in the picture; her face never turns toward us."},
+  keep={d: ("The gold sun-disc ornament on the side of her head with its little fan of scarlet and turquoise feathers and its "
+            "gold bell pendant, her gold hoop earrings, the gold collar with its turquoise gem, the black crop top, the "
+            "crimson-and-cream skirt with gold borders, the curved black obsidian daggers with gold crescent guards and her "
+            "long spotted tail stay exactly the same.") for d in ('S', 'SE', 'E')}
+       | {d: ("The gold sun-disc ornament with its feathers, her long dark-chocolate ponytail, the crimson-and-cream skirt "
+              "with gold borders, the curved black obsidian daggers with gold crescent guards and her long spotted tail "
+              "stay exactly the same.") for d in ('NE', 'N')},
+  spos=dict.fromkeys(DIRS, 'low at her sides'),
+  blink=", her round ears twitch once, and she blinks once",
+  vis=" Both daggers stay visible beside her body during the whole slash.",
+  fmt={'chin': (', lifting her chin proudly', '')},
+  inframe="her whole body, both daggers, all of her long hair and her tail stay inside the frame.",
+  nofx="No shadow, no flash, no glow, no sparkles, no particles, no smoke, no slash trails, no colour streaks, no magic "
+       "effects, no text.",
+  act={
+   'idle': "Idle loop of {who}. {facing} She stands light on her feet like a dancer, one obsidian dagger in each hand held "
+           "{spos}, and breathes slowly; her long ponytail, the feathers of her headpiece, her skirt and the crimson sash "
+           "sway a little and her tail swishes slowly from side to side{blink}. The last frame matches the first frame so "
+           "the clip loops.",
+   'walk': "Walk loop of {who}. {facing} She walks in place, like on a treadmill, toward the way she is facing: light, "
+           "graceful dancer's steps on the balls of her feet (about two steps per second) with a small sway of her hips, the "
+           "daggers held {spos} swinging a little with her arms, her ponytail and skirt bouncing and her tail swaying "
+           "behind her. She does not move across the frame and the ground does not move. The last frame matches the first "
+           "frame so the clip loops.",
+   'attack': "Attack of {who}. {facing} She pulls both daggers back beside her shoulders in a short wind-up, then slashes "
+             "them forward across each other in a fast X in front of her toward the way she is facing, holds the crossed "
+             "finish for an instant, then returns to her starting pose and stands still for the rest of the clip. The whole "
+             "slash takes about one second. Her feet stay in place.{vis} Clean outlines in every frame, no motion blur; the "
+             "blades never leave a trail of light or colour.",
+   'buff': "Spell cast of {who}. {facing} She raises one dagger high above her head, the blade pointing to the sky, and "
+           "holds the other dagger low behind her{chin}; she holds that pose still for about one second, then lowers the "
+           "raised dagger back down to her side, returns to her starting pose and stands still for the rest of the clip. Her feet "
+           "stay in place. The raised dagger stays inside the frame. Clean outlines in every frame, no motion blur."},
+  dirname={'S': 'หน้าตรง', 'SE': 'เฉียงหน้า หันขวา', 'E': 'ข้าง หันขวา', 'NE': 'เฉียงหลัง หันขวา', 'N': 'หลัง'},
+  actname={'idle': 'ยืน (idle · วนลูป)', 'walk': 'เดิน (walk · วนลูป · Blood Chase ก็ใช้คลิปนี้)',
+           'attack': 'ฟันไขว้ (attack · ตีปกติ + สกิลฟันมีดทั้งสาย A และ B + Jaguar Cyclone + จังหวะลงฟันของ Predator Drop)',
+           'buff': 'ชูมีด (buff · บัฟ / เวท / อัลติ / ปัดป้อง + ตอนลอยของ Predator Drop — เกมค้างเฟรมชูมีดตอนร่ายยาว)'},
+  start='jaguar_{n}_{d}.png',
+  header="""เจ้าของเลือกแบบ 1 'นางระบำสุริยคราส' 2026-11-24 14:28 ("ชอบแบบนี้") · ชีต `assets/heroes/jaguar/sheet_eclipse_dancer.webp` · หน้าตา + พรอมต์ภาพยืน 5 มุม: `JAGUAR_LOOK_PROMPTS_TH.md` หัวข้อ 'เลือกแล้ว'
+
+## ลำดับงาน
+1. **ภาพยืน 5 มุม** (รอ) — เจนจากพรอมต์ใน `JAGUAR_LOOK_PROMPTS_TH.md` → เก็บเป็น `assets/heroes/jaguar/view_S|SE|E|NE|N.webp`
+2. **ภาพตั้งต้น** — ตัดจากภาพ 5 มุม (คำสั่งข้างล่าง) ส่งกลับเป็น `jaguar_1_S.png … jaguar_5_N.png` (ไม่เก็บในรีโป สร้างใหม่ได้ทุกเมื่อ)
+3. **คลิป 20 ตัว** — พรอมต์ในไฟล์นี้ แนบภาพตั้งต้นของทิศนั้นทุกคลิป
+
+## ภาพตั้งต้น
+- `jaguar_<n>_<ทิศ>.png` 900×900 สี่เหลี่ยม แบบฮิปโป / บาสเต็ด · ตัวสูง ~520 (58 % ของกรอบ วัดจากยอดหางม้าถึงเท้า) เท้าที่ 90 % → เหนือหัวว่าง ~0.55 เท่าตัวไว้ชูมีด ข้างละ ~0.5 เท่าตัวไว้ฟันไขว้ → ในคลิป 480p ตัวสูง ~280 px · ผมเธอฟูยาว: ถ้ามุมข้างผมล้นกรอบให้ลด ht
+```
+V=assets/heroes/jaguar; python3 -I tools/dir8cut.py startv <โฟลเดอร์> S=$V/view_S.webp SE=$V/view_SE.webp E=$V/view_E.webp NE=$V/view_NE.webp N=$V/view_N.webp size=900 feet=.9 ht=520 clean=0
+```
+→ start_<ทิศ>.png → ตั้งชื่อใหม่ jaguar_1_S … jaguar_5_N · ทุกทิศใช้สเกลของมุมหน้า · clean=0 = ไม่ทาจุดเขียวในตัว (ช่องระหว่างแขน มีด ผม เป็นพื้นหลังจริง)
+- สีเทอร์ควอยซ์บนชีต ≈ RGB 56,180,174 = เขียวเกินน้ำเงินนิดหน่อย (ฮิปโป 50,154,156 น้ำเงิน ≥ เขียว) → พรอมต์ภาพยืนสั่ง 'ฟ้าเทอร์ควอยซ์ น้ำเงินมากกว่าเขียวนิดๆ' · คีย์ของ cliphero ทนเขียวเกินได้ ~18 แล้ว despill ดันกลับเป็นฟ้า — ภาพยืนที่ออกเขียวกว่านี้ (ขนนก พลอย ลูกปัด) ให้แก้ก่อนทำคลิป
+
+## วิธีใช้
+แนบภาพตั้งต้นของทิศนั้น + วางพรอมต์ทีละตัว → 4 คลิปต่อทิศ (ยืน · เดิน · ฟันไขว้ · ชูมีด) · คลิปละ 3–5 วิ · ไม่ต้องทำทิศซ้าย (เกมกลับด้านเอง) · ส่งกลับเรียง S → SE → E → NE → N ทิศละ ยืน → เดิน → ฟันไขว้ → ชูมีด (สลับได้ ดูเองว่าคลิปไหนเป็นท่าอะไร)
+
+## กติกาที่อยู่ในทุกพรอมต์ (บทเรียนจากคลิปลิง / แอคโซลอเติล / มังกร / แกะ)
+- ประโยคบอกทิศขึ้นต้นทุกพรอมต์ กันโมเดลหมุนตัวหันหากล้อง (มุมหลังโดนบ่อย)
+- ล็อกหน้า (ตาทองอำพันโต ลืมทั้งสองข้าง จมูกแมว ยิ้มหวานมั่นใจ ปากปิด — บนชีตภาพใหญ่ขยิบตาอ้าปาก ห้ามติดมา) ในมุมที่เห็นหน้า · มุมหลัง (NE, N) ใช้ประโยค 'เห็นแค่หลังหัว หน้าไม่หันมา' แทน ไม่มีกะพริบตา ไม่มีเชิดคาง
+- ล็อกของติดตัว: จานสุริยะทอง + พัดขนนกแดง / ฟ้า + กระดิ่งทอง · ต่างหูห่วงทอง · สร้อยคอทองพลอยเทอร์ควอยซ์ · เสื้อดำ · กระโปรงแดง–ครีมขอบทอง · มีดออบซิเดียนการ์ดเสี้ยวจันทร์ทอง · หางลายจุด
+- เดินอยู่กับที่แบบลู่วิ่ง ก้าวเบาแบบนักเต้น ~2 ก้าว/วิ สะโพกส่ายนิดๆ (คลิปเดินช้าจะไถลพื้น)
+- ฟันไขว้ = ท่าเดียวกันทุกทิศ: ง้างมีดสองเล่มข้างไหล่ แล้วฟันไขว้เป็นรูป X ไปข้างหน้า ค้างนิดนึง แล้วยืนนิ่งจนจบคลิป · มุมหลังสั่งให้มีดยังเห็นข้างตัว (ไม่งั้นโดนตัวบัง)
+- ชูมีด = ชูมีดเล่มหนึ่งเหนือหัว ใบชี้ฟ้า อีกเล่มลดต่ำไว้ข้างหลัง (มุมหน้าเชิดคางนิดๆ) ค้างนิ่ง ~1 วิ แล้วกลับท่าเดิม — เกมค้างเฟรมนี้ตอนร่ายยาว และตอนลอยของ Predator Drop ก่อนลงฟัน · บนชีตท่าเวทยกมือเปล่า แต่ในคลิปมีดต้องอยู่ในมือทั้งสองเล่มตลอด จึงชูมีดแทน
+- ห้ามเบลอ · ห้ามรอยฟันสีแดง / แสงที่ใบมีด / ดวงอาทิตย์ดำ / ควันม่วงแบบในชีต (เอฟเฟกต์ใส่ด้วยโค้ดในเกม) · กล้องนิ่งไม่ซูม · พื้นเขียวตลอด · ตัว + มีดสองเล่ม + ผม + หางอยู่ในกรอบตลอด
+- ไม่ระบุมือซ้าย / ขวาในพรอมต์คลิป (ภาพตั้งต้นบอกเองว่าอะไรอยู่ฝั่งไหน)""",
+  footer="""## ตอนคลิปมาถึง (โน้ตสำหรับแชตที่ทำต่อ)
+- ตัดด้วย `tools/cliphero.py` + แผนใหม่ `tools/clips/jaguar_plan.json` (ดู `tools/clips/sheep_plan.json` / `wukong_plan.json`: loop ช่วงที่ลืมตา, เลือกเฟรมเลี่ยงแสง / รอยฟันที่โมเดลแอบใส่, flipDirs ถ้ามีคลิปหันผิดฝั่ง, perDir ถ้าคลิปบางทิศถ่ายมาเล็ก / ใหญ่กว่า) → เขียนทับ `assets_jaguar.js` ด้วย prefix เดิม JAG (index.html สลับ atlas ด้วย JAG_ART อยู่แล้ว atkRemap {}) · แก้ขนาดไฟล์ในตาราง MB ของหน้าโหลด + ใส่ ?v= ให้ assets_jaguar.js
+- **เวลาเฟรมต้องเท่า atlas เดิมทุกทิศ** (ลุคเดิมจากคลิป) → จังหวะโดน / ปล่อยสกิลเท่าเดิม bench ไม่เปลี่ยน · เช็ก `python3 tools/fxlab.py hits jaguar` ก่อน / หลัง:
+  - attack 12 เฟรม 900 ms · N [110,120,50,50,70,50,120,70,50,50,50,110] contact 6 (โดนที่ 450 ms) · NE = E [80,50,50,100,50,120,60,120,50,50,50,120] contact 6 (450) · SE [50,50,190,70,90,50,50,50,50,50,90,110] contact 4 (360) · S [80,50,90,50,50,50,70,200,50,50,50,110] contact 6 (370)
+  - buff · N 12 เฟรม [130,50,50,50,50,110,260,450,60,50,50,90] peak 7 (700 ms) · NE [80,60,50,50,50,50,120,160,480,60,60,180] peak 7 (460) · E [70,50,50,50,50,70,170,580,50,50,50,160] peak 7 (510) · SE **6 เฟรม** × 220 peak 3 (660) · S [170,50,50,230,50,110,390,50,50,50,50,150] peak 7 (1,050)
+  - walk 8 × 100 (E [110,90,90,110,110,90,90,110]) · idle 12 เฟรม 2.4 วิ · hurt 7 เฟรม 550 ms
+- sockets: atlas เดิมมีตำแหน่งมีดจริงทุกเฟรม (head / grip ของท่าตี + ร่าย) · cliphero ทำ socket สังเคราะห์ → ทำ socket ปลายมีดใหม่ (orbFix / orbLerp อ่านด้วยตา หรือหาใบมีดดำ) แล้วเช็กว่ารอยฟัน / ประกายของ char_jaguar_fx.js ยังอยู่ที่มีด
+- วัด CHAR_SCALE.jaguar ใหม่ (ตอนนี้ .94 = คลิปลุคเดิม) ให้ยืนสูงเท่าหมาป่า
+- หน้า HUD = ตัดหัวจาก view_S ผ่าน window.HUD_FACE (แบบแกะ / ลิง / ฮิปโป) · หน้าเลือกตัว = `assets/heroes/jaguar/select.webp` ใหม่จาก view_SE (`tools/select_cut.py`; ตอนนี้เป็นลุคเดิม) · ชื่อในหน้าเลือกตัวยังเป็น 'Black Jaguar' (char_create.js) — เจ้าของจะเปลี่ยนเป็น 'Eclipse Jaguar' หรือไม่ ยังไม่ได้ถาม
+- ยังเป็นลุคเก่า: ไอคอนสกิล 53 + สกิลเสริม 10, พื้นหลังผังสกิล 4 ภาพ, ภาพเอฟเฟกต์ 36 ภาพ · ยังไม่มี: ท่านั่ง (hero_sit.js)"""),
 }
 
 def build(h, d, a):
@@ -266,7 +350,7 @@ def build(h, d, a):
     txt = H['act'][a].format(who=H['who'], facing=facing(d, H['P'], H['p'], H['pos']), spos=H['spos'][d],
                              blink='' if back else H['blink'], vis=H['vis'] if back else '', **ex)
     face = H['back_face'][d] if back else H['face']
-    return ' '.join([txt, face, H['keep'][d], tail(H['P'], H['pos'], H['weapon'], H.get('nofx'))])
+    return ' '.join([txt, face, H['keep'][d], tail(H['P'], H['pos'], H['weapon'], H.get('nofx'), H.get('inframe'))])
 
 def doc(h):
     H = HEROES[h]

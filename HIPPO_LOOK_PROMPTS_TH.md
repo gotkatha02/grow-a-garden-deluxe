@@ -84,7 +84,8 @@ Design 5 — a mix: the lotus flower and colours of design 1 with the outfit, sh
 
 **บนชีตต้องระวัง:** ภาพหมุนรอบตัวไม่ถือกระบองกับโล่ · ภาพข้างหันซ้าย · ภาพใหญ่คิ้วขมวดดุนิดๆ แถวล่างหัวเราะอ้าปาก → พรอมต์ภาพ 5 มุมสั่งให้ถืออาวุธครบทุกภาพ บอกทิศชัดๆ ยิ้มมั่นใจปากปิด · ไม่มีสีเขียวแท้ในตัว: เขียวอมฟ้าบนชีต ≈ RGB 50,154,156 (น้ำเงิน ≥ เขียว) ตัดพื้นเขียวได้ มีแค่ไฮไลต์บนพลอยที่อมเขียวนิดๆ
 
-### ขั้น 1 — ภาพยืน 5 มุม ภาพละมุม พื้นเขียว (ตอนนี้)
+### ขั้น 1 — ภาพยืน 5 มุม ภาพละมุม พื้นเขียว ✓ มาแล้ว 2026-11-24 13:53
+เจ้าของส่งครบ 5 มุม (1254×1254 ทุกมุมหันขวาถูก กระบองมือขวา โล่แขนซ้าย หน้าคิ้วขมวดยิ้มมั่นใจ) + ภาพท่าพิเศษอีก 2 ภาพ: "สไปร้2สุดท้ายเอาไว้ตอนท่ากระโดดทับกับท่าดูด" → เก็บ `view_S|SE|E|NE|N.webp`, `pose_jump.webp`, `pose_gulp.webp` ใน assets/heroes/hippo/ (สิ่งที่ทำต่อ: ขั้น 2 และ 'ในเกมตอนนี้' ข้างล่าง)
 วิธีใช้: ส่งต่อในแชต ChatGPT เดิมที่เจนชีตนี้ (มันจำตัวได้) แนบชีตนี้ไปกับพรอมต์ 0 อีกครั้ง · ถ้าเปิดแชตใหม่ แนบชีตนี้ + ภาพปกแคมป์ไฟ · พรอมต์ 0 → มันตอบ ready → ส่งภาพ 1–5 ทีละข้อความ (ข้อความละ 1 ภาพ) · ครบแล้วส่ง 5 ภาพมา
 
 ทำไมแยกภาพละมุม: ภาพใหญ่ = รายละเอียดชัดในคลิป · ทุกภาพท่ายืนเดียวกัน ขนาดเท่ากัน อาวุธมือเดิม (กระบองมือขวา โล่แขนซ้าย) และบอกว่ากระบอง / โล่ต้องอยู่ฝั่งไหนของภาพ (กันสลับมือ) · มุมไหนหันซ้ายมาไม่ต้องแก้ ผมกลับด้านให้ (กระบองจะไปอยู่อีกมือในมุมนั้น รับได้)
@@ -129,9 +130,53 @@ Picture 4 — BACK THREE-QUARTER view: he is turned away from us, facing up and 
 Picture 5 — BACK view: his back faces us. We see the back of his round head with the gold headband and the two horns, the backs of his ears, and the crocodile-tail cape covering his back with its row of cream spikes; no face. The mace is on the right side of the picture, the back of the shield on the left side.
 ```
 
-### ขั้น 2 — ภาพตั้งต้น + คลิปท่า 20 ตัว
+### ขั้น 2 — ภาพตั้งต้น + คลิปท่า 20 ตัว (ส่งแล้ว 2026-11-24 รอคลิป)
 ได้ภาพ 5 มุม → เก็บเป็น `assets/heroes/hippo/view_S|SE|E|NE|N.webp` → ตัดภาพตั้งต้น `hippo_1_S.png … hippo_5_N.png` (tools/dir8cut.py startv) ส่งให้เจ้าของ → พรอมต์คลิป 20 ตัว (ยืน · เดิน · ตี · ชูกระบอง × 5 ทิศ) เขียนไว้แล้วใน `HIPPO_CLIP_PROMPTS_TH.md` (สร้างจาก `python3 tools/clip_prompts.py hippo`)
 
+### ในเกมตอนนี้ (2026-11-24) — ก่อนคลิปมา
+- สไปรต์ชั่วคราวลุคใหม่: `assets_hippo.js` สร้างใหม่ด้วย `tools/statichero.py` จากภาพ 5 มุม (ต่อกันเป็นแผ่นเดียว ขนาดตัวเท่ากัน สูง 230 ใน cell เท่าตัวเดิม) เวลาเฟรมเท่าเดิมทุกท่า → จังหวะโดน / bench ไม่เปลี่ยน (fxlab hits เท่าเดิมทุกสกิล) · CHAR_SCALE.hippo 1.39 เท่าเดิม
+- ท่ากระโดดทับ = state 'jump' (3 เฟรมจากภาพเดียว: ลอยขึ้น · จุดสูงสุด · ตกลง) เล่นตอนลอยของทุกท่าใน hSlam (Belly Flop, Bounce Slam, Sky Belly, Double Drop, Mountain Drop, Meteor Belly, ตัวจบคอมโบ) · ท่าดูด = state 'gulp' (3 เฟรม: ปกติ · พองลม · พองสุด) เล่นตอน Gulp และ Gobble Up (ดูดจนถึงจังหวะฮุบ แล้วยุบกลับ) · ภาพนิ่งหันขวาเฉียงลง (SE) กลับด้านเป็น SW เมื่อท่าไปทางซ้าย · `?hpose=0` = แบบเดิม
+- หน้า HUD ใหม่ (`face.webp` ตัดจากภาพหน้าตรง) · หน้าเลือกตัวมีภาพเต็มตัวแล้ว (`select.webp` จากภาพเฉียงหน้า)
+
 ### ขั้น 3 เป็นต้นไป
-3. สไปร์ทใหม่ (cliphero.py เขียนทับ assets_hippo.js เวลาตีเท่าเดิม = ดาเมจ / จังหวะไม่เปลี่ยน) + หน้า HUD + ภาพหน้าเลือกตัว — โน้ตละเอียดท้าย `HIPPO_CLIP_PROMPTS_TH.md`
-4. ทีหลัง: ไอคอนสกิล 49 + สกิลเสริม 16 และพื้นหลังผังสกิล 4 ภาพ (ตอนนี้ลุคเดิม) · ท่านั่ง · ชีตท่ากระโดดทับ 8 เฟรมมุมเดียว (แทนเฟรมชูกระบองค้างตอนลอยในท่ากระโดดทับ) · หมวกแฟชั่นใส่ง่ายขึ้น (บนหัวมีแค่คาดผม + เขาเล็ก)
+3. สไปร์ทจากคลิป (cliphero.py เขียนทับ assets_hippo.js เวลาตีเท่าเดิม = ดาเมจ / จังหวะไม่เปลี่ยน) แล้วรันสเปกท่ากระโดดทับ / ท่าดูดซ้ำ — โน้ตละเอียดท้าย `HIPPO_CLIP_PROMPTS_TH.md`
+4. ทีหลัง: ไอคอนสกิล 49 + สกิลเสริม 16 และพื้นหลังผังสกิล 4 ภาพ (ตอนนี้ลุคเดิม) · ท่านั่ง · หมวกแฟชั่นใส่ง่ายขึ้น (บนหัวมีแค่คาดผม + เขาเล็ก)
+
+## ภาพหน้าเลือกตัว — ท่ามีชีวิตชีวา (2026-11-24 14:33)
+เจ้าของ: "ขอพรอมต์ทำภาพเอาไว้ใส่หน้านี้หน่อย เป็นแบบตัวละครทำท่าไรซักอย่างให้มันมีชีวิตชีวา แบบนี้" + ภาพหน้าเลือกตัว (ตอนนี้ฮิปโปเป็นภาพยืนเฉียงหน้าที่ตัดจาก view_SE) + ภาพตัวอย่างเสือจากัวร์สาวลุคใหม่ (กระโดดเต้นขาเดียว กางแขน ขยิบตา ถือมีดคู่)
+
+วิธีใช้: ส่งต่อในแชต ChatGPT เดิมที่วาดฮิปโป แนบชีตฮิปโป (แบบ 4) + ภาพปกแคมป์ไฟไปกับพรอมต์ 0 → มันตอบ ready → ส่งท่าที่ชอบ 1 ข้อความ = 1 ภาพ (ลองหลายท่าแล้วเลือกได้) · ไม่แนบภาพเสือ (บอกท่าเป็นคำแทน กันมันเอาขนนก / ผมเสือมาใส่ฮิปโป)
+
+หน้าเลือกตัวต้องการ: ตัวเดียว เต็มตัว ไม่มีพื้น / เงา / ฉาก / เอฟเฟกต์ (เวทีวาดเงาพื้น + แสงหลังให้เอง) · พื้นหลังโปร่งใส (ทำไม่ได้ใช้เขียวล้วน) · ภาพแนวตั้ง · ท่าสูงมากกว่ากว้าง (เวทีย่อภาพตามความกว้าง ท่ากางแขนขาออกข้างกว้างๆ ตัวจะเล็กลง) · หันขวาเข้าหาการ์ดข้อมูล
+
+แก้ภาพ (ส่งต่อท้าย): `Make the pose more dynamic and bouncy, full of joy.` · `Redraw with the whole hippo inside the picture and more empty space around him.` · `Make the background transparent.` · หันซ้ายมาไม่ต้องแก้ กลับด้านให้ได้
+
+พอได้ภาพ: `python3 -I tools/select_cut.py assets/heroes hippo=<ไฟล์>` (ภาพ 2:3 / สี่เหลี่ยม / พื้นเขียวก็ได้ ตัดแล้วจัดให้ยืนตำแหน่งเดียวกับตัวอื่น) → ใส่ ?v ใหม่ให้ภาพฮิปโปใน selSrc ของ char_create.js (ตอนนี้ ?v=1 ทุกตัว ไม่งั้นเครื่องที่เคยเปิดจะเห็นภาพเก่าจากแคช) → เช็กหน้าเลือกตัว PC + มือถือ
+
+#### พรอมต์ 0 — กติกา (ส่งครั้งเดียว พร้อมแนบชีต + ภาพปกแคมป์ไฟ)
+```
+Draw a character-select picture of this same hero — the chubby blue-grey hippo guardian on the attached sheet — for my game's hero select screen. Do not draw yet: reply only "ready", then draw one picture each time I send a pose.
+
+The picture:
+- ONE hippo alone, full body, on a transparent background (PNG). No floor, no shadow, no scenery, no frame, no effects, no text, no logo, no watermark. If a transparent background is not possible, use a plain flat pure green background (#00FF00) instead.
+- a tall portrait picture. The whole hero is inside it with a small empty margin on every side — from the tips of his horns to his feet, including the whole mace, the whole shield and the whole crocodile-tail cape — and he fills most of the picture's height.
+- full of life and personality: a dynamic, playful action pose with a clear, readable silhouette, as if he is showing off on a character select screen. Keep the pose tall rather than wide: arms, mace and shield reach up more than far out to the sides.
+- turned three-quarter toward the RIGHT side of the picture.
+- exactly the same character and drawing style as the sheet: friendly hand-painted chibi cartoon, thick clean dark-brown outlines, flat cel shading with 2–3 tones, soft cartoon glow, bright and warm — not realistic, not 3D. Soft blue-grey skin, cream belly and muzzle, rosy cheeks, small round ears with pink insides, big brown eyes, two small rounded cream tusks. The gold headband with the round gold sun disc on his forehead and two small curved cream horns. The short teal cape over his shoulders, fastened on his chest by the little gold hippo-face clasp with two gold tassels, hanging down his back as a crocodile tail with rounded teal scales and a row of cream spikes. Gold armbands with a turquoise stone, wide gold wrist cuffs, a white linen kilt with a gold belt and a teal front flap with a gold wave line, gold paw-shaped anklets. The studded bronze mace (round head with gold studs and turquoise knobs, gold rings on the short handle) in his RIGHT hand and the round shield (bronze rim with turquoise studs, teal face with a gold sun and a gold ankh) on his LEFT forearm. His round belly always free and visible.
+- the teal and turquoise parts stay blue-teal, never green.
+```
+
+#### ท่า 1 — กระโดดดีใจ (แนะนำ ใกล้ภาพเสือที่ส่งมาที่สุด)
+```
+Pose 1 — Victory Hop: he hops up joyfully on one foot, the other leg kicked up behind him, the mace raised high above his head, the shield arm flung up and out, his belly bouncing and the crocodile-tail cape flicking up behind him, a big open-mouth laugh with one eye winking.
+```
+
+#### ท่า 2 — กระทืบแบบซูโม่ (โชว์สายแท้งก์ / ท่ากระแทก)
+```
+Pose 2 — Sumo Stomp: he balances on one leg with the other knee lifted high, about to stomp the ground like a sumo wrestler, the mace swung up over his shoulder, the shield held out in front, his belly puffed out proudly, a fierce but cute grin.
+```
+
+#### ท่า 3 — ควงกระบอง (ขี้เล่น)
+```
+Pose 3 — Mace Twirl: he stands on the tip of one foot with the other leg bent up, twirling the mace high above his head like a baton, the shield arm held out for balance, the cape swirling around him, grinning playfully with his tongue sticking out a little.
+```

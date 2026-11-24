@@ -280,10 +280,19 @@ class HCore{constructor(){this.t=0;this.layer='none';this.tk=0;}draw(){}
 /* =====================================================================
    5. SKILL ACTIONS
    ===================================================================== */
+/* owner's pose pictures 2026-11-24 ('สไปร้2สุดท้ายเอาไว้ตอนท่ากระโดดทับกับท่าดูด') = atlas states 'jump' / 'gulp'
+   (tools/clips/hippo_jump.json / hippo_gulp.json, 3 frames each, one view facing down-right: SE, mirrored to SW when the move
+   goes left). Same frame times as before → every hit / release keeps its time. ?hpose=0 = the old held buff frame. */
+const HPOSE_ON=!/[?&]hpose=0/.test(location.search);
+const hPose=st=>HPOSE_ON&&!!(SPR_META.states&&SPR_META.states[st]);
+const hSide=phi=>Math.cos(phi)>=0?'SE':'SW';
+function hJumpSeq(phi,ms){const d=hSide(phi);return [.34,.3,.36].map((w,f)=>({st:'jump',d,f,ms:ms*w}));}   // rise · apex · fall
+function hGulpPose(a,phi){if(!a||!a.seq||!hPose('gulp'))return a;const T=seqTotal(a.seq)*1000,tp=Math.min(T,(a.windup||0)*1000),r=Math.max(1,T-tp),d=hSide(phi);
+  a.seq=[{st:'gulp',d,f:0,ms:Math.max(1,tp*.3)},{st:'gulp',d,f:1,ms:Math.max(1,tp*.3)},{st:'gulp',d,f:2,ms:Math.max(1,tp*.4)},{st:'gulp',d,f:1,ms:r*.5},{st:'gulp',d,f:0,ms:r*.5}];return a;}
 /* generic body slam: crouch → jump arc (no damage taken in the air) → land */
 function hSlam(o){const sx=player.x,sy=player.y,[tx,ty]=o.to||[sx,sy];const phi=(tx===sx&&ty===sy)?player.phi:Math.atan2(ty-sy,tx-sx);faceTo(phi);
   const d=player.dir,pre=o.pre??.16,air=o.air??.34,H=o.h??70,[dx,dy]=(tx===sx&&ty===sy)?[sx,sy]:hPathEnd(sx,sy,phi,Math.hypot(tx-sx,ty-sy));
-  const s=[...hold('buff',d,bPeak(d),pre*1000),...hold('buff',d,bPeak(d),air*1000),...seq('attack',atkDir(d),CT(atkDir(d)),null,1.4)];
+  const s=[...hold('buff',d,bPeak(d),pre*1000),...(hPose('jump')?hJumpSeq(phi,air*1000):hold('buff',d,bPeak(d),air*1000)),...seq('attack',atkDir(d),CT(atkDir(d)),null,1.4)];
   return act({key:o.key,name:o.name,seq:s,windup:pre+air,dur:Math.max(seqTotal(s),pre+air+.18),hitList:[],hpHide:!!o.hide,
     update:(a,dt)=>{if(a.t>=pre&&a.t<=pre+air){dashUpd(a,dt,pre,pre+air,sx,sy,dx,dy,HPC.hip,H);player.iframes=.06;if(o.hide)player.jgHide=a.t>pre+air*.15&&a.t<pre+air*.85;}if(o.update)o.update(a,dt);},
     events:[{t:.01,f:()=>hDust(sx,sy,2,20)},{t:pre+air,f:a=>{player.z=0;player.jgHide=false;player.x=dx;player.y=dy;const R=hSlamR(o.R);
@@ -323,11 +332,11 @@ function mkHaFlop(c){const t=hTgt(c,HB.haFlop.range),phi=hPhi(c,t),L=t?Math.min(
   return hSlam({key:'haFlop',name:'Belly Flop',to:[tx,ty],R:HB.haFlop.R,mult:base,h:60,
     land:(a,x,y)=>{if(!hops)return;let px=x,py=y;for(let i=1;i<=hops;i++){const k=i;addFx(new HDelay(.18*k,()=>{px+=Math.cos(phi)*70;py+=Math.sin(phi)*70;const [qx,qy]=hFree(px,py)?[px,py]:[player.x,player.y];player.x=qx;player.y=qy;const R=hSlamR(HB.haFlop.R*.8);
       for(const e of hNear(qx,qy,R))hHit(e,base*HB.hcTriple.mul,'haFlop',{hpSlam:1,big:true});hLand(qx,qy,R,false);}));}}});}
-function mkHaGulp(c){return hBurst({key:'haGulp',name:'Gulp',speed:2.4,f:()=>{addFx(new HImg({n:'h12_gulp',x:player.x+Math.cos(player.phi)*40,y:player.y+Math.sin(player.phi)*40,z:30,w:HB.haGulp.R*1.6,life:.5,s0:1.3,s1:.4,fadeOut:.4,rot:0}));const L=hNear(player.x,player.y,HB.haGulp.R).sort((a,b)=>dist(a,player)-dist(b,player));const e=L[0];
+function mkHaGulp(c){return hGulpPose(hBurst({key:'haGulp',name:'Gulp',speed:2.4,f:()=>{addFx(new HImg({n:'h12_gulp',x:player.x+Math.cos(player.phi)*40,y:player.y+Math.sin(player.phi)*40,z:30,w:HB.haGulp.R*1.6,life:.5,s0:1.3,s1:.4,fadeOut:.4,rot:0}));const L=hNear(player.x,player.y,HB.haGulp.R).sort((a,b)=>dist(a,player)-dist(b,player));const e=L[0];
   for(let i=0;i<qn(12);i++){const a=rnd(0,TAU),r=HB.haGulp.R;emit({type:'dust',x:player.x+Math.cos(a)*r,y:player.y+Math.sin(a)*r,z:20,vx:-Math.cos(a)*r*3,vy:-Math.sin(a)*r*3,vz:0,drag:1,life:.3,size:5,size1:1,color:'#d8c8b0'});}
   if(!e)return;if(e.boss){e.x=player.x+Math.cos(angTo(e))*(e.r+30);e.y=player.y+Math.sin(angTo(e))*(e.r+30);hHit(e,HB.haGulp.boss,'haGulp',{big:true});HIP.gulpList=[e];}
   else{HIP.gulp={e,until:gameTime+HB.haGulp.hold};HIP.gulpList=[e];applyCC(e,{stun:1.2});}
-  hAddFull(HB.haGulp.full);addFx(new DText({x:player.x,y:player.y,z:96,text:'ฮุบ! อิ่ม +'+HB.haGulp.full,color:HPC.gold,size:13,life:.9}));player.action&&(player.action.hitConfirmed=true);}});}
+  hAddFull(HB.haGulp.full);addFx(new DText({x:player.x,y:player.y,z:96,text:'ฮุบ! อิ่ม +'+HB.haGulp.full,color:HPC.gold,size:13,life:.9}));player.action&&(player.action.hitConfirmed=true);}}),player.phi);}
 function mkHaBurp(c){const list=(HIP.gulpList||[]).filter(e=>!e.dead);const t=hTgt(c,260),phi=hPhi(c,t);
   return hBurst({key:'haBurp',name:'Burp Cannon',phi,speed:2.4,f:()=>{const shot=HIP.gulp&&!HIP.gulp.e.dead?HIP.gulp.e:null;HIP.gulp=null;
     if(shot)hHit(shot,HB.haBurp.shot,'haBurp',{big:true});
@@ -388,9 +397,9 @@ function mkHcChomp(c){const t=hTgt(c,200),phi=hPhi(c,t);faceTo(phi);const d=atkD
   const ev=[];for(let i=0;i<HB.hcChomp.n;i++)ev.push({t:seqTimeAt(s,seqIndex(s,'attack',ct,i)),f:a=>{const [nx,ny]=hPathEnd(player.x,player.y,phi,HB.hcChomp.step);player.x=nx;player.y=ny;
     for(const e of enemiesInCone(player.x,player.y,phi,90,.7)){hHit(e,HB.hcChomp.dmg,'hcChomp');if(!e.boss)hAddFull(HB.hcChomp.full);a.hitConfirmed=true;}addFx(new DText({x:player.x+Math.cos(phi)*40,y:player.y+Math.sin(phi)*40,z:50,text:'งับ!',color:'#fff',size:11,life:.4}));shake(1.4);}});
   return act({key:'hcChomp',name:'Chomp Chomp',seq:s,windup:ev[0].t,dur:seqTotal(s),hitList:[],events:ev});}
-function mkHcGobble(c){return hBurst({key:'hcGobble',name:'Gobble Up',speed:2,f:()=>{const L=hNear(player.x,player.y,HB.hcGobble.R).filter(e=>!e.boss).sort((a,b)=>dist(a,player)-dist(b,player)).slice(0,HB.hcGobble.n);
+function mkHcGobble(c){return hGulpPose(hBurst({key:'hcGobble',name:'Gobble Up',speed:2,f:()=>{const L=hNear(player.x,player.y,HB.hcGobble.R).filter(e=>!e.boss).sort((a,b)=>dist(a,player)-dist(b,player)).slice(0,HB.hcGobble.n);
   for(const e of L){hHit(e,HB.hcGobble.dmg,'hcGobble');e.x=player.x+Math.cos(angTo(e))*(e.r+24);e.y=player.y+Math.sin(angTo(e))*(e.r+24);applyCC(e,{stun:1.5});hAddFull(HB.hcGobble.full);}
-  if(L.length){HIP.gulp={e:L[0],until:gameTime+2};HIP.gulpList=L;addFx(new DText({x:player.x,y:player.y,z:100,text:'ฮุบรวบ ×'+L.length,color:HPC.gold,size:13,life:.9}));}}});}
+  if(L.length){HIP.gulp={e:L[0],until:gameTime+2};HIP.gulpList=L;addFx(new DText({x:player.x,y:player.y,z:100,text:'ฮุบรวบ ×'+L.length,color:HPC.gold,size:13,life:.9}));}}}),player.phi);}
 function mkHcSubmerge(c){const t=hTgt(c,400),sx=player.x,sy=player.y,[tx,ty]=t?[t.x,t.y]:[sx+Math.cos(player.phi)*160,sy+Math.sin(player.phi)*160];const s=hold('hurt',player.dir,2,HB.hcSubmerge.hide*1000+300);
   return act({key:'hcSubmerge',name:'Submerge',seq:s,windup:HB.hcSubmerge.hide,dur:HB.hcSubmerge.hide+.3,hitList:[],hpHide:true,update:(a)=>{const hid=a.t<HB.hcSubmerge.hide;player.jgHide=hid;player.iframes=hid?.06:0;},
     events:[{t:.02,f:()=>{hSplash(sx,sy,60);hPool(sx,sy,70,4);}},{t:HB.hcSubmerge.hide,f:a=>{const [px,py]=hFree(tx,ty)?[tx,ty]:[sx,sy];player.x=px;player.y=py;player.jgHide=false;hPool(px,py,70,4);
@@ -476,6 +485,8 @@ function installHippo(){
   window.jgMove=()=>{let b=-HF.movePer*hTier();if(HIP.sea&&Math.hypot(player.x-HIP.sea.x,player.y-HIP.sea.y)<HIP.sea.R)b+=HB.hbSea.move;return Math.max(.4,1+b/165);};
   window.jgAspd=()=>1;window.jgRecover=()=>1;window.jgDetect=()=>1;window.jgPlayerAlpha=()=>player.jgHide?.08:1;window.jgBleedMul=()=>1;
   window.jgSquash=()=>{const s=hSize();return [s,s];};window.jgOnSkillHit=()=>{};
+  /* HUD portrait: his head from the owner's front view of the new look (index.html drawPortrait reads window.HUD_FACE) */
+  try{const hf=new Image();hf.src='assets/heroes/hippo/face.webp?v=1';window.HUD_FACE=hf;hf.onload=()=>{try{drawPortrait();}catch(_){}};}catch(_){}
   window.jgAfterHurt=(e,dmg,crit,o)=>{if(!o||o.dot)return;if(e&&hImg('h04_hit')&&gameTime-(HIP.sparkT||0)>.04){HIP.sparkT=gameTime;addFx(new HImg({n:'h04_hit',x:e.x+rnd(-8,8),y:e.y,z:(e.boss?40:26)+rnd(-4,6),w:(o.big||crit?78:52)*(e.boss?1.3:1),life:.2,s0:.5,s1:1.1,fadeOut:.6,glow:.5}));}HIP.lastCombat=gameTime;hAddFull(o.hpSlam?HF.slam:HF.hit);if(e&&e.dead)hAddFull(HF.kill+(hL('haAppetite')?hLv(HB.haAppetite.kill,'haAppetite'):0));};
   window.hippoAutoTick=hippoAutoTick;
   mkBasic=mkHpBasic;addFx(new HCore());for(const n of ['09_crater','25_shock','23_dust','22_pow','h01_mud','h02_mudball','h03_pool','h04_hit','h05_wave','h06_bigwave','h07_geyser','h08_lotus','h09_lotusburst','h10_petals','h11_melon','h12_gulp','h13_burp','h14_yawn','h15_ward','h16_aura','h17_sea','h18_jar'])hImg(n);
