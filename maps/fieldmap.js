@@ -191,15 +191,20 @@ const WAYKIT={
 const CAPKIT={way:['cpMilestone','cpLampWood','cpWayShrine','cpSignWood','cpFence','cpScarecrow','cpCratesRoad','cpHayBale','cpKnightS','cpRose','cpSunflower'],center:['cpCampfire'],around:['cpTent','cpCrates','cpCartBroken','cpRack','cpBarricade','cpStumpAxe']};
 /* owner 2026-11-20: levelling maps were cramped, cluttered and nearly empty of monsters -> every field is laid out x2 (dungeons x1.4, mazes x1.25),
    ground clutter is gone (rocks, logs, stumps, bushes, flowers, crates, statues, wayside markers, camps, flat ground details, loose grass tufts);
-   only trees + small trees stay, and far more monsters spawn (see spawnN / spawnGroup). */
-function scaleField(c0){if(c0._scaled||c0.mons===false||c0.mood==='town'||c0.townish||c0.city)return c0;const DG=!!(c0.walls||c0.maze),S=c0.fieldScale??(DG?(c0.maze?1.25:1.4):2);
+   only trees + small trees stay, and far more monsters spawn (see spawnN / spawnGroup).
+   owner 2026-11-23 'แมพเล็กแคบ ต้นไม้เยอะ เดินไปทางไหนก็ติด … แบบแรคนารอค': fields x2.5 (was x2), forest masses (groves) about a third of
+   what they were (threshold +.15 instead of +.085), so the open ground runs on; monsters are spread over the whole map by
+   spawnFieldMons in index.html (not in packs at these spawn points any more — the points stay for bosses and the random-warp wing). */
+function scaleField(c0){if(c0._scaled||c0.mons===false||c0.mood==='town'||c0.townish||c0.city)return c0;const DG=!!(c0.walls||c0.maze),S=c0.fieldScale??(DG?(c0.maze?1.25:1.4):2.5);
   const c=JSON.parse(JSON.stringify(c0));c._scaled=1;const pt=p=>Array.isArray(p)?p.map((v,i)=>typeof v==='number'&&i<2?v*S:v):p;
   c.W=Math.round(c.W*S);c.H=Math.round(c.H*S);if(c.bridge)c.bridge=pt(c.bridge);if(c.stream)c.stream=c.stream.map(pt);
   if(c.trails)c.trails=c.trails.map(T=>T.map(pt));for(const r of c.roads||[])if(r.pts)r.pts=r.pts.map(pt);
   for(const o of [...(c.land||[]),...(c.warps||[]),...(c.squares||[]),...(c.clusters||[]),...(c.lakes||[])]){if(o.x!=null)o.x*=S;if(o.y!=null)o.y*=S;if(o.rx)o.rx*=S;if(o.ry)o.ry*=S;if(o.r&&c.clusters&&c.clusters.includes(o))o.r*=S;}
   if(c.clearings)c.clearings=c.clearings.map(q=>[q[0]*S,q[1]*S,q[2]*S]);
   if(c.rows)for(const k of ['x0','x1','y0','y1'])c.rows[k]*=S;
-  if(c.paddies){const P=c.paddies;P.x*=S;P.y*=S;P.cols=Math.round(P.cols*S);P.ny=Math.round(P.ny*S);if(P.skip)P.skip=P.skip.map(q=>[q[0]*S,q[1]*S,q[2]*S]);}
+  /* rice paddies cover the same (scaled) ground, but with plots x1.3 and dikes twice as wide (88 px), so the terraces are no longer
+     a maze of 44 px paths (owner 2026-11-23 'เดินไปทางไหนก็ติด') */
+  if(c.paddies){const P=c.paddies,g0=P.gap||44,h0=P.h,K3=DG?1:1.3;P.x*=S;P.y*=S;P.w*=K3;P.h*=K3;P.gap=DG?g0:g0*2;P.cols=Math.round(P.cols*S/K3);P.ny=Math.round(P.ny*S*(h0+g0)/(P.h+P.gap));if(P.skip)P.skip=P.skip.map(q=>[q[0]*S,q[1]*S,q[2]*S]);}
   if(c.sea){if(c.sea.d)c.sea.d*=S;if(c.sea.x!=null)c.sea.x*=S;if(c.sea.y!=null)c.sea.y*=S;}
   if(c.start)c.start=Array.isArray(c.start)?pt(c.start):Object.assign(c.start,{x:c.start.x*S,y:c.start.y*S});
   /* fewer solid groves, more things to look at between them */
@@ -207,7 +212,7 @@ function scaleField(c0){if(c0._scaled||c0.mons===false||c0.mood==='town'||c0.tow
   if(DG){/* caves and tombs have no trees: a few props stay so the rooms are not bare */c.propDens=(c.propDens??1)*.3;c.spawnN=Math.round((c.spawnN||24)*S*S);c.spawnGroup=[2,4];return c;}
   const CT=window.VK_CAT||{},tree=n=>CT[n]&&CT[n].t==='tree';for(const k of ['open','edge','under','bankSet'])if(c[k]){c[k]=c[k].filter(tree);if(!c[k].length&&k!=='open'&&k!=='edge')delete c[k];}
   /* fewer solid groves = more room to walk */
-  if(c.groves)c.groves.thr=(c.groves.thr??.52)+.085;c.openTrees=(c.openTrees??.06)*.6;
+  if(c.groves)c.groves.thr=(c.groves.thr??.52)+.15;c.openTrees=(c.openTrees??.06)*.6;
   c.spawnN=Math.round((c.spawnN||32)*S*S*.9);c.spawnGap=(c.spawnGap||320)*.85;
   return c;}
 window.createFieldHost=function(base,cfg){if(!cfg._id&&window.VK_MAPS)for(const k in VK_MAPS)if(VK_MAPS[k]===cfg){cfg._id=k;break;}cfg=scaleField(cfg);
@@ -320,8 +325,19 @@ const band0=cfg.border?cfg.border.band||270:0;
 const CALM=cfg.border&&cfg.border.calm;
 const edgeBand=(x,y)=>!band0?0:CALM?band0*(.8+.45*fbm(x/700+13.1,y/700+5.7))+(fbm(x/230,y/230)-.5)*60:band0*Math.max(.25,(-1.2+4.6*fbm(x/1000+13.1,y/1000+5.7)))+(fbm(x/230,y/230)-.5)*110;
 function edgeDist(x,y){return Math.min(x,y,W-x,H-y);}
-function nearTrail(x,y,m){for(const P of trails){const [d,i]=segDist(x,y,P);if(d<P[i][4]/2+m)return true;}return false;}
-function nearStream(x,y,m){if(!stream.length)return false;const [d]=segDist(x,y,stream);return d<44+m;}
+/* 2026-11-23: nearTrail / nearStream ask a bucket index (128 px cells) of the trail points instead of walking every point of every
+   trail for every tree / tuft — the answer is the same as segDist's (nearest even-index point of each trail, its width), the bigger
+   fields lay out ~2x faster. The index is rebuilt when a trail's length changes. */
+const SEGB=128,segIx=new Map();
+function segIndex(P){let I=segIx.get(P);if(I&&I.n===P.length)return I;const m=new Map();let mw=0;
+  for(let i=0;i<P.length;i+=2){const p=P[i],k=(Math.floor(p[0]/SEGB)+4096)*16384+(Math.floor(p[1]/SEGB)+4096);let a=m.get(k);if(!a)m.set(k,a=[]);a.push(i);if(p[4]>mw)mw=p[4];}
+  I={n:P.length,m,mw};segIx.set(P,I);return I;}
+/* nearest even-index point of P closer than R: [d, i], or null */
+function segNear(P,px,py,R){if(!(R>0))return null;const I=segIndex(P),r=Math.ceil(R/SEGB),cx=Math.floor(px/SEGB),cy=Math.floor(py/SEGB);let best=R*R,bi=-1;
+  for(let i=cx-r;i<=cx+r;i++)for(let j=cy-r;j<=cy+r;j++){const a=I.m.get((i+4096)*16384+(j+4096));if(!a)continue;for(const k of a){const q=P[k],d=(q[0]-px)**2+(q[1]-py)**2;if(d<best||(d===best&&k<bi)){best=d;bi=k;}}}
+  return bi<0?null:[Math.sqrt(best),bi];}
+function nearTrail(x,y,m){for(const P of trails){const s=segNear(P,x,y,segIndex(P).mw/2+m);if(s&&s[0]<P[s[1]][4]/2+m)return true;}return false;}
+function nearStream(x,y,m){if(!stream.length)return false;return !!segNear(stream,x,y,44+m);}
 function inClearing(x,y,pad){for(const c of clearings)if(Math.hypot(x-c[0],y-c[1])<c[2]+pad)return c;return null;}
 const landB=[];
 /* inLand is asked for every candidate spot while a map is laid out. Only the few 'big' pieces matter, so they are kept in their own
@@ -489,16 +505,22 @@ function build(){try{
   /* border + groves */
   const BS=cfg.border&&cfg.border.set,GS=cfg.groves&&cfg.groves.set,gthr=cfg.groves?cfg.groves.thr??.52:9,gd=cfg.groves?cfg.groves.dens??.85:0,openD=cfg.openTrees??.06;
   const BSP=cfg.border&&cfg.border.sp||58;
+  /* 2026-11-23 'ต้นไม้เยอะ เดินไปทางไหนก็ติด': on the scaled levelling fields the thinning ring of trees round a forest mass is narrower
+     and sparser (band .035 / density .24 instead of .05 / .32), and the loose trees of the prop pass below come at half the rate */
+  const FLD=!!(cfg._scaled&&!WALLS&&!cfg.maze),FRB=FLD?.035:.05,FRD=FLD?.24:.32,PDF=FLD?.5:1;
   for(let gy=40;gy<H;gy+=44)for(let gx=40;gx<W;gx+=44){const x=gx+R(-19,19),y=gy+R(-19,19);if(x<20||y<20||x>W-20||y>H-20)continue;
     if(WALLS)break;if(water(x,y,40))continue;const de=edgeDist(x,y),band=edgeBand(x,y),n=fbm(x/760,y/760);let D,sp,set;
     /* RO-style: a grove is a solid mass (blocked, packed with trees); outside it only a rare lone tree */
-    if(BS&&de<band){D=1;sp=BSP;set=BS;}else if(!GS)continue;else if(n>gthr-.012){D=1;sp=54;set=GS;}else if(n>gthr-.05){D=.32*(1-(gthr-.012-n)/.038);sp=78;set=GS;}else{D=openD*.2;sp=150;set=GS;}
-    let fringe=!(BS&&de<band)&&(n>gthr-.05&&n<=gthr-.012);if(BS&&de>=band&&de<band+150){D=Math.max(D,.3*(1-(de-band)/150));sp=Math.min(sp,80);set=BS;fringe=true;}
+    if(BS&&de<band){D=1;sp=BSP;set=BS;}else if(!GS)continue;else if(n>gthr-.012){D=1;sp=54;set=GS;}else if(n>gthr-FRB){D=FRD*(1-(gthr-.012-n)/(FRB-.012));sp=78;set=GS;}else{D=openD*.2;sp=150;set=GS;}
+    let fringe=!(BS&&de<band)&&(n>gthr-FRB&&n<=gthr-.012);if(BS&&de>=band&&de<band+150){D=Math.max(D,.3*(1-(de-band)/150));sp=Math.min(sp,80);set=BS;fringe=true;}
     if(de>=band-40){if(nearTrail(x,y,40)||nearStream(x,y,40))continue;if(inClearing(x,y,0))continue;if(n<=gthr-.012&&inClearing(x,y,150))D*=.35;if(inLand(x,y,60))continue;}
     else if(nearTrail(x,y,28)||inLand(x,y,30))continue;
     if(warps.some(w=>Math.abs(x-w.x)<190&&y>w.y-90&&y<w.y+300)||laneD(x,y)<70)continue;
     if(inPave(x,y,de<band?20:50))continue;
-    if(rnd()>D||!far(x,y,sp))continue;PX=x;PY=y;const big=rnd(),tv=big<.18?R(1.15,1.32):big<.4?R(.72,.86):R(.9,1.1);put(mk(pickFill(set,x,y),x,y,{v:fringe?R(.62,.88):tv}));
+    if(rnd()>D||!far(x,y,sp))continue;PX=x;PY=y;const big=rnd(),tv=big<.18?R(1.15,1.32):big<.4?R(.72,.86):R(.9,1.1),pn=pickFill(set,x,y);
+    /* scaled fields: rocks / cliff chunks of a rock 'grove' (Egypt, Greek hills, ice fields) stay in the mass and its edge — no lone boulders scattered over the open ground, half as many at the edge */
+    if(FLD&&pn&&set===GS&&n<=gthr-.012&&CAT[pn]&&CAT[pn].t!=='tree'&&(n<=gthr-FRB||rnd()<.5))continue;
+    put(mk(pn,x,y,{v:fringe?R(.62,.88):tv}));
     /* understory: a bush, rock or sapling at some trunks so groves are not a wall of identical trees */
     if(cfg.under&&de>=band&&rnd()<.22){const a=rnd()*6.28,ux=x+Math.cos(a)*R(40,70),uy=y+Math.abs(Math.sin(a))*R(18,40)+8;if(!nearTrail(ux,uy,10)&&!water(ux,uy,10)&&far(ux,uy,34)){PX=ux;PY=uy;put(mk(pickCap(cfg.under,ux,uy),ux,uy,{v:R(.75,1)}));}}}
   /* props in the open and at grove edges */
@@ -506,7 +528,7 @@ function build(){try{
   for(let gy=70;gy<H;gy+=104)for(let gx=70;gx<W;gx+=104){const x=gx+R(-42,42),y=gy+R(-42,42),de=edgeDist(x,y);if(de<edgeBand(x,y)-20)continue;
     if(water(x,y,30)||nearTrail(x,y,22)||nearStream(x,y,28)||inLand(x,y,50))continue;if(WALLS&&wallFoot(x,y,60))continue;if(inPave(x,y,40))continue;const n=fbm(x/760,y/760),edge=n>gthr-.12&&n<gthr+.04,c=inClearing(x,y,0);
     /* clumped, not sprinkled: a slow noise field decides where things gather; each find brings one or two smaller companions */
-    const cl=cfg.clump===0?1:Math.max(0,Math.min(1,(vnoise(x/520+41.3,y/520+7.7)-.38)/.3)),pr=(edge?.26:c?.03:.05)*pd0*(cfg.clump===0?1:.35+1.1*cl);
+    const cl=cfg.clump===0?1:Math.max(0,Math.min(1,(vnoise(x/520+41.3,y/520+7.7)-.38)/.3)),pr=(edge?.26:c?.03:.05)*pd0*PDF*(cfg.clump===0?1:.35+1.1*cl);
     if(rnd()>pr||!far(x,y,edge?66:120))continue;const set=edge?ED:OP;PX=x;PY=y;if(set.length){const p0=mk(pickCap(set,x,y),x,y,{v:R(.8,1.2)});put(p0);
       if(p0&&cfg.clump!==0&&!edge&&rnd()<.55)for(let k=0;k<1+(rnd()<.4?1:0);k++){const a=rnd()*6.28,dd=R(42,80),cx=x+Math.cos(a)*dd,cy=y+Math.sin(a)*dd*.6;if(water(cx,cy,20)||nearTrail(cx,cy,16)||inLand(cx,cy,30)||inPave(cx,cy,30)||(WALLS&&wallFoot(cx,cy,40))||!far(cx,cy,36))continue;
         PX=cx;PY=cy;const cn=pickCap(set.filter(s=>!CAT[s]||CAT[s].t!=='big'),cx,cy);if(cn)put(mk(cn,cx,cy,{v:R(.6,.85)}));}}}

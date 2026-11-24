@@ -12,7 +12,10 @@
    ===================================================================== */
 (function(){'use strict';
 window.createSnowPineHost=function(base){
-const F=2/3,W=4800,H=3600,CH=512,CELL=12,COLS=Math.ceil(W/CELL),ROWS=Math.ceil(H/CELL);
+/* owner 2026-11-23 'แมพเล็กแคบ ต้นไม้เยอะ มอนน้อย … แบบแรคนารอค': laid out x2.5 (F 2/3 -> 5/3, 4800x3600 -> 12000x9000, like the other
+   fields), forest masses about a third of what they were (G_UP), no rocks / logs / stumps / bushes in the open (only trees),
+   monsters spread over the whole map by spawnFieldMons in index.html */
+const F=5/3,K2=F/(2/3),W=Math.round(7200*F),H=Math.round(5400*F),CH=512,G_UP=.19,CELL=12,COLS=Math.ceil(W/CELL),ROWS=Math.ceil(H/CELL);
 
 /* ---------- art: file, draw scale, anchor (foot point in the image, 0..1), collision ---------- */
 const ART={
@@ -29,7 +32,7 @@ const IMG={};let loaded=0,ready=false,failed=false;const NAMES=Object.keys(ART);
 /* warps to the neighbouring Viking maps (ids match maps/viking-maps.js) */
 /* level text comes from maps/level-zones.js (MAP_ZONE) when the label is read */
 const zl=(name,id,fb)=>({get label(){const z=window.MAP_ZONE&&MAP_ZONE[id];return name+' Lv '+(z?z[0]+'–'+z[1]:fb);}});
-const warps=[{id:'toT',x:4330,y:560,to:'frostheim',at:'toF1',label:'ฟรอสต์เฮล์ม'},Object.assign(zl('หมู่บ้านไวกิ้งร้าง','vikF5','18–26'),{id:'toF5',x:420,y:3420,to:'vikF5',at:'toF1'}),Object.assign(zl('ทุ่งหินรูน','vikF3','10–18'),{id:'toF3',x:1300,y:560,to:'vikF3',at:'toF1'})];
+const warps=[{id:'toT',x:4330*K2,y:560*K2,to:'frostheim',at:'toF1',label:'ฟรอสต์เฮล์ม'},Object.assign(zl('หมู่บ้านไวกิ้งร้าง','vikF5','18–26'),{id:'toF5',x:420*K2,y:3420*K2,to:'vikF5',at:'toF1'}),Object.assign(zl('ทุ่งหินรูน','vikF3','10–18'),{id:'toF3',x:1300*K2,y:560*K2,to:'vikF3',at:'toF1'})];
 for(const n of NAMES){const im=new Image();im.onload=()=>{if(++loaded===NAMES.length)build();};im.onerror=()=>{failed=true;};im.src=base+n+'.webp';IMG[n]=im;}
 
 /* ---------- deterministic helpers ---------- */
@@ -68,10 +71,20 @@ const grassB=new Map();let dirt=[],drifts=[],prints=[],path=[],branches=[],strea
 const grid=new Uint8Array(COLS*ROWS);const buckets=new Map();const chunks=new Map();let minimap=null,snowPat=null,dirtPat=null;
 const edgeBand=(x,y)=>270+fbm(x/500,y/500)*130;
 function edgeDist(x,y){return Math.min(x,y,W-x,H-y);}
-function nearPath(x,y,m){for(const P of [path,...branches]){const [d,i]=segDist(x,y,P);if(d<P[i][4]/2+m)return true;}return false;}
-function nearStream(x,y,m){const [d]=segDist(x,y,stream);return d<44+m;}
+/* 2026-11-23: bucket index of the path points (128 px cells) — same answers as segDist (nearest even-index point, its width),
+   needed now that the map is x2.5 and the tree / tuft loops ask this ~100k times */
+const SEGB=128,segIx=new Map();
+function segIndex(P){let I=segIx.get(P);if(I&&I.n===P.length)return I;const m=new Map();let mw=0;
+  for(let i=0;i<P.length;i+=2){const p=P[i],k=(Math.floor(p[0]/SEGB)+4096)*16384+(Math.floor(p[1]/SEGB)+4096);let a=m.get(k);if(!a)m.set(k,a=[]);a.push(i);if(p[4]>mw)mw=p[4];}
+  I={n:P.length,m,mw};segIx.set(P,I);return I;}
+function segNear(P,px,py,R){if(!(R>0))return null;const I=segIndex(P),r=Math.ceil(R/SEGB),cx=Math.floor(px/SEGB),cy=Math.floor(py/SEGB);let best=R*R,bi=-1;
+  for(let i=cx-r;i<=cx+r;i++)for(let j=cy-r;j<=cy+r;j++){const a=I.m.get((i+4096)*16384+(j+4096));if(!a)continue;for(const k of a){const q=P[k],d=(q[0]-px)**2+(q[1]-py)**2;if(d<best||(d===best&&k<bi)){best=d;bi=k;}}}
+  return bi<0?null:[Math.sqrt(best),bi];}
+function nearPath(x,y,m){for(const P of [path,...branches]){const s=segNear(P,x,y,segIndex(P).mw/2+m);if(s&&s[0]<P[s[1]][4]/2+m)return true;}return false;}
+function nearStream(x,y,m){if(!stream.length)return false;return !!segNear(stream,x,y,44+m);}
 function inClearing(x,y,pad){for(const c of LAYOUT.clearings)if(Math.hypot(x-c[0],y-c[1])<c[2]+pad)return c;return null;}
-function inLandmark(x,y,pad){for(const g of ground){if(Math.abs(x-g.x)<g.w*.5+pad&&y>g.y-g.h*.5-pad&&y<g.y+g.h*.5+pad*2.2)return true;}for(const o of objs)if(o.land&&Math.hypot(x-o.x,y-o.y)<o.w*.45+pad)return true;return false;}
+/* 2026-11-23: the placed landmarks are kept in their own list (they used to be looked up among every tree, thousands on the x2.5 map) */
+const landO=[];function inLandmark(x,y,pad){for(const g of ground){if(Math.abs(x-g.x)<g.w*.5+pad&&y>g.y-g.h*.5-pad&&y<g.y+g.h*.5+pad*2.2)return true;}for(const o of landO)if(Math.hypot(x-o.x,y-o.y)<o.w*.45+pad)return true;return false;}
 
 /* natural trails: the spline wanders (two noise octaves), width swells and pinches, stretches get buried under drifts.
    Displacement fades out at the bridge and at the trail's first points so joins stay exact. */
@@ -101,11 +114,11 @@ function build(){try{
   for(const P of [path,...branches])for(let i=0;i<P.length;i+=1){const p=P[i];if(p[5]>.5||rnd()<.86)continue;for(const sd of [-1,1]){if(rnd()<.45)continue;const o=p[4]*R(.4,.52);const n=rnd()<.4?3:1;for(let k=0;k<n;k++)lips.push([p[0]+p[2]*o*sd+p[3]*k*9,p[1]+p[3]*o*sd-p[2]*k*9,R(5,10),R(3,5.5)]);}}
   for(let i=0;i<stream.length;i++){const p=stream[i];if(Math.hypot(p[0]-B[0],p[1]-B[1])<150)continue;for(const sd of [-1,1]){if(rnd()<.35)continue;const o=p[4]*R(.42,.56);const big=rnd()<.2;banks.push([p[0]+p[2]*o*sd,p[1]+p[3]*o*sd,big?R(13,22):R(6,12),big?R(8,12):R(4,8)]);}}
   for(let i=0;i<stream.length-6;i+=3){if(rnd()<.55)continue;const p=stream[i];let x=p[0]+p[2]*R(-24,24),y=p[1]+p[3]*R(-24,24);const c=[[x,y]];for(let k=0;k<3;k++){x+=R(6,18)*(rnd()<.5?1:-1);y+=R(6,15);c.push([x,y]);}cracks.push(c);}
-  for(let i=0;i<150;i++)tints.push([R(0,W),R(0,H),R(260,700),rnd()<.55?'255,236,220':'176,180,226',R(.07,.14)]);
+  for(let i=0;i<Math.round(W*H/115200);i++)tints.push([R(0,W),R(0,H),R(260,700),rnd()<.55?'255,236,220':'176,180,226',R(.07,.14)]);
   /* landmarks */
   const L=(n,x,y,o={})=>{const A=ART[n],im=IMG[n],w=im.naturalWidth*A.s,h=im.naturalHeight*A.s;return Object.assign({n,x,y,w,h,img:im,ax:A.a[0],ay:A.a[1]},o);};
   ground.push(L('pond',LAYOUT.pond[0],LAYOUT.pond[1]));ground.push(L('bridge',B[0],B[1]));
-  objs.push(L('camp',LAYOUT.camp[0],LAYOUT.camp[1],{land:1,cast:1,smolder:.09}));objs.push(L('shrine',LAYOUT.shrine[0],LAYOUT.shrine[1],{land:1,cast:1}));
+  objs.push(L('camp',LAYOUT.camp[0],LAYOUT.camp[1],{land:1,cast:1,smolder:.09}));objs.push(L('shrine',LAYOUT.shrine[0],LAYOUT.shrine[1],{land:1,cast:1}));for(const o of objs)if(o.land)landO.push(o);
   for(const g of ground){g.x0=g.x-g.ax*g.w;g.y0=g.y-g.ay*g.h;}
   /* trees: jittered grid + density field (thick border, groves, open meadows), min spacing */
   const occ=new Map(),key=(x,y)=>((x/64)|0)+','+((y/64)|0);
@@ -116,21 +129,21 @@ function build(){try{
     if(A.r)ob.solid=[[x,y-2,A.r*w]];if(A.log)ob.solid=[[x-w*.22,y-h*.08,w*.13],[x+w*.2,y-h*.12,w*.13]];return ob;};
   for(let gy=40;gy<H;gy+=44)for(let gx=40;gx<W;gx+=44){const x=gx+R(-19,19),y=gy+R(-19,19);if(x<20||y<20||x>W-20||y>H-20)continue;
     const de=edgeDist(x,y),band=edgeBand(x,y),n=fbm(x/760,y/760);let D,sp;
-    if(de<band){D=1;sp=58;}else if(n>.508){D=1;sp=54;}else{D=.018;sp=150;}
-    if(de>=band-40){if(nearPath(x,y,40)||nearStream(x,y,40))continue;const c=inClearing(x,y,0);if(c)continue;if(n<=.508&&inClearing(x,y,150))D*=.35;if(inLandmark(x,y,60))continue;}
+    if(de<band){D=1;sp=58;}else if(n>.508+G_UP){D=1;sp=54;}else{D=.018;sp=150;}
+    if(de>=band-40){if(nearPath(x,y,40)||nearStream(x,y,40))continue;const c=inClearing(x,y,0);if(c)continue;if(n<=.508+G_UP&&inClearing(x,y,150))D*=.35;if(inLandmark(x,y,60))continue;}
     else if(nearPath(x,y,28))continue;
     if(rnd()>D||!far(x,y,sp))continue;
-    const deep=de<band*.6||n>.68,r=rnd();let t;
+    const deep=de<band*.6||n>.68+G_UP,r=rnd();let t;
     if(deep)t=r<.1?'twinPine':r<.4?'pineA':r<.7?'pineB':'pineC';else t=r<.06?'deadPine':r<.12?'bareTree':r<.3?'pineD':r<.45?'pineS':r<.52?'pineXS':r<.7?'pineA':r<.85?'pineB':'pineC';
     put(add(t,x,y,{v:R(.9,1.12),tree:1}));}
   /* saplings and props on grove edges and in the open */
   const propsOpen=['rockM','rockL','boulder','berryS','berryL','bush','stump','log'];
   for(let gy=70;gy<H;gy+=104)for(let gx=70;gx<W;gx+=104){const x=gx+R(-42,42),y=gy+R(-42,42),de=edgeDist(x,y);if(de<edgeBand(x,y)-20)continue;
-    if(nearPath(x,y,22)||nearStream(x,y,28)||inLandmark(x,y,50))continue;const n=fbm(x/760,y/760),edge=n>.4&&n<.56,c=inClearing(x,y,0);
-    if(rnd()>(edge?.26:c?.03:.05)||!far(x,y,edge?66:120))continue;const t=edge&&rnd()<.35?pick(['pineS','pineXS','pineD']):pick(propsOpen);put(add(t,x,y,{v:R(.85,1.15),tree:t.startsWith('pine')}));}
+    if(nearPath(x,y,22)||nearStream(x,y,28)||inLandmark(x,y,50))continue;const n=fbm(x/760,y/760),edge=n>.4+G_UP&&n<.56+G_UP,c=inClearing(x,y,0);
+    if(!edge||rnd()>.26*.35||!far(x,y,66))continue;const t=pick(['pineS','pineXS','pineD']);put(add(t,x,y,{v:R(.85,1.15),tree:1}));}
   /* rocks along the stream banks */
   for(let i=8;i<stream.length-4;i+=6){if(rnd()<.45)continue;const p=stream[i];if(Math.hypot(p[0]-B[0],p[1]-B[1])<190)continue;const sd=rnd()<.5?-1:1,o=p[4]/2+R(14,34),x=p[0]+p[2]*o*sd,y=p[1]+p[3]*o*sd;
-    if(nearPath(x,y,20))continue;if(rnd()<.6)decals.push(add('rockS',x,y,{v:R(.7,1.1),cast:0}));else if(far(x,y,50))put(add(pick(['rockM','bush']),x,y,{v:R(.7,.9)}));}
+    if(nearPath(x,y,20))continue;decals.push(add('rockS',x,y,{v:R(.7,1.1),cast:0}));}
   /* flat ground details (baked into the ground) */
   for(let gy=30;gy<H;gy+=60)for(let gx=30;gx<W;gx+=60){const x=gx+R(-26,26),y=gy+R(-26,26),de=edgeDist(x,y);if(de<edgeBand(x,y)-140)continue;
     if(nearStream(x,y,18)||inLandmark(x,y,20))continue;const onP=nearPath(x,y,-10);if(onP)continue;const n=fbm(x/760,y/760);
@@ -157,7 +170,7 @@ function build(){try{
       if(!carved)break;for(const o of objs)if(o.solid)for(const s2 of o.solid)stamp(s2[0],s2[1],s2[2]);}
     buckets.clear();for(const o of objs){const k=((o.x/CH)|0)+','+((o.y/CH)|0);(buckets.get(k)||buckets.set(k,[]).get(k)).push(o);}}
   /* monster spawn points: open snow away from the entrance, not on the path */
-  for(let i=0;i<6000&&spawns.length<60;i++){const x=R(350,W-350),y=R(300,H-300);if(blocked(x,y)||nearPath(x,y,20)||Math.hypot(x-LAYOUT.spawn[0],y-LAYOUT.spawn[1])<600)continue;if(spawns.some(s=>Math.hypot(s.x-x,s.y-y)<240))continue;spawns.push({x,y});}
+  for(let i=0;i<12000&&spawns.length<150;i++){const x=R(350,W-350),y=R(300,H-300);if(blocked(x,y)||nearPath(x,y,20)||Math.hypot(x-LAYOUT.spawn[0],y-LAYOUT.spawn[1])<600)continue;if(spawns.some(s=>Math.hypot(s.x-x,s.y-y)<300))continue;spawns.push({x,y});}
   for(const w of warps){const n=nearest({x:w.x,y:w.y});if(n){w.x=n.x;w.y=n.y;}w.ph=rnd()*6.28;}
   makeMinimap();ready=true;}catch(e){console.error(e);failed=true;}}
 
@@ -165,7 +178,7 @@ function build(){try{
 function stamp(x,y,r){const c0=Math.max(0,((x-r)/CELL)|0),c1=Math.min(COLS-1,((x+r)/CELL)|0),r0=Math.max(0,((y-r)/CELL)|0),r1=Math.min(ROWS-1,((y+r)/CELL)|0);
   for(let j=r0;j<=r1;j++)for(let i=c0;i<=c1;i++){const cx=i*CELL+6,cy=j*CELL+6;if((cx-x)**2+(cy-y)**2<=r*r)grid[j*COLS+i]=1;}}
 function onBridge(x,y){const dx=x-B[0],dy=y-B[1],u=dx*pd[0]+dy*pd[1],v=-dx*pd[1]+dy*pd[0];return Math.abs(u)<140&&Math.abs(v)<40;}
-function buildGrid(){for(let j=0;j<ROWS;j++)for(let i=0;i<COLS;i++){const x=i*CELL+6,y=j*CELL+6;if(edgeDist(x,y)<edgeBand(x,y)-22||(fbm(x/760,y/760)>.53&&!inClearing(x,y,0)&&!inLandmark(x,y,0)))grid[j*COLS+i]=1;}
+function buildGrid(){for(let j=0;j<ROWS;j++)for(let i=0;i<COLS;i++){const x=i*CELL+6,y=j*CELL+6;if(edgeDist(x,y)<edgeBand(x,y)-22||(fbm(x/760,y/760)>.53+G_UP&&!inClearing(x,y,0)&&!inLandmark(x,y,0)))grid[j*COLS+i]=1;}
   /* the path stays walkable where it runs through the forest border (entrance / far end) */
   for(const P of [path,...branches])for(const p of P){const r=p[4]/2+26,c0=Math.max(0,((p[0]-r)/CELL)|0),c1=Math.min(COLS-1,((p[0]+r)/CELL)|0),r0=Math.max(0,((p[1]-r)/CELL)|0),r1=Math.min(ROWS-1,((p[1]+r)/CELL)|0);
     for(let j=r0;j<=r1;j++)for(let i=c0;i<=c1;i++){const cx=i*CELL+6,cy=j*CELL+6;if((cx-p[0])**2+(cy-p[1])**2<=r*r)grid[j*COLS+i]=0;}}

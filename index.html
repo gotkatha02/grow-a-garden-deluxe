@@ -684,10 +684,10 @@ document.write('<script src="vfx_layer.js"><\/script>');if(c==='jaguar')document
 <script src="maps/forest-objects.js"></script>
 <script src="maps/forest-ambience.js"></script>
 <script src="maps/forest-host.js"></script>
-<script src="maps/snowpine.js?v=2"></script>
+<script src="maps/snowpine.js?v=3"></script>
 <script src="maps/viking-catalog.js"></script>
 <script src="maps/craft-halls.js?v=8"></script>
-<script src="maps/fieldmap.js?v=15"></script>
+<script src="maps/fieldmap.js?v=16"></script>
 <script src="maps/viking-maps.js"></script>
 <script src="maps/aztec-maps.js"></script>
 <script src="maps/egypt-maps.js"></script>
@@ -2930,7 +2930,7 @@ function jTex(){if(JTEX.ready)return JTEX;
 
 /* ---------------- VFX objects ---------------- */
 class MarkOverlay{constructor(){this.t=0;this.layer='top';}update(dt){this.t+=dt;jgTickICD(dt);return CHAR==='jaguar';}
-  draw(){for(const e of enemies){if(e.dead)continue;const sc=e.sc||1,[x,y]=P(e.x+e.r*1.1,e.y,32*sc+(e.z||0));let ox=0;ctx.save();ctx.translate(x,y);ctx.scale(.72,.72);ctx.translate(-x,-y);
+  draw(){for(const e of enemies){if(e.dead||!(e.prey>0||e.brand>0||e.st.poison>0||e.st.root>0))continue;   /* 2026-11-23: unmarked enemies skipped before any canvas work (fields hold ~1,500 monsters) */const sc=e.sc||1,[x,y]=P(e.x+e.r*1.1,e.y,32*sc+(e.z||0));let ox=0;ctx.save();ctx.translate(x,y);ctx.scale(.72,.72);ctx.translate(-x,-y);
     if(e.prey>0){for(let i=0;i<e.prey;i++){const px=x+ox+i*9,py=y,bl=e.preyT<2?.5+.5*Math.sin(this.t*14):1;ctx.globalAlpha=bl;ctx.strokeStyle='#3a1a08';ctx.lineWidth=3.4;ctx.lineCap='round';for(let j=-1;j<=1;j++){ctx.beginPath();ctx.moveTo(px+j*2.4-2,py-6);ctx.lineTo(px+j*2.4+2,py+5);ctx.stroke();}
       ctx.strokeStyle=JGC.gold2;ctx.lineWidth=1.6;for(let j=-1;j<=1;j++){ctx.beginPath();ctx.moveTo(px+j*2.4-2,py-6);ctx.lineTo(px+j*2.4+2,py+5);ctx.stroke();}}ox+=e.prey*9+6;}
     if(e.brand>0){const bx=x+ox+7,by=y,bl=e.brandT<2?.5+.5*Math.sin(this.t*14):1;ctx.globalAlpha=bl;ctx.fillStyle='#e8b44a';ctx.beginPath();ctx.arc(bx,by,7,0,TAU);ctx.fill();ctx.fillStyle='#120a1c';ctx.beginPath();ctx.arc(bx+2.5,by-1,6.2,0,TAU);ctx.fill();ctx.strokeStyle=JGC.turq;ctx.lineWidth=1.3;ctx.beginPath();ctx.arc(bx,by,8.5,0,TAU);ctx.stroke();
@@ -5606,7 +5606,7 @@ document.getElementById('mmin').onclick=e=>{e.stopPropagation();mmZoom=Math.min(
 function drawMinimap(){const W=mmc.width,H=mmc.height,sc=.16*mmZoom,cx=W/2,cy=H/2,X=x=>cx+(x-player.x)*sc,Y=y=>cy+(y-player.y)*sc*.8;
   if(curMap)mapMini(W,H,X,Y);else{mmg.fillStyle='#1a2030';mmg.fillRect(0,0,W,H);}
   if(warBanner&&warBanner.t<warBanner.life){mmg.strokeStyle='rgba(255,211,106,.8)';mmg.lineWidth=2;mmg.beginPath();mmg.ellipse(X(warBanner.x),Y(warBanner.y),BANNER_R*sc,BANNER_R*sc*.8,0,0,TAU);mmg.stroke();}
-  for(const e of enemies){if(e.dead)continue;const x=X(e.x),y=Y(e.y);mmg.fillStyle=e.mini?'#ffc83a':e.boss?'#ff3a3a':e.aggro>0?'#ff8a5a':'#b98aff';mmg.strokeStyle='#3a2a1f';mmg.lineWidth=1.5;mmg.beginPath();mmg.arc(x,y,e.boss?6:3.6,0,TAU);mmg.fill();mmg.stroke();}
+  for(const e of enemies){if(e.dead)continue;const x=X(e.x),y=Y(e.y);if(x<-8||y<-8||x>W+8||y>H+8)continue;   /* 2026-11-23: fields hold ~1,500 monsters now — only the dots that fall on the minimap are drawn */mmg.fillStyle=e.mini?'#ffc83a':e.boss?'#ff3a3a':e.aggro>0?'#ff8a5a':'#b98aff';mmg.strokeStyle='#3a2a1f';mmg.lineWidth=1.5;mmg.beginPath();mmg.arc(x,y,e.boss?6:3.6,0,TAU);mmg.fill();mmg.stroke();}
   if(fenrir&&hasBuff('fenrir')){mmg.fillStyle='#8ff2ff';mmg.beginPath();mmg.arc(X(fenrir.x),Y(fenrir.y),3.5,0,TAU);mmg.fill();}
   mmg.save();mmg.translate(cx,cy);mmg.rotate((player.phi||0)+Math.PI/2);mmg.fillStyle='#fff';mmg.strokeStyle='#3a2a1f';mmg.lineWidth=2;mmg.beginPath();mmg.moveTo(0,-9);mmg.lineTo(7,7);mmg.lineTo(0,3);mmg.lineTo(-7,7);mmg.closePath();mmg.fill();mmg.stroke();mmg.restore();
   document.getElementById('mmxy').textContent=`${Math.round(player.x/20)}, ${Math.round(player.y/20)}`;}
@@ -5859,11 +5859,31 @@ function vkVar(def,lv){const k=def.name+'|'+lv+'|'+(def.role||'');if(VK_VAR[k])r
     size:def.size||(sc<.8?'small':sc>=1.25?'large':'medium')});}
 function vkMake(def,x,y){const lv=def.lv[0]+Math.floor(Math.random()*(def.lv[1]-def.lv[0]+1)),v=vkVar(def,lv);const e=spawnEnemy(x,y,false,def.base==='snowwolf'?'snowwolf':null);
   e.m=v;e.hp=e.maxHp=v.hp;e.sc*=def.sc||1;e.vdef=def;return e;}
+/* owner 2026-11-23 'มอนน้อย มอนกระจุกเป็นที่ … มันต้องมีอยู่ทั้งแมพ แบบแรคนารอค': monsters live EVERYWHERE on a map, Ragnarok style —
+   spread evenly over all the walkable ground (a jittered grid, one try per cell: a spot gets monsters in proportion to how much of it
+   you can walk on), mostly alone or in twos of one kind (62 % 1 · 30 % 2 · 8 % 3), none in the arrival zone of a warp; a dead one comes
+   back somewhere else on the map, out of sight (≥ 900 px away; 40 % of the time in the ring just beyond the screen, so the ground
+   round the player fills up again). Density = monsters per 1,000,000 map px² of walkable ground (cfg.monDens overrides a map).
+   Before: packs of 3–5 at fixed spawn points (Clark–Evans 0.42, a quarter of phone screens empty). The host's spawn points stay for
+   the map / mini bosses and the random-warp wing. */
+const MON_DENS={field:17,dungeon:25};
+const fieldWalk=h=>h.isReachable?(x,y)=>h.isReachable(x,y):(x,y)=>!h.blocked(x,y);
+function fieldSafe(h){const L=(h.warps||[]).map(w=>[w.x,w.y]);if(h.spawn&&h.spawn.start)L.push([h.spawn.start.x,h.spawn.start.y]);return L;}
 function spawnFieldMons(id){enemies.length=0;const h=mapHosts[id],L=(window.VK_MONS||{})[id];if(!L)return;if(!h||!h.ready){setTimeout(()=>{if(curMap===id&&!enemies.length)spawnFieldMons(id);},300);return;}
   const pool=[];for(const d of L)for(let i=0;i<(d.w??2);i++)pool.push(d);if(!pool.length)return;   // spawn share per monster (critters more, brutes fewer)
-  for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
-  let k=0;const SG=h.spawnGroup;for(const p of h.spawns){const n=SG?SG[0]+Math.floor(Math.random()*(SG[1]-SG[0]+1)):2+(Math.random()<.3?1:0);   /* owner 2026-11-20: packs of 3–5 on the cleaned, larger maps */const sp=SG?1.8:1;for(let i=0;i<n;i++){let q=p;for(let t=0;t<8;t++){const c={x:p.x+rnd(-60,60)*sp,y:p.y+rnd(-45,45)*sp};if(!h.blocked(c.x,c.y)){q=c;break;}}const [x,y]=M2W(q);vkMake(pool[k++%pool.length],x,y);}}}
-function fieldRespawn(e){const h=mapHost();if(!h||!h.ready||!h.randomSpawn)return false;const m=W2M(player.x,player.y),p=h.randomSpawn(m.x,m.y,650);if(!p)return false;const [x,y]=M2W(p);
+  const cfg=h.cfg||{},dg=!!(cfg.walls||cfg.maze),dens=cfg.monDens||(dg?MON_DENS.dungeon:MON_DENS.field),ok=fieldWalk(h),safe=fieldSafe(h),SAFE=dg?300:420;
+  const g=Math.sqrt(1e6*1.46/dens),ox=Math.random()*g,oy=Math.random()*g;   /* 1.46 = mean group size */
+  for(let y=-oy;y<h.H;y+=g)for(let x=-ox;x<h.W;x+=g){const px=x+Math.random()*g,py=y+Math.random()*g;
+    if(px<60||py<60||px>h.W-60||py>h.H-60||!ok(px,py)||safe.some(s=>Math.hypot(px-s[0],py-s[1])<SAFE))continue;
+    const r=Math.random(),n=r<.62?1:r<.92?2:3,def=pool[Math.floor(Math.random()*pool.length)];
+    for(let i=0;i<n;i++){let q={x:px,y:py};if(i)for(let t=0;t<8;t++){const a=Math.random()*TAU,d=rnd(34,72),c={x:px+Math.cos(a)*d,y:py+Math.sin(a)*d*.7};if(ok(c.x,c.y)){q=c;break;}}
+      const [wx,wy]=M2W(q);vkMake(def,wx,wy);}}}
+/* a walkable point out of sight of map point m (≥ minD), not at a warp: 40 % in the ring just beyond, else anywhere on the map */
+function fieldRandomPoint(h,m,minD){const ok=fieldWalk(h),safe=fieldSafe(h);
+  for(let t=0;t<60;t++){let x,y;if(t<36&&Math.random()<.4){const a=Math.random()*TAU,d=rnd(minD,minD+650);x=m.x+Math.cos(a)*d;y=m.y+Math.sin(a)*d*.75;}else{x=rnd(60,h.W-60);y=rnd(60,h.H-60);}
+    if(x<60||y<60||x>h.W-60||y>h.H-60||Math.hypot(x-m.x,y-m.y)<minD||!ok(x,y)||safe.some(s=>Math.hypot(x-s[0],y-s[1])<300))continue;return {x,y};}
+  return h.randomSpawn?h.randomSpawn(m.x,m.y,minD):null;}
+function fieldRespawn(e){const h=mapHost();if(!h||!h.ready)return false;const m=W2M(player.x,player.y),p=fieldRandomPoint(h,m,Math.max(900,Math.hypot(VW/2/Z,VH/2/Z)+120));if(!p)return false;const [x,y]=M2W(p);   /* never inside the view, also on a wide screen zoomed out */
   const n=vkMake(e.vdef,x,y);Object.assign(e,n,{id:e.id});enemies.pop();return true;}
 const FIELD_BOUNDS={...BOUNDS};
 let mapArrive=null,mapWarpLock=true;const mapHosts={};let mapSeen=[];const MAP_KEEP=(navigator.deviceMemory&&navigator.deviceMemory<=4)||/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)?1:2;   /* laid-out maps kept in memory: this one + the one before (phones: this one only) */let mapZoom=1,mapNight=false,mapLastValid=null,mapFade=0,mapFadeDir=0,mapNext=null,mapThumb={};
