@@ -182,7 +182,9 @@ const POP=document.createElement('div');POP.id='ulPop';document.body.appendChild
 ['pointerdown','mousedown','touchstart'].forEach(ev=>POP.addEventListener(ev,e=>e.stopPropagation()));
 const QUEUE=[];let showing=null;
 function iconOf(s){const b=btnOf(s);const im=b&&b.querySelector('img,svg');if(im){const c=im.cloneNode(true);c.removeAttribute('style');c.style.cssText='';return c.outerHTML;}return `<span class="em">${s.ic}</span>`;}
-function blocked(){return [...document.querySelectorAll('#ccov,#rollwin,#deathov,#boot')].some(vis)||['#totemWin','#rtw','#rgw'].some(isOpen)||(($('#lvup')||{}).classList||{contains:()=>false}).contains('on')||(($('#gdC')||{}).classList||{contains:()=>false}).contains('on');}
+const BIG=['#totemWin','#rtw','#rgw','#gdBook','#petw'];   /* a card waits while one of these is open */
+const busy=()=>BIG.some(isOpen);
+function blocked(){return [...document.querySelectorAll('#ccov,#rollwin,#deathov,#boot')].some(vis)||busy()||(($('#lvup')||{}).classList||{contains:()=>false}).contains('on')||(($('#gdC')||{}).classList||{contains:()=>false}).contains('on');}
 function show(s){showing=s;const tut=s.tut&&window.GUIDE&&GUIDE.TUT&&GUIDE.TUT[s.tut];
   POP.innerHTML=`<div class="c"><div class="h">✨ ${s.note?'พลังใหม่':'ปลดล็อกระบบใหม่'} ✨</div>
     <div class="r"><div class="ic">${iconOf(s)}</div><div><div class="n">${s.n}${s.k&&!mob()?`<small>ปุ่ม ${s.k}</small>`:''}</div><div class="d">${s.d}</div></div></div>
@@ -210,7 +212,7 @@ function tick(){if(!started){if(MODE())start();return;}
   for(const s of SY){if(S.seen[s.id]||!ok(s.id))continue;S.seen[s.id]=1;save();queue(s);}
   for(const s of SY)if(s.w&&!S.opened[s.id]&&isOpen(s.w)){S.opened[s.id]=1;save();}
   /* the player went there by himself while its card was up → the card goes; a full-screen window on top → the card waits behind it */
-  if(showing){if(showing.w&&isOpen(showing.w))hide();else POP.style.visibility=['#totemWin','#rtw','#rgw'].some(isOpen)?'hidden':'';}
+  if(showing){if(showing.w&&isOpen(showing.w))hide();else POP.style.visibility=busy()?'hidden':'';}
   if(!showing&&QUEUE.length&&!blocked()){const s=QUEUE.shift();if(S.opened[s.id]||(s.w&&isOpen(s.w))){S.opened[s.id]=1;save();}else show(s);}   /* already looking at it: no card */
   syncButtons();lastLv=lv();}
 (function loop(){requestAnimationFrame(loop);const t=performance.now();if(t-acc<400)return;acc=t;try{tick();}catch(e){}})();
