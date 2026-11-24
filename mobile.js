@@ -229,6 +229,8 @@ setInterval(syncAuto,500);
    drag = aim: arrow for directional skills, circle for ground skills; release casts, release on ✕ cancels */
 const W=document.getElementById('mobSkW'),setB=document.getElementById('mobSkSet'),tabB=document.getElementById('mobTab'),cancelEl=document.getElementById('mobCancel');
 let L={},sig='',btns=[];
+/* body.mobCx while the ✕ cancel spot shows (skill or 🎯 drag): the target chip docked under the minimap fades there (target_lock.js) */
+new MutationObserver(()=>document.body.classList.toggle('mobCx',cancelEl.classList.contains('show'))).observe(cancelEl,{attributes:true,attributeFilter:['class']});
 const G=n=>{try{return eval(n);}catch(e){return undefined;}};   // game globals (TABS, tab, LV …) are script-level lets/consts
 const SZ={s:.88,m:1,l:1.1};function uiPref(k,d){try{return localStorage.getItem(k)||d;}catch(e){return d;}}
 function layout(){const vh=innerHeight,vw=innerWidth;let sc=Math.max(.62,Math.min(1.05,Math.min(vh,vw)/480))*(SZ[uiPref('af_mob_sz','m')]||1);
@@ -245,13 +247,29 @@ function layout(){const vh=innerHeight,vw=innerWidth;let sc=Math.max(.62,Math.mi
   btns.forEach(placeBtn);}
 const atk_el=document.getElementById('mobAtk'),tgt=document.getElementById('mobTgt'),info=document.getElementById('mobInfo');
 /* 🎯 target (target_lock.js, 12 Tails style lock): tap = next target (bosses first, then by distance; repeated taps walk
-   the whole list instead of bouncing between the two nearest) · hold = release. Only locks — the hero keeps doing what it
-   does (if it is attacking, the attack moves to the new target); the attack button / skills then go to the lock. */
-let tgtHold=null,tgtLong=false;
-tgt.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();tgt.classList.add('pr');buzz(6);tgtLong=false;try{tgt.setPointerCapture(e.pointerId);}catch(_){}
-  clearTimeout(tgtHold);tgtHold=setTimeout(()=>{tgtLong=true;tgt.classList.remove('pr');if(window.TL&&TL.e){TL.release();buzz(18);}},450);});
-['pointerup','pointercancel'].forEach(ev=>tgt.addEventListener(ev,e=>{e.preventDefault();e.stopPropagation();clearTimeout(tgtHold);tgt.classList.remove('pr');
-  if(ev==='pointerup'&&!tgtLong){try{if(window.TL)TL.cycle(1);}catch(err){}}tgtLong=true;}));
+   the whole list instead of bouncing between the two nearest) · hold = release · DRAG = pick it yourself (owner 2026-11-23
+   'เลือกเป้าหมายได้ เหมือนเลือกพื้นที่ตอนใช้สกิล'): a blue ground circle moves out from the hero like a ground skill's,
+   the monster under it gets blue darts + its name, lifting the finger locks it, lifting on ✕ cancels (TL.aimDrag / aimEnd).
+   Hold still 0.45 s = release ARMED (button greys, buzz), done when the finger lifts — a drag after that still picks, and a
+   cancelled drag keeps the old lock. Only locks — the hero keeps doing what it does (if it is attacking, the attack moves to
+   the new target); the attack button / skills then go to the lock. */
+let tgtHold=null,TA=null;
+const TAIM=()=>64*(L.sc||1);
+function tgtRoom(x,y){return {l:x-6,r:innerWidth-x-6,u:y-6,d:innerHeight-y-6};}   /* a full drag = the screen edge where the finger has less room */
+tgt.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();if(TA)return;tgt.classList.add('pr');buzz(6);try{tgt.setPointerCapture(e.pointerId);}catch(_){}
+  TA={id:e.pointerId,x0:e.clientX,y0:e.clientY,moved:false,cancel:false,armed:false,e:null};
+  clearTimeout(tgtHold);tgtHold=setTimeout(()=>{if(!TA||TA.moved||!(window.TL&&TL.e))return;TA.armed=true;tgt.classList.remove('pr');tgt.classList.add('rel');buzz(18);},450);});
+tgt.addEventListener('pointermove',e=>{if(!TA||TA.id!==e.pointerId||!window.TL||!TL.aimDrag)return;e.preventDefault();const dx=e.clientX-TA.x0,dy=e.clientY-TA.y0;
+  if(!TA.moved){if(Math.hypot(dx,dy)<=12)return;TA.moved=true;TA.armed=false;clearTimeout(tgtHold);tgt.classList.remove('pr','rel');tgt.classList.add('aim');cancelEl.classList.add('show');}
+  TA.cancel=overCancel(e.clientX,e.clientY);cancelEl.classList.toggle('hot',TA.cancel);
+  const c=TL.aimDrag(dx,dy,{T:TAIM(),room:tgtRoom(TA.x0,TA.y0),cancel:TA.cancel});if(c&&c!==TA.e)buzz(5);TA.e=c;});
+function tgtEnd(e,ok){if(!TA||TA.id!==e.pointerId)return;e.preventDefault();e.stopPropagation();clearTimeout(tgtHold);tgt.classList.remove('pr','aim','rel');cancelEl.classList.remove('show','hot');
+  const a=TA;TA=null;if(!window.TL)return;
+  if(a.moved){const got=TL.aimEnd?TL.aimEnd(ok&&!a.cancel):null;if(got)buzz(12);return;}
+  if(!ok)return;
+  if(a.armed){if(TL.e)TL.release();return;}   /* held still = release */
+  try{TL.cycle(1);}catch(err){}}
+tgt.addEventListener('pointerup',e=>tgtEnd(e,true));tgt.addEventListener('pointercancel',e=>tgtEnd(e,false));tgt.addEventListener('lostpointercapture',e=>tgtEnd(e,false));
 /* skill info (long-press in ✎ mode or in the picker) */
 function showInfo(k){let h='';try{h=typeof skTip==='function'?skTip(k,(G('LV')||{})[k]||1):G('SKILLS')[k].name;}catch(e){h=G('SKILLS')[k].name;}
   info.innerHTML='<button class="x">ปิด ✕</button>'+h;info.querySelectorAll('*').forEach(n=>{if(!n.children.length&&/^\s*คลิก/.test(n.textContent))n.remove();});

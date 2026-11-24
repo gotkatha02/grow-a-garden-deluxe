@@ -224,7 +224,7 @@ function tameBtn(){const F=$('#tlf');if(!F)return;if(!TB||!F.contains(TB)){TB=do
     ['pointerdown','mousedown','touchstart','click'].forEach(ev=>TB.addEventListener(ev,e=>e.stopPropagation()));TB.addEventListener('pointerdown',e=>{e.preventDefault();throwCharm();});}
   const e=window.TL&&TL.e,s=specOf(e);if(!s||!F.classList.contains('on')){if(TB.style.display!=='none')TB.style.display='none';return;}
   const pt=e._pt,id=charmFor(s),n=id?A.BAG[id]:0,have=!!id||TEST(),h=pt?`${'♥'.repeat(pt.h)}${'♡'.repeat(pt.need-pt.h)}`:`${'♡'.repeat(s.hearts)}`,
-    lab=`<b>🐾 ผูกใจ</b><span>${h}</span><small>${have?(id?`×${n}`:'ทดสอบ'):'ไม่มีเครื่องราง'}</small>`,cls=(have?'':'no ')+(pt?'calm':'');
+    lab=`<b>🐾 <span class="ptw">ผูกใจ</span></b><span>${h}</span><small>${have?(id?`×${n}`:'ทดสอบ'):'ไม่มีเครื่องราง'}</small>`,cls=(have?'':'no ')+(pt?'calm':'');
   if(TB.dataset.l!==lab||TB.className!==cls){TB.dataset.l=lab;TB.className=cls;TB.innerHTML=lab;TB.title=`${s.th} · ต้องใช้ ${charmNeed(s)} · ${s.hearts} ดวง`;}
   if(TB.style.display!=='')TB.style.display='';}
 
@@ -261,7 +261,9 @@ const css=`
 #petTame b{font:800 12px Mali}#petTame span{letter-spacing:-1px;color:#fff3f8}#petTame small{font:700 10px Mali;opacity:.92}
 #petTame.calm{animation:ptPulse .7s ease-in-out infinite alternate}#petTame.no{filter:saturate(.35) brightness(.95)}
 @keyframes ptPulse{to{box-shadow:0 3px 0 #8a2a50,0 0 18px rgba(255,120,170,1)}}
-#tlf.ph #petTame{bottom:-27px;right:4px;padding:1px 7px 1px 5px}#tlf.ph #petTame b{font-size:11px}
+#petTame b .ptw{letter-spacing:0;color:inherit}
+#tlf.ph #petTame{top:calc(100% + 3px);bottom:auto;left:24px;right:auto;gap:3px;padding:0 7px 0 5px;height:20px;border-width:1.5px;border-radius:10px;box-shadow:0 2px 0 #8a2a50,0 0 7px rgba(255,120,170,.5)}
+#tlf.ph #petTame b{font-size:11px}#tlf.ph #petTame .ptw,#tlf.ph #petTame small{display:none}#tlf.ph #petTame span{font-size:10px}
 @media (max-width:640px){#petw .ptpg{grid-template-columns:1fr}#petw .ptcxg{grid-template-columns:1fr}#petw .ptslot{height:88px}}
 `;
 {const st=document.createElement('style');st.textContent=css;document.head.appendChild(st);}
