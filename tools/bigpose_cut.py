@@ -6,6 +6,9 @@ usage: python3 -I tools/bigpose_cut.py SHEET OUT.png [xmax=585] [ymin_shadow=900
   segment (the tan is measured from the bottom band), flood-filled from the border; so the soft floor shadow goes too
 - pockets=1: enclosed pure-cream pockets (area >= 40) also count as background (gaps between arm and body). Use pockets=0
   when the hero has parts in the cream colour (rhino 2026-11-24: horn highlights and teeth were taken as pockets)
+- pockbox=x0,y0,x1,y1;x0,y0,x1,y1 (quote it in the shell): ONLY enclosed cream pockets whose centre lies in one of these
+  boxes are background (any size >= 4, any shade of the cream) — for heroes with cream costume parts AND see-through gaps
+  (anubis 2026-11-24: cream collar / kilt underlayer / shin wraps kept, chain-link holes + arm and leg gaps removed)
 - kept: the biggest piece + small pieces whose box lies left of xmax (sparkles / chips of the big pose; the right-hand
   figures' bits stay out) · specks under minpiece px dropped
 - rim pixels (<= 2 px from the background) are un-mixed against the background colour they sit on (cream or tan), using
@@ -40,7 +43,18 @@ edge = set(np.unique(np.concatenate([lab[0], lab[-1], lab[:, 0], lab[:, -1]]))) 
 B = np.isin(lab, list(edge))
 # enclosed pure-cream pockets
 pk, pn = ndi.label(bgc & ~B)
-if pn and POCK:
+PBOX = [tuple(int(v) for v in b.split(',')) for b in kw['pockbox'].split(';')] if 'pockbox' in kw else None
+if pn and PBOX:
+    sz = ndi.sum(np.ones_like(pk), pk, range(1, pn + 1))
+    cyx = ndi.center_of_mass(np.ones_like(pk), pk, range(1, pn + 1))
+    pobj = ndi.find_objects(pk)
+    for i in range(pn):
+        cy, cx = cyx[i]
+        if sz[i] >= 4 and any(b[0] <= cx <= b[2] and b[1] <= cy <= b[3] for b in PBOX):
+            B |= pk == i + 1
+            sl = pobj[i]
+            print('pocket', int(sz[i]), 'x', sl[1].start, sl[1].stop, 'y', sl[0].start, sl[0].stop)
+elif pn and POCK:
     sz = ndi.sum(np.ones_like(pk), pk, range(1, pn + 1))
     mean_d = ndi.mean(d_cream, pk, range(1, pn + 1))
     pobj = ndi.find_objects(pk)
@@ -58,6 +72,8 @@ keep = np.zeros(fn + 1, bool); keep[big] = True
 for i, sl in enumerate(objs):
     if sl[1].stop <= XMAX and i + 1 != big:
         keep[i + 1] = True
+        if sizes[i] >= 30:
+            print('  small piece', int(sizes[i]), 'x', sl[1].start, sl[1].stop, 'y', sl[0].start, sl[0].stop)
 K = keep[fl]
 print('kept pieces', int(keep.sum()), 'main box x', objs[big - 1][1], 'y', objs[big - 1][0])
 # alpha: interior 1, rim un-mixed

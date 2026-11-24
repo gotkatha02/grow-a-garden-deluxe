@@ -621,6 +621,98 @@ V=assets/heroes/rhino; python3 -I tools/dir8cut.py startv <โฟลเดอร
 - **หน้า HUD:** atlas เดิมมี `RH_PORTRAIT` (หน้าแรดลุคเดิม) — cliphero ไม่สร้าง → ตัดหัวจาก view_S เป็น `assets/heroes/rhino/face.webp` แล้วตั้ง window.HUD_FACE (แบบลิง / แกะ / ฮิปโป / บาสเต็ด) ไม่งั้นหน้า HUD จะกลับเป็นหน้า default
 - `CHAR_FILTER.rhino` เป็น '' เมื่อมี RH_ART (ไม่ต้องแก้) · หน้าเลือกตัว = ภาพใหญ่ของชีตแล้ว (`select.webp`, SELV rhino 2)
 - ยังเป็นลุคเก่า: ไอคอนสกิล 53 + ex_ 11, พื้นหลังผังสกิล 4 ภาพ, ภาพเอฟเฟกต์ที่มีถุงมือเดิม (`assets/fx/rhino` r01_jab, r02_heavy) / ตัวแรดเดิม (`assets/skill-vfx/rhino` colossus-spirit, worldbreaker), ภาพหน้าโหลด ld1 ld7 ld8 · ยังไม่มี: ท่านั่ง (hero_sit.js)"""),
+ 'anubis': dict(
+  title='อนูบิส ลุคใหม่ (อนูบิสโฉมใหม่ · Anubis Reborn)',
+  who='the black jackal warrior in this picture', P='He', p='he', pos='his', weapon='chain and spiked ball',
+  face="Keep his face exactly as in the picture: the same narrow gold eyes with the gold kohl lines, the same thin gold "
+       "band across his brow, the same black muzzle and the same calm, confident small smile, mouth closed.",
+  back_face={'NE': "We see him mostly from behind: the back of his head with both tall ears, the striped headcloth covering "
+                   "the back of his head and the white shoulder cape; of his face only the edge of his muzzle on the right, "
+                   "as in the picture; his face never turns toward us.",
+             'N': "We only see the back of his head with both tall ears, the striped headcloth covering the back of his "
+                  "head and the white shoulder cape across his upper back, as in the picture; his face never turns toward us."},
+  keep={d: ("His tall ears, the thin gold band across his brow, the deep-blue-and-gold striped headcloth, the white shoulder "
+            "cape with its gold zigzag band and the round gold ankh brooch, the black top with its gold trim, the wide gold "
+            "belt with its round buckle, the navy kilt with the gold ankh panel, the gold wrist cuffs, the linen shin wraps, "
+            "the gold sandals, his big bushy black tail and the gold chain with the dark spiked ball and its gold ankh stay "
+            "exactly the same.") for d in ('S', 'SE', 'E')}
+       | {d: ("His tall ears, the striped headcloth, the white shoulder cape with its gold zigzag band, the gold belt, the "
+              "back of the navy kilt, the gold wrist cuffs, the linen shin wraps, the gold sandals, his big bushy black tail "
+              "and the gold chain with the dark spiked ball stay exactly the same.") for d in ('NE', 'N')},
+  spos=dict.fromkeys(DIRS, 'wrapped around his fist at his side with the spiked ball hanging beside his leg'),
+  blink=", his tall ears twitch once, and he blinks once",
+  vis=" His swinging arm, the chain and the whole spiked ball stay visible beside his body during the whole swing.",
+  fmt={'pvis': ('', " His raised fist and the dangling ball stay visible above his shoulder while he holds the pose."),
+       'chin': (', lifting his chin proudly', '')},
+  inframe="his whole body, both tall ears, the whole chain and spiked ball, and his whole tail stay inside the frame.",
+  nofx="No shadow, no flash, no glow, no sparkles, no particles, no smoke, no sand, no dust, no light trails, no streaks "
+       "of colour, no golden swirls, no purple fire, no magic effects, no text.",
+  act={
+   'idle': "Idle loop of {who}. {facing} He stands tall in a relaxed, ready stance, the gold chain {spos}, his other hand "
+           "loosely closed at his side, and breathes slowly: his chest rises and falls, the striped headcloth and the white "
+           "shoulder cape stir a little, the spiked ball sways gently on its chain and his big bushy tail sways slowly"
+           "{blink}. The last frame matches the first frame so the clip loops.",
+   'walk': "Walk loop of {who}. {facing} He walks in place, like on a treadmill, toward the way he is facing: light, "
+           "confident steps (about two steps per second) in his gold sandals, the spiked ball swinging a little on its "
+           "chain from his fist beside his leg, his other arm swinging a little, the striped headcloth bouncing and his "
+           "bushy tail swaying behind him. He does not move across the frame and the ground does not move. The last frame "
+           "matches the first frame so the clip loops.",
+   'attack': "Flail swing of {who}. {facing} He swings his chain arm up and back so the spiked ball rises over his shoulder "
+             "in a short wind-up, then swings it forward and down in one powerful diagonal arc toward the way he is facing, "
+             "until his arm points forward and the ball is low in front of him at the end of its chain; he holds that pose "
+             "for a moment, then lets the ball swing back to hang at his side, returns to his starting pose and stands still "
+             "for the rest of the clip. The whole move takes about one second. His feet stay in place.{vis} The chain stays "
+             "the same length and the ball stays exactly as drawn, and the air around them stays empty and plain green in "
+             "every frame. Clean outlines in every frame, no motion blur.",
+   'buff': "Power pose of {who}. {facing} He raises his chain fist high above his head so the spiked ball dangles on its "
+           "chain beside his head, and opens his other hand palm up at his side, his chest out{chin}; he holds that pose "
+           "still for about one second, then lowers his arm back to his side, returns to his starting pose and stands still "
+           "for the rest of the clip. His feet stay in place.{pvis} The raised fist and the ball stay inside the frame. "
+           "Clean outlines in every frame, no motion blur."},
+  dirname={'S': 'หน้าตรง', 'SE': 'เฉียงหน้า หันขวา', 'E': 'ข้าง หันขวา', 'NE': 'เฉียงหลัง หันขวา', 'N': 'หลัง'},
+  actname={'idle': 'ยืน (idle · วนลูป)', 'walk': 'เดิน (walk · วนลูป)',
+           'attack': 'เหวี่ยงลูกตุ้ม (attack · ตีปกติ + สกิลเหวี่ยงทุกท่า — เกมเล่นแค่ช่วงง้าง 3 เฟรม → ลูกตุ้มลงตรงหน้า → 2 เฟรมหลัง)',
+           'buff': 'ชูกำปั้น (buff · สกิลร่ายทุกท่า พุ่ง หมุน บัฟ อัลติ — เกมปล่อยสกิลที่เฟรมชูสุด)'},
+  start='anubis_{n}_{d}.png',
+  header="""เจ้าของเลือกแบบ 5 'อนูบิสโฉมใหม่' 2026-11-24 21:27 ("รูปซ้ายเอาไว้ทำ หน้าเลิอกตัวด้วย") · ชีต `assets/heroes/anubis/sheet_reborn.webp` · ภาพใหญ่ = หน้าเลือกตัวแล้ว · หน้าตา + พรอมต์ภาพยืน 5 มุม: `ANUBIS_LOOK_PROMPTS_TH.md` หัวข้อ 'เลือกแล้ว'
+
+## ลำดับงาน
+1. **ภาพยืน 5 มุม** — รอภาพ (พรอมต์ใน `ANUBIS_LOOK_PROMPTS_TH.md` หัวข้อ 'เลือกแล้ว') → `assets/heroes/anubis/view_S|SE|E|NE|N.webp`
+2. **ภาพตั้งต้น** — ตัดจากภาพ 5 มุม (คำสั่งข้างล่าง) เป็น `anubis_1_S.png … anubis_5_N.png` (ไม่เก็บในรีโป สร้างใหม่ได้ทุกเมื่อ)
+3. **คลิป 20 ตัว** — พรอมต์ในไฟล์นี้ แนบภาพตั้งต้นของทิศนั้นทุกคลิป
+
+## ภาพตั้งต้น
+- `anubis_<n>_<ทิศ>.png` 900×900 สี่เหลี่ยม แบบฮิปโป / จากัวร์ / หมาป่า / แรด · หูสูงมาก + ต้องมีที่ให้เหวี่ยงลูกตุ้มข้ามไหล่ ฟาดไปข้างหน้า และชูกำปั้นเหนือหัว (ลูกตุ้มห้อยข้างหัว) → เริ่มที่ ht ~480 (ในคลิป 480p ตัวสูง ~255 px) แล้วดูว่าซ้าย / ขวา / เหนือหูว่างพอไหม
+```
+V=assets/heroes/anubis; python3 -I tools/dir8cut.py startv <โฟลเดอร์> S=$V/view_S.webp SE=$V/view_SE.webp E=$V/view_E.webp NE=$V/view_NE.webp N=$V/view_N.webp size=900 feet=.9 ht=480 clean=0
+```
+→ start_<ทิศ>.png → ตั้งชื่อใหม่ anubis_1_S … anubis_5_N · ทุกทิศใช้สเกลของมุมหน้า (ใส่ S ก่อนเสมอ) · clean=0 = ไม่ทาจุดเขียวในตัว (ชุดไม่มีสีเขียวเลย · แถบผ้า / กระโปรงน้ำเงินมากกว่าเขียวทุกจุด · ช่องในห่วงโซ่ ระหว่างแขนกับตัว ระหว่างขา เป็นพื้นหลังจริง)
+
+## วิธีใช้
+แนบภาพตั้งต้นของทิศนั้น + วางพรอมต์ทีละตัว → 4 คลิปต่อทิศ (ยืน · เดิน · เหวี่ยงลูกตุ้ม · ชูกำปั้น) · คลิปละ 3–5 วิ · ไม่ต้องทำทิศซ้าย (เกมกลับด้านเอง) · ส่งกลับเรียง S → SE → E → NE → N ทิศละ ยืน → เดิน → เหวี่ยง → ชู (สลับได้ ดูเองว่าคลิปไหนเป็นท่าอะไร)
+
+## กติกาที่อยู่ในทุกพรอมต์ (บทเรียนจากคลิปลิง / แอคโซลอเติล / มังกรลุคเดิม / แกะ / บาสเต็ด / ฮิปโป / จากัวร์)
+- ประโยคบอกทิศขึ้นต้นทุกพรอมต์ กันโมเดลหมุนตัวหันหากล้อง (มุมหลังโดนบ่อย)
+- ล็อกหน้า (ตาทองเส้นอายไลเนอร์ทอง คาดหน้าผากทอง ปากดำ ยิ้มปากปิด สีหน้ามั่นใจ) ในมุมที่เห็นหน้า · มุมหลัง (NE, N) ใช้ประโยค 'เห็นแค่หลังหัว หน้าไม่หันมา' แทน ไม่มีกะพริบตา
+- ล็อกของติดตัว: หูสูงตั้งพ้นผ้า · ผ้าโพกลายทางน้ำเงินทอง · ผ้าคลุมไหล่ขาวแถบซิกแซกทอง · เข็มกลัดอังค์ทองกลม · เสื้อดำขลิบทอง · เข็มขัดทองหัวกลม · กระโปรงกรมแผงอังค์ · กำไลทอง · ผ้าพันแข้ง · รองเท้าทอง · หางพวงดำ · โซ่ทองพันกำปั้น + ลูกตุ้มหนามอังค์
+- เดินอยู่กับที่แบบลู่วิ่ง ~2 ก้าว/วิ ลูกตุ้มแกว่งนิดๆ ข้างขา
+- เหวี่ยงลูกตุ้ม = เหวี่ยงแขนขึ้นไปข้างหลังให้ลูกตุ้มข้ามไหล่ แล้วฟาดลงทแยงไปข้างหน้าจนแขนชี้ไปข้างหน้า ลูกตุ้มอยู่ต่ำตรงหน้าสุดปลายโซ่ ค้างนิดนึง ปล่อยกลับมาห้อยข้างตัว ยืนนิ่งจนจบคลิป · **ไม่ใช้คำว่า attack / slash / smash ในพรอมต์** (คลิปแรกของจากัวร์: โมเดลวาดรอยฟัน แสงขาว ตัว X ทับท่า) + สั่งให้อากาศรอบลูกตุ้มเป็นพื้นเขียวเปล่าทุกเฟรม · โซ่ยาวเท่าเดิม · มุมหลังสั่งให้แขน โซ่ ลูกตุ้มยังเห็นข้างตัว
+- ชูกำปั้น = ชูกำปั้นที่พันโซ่ขึ้นเหนือหัว ลูกตุ้มห้อยข้างหัว อีกมือแบหงายข้างตัว อกผาย ค้างนิ่ง ~1 วิ แล้ววางลง — เกมใช้ทั้งคลิปกับสกิลร่ายทุกท่า
+- ห้ามเบลอ · ห้ามวงทอง ฝุ่นทราย ไฟม่วง แบบในชีต (เอฟเฟกต์ใส่ในเกม: `char_anubis.js` + ภาพวาด `char_anubis_fx.js`) · กล้องนิ่งไม่ซูม · พื้นเขียวตลอด · ตัว + หู + โซ่ + ลูกตุ้ม + หางอยู่ในกรอบตลอด
+- ไม่ระบุมือซ้าย / ขวาในพรอมต์คลิป (ภาพตั้งต้นบอกเองว่าโซ่อยู่ฝั่งไหน)""",
+  footer="""## ตอนคลิปมาถึง (โน้ตสำหรับแชตที่ทำต่อ)
+- ตัดด้วย `tools/cliphero.py` + แผนใหม่ `tools/clips/anubis_plan.json` (ดู `hippo_plan.json` / `bastet_plan.json`: loop ช่วงที่ลืมตา, เลือกเฟรมเลี่ยงรอยวง / ฝุ่น / แสงที่โมเดลแอบใส่, flipDirs ถ้ามีคลิปหันผิดฝั่ง, perDir ถ้าคลิปบางทิศถ่ายมาเล็ก / ใหญ่กว่า, "unstreak")
+- **เขียนเป็นไฟล์ใหม่ `assets_anubis.js`** (prefix ใหม่ เช่น ANB + สลับเข้าใน index.html แบบ BST_ART เฉพาะ `?char=anubis` + รายการ document.write + ตาราง MB ของหน้าโหลด) · **ห้ามเขียนทับ `assets.js`**: มันคือหมาป่า + ร่างชั่วคราวของจิ้งจอก สิงโต จระเข้ อีกา (และอนูบิสตอนนี้)
+- **เวลาเฟรมต้องเท่า `assets.js` ทุกทิศ** (อนูบิสถูก bench กับเวลานี้) → จังหวะโดน / ปล่อยสกิลเท่าเดิม · เช็ก `python3 tools/fxlab.py hits anubis` ก่อน / หลัง:
+  - attack 12 เฟรม 900 ms · S [80,50,90,50,50,50,70,200,50,50,50,110] contact 6 (โดนที่ 370 ms) · SE [50,50,190,70,90,50,50,50,50,50,90,110] contact 4 (360 ms) · E [80,50,50,100,50,120,60,120,50,50,50,120] contact 6 (450 ms) · N [110,120,50,50,70,50,120,70,50,50,50,110] contact 6 (450 ms) · NE: atlas เดิมให้เกมเล่นแถว E แทน (atkRemap NE→E) → คลิป NE ใหม่ใช้เวลาเฟรม + contact ของ E แล้วตั้ง atkRemap {} (แบบบาสเต็ด) · เฟรม contact = ลูกตุ้มลงต่ำตรงหน้า แขนชี้ไปข้างหน้า · contact−3 … contact−1 = ลูกตุ้มข้ามไหล่ → กำลังฟาดลง (ช่วงนี้ต้องคม ไม่เบลอ)
+  - buff 12 เฟรม 1.4 วิ peak 7 · S [170,50,50,230,50,110,390,50,50,50,50,150] (1,050 ms) · E [70,50,50,50,50,70,170,580,50,50,50,160] (510) · NE [80,60,50,50,50,50,120,160,480,60,60,180] (460) · N [130,50,50,50,50,110,260,450,60,50,50,90] (700) · SE 6 เฟรม [220×6] peak 3 (660) → เฟรม peak = ชูกำปั้นสุด
+  - walk 8 × 100 ms (E สลับ 110 / 90) รอบละ 0.8 วิ · idle 12 เฟรม 2.4 วิ · hurt 7 เฟรม 550 ms
+- ใครใช้เฟรมไหน (`char_anubis.js`): `uSwingAct` = ตีปกติ (Chain Flail ชุด + Chain Frenzy), Ankh Sweep, Chain Lasso, Soul Hook, Heart Crush, Final Judgment, Scale Breaker → เล่น attack ตั้งแต่ contact−3 ถึง contact+2 เร็ว ×1–1.7 × aspd() ดาเมจที่ contact · `uCast` → buffAct = ที่เหลือทั้งหมด (Jackal Lunge, Linen Wraps, Embalming Rite, Standard of Ra, Sandstorm Spin, Meteor Ankh, Duat Cyclone, Chain Guard, Wheel of Ra, Binding Chains, Jackal Pounce, Underworld Gate, Hall of Two Truths, Dust Devil, Rite of Rebirth, Avatar of Anubis, Ra's Wrath, Anubis Verdict) → buff ถึง peak = ปล่อยสกิล · ท่าหมุน (Sandstorm Spin, Wheel of Ra) วาดโซ่ + ลูกตุ้มหมุนรอบตัวด้วยโค้ด (uChain / uBall) ตัวไม่หมุน
+- **socket:** โค้ดอนูบิสไม่อ่าน socket ตอนนี้ (ไม่จำเป็นต้องทำ) · ถ้าอยากให้เอฟเฟกต์ออกจากลูกตุ้มจริง → cliphero 'orb' จับอังค์ทอง / ลูกตุ้ม หรือ orbFix อ่านด้วยตา
+- **ขนาด:** CHAR_SCALE.anubis ตอนนี้ 1 (ร่างหมาป่า) · CHAR_SCALE ของทุกตัววัดเทียบความสูงตอนยืนของหมาป่า (S idle 196 cell px ที่สเกล atlas .55) → วัดใหม่ให้ยืนสูงเท่าหมาป่า (หูสูงนับรวม)
+- **หน้า HUD:** ตอนนี้ใช้หน้า default (หมาป่า) → ตัดหัวจาก view_S เป็น `assets/heroes/anubis/face.webp` แล้วตั้ง window.HUD_FACE ใน installAnubis (แบบลิง / แกะ / ฮิปโป / บาสเต็ด)
+- อนูบิสไม่มี CHAR_FILTER (ไม่ต้องแก้) · หน้าเลือกตัว = ภาพใหญ่ของชีตแล้ว (`select.webp`, SELV anubis 2)
+- ยังเป็นลุคเก่า: ไอคอนสกิลที่มีตัวอนูบิส (~2 ใน 3 ของ 55 + ex_ 8), พื้นหลังผังสกิล 4 ภาพ, ภาพเอฟเฟกต์ `anubis_head` / `avatar_aura` (เทพหมาจิ้งจอกทองโพกผ้าลายทาง ยังพอเข้ากัน), ภาพหน้าโหลด ld1 ld8 · ยังไม่มี: ท่านั่ง (hero_sit.js)"""),
 }
 
 def build(h, d, a):

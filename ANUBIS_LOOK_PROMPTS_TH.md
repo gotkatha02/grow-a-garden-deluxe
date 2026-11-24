@@ -135,7 +135,7 @@ Design 6 — a mix: the fur and face of design 3 with the outfit of design 1, in
 ```
 
 ## เลือกแล้วทำอะไรต่อ
-1. ส่งชีตที่เลือกมา → เขียนหัวข้อ 'เลือกแล้ว' ในไฟล์นี้ (หน้าตาตามที่วาด + พรอมต์ภาพยืน 5 มุมบนพื้นเขียว S SE E NE N ด้านข้างหันขวา ท่าเดียวกัน ขนาดเท่ากัน โซ่พันแขน ลูกตุ้มห้อย ตะขอที่สะโพกทุกมุม บอกฝั่งของลูกตุ้ม / ตะขอในภาพทีละมุม)
+1. ส่งชีตที่เลือกมา → เขียนหัวข้อ 'เลือกแล้ว' ในไฟล์นี้ (หน้าตาตามที่วาด + พรอมต์ภาพยืน 5 มุมบนพื้นเขียว S SE E NE N ด้านข้างหันขวา ท่าเดียวกัน ขนาดเท่ากัน โซ่พันแขน ลูกตุ้มห้อย ตะขอที่สะโพกทุกมุม บอกฝั่งของลูกตุ้ม / ตะขอในภาพทีละมุม) — ทำแล้ว: ชีตที่เลือกไม่มีตะขอในท่ายืน จึงไม่ใส่ (ดูหัวข้อ 'เลือกแล้ว' ท้ายไฟล์)
 2. ภาพตั้งต้น (`tools/dir8cut.py startv` size=900 feet .9 clean=0 · เว้นที่ด้านข้างให้ลูกตุ้มเหวี่ยง) + พรอมต์คลิป 20 อัน (`tools/clip_prompts.py` เพิ่มรายการ anubis) — ท่าที่เกมใช้:
    - **ท่าตี** = เหวี่ยงลูกตุ้มเฉียงลงตรงหน้า · สกิลเหวี่ยง (`uSwingAct`) เล่นท่าตีตั้งแต่เฟรม 'โดน−3' → เฟรมโดนต้องเป็นลูกตุ้มกระแทกตรงหน้าพอดี
    - **ท่าบัฟ** = ชูลูกตุ้มขึ้นเหนือหัว (โซ่ห้อย) ค้างไว้ราว 1 วิ · สกิลร่าย (`uCast` → `buffAct`) ค้างที่จุดสูงสุด
@@ -151,3 +151,95 @@ Design 6 — a mix: the fur and face of design 3 with the outfit of design 1, in
    - ตัวยืน S สูงบนจอเท่าหมาป่า (`CHAR_SCALE.anubis` วัดใหม่) · จุดลูกตุ้มทุกเฟรมของท่าตีกับท่าบัฟ (`sockets`) ถ้าหาได้
 4. ตามมา: หน้า HUD (`window.HUD_FACE`) + ภาพหน้าเลือกตัว + ท่านั่ง (`hero_sit.js`)
 5. ทีหลัง: ไอคอนที่มีตัวอนูบิส + ผังสกิล 4 ภาพ + ภาพหน้าโหลด ld1 ld8 (+ `anubis_head` / `avatar_aura` ถ้าอยากให้ตรงลุค) เขียนพรอมต์ให้ตอนลุคนิ่งแล้ว
+
+## เลือกแล้ว: แบบ 5 อนูบิสโฉมใหม่ (2026-11-24 21:27)
+- เจ้าของส่งชีต + "รูปซ้ายเอาไว้ทำ หน้าเลิอกตัวด้วย" → ชีตเก็บที่ `assets/heroes/anubis/sheet_reborn.webp` (1536×1024 พื้นครีม)
+- ภาพใหญ่ด้านซ้าย: ตัดพื้นครีม + เงาพื้นสีแทนออกด้วย `tools/bigpose_cut.py` + ตัวเลือกใหม่ `pockbox=60,470,300,640` = เจาะเฉพาะแอ่งครีมในกรอบนี้ (ช่องในห่วงโซ่ + ช่องระหว่างแขนกับตัว) · ผ้าคลุมไหล่ขาว ผ้าซับในกระโปรง ผ้าพันแข้ง ตาขาว เป็นสีครีมเกือบเท่าพื้น ถ้าเจาะแบบปกติ (`pockets=1`) ผ้าคลุมไหล่จะเป็นรู · `xmax=530` กันฝุ่นทรายของท่าสู้ข้างๆ ติดมา → `assets/heroes/anubis/bigpose_reborn.webp` (664×1002 พื้นใส) → หน้าเลือกตัว `assets/heroes/anubis/select.webp` (`tools/select_cut.py` สเกลเดียวกับตัวอื่น สูงชนกรอบ 935 ของ 960 · `char_create.js` SELV anubis 2 = กันแคชภาพเก่า) · ภาพเลือกตัวเดิม (ลุคเก่า) อยู่ในประวัติ git
+- ในเกมตอนนี้: หน้าเลือกตัวเป็นลุคใหม่แล้ว แต่ตัวในเกมยังเป็นร่างหมาป่า (`assets.js`) และไอคอน ผังสกิล ภาพเอฟเฟกต์หัวอนูบิส ยังเป็นลุคเดิม จนกว่าคลิป 20 ตัวจะมา
+
+**หน้าตาตามที่วาดออกมา** (ใช้ในพรอมต์ต่อๆ ไปทุกตัว):
+- **หัว:** หมาจิ้งจอกดำเงา (เงาม่วงเข้ม ไม่ใช่น้ำตาล) หูสูงแหลมมาก ในหูชมพูหม่น · ตาทองเรียวรูม่านตาดำ เส้นอายไลเนอร์ทองลากไปด้านหลัง + ขีดทองเล็กใต้ตา · จมูกดำ · ยิ้มมั่นใจปากปิด · คาดหน้าผากทองเส้นบาง (มีจุดแหลมเล็กตรงกลาง)
+- **ผ้าโพกลายทาง** น้ำเงินเข้มสลับทอง ใส่ต่ำหลังหัว: มุมหน้า = แถบลาย 2 แถบห้อยข้างคอสองข้าง · มุมหลัง = คลุมท้ายทอยทั้งแผ่นลงถึงผ้าคลุมไหล่ · หูทั้งสองตั้งพ้นผ้าทุกมุม
+- **ผ้าคลุมไหล่** ลินินขาวสั้นคลุมสองบ่า ขอบทอง + แถบลายซิกแซกทอง · กลัดที่คอด้วยเข็มกลัดทองกลม (ขอบทอง กลางสีเข้ม อังค์ทอง) มีจี้ทองแหลมเล็กห้อยใต้
+- **ตัว:** เสื้อดำแนบตัวไม่มีแขน เส้นขลิบทองลงด้านหน้า · แขนดำเปลือย กำไลทองกว้างที่ข้อมือทั้งสองข้าง · มือดำ · เข็มขัดทองกว้าง หัวเข็มขัดทองกลม
+- **กระโปรง** สั้นสีกรม ขอบทอง แผงหน้าสีกรมยาวปลายแหลม ขอบทอง อังค์ทองกลางแผง · ผ้าลินินขาวโผล่ด้านข้าง
+- **ขา:** ขาดำ ผ้าลินินพันแข้ง กำไลข้อเท้าทอง รองเท้าสานทองบนเท้าดำ · หางพวงดำเงาใหญ่
+- **อาวุธ:** **มือขวา**ทุกมุม = โซ่ทองหนาพันกำปั้นหลายรอบ ห้อยลงเป็นสองเส้นถึงลูกตุ้มเหล็กสีน้ำตาลเข้ม (≈ RGB 83, 47, 46) หนามทอง 8 อัน อังค์ทองด้านหน้า · ลูกตุ้มห้อยราวเข่า
+- **สี:** ดำ + ทอง + กรม / น้ำเงินเข้ม + ขาว (ผ้า) + ชมพูหม่น (ในหู) + น้ำตาลเข้ม (ลูกตุ้ม) · ไม่มีสีเขียวเลย (นับทั้งชีต 0 จุด · สีฟ้า / กรมทุกจุดน้ำเงินมากกว่าเขียว: แถบผ้า ≈ 44, 45, 92 · กระโปรง ≈ 57, 52, 92) → ตัดพื้นเขียวได้ปลอดภัย
+
+**บนชีตต้องระวัง** (ใส่ไว้ในพรอมต์ข้างล่างแล้ว):
+- ภาพใหญ่แบมือซ้ายยื่นมาหาคนดู → ภาพยืนให้มือซ้ายกำหลวมๆ ข้างตัว (โซ่ยังพันมือขวา ลูกตุ้มห้อยข้างขา แบบภาพหมุนรอบตัว)
+- ตะขอเกี่ยวทอง (สาย B) มีแค่ในท่าสู้ขวาล่าง → ภาพยืนไม่ใส่ตะขอ (เกมวาดตะขอเองตอนเกี่ยว: `UThrow` + ภาพ `soul_hook`)
+- ท่าสู้มีวงทองหมุน ฝุ่นทราย ไฟม่วง → ภาพยืนห้ามเอฟเฟกต์ (ใส่ด้วยโค้ด / ภาพในเกม)
+- ผ้าโพกวาดสองแบบตามมุม (หน้า = แถบห้อยข้างคอ · หลัง = คลุมท้ายทอย) → พรอมต์บอกทั้งสองอย่าง ไม่ให้กลายเป็นผ้าคลุมหัวทั้งหัว
+- หูสูงมาก + ลูกตุ้มห้อย + หางพวงใหญ่ → สั่งให้อยู่ในกรอบหมด มีพื้นเขียวเหลือรอบตัว
+- พรอมต์ออกแบบบอก 'ลูกตุ้มบรอนซ์เข้ม' + 'โซ่พันแขน' แต่วาดเป็นเหล็กสีน้ำตาลเข้ม + โซ่พันกำปั้น → ใช้ตามภาพ
+
+### ขั้น 1 — ภาพยืน 5 มุม ภาพละมุม พื้นเขียว · รอภาพ
+วิธีใช้:
+1. ส่งต่อในแชต ChatGPT เดิมที่เจนชีตนี้ (มันจำตัวได้) แนบชีตไปกับพรอมต์ 0 อีกครั้ง · ถ้าเปิดแชตใหม่ แนบชีต + ภาพปกแคมป์ไฟ (`keyart_campfire_ld5.jpg`)
+2. ส่งพรอมต์ 0 → รอมันตอบ ready
+3. ส่งภาพ 1–5 ทีละข้อความ (ข้อความละ 1 ภาพ)
+4. ครบแล้วส่ง 5 ภาพมาให้ผม
+
+ทำไมแยกภาพละมุม: ภาพใหญ่ = รายละเอียดชัดในคลิป (480p) · ทุกภาพท่ายืนเดียวกัน ขนาดเท่ากัน · บอกว่าโซ่ ลูกตุ้ม หาง ต้องอยู่ฝั่งไหนของภาพ · มุมไหนหันซ้ายมาไม่ต้องแก้ ผมกลับด้านให้
+
+แก้ภาพ (ต่อท้ายแล้วส่ง):
+- หันผิดทาง → `Redo picture 2: he must face the RIGHT side of the picture.`
+- มุมหลังเห็นหน้า → `Redo picture 4: turn him further away, we must not see his eyes or his face.`
+- ขนาดไม่เท่ากัน → `Redo picture 3: draw him the same size as in picture 1.`
+- มีหลายตัว → `Redo picture 1: only ONE jackal in the picture, nothing else.`
+- โซ่ / ลูกตุ้มย้ายไปอีกมือ (มุมหน้า) → `Redo picture 1: the gold chain and the spiked ball must be in the hand on the LEFT side of the picture, and his other hand on the RIGHT side is empty and loosely closed.`
+- ลูกตุ้มหาย / โซ่ขาด → `Redo picture 3: keep the gold chain wrapped around his fist and the dark spiked ball with the gold ankh hanging from it, exactly as on the sheet.`
+- มีตะขอโผล่มา → `Redo picture 2: no golden hook — only the chain and the spiked ball.`
+- ผ้าโพกคลุมทั้งหัว / หูหาย → `Redo picture 1: the striped headcloth is worn low behind his head; both tall ears stand completely free above it.`
+- มีเอฟเฟกต์ติดมา → `Redo picture 2: no golden swirls, no sand, no purple fire, no glow, no sparkles — just the jackal standing.`
+- อ้าปาก / เห็นฟัน → `Redo picture 1: his mouth closed, a calm, confident small smile.`
+- หู / ลูกตุ้ม / หางล้นกรอบ → `Redo picture 3: draw him a little smaller so his whole ears, the whole spiked ball and his whole tail fit inside the picture.`
+- แก้แค่บางส่วน → ใช้แปรงเลือกเฉพาะจุดใน ChatGPT (สั่งแก้ทั้งภาพ มันจะวาดใหม่หมด)
+
+#### พรอมต์ 0 — กติกา (ส่งครั้งเดียว พร้อมแนบชีต)
+```
+Next I need this same hero — the black jackal warrior on the attached sheet — drawn standing in 5 directions for my game's animation, ONE picture per message. Do not draw anything yet: reply only "ready", then draw one picture each time I send a direction.
+
+Every picture:
+- ONE jackal alone in a square picture on a plain flat pure green background (#00FF00): no gradient, no floor, no shadow under him, no other views, no text, no logo, no watermark.
+- exactly the same character and drawing style as the sheet, nothing added and nothing left out: friendly hand-painted chibi cartoon, thick clean dark-brown outlines, flat cel shading with 2–3 tones. A slim, athletic black jackal with glossy black fur (dark plum-black shading, not brown), two very tall pointed ears with dusty-pink insides, narrow gold eyes with gold kohl lines that sweep back and a small gold mark under each eye, a black nose and a calm, confident small smile with his mouth closed. A thin gold band across his brow. A short deep-blue-and-gold striped headcloth worn low at the back of his head: from the front two striped flaps hang down beside his neck, from behind it covers the back of his head down to his shoulders, and both tall ears always stand completely free above it. A short white linen shoulder cape over both shoulders with a gold border and a gold zigzag band, fastened at his throat by a round gold brooch with a dark centre and a gold ankh, with a small gold point hanging under it. A fitted black sleeveless top with thin gold trim lines down the front. Bare black arms with wide gold cuffs on both wrists. A wide gold belt with a round gold buckle. A short navy kilt with gold borders and one long navy front panel with a gold border, a gold ankh and a pointed end; white linen shows at the sides of the kilt. White linen wraps on his shins, gold ankle bands and gold sandals on his black feet. A big bushy black tail.
+- his weapon, always in his RIGHT hand: a thick gold chain wrapped several times around his fist, with two short strands hanging down to a dark brown iron spiked ball with eight gold spikes and a gold ankh on its front. No golden hook, no other weapon, no shield.
+- the same standing pose in every picture: standing tall in a relaxed, ready stance, feet about shoulder-width apart, his right fist with the chain at his side so the spiked ball hangs beside his leg at about knee height, his other hand empty and loosely closed at his other side.
+- the same size in every picture: from the tips of his ears to the soles of his feet he fills about three quarters of the picture's height, his feet near the bottom with a small margin; his whole ears, the whole chain and spiked ball and his whole tail inside the picture with green space all round.
+- no green anywhere on him: the blues are deep blue and navy. No golden swirls, no sand, no dust, no purple fire, no glow, no sparkles, no motion lines, no effects.
+```
+
+#### ภาพ 1 — หน้าตรง
+```
+Picture 1 — FRONT view: he faces straight toward us, like the front view on the sheet. His right fist with the gold chain wrapped around it is on the LEFT side of the picture, with the spiked ball hanging beside his leg at about knee height; his empty, loosely closed hand is on the RIGHT side of the picture. Both tall ears stand straight up, the two striped flaps of the headcloth hang beside his neck, and the round gold ankh brooch sits at his throat.
+```
+
+#### ภาพ 2 — เฉียงหน้า หันขวา
+```
+Picture 2 — FRONT THREE-QUARTER view: he is turned toward the RIGHT side of the picture, facing down and to the right, like the big pose on the sheet but standing calmly with both arms down. We see his face with his muzzle pointing to the right and mostly his right side: his right fist with the gold chain is his near hand, on the LEFT side of the picture, with the spiked ball hanging beside his near leg; his empty far hand hangs on the right, partly behind his body. His bushy tail shows behind him on the left side of the picture.
+```
+
+#### ภาพ 3 — ข้าง หันขวา
+```
+Picture 3 — SIDE view facing RIGHT, like the side view on the sheet: his muzzle points to the right edge of the picture and we see his right side — the near tall ear with its pink inside and the far ear just behind it, one gold eye with its gold kohl line, the striped headcloth hanging at the back of his head and the white shoulder cape. His near right fist with the gold chain hangs at his side, with the spiked ball hanging below it by his knee, fully visible; his far hand is hidden behind his body. His bushy tail hangs out behind him on the left side of the picture.
+```
+
+#### ภาพ 4 — เฉียงหลัง หันขวา
+```
+Picture 4 — BACK THREE-QUARTER view: he is turned away from us, facing up and to the RIGHT. We see mostly his back: the back of his head with both tall ears, the striped headcloth covering the back of his head down to his shoulders, the white shoulder cape with its gold zigzag band across his upper back, and his bushy tail; of his face only the edge of his muzzle on the right — not his eyes and not his face. His right fist with the gold chain is his near hand, on the RIGHT side of the picture, with the spiked ball hanging beside his leg; his empty far hand is on the left, partly behind his body.
+```
+
+#### ภาพ 5 — หลัง
+```
+Picture 5 — BACK view: his back faces us, like the back view on the sheet: the back of his head with both tall ears, the striped headcloth covering the back of his head down to the white shoulder cape, the cape with its gold zigzag band across his upper back, the back of the gold belt and of the navy kilt, and his bushy tail hanging down in the middle; no face. His right fist with the gold chain is on the RIGHT side of the picture, with the spiked ball hanging beside his leg; his empty hand is on the LEFT side.
+```
+
+### ขั้น 2 — ภาพตั้งต้น + คลิปท่า 20 ตัว (รอภาพ 5 มุม)
+ภาพ 5 มุมมาแล้ว → ตัดภาพตั้งต้น `anubis_1_S.png … anubis_5_N.png` (`tools/dir8cut.py startv`, คำสั่งอยู่ใน `ANUBIS_CLIP_PROMPTS_TH.md`) ส่งพร้อม `ANUBIS_CLIP_PROMPTS_TH.md` (คลิป 20 ตัว ยืน · เดิน · เหวี่ยงลูกตุ้ม · ชูกำปั้น × 5 ทิศ สร้างจาก `python3 tools/clip_prompts.py anubis`)
+
+### ขั้น 3 เป็นต้นไป
+3. **สไปร์ทจากคลิป** — `cliphero.py` → **ไฟล์ใหม่ `assets_anubis.js`** (prefix ใหม่ สลับเข้าแบบ `BST_ART` เฉพาะ `?char=anubis` · `assets.js` ไม่แตะ: ยังเป็นร่างของจิ้งจอก สิงโต จระเข้ อีกา) · เวลาเฟรมเท่า `assets.js` ทุกทิศ (ตารางอยู่ในหัวข้อ 'เลือกแล้วทำอะไรต่อ' ข้างบน + ท้าย `ANUBIS_CLIP_PROMPTS_TH.md`) · ตัวยืนสูงบนจอเท่าหมาป่า (วัด `CHAR_SCALE.anubis` ใหม่)
+4. **ของที่ผูกกับสไปร์ท** — หน้า HUD (ตัดหัวจาก view_S ผ่าน window.HUD_FACE) · ท่านั่ง (`hero_sit.js`) · จุดลูกตุ้มทุกเฟรมของท่าเหวี่ยงกับท่าชู (sockets) ถ้าจะให้เอฟเฟกต์วิ่งตามลูกตุ้ม (ตอนนี้โค้ดอนูบิสไม่อ่าน socket)
+5. **ทีหลัง** — ไอคอนที่มีตัวอนูบิส (~2 ใน 3 ของ 55 + ex_ 8) + ผังสกิล 4 ภาพ + ภาพเอฟเฟกต์ `anubis_head` / `avatar_aura` (เทพหมาจิ้งจอกทองโพกผ้าลายทาง ยังพอเข้ากับลุคใหม่) + ภาพหน้าโหลด ld1 ld8
