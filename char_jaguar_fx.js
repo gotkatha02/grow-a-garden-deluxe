@@ -86,6 +86,13 @@ const JXR={
 };
 
 function installJaguarFx(){if(CHAR!=='jaguar')return;JXF.forEach(jxImg);
+  /* Eclipse Dancer sprite (assets_jaguar.js = the owner's 20 clips 2026-11-24, cell 720 × 540): its sockets sit on a real dagger
+     (head = blade tip, grip = blade base). The sprite is drawn CHAR_SCALE× about her feet but the engine's socket → screen mapping
+     (s2r) is not scaled, so it is scaled here — liveSocket (weapon trail, glints, embers at the blade) and headR (the slash arcs of
+     slashAt / spriteSlash) both go through s2r. HUD portrait = her head from the front view (index.html drawPortrait). */
+  if(typeof JAG_ART!=='undefined'&&JAG_ART&&typeof JAG_SPR_META!=='undefined'&&JAG_SPR_META.cell.w===720&&!window.__JG_S2R){window.__JG_S2R=1;
+    if(typeof s2r==='function'&&CHAR_SCALE!==1){const S0=s2r;s2r=function(p,d,x,y){const r=S0(p,d,x,y),k=CHAR_SCALE;return [x+(r[0]-x)*k,y+(r[1]-y)*k];};}
+    try{const hf=new Image();hf.src='assets/heroes/jaguar/face.webp?v=1';window.HUD_FACE=hf;hf.onload=()=>{try{drawPortrait();}catch(_){}};}catch(_){}}
   /* strikes: painted slash per strike */
   if(typeof jgStrikes==='function'){const _s=jgStrikes;jgStrikes=function(o){const aft=o.after;o=Object.assign({},o,{after:(a,hit,i,last)=>{try{const [n,w]=jxStrikePiece(o.key,i,last);
         if(n==='j03_thrust')jxStreak(n,o.phi,w,{off:20,life:.2});else jxSlash(n,o.phi,w,i,n==='j02_xslash'?{rot:0,fy:false,life:.32}:{});}catch(_){}if(aft)aft(a,hit,i,last);}});return _s(o);};}

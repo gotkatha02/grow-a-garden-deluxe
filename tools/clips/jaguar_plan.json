@@ -1,0 +1,586 @@
+{
+ "_note": "Eclipse Dancer jaguar sprite plan — owner's 20 clips 2026-11-24 22:05 ('เพิ่มสไปร้ใหม่ของจากั้วให้หน่อย'), 480x480 24 fps green, made from jaguar_1_S … jaguar_5_N.png; uploads 1000001249–1268 came buff, attack, walk, idle per direction SE, S, E, NE, N (1250 = the SE attack clip of 19:41). All face right, one scale, no camera zoom. Frame TIMES = the old jaguar atlas (the look before, also clips): attack / buff counts, every frame time, attack contact 6 (SE 4), buff peak 7 (SE: 6 frames × 220, peak 3), walk 8 × 100 (E 110/90), hurt rows (stateDur) — every hit / cast release / dash keeps its time (jgStep + Blood Chase play the walk row as a timed dash). Frames skip the clips' baked effects (the video model drew slash arcs, white flashes / an X and sparkles over every swing: SE 22–46 with 16 / 18 cleaned by unstreak, NE from 9 with 7 / 8 = a white-lit blade toned down by deglow); every attack row jumps from the wind-up to the end pose at the contact frame and the game's own slash plays there. Buff S / N raise = the lowering frames played backwards (their real raise carries a baked red arc (S, plus closed eyes) / a white-yellow light arc (N)); SE skips the wink 10–14 and 52–58. Idle loops with the eyes open (S blink 18–26, SE 44–52 / 84–89, E closes 107+): S 51+59, SE 5+38, E 48+48, NE 40+51, N 73+45; walk loops by best self-match S 75+24, SE 58+24, E 4+25, NE 58+24, N 14+31. Sockets = a real dagger (blade): head = blade tip, grip = blade base at the gold guard, found per frame by colour (violet obsidian / near-black, long thin piece), one dagger tracked per row from the contact / peak frame (pick rule per row), frames where it is hidden lie between their neighbours; a few read by eye (fix). Rebuild: python3 -I tools/cliphero.py tools/clips/jaguar_plan.json assets_jaguar.js JAG (clip paths = that chat's uploads).",
+ "height": 230,
+ "flip": false,
+ "loop": {
+  "idle/S": [
+   51,
+   59
+  ],
+  "idle/SE": [
+   5,
+   38
+  ],
+  "idle/E": [
+   48,
+   48
+  ],
+  "idle/NE": [
+   40,
+   51
+  ],
+  "idle/N": [
+   73,
+   45
+  ],
+  "walk/S": [
+   75,
+   24
+  ],
+  "walk/SE": [
+   58,
+   24
+  ],
+  "walk/E": [
+   4,
+   25
+  ],
+  "walk/NE": [
+   58,
+   24
+  ],
+  "walk/N": [
+   14,
+   31
+  ]
+ },
+ "stateDur": {
+  "walk/S": [
+   100,
+   100,
+   100,
+   100,
+   100,
+   100,
+   100,
+   100
+  ],
+  "walk/SE": [
+   100,
+   100,
+   100,
+   100,
+   100,
+   100,
+   100,
+   100
+  ],
+  "walk/E": [
+   110,
+   90,
+   90,
+   110,
+   110,
+   90,
+   90,
+   110
+  ],
+  "walk/NE": [
+   100,
+   100,
+   100,
+   100,
+   100,
+   100,
+   100,
+   100
+  ],
+  "walk/N": [
+   100,
+   100,
+   100,
+   100,
+   100,
+   100,
+   100,
+   100
+  ],
+  "hurt/N": [
+   50,
+   50,
+   60,
+   130,
+   150,
+   50,
+   60
+  ],
+  "hurt/NE": [
+   50,
+   50,
+   50,
+   150,
+   150,
+   50,
+   50
+  ],
+  "hurt/E": [
+   50,
+   50,
+   180,
+   80,
+   80,
+   50,
+   60
+  ],
+  "hurt/SE": [
+   60,
+   50,
+   60,
+   120,
+   130,
+   50,
+   80
+  ],
+  "hurt/S": [
+   60,
+   70,
+   130,
+   50,
+   80,
+   50,
+   110
+  ]
+ },
+ "unstreak": {
+  "attack/SE": [
+   16,
+   18
+  ]
+ },
+ "deglow": {
+  "attack/NE": [
+   7,
+   8
+  ]
+ },
+ "blade": {
+  "pick": {
+   "attack/S": [
+    "x",
+    6
+   ],
+   "attack/N": [
+    "x",
+    6
+   ],
+   "attack/SE": [
+    "fwd",
+    4
+   ],
+   "attack/E": [
+    "fwd",
+    6
+   ],
+   "attack/NE": [
+    "fwd",
+    6
+   ]
+  },
+  "fix": {
+   "attack/S": {
+    "0": [
+     430,
+     420,
+     419,
+     392
+    ],
+    "1": [
+     473,
+     349,
+     448,
+     343
+    ],
+    "2": [
+     471,
+     282,
+     448,
+     292
+    ],
+    "3": null
+   },
+   "attack/E": {
+    "1": [
+     457,
+     315,
+     424,
+     329
+    ],
+    "2": [
+     420,
+     265,
+     400,
+     300
+    ]
+   },
+   "attack/NE": {
+    "0": [
+     433,
+     354,
+     395,
+     355
+    ]
+   },
+   "attack/N": {
+    "0": [
+     438,
+     414,
+     418,
+     384
+    ],
+    "1": [
+     465,
+     363,
+     438,
+     352
+    ]
+   },
+   "buff/S": {
+    "0": [
+     430,
+     419,
+     416,
+     388
+    ],
+    "1": [
+     456,
+     378,
+     435,
+     369
+    ],
+    "2": null
+   }
+  }
+ },
+ "attack": {
+  "SE": {
+   "frames": [
+    9,
+    12,
+    16,
+    18,
+    47,
+    52,
+    56,
+    60,
+    62,
+    64,
+    66,
+    69
+   ],
+   "contact": 4,
+   "dur": [
+    50,
+    50,
+    190,
+    70,
+    90,
+    50,
+    50,
+    50,
+    50,
+    50,
+    90,
+    110
+   ]
+  },
+  "S": {
+   "frames": [
+    14,
+    18,
+    21,
+    24,
+    26,
+    27,
+    51,
+    53,
+    56,
+    58,
+    61,
+    66
+   ],
+   "contact": 6,
+   "dur": [
+    80,
+    50,
+    90,
+    50,
+    50,
+    50,
+    70,
+    200,
+    50,
+    50,
+    50,
+    110
+   ]
+  },
+  "E": {
+   "frames": [
+    5,
+    8,
+    9,
+    11,
+    16,
+    21,
+    23,
+    25,
+    40,
+    50,
+    53,
+    57
+   ],
+   "contact": 6,
+   "dur": [
+    80,
+    50,
+    50,
+    100,
+    50,
+    120,
+    60,
+    120,
+    50,
+    50,
+    50,
+    120
+   ]
+  },
+  "NE": {
+   "frames": [
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    78,
+    79,
+    80,
+    81,
+    83,
+    86
+   ],
+   "contact": 6,
+   "dur": [
+    80,
+    50,
+    50,
+    100,
+    50,
+    120,
+    60,
+    120,
+    50,
+    50,
+    50,
+    120
+   ]
+  },
+  "N": {
+   "frames": [
+    7,
+    9,
+    11,
+    12,
+    14,
+    16,
+    17,
+    59,
+    61,
+    63,
+    65,
+    68
+   ],
+   "contact": 6,
+   "dur": [
+    110,
+    120,
+    50,
+    50,
+    70,
+    50,
+    120,
+    70,
+    50,
+    50,
+    50,
+    110
+   ]
+  }
+ },
+ "buff": {
+  "SE": {
+   "frames": [
+    6,
+    9,
+    17,
+    30,
+    9,
+    62
+   ],
+   "peak": 3,
+   "dur": [
+    220,
+    220,
+    220,
+    220,
+    220,
+    220
+   ]
+  },
+  "S": {
+   "frames": [
+    0,
+    64,
+    62,
+    60,
+    58,
+    57,
+    30,
+    40,
+    58,
+    61,
+    64,
+    67
+   ],
+   "peak": 7,
+   "dur": [
+    170,
+    50,
+    50,
+    230,
+    50,
+    110,
+    390,
+    50,
+    50,
+    50,
+    50,
+    150
+   ]
+  },
+  "E": {
+   "frames": [
+    5,
+    8,
+    9,
+    10,
+    11,
+    12,
+    14,
+    30,
+    59,
+    61,
+    63,
+    66
+   ],
+   "peak": 7,
+   "dur": [
+    70,
+    50,
+    50,
+    50,
+    50,
+    70,
+    170,
+    580,
+    50,
+    50,
+    50,
+    160
+   ]
+  },
+  "NE": {
+   "frames": [
+    4,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    13,
+    40,
+    64,
+    67,
+    71
+   ],
+   "peak": 7,
+   "dur": [
+    80,
+    60,
+    50,
+    50,
+    50,
+    50,
+    120,
+    160,
+    480,
+    60,
+    60,
+    180
+   ]
+  },
+  "N": {
+   "frames": [
+    0,
+    60,
+    59,
+    58,
+    57,
+    56,
+    54,
+    40,
+    56,
+    58,
+    60,
+    63
+   ],
+   "peak": 7,
+   "dur": [
+    130,
+    50,
+    50,
+    50,
+    50,
+    110,
+    260,
+    450,
+    60,
+    50,
+    50,
+    90
+   ]
+  }
+ },
+ "clips": {
+  "idle": {
+   "SE": "/mnt/user-data/uploads/112fc6ea-1000001252.mp4",
+   "S": "/mnt/user-data/uploads/6f51f794-1000001256.mp4",
+   "E": "/mnt/user-data/uploads/7af490c6-1000001260.mp4",
+   "NE": "/mnt/user-data/uploads/93df029d-1000001264.mp4",
+   "N": "/mnt/user-data/uploads/2efd4463-1000001268.mp4"
+  },
+  "walk": {
+   "SE": "/mnt/user-data/uploads/5bb1f00d-1000001251.mp4",
+   "S": "/mnt/user-data/uploads/9227921c-1000001255.mp4",
+   "E": "/mnt/user-data/uploads/b7e78164-1000001259.mp4",
+   "NE": "/mnt/user-data/uploads/fe7e5caa-1000001263.mp4",
+   "N": "/mnt/user-data/uploads/22dbab5b-1000001267.mp4"
+  },
+  "attack": {
+   "SE": "/mnt/user-data/uploads/49ffd9ec-1000001250.mp4",
+   "S": "/mnt/user-data/uploads/47d78059-1000001254.mp4",
+   "E": "/mnt/user-data/uploads/80d05e9d-1000001258.mp4",
+   "NE": "/mnt/user-data/uploads/59f6a31d-1000001262.mp4",
+   "N": "/mnt/user-data/uploads/d6dc7dab-1000001266.mp4"
+  },
+  "buff": {
+   "SE": "/mnt/user-data/uploads/5cd3f0ca-1000001249.mp4",
+   "S": "/mnt/user-data/uploads/d491ca81-1000001253.mp4",
+   "E": "/mnt/user-data/uploads/1821c329-1000001257.mp4",
+   "NE": "/mnt/user-data/uploads/69fc2dc1-1000001261.mp4",
+   "N": "/mnt/user-data/uploads/3fd76821-1000001265.mp4"
+  }
+ }
+}

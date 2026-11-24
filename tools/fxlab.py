@@ -7,6 +7,9 @@ It serves the repo itself on port 8765 when nothing is listening there (or start
       one mp4 with all keys one after another (frames stepped by hand → no stutter)
   python3 tools/fxlab.py hits <hero> <key[,key…]> [dist=110] [secs=3]
       prints the game time of every hit after the cast (to compare old / new effects: the numbers must not change)
+      FXSEED=<n> in the environment seeds Math.random (physical hits can miss at random — seed both runs of a comparison)
+      FXINIT='<js>' runs once in the page before the casts, e.g. FXINIT='{const h=hurt;hurt=function(e,m,o){o=o||{};o.sure=1;return h.call(this,e,m,o);}}' (no random MISS: effects also draw
+      random numbers, so a changed effect shifts the seeded stream and a different hit can miss)
 
   key 'basic' = one normal attack on the dummy. q= extra query string (e.g. q=vfx3=0 for the old look).
   Output: /home/claude/work/fx/<hero>_<tag>_<key>.png  /  /home/claude/work/fx/<hero>_<name>.mp4
@@ -36,6 +39,8 @@ async def boot(p, hero, room='one', q='', vw=1000, vh=600):
     errs = []
     pg.on('pageerror', lambda e: errs.append(str(e)[:300]))
     await pg.add_init_script(STUB)
+    if os.environ.get('FXSEED'):   # FXSEED=n: Math.random seeded (mulberry32) — physical hits can MISS at random, so old / new hit lists only match when both runs roll the same numbers
+        await pg.add_init_script("(()=>{let s=%d>>>0;Math.random=function(){s=(s+0x6D2B79F5)>>>0;let t=s;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return ((t^(t>>>14))>>>0)/4294967296;};})();" % int(os.environ['FXSEED']))
     url = 'http://localhost:8765/index.html?char=%s&map=vikF2&testroom=1&nosw=1&cb=%d%s' % (hero, time.time(), ('&' + q) if q else '')
     await pg.goto(url)
     for _ in range(160):   # the start dialog can reload the page once (test-mode button): wait until a page stays up
@@ -51,6 +56,7 @@ async def boot(p, hero, room='one', q='', vw=1000, vh=600):
     if room != 'one':
         await pg.evaluate("(m)=>{const b=document.querySelector('[data-tr=\"'+m+'\"]');if(b)b.click();}", room)
         await pg.wait_for_timeout(400)
+    if os.environ.get('FXINIT'): await pg.evaluate("(js)=>(0,eval)(js)", os.environ['FXINIT'])   # FXINIT='<js>': run once in the page before any cast (e.g. a hurt wrapper that sets o.sure = no random MISS)
     await pg.add_style_tag(content='#trbar{display:none!important}')
     await pg.evaluate("()=>window.__fx.go()")
     for _ in range(40):

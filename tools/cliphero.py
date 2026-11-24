@@ -28,6 +28,10 @@ Optional (2026-11-24, jaguar): "unstreak":{"attack/SE":[16,18]} = after keying, 
   frames: saturated red pieces with (almost) no dark outline whose rim touches the transparent background, plus their soft
   edge, then whatever no longer touches the body (the video model drew a red crescent behind her raised dagger; painted red
   parts of a hero always sit inside dark-brown outlines). Only for streaks on the background, not ones drawn over the body.
+Optional (2026-11-24, jaguar clips): "blade":{"pick":{"attack/S":["x",6]},"fix":{"attack/E":{"2":[hx,hy,gx,gy]}}} = attack / buff sockets
+  on a real dagger (head = blade tip, grip = blade base at the guard), see blade_sockets(); "stateDur":{"walk/E":[…],"hurt/S":[…]}
+  = frame times for idle / walk / hurt rows (keep an older atlas's times: two skills play the walk row as a timed dash);
+  "deglow":{"attack/NE":[7,8]} = a blade the video lit up white-violet is toned back to dark obsidian.
 Keying: soft green matte + despill + speck removal (keeps the body and anything touching it, e.g. the sword).
 Idle / walk loops are found automatically (period of best self-match); hurt is made from the idle pose."""
 import sys, io, json, base64, math, subprocess, numpy as np
@@ -130,6 +134,16 @@ def unstreak(img):
         sizes = nd.sum(np.ones_like(a), lab, range(1, n + 1)); a = a * np.isin(lab, [i + 1 for i, s in enumerate(sizes) if s > sizes.max() * .02])
     print(f'  unstreak: {int(kill.sum())} px removed')
     return Image.fromarray(np.dstack([col, a * 255]).astype(np.uint8))
+DEG = plan.get('deglow', {})
+def deglow(img):
+    """a blade that the video model lit up white-violet (it is black obsidian with one lavender stripe) is toned back down:
+    pale violet pixels (blue > green + 12, red > green + 2, every channel > 90) are pulled toward dark violet ×.45"""
+    A = np.asarray(img).astype(np.float32); col = A[..., :3]; a = A[..., 3]
+    R, G, B = col[..., 0], col[..., 1], col[..., 2]
+    m = (a > 70) & (B - G > 12) & (R - G > 2) & (col.min(-1) > 90)
+    dk = np.array([46, 26, 48], np.float32); col[m] = dk + (col[m] - dk) * .45
+    print(f'  deglow: {int(m.sum())} px')
+    return Image.fromarray(np.dstack([col, a]).astype(np.uint8))
 FIT = plan.get('feetFit', {})
 def fspan(img):
     """width of the feet: alpha extent of the bottom 15 rows (camera-zoom gauge where the stance stays the same)"""
@@ -151,6 +165,7 @@ def frames_for(st, d):
     def cell(i):
         img = F[i] if i not in STRICT.get(f'{st}/{d}', []) else key(RAW[path][i], d in FLIPDIRS, True)
         if i in UNS.get(f'{st}/{d}', []): img = unstreak(img)
+        if i in DEG.get(f'{st}/{d}', []): img = deglow(img)
         if norm:
             bb = bbox(img); s = HT / (bb[3] - bb[1]); return place(img, s, feet(img))
         if i in fit:   # undo the camera zoom about the feet: video point p -> c + (p - c)·k, then placed like every other frame
@@ -201,14 +216,58 @@ def orb_at(c_, prev):
         m = (A[..., 3] > 120) & (A[..., 2] > OP['b']) & (A[..., 1] > OP['g']) & (A[..., 2] - A[..., 0] >= OP['br']) & (A[..., 2] - A[..., 1] >= OP['gb'])
         best = orb_pick(m, OP['min'], prev)
     return best
-meta = {'cell': {'w': CW, 'h': CH}, 'pivot': {'x': PX, 'y': PY}, 'scale': .56, 'states': {}, 'sockets': ({'idle': {}, 'walk': {}, 'attack': {}, 'buff': {}, 'hurt': {}} if ORB_ALL else {'attack': {}, 'buff': {}}) if plan.get('orb') else {'attack': {}},
+BLADE = plan.get('blade')
+def blades_at(c_):
+    """dagger blades in a placed cell: violet obsidian (+ its lavender stripe) or near-neutral black pixels, long thin components;
+    tip / base = the two ends of the main axis, base = the end with the gold guard next to it (else the end nearer the body)"""
+    A = np.asarray(c_).astype(np.int16); R, G, B, a = A[..., 0], A[..., 1], A[..., 2], A[..., 3]; mx = A[..., :3].max(-1)
+    m = (a > 120) & (B >= G + 4) & (B * 100 >= 55 * R) & (R >= G - 4) & (mx < 235)
+    m |= (a > 120) & (mx < 75) & (B >= G - 3) & (R - G < 22) & (R >= G - 6)
+    core = nd.binary_opening(m, iterations=1); lab, n = nd.label(m, structure=np.ones((3, 3)))
+    gold = (a > 120) & (R > 170) & (G > 110) & (B < 100) & (R - B > 100); out = []
+    for i in range(1, n + 1):
+        comp = lab == i
+        if (comp & core).sum() < BLADE.get('minA', 40): continue
+        ys, xs = np.nonzero(comp); P_ = np.stack([xs, ys], 1).astype(float); mu = P_.mean(0)
+        _, sv, vt = np.linalg.svd(P_ - mu, full_matrices=False); t = (P_ - mu) @ vt[0]; e0, e1 = P_[np.argmin(t)], P_[np.argmax(t)]
+        if t.max() - t.min() < 14 or sv[0] / max(1e-3, sv[1]) < 1.6: continue
+        gn = lambda p: gold[max(0, int(p[1]) - 9):int(p[1]) + 10, max(0, int(p[0]) - 9):int(p[0]) + 10].sum()
+        g0, g1 = gn(e0), gn(e1); body = (PX, PY - HT * .6)
+        if g0 != g1: tip, base = (e1, e0) if g0 > g1 else (e0, e1)
+        else: tip, base = (e0, e1) if math.hypot(e0[0] - body[0], e0[1] - body[1]) > math.hypot(e1[0] - body[0], e1[1] - body[1]) else (e1, e0)
+        out.append((float(tip[0]), float(tip[1]), float(base[0]), float(base[1])))
+    return out
+def blade_sockets(st, d):
+    """one dagger per row: picked at a key frame by a rule (x = right-most tip, -x = left-most, up = highest tip, fwd = furthest
+    along the facing), then followed frame by frame (nearest hand + tip); frames where it is hidden sit between their neighbours;
+    "bladeFix" {frame: [head x, head y, grip x, grip y] | null} = read by eye in placed-cell px of this build"""
+    F = CELLS[(st, d)]; C = [blades_at(c_) for c_ in F]; n = len(F)
+    rule, k0 = (BLADE.get('pick', {}).get(f'{st}/{d}') or ['fwd' if st == 'attack' else 'up', meta['contact']['attack'][d] if st == 'attack' else meta['buffPeak'][d]])
+    fx, fy = FWD[d]; score = {'x': lambda b: b[0], '-x': lambda b: -b[0], 'up': lambda b: -b[1], 'fwd': lambda b: b[0] * fx + b[1] * fy}[rule]
+    pick = [None] * n; fix = BLADE.get('fix', {}).get(f'{st}/{d}', {})
+    if C[k0]: pick[k0] = max(C[k0], key=score)
+    for rng in (range(k0 + 1, n), range(k0 - 1, -1, -1)):
+        prev = pick[k0]
+        for i in rng:
+            if C[i] and prev: pick[i] = min(C[i], key=lambda b: math.hypot(b[2] - prev[2], b[3] - prev[3]) + .5 * math.hypot(b[0] - prev[0], b[1] - prev[1]))
+            elif C[i]: pick[i] = max(C[i], key=score)
+            if pick[i]: prev = pick[i]
+    for k, v in fix.items(): pick[int(k)] = tuple(v) if v else None
+    known = [i for i, p in enumerate(pick) if p]
+    for i in range(n):
+        if pick[i] or not known: continue
+        a_ = max((j for j in known if j < i), default=None); b_ = min((j for j in known if j > i), default=None)
+        if a_ is not None and b_ is not None: t = (i - a_) / (b_ - a_); pick[i] = tuple(pick[a_][q] + (pick[b_][q] - pick[a_][q]) * t for q in range(4))
+        else: pick[i] = pick[a_ if a_ is not None else b_]
+    return [{'head': [round(p[0]), round(p[1])], 'grip': [round(p[2]), round(p[3])]} if p else {'head': [PX + 40, PY - 60], 'grip': [PX + 34, PY - 70]} for p in pick]
+meta = {'cell': {'w': CW, 'h': CH}, 'pivot': {'x': PX, 'y': PY}, 'scale': .56, 'states': {}, 'sockets': ({'idle': {}, 'walk': {}, 'attack': {}, 'buff': {}, 'hurt': {}} if ORB_ALL else {'attack': {}, 'buff': {}}) if plan.get('orb') else {'attack': {}, 'buff': {}} if BLADE else {'attack': {}},
         'contact': {'attack': {}}, 'mirror': {'SW': 'SE', 'W': 'E', 'NW': 'NE'}, 'qa': {}, 'buffPeak': {}}
 atlas = {}; report = {}
 for st in ['idle', 'walk', 'attack', 'buff', 'hurt']:
     rows = []; meta['states'][st] = {'loop': st in ('idle', 'walk'), 'dirs': {}}
     for d in DIRS:
         if st == 'hurt':
-            F = hurt_from(frames_for('idle', d)[0][0], d); dur = [70] * 7
+            F = hurt_from(frames_for('idle', d)[0][0], d); dur = plan.get('stateDur', {}).get(f'hurt/{d}', [70] * 7)
         else:
             F, P = frames_for(st, d)
             if st == 'idle': dur = [round(1000 * P / 24 / len(F))] * len(F)
@@ -219,6 +278,7 @@ for st in ['idle', 'walk', 'attack', 'buff', 'hurt']:
                 meta['contact']['attack'][d] = c
             else:
                 dur = plan['buff'][d].get('dur') or [70] * len(F); meta['buffPeak'][d] = plan['buff'][d]['peak']
+            dur = plan.get('stateDur', {}).get(f'{st}/{d}', dur)
             assert len(dur) == len(F), f'{st}/{d}: {len(dur)} durations for {len(F)} frames'
             report[f'{st}/{d}'] = (len(F), P)
         if st in ('attack', 'buff') or ORB_ALL: CELLS[(st, d)] = F
@@ -252,6 +312,9 @@ for st in ['idle', 'walk', 'attack', 'buff', 'hurt']:
                 gx = p[0] + (8 if p[0] < PX else -8); o.append({'head': [round(p[0]), round(p[1])], 'grip': [round(gx), round(p[1] + 6)]})
             meta['sockets'][st][d] = o
         if st == 'buff': continue
+    if BLADE and st in ('attack', 'buff'):
+        for d in DIRS: meta['sockets'][st][d] = blade_sockets(st, d)
+        continue
     if st == 'attack' and not plan.get('orb'):
         for d in DIRS:
             fx, fy = FWD[d]; sgn = 1 if fx >= -.01 else -1; gx, gy = PX + 18 * sgn, PY - HT * .42; n = len(meta['states'][st]['dirs'][d]['f']); c = meta['contact']['attack'][d]; o = []
