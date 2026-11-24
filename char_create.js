@@ -100,7 +100,7 @@ function frame(body,foot){ov.innerHTML=`<div class="cc"><div class="cc-hd"><b>Cr
 function pick(){const h=HEROES[idx],a=art(h.k);
   frame(`${a?`<div class="cc-art" style="background-image:url(${a})"></div>`:`<div class="cc-noart">ภาพ ${h.n}<br>กำลังวาด</div>`}
     <button class="cc-arrow" id="ccprev" style="left:2%">‹</button><button class="cc-arrow" id="ccnext" style="right:2%">›</button>
-    <div class="cc-info"><div class="box"><span class="ln">${h.land} · ${h.r}</span><br>${h.d}<div class="st">A: <b>${h.A}</b><br>B: <b>${h.B}</b></div>
+    <div class="cc-info"><div class="box"><span class="ln">${h.land} · ${h.r}</span><br>${h.d}<div class="st">A: ${window.ROLES?ROLES.chip(h.k,'A'):''}<b>${h.A}</b><br>B: ${window.ROLES?ROLES.chip(h.k,'B'):''}<b>${h.B}</b></div>
       <div style="margin-top:10px"><button class="cb" id="ccgo">Create Hero</button></div></div><div class="cc-name">${h.n.split(' ').slice(-1)[0]}<small>${h.r}</small></div></div>
     <div class="cc-dots">${HEROES.map((x,i)=>`<i class="${i===idx?'on':''}" data-i="${i}" title="${x.n}"></i>`).join('')}</div>`,
     `${closable?'<button class="cb dark" id="ccclose">Close</button>':''}<button class="cb dark" data-m="test" id="cctest" title="Lv ${window.LV_CAP||99} ทุกสกิล สำหรับทดสอบ">🧪 โหมดทดสอบ</button>`);

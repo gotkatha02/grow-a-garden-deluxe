@@ -22,6 +22,7 @@ async def run(branch,runs):
         if branch!='all':
             other='B' if branch=='A' else 'A'
             await pg.evaluate(f"window.__BENCH_SKIP=k=>{COL}(k)==='{other}'")
+            await pg.evaluate(f"window.__ROLE_BR='{branch}'")   # roles.js: basic attacks / Basic branch use this branch's role
         r=await pg.evaluate(f"balanceBench({runs})");await b.close();return r,errs
 runs=int(sys.argv[2]) if len(sys.argv)>2 else 8
 for br in (sys.argv[1] if len(sys.argv)>1 else 'A,B').split(','):

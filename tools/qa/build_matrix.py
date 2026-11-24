@@ -39,6 +39,7 @@ async def one(h,br,col):
         if br!='all':
             other='B' if br=='A' else 'A'
             await pg.evaluate(f"window.__BENCH_SKIP=k=>{col}(k)==='{other}'")
+            await pg.evaluate(f"window.__ROLE_BR='{br}'")   # roles.js: basic attacks / Basic branch use this branch's role
         if SHARES:await pg.evaluate(SHARE_JS)
         res={}
         for name in BUILDS:

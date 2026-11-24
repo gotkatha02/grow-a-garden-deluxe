@@ -23,7 +23,7 @@
    --------------------------------------------------------------------- */
 const ZD_BAL={
   heat:{cap:3,white:4,life:6,burn:.4},             // stacks · seconds · burn = level × .4 per stack per second
-  lava:{per:.5,R:70},                              // A quench: ATK × .5 per stack round the target
+  lava:{per:.5,R:90},                              // A quench: ATK × .5 per stack round the target
   stone:{per:.6,imm:3,weak:.3},                    // B quench: .6 s of stone per stack, then 3 s immune; quench while immune = MATK × .3 per stack
   boss:{slow:2,ko:5,crack:4},                      // bosses / mini-bosses / boss parts: slow + heavy KO drain + 'cracked' 4 s
   blood:{need:100,heavy:120,rapid:70,cap:120,basic:1,skill:2,skillCap:4,q:3,qCap:6,taken:1,takenCap:4,skin:2,skinCap:6,kill:2,idle:10,idleDrain:2,lock:8,drain:5,refA:1,refACap:2,refB:2,refBCap:4},
@@ -31,57 +31,57 @@ const ZD_BAL={
   sk:{
     // ---- Basic
     znHammer:{chain:[2,3,3,4],hit:1.0,last:1.2},
-    znBreath:{dmg:[.75,.9,1.05,1.2],r:[110,120,130,140],half:.55,heat:2,cd:6,mp:10,range:140},
+    znBreath:{dmg:[.75,.9,1.05,1.2],r:[200,215,230,245],half:.62,heat:2,puffs:5,gap:.12,form:1.25,cd:6,mp:10,range:200},
     znSkin:{T:5,block:[10,20,30],cd:18,mp:12},
-    znLeap:{dist:[180,210,240],dmg:[1.0,1.2,1.4],R:80,cd:10,mp:12},
+    znLeap:{dist:[180,210,240],dmg:[1.0,1.2,1.4],R:110,cd:10,mp:12},
     znCyclops:{heal:[.2,.4,.6,.8]},
     znCore:{life:[.7,1.4,2],burn:[.07,.14,.2]},
-    znRoar:{R:160,range:170,flinch:[.5,.75,1],blood:15,cd:24,mp:16},
+    znRoar:{R:200,range:210,flinch:[.5,.75,1],blood:15,cd:24,mp:16},
     // ---- A · Etna's Magma Blade
-    zaHeart:{dmg:[1.4,1.67,1.93,2.2],R:140},
+    zaHeart:{dmg:[1.4,1.67,1.93,2.2],R:180},
     zaSear:{dmg:[.85,1.0,1.15,1.3],dd:[.65,.77,.88,1.0],cd:5,mp:9,range:90},
-    zaBurst:{per:[.6,.7,.8],R:[80,90,100]},
-    zaQuake:{dmg:[1.4,1.7],R:120,range:130,dd:[1.9,2.3],dR:150,dRange:260,cd:9,mp:14},
-    zaAfter:{dmg:[.7,1.0],R:180,delay:.6},
-    zaRush:{dmg:[1.2,1.5],len:200,dd:[1.5,1.9],dlen:260,w:34,cd:8,mp:12,range:200},
-    zaCinder:{dmg:.3,T:3,tick:.5,w:30},
-    zaAnvil:{dmg:[1.9,2.4],dd:[1.6,2.0],dR:130,cd:10,mp:14,range:90},
+    zaBurst:{per:[.6,.7,.8],R:[100,115,130]},
+    zaQuake:{dmg:[1.4,1.7],R:160,range:170,dd:[1.9,2.3],dR:195,dRange:260,cd:9,mp:14},
+    zaAfter:{dmg:[.7,1.0],R:220,delay:.6},
+    zaRush:{dmg:[1.2,1.5],len:240,dd:[1.5,1.9],dlen:300,w:50,cd:8,mp:12,range:240},
+    zaCinder:{dmg:.3,T:3,tick:.5,w:44},
+    zaAnvil:{dmg:[1.9,2.4],dd:[1.6,2.0],dR:170,cd:10,mp:14,range:90},
     zaCrack:{def:.25,T:6},
-    zaGeyser:{dmg:[.8,1.0],n:3,R:90,gap:.35,dd:[.5,.6],dT:1.2,dTick:.2,dR:180,cd:11,mp:16,range:320},
-    zaPool:{dmg:.35,T:4,R:80,tick:.5},
-    zaFury:{atk:[4,8,12],R:220,max:5},
-    zaGuard:{T:1,dmg:2.4,R:70,blood:10,dT:3,dn:2,cd:14,mp:12},
-    zaUlt:{n:10,R:220,dmg:[1.0,1.3],gap:.1,blood:40,dn:12,ddmg:[1.1,1.4],dfin:[3.0,4.0],dR:160,cd:60,mp:50},
+    zaGeyser:{dmg:[.8,1.0],n:3,R:115,gap:.35,dd:[.5,.6],dT:1.2,dTick:.2,dR:220,cd:11,mp:16,range:320},
+    zaPool:{dmg:.35,T:4,R:100,tick:.5},
+    zaFury:{atk:[4,8,12],R:260,max:5},
+    zaGuard:{T:1,dmg:2.4,R:100,blood:10,dT:3,dn:2,cd:14,mp:12},
+    zaUlt:{n:16,R:280,dmg:[.63,.81],gap:.085,sp:70,blood:40,dn:16,ddmg:[.83,1.05],dfin:[3.0,4.0],dR:210,cd:60,mp:50},
     zaHeir:{ext:8,drain:4},
     // ---- B · Stone Oracle of Delphi
-    zbHeart:{dmg:[1.2,1.4,1.6,1.8],R:170},
-    zbSpike:{dmg:[.8,.92,1.04,1.15],dd:[.6,.7,.8,.9],dR:200,half:.7,cd:4,mp:10,range:300},
+    zbHeart:{dmg:[1.2,1.4,1.6,1.8],R:210},
+    zbSpike:{dmg:[.8,.92,1.04,1.15],dd:[.6,.7,.8,.9],dR:240,half:.8,cd:4,mp:10,range:300},
     zbMark:{per:[.67,.73,.8],flat:[.33,.67,1]},
-    zbVent:{dmg:[.4,.5],R:110,T:5,tick:1,dd:[.5,.6],dR:120,cd:9,mp:14,range:300},
+    zbVent:{dmg:[.4,.5],R:145,T:5,tick:1,dd:[.5,.6],dR:160,cd:9,mp:14,range:300},
     zbTrance:{need:2,stun:.5},
     zbChain:{dmg:[1.1,1.4],root:[1.2,1.5],dd:[1.2,1.5],stun:1.5,cd:10,mp:14,range:280},
-    zbLink:{n:2,R:150},
-    zbQuake:{dmg:[1.3,1.6],R:140,range:150,dd:[1.55,1.9],dR:200,cd:12,mp:18},
-    zbFault:{dmg:1.0,len:260,w:32},
-    zbMono:{dmg:[1.6,2.0],R:120,T:6,taunt:160,dd:[1.9,2.4],dR:140,dT:4,cd:14,mp:18,range:300},
-    zbOracle:{dmg:.35,R:220},
-    zbGaia:{matk:[4,8,12],R:260,max:5},
-    zbAegis:{lv:5,vit:3,T:6,R:120,cd:18,mp:14},
-    zbUlt:{waves:3,dmg:[.9,1.2],R:240,stat:2,blood:40,dd:[1.9,2.4],dspk:[1.2,1.5],cd:60,mp:50},
+    zbLink:{n:2,R:190},
+    zbQuake:{dmg:[1.3,1.6],R:180,range:190,dd:[1.55,1.9],dR:250,cd:12,mp:18},
+    zbFault:{dmg:1.0,len:300,w:46},
+    zbMono:{dmg:[1.6,2.0],R:155,T:6,taunt:200,dd:[1.9,2.4],dR:180,dT:4,cd:14,mp:18,range:300},
+    zbOracle:{dmg:.35,R:260},
+    zbGaia:{matk:[4,8,12],R:300,max:5},
+    zbAegis:{lv:5,vit:3,T:6,R:150,cd:18,mp:14},
+    zbUlt:{waves:6,gap:.22,pull:22,dmg:[.45,.6],R:290,stat:2,blood:40,dd:[1.9,2.4],dspk:[1.2,1.5],cd:60,mp:50},
     zbProph:{ext:8,T:6},
     // ---- C · Primordial Dragon
-    zxSmith:{R:90},
+    zxSmith:{R:110},
     zxWhite:{},
-    zxStare:{R:150},
-    zxLiving:{dmg:1.2,R:110},
-    zxComet:{dmg:2.0,back:1.2,len:320,w:36,cd:18,mp:20,range:320},
-    zxVeil:{dmg:.4,R:150,range:160,T:5,tick:.5,need:2,cd:22,mp:22},
+    zxStare:{R:190},
+    zxLiving:{dmg:1.2,R:140},
+    zxComet:{dmg:2.0,back:1.2,len:320,w:50,cd:18,mp:20,range:320},
+    zxVeil:{dmg:.4,R:190,range:200,T:5,tick:.5,need:2,cd:22,mp:22},
     zxWind:{heal:4,start:25},
     zxPlate:{vit:2},
-    zxGarden:{dmg:1.0,R:100},
+    zxGarden:{dmg:1.0,R:130},
     zxAscend:{T:15,ext:10,size:1.15,cd:90,mp:40},
     zxTyphon:{dmg:3.0,n:3,cd:50,mp:40,range:100},
-    zxEmbrace:{dmg:.8,R:160,T:3,tick:.5,cd:50,mp:40,range:320}
+    zxEmbrace:{dmg:.8,R:200,T:3,tick:.5,cd:50,mp:40,range:320}
   }
 };
 const ZB=ZD_BAL.sk;
@@ -94,7 +94,7 @@ const zdX=n=>'ATK×'+zdN(n),zdM=n=>'MATK×'+zdN(n);
 const ZD_DEFS=[
  // ---------------- BASIC · FORGEBORN HATCHLING ----------------
  {key:'znHammer',id:'ZD-B01',name:'Forge Blade',br:'basic',row:1,max:4,passive:1,d:'(ตีปกติ) ฟันดาบเตาหลอมต่อเนื่อง จังหวะแรก ๆ เป็นไฟ ติดความร้อน 1 · จังหวะสุดท้ายเป็นหิน ชุบความร้อนออก · ร่างมังกรใช้ตีปกติของมังกรแทน (อัปสลับกับ Bellows Breath)',lv:i=>[`ต่อ ${ZB.znHammer.chain[i-1]} จังหวะ (ไฟ ×${ZB.znHammer.chain[i-1]-1} แล้วหิน)`,`${zdX(ZB.znHammer.hit)} ต่อจังหวะ · จังหวะหิน ${zdX(ZB.znHammer.last)}`]},
- {key:'znBreath',id:'ZD-B02',name:'Bellows Breath',br:'basic',row:1,max:4,type:'melee',d:'พ่นไฟจากเครื่องเป่าเตาเป็นกรวยสั้นด้านหน้า ทุกตัวในกรวยติดความร้อน 2 · ร่างมังกร กรวยยาว ×1.5 (อัปสลับกับ Forge Blade)',lv:i=>[`${zdX(ZB.znBreath.dmg[i-1])} กรวย ${ZB.znBreath.r[i-1]}`,'ความร้อน +2',`Cooldown ${ZB.znBreath.cd} วิ`]},
+ {key:'znBreath',id:'ZD-B02',name:'Bellows Breath',br:'basic',row:1,max:4,type:'melee',d:'พ่นไฟจากเครื่องเป่าเตาต่อเนื่อง 5 ระลอกเป็นกรวยกว้างด้านหน้า (ดาเมจรวมเท่าเดิม แบ่งเป็น 5 ครั้ง) ทุกตัวในกรวยติดความร้อน 2 · ร่างมังกร กรวยยาว ×1.25 (อัปสลับกับ Forge Blade)',lv:i=>[`${zdX(ZB.znBreath.dmg[i-1])} รวม ${ZB.znBreath.puffs} ระลอก · กรวย ${ZB.znBreath.r[i-1]}`,'ความร้อน +2',`Cooldown ${ZB.znBreath.cd} วิ`]},
  {key:'znSkin',id:'ZD-B03',name:'Stone Skin',br:'basic',row:2,max:3,type:'self',d:'เกล็ดกลายเป็นหินอ่อน ดาเมจที่ได้รับลดลง โดนตีได้เลือดมังกร +2 แทน +1 (สูงสุด +6 ต่อวิ)',lv:i=>[`ดาเมจที่ได้รับ −${ZB.znSkin.block[i-1]} ต่อครั้ง นาน ${ZB.znSkin.T} วิ`,`Cooldown ${ZB.znSkin.cd} วิ`]},
  {key:'znLeap',id:'ZD-B04',name:'Quenching Plunge',br:'basic',row:2,max:3,type:'ground',radius:()=>ZB.znLeap.R,d:'กระโดดปักดาบลงจุดที่เลือก ชุบความร้อนของทุกตัวในวง · ร่างมังกร กระโจนด้วยร่างมังกร วงกว้างขึ้น',lv:i=>[`ระยะ ${ZB.znLeap.dist[i-1]}`,`${zdX(ZB.znLeap.dmg[i-1])} รัศมี ${ZB.znLeap.R}`,`Cooldown ${ZB.znLeap.cd} วิ`]},
  {key:'znCyclops',id:'ZD-B05',name:'Cyclops Apprentice',br:'basic',row:3,max:4,passive:1,d:'(Passive) ศิษย์ไซคลอปส์ช่างตีเหล็ก ชุบได้แต่ละครั้งฟื้น HP (ไม่เกิน 1 ครั้งต่อวิ)',lv:i=>[`ฟื้น HP = เลเวล × ${ZB.znCyclops.heal[i-1]}`]},
@@ -114,7 +114,7 @@ const ZD_DEFS=[
  {key:'zaPool',id:'ZD-A11',name:'Molten Pool',br:'A',row:6,max:1,passive:1,enh:'zaGeyser',pre:[['zaGeyser',1]],d:'(ต่อยอด Lava Geyser / Magma Breath) เหลือบ่อลาวา 4 วิ',lv:()=>[`${zdX(ZB.zaPool.dmg)} ทุก ${ZB.zaPool.tick} วิ · ร้อน 1 ทุก 1 วิ`]},
  {key:'zaFury',id:'ZD-A12',name:'Forge Fury',br:'A',row:7,max:3,passive:1,d:'(Passive) ทุกศัตรูที่ติดความร้อนรอบตัว 220 ATK เพิ่ม (สูงสุด 5 ตัว)',lv:i=>[`ATK +${ZB.zaFury.atk[i-1]} ต่อตัว`]},
  {key:'zaGuard',id:'ZD-A13',name:'Obsidian Guard',br:'A',row:7,max:1,type:'self',dn:'Obsidian Hide',d:'ยกดาบรับ 1 วิ โดนตีประชิด = กันได้ทั้งหมด สวนด้วยระเบิดลาวา + เลือดมังกร +10 · ร่างมังกร Obsidian Hide เกล็ดออบซิเดียนกันได้ 2 ครั้งใน 3 วิ',lv:()=>[`สวน ${zdX(ZB.zaGuard.dmg)} รัศมี ${ZB.zaGuard.R}`,`Cooldown ${ZB.zaGuard.cd} วิ`]},
- {key:'zaUlt',id:'ZD-A14',name:'Etna Erupts',br:'A',row:8,max:2,type:'self',ult:1,dn:'Cataclysm',d:'ULTIMATE A · ปักดาบลงพื้นจนภูเขาไฟเล็กโผล่ พ่นลาวา 10 ลูกรอบตัว แล้วทุกตัวร้อนเต็มและชุบพร้อมกัน + เลือดมังกร +40 · ร่างมังกร Cataclysm (ท่าปิดฉาก) บินขึ้น ฝนอุกกาบาตลาวา 12 ลูก ดิ่งลงกลางวง ชุบ ×2 แล้วคืนร่าง',lv:i=>[`${zdX(ZB.zaUlt.dmg[i-1])} × ${ZB.zaUlt.n} รัศมี ${ZB.zaUlt.R}`,`มังกร ${zdX(ZB.zaUlt.ddmg[i-1])} × ${ZB.zaUlt.dn} + ${zdX(ZB.zaUlt.dfin[i-1])}`,`Cooldown ${ZB.zaUlt.cd} วิ`]},
+ {key:'zaUlt',id:'ZD-A14',name:'Etna Erupts',br:'A',row:8,max:2,type:'self',ult:1,dn:'Cataclysm',d:'ULTIMATE A · ปักดาบลงพื้นจนภูเขาไฟเล็กโผล่ พ่นลาวา 16 ลูกรัวรอบตัววงกว้าง แล้วทุกตัวร้อนเต็มและชุบพร้อมกัน + เลือดมังกร +40 · ร่างมังกร Cataclysm (ท่าปิดฉาก) บินขึ้น ฝนอุกกาบาตลาวา 16 ลูก ดิ่งลงกลางวง ชุบ ×2 แล้วคืนร่าง',lv:i=>[`${zdX(ZB.zaUlt.dmg[i-1])} × ${ZB.zaUlt.n} รัศมี ${ZB.zaUlt.R}`,`มังกร ${zdX(ZB.zaUlt.ddmg[i-1])} × ${ZB.zaUlt.dn} + ${zdX(ZB.zaUlt.dfin[i-1])}`,`Cooldown ${ZB.zaUlt.cd} วิ`]},
  {key:'zaHeir',id:'ZD-A15',name:'Heir of Typhon',br:'A',row:8,max:1,passive:1,enh:'zaUlt',pre:[['zaUlt',1]],d:'(ต่อยอด Etna Erupts) เลือดไทฟอนในตัวตื่น ร่างมังกรลาวาอยู่นานขึ้น',lv:()=>[`นานสุด +${ZB.zaHeir.ext} วิ · เลือดมังกรลด ${ZB.zaHeir.drain} ต่อวิ (แทน 5)`]},
  // ---------------- B · STONE ORACLE OF DELPHI ----------------
  {key:'zbHeart',id:'ZD-G01',name:'Heart of Gaia',br:'B',row:1,max:4,type:'self',dn:'Heart of Gaia · คืนร่าง',d:'แปลงร่างเป็นมังกรภูผาแห่งไกอา (ใช้เลือดมังกร 100) แผ่นดินรอบตัวยกตัว ไอร้อนพวย ทุกตัวร้อน 2 แล้วชุบ = เป็นหินทั้งวง · ร่างมังกร: ตัวใหญ่สุด ไม่ติดชะงัก ไม่โดนผลัก เดินช้าลง 40 มีโล่ · กดซ้ำ = คืนร่าง (อัปสลับกับ Stone Spike)',lv:i=>[`ระเบิด ${zdM(ZB.zbHeart.dmg[i-1])} รัศมี ${ZB.zbHeart.R}`,`โล่มังกร = เลเวล × ${ZD_BAL.form.B.shield} · นานสุด ${ZD_BAL.form.max[i-1]} วิ`]},
@@ -130,7 +130,7 @@ const ZD_DEFS=[
  {key:'zbOracle',id:'ZD-G11',name:'Oracle Stone',br:'B',row:6,max:1,passive:1,enh:'zbMono',pre:[['zbMono',1]],d:'(ต่อยอด Monolith) แท่งหินพ่นไอใส่ตัวที่ใกล้ที่สุดทุก 1 วิ ร้อน 1',lv:()=>[`${zdM(ZB.zbOracle.dmg)} ระยะ ${ZB.zbOracle.R}`]},
  {key:'zbGaia',id:'ZD-G12',name:"Gaia's Favour",br:'B',row:7,max:3,passive:1,d:'(Passive) ทุกศัตรูที่เป็นหิน / ร้าวรอบตัว 260 MATK เพิ่ม (สูงสุด 5 ตัว)',lv:i=>[`MATK +${ZB.zbGaia.matk[i-1]} ต่อตัว`]},
  {key:'zbAegis',id:'ZD-G13',name:'Marble Aegis',br:'B',row:7,max:1,type:'self',dn:'Mountain Hide',d:'เกราะหินอ่อนดูดดาเมจ แตกหรือหมดเวลาแล้วชุบทุกตัวรอบตัว · ร่างมังกร Mountain Hide ผิวภูเขาดูดได้ 2 เท่า ศัตรูที่ตีเราประชิดถูกชุบ',lv:()=>[`ดูด เลเวล × ${ZB.zbAegis.lv} + VIT × ${ZB.zbAegis.vit} นาน ${ZB.zbAegis.T} วิ`,`Cooldown ${ZB.zbAegis.cd} วิ`]},
- {key:'zbUlt',id:'ZD-G14',name:"Gorgon's Eye",br:'B',row:8,max:2,type:'self',ult:1,dn:'Mountainfall',d:'ULTIMATE B · รอยแยกเดลฟีเปิดเป็นวง ไอร้อนพวย 3 ระลอก แล้วดวงตากอร์กอนบนฟ้าลืมตา ทุกตัวกลายเป็นรูปปั้นพร้อมกัน (ข้ามกันหิน) + เลือดมังกร +40 · ร่างมังกร Mountainfall (ท่าปิดฉาก) กระโดดสูงแล้วทิ้งตัวลงกลางวง หนามหินพุ่งทั่ว ชุบ ×2 แล้วคืนร่าง',lv:i=>[`${zdM(ZB.zbUlt.dmg[i-1])} × ${ZB.zbUlt.waves} + รูปปั้น ${ZB.zbUlt.stat} วิ รัศมี ${ZB.zbUlt.R}`,`มังกร ${zdM(ZB.zbUlt.dd[i-1])} + หนามหิน ${zdM(ZB.zbUlt.dspk[i-1])}`,`Cooldown ${ZB.zbUlt.cd} วิ`]},
+ {key:'zbUlt',id:'ZD-G14',name:"Gorgon's Eye",br:'B',row:8,max:2,type:'self',ult:1,dn:'Mountainfall',d:'ULTIMATE B · รอยแยกเดลฟีเปิดเป็นวง ไอร้อนพวย 6 ระลอกรัวๆ ดูดทุกตัวเข้ากลางวง แล้วดวงตากอร์กอนบนฟ้าลืมตา ทุกตัวกลายเป็นรูปปั้นพร้อมกัน (ข้ามกันหิน) + เลือดมังกร +40 · ร่างมังกร Mountainfall (ท่าปิดฉาก) กระโดดสูงแล้วทิ้งตัวลงกลางวง หนามหินพุ่งทั่ว ชุบ ×2 แล้วคืนร่าง',lv:i=>[`${zdM(ZB.zbUlt.dmg[i-1])} × ${ZB.zbUlt.waves} + รูปปั้น ${ZB.zbUlt.stat} วิ รัศมี ${ZB.zbUlt.R}`,`มังกร ${zdM(ZB.zbUlt.dd[i-1])} + หนามหิน ${zdM(ZB.zbUlt.dspk[i-1])}`,`Cooldown ${ZB.zbUlt.cd} วิ`]},
  {key:'zbProph',id:'ZD-G15',name:"Oracle's Prophecy",br:'B',row:8,max:1,passive:1,enh:'zbUlt',pre:[['zbUlt',1]],d:"(ต่อยอด Gorgon's Eye) ร่างมังกรภูผาอยู่นานขึ้น · 6 วิหลังคืนร่าง ชุบทุกครั้งนับเต็ม 3 ขั้น",lv:()=>[`นานสุด +${ZB.zbProph.ext} วิ`]},
  // ---------------- C · PRIMORDIAL DRAGON (12 nodes, tied to the Basic / A / B skill) ----------------
  {key:'zxSmith',id:'ZD-C01',name:'Master Smith',br:'C',col:'basic',tier:1,passive:1,pre:[['znHammer',4]],d:'Forge Blade ต่อได้อีก 1 จังหวะ จังหวะหินชุบรอบตัว (ไม่ใช่แค่เป้า)',lv:()=>[`ไฟ ×4 แล้วหิน · ชุบรอบตัว ${ZB.zxSmith.R}`]},
@@ -644,9 +644,12 @@ function zdStompBasic(tgt){const chain=3;if(gameTime-player.basicLast>1.3||playe
     shake(last?1.8:1);stop(last?40:20);}});}
 
 /* ---------- BASIC ---------- */
-function mkZnBreath(c){const t=zdTgt(c,ZB.znBreath.range+60),phi=zdPhi(c,t),R=zdLv(ZB.znBreath.r,'znBreath')*(ZD.form?1.5:1),m=zdLv(ZB.znBreath.dmg,'znBreath'),C=zdC('znBreath',{q:'b'}),half=ZB.znBreath.half;
-  return zdCast({key:'znBreath',name:ZD.form?'Dragon Breath':'Bellows Breath',phi,speed:2.6,glow:ZDC.fire,f:()=>{addFx(new ZdCone({x:player.x,y:player.y,phi,R,half,col:ZDC.fire,life:.5,kind:'fire'}));
-    for(const e of zdCone(player.x,player.y,phi,R,half)){if(zdHit(e,m,'znBreath',C)>0)zdHeat(e,ZB.znBreath.heat);zdSpark(e,false,ZDC.fire);}zdEmbers(player.x+Math.cos(phi)*R*.5,player.y+Math.sin(phi)*R*.5,20,10,{spd:R});shake(.9);}});}
+function mkZnBreath(c){const B=ZB.znBreath,t=zdTgt(c,B.range+60),phi=zdPhi(c,t),R=zdLv(B.r,'znBreath')*(ZD.form?B.form:1),m=zdLv(B.dmg,'znBreath'),C=zdC('znBreath',{q:'b'}),half=B.half,n=B.puffs,mp=m/n;
+  return zdCast({key:'znBreath',name:ZD.form?'Dragon Breath':'Bellows Breath',phi,speed:2.6,glow:ZDC.fire,f:()=>{
+    addFx(new ZdCone({x:player.x,y:player.y,phi,R,half,col:ZDC.fire,life:.32+n*B.gap,kind:'fire',follow:1}));shake(.9);
+    for(let i=0;i<n;i++)setFxTimer(.001+i*B.gap,()=>{const x=player.x,y=player.y;if(i)addFx(new ZdCone({x,y,phi,R:R*(.86+.04*i),half:half*.9,col:ZDC.fire,life:.3,kind:'fire',follow:1}));
+      for(const e of zdCone(x,y,phi,R,half)){if(zdHit(e,mp,'znBreath',C,i?{dot:1,noTag:1}:{})>0&&(i===0||i===n-1))zdHeat(e,B.heat/2);if(i===0||i===n-1)zdSpark(e,false,ZDC.fire);}
+      zdEmbers(x+Math.cos(phi)*R*.55,y+Math.sin(phi)*R*.55,10,7,{spd:R*.9});if(i)shake(.35);});}});}
 function mkZnSkin(c){return zdCast({key:'znSkin',name:'Stone Skin',speed:2.6,glow:ZDC.stone2,f:()=>{addBuff('znSkin',ZB.znSkin.T);addFx(new GRing({x:player.x,y:player.y,r0:10,r1:56,w:6,color:ZDC.stone2,life:.4}));zdRocks(player.x,player.y,8,{spd:60,z:30,up:.6,col:ZDC.marble});}});}
 function mkZnLeap(c){const L=zdLv(ZB.znLeap.dist,'znLeap'),t=zdTgt(c,L);let [gx,gy]=zdGround(c,t,L*.7);const phi=Math.atan2(gy-player.y,gx-player.x),dd=Math.min(L,Math.hypot(gx-player.x,gy-player.y)),[dx,dy]=zdPathEnd(player.x,player.y,phi,dd),
     R=ZB.znLeap.R*(ZD.form?1.3:1),m=zdLv(ZB.znLeap.dmg,'znLeap'),C=zdC('znLeap',{q:'b'}),T=.42;
@@ -682,7 +685,7 @@ function mkZaUlt(c){const n=ZB.zaUlt.n,R=ZB.zaUlt.R,gap=ZB.zaUlt.gap,m=zdLv(ZB.z
   return buffAct({key:'zaUlt',name:'Etna Erupts',speed:1.4,glow:ZDC.lava,events:tP=>[{t:.02,f:()=>{skyDarkT=.5;}},{t:tP,f:()=>{const cx=player.x,cy=player.y;zdGain('ult');
     addFx(new ZdStand({kind:'volcano',x:cx+Math.cos(player.phi)*20,y:cy+Math.sin(player.phi)*12,life:1.9}));addFx(new ZdQuake({x:cx,y:cy,R:90,col:ZDC.fire}));shake(3);
     for(let i=0;i<n;i++)setFxTimer(.15+i*gap,()=>{const L=zdNear(cx,cy,R);const e=L.length?L[i%L.length]:null,an=rnd(0,TAU),r=rnd(40,R),tx=e?e.x+rnd(-14,14):cx+Math.cos(an)*r,ty=e?e.y+rnd(-10,10):cy+Math.sin(an)*r*.8;
-      addFx(new ZdMeteor({x:tx,y:ty,T:.32,H:180,s:.8,onLand:(lx,ly)=>{for(const q of zdNear(lx,ly,52)){zdHit(q,m,'zaUlt',C);zdHeat(q,1);}zdRocks(lx,ly,4,{lava:1,spd:80});addFx(new ZdFlash({x:lx,y:ly,z:12,r:26,col:ZDC.fire}));shake(.9);}}));});
+      addFx(new ZdMeteor({x:tx,y:ty,T:.32,H:180,s:.9,onLand:(lx,ly)=>{for(const q of zdNear(lx,ly,ZB.zaUlt.sp)){zdHit(q,m,'zaUlt',C,i?{dot:1,noTag:1}:{});zdHeat(q,1);}zdRocks(lx,ly,4,{lava:1,spd:80});addFx(new ZdFlash({x:lx,y:ly,z:12,r:30,col:ZDC.fire}));shake(.7);}}));});
     setFxTimer(.15+n*gap+.45,()=>{skyDarkT=0;for(const e of zdNear(cx,cy,R)){zdHeat(e,zdCap());zdQuench(e,C);}addFx(new ZdQuake({x:cx,y:cy,R,col:ZDC.lava}));addFx(new DText({x:cx,y:cy,z:120,text:'ETNA ERUPTS',color:ZDC.fire2,size:16,life:1}));shake(4);stop(80);});}}]});}
 
 /* ---------- A · dragon moves (Magma Drake) ---------- */
@@ -707,8 +710,8 @@ function dmZaGeyser(c){const t=zdTgt(c,ZB.zaGeyser.dR+60),phi=zdPhi(c,t),R=ZB.za
 function dmZaGuard(c){ZD.hideN=ZB.zaGuard.dn;ZD.hideUntil=gameTime+ZB.zaGuard.dT;return zdCast({key:'zaGuard',name:'Obsidian Hide',speed:3,glow:ZDC.obs,f:()=>{zdRocks(player.x,player.y,6,{spd:50,z:40,col:ZDC.obs});}});}
 function dmZaUlt(c){const n=ZB.zaUlt.dn,R=ZB.zaUlt.dR,m=zdLv(ZB.zaUlt.ddmg,'zaUlt'),fin=zdLv(ZB.zaUlt.dfin,'zaUlt'),C=zdC('zaUlt',{q:'A'}),T=1.6,cx=player.x,cy=player.y,ev=[];
   ev.push({t:.001,f:()=>{skyDarkT=.6;player.iframes=Math.max(player.iframes||0,zdRT(T)+.3);}});
-  ev.push({t:.05,f:()=>{for(let i=0;i<n;i++)setFxTimer(.15+i*.08,()=>{const L=zdNear(cx,cy,R+60),e=L.length?L[i%L.length]:null,an=rnd(0,TAU),r=rnd(30,R),tx=e?e.x+rnd(-16,16):cx+Math.cos(an)*r,ty=e?e.y+rnd(-12,12):cy+Math.sin(an)*r*.8;
-    addFx(new ZdMeteor({x:tx,y:ty,T:.34,H:280,s:1,onLand:(lx,ly)=>{for(const q of zdNear(lx,ly,58)){zdHit(q,m,'zaUlt',C,{noPrim:1});zdHeat(q,1);}zdRocks(lx,ly,5,{lava:1,spd:100});addFx(new ZdFlash({x:lx,y:ly,z:12,r:30,col:ZDC.fire}));shake(1.1);}}));});}});
+  ev.push({t:.05,f:()=>{for(let i=0;i<n;i++)setFxTimer(.15+i*Math.min(.08,1/n),()=>{const L=zdNear(cx,cy,R+60),e=L.length?L[i%L.length]:null,an=rnd(0,TAU),r=rnd(30,R),tx=e?e.x+rnd(-16,16):cx+Math.cos(an)*r,ty=e?e.y+rnd(-12,12):cy+Math.sin(an)*r*.8;
+    addFx(new ZdMeteor({x:tx,y:ty,T:.34,H:280,s:1,onLand:(lx,ly)=>{for(const q of zdNear(lx,ly,ZB.zaUlt.sp)){zdHit(q,m,'zaUlt',C,i?{noPrim:1,dot:1,noTag:1}:{noPrim:1});zdHeat(q,1);}zdRocks(lx,ly,5,{lava:1,spd:100});addFx(new ZdFlash({x:lx,y:ly,z:12,r:30,col:ZDC.fire}));shake(1.1);}}));});}});
   ev.push({t:T-.02,f:a=>{player.z=0;for(const e of zdNear(player.x,player.y,R)){if(zdHit(e,fin,'zaUlt',C,{big:true,noPrim:1})>0){zdQuench(e,C,{dbl:1});a.hitList.push(e);a.hitConfirmed=true;}}
     addFx(new ZdQuake({x:player.x,y:player.y,R:R+30,col:ZDC.lava}));addFx(new ZdPillar({x:player.x,y:player.y,R,col:ZDC.lava,H:300}));addFx(new DText({x:player.x,y:player.y,z:130,text:'CATACLYSM',color:ZDC.fire2,size:17,life:1.1}));
     skyDarkT=0;shake(5);stop(110);try{screenFlash(.3,'#ffd0a0');}catch(_){}setFxTimer(.25,()=>zdRevert('finisher'));}});
@@ -746,7 +749,9 @@ function zdAegisBreak(){ZD.aegis=0;ZD.aegisUntil=0;const C=zdC('zbAegis',{q:'B'}
 function mkZbUlt(c){const R=ZB.zbUlt.R,m=zdLv(ZB.zbUlt.dmg,'zbUlt'),C=zdC('zbUlt',{q:'B'});
   return buffAct({key:'zbUlt',name:"Gorgon's Eye",speed:1.4,glow:ZDC.amber,events:tP=>[{t:.02,f:()=>{skyDarkT=.55;}},{t:tP,f:()=>{const cx=player.x,cy=player.y;zdGain('ult');
     addFx(new ZdVentRing({x:cx,y:cy,R,T:1.5}));
-    for(let w=0;w<ZB.zbUlt.waves;w++)setFxTimer(.001+w*.45,()=>{for(const e of zdNear(cx,cy,R)){if(zdHit(e,m,'zbUlt',C)>0)zdHeat(e,1);}zdSteam(cx,cy,6,10,{big:1.4});addFx(new GRing({x:cx,y:cy,r0:20,r1:R,w:8,color:ZDC.stone2,life:.4}));shake(1);});
+    for(let w=0;w<ZB.zbUlt.waves;w++)setFxTimer(.001+w*ZB.zbUlt.gap,()=>{for(const e of zdNear(cx,cy,R)){if(zdHit(e,m,'zbUlt',C,w?{dot:1,noTag:1}:{})>0&&(w===0||w===ZB.zbUlt.waves-1))zdHeat(e,1);
+        if(!zdBig(e)&&!e.dead){const d=Math.hypot(e.x-cx,e.y-cy);if(d>40){const k=Math.min(ZB.zbUlt.pull,d-40)/d;e.x-=(e.x-cx)*k;e.y-=(e.y-cy)*k;}}}
+      zdSteam(cx,cy,5,8,{big:1.4});addFx(new GRing({x:cx,y:cy,r0:R,r1:30,w:7,color:w%2?ZDC.amber:ZDC.stone2,life:.3}));shake(.7);});
     setFxTimer(.95,()=>addFx(new ZdEye({x:cx,y:cy,R})));
     setFxTimer(1.55,()=>{skyDarkT=0;for(const e of zdNear(cx,cy,R)){if(zdBig(e)){zdStone(e,ZD_BAL.heat.cap*2,C);continue;}zdQuench(e,C,{min:1,force:1,T:ZB.zbUlt.stat});if(!zdStoned(e))zdStone(e,1,C,{force:1,T:ZB.zbUlt.stat});}
       addFx(new DText({x:cx,y:cy,z:120,text:"GORGON'S EYE",color:ZDC.amber,size:16,life:1}));shake(3);stop(70);});}}]});}
