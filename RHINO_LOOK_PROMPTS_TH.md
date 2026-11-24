@@ -7,7 +7,7 @@
 
 ถ้าไม่ตรงใจ บอกแนวที่อยากได้มาได้เลย (เช่น กลมน่ารักแบบฮิปโป หรือดุดันแบบมังกร)
 
-**เลือกแล้ว: แบบ 1 ไททันธารน้ำแข็ง (2026-11-24 20:56)** → ภาพใหญ่อยู่หน้าเลือกตัวแล้ว · ต่อไปภาพยืน 5 มุม ดูหัวข้อ 'เลือกแล้ว' ท้ายไฟล์ · พรอมต์คลิป 20 ตัว: `RHINO_CLIP_PROMPTS_TH.md`
+**เลือกแล้ว: แบบ 1 ไททันธารน้ำแข็ง (2026-11-24 20:56)** → ภาพใหญ่อยู่หน้าเลือกตัวแล้ว · ภาพยืน 5 มุมมาแล้ว (21:48) + ส่งภาพตั้งต้นแล้ว → รอคลิป 20 ตัว (พรอมต์: `RHINO_CLIP_PROMPTS_TH.md`) · ดูหัวข้อ 'เลือกแล้ว' ท้ายไฟล์
 
 ## เปลี่ยนแรดกระทบอะไรบ้าง (น้อยกว่าหมาป่ามาก)
 - **สไปร์ท `assets_rhino.js`** (prefix RH) ทำจากคลิป 17 อัน ไม่มีคลิปหันหลัง (N ใช้ภาพ NE แทน) · ใช้กับแรดตัวเดียว → คลิปใหม่ 20 อันเขียนทับไฟล์เดิมได้เลย ฮีโร่ตัวอื่นไม่โดน
@@ -183,7 +183,8 @@ Design 6 — a mix: the head and wool of design 1 with the outfit and colours of
 - ถุงมือใหญ่ แผงขนฟู ตัวกว้างมาก → สั่งให้อยู่ในกรอบหมด มีพื้นเขียวเหลือรอบตัว
 - หัวเข็มขัด: พรอมต์ออกแบบสั่งกลม แต่วาดออกมาสี่เหลี่ยม → ใช้สี่เหลี่ยมตามภาพ · รอยบิ่นที่หูตามพรอมต์ออกแบบไม่ได้วาด → ไม่ใส่
 
-### ขั้น 1 — ภาพยืน 5 มุม ภาพละมุม พื้นเขียว · รอภาพ
+### ขั้น 1 — ภาพยืน 5 มุม ภาพละมุม พื้นเขียว · ✓ มาแล้ว 2026-11-24 21:48
+เจ้าของส่ง 5 ภาพ (ไม่มีข้อความ) → `assets/heroes/rhino/view_S|SE|E|NE|N.webp` (1254² หันขวาทุกภาพ ตัวสูง 1197–1209 px ต่างกัน 1 %) · ตรงตามพรอมต์: ไม่มีสีเขียวบนตัว (จุดเขียวในตัวเป็นช่องพื้นหลังจริง) · ผ้าคลุมไหล่ / เกราะบ่าอยู่ฝั่งถูกทุกมุม · งาหน้ามีห่วง 2 วงทุกมุม · ยิ้มมั่นใจปากปิด · มุมเฉียงหลังไม่เห็นตา เห็นข้างจมูก + รูจมูก + งา · มุมหลังแผงขนคลุมหลังถึงเข็มขัด หางพู่ห้อยกลาง · พรอมต์ข้างล่างเก็บไว้ใช้ซ่อมภาพ
 วิธีใช้:
 1. ส่งต่อในแชต ChatGPT เดิมที่เจนชีตนี้ (มันจำตัวได้) แนบชีตไปกับพรอมต์ 0 อีกครั้ง · ถ้าเปิดแชตใหม่ แนบชีต + ภาพปกแคมป์ไฟ (`keyart_campfire_ld5.jpg`)
 2. ส่งพรอมต์ 0 → รอมันตอบ ready
@@ -243,7 +244,7 @@ Picture 4 — BACK THREE-QUARTER view: he is turned away from us, facing up and 
 Picture 5 — BACK view: his back faces us, like the back view on the sheet: the back of his head with both ears and the tips of his horns, his shaggy chestnut mane hanging down his back to the waist, the back of the harness and the belt, and the back of the blue tunic skirt; no face. The dark-iron pauldron with the ice crystal is on the shoulder on the LEFT side of the picture and the blue capelet with its white fur trim on the shoulder on the RIGHT side. Both huge gauntlets hang at his sides, one on each side of the picture. His tail hangs down behind him.
 ```
 
-### ขั้น 2 — ภาพตั้งต้น + คลิปท่า 20 ตัว (รอภาพ 5 มุม)
+### ขั้น 2 — ภาพตั้งต้น + คลิปท่า 20 ตัว · ภาพตั้งต้นส่งแล้ว 2026-11-24 → รอคลิป
 ภาพ 5 มุมมาแล้ว → ตัดภาพตั้งต้น `rhino_1_S.png … rhino_5_N.png` (`tools/dir8cut.py startv`, คำสั่งอยู่ใน `RHINO_CLIP_PROMPTS_TH.md`) ส่งพร้อม `RHINO_CLIP_PROMPTS_TH.md` (คลิป 20 ตัว ยืน · เดิน · ทุบสองหมัด · ชูสองหมัด × 5 ทิศ สร้างจาก `python3 tools/clip_prompts.py rhino`)
 
 ### ขั้น 3 เป็นต้นไป

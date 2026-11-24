@@ -532,19 +532,20 @@ V=assets/heroes/wolf; python3 -I tools/dir8cut.py startv <โฟลเดอร�
   title='แรดขนยาว ลุคใหม่ (ไททันธารน้ำแข็ง · Glacier Titan)',
   who='the woolly rhino warrior in this picture', P='He', p='he', pos='his', weapon='gauntlets',
   face="Keep his face exactly as in the picture: the same small fierce frost-blue eyes under the same heavy brows, the same "
-       "blue war paint on his cheeks, the same two ivory horns and the same calm, confident look, mouth closed.",
+       "blue war paint on his cheeks, the same two ivory horns and the same calm, confident small smile, mouth closed.",
   back_face={'NE': "We see him mostly from behind: his shaggy chestnut mane hanging down his back and the back of his head "
-                   "with both ears; of his face only the edge of his snout and his horns pointing to the right, as in the "
-                   "picture; his face never turns toward us.",
+                   "with both ears; of his face only the side of his snout with the nostril and his two horns pointing to "
+                   "the right, as in the picture; his face never turns toward us.",
              'N': "We only see the back of his head with both ears and the tips of his horns, and his shaggy chestnut mane "
                   "hanging down his back, as in the picture; his face never turns toward us."},
   keep={d: ("His two ivory horns with the dark-iron rings, his shaggy chestnut mane, the X harness with the round copper "
             "rhino medallion, the blue capelet with the white fur trim, the dark-iron pauldron with the ice crystal, the "
             "blue tunic skirt with the copper zigzag border, the two huge dark-iron gauntlets with the ice-crystal knuckles, "
             "the fur-wrapped greaves, the iron-shod boots and his tufted tail stay exactly the same.") for d in ('S', 'SE', 'E')}
-       | {d: ("His horns, his shaggy chestnut mane, the back of the harness and the belt, the blue capelet with the white fur "
-              "trim, the dark-iron pauldron with the ice crystal, the back of the blue tunic skirt, the two huge dark-iron "
-              "gauntlets, the iron-shod boots and his tufted tail stay exactly the same.") for d in ('NE', 'N')},
+       | {d: ("His horns, his shaggy chestnut mane covering his back down to the belt, the blue capelet with the white fur "
+              "trim, the dark-iron pauldron with the ice crystal, the back of the blue tunic skirt with the copper zigzag "
+              "border, the two huge dark-iron gauntlets with the ice-crystal knuckles, the fur-wrapped greaves, the "
+              "iron-shod boots and his tufted tail stay exactly the same.") for d in ('NE', 'N')},
   spos=dict.fromkeys(DIRS, 'hanging at his sides with the fists loosely closed'),
   blink=", his ears twitch once, and he blinks once",
   vis=" Both of his arms and gauntlets stay visible beside his body during the whole move.",
@@ -585,14 +586,14 @@ V=assets/heroes/wolf; python3 -I tools/dir8cut.py startv <โฟลเดอร�
   header="""เจ้าของเลือกแบบ 1 'ไททันธารน้ำแข็ง' 2026-11-24 20:56 ("เอาอันนี้ภาพซ้ายเอาไปใส่หน้าเลือกตัว") · ชีต `assets/heroes/rhino/sheet_glacier_titan.webp` · ภาพใหญ่ = หน้าเลือกตัวแล้ว · หน้าตา + พรอมต์ภาพยืน 5 มุม: `RHINO_LOOK_PROMPTS_TH.md` หัวข้อ 'เลือกแล้ว'
 
 ## ลำดับงาน
-1. **ภาพยืน 5 มุม** — รอภาพ (พรอมต์ใน `RHINO_LOOK_PROMPTS_TH.md` หัวข้อ 'เลือกแล้ว') → `assets/heroes/rhino/view_S|SE|E|NE|N.webp`
-2. **ภาพตั้งต้น** — ตัดจากภาพ 5 มุม (คำสั่งข้างล่าง) เป็น `rhino_1_S.png … rhino_5_N.png` (ไม่เก็บในรีโป สร้างใหม่ได้ทุกเมื่อ)
-3. **คลิป 20 ตัว** — พรอมต์ในไฟล์นี้ แนบภาพตั้งต้นของทิศนั้นทุกคลิป
+1. **ภาพยืน 5 มุม ✓** (2026-11-24 21:48 เจ้าของส่งมา 5 ภาพ ไม่มีข้อความ) → `assets/heroes/rhino/view_S|SE|E|NE|N.webp` · 1254² พื้นเขียว หันขวาทุกภาพ ตัวสูง 1197–1209 px (ต่างกัน 1 %) · ไม่มีสีเขียวบนตัว (จุดเขียวในตัว = ช่องพื้นหลังจริงระหว่างแขนกับตัว ระหว่างงากับหน้า ระหว่างหางกับขา) · ผ้าคลุมไหล่ / เกราะบ่าอยู่ฝั่งถูกทุกมุม (หน้า: ผ้าคลุมซ้ายภาพ · เฉียงหลัง: ผ้าคลุมขวาภาพ เกราะบ่าไกลซ้าย · หลัง: เกราะบ่าซ้าย ผ้าคลุมขวา) · มุมหน้างาใหญ่ชี้ขึ้นกลางหัวมีห่วง 2 วง · มุมเฉียงหลังเห็นข้างจมูก + รูจมูก + งาสองอัน ไม่เห็นตา · มุมหลังเห็นหูสองข้าง + ปลายงา แผงขนคลุมหลังถึงเข็มขัด
+2. **ภาพตั้งต้น ✓** ส่งแล้ว 2026-11-24 → `rhino_1_S.png … rhino_5_N.png` (ไม่เก็บในรีโป สร้างใหม่ด้วยคำสั่งข้างล่างได้ทุกเมื่อ)
+3. **คลิป 20 ตัว** — รอคลิป · พรอมต์ในไฟล์นี้ แนบภาพตั้งต้นของทิศนั้นทุกคลิป
 
 ## ภาพตั้งต้น
-- `rhino_<n>_<ทิศ>.png` 900×900 สี่เหลี่ยม แบบฮิปโป / จากัวร์ / มังกร / หมาป่า · แรดตัวกว้างมาก (ถุงมือใหญ่ + แผงขน มุมหน้ากว้างเกือบเท่าสูง) และต้องมีที่ให้ชูสองหมัดเหนือหัว + ก้มทุบหมัดลงพื้นข้างหน้า → เริ่มที่ ht ~480 (ในคลิป 480p ตัวสูง ~255 px) แล้วดูว่าซ้าย / ขวา / เหนือหัวว่างพอไหม
+- `rhino_<n>_<ทิศ>.png` 900×900 สี่เหลี่ยม แบบฮิปโป / จากัวร์ / มังกร / หมาป่า · แรดตัวกว้างมาก (ถุงมือใหญ่ + แผงขน มุมหน้ากว้าง .9 เท่าของความสูง) และต้องมีที่ให้ชูสองหมัดเหนือหัว + ก้มทุบหมัดลงพื้นข้างหน้า → ht 480 · เท้าที่ 88 % (ไม่ใช่ 90 % แบบตัวอื่น: มุมหน้า 'พื้นหน้าเท้า' อยู่ต่ำกว่าเท้าในภาพ หมัดยักษ์ต้องมีที่ลง) · ผลที่วัดได้ (สเกล .400 ทุกทิศ): ตัวสูง 480–485 px = ~256–259 px ในคลิป 480p · เหนือหัวว่าง .64–.65 เท่าตัว · ซ้าย / ขวา S .48 / .47 · SE .53 / .52 · E .63 / .60 · NE .54 / .54 · N .50 / .49 · ใต้เท้า 108 px = .22 เท่าตัว
 ```
-V=assets/heroes/rhino; python3 -I tools/dir8cut.py startv <โฟลเดอร์> S=$V/view_S.webp SE=$V/view_SE.webp E=$V/view_E.webp NE=$V/view_NE.webp N=$V/view_N.webp size=900 feet=.9 ht=480 clean=0
+V=assets/heroes/rhino; python3 -I tools/dir8cut.py startv <โฟลเดอร์> S=$V/view_S.webp SE=$V/view_SE.webp E=$V/view_E.webp NE=$V/view_NE.webp N=$V/view_N.webp size=900 feet=.88 ht=480 clean=0
 ```
 → start_<ทิศ>.png → ตั้งชื่อใหม่ rhino_1_S … rhino_5_N · ทุกทิศใช้สเกลของมุมหน้า (ใส่ S ก่อนเสมอ) · clean=0 = ไม่ทาจุดเขียวในตัว (ชุดไม่มีสีเขียวเลย · ผลึกน้ำแข็ง ≈ RGB 167, 212, 245 ฟ้ามากกว่าเขียว · ช่องระหว่างแขนกับตัว ระหว่างขา เป็นพื้นหลังจริง)
 
@@ -601,7 +602,7 @@ V=assets/heroes/rhino; python3 -I tools/dir8cut.py startv <โฟลเดอร
 
 ## กติกาที่อยู่ในทุกพรอมต์ (บทเรียนจากคลิปลิง / แอคโซลอเติล / มังกรลุคเดิม / แกะ / บาสเต็ด / ฮิปโป / จากัวร์)
 - ประโยคบอกทิศขึ้นต้นทุกพรอมต์ กันโมเดลหมุนตัวหันหากล้อง (มุมหลังโดนบ่อย)
-- ล็อกหน้า (ตาฟ้าน้ำแข็งเล็กดุ คิ้วหนา ลายสงครามฟ้า งาสองอัน ปากปิด สีหน้ามั่นใจ — บนชีตภาพใหญ่ยิ้มเห็นฟัน ท่าสู้อ้าปาก ห้ามติดมา) ในมุมที่เห็นหน้า · มุมหลัง (NE, N) ใช้ประโยค 'เห็นแค่หลังหัว หน้าไม่หันมา' แทน ไม่มีกะพริบตา
+- ล็อกหน้า (ตาฟ้าน้ำแข็งเล็กดุ คิ้วหนา ลายสงครามฟ้า งาสองอัน ยิ้มมั่นใจปากปิดแบบภาพ 5 มุม — บนชีตภาพใหญ่ยิ้มเห็นฟัน ท่าสู้อ้าปาก ห้ามติดมา) ในมุมที่เห็นหน้า · มุมหลัง (NE, N) ใช้ประโยค 'เห็นแค่หลังหัว หน้าไม่หันมา' แทน ไม่มีกะพริบตา
 - ล็อกของติดตัว: ห่วงเหล็กที่งา · แผงขนเกาลัด · สายหนังไขว้ + เหรียญทองแดงหัวแรด · ผ้าคลุมไหล่น้ำเงินขอบขนขาว · เกราะบ่าฝังผลึก · กระโปรงน้ำเงินขอบซิกแซกทองแดง · ถุงมือยักษ์ข้อนิ้วผลึก · สนับแข้งพันขน · บูทหุ้มเหล็ก · หางพู่
 - ไม่มีอาวุธ: หมัดห้อยข้างตัวทุกคลิป ยกเว้นตอนทุบ / ชู
 - เดินอยู่กับที่แบบลู่วิ่ง ก้าวหนัก ~2 ก้าว/วิ ตัวโยกซ้ายขวานิดๆ
