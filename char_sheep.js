@@ -398,8 +398,6 @@ function sheepAutoTick(){if(busy()||player.casting||targeting||player.pending)re
   return false;}
 
 function installSheep(){
-  /* HUD portrait: her head from the owner's front view (index.html drawPortrait reads window.HUD_FACE) */
-  try{const hf=new Image();hf.src='assets/heroes/sheep/face.webp?v=1';window.HUD_FACE=hf;hf.onload=()=>{try{drawPortrait();}catch(_){}};}catch(_){}
   for(const k in SKILLS)delete SKILLS[k];for(const k in LV)delete LV[k];for(const k in CSK)delete CSK[k];
   setTimeout(()=>{try{CTIER_LV[1]=LVC.g(55);CTIER_LV[2]=LVC.g(60);CTIER_LV[3]=LVC.g(70);CTIER_LV[4]=LVC.g(80);}catch(_){}},0);
   for(const d of SP_DEFS){const b=SB[d.key]||{};const sk={id:d.id,name:d.name,br:d.br,row:d.row||d.tier,max:d.br==='C'?1:d.max,type:d.type,icon:sIconSpec(d),th:d.d.replace(/^\([^)]*\)\s*/,'').slice(0,40),characterId:'golden_fleece_sheep'};

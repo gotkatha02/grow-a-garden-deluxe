@@ -28,7 +28,7 @@ const SN={str:'STR',agi:'AGI',vit:'VIT',int:'INT',dex:'DEX',luk:'LUK'},ORDER=['s
 const anySave=()=>{try{for(const h of HEROES){const o=JSON.parse(localStorage.getItem('af_prog_v1_'+h.k)||'{}');if(o.mode)return true;}}catch(e){}return false;};
 function roll(k){const b=Object.assign({},CLASS_BASE[k]||CLASS_BASE.wolf);for(let i=0;i<3;i++)b[ORDER[Math.floor(Math.random()*6)]]++;for(let i=0;i<3;i++)b[ORDER[Math.floor(Math.random()*6)]]--;
   for(const s of ORDER)b[s]=Math.max(3,Math.min(12,b[s]+1));return b;}
-const PORT={wukong:'assets/heroes/wukong/portrait.webp',drake:'assets/heroes/drake/portrait.webp',sheep:'assets/heroes/sheep/portrait.webp'};   /* heroes without tree art yet: a crop of the owner's design sheet */
+const PORT={wukong:'assets/heroes/wukong/portrait.webp',drake:'assets/heroes/drake/portrait.webp'};   /* heroes without tree art yet: a crop of the owner's design sheet */
 const art=k=>{try{return (SKILL_BG_ALL[k]&&SKILL_BG_ALL[k].basic)||PORT[k]||null;}catch(e){return PORT[k]||null;}};
 function radar(st){const R=70,c=90,pts=ORDER.map((s,i)=>{const a=-Math.PI/2+i*Math.PI/3,v=(st[s]||0)/12;return [c+Math.cos(a)*R*v,c+Math.sin(a)*R*v];});
   const ring=f=>ORDER.map((s,i)=>{const a=-Math.PI/2+i*Math.PI/3;return `${c+Math.cos(a)*R*f},${c+Math.sin(a)*R*f}`;}).join(' ');

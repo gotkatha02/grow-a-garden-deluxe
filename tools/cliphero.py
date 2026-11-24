@@ -13,15 +13,6 @@ Optional (2026-11-21, axolotl): "topFade":6 / "sideFade":60 (px faded at the top
 Optional (2026-11-23, snow monkey): "flipDirs":["E"] (only these directions are mirrored — his side clips faced west),
   "loop":{"idle/S":[44,72]} (start frame + period of an idle / walk loop instead of the automatic one — for clips whose first
   second is a pose change that does not loop).
-Optional (2026-11-24, sheep priestess): "orbMask":{"b":140,"br":70,"bg":40,"g":0,"min":90} (thresholds of the orb colour: blue > b,
-  blue − red > br, blue − green > bg, green > g, blob area ≥ min — her deep-blue orb is darker than the axolotl's water, and the blue
-  gems on her tiara / earrings are smaller than min), "orbAll":true (orb sockets for EVERY state — idle / walk / hurt too — so
-  effects can start at the orb outside actions: the game reads them through playerFrame()),
-  "orbPale":true or {b, g, br, gb, min} (when no blue orb is found, a white / pale-blue glowing one: blue > b, green > g,
-  blue − red ≥ br, blue − green ≥ gb, area ≥ min — the sheep's orb glows white after the swing and at the cast peak),
-  "orbFix":{"attack/S":{"4":[x,y], …}} (orb read by eye where the clip blurs / turns / hides it, in PLACED-CELL px of this
-  build — re-read them after changing height / perDir / frames; null = treat as not found),
-  "orbLerp":true (a frame without an orb sits on the line between the nearest frames that have one, instead of borrowing one).
 Keying: soft green matte + despill + speck removal (keeps the body and anything touching it, e.g. the sword).
 Idle / walk loops are found automatically (period of best self-match); hurt is made from the idle pose."""
 import sys, io, json, base64, math, subprocess, numpy as np
@@ -149,31 +140,20 @@ def hurt_from(c, d):
     return F
 
 CELLS = {}
-OM = dict({'b': 165, 'br': 60, 'bg': 15, 'g': 110, 'min': 40}, **plan.get('orbMask', {}))
-ORB_ALL = plan.get('orb') and plan.get('orbAll')
-OPv = plan.get('orbPale'); OP = dict({'b': 205, 'g': 190, 'br': 8, 'gb': -4, 'min': 25}, **(OPv if isinstance(OPv, dict) else {})) if OPv else None
-def orb_pick(m, mn, prev):
+def orb_at(c_, prev):
+    """centre of the held orb / water burst in a placed cell: compact cyan-blue blob (rings and spray are thin or tiny)"""
+    A = np.asarray(c_).astype(np.int16); m = (A[..., 3] > 120) & (A[..., 2] > 165) & (A[..., 2] - A[..., 0] > 60) & (A[..., 1] > 110) & (A[..., 2] - A[..., 1] > 15)   # blue, not the teal gems
     lab, n = nd.label(m); best, bs = None, 0
     for i, sl in enumerate(nd.find_objects(lab)):
         hh, ww = sl[0].stop - sl[0].start, sl[1].stop - sl[1].start; ar = (lab[sl] == i + 1).sum()
         asp = max(hh, ww) / max(1, min(hh, ww))
-        if ar < mn or asp > 2.4: continue
+        if ar < 40 or asp > 2.4: continue
         fill = ar / (hh * ww); cy, cx = nd.center_of_mass(lab == i + 1)
         sc = ar * fill ** 3 * (1 if asp <= 1.5 else .15) * (1 if cy < PY - HT * .3 else .1)   # the orb is round and held above the waist; rings round the feet are not
         if prev is not None: sc /= 1 + math.hypot(cx - prev[0], cy - prev[1]) / 60
         if sc > bs: bs = sc; best = (float(cx), float(cy))
     return best
-def orb_at(c_, prev):
-    """centre of the held orb / water burst in a placed cell: compact cyan-blue blob (rings and spray are thin or tiny);
-    with "orbPale" a white / pale-blue glowing orb is tried when no blue one is found"""
-    A = np.asarray(c_).astype(np.int16)
-    m = (A[..., 3] > 120) & (A[..., 2] > OM['b']) & (A[..., 2] - A[..., 0] > OM['br']) & (A[..., 1] > OM['g']) & (A[..., 2] - A[..., 1] > OM['bg'])   # blue, not the teal gems
-    best = orb_pick(m, OM['min'], prev)
-    if best is None and OP:
-        m = (A[..., 3] > 120) & (A[..., 2] > OP['b']) & (A[..., 1] > OP['g']) & (A[..., 2] - A[..., 0] >= OP['br']) & (A[..., 2] - A[..., 1] >= OP['gb'])
-        best = orb_pick(m, OP['min'], prev)
-    return best
-meta = {'cell': {'w': CW, 'h': CH}, 'pivot': {'x': PX, 'y': PY}, 'scale': .56, 'states': {}, 'sockets': ({'idle': {}, 'walk': {}, 'attack': {}, 'buff': {}, 'hurt': {}} if ORB_ALL else {'attack': {}, 'buff': {}}) if plan.get('orb') else {'attack': {}},
+meta = {'cell': {'w': CW, 'h': CH}, 'pivot': {'x': PX, 'y': PY}, 'scale': .56, 'states': {}, 'sockets': {'attack': {}, 'buff': {}} if plan.get('orb') else {'attack': {}},
         'contact': {'attack': {}}, 'mirror': {'SW': 'SE', 'W': 'E', 'NW': 'NE'}, 'qa': {}, 'buffPeak': {}}
 atlas = {}; report = {}
 for st in ['idle', 'walk', 'attack', 'buff', 'hurt']:
@@ -192,8 +172,8 @@ for st in ['idle', 'walk', 'attack', 'buff', 'hurt']:
             else:
                 dur = plan['buff'][d].get('dur') or [70] * len(F); meta['buffPeak'][d] = plan['buff'][d]['peak']
             assert len(dur) == len(F), f'{st}/{d}: {len(dur)} durations for {len(F)} frames'
+            if st in ('attack', 'buff'): CELLS[(st, d)] = F
             report[f'{st}/{d}'] = (len(F), P)
-        if st in ('attack', 'buff') or ORB_ALL: CELLS[(st, d)] = F
         crops, rects = [], []
         for c_ in F:
             bb = bbox(c_) or (0, 0, 1, 1); bx, by, bw, bh = int(bb[0]), int(bb[1]), int(bb[2] - bb[0] + 1), int(bb[3] - bb[1] + 1)
@@ -207,18 +187,9 @@ for st in ['idle', 'walk', 'attack', 'buff', 'hurt']:
             sheet.paste(c_, (x, y)); fl.append([x, y, bw, bh, bx, by, bw, bh]); x += c_.width + 2
         meta['states'][st]['dirs'][d] = {'dur': dur, 'f': fl}; y += hmax + 2
     bio = io.BytesIO(); sheet.save(bio, 'WEBP', quality=90, method=6); atlas[st] = 'data:image/webp;base64,' + base64.b64encode(bio.getvalue()).decode()
-    if plan.get('orb') and (st in ('attack', 'buff') or ORB_ALL):
+    if plan.get('orb') and st in ('attack', 'buff'):
         for d in DIRS:
             o = []; prev = None; pts = [orb_at(c_, None) for c_ in CELLS[(st, d)]]
-            for k, v in plan.get('orbFix', {}).get(f'{st}/{d}', {}).items(): pts[int(k)] = tuple(v) if v else None   # read by eye: placed-cell px of this build
-            if plan.get('orbLerp'):   # a frame where the orb is hidden sits between the nearest frames where it is seen
-                fd = [i for i, p in enumerate(pts) if p]; q = list(pts)
-                for i, p in enumerate(pts):
-                    if p or not fd: continue
-                    a = max((j for j in fd if j < i), default=None); b = min((j for j in fd if j > i), default=None)
-                    if a is not None and b is not None: t = (i - a) / (b - a); q[i] = (pts[a][0] + (pts[b][0] - pts[a][0]) * t, pts[a][1] + (pts[b][1] - pts[a][1]) * t)
-                    else: q[i] = pts[a if a is not None else b]
-                pts = q
             for i, p in enumerate(pts):   # a frame where the orb is hidden borrows its neighbour
                 p = p or next((q for q in pts[i + 1:] if q), None) or next((q for q in reversed(pts[:i]) if q), None) or (PX + 30, PY - HT * .45)
                 gx = p[0] + (8 if p[0] < PX else -8); o.append({'head': [round(p[0]), round(p[1])], 'grip': [round(gx), round(p[1] + 6)]})
