@@ -6,7 +6,7 @@ usage: python3 -I tools/miniboss_art.py add <key> <picture.png> [<key> <picture.
        python3 -I tools/miniboss_art.py recut [<key> …]   → cut again from the stored raw <key>.webp (all keys that have one)
        python3 -I tools/miniboss_art.py sheet <out.jpg>   → overview of all 56 slots (picture or 'ยังไม่มีรูป')
        python3 -I tools/miniboss_art.py list              → keys with / without a picture
-Keys = the third field of every entry in tools/miniboss_prompts.py LANDS. After adding pictures re-run
+Keys = the third field of every entry in tools/miniboss_prompts.py LANDS (or PLANNED: the sea's keys, before its maps exist). After adding pictures re-run
 `python3 tools/miniboss_prompts.py` (the doc's table shows which ones are in)."""
 import os, sys, importlib.util
 import numpy as np
@@ -25,6 +25,10 @@ def lands():
     return mod('mb', 'tools/miniboss_prompts.py').LANDS
 
 
+def planned():   # regions with prompt files only (the sea, Lv 60–70): pictures can come before their maps
+    return getattr(mod('mb', 'tools/miniboss_prompts.py'), 'PLANNED', [])
+
+
 def edges(path):
     """how many pixels of the figure touch each side of the picture (the figure was cut by the frame there)"""
     a = np.asarray(Image.open(path).convert('RGB')).astype(int)
@@ -34,7 +38,7 @@ def edges(path):
 
 
 def add(pairs):
-    keys = {e[2] for L in lands() for e in L[4]}
+    keys = {e[2] for L in lands() + planned() for e in L[4]}
     key_sheet = mod('wa', 'tools/wboss_arenas.py').key_sheet
     os.makedirs(OUT, exist_ok=True)
     for key, src in pairs:

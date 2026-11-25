@@ -1,0 +1,584 @@
+{
+ "_note": "Wolf (Fenrir's Heir) sprite plan — owner's clips 2026-11-25 08:34 (no words), 544x544 24 fps green, made from wolf_1_S … wolf_5_N.png (900², body ~480). 19 uploads 1000001274–1294 (1277 + 1288 not sent): S buff 74 · attack 75 · walk 76 · idle 78 | SE attack 79 · buff 80 · walk 81 · idle 82 | E buff 83 · attack 84 · walk 85 · idle 86 | NE buff 87 · (attack missing) · walk 89 · idle 90 | N buff 91 · attack 92 · walk 93 · idle 94. All clips start from the same start frame (height ~287 video px, feet y 489), facing right, no zoom — except the S walk, where he walks TOWARD the camera (height 287 -> 401 over the clip) -> trendNorm + loop 71/24 (scaled back). The NE attack is missing: the NE row copies the E clip and the game keeps the old default remap NE -> E (as the old wolf atlas did), so nothing plays it. Frame times = the OLD wolf atlas (assets.js) per direction: attack / buff / hurt rows copy its durations, contacts (S 6, SE 4, E 6, N 6) and buff peaks (7, SE 3 with 6 frames), so every hit / release keeps its time. Frames (0-based video frames; the strips were read 1-based): the clips bake effects into the swing — S chop 30–43 blue ice arc + white splash, SE 20–33 arc + splash, E 25–33 arc + sparkles, N 23–36 white starburst; buff E 10–28 blue arc + ice burst, N 14–19 red crescent, SE 10–13 white swoosh, S/NE clean — so the contact frame is the first clean frame with the axe on the ground (S 44, SE 34, E 34, N 36) right after the last clean wind-up frame, and the E buff raise is its lowering played backwards. S idle skips 17–29 (eyes closed, head bowed). Walk rows play at 100 ms (0.8 s cycle = the old wolf's cadence). Sockets: axe head = the blade's ice-blue runes (axe option). cellScale 1.548 = old idle height 356 cell px / 230, so the new atlas stands in for the old one without CHAR_SCALE.",
+ "height": 230,
+ "flip": false,
+ "cellScale": 1.5478,
+ "clips": {
+  "idle": {
+   "S": "/home/claude/work/vid25/in/1000001278.mp4",
+   "SE": "/home/claude/work/vid25/in/1000001282.mp4",
+   "E": "/home/claude/work/vid25/in/1000001286.mp4",
+   "NE": "/home/claude/work/vid25/in/1000001290.mp4",
+   "N": "/home/claude/work/vid25/in/1000001294.mp4"
+  },
+  "walk": {
+   "S": "/home/claude/work/vid25/in/1000001276.mp4",
+   "SE": "/home/claude/work/vid25/in/1000001281.mp4",
+   "E": "/home/claude/work/vid25/in/1000001285.mp4",
+   "NE": "/home/claude/work/vid25/in/1000001289.mp4",
+   "N": "/home/claude/work/vid25/in/1000001293.mp4"
+  },
+  "attack": {
+   "S": "/home/claude/work/vid25/in/1000001275.mp4",
+   "SE": "/home/claude/work/vid25/in/1000001279.mp4",
+   "E": "/home/claude/work/vid25/in/1000001284.mp4",
+   "NE": "/home/claude/work/vid25/in/1000001284.mp4",
+   "N": "/home/claude/work/vid25/in/1000001292.mp4"
+  },
+  "buff": {
+   "S": "/home/claude/work/vid25/in/1000001274.mp4",
+   "SE": "/home/claude/work/vid25/in/1000001280.mp4",
+   "E": "/home/claude/work/vid25/in/1000001283.mp4",
+   "NE": "/home/claude/work/vid25/in/1000001287.mp4",
+   "N": "/home/claude/work/vid25/in/1000001291.mp4"
+  }
+ },
+ "frames": {
+  "idle/S": [
+   6,
+   10,
+   13,
+   15,
+   30,
+   34,
+   39,
+   44,
+   49,
+   54,
+   60,
+   67
+  ]
+ },
+ "loop": {
+  "idle/SE": [
+   4,
+   71
+  ],
+  "idle/E": [
+   28,
+   48
+  ],
+  "idle/NE": [
+   2,
+   72
+  ],
+  "idle/N": [
+   6,
+   49
+  ],
+  "walk/S": [
+   71,
+   24
+  ],
+  "walk/SE": [
+   53,
+   24
+  ],
+  "walk/E": [
+   50,
+   24
+  ],
+  "walk/NE": [
+   32,
+   28
+  ],
+  "walk/N": [
+   42,
+   24
+  ]
+ },
+ "trendNorm": [
+  "walk/S"
+ ],
+ "attack": {
+  "S": {
+   "frames": [
+    13,
+    16,
+    18,
+    21,
+    25,
+    28,
+    44,
+    49,
+    90,
+    93,
+    96,
+    102
+   ],
+   "contact": 6,
+   "dur": [
+    80,
+    50,
+    90,
+    50,
+    50,
+    50,
+    70,
+    200,
+    50,
+    50,
+    50,
+    110
+   ]
+  },
+  "SE": {
+   "frames": [
+    2,
+    8,
+    12,
+    18,
+    34,
+    39,
+    47,
+    57,
+    64,
+    67,
+    70,
+    74
+   ],
+   "contact": 4,
+   "dur": [
+    50,
+    50,
+    190,
+    70,
+    90,
+    50,
+    50,
+    50,
+    50,
+    50,
+    90,
+    110
+   ]
+  },
+  "E": {
+   "frames": [
+    4,
+    8,
+    10,
+    14,
+    19,
+    23,
+    34,
+    44,
+    73,
+    75,
+    78,
+    83
+   ],
+   "contact": 6,
+   "dur": [
+    80,
+    50,
+    50,
+    100,
+    50,
+    120,
+    60,
+    120,
+    50,
+    50,
+    50,
+    120
+   ]
+  },
+  "NE": {
+   "frames": [
+    4,
+    8,
+    10,
+    14,
+    19,
+    23,
+    34,
+    44,
+    73,
+    75,
+    78,
+    83
+   ],
+   "contact": 6,
+   "dur": [
+    80,
+    50,
+    50,
+    100,
+    50,
+    120,
+    60,
+    120,
+    50,
+    50,
+    50,
+    120
+   ]
+  },
+  "N": {
+   "frames": [
+    5,
+    12,
+    14,
+    16,
+    19,
+    21,
+    36,
+    44,
+    62,
+    64,
+    67,
+    71
+   ],
+   "contact": 6,
+   "dur": [
+    110,
+    120,
+    50,
+    50,
+    70,
+    50,
+    120,
+    70,
+    50,
+    50,
+    50,
+    110
+   ]
+  }
+ },
+ "buff": {
+  "S": {
+   "frames": [
+    5,
+    8,
+    10,
+    12,
+    14,
+    16,
+    19,
+    29,
+    61,
+    63,
+    65,
+    67
+   ],
+   "peak": 7,
+   "dur": [
+    170,
+    50,
+    50,
+    230,
+    50,
+    110,
+    390,
+    50,
+    50,
+    50,
+    50,
+    150
+   ]
+  },
+  "SE": {
+   "frames": [
+    5,
+    8,
+    14,
+    29,
+    68,
+    75
+   ],
+   "peak": 3,
+   "dur": [
+    220,
+    220,
+    220,
+    220,
+    220,
+    220
+   ]
+  },
+  "E": {
+   "frames": [
+    3,
+    6,
+    8,
+    66,
+    65,
+    64,
+    30,
+    32,
+    59,
+    63,
+    65,
+    69
+   ],
+   "peak": 7,
+   "dur": [
+    70,
+    50,
+    50,
+    50,
+    50,
+    70,
+    170,
+    580,
+    50,
+    50,
+    50,
+    160
+   ]
+  },
+  "NE": {
+   "frames": [
+    4,
+    7,
+    8,
+    9,
+    10,
+    11,
+    13,
+    29,
+    44,
+    53,
+    55,
+    58
+   ],
+   "peak": 7,
+   "dur": [
+    80,
+    60,
+    50,
+    50,
+    50,
+    50,
+    120,
+    160,
+    480,
+    60,
+    60,
+    180
+   ]
+  },
+  "N": {
+   "frames": [
+    7,
+    10,
+    11,
+    12,
+    19,
+    20,
+    23,
+    39,
+    75,
+    77,
+    79,
+    83
+   ],
+   "peak": 7,
+   "dur": [
+    130,
+    50,
+    50,
+    50,
+    50,
+    110,
+    260,
+    450,
+    60,
+    50,
+    50,
+    90
+   ]
+  }
+ },
+ "axe": {
+  "b": 190,
+  "br": 45,
+  "g": 140,
+  "bg": 10,
+  "min": 40,
+  "grip": 28
+ },
+ "axeFix": {
+  "attack/N": {
+   "9": [
+    301,
+    278
+   ]
+  },
+  "attack/SE": {
+   "8": [
+    433,
+    323
+   ]
+  }
+ },
+ "stateDur": {
+  "walk/S": [
+   100,
+   100,
+   100,
+   100,
+   100,
+   100,
+   100,
+   100
+  ],
+  "walk/SE": [
+   100,
+   100,
+   100,
+   100,
+   100,
+   100,
+   100,
+   100
+  ],
+  "walk/E": [
+   100,
+   100,
+   100,
+   100,
+   100,
+   100,
+   100,
+   100
+  ],
+  "walk/NE": [
+   100,
+   100,
+   100,
+   100,
+   100,
+   100,
+   100,
+   100
+  ],
+  "walk/N": [
+   100,
+   100,
+   100,
+   100,
+   100,
+   100,
+   100,
+   100
+  ],
+  "idle/S": [
+   200,
+   200,
+   200,
+   200,
+   200,
+   200,
+   200,
+   200,
+   200,
+   200,
+   200,
+   200
+  ],
+  "idle/SE": [
+   200,
+   200,
+   200,
+   200,
+   200,
+   200,
+   200,
+   200,
+   200,
+   200,
+   200,
+   200
+  ],
+  "idle/E": [
+   200,
+   200,
+   200,
+   200,
+   200,
+   200,
+   200,
+   200,
+   200,
+   200,
+   200,
+   200
+  ],
+  "idle/NE": [
+   200,
+   200,
+   200,
+   200,
+   200,
+   200,
+   200,
+   200,
+   200,
+   200,
+   200,
+   200
+  ],
+  "idle/N": [
+   200,
+   200,
+   200,
+   200,
+   200,
+   200,
+   200,
+   200,
+   200,
+   200,
+   200,
+   200
+  ],
+  "hurt/N": [
+   50,
+   50,
+   60,
+   130,
+   150,
+   50,
+   60
+  ],
+  "hurt/NE": [
+   50,
+   50,
+   50,
+   150,
+   150,
+   50,
+   50
+  ],
+  "hurt/E": [
+   50,
+   50,
+   180,
+   80,
+   80,
+   50,
+   60
+  ],
+  "hurt/SE": [
+   60,
+   50,
+   60,
+   120,
+   130,
+   50,
+   80
+  ],
+  "hurt/S": [
+   60,
+   70,
+   130,
+   50,
+   80,
+   50,
+   110
+  ]
+ }
+}

@@ -5,6 +5,15 @@
      in EQ; it only changes the look, plus small flat bonuses (piece bonus + full-set bonus) mapped to the 8 stats.
    • Saved per hero: af_fashion_<CHAR> (slots), af_fur_<CHAR> / af_skin_<CHAR> (colours).
    ===================================================================== */
+/* 2026-11-25: the wolf's new sprite (Fenrir's Heir, assets_wolf.js) brings its own head points (meta.head, tools/headtrack.py) — the old
+   ones belong to the old frames. Its axe is a new design, so the old axe skins (FASHION.axe = points on the old axe) are off, and so are
+   fur / outfit colours (assets_fur / skin / cloth.js masks are made for the old frames and are not loaded with the new sprite). */
+const NEW_SPR=!!(typeof SPR_META!=='undefined'&&SPR_META.head),DYE_OK=!!window.FUR_MASK;
+/* owner 2026-11-25 'แฟชั่นไม่ต้องใส่ ใส่แค่ปีก': on the new wolf only WINGS are worn (garment pieces whose id ends in 'wings' — no capes,
+   cloaks, mantles or the Soulflame aura); every other costume piece of the save is kept aside (FSTASH, still written back by fSave, so
+   ?wlfart=0 = the old wolf still has his outfit) and neither drawn nor counted. */
+const WING_ONLY=NEW_SPR,isWingId=id=>!!(id&&/wings$/.test(id));let FSTASH={};
+if(window.FASHION&&NEW_SPR){FASHION.head=SPR_META.head;FASHION.axe={};}
 /* ---------- fashion: headgear drawn on the tracked head point of every sprite frame ---------- */
 const FASH_VIS={vikinghelm:'viking'};const fashImg={};
 function fashImgOf(k,d){const key=k+d;let im=fashImg[key];if(!im){im=new Image();im.src=FASHION.items[k].img[d];fashImg[key]=im;}return im;}
@@ -1128,8 +1137,9 @@ const FEQ={top:null,mid:null,low:null,shoulder:null,armor:null,garment:null,back
 const FINV=Object.keys(FITEMS);   /* every costume unlocked for now (no drop / shop source yet) */
 const FSAVE='af_fashion_'+(typeof CHAR!=='undefined'?CHAR:'wolf');
 try{const sv=JSON.parse(localStorage.getItem(FSAVE)||'null');if(sv)for(const k in FEQ)if(sv[k]===null||FITEMS[sv[k]])FEQ[k]=sv[k];}catch(_){}
-function fSave(){try{localStorage.setItem(FSAVE,JSON.stringify(FEQ));}catch(_){}}
-function fEquip(id){const it=FITEMS[id];if(!it)return;FEQ[it.slot]=id;fSave();gearCalc();if(typeof buildEquip==='function')try{buildEquip();}catch(_){}}
+if(WING_ONLY)for(const k in FEQ){if(k==='garment'&&isWingId(FEQ[k]))continue;if(FEQ[k]){FSTASH[k]=FEQ[k];FEQ[k]=null;}}
+function fSave(){try{localStorage.setItem(FSAVE,JSON.stringify(WING_ONLY?Object.assign({},FSTASH,FEQ):FEQ));}catch(_){}}
+function fEquip(id){const it=FITEMS[id];if(!it)return;if(WING_ONLY&&!(it.slot==='garment'&&isWingId(id)))return;FEQ[it.slot]=id;fSave();gearCalc();if(typeof buildEquip==='function')try{buildEquip();}catch(_){}}
 function fUnequip(sl){FEQ[sl]=null;fSave();gearCalc();if(typeof buildEquip==='function')try{buildEquip();}catch(_){}}
 
 /* ---------- sets ---------- */
@@ -1178,7 +1188,7 @@ const CLOTH_SW=[['','หนังเดิม'],['#2b2a33','ดำ'],['#5c6170',
 let CLOTH_CUR='';
 function hex2hsl(h){const r=parseInt(h.substr(1,2),16)/255,g=parseInt(h.substr(3,2),16)/255,b=parseInt(h.substr(5,2),16)/255;const mx=Math.max(r,g,b),mn=Math.min(r,g,b),l=(mx+mn)/2,d=mx-mn;let H=0,S=0;
   if(d>0){S=d/(1-Math.abs(2*l-1));H=mx===r?((g-b)/d)%6:mx===g?(b-r)/d+2:(r-g)/d+4;H*=60;if(H<0)H+=360;}return [H,S,l];}
-function lookPrepare(){if(LOOK.prep)return LOOK.prep;
+function lookPrepare(){if(LOOK.prep)return LOOK.prep;if(!DYE_OK)return LOOK.prep=Promise.resolve();
   LOOK.prep=Promise.all(Object.keys(SPR_ATLAS).map(st=>new Promise(res=>{const a=new Image(),m=new Image(),sk=new Image(),cm=window.CLOTH_MASK&&CLOTH_MASK[st]?new Image():null;let n=0;const done=()=>{if(++n<(cm?4:3))return;
       const c=document.createElement('canvas');c.width=a.width;c.height=a.height;const g=c.getContext('2d');g.drawImage(a,0,0);const px=g.getImageData(0,0,c.width,c.height);
       g.clearRect(0,0,c.width,c.height);g.drawImage(m,0,0);const md=g.getImageData(0,0,c.width,c.height).data,wt=new Float32Array(c.width*c.height);for(let i=0;i<wt.length;i++)wt[i]=md[i*4]/255;
@@ -1217,9 +1227,9 @@ function lookSave(){try{localStorage.setItem(lookKey(),LOOK.cur);localStorage.se
 function clothLoad(){try{return localStorage.getItem('af_cloth_'+CHAR)||'';}catch(e){return '';}}
 function skinLoad(){try{return localStorage.getItem('af_skin_'+CHAR)||SKIN_DEF;}catch(e){return SKIN_DEF;}}
 function lookLoad(){try{return localStorage.getItem(lookKey())||'';}catch(e){return '';}}
-let lkDir=0,lkDraft='',lkTab='sets';
-const WR_TABS=[['sets','ชุดเซ็ต'],['fur','สีขน'],['top','หมวก'],['mid','หน้า'],['low','ปาก'],['shoulder','ไหล่'],['armor','เกราะ'],['garment','ปีก'],['back','ติดหลัง'],['rhand','อาวุธ']];
-function wrItems(sl){const ids=new Set(FINV.filter(id=>FITEMS[id]&&FITEMS[id].slot===sl));if(FEQ[sl]&&FITEMS[FEQ[sl]])ids.add(FEQ[sl]);return [...ids];}
+let lkDir=0,lkDraft='',lkTab=WING_ONLY?'garment':'sets';
+const WR_TABS=[['sets','ชุดเซ็ต'],['fur','สีขน'],['top','หมวก'],['mid','หน้า'],['low','ปาก'],['shoulder','ไหล่'],['armor','เกราะ'],['garment','ปีก'],['back','ติดหลัง'],['rhand','อาวุธ']].filter(([k])=>WING_ONLY?k==='garment':!(k==='fur'&&!DYE_OK));
+function wrItems(sl){const ids=new Set(FINV.filter(id=>FITEMS[id]&&FITEMS[id].slot===sl&&(!WING_ONLY||isWingId(id))));if(FEQ[sl]&&FITEMS[FEQ[sl]])ids.add(FEQ[sl]);return [...ids];}
 function buildLook(){const w=document.getElementById('lookw');if(!w)return;
   const tabs=WR_TABS.map(([k,n])=>`<button data-t="${k}" class="${lkTab===k?'on':''}">${n}</button>`).join('');
   let body='';
@@ -1234,8 +1244,8 @@ function buildLook(){const w=document.getElementById('lookw');if(!w)return;
       `<div class="wr-grid"><button class="wr-it${FEQ[lkTab]?'':' on'}" data-id=""><b>✕</b><span>ไม่ใส่</span></button>`+ids.map(id=>{const it=FITEMS[id];return `<button class="wr-it${FEQ[lkTab]===id?' on':''}" data-id="${id}" title="${it.d||''}">${itemIcon(it,22)}<span>${it.n}</span></button>`;}).join('')+`</div>`;}
   else{const ids=wrItems(lkTab);
     body=`<div class="wr-grid"><button class="wr-it${FEQ[lkTab]?'':' on'}" data-id="">${lkTab==='rhand'?'<b>—</b><span>ไม่เปลี่ยน</span>':'<b>✕</b><span>ไม่ใส่</span>'}</button>`+ids.map(id=>{const it=FITEMS[id];return `<button class="wr-it${FEQ[lkTab]===id?' on':''}" data-id="${id}" title="${it.d||''}">${itemIcon(it,22)}<span>${it.n}</span></button>`;}).join('')+`</div>`;}
-  roWin('lookw','แต่งตัว',`<div class="ro-tabs wr-tabs">${tabs}</div><div class="lk"><div class="lk-pv"><canvas id="lkcv" width="220" height="290"></canvas><div><button class="rob" id="lkrl">◀</button><button class="rob" id="lkrr">▶</button></div></div><div class="lk-rows">${body}
-    <div class="lk-btns"><button class="rob" id="lkreset">รีเซ็ตสี</button><button class="rob lk-ok" id="lksave">✔ เสร็จ</button></div></div></div>`);
+  roWin('lookw',WING_ONLY?'ปีกแฟชั่น':'แต่งตัว',`<div class="ro-tabs wr-tabs">${tabs}</div><div class="lk"><div class="lk-pv"><canvas id="lkcv" width="220" height="290"></canvas><div><button class="rob" id="lkrl">◀</button><button class="rob" id="lkrr">▶</button></div></div><div class="lk-rows">${body}
+    <div class="lk-btns">${DYE_OK?'<button class="rob" id="lkreset">รีเซ็ตสี</button>':''}<button class="rob lk-ok" id="lksave">✔ เสร็จ</button></div></div></div>`);
   w.querySelectorAll('.wr-tabs button').forEach(b=>b.onclick=()=>{lkTab=b.dataset.t;buildLook();});
   w.querySelectorAll('.lk-sw:not(.sk-sw):not(.cl-sw)').forEach(b=>b.onclick=()=>{lkDraft=b.dataset.c;lookLive();});   /* face and hands keep their colour (owner 2026-11-23) */
   w.querySelectorAll('.cl-sw').forEach(b=>b.onclick=()=>{CLOTH_CUR=b.dataset.k;lookLive();});
@@ -1247,7 +1257,7 @@ function buildLook(){const w=document.getElementById('lookw');if(!w)return;
   w.querySelectorAll('.wr-wear').forEach(b=>b.onclick=()=>{const S=FSETS.find(x=>x.id===b.dataset.s);wearSet(S);setTimeout(buildLook,80);});
   w.querySelectorAll('.wr-it').forEach(b=>b.onclick=()=>{const id=b.dataset.id;if(!id){if(lkTab!=='rhand')fUnequip(lkTab);}else if(FEQ[lkTab]!==id)fEquip(id);buildLook();});
   w.querySelector('#lkrl').onclick=()=>{lkDir=(lkDir+1)%8;};w.querySelector('#lkrr').onclick=()=>{lkDir=(lkDir+7)%8;};
-  w.querySelector('#lkreset').onclick=()=>{lkDraft='';SKIN_CUR=SKIN_DEF;CLOTH_CUR='';lookLive();};
+  if(w.querySelector('#lkreset'))w.querySelector('#lkreset').onclick=()=>{lkDraft='';SKIN_CUR=SKIN_DEF;CLOTH_CUR='';lookLive();};
   w.querySelector('#lksave').onclick=()=>{WGROW.pv=null;lookApply(lkDraft);lookSave();lkSaved=true;w.classList.remove('open');msg('บันทึกการแต่งตัวแล้ว');};
   drawLookPreview();}
 let _lkT=0,lkSaved=false;function lookLive(soft){clearTimeout(_lkT);_lkT=setTimeout(()=>{lookApply(lkDraft);buildLook();},soft?60:0);}
@@ -1258,12 +1268,12 @@ function drawLookPreview(){const cv=document.getElementById('lkcv');if(!cv)retur
   const old=ctx;ctx=g;g.setTransform(2.2,0,0,2.2,0,0);const X=110/2.2,Y=262/2.2;try{drawGear({st,d,f},X,Y,0,st==='walk');g.filter=armorFilter()||'none';drawFrame({st,d,f},X,Y,1);g.filter='none';drawGear({st,d,f},X,Y,1,st==='walk');}finally{ctx=old;}}
 setInterval(()=>{const w=document.getElementById('lookw');if(w&&!w.classList.contains('open'))WGROW.pv=null;if(w&&w.classList.contains('open'))drawLookPreview();else if(w&&!lkSaved&&!window.__DYE_PV&&LOOK.ready&&(LOOK.cur!==lookLoad()||SKIN_CUR!==skinLoad()||CLOTH_CUR!==clothLoad())){SKIN_CUR=skinLoad();CLOTH_CUR=clothLoad();lookApply(lookLoad());}},80);
 function openLook(){const w=document.getElementById('lookw');lkDraft=LOOK.cur;lkSaved=false;w.classList.add('open');w.style.zIndex=40;buildLook();lookPrepare().then(()=>{if(w.classList.contains('open'))buildLook();});}
-(function(){const panel=document.getElementById('chsel');if(panel){const b=document.createElement('button');b.className='rob';b.id='lookbtn';b.textContent='👗 แต่งตัว (สีขน · แฟชั่น)';b.style.cssText='margin:6px 0 2px;width:100%';b.onclick=openLook;panel.after(b);}
-  const saved=lookLoad();SKIN_CUR=skinLoad();CLOTH_CUR=clothLoad();if(saved||SKIN_CUR||CLOTH_CUR)lookPrepare().then(()=>lookApply(saved));
+(function(){const panel=document.getElementById('chsel');if(panel){const b=document.createElement('button');b.className='rob';b.id='lookbtn';b.textContent=WING_ONLY?'🪽 ปีกแฟชั่น':DYE_OK?'👗 แต่งตัว (สีขน · แฟชั่น)':'👗 แต่งตัว (แฟชั่น)';b.style.cssText='margin:6px 0 2px;width:100%';b.onclick=openLook;panel.after(b);}
+  const saved=lookLoad();SKIN_CUR=skinLoad();CLOTH_CUR=clothLoad();if(DYE_OK&&(saved||SKIN_CUR||CLOTH_CUR))lookPrepare().then(()=>lookApply(saved));
   addEventListener('keydown',e=>{if(e.altKey&&(e.key==='c'||e.key==='C')){e.preventDefault();const w=document.getElementById('lookw');w.classList.contains('open')?w.classList.remove('open'):openLook();}});})();
 window.lookTest={openLook,lookApply,lookPrepare,get L(){return LOOK}};
 /* the create screen (char_create.js) and tests: fur + outfit colour of this hero, face / hands untouched */
-window.HERO_DYE={ok:true,FUR:FUR_SW,CLOTH:window.CLOTH_MASK?CLOTH_SW:null,prepare:lookPrepare,
+if(DYE_OK)window.HERO_DYE={ok:true,FUR:FUR_SW,CLOTH:window.CLOTH_MASK?CLOTH_SW:null,prepare:lookPrepare,
   get fur(){return LOOK.cur},get cloth(){return CLOTH_CUR},
   set(f,c){return lookPrepare().then(()=>{if(c!==undefined)CLOTH_CUR=c||'';lookApply(f!==undefined?(f||''):LOOK.cur);});},
   save(){lookSave();},restore(){SKIN_CUR=skinLoad();CLOTH_CUR=clothLoad();return lookPrepare().then(()=>lookApply(lookLoad()));}};

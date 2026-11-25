@@ -140,7 +140,7 @@ function crowdDef(id,E,npc){const g=E.grade||0,f=Math.pow(.86,g);let sup,q,m;
     case 'gmut':sup=.12;q=[1,1];m=[1,1.6];break;
     case 'gsup':sup=.2;q=[1,2];m=[1,1.4];break;
     case 'orb':sup=[.9,.6,.4,.25][(E.tier||1)-1];q=[1,2];break;
-    case 'crystal':sup=.3;q=[1,1];m=[1,1.8];break;
+    case 'crystal':sup=1.1;q=[1,4];m=[1,1.6];break;   /* affcry = reroll crystals (2026-11-25; the 5 land seal crystals before) */
     case 'bpart':if(!E.live)return null;sup=[.3,.12,.06][{map:0,mvp:1,main:2}[E.btier]||1];q=[1,2];m=[1,1.6];break;   /* boss parts (drop_table.js) — only bosses in the game */
     case 'tool':sup=id==='guard'?.25:.5;q=[1,2];break;
     case 'pcharm':if((E.tier||1)>2)return null;sup=[2,1.2][(E.tier||1)-1];q=[2,8];break;            /* pets (pet_data.js): bond charms — tiers 3–4 have no monsters yet */
@@ -212,6 +212,18 @@ if(A.fresh&&W.pl[HERO]){const mine=g=>g[1]&&g[1].indexOf(HERO+'#')===0;for(const
 (function(){const O=A.oldMarket;if(!O||!O.MK)return;const MK=O.MK,P=me();let ch=0;
   for(const l of MK.mine||[])if(l.k){if(l.n>0&&!A.fresh){P.box.it[l.k]=(P.box.it[l.k]||0)+l.n;P.log.unshift(`ตลาดเปลี่ยนเป็นระบบราคากลาง: คืน ${nm(l.k)} ×${l.n} ที่ลงขายค้างไว้ → กล่องรับของ`);}ch=1;}
   if(ch)MK.mine=MK.mine.filter(l=>!l.k);const n=(MK.list||[]).length;MK.list=(MK.list||[]).filter(l=>l.eq);if(ch||MK.list.length!==n){O.mkSave();save();}})();
+/* ---- the land seals left the game (owner 2026-11-25): seal crystals trait_<land> are reroll crystals now — open listings come back to the
+   claim box as reroll crystals, reservations give their held zeny back, the box's crystals change over (every hero of this world, once) ---- */
+(function(){const OLD=id=>/^trait_(vik|azt|grk|egy|jpn)$/.test(id),NEW='affcry';let ch=0;
+  for(const h in W.pl||{}){const P=W.pl[h];if(!P)continue;let mine=0;P.box=P.box||{z:0,it:{}};P.box.it=P.box.it||{};
+    for(const L of P.ls||[])if(OLD(L.id)){if(L.n>0)P.box.it[NEW]=(P.box.it[NEW]||0)+L.n;L.n=0;mine=1;}
+    if(P.ls)P.ls=P.ls.filter(L=>!OLD(L.id));
+    for(const id in P.rs||{})if(OLD(id)){P.box.z=(P.box.z||0)+((P.rs[id]&&P.rs[id].hold)||0);delete P.rs[id];mine=1;}
+    for(const id in P.box.it)if(OLD(id)){P.box.it[NEW]=(P.box.it[NEW]||0)+P.box.it[id];delete P.box.it[id];mine=1;}
+    for(const id in P.lock||{})if(OLD(id))delete P.lock[id];for(const id in P.bell||{})if(OLD(id))delete P.bell[id];
+    if(mine){ch=1;(P.log=P.log||[]).unshift('ผลึกตราเลิกใช้แล้ว: ของที่ลงขาย / จองไว้คืนเข้ากล่องรับของ เป็นผลึกสุ่มสถานะ / เงิน');}}
+  for(const id in W.it||{})if(OLD(id)){delete W.it[id];ch=1;}
+  if(ch)save();})();
 
 /* ---- money and items move here; the engine only checks and changes the market ---- */
 const give=(id,n)=>{const got=A.bagAdd(id,n);if(got<n){if(got>0)A.bagAdd(id,-got);return false;}return true;};

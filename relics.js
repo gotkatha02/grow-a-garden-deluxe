@@ -72,7 +72,7 @@ const saveRS=()=>{try{localStorage.setItem(SKEY,JSON.stringify(RS));}catch(e){}}
 const gradeOf=r=>A.gradeOfLv(r.live?r.live.lv:LV0(80));
 function makeRelic(k,star=1){const r=R[k],g=gradeOf(r),t=A.gradeTier(g);
   return A.mkInst({base:null,n:r.en,slot:'acc',kind:'Accessory',relic:k,star:Math.max(1,Math.min(5,star|0||1)),st:A.craftStats(r.land,'acc',g,false),ro:1,x:{},b:{},
-    grade:g,tier:t,wlv:t,lvReq:A.gradeLv(g),sockets:0,orbs:[],ref:0,w:10,rank:'All',sealM:1,d:`วัตถุโบราณจาก${r.boss} · ${TYPE[r.type][0]} ${r.pw}`});}
+    grade:g,tier:t,wlv:t,lvReq:A.gradeLv(g),sockets:0,orbs:[],ref:0,w:10,rank:'All',d:`วัตถุโบราณจาก${r.boss} · ${TYPE[r.type][0]} ${r.pw}`});}
 function give(k,star,why){const id=makeRelic(k,star);A.buyGear(id,0);RS.got[k]=1;saveRS();
   chatLog('sys',`🗿 ได้ <b style="color:#b89aff">${R[k].th}</b> ★${star}${why?` (${why})`:''} — สวมที่ช่องเครื่องประดับ${R[k].type==='act'?' แล้วกด R':''}`);return id;}
 const relicIds=()=>[...Object.values(EQ).filter(Boolean),...INV].filter(id=>ITEMS[id]&&ITEMS[id].relic);

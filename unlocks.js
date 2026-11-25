@@ -156,6 +156,9 @@ function todo(){const out=[],A=window.AFItems;if(!A)return out;const B=A.BAG,IT=
     const emp=(it.sockets||0)-((it.orbs||[]).length);if(emp>0)holes+=emp;}
   if(safe.length)add('⚒','ตีบวกแบบไม่มีวันแตก',`${safe.join(' · ')} ยังไม่ถึง +5 และมีหินตีบวกแล้ว (+1 ถึง +5 สำเร็จเสมอ)`,()=>A.openRefine&&A.openRefine(),'ไปตีบวก','refine');
   if(holes&&Object.keys(B).some(k=>/^orb_/.test(k)&&B[k]>0))add('💎','ยัดหินออฟ',`อุปกรณ์ที่สวมมีรูว่าง ${holes} รู และมีหินออฟในกระเป๋า`,()=>{A.openSmith();setTimeout(()=>{const b=$('#smw [data-tab="socket"]');b&&b.click();},60);},'ไปยัดหิน','orb');
+  /* special stats (2026-11-25): reroll crystals in the bag + a worn piece with lines, until the first reroll → the smith's สถานะ tab */
+  {const c=B.affcry||0,W=Object.values(EQ).map(id=>id&&IT[id]).filter(it=>it&&!it.broken&&(it.aff||[]).length),n=W.length;
+    if(c>0&&n&&!W.some(it=>it.rr))add('💎','สุ่มสถานะพิเศษ',`มีผลึกสุ่มสถานะ ${c} ก้อน — สุ่มสถานะพิเศษของที่สวมใหม่ได้ ล็อกบรรทัดที่ชอบไว้ได้`,()=>{A.openSmith();setTimeout(()=>{const b=$('#smw [data-tab="trait"]');b&&b.click();},60);},'ไปช่าง','reroll');}
   {const better=[];for(const id of A.INV||[]){const it=IT[id];if(!it||it.broken)continue;const sl=slotOf(it);if(!sl||!(sl in ST_N))continue;const cur=EQ[sl]&&IT[EQ[sl]];
       if((it.lvReq||1)<=L&&(!cur||(it.lvReq||1)>(cur.lvReq||1))&&!better.includes(ST_N[sl]))better.push(ST_N[sl]);}
     if(better.length)add('🛡','ใส่อุปกรณ์ที่ดีกว่า',`ในกระเป๋ามี${better.join(' · ')}ที่เลเวลสูงกว่าชิ้นที่ใส่อยู่`,tgl('itw','buildItems'),'เปิดกระเป๋า','gear');}

@@ -1,7 +1,7 @@
 # ภาพโซนทะเลห้าฝั่ง (Lv 60–70) — พรอมต์เจนรูปทั้งหมด (2026-11-25)
 
 เจ้าของ 07:22: *"โซนทะเลผมจะให้เป็น 60-70 ขอพร้อมเจนรูปด้วย"*
-สถานะ: **พรอมต์อย่างเดียว ยังไม่มีอะไรในเกม** · แผนโซน เรื่อง แมพ เลเวล: SEA_ZONE_TH.md
+สถานะ: **ชุด 1 ได้รูปแล้ว 36 / 37 (ขาดแค่ภาพปก 2.1) ตัดเข้า repo แล้ว ข้อ 9 · ชุด 2–4 ยังไม่ได้เจน** · ยังไม่มีแมพทะเลในเกม · แผนโซน เรื่อง แมพ เลเวล: SEA_ZONE_TH.md
 08:09 เจ้าของแนบไฟล์นี้ทั้งไฟล์ให้ ChatGPT แล้วมันวาดมั่ว → **ทุกกล่องสมบูรณ์ในตัวแล้ว** (ไม่มีพรอมต์ 0) และส่งเป็นกล่องในแชทแทน · มอน / มินิบอสทีละกล่อง: `python3 tools/monster_prompts.py single sea 1-11` · `python3 tools/miniboss_prompts.py single 7_sea 1-2`
 
 ---
@@ -622,13 +622,31 @@ Icons — SEA MATERIALS:
 ---
 
 ## 8. ตอนได้รูปมา (สำหรับแชทที่ตัดรูปเข้าเกม)
+เครื่องมือ: `tools/sea_art.py` (ตาราง SHEETS / P / MON อยู่ในไฟล์ — ชุดถัดไปเพิ่มชื่อลงตารางก่อนตัด) · `tools/seamless_tex.py`
 - **ภาพปก** → `assets/loading/ld9.webp` + `ld9_s.webp` (1672 / 960 px, ครอป 16:9) แล้วเพิ่ม N ในสคริปต์หน้าโหลด
-- **แผนที่โลก** → `assets/ui/worldmap_bg_sea.webp` (ย่อกลับ 1448×1086) · เปลี่ยนเป็นภาพหลักตอนเปิดโซน
-- **พื้นลายซ้ำ** → ย่อเป็น 640×640 + ทำขอบให้ต่อกันเนียน (เลื่อนครึ่งภาพแล้วผสมรอยต่อ) → `maps/sea/<ชื่อ>.webp` + `{t:'tex'}` ใน VK_CAT
-- **กำแพง** → ตัดพื้นเขียว เล็มเป็นแถบสูง 300 px ต่อซ้ายขวาเนียน → `maps/sea/ocWall*.webp` (แบบ grWallCave)
-- **แผ่นของประกอบ** → ตัดพื้นเขียว / แดงม่วงด้วยตัวตัดแบบรูปบอส (เก็บแสงเรือง) แล้วแบ่งตามช่อง (ชิ้นที่ล้นช่องไปอยู่กับช่องที่จุดกลางชิ้นอยู่) → `maps/sea/<ชื่อตามตาราง>.webp` + VK_CAT (กว้าง สูง จุดเท้า ชนิด tree / prop / big / flat / water วงชน) — ยังไม่มีเครื่องมือตัดแผ่นแมพทั่วไป ทำตอนรูปแผ่นแรกมา (ใช้ key_sheet + split จาก tools/wboss_arenas.py ได้)
-- **NPC** → แบ่งครึ่งซ้าย / ขวา → `assets/npc/<ชื่อ>_front.webp` / `_side.webp` + ค่า AX ใน npcs.js
-- **ห้องช่าง** → `assets/rooms/craft_sea.webp` + วัดพื้นที่เดินในห้องแบบห้องเดิม
-- **บอส** → `assets/bosses/sea/<ran|funayurei|chalchiuhtlicue|kraken|kraken_arms>.png` (ต้นฉบับ) + `_cut.webp` (ตัวตัดบอสเดิม)
-- **มอน** → `tools/monsheet2.py <แผ่น> <ออก> W` → `assets/monsters/<ชื่อ>.webp` + MS ใน monster-sprites.js (ตอนแมพมีแล้ว)
-- **มินิบอส** → `python3 -I tools/miniboss_art.py add <key> <รูป>` (key อยู่ใน PLANNED ของ tools/miniboss_prompts.py) — ตอนสร้างแมพย้ายข้อมูลจาก PLANNED ไป LANDS แล้วรันใหม่ (เข้า mini_boss_data.js เอง)
+- **แผนที่โลก** → `assets/ui/worldmap_bg_sea.webp` (1448×1086) · ChatGPT วาดใหม่ทั้งแผ่นแม้สั่งแก้แค่มุม → เอาเฉพาะส่วนที่เปลี่ยน วางลงภาพเดิม ปรับสีให้เข้ากับภาพเดิม (สคริปต์ wmcomp ในแชท 2026-11-25: เลื่อนให้ตรง · ปรับสี 3×3 จากส่วนที่ไม่เปลี่ยน · หน้ากากนุ่ม) · เปลี่ยนเป็นภาพหลักตอนเปิดโซน
+- **พื้นลายซ้ำ** → `python3 -I tools/seamless_tex.py <รูป> maps/sea/<ชื่อ>.webp` (640², แก้เฉพาะแกนที่รอยต่อเห็น · `skip=y` ถ้าการผสมทำให้เปลือกหอยซ้อนเป็นเงา) + ชื่อใน TEX ของ sea_art.py → `cat` · พื้นที่เป็นอิฐ / ไม้ / หินปูต้องย่อในแมพ: TEXS ใน maps/fieldmap.js (ocPlanks .5 · ocShellPave .55)
+- **กำแพง** → ตัดพื้นเขียว เล็มเป็นแถบสูง 300 px ต่อซ้ายขวาเนียน → `maps/sea/ocWall*.webp` (แบบ grWallCave) — ยังไม่มีคำสั่ง ทำตอน W1 มา
+- **แผ่นของประกอบ** → `python3 -I tools/sea_art.py sheet S<n> <รูป>` (ตัวตัดบอส + แบ่งตามช่อง ชิ้นที่ล้นช่องไปอยู่กับช่องที่จุดกลางชิ้นอยู่ · เก็บแผ่นเดิมที่ assets/sea/sheets/ ไว้ตัดใหม่ด้วย `recut`) → `maps/sea/<ชื่อตามตาราง>.webp` → `python3 -I tools/sea_art.py cat` (maps/sea-cat.js = VK_CAT: กว้างในเกม / ชนิด / วงชน จากตาราง P · สูงจากรูป · จุดเท้าวัดจากแนวกว้างสุดของฐาน) → ตรวจ `python3 -I tools/sea_art.py preview <ออก.jpg> S<n>`
+- **NPC** → `python3 -I tools/sea_art.py npc <key> <รูป>` → `assets/npc/<key>_front.webp` / `_side.webp` (สูง 300 px) + พิมพ์ค่า AX ให้ใส่ใน npcs.js
+- **ห้องช่าง** → `assets/rooms/craft_sea.webp` + วัดพื้นที่เดิน / ชั้นหน้าในห้อง (ROOM_ART ใน npcs.js) ตอนสร้างเมืองท่า
+- **บอส** → `python3 -I tools/sea_art.py boss <ran|funayurei|chalchiuhtlicue|kraken> <รูป>` → `assets/bosses/sea/<key>.png` (ต้นฉบับ) + `_cut.webp` · แผ่นหนวด kraken_arms ทำตอนออกแบบการต่อสู้
+- **มอน** → `python3 -I tools/sea_art.py mon <ชื่อ> <แผ่น>` (เพิ่มชื่อในตาราง MON ก่อน: ชื่อในแมพ · สูงในเกม · บิน/ลอย · โหมดตัด W หรือ A) → `assets/monsters/<ชื่อ>.webp` + บรรทัดใส่ monster-sprites.js · ท่าตายรูปสุดท้ายของ ChatGPT เป็นตัวโปร่งทับพื้นเขียว (ติดสีเขียวขี้ม้า) → เครื่องมือแทนด้วยท่าที่ 4 จาง 45 %
+- **มินิบอส** → `python3 -I tools/miniboss_art.py add <key> <รูป>` (รับ key ใน PLANNED ของ tools/miniboss_prompts.py ได้แล้ว) แล้วรัน `python3 tools/miniboss_prompts.py` · ตอนสร้างแมพย้ายข้อมูลจาก PLANNED ไป LANDS แล้วรันใหม่ (เข้า mini_boss_data.js เอง)
+
+---
+
+## 9. รูปที่ได้แล้ว (2026-11-25 09:16 เจ้าของส่ง 36 รูป ไม่มีข้อความ)
+| กล่อง | ไปที่ | หมายเหตุ |
+|---|---|---|
+| 2.2 แผนที่โลก | `assets/ui/worldmap_bg_sea.webp` | วางเฉพาะมุมหมู่เกาะลงภาพเดิม (ส่วนอื่นของแผนที่ไม่เปลี่ยน) · ยังไม่ใช้จนกว่าจะเปิดโซน |
+| T1–T6 | `maps/sea/ocSand` `ocWetSand` `ocLagoon` `ocDeep` `ocPlanks` `ocShellPave` | ภาพมาเกือบต่อขอบได้อยู่แล้ว แก้รอยต่อเล็กน้อย (ไม้กระดานแก้แกนตั้ง ให้ร่องไม้ตรงกัน) |
+| S1–S10 | 68 ชิ้นใน `maps/sea/` + `maps/sea-cat.js` (โหลดใน index.html แล้ว ยังไม่มีแมพใช้) | ตัดสะอาดทุกแผ่น ไม่มีขอบเขียว · ขนาดในเกมตั้งเทียบของเดิม (บ้าน 290–330 · เรือ 340–380 · ซุ้มราก 270 เดินลอดได้ · ของชิ้นเล็ก 58–124) |
+| N1–N4 | `assets/npc/sea_elder` · `kafra_sea` · `craft_sea` · `sea_ferry` (_front / _side) | AX ของช่าง / คลังใส่ npcs.js แล้ว (sea · kf_sea) · ผู้เฒ่า AX .528 / .490 · กัปตัน .493 / .443 (ใส่ตอนสร้าง NPC ชนิดใหม่) |
+| R1 | `assets/rooms/craft_sea.webp` | พื้นที่เดินในห้องยังไม่ได้วัด |
+| B1 ราน | `assets/bosses/sea/ran.png` + `ran_cut.webp` | ตาข่ายโปร่งตัดพื้นเขียวออกแล้ว |
+| มอน #1–#11 | `assets/monsters/goldshellHermitCrab` … `drownedOarsman` + 11 บรรทัดใน monster-sprites.js | ทุกแผ่นวางแถวตามพรอมต์ 4/4/5/2/5 · ปูเสฉวน / ฝีพาย ใช้โหมด A (โหมด W แบ่งท่านอนตายผิด) |
+| มินิบอส #1–#2 | `assets/bosses/mini/coconutCrabKing` · `islandbackMatriarch` (+ `_cut`) | |
+| 2.1 ภาพปก | — | **ยังไม่ได้** → ld9 |
+
+ภาพตรวจขนาดในเกมจริง (พื้นทะเล + ของ + มอน + NPC + ฮีโร่): สคริปต์ seamock ในแชท 2026-11-25 (ไม่ได้เก็บใน repo) — ฉากหาด + ฉากท่าเรือ

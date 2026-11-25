@@ -150,7 +150,19 @@ const MS={
   "Cyclops":S('cyclops',322,216,161,208,192,78),
   "Cave Hound":S('caveHound',340,201,165,196,176,46),
   "Hecate Witch":S('hecateWitch',285,213,142,203,192,52),
-  'Fenrir Spawn':     S('fenrirSpawn',274,203,138,201,182,44,{walk:12,sw:32})};
+  'Fenrir Spawn':     S('fenrirSpawn',274,203,138,201,182,44,{walk:12,sw:32}),
+  /* sea (Lv 60–70, SEA_ZONE_TH.md): sheets in 2026-11-25, maps not built yet — cut by `python3 -I tools/sea_art.py mon` */
+  "Goldshell Hermit Crab":S('goldshellHermitCrab',238,189,104,185,174,34),
+  "Coconut Crab Brute":S('coconutCrabBrute',329,214,146,203,192,70,{sw:46}),
+  "Thief Gull":S('thiefGull',281,215,135,186,167,36,{fly:1}),
+  "Tidepool Starfish":S('tidepoolStarfish',251,202,122,192,175,34),
+  "Foam Sprite":S('foamSprite',274,213,138,195,182,38,{fly:1}),
+  "Lagoon Ray":S('lagoonRay',317,193,139,177,168,46,{fly:1,sw:40}),
+  "Shellback Turtle":S('shellbackTurtle',309,209,137,201,191,46,{sw:40}),
+  "Barnacle Golem":S('barnacleGolem',325,207,149,201,182,72,{sw:46}),
+  "Net Wraith":S('netWraith',332,211,156,198,184,54,{fly:1}),
+  "Barrel Mimic":S('barrelMimic',292,206,137,199,178,38),
+  "Drowned Oarsman":S('drownedOarsman',309,222,145,207,188,54)};
 const ROW={idle:0,walk:1,attack:2,hurt:3,death:4};
 /* walk:N = a separate smooth walk strip assets/monsters/<file>_walk.webp (N frames, same cell size), made from a walk video by tools/vidwalk.py */
 /* 2026-11-20 load time: a sheet is downloaded the first time its monster is looked at (was: all 30 sheets, 11 MB, at every start) */

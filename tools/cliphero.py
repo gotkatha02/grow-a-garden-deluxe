@@ -32,6 +32,16 @@ Optional (2026-11-24, jaguar clips): "blade":{"pick":{"attack/S":["x",6]},"fix":
   on a real dagger (head = blade tip, grip = blade base at the guard), see blade_sockets(); "stateDur":{"walk/E":[…],"hurt/S":[…]}
   = frame times for idle / walk / hurt rows (keep an older atlas's times: two skills play the walk row as a timed dash);
   "deglow":{"attack/NE":[7,8]} = a blade the video lit up white-violet is toned back to dark obsidian.
+Optional (2026-11-25, wolf Fenrir's Heir): "frames":{"idle/S":[...]} (explicit 0-based video frames for an idle / walk row instead of a
+  sampled loop — skips closed-eye stretches; their times come from "stateDur", default 200 / 100 ms), "trendNorm":["walk/S"] (the
+  hero walks TOWARD the camera: size and feet follow a smooth quadratic fit of the bbox height / feet over the whole clip, every
+  frame is scaled back to the first frame's size — no per-frame jitter),
+  "axe":{"b":190,"br":45,"g":140,"bg":10,"min":40,"grip":28} (attack + buff sockets: head = centre of the largest light-blue blob = the
+  rune-engraved axe blade, frames where it is hidden sit between their neighbours; grip = that far toward the chest),
+  "axeFix":{"attack/S":{"5":[x,y]}} (placed-cell px, like orbFix), "cellScale":k (cell, pivot, every frame box, socket and head point
+  are multiplied by k while the sheet keeps its pixels: the engine draws the sheet bigger, so a hero cut at height 230 can stand in
+  for an atlas drawn at 230·k cell px — the wolf replaces the old wolf atlas without CHAR_SCALE, so every wolf effect, socket user
+  and fashion point keeps its numbers).
 Keying: soft green matte + despill + speck removal (keeps the body and anything touching it, e.g. the sword).
 Idle / walk loops are found automatically (period of best self-match); hurt is made from the idle pose."""
 import sys, io, json, base64, math, subprocess, numpy as np
@@ -159,19 +169,36 @@ for _d in DIRS:
         _b = bbox(clip(plan['clips']['idle'][_d], _d)[0]); SD[_d] = HT / (_b[3] - _b[1])
     else: SD[_d] = S0
 
+TREND = {}
+def trend(path, d, F):
+    """quadratic fit of bbox height and feet point over the whole clip (hero walking toward the camera)"""
+    k = (path, d)
+    if k not in TREND:
+        i = np.arange(len(F)); H_, X_, Y_ = [], [], []
+        for f in F:
+            bb = bbox(f); ft = feet(f); H_.append(bb[3] - bb[1]); X_.append(ft[0]); Y_.append(ft[1])
+        fitq = lambda v: np.polyval(np.polyfit(i, np.array(v, float), 2), i)
+        TREND[k] = (fitq(H_), fitq(X_), fitq(Y_)); h = TREND[k][0]; print(f'  trendNorm {d}: height {h[0]:.0f} -> {h[-1]:.0f} px over the clip')
+    return TREND[k]
+
 def frames_for(st, d):
     path = plan['clips'][st][d]; F = clip(path, d); norm = f'{st}/{d}' in plan.get('normalize', [])
     anchor0 = feet(F[0]); fit = FIT.get(f'{st}/{d}', []); span0 = fspan(F[0]) if fit else None
+    tn = trend(path, d, F) if f'{st}/{d}' in plan.get('trendNorm', []) else None
     def cell(i):
         img = F[i] if i not in STRICT.get(f'{st}/{d}', []) else key(RAW[path][i], d in FLIPDIRS, True)
         if i in UNS.get(f'{st}/{d}', []): img = unstreak(img)
         if i in DEG.get(f'{st}/{d}', []): img = deglow(img)
+        if tn:   # walking toward the camera: smooth size / feet trend, scaled back to the first frame's size
+            h, fx, fy = tn; return place(img, SD[d] * h[0] / h[i], (fx[i], fy[i]))
         if norm:
             bb = bbox(img); s = HT / (bb[3] - bb[1]); return place(img, s, feet(img))
         if i in fit:   # undo the camera zoom about the feet: video point p -> c + (p - c)·k, then placed like every other frame
             k = span0 / fspan(img); c = feet(img); print(f'  feetFit {st}/{d} frame {i}: ×{k:.3f}')
             return place(img, SD[d] * k, (c[0] - (c[0] - anchor0[0]) / k, c[1] - (c[1] - anchor0[1]) / k))
         return place(img, SD[d], anchor0)
+    if st in ('idle', 'walk') and f'{st}/{d}' in plan.get('frames', {}):
+        return [cell(i) for i in plan['frames'][f'{st}/{d}']], None
     if st in ('idle', 'walk'):
         if f'{st}/{d}' in plan.get('loop', {}): s0, P = plan['loop'][f'{st}/{d}']
         else: P = period([mask_small(f) for f in F], 20 if st == 'walk' else 16, 40 if st == 'walk' else 70) or len(F) // 2; s0 = 12
@@ -260,7 +287,7 @@ def blade_sockets(st, d):
         if a_ is not None and b_ is not None: t = (i - a_) / (b_ - a_); pick[i] = tuple(pick[a_][q] + (pick[b_][q] - pick[a_][q]) * t for q in range(4))
         else: pick[i] = pick[a_ if a_ is not None else b_]
     return [{'head': [round(p[0]), round(p[1])], 'grip': [round(p[2]), round(p[3])]} if p else {'head': [PX + 40, PY - 60], 'grip': [PX + 34, PY - 70]} for p in pick]
-meta = {'cell': {'w': CW, 'h': CH}, 'pivot': {'x': PX, 'y': PY}, 'scale': .56, 'states': {}, 'sockets': ({'idle': {}, 'walk': {}, 'attack': {}, 'buff': {}, 'hurt': {}} if ORB_ALL else {'attack': {}, 'buff': {}}) if plan.get('orb') else {'attack': {}, 'buff': {}} if BLADE else {'attack': {}},
+meta = {'cell': {'w': CW, 'h': CH}, 'pivot': {'x': PX, 'y': PY}, 'scale': .56, 'states': {}, 'sockets': ({'idle': {}, 'walk': {}, 'attack': {}, 'buff': {}, 'hurt': {}} if ORB_ALL else {'attack': {}, 'buff': {}}) if plan.get('orb') else ({'attack': {}, 'buff': {}} if BLADE or plan.get('axe') else {'attack': {}}),
         'contact': {'attack': {}}, 'mirror': {'SW': 'SE', 'W': 'E', 'NW': 'NE'}, 'qa': {}, 'buffPeak': {}}
 atlas = {}; report = {}
 for st in ['idle', 'walk', 'attack', 'buff', 'hurt']:
@@ -270,8 +297,8 @@ for st in ['idle', 'walk', 'attack', 'buff', 'hurt']:
             F = hurt_from(frames_for('idle', d)[0][0], d); dur = plan.get('stateDur', {}).get(f'hurt/{d}', [70] * 7)
         else:
             F, P = frames_for(st, d)
-            if st == 'idle': dur = [round(1000 * P / 24 / len(F))] * len(F)
-            elif st == 'walk': dur = [max(70, round(1000 * P / 24 / len(F)))] * len(F)
+            if st == 'idle': dur = [round(1000 * P / 24 / len(F))] * len(F) if P else [200] * len(F)
+            elif st == 'walk': dur = [max(70, round(1000 * P / 24 / len(F)))] * len(F) if P else [100] * len(F)
             elif st == 'attack':
                 c = plan['attack'][d]['contact']; n = len(F)
                 dur = plan['attack'][d].get('dur') or [55 if i < c - 1 else 40 if i <= c + 1 else 75 for i in range(n)]
@@ -315,13 +342,50 @@ for st in ['idle', 'walk', 'attack', 'buff', 'hurt']:
     if BLADE and st in ('attack', 'buff'):
         for d in DIRS: meta['sockets'][st][d] = blade_sockets(st, d)
         continue
-    if st == 'attack' and not plan.get('orb'):
+    if plan.get('axe') and st in ('attack', 'buff'):
+        AX = dict({'b': 190, 'br': 45, 'g': 140, 'bg': 10, 'min': 40, 'grip': 28}, **plan['axe'])
+        for d in DIRS:
+            pts = []; prev = None
+            for c_ in CELLS[(st, d)]:
+                A = np.asarray(c_).astype(np.int16)
+                m = (A[..., 3] > 120) & (A[..., 2] > AX['b']) & (A[..., 2] - A[..., 0] > AX['br']) & (A[..., 1] > AX['g']) & (A[..., 2] - A[..., 1] > AX['bg'])
+                lab, n = nd.label(nd.binary_closing(m, iterations=2)); best, bs = None, 0
+                for i in range(1, n + 1):
+                    ar = int((lab == i).sum())
+                    if ar < AX['min']: continue
+                    cy, cx = nd.center_of_mass(lab == i); sc = ar / (1 + (math.hypot(cx - prev[0], cy - prev[1]) / 90 if prev else 0))
+                    if sc > bs: bs, best = sc, (float(cx), float(cy))
+                pts.append(best); prev = best or prev
+            for k, v in plan.get('axeFix', {}).get(f'{st}/{d}', {}).items(): pts[int(k)] = tuple(v) if v else None
+            fd = [i for i, p in enumerate(pts) if p]; q = list(pts)
+            for i, p in enumerate(pts):
+                if p or not fd: continue
+                a = max((j for j in fd if j < i), default=None); b = min((j for j in fd if j > i), default=None)
+                if a is not None and b is not None: t = (i - a) / (b - a); q[i] = (pts[a][0] + (pts[b][0] - pts[a][0]) * t, pts[a][1] + (pts[b][1] - pts[a][1]) * t)
+                else: q[i] = pts[a if a is not None else b]
+            o = []; chest = (PX, PY - HT * .55)
+            for p in q:
+                p = p or (PX + 40, PY - HT * .5); vx, vy = chest[0] - p[0], chest[1] - p[1]; L = math.hypot(vx, vy) or 1; g = min(AX['grip'], L * .45)
+                o.append({'head': [round(p[0]), round(p[1])], 'grip': [round(p[0] + vx / L * g), round(p[1] + vy / L * g)]})
+            meta['sockets'][st][d] = o
+            print(f'  axe {st}/{d}: found {len(fd)}/{len(pts)}' + (f' — between neighbours: {[i for i, p in enumerate(pts) if not p]}' if len(fd) < len(pts) else ''))
+    if st == 'attack' and not plan.get('orb') and not plan.get('axe'):
         for d in DIRS:
             fx, fy = FWD[d]; sgn = 1 if fx >= -.01 else -1; gx, gy = PX + 18 * sgn, PY - HT * .42; n = len(meta['states'][st]['dirs'][d]['f']); c = meta['contact']['attack'][d]; o = []
             for i in range(n):
                 k = 0 if i < c else min(1, (i - c + 1) / 2)
                 o.append({'head': [round(gx + (-34 * sgn) * (1 - k) + 62 * (fx if abs(fx) > .3 else sgn * .8) * k), round(gy - 52 * (1 - k) + (10 + 40 * fy) * k)], 'grip': [round(gx), round(gy)]})
             meta['sockets']['attack'][d] = o
+CS = plan.get('cellScale')
+if CS:   # the engine draws the sheet pixels into these bigger cell boxes (see the usage note)
+    meta['cell'] = {'w': round(CW * CS), 'h': round(CH * CS)}; meta['pivot'] = {'x': round(PX * CS), 'y': round(PY * CS)}; meta['cellScale'] = CS
+    for st_ in meta['states'].values():
+        for v in st_['dirs'].values():
+            for f in v['f']: f[4:8] = [round(f[4] * CS), round(f[5] * CS), round(f[6] * CS), round(f[7] * CS)]
+    for st_ in meta['sockets'].values():
+        for v in st_.values():
+            for q in v:
+                for kk in q: q[kk] = [round(q[kk][0] * CS), round(q[kk][1] * CS)]
 open(out, 'w').write(f'/* {PFX} hero sprites — cut from video clips by tools/cliphero.py (green key, despill, speck removal). */\n'
                      f'const {PFX}_SPR_META={json.dumps(meta, separators=(",", ":"))};\nconst {PFX}_SPR_ATLAS={json.dumps(atlas)};\n')
 print('ok', out, {k: len(v) // 1024 for k, v in atlas.items()}, 'KB'); print(report)

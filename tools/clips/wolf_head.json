@@ -1,0 +1,134 @@
+{
+ "_search": 220,
+ "S": {
+  "frame": "idle:0",
+  "point": [
+   565,
+   418
+  ],
+  "box": [
+   525,
+   372,
+   607,
+   500
+  ]
+ },
+ "SE": {
+  "frame": "idle:0",
+  "point": [
+   564,
+   410
+  ],
+  "box": [
+   515,
+   370,
+   600,
+   495
+  ]
+ },
+ "E": {
+  "frame": "idle:0",
+  "point": [
+   550,
+   418
+  ],
+  "box": [
+   515,
+   375,
+   600,
+   500
+  ]
+ },
+ "NE": {
+  "frame": "idle:0",
+  "point": [
+   552,
+   416
+  ],
+  "box": [
+   505,
+   372,
+   600,
+   495
+  ]
+ },
+ "N": {
+  "frame": "idle:0",
+  "point": [
+   550,
+   418
+  ],
+  "box": [
+   500,
+   372,
+   600,
+   495
+  ]
+ },
+ "_fix": {
+  "attack/S/3": [
+   603,
+   412
+  ],
+  "attack/S/4": [
+   610,
+   425
+  ],
+  "attack/S/5": null,
+  "attack/E/2": null,
+  "attack/E/3": null,
+  "attack/E/4": null,
+  "attack/N/1": [
+   558,
+   440
+  ],
+  "attack/N/2": [
+   568,
+   440
+  ],
+  "attack/N/3": [
+   551,
+   437
+  ],
+  "attack/N/4": [
+   551,
+   437
+  ],
+  "attack/N/5": [
+   545,
+   445
+  ],
+  "buff/E/6": [
+   525,
+   397
+  ],
+  "buff/E/7": [
+   525,
+   397
+  ],
+  "buff/E/8": [
+   527,
+   397
+  ],
+  "buff/E/9": [
+   527,
+   397
+  ],
+  "buff/NE/4": [
+   545,
+   427
+  ],
+  "buff/NE/5": [
+   540,
+   418
+  ],
+  "buff/SE/4": [
+   570,
+   425
+  ]
+ },
+ "_copy": {
+  "attack/NE": "attack/E"
+ },
+ "_note": "points = forehead centre between the ears, ~26 px above the eye centres (S eyes y 444). Only the WINGS use them on the new wolf (owner 2026-11-25: no other fashion) \u2014 wing root = point + BACK_OFF, checked against the old wolf's gold wings. (A 16 px higher version was tried for the Sunfire crown before the owner dropped hats.)"
+}

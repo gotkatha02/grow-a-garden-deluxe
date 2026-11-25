@@ -1,6 +1,6 @@
 MINI-BOSS MASTER PICTURES — SEA (8 pictures)
 Game: Totem Legend, a 2D isometric fantasy MMORPG (Ragnarok Online feel). Every field and dungeon map of the Sea of Five Shores (golden-root islands, lagoons, crystal reefs, golden kelp forests, a sunken ghost ship, the drowned cities of the five lands and the World-Root Well, Lv 60–70) gets one MINI-BOSS: the leader of that map's monsters — bigger, prouder and more decorated than its kin, with no special powers.
-Attached: the campfire key art (the art style to copy).
+Attached: the campfire key art (the art style to copy) and the KIN BOARD (a white sheet with the monsters these mini-bosses lead, labelled with the same #numbers as below: #1, #2).
 
 === HOW TO WORK WITH THIS FILE — READ EVERYTHING FIRST ===
 • This file lists 8 mini-bosses, numbered #1–#8. Draw ONE picture per reply, in order, starting with #1.
@@ -19,6 +19,7 @@ Friendly hand-painted chibi cartoon, cute-but-dangerous, thick clean dark-brown 
 • Background: SOLID FLAT PURE GREEN (#00FF00) — no gradient, no ground, no floor, no shadow, no scenery. NEVER use green on the mini-boss: anything that would normally be green (leaves, moss, jade, frogs, kappa skin) is drawn teal, turquoise, blue, gold, purple or autumn orange instead.
 • No effects floating around it (no smoke clouds, sparkles, motion lines, flying leaves). Small glows ON the body (eyes, runes, lanterns, embers) are fine.
 • Paint everything SOLID — no see-through or half-transparent parts (ghosts, wings, robes, fire and glows are drawn opaque), because the green behind would show through them.
+• The KIN BOARD only shows what the kin look like. Draw the mini-boss alone in its own new pose — never copy the board's labels, frames or white background.
 
 === MINI-BOSSES IN THIS FILE ===
   #1 Coconut Crab King
@@ -34,9 +35,11 @@ Friendly hand-painted chibi cartoon, cute-but-dangerous, thick clean dark-brown 
 
 #1 COCONUT CRAB KING — leader of its map's Coconut Crab Brute monsters (map Lv 60–62, mini-boss Lv 64)
    Look: the king of the coconut crabs: a colossal coconut crab with a thick deep-blue and violet shell covered in old battle scars, one claw much bigger than the other, a crown made of a carved half coconut shell set with gold shells and pearls, a cape of old fishing net with glass floats and washed-up treasures caught in it (gold coins, a small ship's bell, a broken compass), fierce yellow eyes on stalks.
+   Kin: shown on the kin board as #1 — keep its species, colours and main features (but no green), make it bigger, older and more decorated.
 
 #2 ISLANDBACK MATRIARCH — leader of its map's Shellback Turtle monsters (map Lv 61–63, mini-boss Lv 65)
    Look: a huge ancient sea-turtle matriarch with sandy-tan wrinkled skin, wise half-closed eyes and a white wispy beard; her wide brown-and-amber shell carries a small island: golden sand, a golden root arch, a tiny stone shrine with a glowing totem chip, shells and orange coral (no green plants); a necklace of carved wooden totem beads with one big pearl; four strong flippers.
+   Kin: shown on the kin board as #2 — keep its species, colours and main features (but no green), make it bigger, older and more decorated.
 
 #3 CRYSTAL FIN WARLORD — leader of its map's Crystal Reef Shark monsters (map Lv 63–65, mini-boss Lv 67)
    Look: a big muscular blue shark warlord with a white belly and a scarred grin, a huge clear blue crystal dorsal fin like a crown, smaller crystal spikes along its tail, a gold ring through its fin and an old broken harpoon stuck in its side as a trophy, swimming in a proud pose.

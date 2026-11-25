@@ -83,7 +83,7 @@ for(let s=1;s<=3;s++){const {h}=run(Object.assign({V:100,P0:100,shock:[120,2]},C
 (function whole(){const ETC={},REG=['vik','azt','grk','egy','jpn'];
   for(const r of REG)for(let g=0;g<10;g++){ETC[`m_${r}_${g}_a`]={price:8+6*g,kind:'mat',reg:r,grade:g};ETC[`m_${r}_${g}_b`]={price:30+25*g,kind:'mat',reg:r,grade:g,rare:1};}
   [100,400,1500,5000].forEach((p,i)=>{ETC['ore'+(i+1)]={price:p,kind:'ore',tier:i+1};ETC['wore'+(i+1)]={price:p,kind:'ore',tier:i+1};});   /* 2026-11-22: armour (ore) + weapon (wore) refine stones */ETC.drill={price:3000,kind:'tool'};ETC.pliers={price:2000,kind:'tool'};ETC.guard={price:50000,kind:'tool'};
-  for(const r of REG)ETC['trait_'+r]={price:20000,kind:'crystal',reg:r};
+  ETC.affcry={price:3000,kind:'crystal'};   /* 2026-11-25: one reroll crystal (the 5 land seal crystals before) */
   const U={hp1:[25,'hp'],hp2:[120,'hp'],hp3:[450,'hp'],hp4:[1100,'hp'],sp1:[60,'sp'],sp2:[300,'sp'],sp3:[900,'sp'],elixir:[15000,'full'],manual:[20000,'exp'],ret:[300,'warp'],capscroll:[800,'warp'],wing:[60,'warp']};
   for(const k in U)ETC[k]={price:U[k][0],kind:'use',[U[k][1]]:1};for(const f of ['atk','def','vit','agi','tal','cha'])ETC['food_'+f]={price:1500,kind:'use',buff:f};
   for(const st of ['atk','def','agi','vit','int','cha','tal','lck'])for(let t=1;t<=4;t++)ETC[`orb_${st}_${t}`]={price:300*t*t,kind:'orb',tier:t};

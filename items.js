@@ -102,9 +102,14 @@ ETC.sore={n:'Star Ore',th:'แร่ดาวตก',price:50000,kind:'ore',tier
    shaman feathers, carved-rune pouches, spirit dust, spirit runes 18 × B/A/S, carved runes 18). Spirit / carved runes stay in the bag
    (so the market can trade them) but sit in the ring's own pouch view and do not count against the bag's 60 kinds. */
 {const RD=window.RUNEDATA;if(RD)for(const id in RD.GOODS)ETC[id]=RD.GOODS[id];}
-/* totem seals (2026-11-21, seals.js): every big piece carries one land's seal; the old trait crystals unlock seal powers now (same ids → bags and market keep working) */
-const SEAL_N={vik:'กา',azt:'งูขนนก',grk:'ม้าบิน',egy:'สคารับ',jpn:'กระเรียน'},SEAL_SL=['rhand','top','armor','shoes'];
-for(const r in TOWNS)ETC['trait_'+r]={n:`Seal Crystal (${TOWNS[r].name})`,th:`ผลึกตรา${SEAL_N[r]}`,price:20000,kind:'crystal',reg:r,col:TOWNS[r].col,d:`ปลดพลัง 4 ตรา${SEAL_N[r]} แบบที่ 2–3 (หน้าอุปกรณ์ › ตราโทเท็ม) · แบบแรกเลือกได้ฟรี · ดรอปจากมอนแดนนี้ (ดันเจี้ยนบ่อยกว่า)`};
+/* special-stat reroll (owner 2026-11-25 'สเตตัสพิเศษสุ่มมาตอนทำไอเทม ถ้าต้องการเปลี่ยนก็สุ่มได้ ล็อกสเตตัสที่ชอบได้ แต่ถ้ามีการล็อกไว้และสุ่มใหม่
+   จะต้องใช้ไอเทมในการสุ่มมากขึ้น'): smith tab สถานะ rerolls the unlocked lines of a piece, locked lines stay. Crystals per try RR_K[locks],
+   zeny RR_Z(grade). The land seals (seals.js) were removed the same day ('ตราประจำแดนเอาออก … เอาออกทั้งระบบ'): the 5 seal crystals
+   trait_<land> became this one crystal in bags, storage and the market (sealGone / market.js). */
+ETC.affcry={n:'Reroll Crystal',th:'ผลึกสุ่มสถานะ',price:3000,kind:'crystal',col:'#a070e0',d:'สุ่มสถานะพิเศษของอุปกรณ์ใหม่ที่ช่าง (B) แท็บ สถานะ · ไม่ล็อก 1 ก้อน · ล็อก 1 บรรทัด 2 ก้อน · ล็อก 2 บรรทัด 4 ก้อน · ดรอปจากมอนทุกตัว (ดันเจี้ยนบ่อยกว่า) มินิบอส บอส · ตลาดกลาง'};
+const RR_K=[1,2,4],RR_Z=g=>400*(g+1);
+const OLD_SEALC=['trait_vik','trait_azt','trait_grk','trait_egy','trait_jpn'];
+function sealGone(bag){let n=0;for(const k of OLD_SEALC)if(bag[k]!=null){n+=Math.max(0,bag[k]|0);delete bag[k];}if(n>0)bag.affcry=(bag.affcry||0)+n;return n;}   // old seal crystals → reroll crystals (1 : 1)
 /* ---------------- consumables (Item tab · double-click to use · F = best HP potion · V = best SP potion) ---------------- */
 const CONS={
   hp1:{n:'Red Potion',th:'ยาแดง',lv:1,hp:150,price:25,col:'#e2574c',d:'ฟื้น HP 150'},
@@ -134,7 +139,7 @@ for(const s of ORB_K)for(let t=1;t<=4;t++)ETC[`orb_${s}_${t}`]={n:`${STN[s]} Orb
 /* ---------------- tuning ---------------- */
 /* economy (tuned 2026-11-16): one grade (10 levels, ~240–960 kills) drops enough for 4–16 crafts → early you choose which
    pieces to remake, later you craft extra copies to chase better special stats. */
-const DROP={matA:.20,matB:.05,ore:.03,orb:.012,crystalDun:.004,crystalField:.001,zenyBase:10,zenyLv:3,hpPot:.03,spPot:.015,food:.005,elixir:.002};
+const DROP={matA:.20,matB:.05,ore:.03,orb:.012,crystalDun:.012,crystalField:.005,zenyBase:10,zenyLv:3,hpPot:.03,spPot:.015,food:.005,elixir:.002};
 /* refine v2 (owner 2026-11-21: 'it may break, but it must be repaired' · '+15 yes, but very very hard'):
    +1…+5 always · +6…+10 fail = −1 and the piece BREAKS · +11…+15 fail = the piece breaks (refine stays) · a broken piece gives
    nothing until it is repaired (a same slot + same grade piece, or zeny) · Guard Stone = no break · +11…+15 need Star Ore
@@ -186,33 +191,24 @@ const raceOf=e=>(e&&e.vdef&&e.vdef._t&&e.vdef._t.race)||(e&&e.m&&e.m.race)||'';
 const elOf=e=>(e&&e.vdef&&e.vdef._t&&e.vdef._t.el)||String((e&&e.m&&e.m.el)||'').split(' ')[0];
 const affLabel=(k,v)=>{const f=/^([rex])_(.+)$/.exec(k);if(f){const q=f[2];return f[1]==='r'?`ดาเมจใส่${RACE_N[q]||q} +${v}%`:f[1]==='e'?`ดาเมจใส่ธาตุ${EL_N[q]||q} +${v}%`:`ต้านธาตุ${EL_N[q]||q} -${v}%`;}
   const A=AFF[k];return A?`${A.n} ${A.neg?'-':'+'}${v}${A.flat?'':'%'}`:`${k} +${v}%`;};
+/* one special-stat line of kind k on a piece of grade g (crafting and the smith's reroll use the same roll: value 30–100 % of the grade's top) */
+function affRoll(k,g){const A=AFF[k],raw=A.max*(.4+.6*g/9)*rnd(.3,1);
+  return {k:A.fam?A.fam+'_'+FAM[A.fam][Math.floor(Math.random()*FAM[A.fam].length)]:k,v:A.dec?Math.max(.1,Math.round(raw*10)/10):Math.max(1,Math.round(raw))};}
 function rollAffixes(slot,g){const code=SLOTS[slot].code,pool=Object.keys(AFF).filter(k=>AFF[k].s.includes(code)),x=Math.random(),n=x<.6?1:x<.9?2:3,out=[];
-  while(out.length<n&&pool.length){const k=pool.splice(Math.floor(Math.random()*pool.length),1)[0],A=AFF[k],raw=A.max*(.4+.6*g/9)*rnd(.3,1);
-    out.push({k:A.fam?A.fam+'_'+FAM[A.fam][Math.floor(Math.random()*FAM[A.fam].length)]:k,v:A.dec?Math.max(.1,Math.round(raw*10)/10):Math.max(1,Math.round(raw))});}return out;}
+  while(out.length<n&&pool.length)out.push(affRoll(pool.splice(Math.floor(Math.random()*pool.length),1)[0],g));return out;}
 const affKey=k=>{const f=/^([rex])_/.exec(k);return f?{r:'raceDmg',e:'elDmg',x:'elRes'}[f[1]]:k;};
+/* smith tab สถานะ (owner 2026-11-25): the unlocked lines get a new kind (never one a locked line already has, no two alike) and a new value,
+   locked lines (a.lk) stay; the line count stays. it.x (what itemSt reads) is moved by the difference, so stats a piece has besides its lines stay. */
+const affG=it=>Math.max(0,Math.min(9,it.grade??((it.tier||1)-1)*3)),rrLocks=it=>(it.aff||[]).filter(a=>a.lk).length;
+const rrCost=it=>[['affcry',RR_K[Math.min(RR_K.length-1,rrLocks(it))]]],rrZ=it=>RR_Z(affG(it)),rrFree=()=>MODE!=='play';
+function rerollAff(it){const sl=it.cslot||it.slot,code=SLOTS[sl]&&SLOTS[sl].code,old=it.aff||[];if(!code||!old.length)return false;const g=affG(it);
+  const keep=new Set(old.filter(a=>a.lk).map(a=>affKey(a.k))),pool=Object.keys(AFF).filter(k=>AFF[k].s.includes(code)&&!keep.has(k)),x={...(it.x||{})};
+  for(const a of old)if(x[a.k]!=null){const r=Math.round((x[a.k]-a.v)*10)/10;if(r>0)x[a.k]=r;else delete x[a.k];}
+  it.aff=old.map(a=>a.lk||!pool.length?a:affRoll(pool.splice(Math.floor(Math.random()*pool.length),1)[0],g));
+  for(const a of it.aff)x[a.k]=Math.round(((x[a.k]||0)+a.v)*10)/10;it.x=x;it.rr=(it.rr||0)+1;return true;}
 const affRating=it=>(it.aff||[]).reduce((s,a)=>s+a.v/((AFF[affKey(a.k)]||{max:a.v||1}).max*(.4+.6*(it.grade||0)/9)),0);   // 0…3, how good the roll is
 
-/* ---------------- traits (3 per town, power × grade) ---------------- */
-const TRAITS={
-  berserk:{town:'vik',n:'เลือดนักรบ',d:p=>`HP ต่ำกว่า 50%: ดาเมจ +${r1(6*p)}%`},
-  wolfhide:{town:'vik',n:'ขนหมาป่า',d:p=>`รับดาเมจ -${r1(4*p)}%`},
-  rune:{town:'vik',n:'รูนสลัก',d:p=>`ตีโดนครบ 5 ครั้ง ระเบิดรูน ${r1(40*p)}% ของพลังโจมตี`},
-  obsidian:{town:'azt',n:'คมออบซิเดียน',d:p=>`ตีคริ: ศัตรูเลือดไหล ${r1(3*p)} วิ`},
-  numbdart:{town:'azt',n:'ลูกดอกชา',d:p=>`ตีโดน ${r1(10*p)}%: ศัตรูช้า 2 วิ`},
-  jagrush:{town:'azt',n:'สายฟ้าจากัวร์',d:p=>`ฆ่าศัตรู: เดินเร็ว +${r1(10*p)}% 3 วิ`},
-  aegis:{town:'grk',n:'โล่เทพ',d:p=>`ทุก 8 วิ: ครั้งต่อไปที่โดนตี ลดดาเมจ ${Math.min(75,r1(25*p))}%`},
-  phalanx:{town:'grk',n:'กำแพงฟาแลงซ์',d:p=>`ศัตรูรุมรอบตัว (สูงสุด 3): รับดาเมจ -${r1(2*p)}% ต่อตัว`},
-  apollo:{town:'grk',n:'พรอพอลโล',d:p=>`ตีโดน: ฟื้น HP ${r1(2*p)}% ของดาเมจ`},
-  curse:{town:'egy',n:'คำสาปฟาโรห์',d:p=>`ตีโดน: DEF ศัตรู -${r1(5*p)}% ซ้อนได้ 3 ครั้ง`},
-  soulsand:{town:'egy',n:'ทรายดูดวิญญาณ',d:p=>`ตีโดน: SP +${r1(1*p)}`},
-  eyeofra:{town:'egy',n:'ดวงตาแห่งรา',d:p=>`ดาเมจเวท +${r1(6*p)}%`},
-  iaido:{town:'jpn',n:'ไออิโด',d:p=>`ตีศัตรูที่ HP เต็ม: ดาเมจ +${r1(25*p)}%`},
-  shinobi:{town:'jpn',n:'เงานินจา',d:p=>`${r1(3*p)}% หลบการโจมตี`},
-  raiden:{town:'jpn',n:'ใบมีดสายฟ้า',d:p=>`ดาเมจคริ +${r1(10*p)}%`}};
 function r1(v){return Math.round(v*10)/10;}
-/* each old trait → [land, power index] of the totem-seal power that replaced it (seals.js) */
-const TRAIT2SEAL={berserk:['vik',0],rune:['vik',1],wolfhide:['vik',2],obsidian:['azt',0],numbdart:['azt',1],jagrush:['azt',2],
-  aegis:['grk',0],phalanx:['grk',1],apollo:['grk',2],eyeofra:['egy',0],curse:['egy',1],soulsand:['egy',2],iaido:['jpn',0],shinobi:['jpn',1],raiden:['jpn',2]};
 
 /* ---------------- state + save ---------------- */
 /* play mode (Lv1 real game) keeps its own item save, separate from the Lv99 test mode (progress.js decides the mode) */
@@ -241,11 +237,11 @@ function load(){let s=null;try{s=JSON.parse(localStorage.getItem(SKEY)||'null');
     for(const k in s.bag||{}){const m=/^orb_(atk|tal|cha|lck)_(\d)$/.exec(k);if(m){const n=`orb_${ORB_OLD[m[1]]}_${m[2]}`;s.bag[n]=(s.bag[n]||0)+s.bag[k];delete s.bag[k];}}   // stray old orbs (market box)
     for(const k in s.bag||{}){const m=/^m_(\w+)_(\d)_([ab])$/.exec(k);if(m&&!ETC[k])continue;BAG[k]=s.bag[k];}
     if(!s.ws)oreSplit(BAG);   /* weapon / armour stones (2026-11-22): an old save's refine ore is shared out once */   // drop materials from the old 4-tier table
+    sealGone(BAG);   /* seal crystals → reroll crystals (2026-11-25) */
     for(const id in s.inst||{}){const it=ITEMS[id]=s.inst[id];if(it.crafted&&it.grade===undefined){it.grade=[0,3,6,9][(it.tier||1)-1];restat(id);}
       if(it.crafted&&![3,5,7,9].includes(it.grade)){it.grade=[3,3,3,3,3,5,5,7,7,9][it.grade]??3;restat(id);}
       if(it.crafted&&!it.renamed)it.n=craftName(it.town,it.cslot,it.grade);   /* crafting now has 4 tiers (Lv30/50/70/90): older pieces move to the nearest */
-      if(!it.sealM){const sl=it.cslot||it.slot;if(SEAL_SL.includes(sl)&&!it.seal){if(it.crafted&&TOWNS[it.town])it.seal=it.town;else if(it.dset!==undefined)it.seal=Object.keys(TOWNS)[(parseInt(id.slice(1))||0)%5];}it.sealM=1;}   /* totem seals (2026-11-21): crafted = its town, drop pieces = a fixed pick */
-      if(it.trait){const g=TRAIT2SEAL[it.trait];if(g)(window.__SEAL_GRANTS=window.__SEAL_GRANTS||[]).push(g);delete it.trait;}   /* an old trait unlocks the seal power it became */
+      delete it.seal;delete it.sealM;delete it.trait;   /* land seals + old traits removed (2026-11-25) */
       if(!it.ro){if(it.crafted&&TOWNS[it.town]&&it.cslot&&SLOTS[it.cslot]&&it.grade!=null){it.st=craftStats(it.town,it.cslot,it.grade,it.magic);it.s5=1;}
         else if(it.dset!=null&&it.cslot&&SLOTS[it.cslot]&&it.grade!=null){it.st=dsStats(it.dset,it.cslot,it.magic);it.s5=1;}else if(it.st)it.st=conv12(it.st,it.slot);
         if(it.orbs)it.orbs=it.orbs.map(o=>ORB12[o.s]?Object.assign({},o,{s:ORB12[o.s]}):o);it.ro=1;}   /* RO stats (2026-11-22): old pieces re-read their stats once */
@@ -280,9 +276,9 @@ function craftStats(town,slot,g,magic){const T=TOWNS[town],S=SLOTS[slot],P=PAIR(
   if(slot==='rhand')wPut(put,magic,S.main(g));else if(S.main){put('def',S.main(g));if(S.mdef)put('mdef',Math.max(1,S.main(g)*S.mdef));}
   pairPut(put,T.pair[0],P[0]*S.pm);pairPut(put,T.pair[1],P[1]*S.pm);pairPut(put,T.third,P[2]*S.pm);return st;}
 function craftName(town,slot,g){return `${TOWNS[town].pre[g]} ${slot==='rhand'?(W_NOUN[CHAR]||'Weapon'):SLOTS[slot].noun}`;}
-function craftItem(town,slot,g=0,seal=null){const S=SLOTS[slot],cw=slot==='rhand'?classWeapon():{},aff=rollAffixes(slot,g),x={};for(const a of aff)x[a.k]=(x[a.k]||0)+a.v;
+function craftItem(town,slot,g=0){const S=SLOTS[slot],cw=slot==='rhand'?classWeapon():{},aff=rollAffixes(slot,g),x={};for(const a of aff)x[a.k]=(x[a.k]||0)+a.v;
   return newInst(null,{base:null,n:craftName(town,slot,g),slot,kind:slot==='rhand'?cw.kind:S.kind,two:cw.two,aspd:cw.aspd,size:cw.size,magic:!!cw.magic,
-    st:craftStats(town,slot,g,cw.magic),ro:1,wm:1,x,aff,b:{},grade:g,tier:gradeTier(g),wlv:gradeTier(g),lvReq:gradeLv(g),town,seal:SEAL_SL.includes(slot)?(TOWNS[seal]?seal:town):undefined,sealM:1,sockets:0,orbs:[],ref:0,w:S.w,crafted:1,cslot:slot,
+    st:craftStats(town,slot,g,cw.magic),ro:1,wm:1,x,aff,b:{},grade:g,tier:gradeTier(g),wlv:gradeTier(g),lvReq:gradeLv(g),town,sockets:0,orbs:[],ref:0,w:S.w,crafted:1,cslot:slot,
     rank:slot==='rhand'?JOB.name:'All',d:`เซ็ทคราฟ${TOWNS[town].name} Lv${gradeLv(g)}`});}
 function restat(id){const it=ITEMS[id],g=it.grade;it.tier=it.wlv=gradeTier(g);it.lvReq=gradeLv(g);it.st=craftStats(it.town,it.cslot,g,it.magic);it.ro=1;it.n=craftName(it.town,it.cslot,g);
   if(!it.aff){it.aff=rollAffixes(it.cslot,g);it.x={};for(const a of it.aff)it.x[a.k]=(it.x[a.k]||0)+a.v;}}
@@ -317,10 +313,10 @@ function dsStats(g,slot,magic){const S=SLOTS[slot],D=DSET[g],P=PAIR(g),st={},put
   pairPut(put1,D[2][0],P[0]*S.pm*DSET_MUL);pairPut(put1,D[2][1],P[1]*S.pm*DSET_MUL);return st;}
 function dropSetItem(g,slot){const S=SLOTS[slot],D=DSET[g],cw=slot==='rhand'?classWeapon():{},st=dsStats(g,slot,cw.magic);
   return newInst(null,{base:null,n:`${D[0]}'s ${slot==='rhand'?(W_NOUN[CHAR]||'Weapon'):S.noun}`,slot,kind:slot==='rhand'?cw.kind:S.kind,two:cw.two,aspd:cw.aspd,size:cw.size,magic:!!cw.magic,
-    st,ro:1,wm:1,x:{},aff:[],b:{},grade:g,tier:gradeTier(g),wlv:gradeTier(g),lvReq:gradeLv(g),dset:g,seal:SEAL_SL.includes(slot)?Object.keys(TOWNS)[Math.floor(Math.random()*5)]:undefined,sealM:1,sockets:0,orbs:[],ref:0,w:S.w,cslot:slot,
+    st,ro:1,wm:1,x:{},aff:[],b:{},grade:g,tier:gradeTier(g),wlv:gradeTier(g),lvReq:gradeLv(g),dset:g,sockets:0,orbs:[],ref:0,w:S.w,cslot:slot,
     rank:slot==='rhand'?JOB.name:'All',d:`ชุด${D[1]} (ของดรอป Lv${gradeLv(g)}) · อ่อนกว่าของคราฟ แต่สวมครบเซ็ทได้โบนัส`});}
 const dsCount=()=>{const c={};for(const sl in EQ){const it=ITEMS[EQ[sl]];if(it&&!it.broken&&it.dset!==undefined&&(it.lvReq||1)<=PS.lv)c[it.dset]=(c[it.dset]||0)+1;}return c;};
-/* 2026-11-21: drop-set bonuses are off too — drop pieces come with a random seal instead (seals.js). */
+/* 2026-11-21: drop-set bonuses are off too (the random seal they got instead left with the land seals, 2026-11-25). */
 DROP.dset=.008;
 /* ---------------- traits + special stats in combat ---------------- */
 /* traits are gone (2026-11-21): the 15 trait ideas live on as totem-seal powers in seals.js (flat values / counters) */
@@ -354,11 +350,11 @@ function dropFor(e){const m=e.m||{},L=m.lv||1,t=tierOfLv(L),g=gradeOfLv(L),R=Loo
   /* special drop (owner 2026-11-22 17:42 — drop_table.js / DROP_TABLE_TH.md): a refine stone OR an orb with the monster's own stat,
      only from the monsters the table names (every monster used to drop refine ore 3 % and a random orb 1.2 %) */
   const DT=window.DROPTAB,sp=DT?DT.of(e):'';if(sp&&ch(DT.rate(sp,m.role||(e.vdef&&e.vdef.role))*dm))got.push(DT.item(sp,t));
-  if(e.mini&&DT){const c=window.MINIB?MINIB.drop(e.mini):DT.code(e.mini.kin);if(c)got.push(DT.item(c,t));if(Math.random()<.1)got.push('tstone'+t);}   /* mini-boss (mini_bosses.js): its kin's special drop for sure (or an orb), totem stone 10 % */
+  if(e.mini&&DT){const c=window.MINIB?MINIB.drop(e.mini):DT.code(e.mini.kin);if(c)got.push(DT.item(c,t));if(Math.random()<.1)got.push('tstone'+t);if(Math.random()<.5)got.push('affcry');}   /* mini-boss (mini_bosses.js): its kin's special drop for sure (or an orb), totem stone 10 %, reroll crystal 50 % */
   if(ch(DROP.hpPot))got.push(L0<20?'hp1':L0<45?'hp2':L0<70?'hp3':'hp4');if(ch(DROP.spPot))got.push(L0<30?'sp1':L0<60?'sp2':'sp3');   /* zeny / potions follow the design level (level cap 60) */
   if(ch(DROP.food))got.push(['food_atk','food_def','food_vit','food_agi','food_tal','food_cha'][Math.floor(Math.random()*6)]);
   const dun=/D\d|H\d|E\d|cata|rift/.test(curMap||'');
-  if(ch(dun?DROP.crystalDun:DROP.crystalField))got.push('trait_'+r);
+  if(ch(dun?DROP.crystalDun:DROP.crystalField))got.push('affcry');   /* reroll crystal (2026-11-25, was the land's seal crystal) */
   if(dun&&ch(DROP.elixir))got.push('elixir');
   /* totem goods (owner 2026-11-21): raw stones by the ore tier of the monster's level band, essence, Star Ore (Lv 70+), mutation / support gems */
   {const GD=window.GEMDATA,D2=GD&&GD.DROPS;if(D2){const tough=m.role==='brute'?2:1,boss=m.boss||(e.vdef&&e.vdef.role==='boss');
@@ -391,8 +387,7 @@ const stars=it=>{const r=affRating(it);return r>=2.2?'★★★':r>=1.4?'★★'
 window.itemExtraInfo=id=>{const it=ITEMS[id];if(!it)return '';const L=[];
   if(it.crafted)L.push(`ของคราฟ<b>${TOWNS[it.town].name} Lv${gradeLv(it.grade)}</b> ${stars(it)?`<span style="color:#e0a020">${stars(it)}</span>`:''}`);
   if(it.dset!==undefined)L.push(`ชุด<b>${DSET[it.dset][1]}</b> · ของดรอป Lv${gradeLv(it.dset)}`);
-  if(window.SEALS){const sl=SEALS.itemLine(it);if(sl)L.push(sl);}
-  if(it.aff&&it.aff.length)L.push(`<b style="color:#2a7ac8">สถานะพิเศษ</b>: ${it.aff.map(a=>affLabel(a.k,a.v)).join(' · ')}`);
+  if(it.aff&&it.aff.length)L.push(`<b style="color:#2a7ac8">สถานะพิเศษ</b>: ${it.aff.map(a=>(a.lk?'🔒':'')+affLabel(a.k,a.v)).join(' · ')}<br><small style="color:#8a7a9a">ไม่ถูกใจ? สุ่มใหม่ที่ช่าง แท็บ สถานะ · ล็อกบรรทัดที่ชอบไว้ได้</small>`);
   return L.length?`<div class="t12x">${L.join('<br>')}</div>`:'';};
 const _equip=equipItem,_unequip=unequip;
 equipItem=function(id){_equip(id);save();};
@@ -511,64 +506,12 @@ const statLine=st=>SHOWK.filter(k=>st[k]).map(k=>`${STN[k]} ${st[k]>0?'+':''}${s
 const repLine=(b,f)=>SHOWK.filter(k=>b[k]||f[k]).map(k=>{const v=b[k]||0,d=(f[k]||0)-v;return `${STN[k]} ${v}${d?` <b style="color:${d>0?'#2a9a28':'#d23a2a'}">${d>0?'+':''}${d}</b>`:''}`;}).join(' · ');
 function itemRow(id,extra='',sel=false){const it=ITEMS[id],S=itemSt(id),eq=Object.values(EQ).includes(id);
   return `<div class="ix-row${sel?' sel':''}" data-pick="${id}"><div class="ic">${itemIcon(it,26)}</div><div class="mid"><b>${it.ref?'+'+it.ref+' ':''}${it.n}</b> <span style="color:#e0a020">${stars(it)}</span>${eq?' <span style="color:#2a9a28;font-size:10px">(สวมอยู่)</span>':''}
-    <small>Lv${S.lv} · ${S.st0?'◈ '+repLine(S.st0,S.st):statLine(S.st)}${it.aff&&it.aff.length?' · '+it.aff.map(a=>affLabel(a.k,a.v)).join(' · '):''}${S.sockets?` · รู ${S.orbs.length}/${S.sockets}`:''}${it.seal&&SEAL_N[it.seal]?` · ตรา${SEAL_N[it.seal]}`:''}</small>${extra}</div></div>`;}
+    <small>Lv${S.lv} · ${S.st0?'◈ '+repLine(S.st0,S.st):statLine(S.st)}${it.aff&&it.aff.length?' · '+it.aff.map(a=>affLabel(a.k,a.v)).join(' · '):''}${S.sockets?` · รู ${S.orbs.length}/${S.sockets}`:''}</small>${extra}</div></div>`;}
 function done(t){msg(t);chatLog('sys',t);save();applyStats();buildItems();buildEquip();}
 function destroyItem(id){for(const sl in EQ)if(EQ[sl]===id)EQ[sl]=null;const i=INV.indexOf(id);if(i>=0)INV.splice(i,1);delete ITEMS[id];}
 
 /* ---------------- Smith ---------------- */
 let smTab='craft',smPick=null,smTown=null,smGrade=null,smFrom=null;
-function openSmithOld(){const w=$('#smw');w.classList.add('open');document.querySelectorAll('.ro').forEach(o=>o.style.zIndex=30);w.style.zIndex=37;buildSmith();}
-function buildSmithOld(){const w=$('#smw');if(!w.classList.contains('open'))return;const here=townHere();
-  if(here&&here!=='cap')smTown=here;else if(!smTown||!TOWNS[smTown])smTown=HOME[CHAR]||'vik';
-  if(smGrade===null||!CRAFT_G.includes(smGrade))smGrade=CRAFT_G.filter(x=>gradeLv(x)<=PS.lv).pop()??CRAFT_G[0];
-  const T=TOWNS[smTown],test=!(here&&here!=='cap');
-  const tabs=[['craft','คราฟต์'],['trait','นิสัยพิเศษ'],['refine','ตีบวก'],['move','ย้ายบวก'],['socket','เจาะรู/ยัดหิน'],['merge','รวมหิน']];
-  let note=test?`<div class="ix-note ix-warn">${here==='cap'?'เมืองหลวงไม่มีช่าง (เมืองค้าขาย)':'ไม่ได้อยู่ในเมือง'} — โหมดทดสอบ: เลือกช่าง ${Object.keys(TOWNS).map(r=>`<button class="rob" data-town="${r}" style="${r===smTown?'background:#f5a623;color:#fff':''}">${TOWNS[r].name}</button>`).join(' ')}</div>`:'';
-  note+=`<div class="ix-note">ช่าง<b>${T.name}</b> · ไอเทมเมืองนี้ได้ <b>${STN[T.pair[0]]} + ${STN[T.pair[1]]}</b> (+${STN[T.third]}) · Zeny <b>${fmt(ZENY)}</b></div>`;
-  let body='',owned=ownedIds();
-  if(smTab==='craft'){const g=smGrade,cost=craftCost(smTown,g),cz=COST.craftZ(g),cr=has('trait_'+smTown),cb=csBonusText(smTown,g);
-    body=`<div class="ix-grades">${CRAFT_G.map(i=>`<button class="rob ${i===g?'on':''} ${gradeLv(i)>PS.lv?'lock':''}" data-grade="${i}">เซ็ท Lv${gradeLv(i)}</button>`).join('')}</div>
-      <div class="ix-note">เซ็ทคราฟ Lv${gradeLv(g)} · ใช้ <b>${etcName(matA(smTown,g-2))}</b> + <b>${etcName(matA(smTown,g-1))}</b> (มอน Lv${(g-2)*10}–${g*10-1}) + ของหายาก <b>${etcName(matB(smTown,g))}</b> (มอน Lv${g*10}–${g*10+9} / บอส) ในภูมิภาค${T.name} · <b>ทุกครั้งที่คราฟต์ สุ่มสถานะพิเศษ 1–3 ช่อง</b><br><b style="color:#c2541c">โบนัสเซ็ท</b>: ${cb}</div>`+
-      GEAR.map(sl=>`<div class="ix-row"><div class="mid"><b>${craftName(smTown,sl,g)}</b> <small>${SLOTS[sl].nm} · Lv${gradeLv(g)} · ${statLine(craftStats(smTown,sl,g,sl==='rhand'&&classWeapon().magic))} · สถานะพิเศษที่ออกได้: ${Object.keys(AFF).filter(k=>AFF[k].s.includes(SLOTS[sl].code)).map(k=>AFF[k].n).join(', ')}</small><div class="ix-cost">${costHtml(cost,cz)}</div></div>
-        <button class="rob" data-craft="${sl}" ${canPay(cost,cz)?'':'disabled'}>คราฟต์</button>${cr?`<button class="rob" data-craft="${sl}" data-wt="1" ${canPay(cost,cz)?'':'disabled'} title="ใช้ผลึกนิสัย 1 ก้อน">+นิสัย</button>`:''}</div>`).join('');}
-  else if(smTab==='trait'){const L=owned.filter(id=>ITEMS[id].crafted&&ITEMS[id].town===smTown),cost=[['trait_'+smTown,1]];
-    body=`<div class="ix-note">นิสัยของเมืองนี้ (สุ่ม 1 แบบ · แรงขึ้นตามระดับไอเทม ×1 → ×3): ${Object.entries(TRAITS).filter(([k,v])=>v.town===smTown).map(([k,v])=>`<b>${v.n}</b> — ${v.d(1)}`).join(' · ')}</div>`+
-      (L.length?L.map(id=>itemRow(id,`<div class="ix-cost">${costHtml(cost,COST.traitZ)}</div><button class="rob" data-trait="${id}" ${canPay(cost,COST.traitZ)?'':'disabled'}>${ITEMS[id].trait?'สุ่มนิสัยใหม่':'ใส่นิสัย'}</button>`)).join(''):`<div class="ix-note">ยังไม่มีไอเทมของช่าง${T.name}</div>`);}
-  else if(smTab==='refine'){const g=has('guard');
-    body=`<div class="ix-note">+1 ถึง +5 สำเร็จเสมอ · ตั้งแต่ +6 พลาดแล้ว<b class="ix-warn">ของแตก</b> · ${g?`<label><input type="checkbox" id="useGuard"> ใช้หินกันแตก (มี ${BAG.guard}) — พลาดแล้วลดบวก 1 แทน</label>`:'หินกันแตกซื้อได้ที่ร้านเมืองหลวง'}</div>`+
-      owned.map(id=>{const it=ITEMS[id],r=it.ref||0,t=Math.max(1,Math.min(4,it.tier||it.wlv||1));if(r>=10)return itemRow(id,'<small>ตีบวกสูงสุดแล้ว (+10)</small>');
-        const cost=[[refOre(it,t),1]],z=COST.refineZ(t,r),gain=it.slot==='rhand'?`พลังโจมตี/เวท +${REF_ATK[Math.min(4,it.wlv||t)]}`:`DEF รวม +${armorRefDef({ref:r+1,tier:it.tier||1})}`;
-        return itemRow(id,`<small>+${r} → +${r+1} · โอกาส <b>${Math.round(REFINE_CHANCE[r]*100)}%</b> · ${gain}</small><div class="ix-cost">${costHtml(cost,z)}</div><button class="rob" data-ref="${id}" ${canPay(cost,z)?'':'disabled'}>ตีบวก</button>`);}).join('');}
-  else if(smTab==='move'){const src=owned.filter(id=>(ITEMS[id].ref||0)>0&&!ITEMS[id].broken);if(!src.includes(smFrom))smFrom=src[0]||null;const f=ITEMS[smFrom];
-    body=`<div class="ix-note">ย้ายระดับบวกจากของเก่าไปของใหม่ช่องเดียวกัน · ของใหม่ได้บวก <b>−1</b> จากของเดิม · ของเก่าเหลือ +0 · ใช้ Zeny เท่านั้น</div>`+
-      (src.length?`<div style="display:flex;gap:8px"><div class="ix-list" style="flex:1"><b>ย้ายจาก</b>${src.map(id=>itemRow(id,'',id===smFrom).replace('data-pick','data-from')).join('')}</div>
-        <div class="ix-list" style="flex:1"><b>ไปที่</b>${f?owned.filter(id=>id!==smFrom&&ITEMS[id].slot===f.slot&&(ITEMS[id].ref||0)<f.ref-1).map(id=>{const z=COST.moveZ(ITEMS[id].grade??((ITEMS[id].tier||1)-1)*3,f.ref);
-          return itemRow(id,`<small>+${ITEMS[id].ref||0} → +${f.ref-1}</small><div class="ix-cost">${costHtml([],z)}</div><button class="rob" data-move="${id}" ${ZENY>=z?'':'disabled'}>ย้าย</button>`);}).join('')||'<div class="ix-note">ไม่มีของช่องเดียวกันที่รับได้</div>':''}</div></div>`:'<div class="ix-note">ยังไม่มีของที่ตีบวกไว้</div>');}
-  else if(smTab==='socket'){if(!smPick||!ITEMS[smPick]||!owned.includes(smPick))smPick=owned[0];
-    const S=smPick&&itemSt(smPick),it=ITEMS[smPick],orbs=Object.keys(BAG).filter(k=>ETC[k]&&ETC[k].kind==='orb');
-    body=`<div class="ix-note">เลือกไอเทม → เจาะรูด้วยสว่าน (สุ่ม 1 รู 45% · 2 รู 30% · 3 รู 18% · 4 รู 7% — อาวุธ/เกราะสูงสุด 4 รู ชิ้นอื่นสูงสุด 2 รู) → คลิกหินด้านล่างเพื่อยัดลงรูว่าง (ค่าสุ่มตอนยัด) · คลิกหินที่ยัดแล้วเพื่อถอด (มีคีม = หินคืน, ไม่มี = หินแตก)</div>
-      <div style="display:flex;gap:8px"><div class="ix-list" style="flex:1">${owned.map(id=>itemRow(id,'',id===smPick)).join('')}</div>
-      <div style="width:230px">${it?`<b>${it.n}</b><div class="ix-holes">${[0,1,2,3].map(i=>i<S.orbs.length?`<div class="ix-hole" data-unsock="${i}" style="background:${ORB_COL[S.orbs[i].s]}" title="ถอดหิน">${STN[S.orbs[i].s]}<br>+${S.orbs[i].v}</div>`:i<S.sockets?'<div class="ix-hole empty" title="รูว่าง"></div>':'<div class="ix-hole none"></div>').join('')}</div>
-      <button class="rob" data-drill="1" ${has('drill')?'':'disabled'}>เจาะรู (สว่าน ${BAG.drill||0})</button> <small>คีม ${BAG.pliers||0}</small>
-      <div style="margin-top:6px;font-weight:700">หินออฟในกระเป๋า</div><div class="ix-orbs">${orbs.length?orbs.map(k=>`<div class="c" data-sock="${k}" title="${ETC[k].th} ×${BAG[k]} — ${ETC[k].d}">${etcIcon(k,26)}<em>${BAG[k]}</em></div>`).join(''):'<small>ยังไม่มีหิน (ดรอปจากมอนบางตัว — ดูในแผนที่โลก กด W)</small>'}</div>`:''}</div></div>`;}
-  else if(smTab==='merge'){body=`<div class="ix-note">หินขั้นเดียวกัน 3 ก้อน (ชนิดใดก็ได้) → หินขั้นถัดไป 1 ก้อน ชนิดสุ่ม · ใช้หินที่มีมากที่สุดก่อน</div>`+
-      [1,2,3].map(t=>{const n=Object.keys(BAG).filter(k=>ETC[k]&&ETC[k].kind==='orb'&&ETC[k].tier===t).reduce((s,k)=>s+BAG[k],0);
-        return `<div class="ix-row"><div class="mid"><b>หินขั้น ${t} → ขั้น ${t+1}</b><small>มีหินขั้น ${t} รวม ${n} ก้อน</small><div class="ix-cost"><span class="${n>=3?'':'no'}">หินขั้น ${t} ${n}/3</span> · <span class="${ZENY>=COST.mergeZ(t)?'':'no'}">${fmt(COST.mergeZ(t))}z</span></div></div><button class="rob" data-merge="${t}" ${n>=3&&ZENY>=COST.mergeZ(t)?'':'disabled'}>รวม</button></div>`;}).join('');}
-  roWin('smw','🔨 ช่างตีเหล็ก',`${note}<div class="ix-tabs">${tabs.map(([k,n])=>`<button class="rob ${smTab===k?'on':''}" data-tab="${k}">${n}</button>`).join('')}</div>${smTab==='socket'||smTab==='move'?body:`<div class="ix-list">${body}</div>`}`);
-  const q=(s,f)=>w.querySelectorAll(s).forEach(b=>b.onclick=ev=>{ev.stopPropagation();f(b);});
-  q('[data-tab]',b=>{if(b.dataset.tab==='refine'){$('#smw').classList.remove('open');openRefine();return;}smTab=b.dataset.tab;buildSmith();});   /* refine has its own 12 Tails-style window */
-  q('[data-town]',b=>{smTown=b.dataset.town;buildSmith();});q('[data-grade]',b=>{smGrade=+b.dataset.grade;buildSmith();});
-  q('[data-craft]',b=>{if(eqFull()){msg(`กระเป๋าอุปกรณ์เต็ม (${BAG_EQ_MAX}) — ฝากของในคลังก่อน`);return;}const sl=b.dataset.craft,g=smGrade,cost=craftCost(smTown,g),cz=COST.craftZ(g);if(b.dataset.wt)cost.push(['trait_'+smTown,1]);if(!canPay(cost,cz))return;pay(cost,cz);
-    const tr=b.dataset.wt?rollTrait(smTown):null,id=craftItem(smTown,sl,g,tr),it=ITEMS[id];INV.push(id);
-    done(`คราฟต์สำเร็จ: ${it.n} ${stars(it)} — ${it.aff.map(a=>affLabel(a.k,a.v)).join(' · ')}${tr?' · ✦'+TRAITS[tr].n:''}`);buildSmith();});
-  q('[data-trait]',b=>{const id=b.dataset.trait,cost=[['trait_'+smTown,1]];if(!canPay(cost,COST.traitZ))return;pay(cost,COST.traitZ);ITEMS[id].trait=rollTrait(smTown,ITEMS[id].trait);done(`${ITEMS[id].n} ได้นิสัย ✦${TRAITS[ITEMS[id].trait].n}`);buildSmith();});
-  q('[data-ref]',b=>doRefine(b.dataset.ref));
-  q('[data-from]',b=>{smFrom=b.dataset.from;buildSmith();});
-  q('[data-move]',b=>{const to=ITEMS[b.dataset.move],f=ITEMS[smFrom];if(!to||!f)return;const z=COST.moveZ(to.grade??((to.tier||1)-1)*3,f.ref);if(ZENY<z)return;ZENY-=z;to.ref=f.ref-1;f.ref=0;done(`ย้ายบวกสำเร็จ: ${to.n} +${to.ref}`);buildSmith();});
-  q('[data-pick]',b=>{if(smTab!=='socket')return;smPick=b.dataset.pick;buildSmith();});
-  q('[data-drill]',()=>doDrill(smPick));q('[data-sock]',b=>doSocket(smPick,b.dataset.sock));q('[data-unsock]',b=>doUnsocket(smPick,+b.dataset.unsock));
-  q('[data-merge]',b=>doMerge(+b.dataset.merge));}
-function rollTrait(town,not){const L=Object.keys(TRAITS).filter(k=>TRAITS[k].town===town&&k!==not);return L[Math.floor(Math.random()*L.length)];}
 function doRefine(id){const it=ITEMS[id];if(!it)return;const r=it.ref||0,t=Math.max(1,Math.min(4,it.tier||it.wlv||1)),cost=[[refOre(it,t),1]],z=COST.refineZ(t,r);if(r>=10||!canPay(cost,z))return;
   const g=$('#useGuard')&&$('#useGuard').checked&&has('guard');pay(cost,z);if(g&&r>=5)add('guard',-1);
   if(Math.random()<REFINE_CHANCE[r]){it.ref=r+1;done(`ตีบวกสำเร็จ! ${it.n} +${it.ref}`);addFx(new DText({x:player.x,y:player.y,z:90,text:'+'+it.ref+' SUCCESS',color:'#ffd36a',size:15,life:1.2}));}
@@ -610,6 +553,8 @@ const STKEY='af_storage_v1',STO={equip:{},etc:{}},STO_EQ_MAX=300;
 try{Object.assign(STO,JSON.parse(localStorage.getItem(STKEY)||'{}'));}catch(e){}
 for(const k in STO.equip)lvFix(STO.equip[k]);   /* level cap 60: stored pieces read their level on the new scale */
 if(!STO.ws){oreSplit(STO.etc||(STO.etc={}));STO.ws=1;try{localStorage.setItem(STKEY,JSON.stringify(STO));}catch(e){}}   /* weapon / armour stones (2026-11-22) */
+{let ch=sealGone(STO.etc||(STO.etc={}));for(const k in STO.equip){const it=STO.equip[k];if(it&&(it.seal||it.sealM||it.trait)){delete it.seal;delete it.sealM;delete it.trait;ch=1;}}
+  if(ch)try{localStorage.setItem(STKEY,JSON.stringify(STO));}catch(e){}}   /* land seals removed (2026-11-25): stored seal crystals → reroll crystals, stored pieces lose their seal */
 const saveSto=()=>{try{localStorage.setItem(STKEY,JSON.stringify(STO));}catch(e){}};
 let kfTab='equip';
 function openStorage(){const w=$('#kfw');if(!townHere()&&!(window.AFProgress&&AFProgress.mode==='test')){msg('คลังใช้ได้ในเมืองเท่านั้น');return;}
@@ -970,12 +915,23 @@ smCss.textContent+=`
 #smw .tttab button:not(.on) img{filter:grayscale(.35) brightness(.9)}
 .uiarrow{width:46px;height:auto;filter:drop-shadow(0 0 4px #ffb02e)}#smw .mrow .uiarrow{width:34px}
 .ttw .ttx{background:url(assets/ui/x_btn.webp) center/100% 100% no-repeat!important;border:0!important;width:28px;height:28px;color:transparent!important;text-shadow:none!important;top:4px}`;
+smCss.textContent+=`
+#smw .afl{display:flex;flex-direction:column;gap:5px;margin:7px 0 2px}
+#smw .afr{display:grid;grid-template-columns:30px 1fr 58px;align-items:center;gap:7px;background:#fff;border:1.5px solid #c9b3f0;border-radius:10px;padding:3px 7px 3px 4px;font:800 12.5px Mali;color:#4a2a7a}
+#smw .afr.lk{background:#fff6dc;border-color:#f0a52c;color:#7a4a10}
+#smw .afr.nw{animation:afNew 1.3s ease-out}
+@keyframes afNew{0%{background:#ecdcff;box-shadow:0 0 0 3px #b07aff,0 0 14px #b07aff}100%{background:#fff;box-shadow:none}}
+#smw .lkb{width:30px;height:26px;border-radius:8px;border:1.5px solid #a596c8;background:#f4efff;cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center}
+#smw .afr.lk .lkb{background:#ffe9a8;border-color:#e0a020}#smw .lkb:disabled{opacity:.38;cursor:default}
+#smw .aq{height:8px;border-radius:5px;background:#e8e0f4;overflow:hidden}#smw .aq i{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,#b07aff,#ffcf3a)}
+#smw .act.rra{align-items:center}#smw .act.rra .lab{font:700 10px Mali;color:#5a6a8a;text-align:center;max-width:64px;margin-top:2px;line-height:1.15}
+@media (max-height:520px){#smw .stage2.rrs{height:104px!important}#smw .stage2.rrs .bigc{transform:translateX(-50%) scale(.56);transform-origin:50% 0;top:25px;margin:0}#smw .afr{padding:1px 6px 1px 3px}#smw .lkb{height:22px}}
+#smw .rrb{display:inline-flex!important;align-items:center;justify-content:center;gap:5px;white-space:nowrap}#smw .rrb img,#smw .rrb svg{display:inline-block!important;width:20px!important;height:20px!important;flex:none}`;
 document.head.appendChild(smCss);
-let smSlot='rhand',smTraitSel=null,smTo=null,smSealSel=null,smSealTo=null,smSealC=null;
-const SM_TABS=[['craft','คราฟต์'],['trait','ตรา'],['refine','ตีบวก'],['move','ย้ายบวก'],['replica','จำลอง'],['socket','เจาะรู'],['merge','รวมหิน']];
-/* totem seal on a piece (seals.js): that land's materials of the piece's grade + zeny · test mode free */
-const sealG=it=>Math.max(0,Math.min(9,it.grade??((it.tier||1)-1)*3));
-const sealCost=(l,g)=>[[matA(l,g),4],[matB(l,g),1]],sealZ=g=>1000*(g+1),sealFree=()=>MODE!=='play';
+let smSlot='rhand',smTo=null,smAffSel=null,smRR=null;
+const SM_TABS=[['craft','คราฟต์'],['trait','สถานะ'],['refine','ตีบวก'],['move','ย้ายบวก'],['replica','จำลอง'],['socket','เจาะรู'],['merge','รวมหิน']];
+/* padlock for the สถานะ tab (code SVG: closed = the line is kept on a reroll) */
+const lockSvg=on=>`<svg viewBox="0 0 20 22" width="16" height="17"><path d="${on?'M6 10 V7 a4 4 0 0 1 8 0 V10':'M6 10 V7 a4 4 0 0 1 8 0 V5'}" fill="none" stroke="${on?'#8a5a10':'#7a6a9a'}" stroke-width="2.4" stroke-linecap="round"/><rect x="3" y="10" width="14" height="10" rx="2.5" fill="${on?'#ffcf3a':'#e6defa'}" stroke="${on?'#8a5a10':'#7a6a9a'}" stroke-width="1.6"/><circle cx="10" cy="15" r="1.7" fill="${on?'#8a5a10':'#7a6a9a'}"/></svg>`;
 let rpSrc=null,rpDst=null;const REP_Z=it=>Math.round(3000*Math.pow((it.grade??((it.tier||1)-1)*3)+1,1.5)/100)*100;
 function openSmith(){const w=$('#smw');w.classList.add('open');document.querySelectorAll('.ro').forEach(o=>o.style.zIndex=30);w.style.zIndex=37;buildSmith();}
 const smSlotIcon=(sl,g,sz)=>itemIcon({crafted:1,slot:sl,cslot:sl,town:smTown,grade:g,n:'',b:{}},sz);
@@ -992,27 +948,26 @@ function buildSmith(){const w=$('#smw');if(!w||!w.classList.contains('open'))ret
   top+=`<div class="tttab">${SM_TABS.map(([k,n])=>`<button class="${smTab===k?'on':''}" data-tab="${k}"><img src="assets/ui/tab_${k}.webp" alt="">${n}</button>`).join('')}</div>`;
   let body='';
   if(!GEAR.includes(smSlot))smSlot='rhand';
-  if(smTab==='craft'){const g=smGrade,sl=smSlot,sOk=SEAL_SL.includes(sl),sl0=sOk?(TOWNS[smSealC]?smSealC:smTown):null,sx=sOk&&sl0!==smTown&&!sealFree(),cost=craftCost(smTown,g).concat(sx?sealCost(sl0,g):[]),cz=COST.craftZ(g)+(sx?sealZ(g):0),ok=canPay(cost,cz),st=craftStats(smTown,sl,g,sl==='rhand'&&classWeapon().magic),SE=window.SEALS;
+  if(smTab==='craft'){const g=smGrade,sl=smSlot,cost=craftCost(smTown,g),cz=COST.craftZ(g),ok=canPay(cost,cz),st=craftStats(smTown,sl,g,sl==='rhand'&&classWeapon().magic);
     const affs=Object.keys(AFF).filter(k=>AFF[k].s.includes(SLOTS[sl].code)).map(k=>AFF[k].n);
     body=`<div class="sgrid"><div class="ttp"><h4>📜 เลือกเซ็ทและชิ้น</h4><div class="grades">${CRAFT_G.map(i=>`<button class="${i===g?'on':''} ${gradeLv(i)>PS.lv?'lock':''}" data-grade="${i}">Lv${gradeLv(i)}</button>`).join('')}</div>
       <div class="slots">${GEAR.map(s=>`<div class="s"><div class="tts ${s===sl?'sel':''}" data-slot="${s}">${smSlotIcon(s,g,42)}</div>${SLOTS[s].nm}</div>`).join('')}</div>
-      <div class="bonus">${SE&&sOk?SE.setText(sl0):'<b style="color:#c2541c">เครื่องประดับ</b> ไม่มีตรา — ช่องนี้สำหรับของบอส'}</div></div>
+      <div class="bonus">ของที่คราฟต์ได้สถานะพิเศษสุ่ม <b>1–3 บรรทัด</b> · ไม่ถูกใจสุ่มใหม่ได้ที่แท็บ <b>สถานะ</b> (ล็อกบรรทัดที่ชอบไว้ได้)</div></div>
       <div class="ttp"><div class="stage2"><div class="lv2">${craftName(smTown,sl,g)}</div><div class="bigc">${smSlotIcon(sl,g,58)}</div><div class="sub2">${SLOTS[sl].nm} · Lv${gradeLv(g)} · สุ่มสถานะพิเศษ 1–3 ช่อง</div></div>
       <div class="chips">${Object.entries(st).map(([k,v])=>`<span class="chip">${STN[k]||k.toUpperCase()} +${v}</span>`).join('')}</div>
       <div class="chips">${affs.slice(0,8).map(a=>`<span class="chip p">${a}</span>`).join('')}</div>
-      ${SE&&sOk?`<div class="sealpick"><span>🔱 ตราที่ได้</span>${Object.keys(TOWNS).map(l=>`<button class="${l===sl0?'on':''}" data-sc="${l}" title="ตรา${SEAL_N[l]}${l===smTown?' (ตราของเมืองนี้ ฟรี)':' (ใช้วัตถุดิบแดนนั้นเพิ่ม)'}">${SE.badge(l,26)}</button>`).join('')}<b>ตรา${SEAL_N[sl0]}</b>${sl0!==smTown?(sealFree()?' <small>(โหมดทดสอบ ฟรี)</small>':' <small>+วัตถุดิบ'+SEAL_N[sl0]+'</small>'):''}</div>`:''}
       <div class="mats">${cost.map(([id,n])=>matCell(id,n)).join('')}</div>
       <div class="act"><span class="ttnote">ค่าคราฟต์ <b style="color:${ZENY>=cz?'#b8740c':'#d23a2a'}">${fmt(cz)}z</b></span>
         <button class="ttb" data-craft="${sl}" ${ok?'':'disabled'}>⚒ คราฟต์</button></div></div></div>`;}
-  else if(smTab==='trait'){const SE=window.SEALS,L=owned.filter(id=>SEAL_SL.includes(ITEMS[id].slot));   /* ตรา tab: put a totem seal on a weapon / helm / armour / boots */
-    if(!L.includes(smSealSel))smSealSel=L.find(id=>Object.values(EQ).includes(id))||L[0]||null;const it=smSealSel&&ITEMS[smSealSel],g=it?sealG(it):0;
-    const to=it&&TOWNS[smSealTo]&&it.seal!==smSealTo?smSealTo:null,free=sealFree(),cost=to&&!free?sealCost(to,g):[],z=to&&!free?sealZ(g):0,ok=!!(it&&to&&!it.broken&&canPay(cost,z));
-    body=`<div class="sgrid"><div class="ttp"><h4>🎒 อาวุธ · หมวก · ชุด · รองเท้า</h4><div class="inv">${invGrid(L,smSealSel,'ssel')}</div>${L.length?'':'<div class="ttnote" style="margin-top:6px">ยังไม่มีอุปกรณ์ที่ใส่ตราได้</div>'}
-      <div class="ttnote" style="margin-top:6px">ตราเดียวกัน <b>2 ชิ้น</b> = สเตตัสคู่ของแดน · <b>4 ชิ้น</b> = พลังเลือกได้ 1 ใน 3 · ตราไม่ผูกกับเมืองที่คราฟต์ → สเตตัสเมืองหนึ่ง + ตราอีกแดนได้</div></div>
-      <div class="ttp"><div class="stage2 violet"><div class="lv2">${it?it.n:'เลือกของทางซ้าย'}</div><div class="bigc ${it?'':'none'}">${it?itemIcon(it,58):'ยังไม่<br>เลือก'}</div><div class="sub2">${it?(it.seal&&SEAL_N[it.seal]?'ตราตอนนี้: ตรา'+SEAL_N[it.seal]:'ยังไม่มีตรา'):''}</div></div>
-      <div class="slands">${SE?Object.keys(TOWNS).map(l=>SE.landRow(l,{cur:!!(it&&it.seal===l),sel:smSealTo===l})).join(''):''}</div>
-      ${to?`<div class="mats">${free?'<div class="ttnote">โหมดทดสอบ: ประทับตราฟรี</div>':cost.map(([id,n])=>matCell(id,n)).join('')}</div>`:''}
-      <div class="act"><span class="ttnote">${it&&it.broken?'<b class="ttwarn">ของแตก — ซ่อมก่อน</b>':to?`ค่าประทับ <b style="color:${ZENY>=z?'#b8740c':'#d23a2a'}">${fmt(z)}z</b>`:'แตะตราที่ต้องการ'}</span><button class="ttb" ${ok?`data-seal="${smSealSel}"`:''} ${ok?'':'disabled'}>🔱 ${to?'ประทับตรา'+SEAL_N[to]:'ประทับตรา'}</button></div></div></div>`;}
+  else if(smTab==='trait'){const L=owned.filter(id=>{const x=ITEMS[id];return x&&!x.relic&&(x.aff||[]).length>0;});   /* สถานะ tab (owner 2026-11-25): reroll special stats, lock the lines you like — more locks, more crystals */
+    if(!L.includes(smAffSel))smAffSel=L.find(id=>Object.values(EQ).includes(id))||L[0]||null;
+    const it=smAffSel&&ITEMS[smAffSel],AL=it?it.aff:[],nl=it?rrLocks(it):0,free=rrFree(),cost=it?rrCost(it):[],z=it?rrZ(it):0,ok=!!(it&&!it.broken&&nl<AL.length&&(free||canPay(cost,z))),g=it?affG(it):0,fresh=!!(it&&smRR&&smRR.id===smAffSel&&Date.now()-smRR.t<1600);
+    const qOf=a=>{const A=AFF[affKey(a.k)];return A?Math.max(.06,Math.min(1,a.v/(A.max*(.4+.6*g/9)))):0;};
+    body=`<div class="sgrid"><div class="ttp"><h4>🎒 อุปกรณ์ที่มีสถานะพิเศษ</h4><div class="inv">${invGrid(L,smAffSel,'asel',10)}</div>${L.length?'':'<div class="ttnote" style="margin-top:6px">ยังไม่มีอุปกรณ์ที่มีสถานะพิเศษ — ของที่คราฟต์จะสุ่มได้ 1–3 บรรทัด</div>'}
+      <div class="ttnote" style="margin-top:6px">สุ่มใหม่ = บรรทัดที่ไม่ล็อกได้ชนิดและค่าใหม่ · บรรทัดที่ล็อกอยู่เหมือนเดิม · จำนวนบรรทัดเท่าเดิม<br>ผลึกสุ่มสถานะต่อครั้ง: ไม่ล็อก <b>${RR_K[0]}</b> · ล็อก 1 บรรทัด <b>${RR_K[1]}</b> · ล็อก 2 บรรทัด <b>${RR_K[2]}</b></div></div>
+      <div class="ttp"><div class="stage2 violet rrs"><div class="lv2">${it?it.n:'เลือกของทางซ้าย'}</div><div class="bigc ${it?'':'none'}">${it?itemIcon(it,58):'ยังไม่<br>เลือก'}</div><div class="sub2">${it?`${stars(it)?stars(it)+' · ':''}สถานะพิเศษ ${AL.length} บรรทัด`:''}</div></div>
+      <div class="afl">${AL.map((a,i)=>{const can=AL.length>1&&(a.lk||nl<AL.length-1);return `<div class="afr ${a.lk?'lk':''} ${fresh&&!a.lk?'nw':''}"><button class="lkb" data-alk="${i}" ${can?'':'disabled'} title="${a.lk?'ปลดล็อก':can?'ล็อกบรรทัดนี้ไว้ (สุ่มใหม่แล้วไม่เปลี่ยน)':AL.length>1?'ต้องเหลือบรรทัดที่ไม่ล็อกอย่างน้อย 1':'ของ 1 บรรทัดล็อกไม่ได้'}">${lockSvg(!!a.lk)}</button><span class="an">${affLabel(a.k,a.v)}</span><span class="aq" title="ค่าที่สุ่มได้ เทียบค่าสูงสุดของเลเวลนี้"><i style="width:${Math.round(qOf(a)*100)}%"></i></span></div>`;}).join('')}</div>
+      <div class="act rra">${it?cost.map(([id,n])=>matCell(id,n)).join(''):''}<span class="ttnote">${it&&it.broken?'<b class="ttwarn">ของแตก — ซ่อมก่อน</b>':it?(nl>=AL.length?'ปลดล็อกอย่างน้อย 1 บรรทัด':`ค่าสุ่ม <b style="color:${free||ZENY>=z?'#b8740c':'#d23a2a'}">${fmt(z)}z</b>${nl?` · ล็อก ${nl} บรรทัด`:''}${free?'<br><small>โหมดทดสอบ: สุ่มฟรี (โหมดเล่นใช้ผลึกตามนี้)</small>':''}`):''}</span><button class="ttb rrb" ${ok?`data-rr="${smAffSel}"`:''} ${ok?'':'disabled'}>${etcIcon('affcry',20)}<span>สุ่มใหม่</span></button></div></div></div>`;}
   else if(smTab==='move'){const src=owned.filter(id=>(ITEMS[id].ref||0)>0&&!ITEMS[id].broken);if(!src.includes(smFrom))smFrom=src[0]||null;const f=ITEMS[smFrom];
     const dst=f?owned.filter(id=>id!==smFrom&&!ITEMS[id].broken&&ITEMS[id].slot===f.slot&&(ITEMS[id].ref||0)<f.ref-1):[];if(!dst.includes(smTo))smTo=dst[0]||null;const to=smTo&&ITEMS[smTo];
     const z=to?COST.moveZ(to.grade??((to.tier||1)-1)*3,f.ref):0;
@@ -1054,13 +1009,13 @@ function buildSmith(){const w=$('#smw');if(!w||!w.classList.contains('open'))ret
   const q=(s,f)=>bd.querySelectorAll(s).forEach(b=>b.onclick=ev=>{ev.stopPropagation();f(b);});
   q('[data-tab]',b=>{if(b.dataset.tab==='refine'){w.classList.remove('open');openRefine();return;}smTab=b.dataset.tab;buildSmith();});
   q('[data-town]',b=>{smTown=b.dataset.town;buildSmith();});q('[data-grade]',b=>{smGrade=+b.dataset.grade;buildSmith();});q('[data-slot]',b=>{smSlot=b.dataset.slot;buildSmith();});
-  q('[data-craft]',b=>{if(eqFull()){msg(`กระเป๋าอุปกรณ์เต็ม (${BAG_EQ_MAX}) — ฝากของในคลังก่อน`);return;}const sl=b.dataset.craft,g=smGrade,sOk=SEAL_SL.includes(sl),sl0=sOk?(TOWNS[smSealC]?smSealC:smTown):null,sx=sOk&&sl0!==smTown&&!sealFree(),cost=craftCost(smTown,g).concat(sx?sealCost(sl0,g):[]),cz=COST.craftZ(g)+(sx?sealZ(g):0);if(!canPay(cost,cz))return;pay(cost,cz);
-    const id=craftItem(smTown,sl,g,sl0),it=ITEMS[id];INV.push(id);
-    done(`คราฟต์สำเร็จ: ${it.n} ${stars(it)} — ${it.aff.map(a=>affLabel(a.k,a.v)).join(' · ')}${it.seal?' · ตรา'+SEAL_N[it.seal]:''}`);buildSmith();});
-  q('[data-sc]',b=>{smSealC=b.dataset.sc;buildSmith();});
-  q('[data-ssel]',b=>{smSealSel=b.dataset.ssel;buildSmith();});q('[data-sto]',b=>{smSealTo=b.dataset.sto;buildSmith();});
-  q('[data-seal]',b=>{const it=ITEMS[b.dataset.seal],to=smSealTo;if(!it||!TOWNS[to]||it.broken||it.seal===to)return;const g=sealG(it),free=sealFree(),cost=free?[]:sealCost(to,g),z=free?0:sealZ(g);if(!canPay(cost,z))return;pay(cost,z);
-    const was=it.seal;it.seal=to;it.sealM=1;if(window.SEALS)SEALS.stamp(b.dataset.seal);done(`🔱 ${it.n}: ${was&&SEAL_N[was]?'ตรา'+SEAL_N[was]+' → ':''}ตรา${SEAL_N[to]}`);buildSmith();});
+  q('[data-craft]',b=>{if(eqFull()){msg(`กระเป๋าอุปกรณ์เต็ม (${BAG_EQ_MAX}) — ฝากของในคลังก่อน`);return;}const sl=b.dataset.craft,g=smGrade,cost=craftCost(smTown,g),cz=COST.craftZ(g);if(!canPay(cost,cz))return;pay(cost,cz);
+    const id=craftItem(smTown,sl,g),it=ITEMS[id];INV.push(id);
+    done(`คราฟต์สำเร็จ: ${it.n} ${stars(it)} — ${it.aff.map(a=>affLabel(a.k,a.v)).join(' · ')}`);buildSmith();});
+  q('[data-asel]',b=>{smAffSel=b.dataset.asel;buildSmith();});
+  q('[data-alk]',b=>{const it=ITEMS[smAffSel],a=it&&(it.aff||[])[+b.dataset.alk];if(!a)return;if(a.lk)delete a.lk;else if(rrLocks(it)<it.aff.length-1)a.lk=1;save();buildSmith();});
+  q('[data-rr]',b=>{const id=b.dataset.rr,it=ITEMS[id];if(!it||it.broken||!(it.aff||[]).length||rrLocks(it)>=it.aff.length)return;const free=rrFree(),cost=free?[]:rrCost(it),z=free?0:rrZ(it);if(!canPay(cost,z))return;pay(cost,z);
+    if(!rerollAff(it))return;smRR={id,t:Date.now()};done(`สุ่มสถานะใหม่ ${it.n}: ${it.aff.map(a=>(a.lk?'🔒':'')+affLabel(a.k,a.v)).join(' · ')}`);try{if(window.GUIDE&&GUIDE.bump)GUIDE.bump('reroll');}catch(e){}buildSmith();});
   q('[data-from]',b=>{smFrom=b.dataset.from;smTo=null;buildSmith();});q('[data-mto]',b=>{smTo=b.dataset.mto;buildSmith();});
   q('[data-move]',b=>{const to=ITEMS[b.dataset.move],f=ITEMS[smFrom];if(!to||!f)return;const z=COST.moveZ(to.grade??((to.tier||1)-1)*3,f.ref);if(ZENY<z)return;ZENY-=z;to.ref=f.ref-1;f.ref=0;done(`ย้ายบวกสำเร็จ: ${to.n} +${to.ref}`);buildSmith();});
   q('[data-pick]',b=>{smPick=b.dataset.pick;buildSmith();});
@@ -1092,8 +1047,8 @@ function spDrop(x,sz=16){const DT=window.DROPTAB;if(!DT||!x)return null;const li
   const lv=live?((x.m&&x.m.lv)||1):[].concat(x.lv||[1]),t0=tierOfLv(live?lv:lv[0]),t1=tierOfLv(live?lv:lv[lv.length-1]),id=DT.item(c,t1),E=ETC[id];if(!E)return null;
   const role=live?((x.m&&x.m.role)||(x.vdef&&x.vdef.role)):x.role,p=DT.rate(c,role)*100,tt=t0===t1?`ขั้น ${t1}`:`ขั้น ${t0}–${t1}`;
   return {code:c,id,th:E.th,icon:etcIcon(id,sz),tt,sh:c==='w'?'หินอาวุธ':c==='a'?'หินชุด':'หิน '+(DT.STAT_EN[c.slice(2)]||''),tip:`ดรอปพิเศษ: ${DT.label(c)} ${tt} · โอกาส ${p<1?p.toFixed(1):Math.round(p*10)/10}% ต่อตัว`};}
-window.AFItems={spDrop,EQ,INV,buyGear(id,price){if(ZENY<price)return false;ZENY-=price;INV.push(id);save();try{buildItems();buildEquip();}catch(e){}return true;},dropItem(id){delete ITEMS[id];},get ITEMS(){return ITEMS;},eqFair:(g,r)=>Math.round(1500*Math.pow(g+1,1.6)*(1+(r||0)*.35)),dropSetItem,DSET,DROP,openRefine,openMarket,BAG,ETC,CONS,TRAITS,TOWNS,AFF,MATS,SLOTS,W_NOUN,useItem,BUFF,newGame,openStorage,STO,townHere,HOME,get zeny(){return ZENY;},set zeny(v){ZENY=v;save();},add:(id,n)=>{add(id,n);save();},craftItem,rollAffixes,openSmith,openShop,save,
-  ui:{ttWin,etcIcon,etcName,fmt,done},bagAdd:add,MODE,SEAL_N,SEAL_SL,has,SHOP_FULL,oldMarket:{MK,mkSave},openGearMarket,get fresh(){return FRESH;},
+window.AFItems={spDrop,EQ,INV,buyGear(id,price){if(ZENY<price)return false;ZENY-=price;INV.push(id);save();try{buildItems();buildEquip();}catch(e){}return true;},dropItem(id){delete ITEMS[id];},get ITEMS(){return ITEMS;},eqFair:(g,r)=>Math.round(1500*Math.pow(g+1,1.6)*(1+(r||0)*.35)),dropSetItem,DSET,DROP,openRefine,openMarket,BAG,ETC,CONS,TOWNS,AFF,MATS,SLOTS,W_NOUN,useItem,BUFF,newGame,openStorage,STO,townHere,HOME,get zeny(){return ZENY;},set zeny(v){ZENY=v;save();},add:(id,n)=>{add(id,n);save();},craftItem,rollAffixes,openSmith,openShop,save,
+  ui:{ttWin,etcIcon,etcName,fmt,done},bagAdd:add,MODE,has,rerollAff,affRoll,RR_K,SHOP_FULL,oldMarket:{MK,mkSave},openGearMarket,get fresh(){return FRESH;},
   mkInst:d=>newInst(null,d),craftStats,affLabel,gradeOfLv,gradeLv,gradeTier,iconHas:k=>ICONS.has(k),          // for relics.js (boss relics)
             // for market.js
   reset(){localStorage.removeItem(SKEY);location.reload();}};

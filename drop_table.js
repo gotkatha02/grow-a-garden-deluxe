@@ -119,9 +119,9 @@ const ROLE_MUL={brute:2,critter:.5};      // spawn shares are critter 3 · norma
    of the boss's tier · ess = totem essence · sore = Star Ore · ref = refine stones of its tier (40 % weapon / 60 % armour) */
 /* owner 2026-11-22 18:44 ('decide — players should farm and trade, no item / money inflation'): map bosses respawn every 15 / 30 min
    (map_bosses.js), so their loot is smaller than the MVP's (respawn 60 min) — DROP_TABLE_TH.md §11 */
-const BOSS={map:{th:'บอสประจำแมพ',mut:.25,sup:.6,part:[1,2],stone:1,ess:4,sore:.3,ref:1},
-            mvp:{th:'MVP',mut:1,sup:2,part:[2,3],stone:3,ess:10,sore:2,ref:3},
-            main:{th:'บอสใหญ่',mut:1.5,sup:2,part:[3,4],stone:4,ess:15,sore:3,ref:4}};
+const BOSS={map:{th:'บอสประจำแมพ',mut:.25,sup:.6,part:[1,2],stone:1,ess:4,sore:.3,ref:1,rr:1},
+            mvp:{th:'MVP',mut:1,sup:2,part:[2,3],stone:3,ess:10,sore:2,ref:3,rr:3},
+            main:{th:'บอสใหญ่',mut:1.5,sup:2,part:[3,4],stone:4,ess:15,sore:3,ref:4,rr:5}};   /* rr = reroll crystals (2026-11-25, items.js affcry) */
 /* the 30 bosses (relics.js keys) and their boss part: [land, map slot, boss (th), part (en), part (th), live] — names from BOSS_SET_ICON_PROMPTS_TH.md */
 const BOSSES={
   draugr:['vik','D1b','ดรอกร์ช่างหลอม','Deathforge Slag','ก้อนตะกรันเตาหลอม',1],huldra:['vik','H1','ฮุลดรา','Glowcap Mushrooms','เห็ดเรืองแสงบนเปลือกไม้',1],
@@ -160,6 +160,7 @@ const DT=window.DROPTAB={MON,RATE,ROLE_MUL,BOSS,BOSSES,SLOT_TIER,KIND_TH,STAT_EN
     for(let i=0,n=count(T.ess);i<n;i++)out.push('tess');
     for(let i=0,n=count(T.sore);i<n;i++)out.push('sore');
     for(let i=0,n=count(T.ref);i<n;i++)out.push((rnd()<.4?'wore':'ore')+t);
+    for(let i=0,n=count(T.rr||0);i<n;i++)out.push('affcry');
     /* rune goods (owner 2026-11-23, rune_data.js DROPS.boss): golden medals, root skill gems (map 15 % T1 · MVP T2/T3 · main T3/T4),
        raw rune stones (always), carved-rune pouches */
     {const RB=window.RUNEDATA&&RUNEDATA.DROPS.boss[this.bossTier(key)];if(RB){

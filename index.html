@@ -564,11 +564,11 @@ body.th-c .ro-st .r span[style]{text-shadow:none}
   var TIPS=['กด G เปิดเสาโทเท็ม — ใส่เจมแต่งสกิลให้เป็นแบบของคุณ','เจมแปรสภาพแบบเดียวกัน 2 เม็ด = เรโซแนนซ์ · ไม่ซ้ำกันครบ 5 แบบ = สมดุล',
     'จัดเสาโทเท็มไว้ได้ 3 หน้า — สลับให้เข้ากับบอสแต่ละตัว','แต้มสกิลไม่พอเก็บครบทุกท่า — เลือกสาย A หรือ B ให้ตรงสไตล์ (กด K)',
     'ตลาดกลางอยู่ที่เมืองหลวง — ของที่คนแย่งกันซื้อ ราคาจะขึ้น','ตีบวกเกิน +5 อาจพัง — ของพังซ่อมได้ที่หน้าต่างตีบวก',
-    'ล้มบอสเก็บเศษ ครบแล้วสร้างวัตถุโบราณของบอสได้ — กด R ใช้พลัง','ใส่ของตราแดนเดียวกัน 2 ชิ้นได้สเตตัสเพิ่ม · 4 ชิ้นปลดพลังตรา'];
+    'ล้มบอสเก็บเศษ ครบแล้วสร้างวัตถุโบราณของบอสได้ — กด R ใช้พลัง','สถานะพิเศษไม่ถูกใจ? สุ่มใหม่ที่ช่าง แท็บ สถานะ — ล็อกบรรทัดที่ชอบไว้ได้'];
   var tip=document.getElementById('bootTip');tip.textContent=TIPS[Math.floor(Math.random()*TIPS.length)];
   var hero='wolf';try{var q=new URLSearchParams(location.search).get('char'),h=(location.hash||'').slice(1);hero=q||(/^[a-z]+$/.test(h)&&h.length>2?h:'')||localStorage.getItem('af_char')||'wolf';}catch(e){}
-  var MB={'assets.js':3.68,'assets_snowwolf.js':.41,'assets_jaguar.js':5.04,'assets_dragon.js':4.67,'assets_owl.js':3.94,'assets_cat.js':4.66,'assets_hippo.js':6.62,'assets_sheep.js':5.55,'assets_bastet.js':5.46,'assets_axolotl.js':5.68,'assets_rhino.js':3.15,'assets_wukong.js':5.55,'assets_drake.js':5.68,'assets_fashion.js':.06,'assets_fur.js':.26,'assets_skin.js':.19,'assets_cloth.js':.6},SMALL=.033;
-  var total=MB['assets.js']+MB['assets_snowwolf.js']+(MB['assets_'+hero+'.js']||0)+(hero==='wolf'?1.11:0)+SMALL*76,got=0,lastT=Date.now();   /* the wolf also loads its dye masks */
+  var MB={'assets.js':3.68,'assets_snowwolf.js':.41,'assets_jaguar.js':5.04,'assets_dragon.js':4.67,'assets_owl.js':3.94,'assets_cat.js':4.66,'assets_hippo.js':6.62,'assets_sheep.js':5.55,'assets_bastet.js':5.46,'assets_axolotl.js':5.68,'assets_rhino.js':3.15,'assets_wukong.js':5.55,'assets_drake.js':5.68,'assets_wolf.js':5.19,'assets_fashion.js':.06,'assets_fur.js':.26,'assets_skin.js':.19,'assets_cloth.js':.6},SMALL=.033;
+  var total=MB['assets.js']+MB['assets_snowwolf.js']+(MB['assets_'+hero+'.js']||0)+(hero==='wolf'&&/[?&]wlfart=0/.test(location.search)?1.11:0)+SMALL*76,got=0,lastT=Date.now();   /* the old wolf sprite (?wlfart=0) also loads its dye masks */
   function done(e){var t=e.target;if(!t||t.tagName!=='SCRIPT'||!t.src)return;var f=t.src.split('?')[0].split('/').pop();got+=MB[f]||SMALL;lastT=Date.now();}
   document.addEventListener('load',done,true);document.addEventListener('error',done,true);
   var fill=document.getElementById('bootFill'),pct=document.getElementById('bootPct'),shown=0,prev=Date.now(),okT=0,fin=false;
@@ -666,7 +666,7 @@ body.th-c .ro-st .r span[style]{text-shadow:none}
 <script src="assets.js"></script>
 <script>/* Jaguar has its own sprite set; it is only downloaded when Jaguar is the character being played */
 (function(){var c='';try{c=new URLSearchParams(location.search).get('char')||'';if(!c){var h=(location.hash||'').slice(1);if(['wolf','jaguar','rhino','axolotl','croc','owl','cat','hippo','sheep','dragon','lion','kitsune','bastet','anubis','raven','wukong','drake'].indexOf(h)>=0)c=h;}if(!c)c=localStorage.getItem('af_char')||'';}catch(e){}
-document.write('<script src="vfx_layer.js"><\/script>');if(c==='jaguar')document.write('<script src="assets_jaguar.js?v=2"><\/script>');if(c==='dragon'){document.write('<script src="assets_dragon.js"><\/script>');document.write('<script src="char_dragon.js?v=6"><\/script>');document.write('<script src="char_dragon_fx.js?v=2"><\/script>');}if(c==='lion'){document.write('<script src="char_lion.js?v=4"><\/script>');document.write('<script src="char_lion_fx.js?v=2"><\/script>');}if(c==='raven')document.write('<script src="char_raven.js?v=2"><\/script>');if(c==='drake'){document.write('<script src="assets_drake.js?v=1"><\/script>');document.write('<script src="char_drake.js?v=4"><\/script>');}if(c==='wukong'){document.write('<script src="assets_wukong.js?v=3"><\/script>');document.write('<script src="char_wukong.js?v=4"><\/script>');}if(c==='kitsune'){document.write('<script src="char_kitsune.js?v=9"><\/script>');document.write('<script src="char_kitsune_fx.js"><\/script>');}if(c==='bastet'){document.write('<script src="assets_bastet.js?v=1"><\/script>');document.write('<script src="char_bastet.js?v=7"><\/script>');}if(c==='anubis'){document.write('<script src="char_anubis.js?v=5"><\/script>');document.write('<script src="char_anubis_fx.js"><\/script>');}if(c==='owl'){document.write('<script src="assets_owl.js"><\/script>');document.write('<script src="char_owl.js?v=3"><\/script>');document.write('<script src="char_owl_fx.js"><\/script>');}if(c==='wolf')document.write('<script src="wolf_fx.js?v=73"><\/script>');if(c==='croc'){document.write('<script src="char_croc.js?v=3"><\/script>');document.write('<script src="char_croc_fx.js?v=2"><\/script>');}if(c==='rhino'){document.write('<script src="char_rhino.js?v=2"><\/script>');document.write('<script src="char_rhino_fx.js"><\/script>');}if(c==='jaguar'){document.write('<script src="char_jaguar.js?v=2"><\/script>');document.write('<script src="char_jaguar_fx.js?v=2"><\/script>');}if(c==='cat'){document.write('<script src="assets_cat.js?v=2"><\/script>');document.write('<script src="char_cat.js?v=9"><\/script>');}if(c==='hippo'){document.write('<script src="assets_hippo.js?v=3"><\/script>');document.write('<script src="char_hippo.js?v=4"><\/script>');}if(c==='sheep'){document.write('<script src="assets_sheep.js?v=2"><\/script>');document.write('<script src="char_sheep.js?v=7"><\/script>');}if(c==='axolotl')document.write('<script src="assets_axolotl.js?v=2"><\/script>');if(c==='rhino')document.write('<script src="assets_rhino.js"><\/script>');})();</script>
+document.write('<script src="vfx_layer.js"><\/script>');if(c==='jaguar')document.write('<script src="assets_jaguar.js?v=2"><\/script>');if(c==='dragon'){document.write('<script src="assets_dragon.js"><\/script>');document.write('<script src="char_dragon.js?v=6"><\/script>');document.write('<script src="char_dragon_fx.js?v=2"><\/script>');}if(c==='lion'){document.write('<script src="char_lion.js?v=4"><\/script>');document.write('<script src="char_lion_fx.js?v=2"><\/script>');}if(c==='raven')document.write('<script src="char_raven.js?v=2"><\/script>');if(c==='drake'){document.write('<script src="assets_drake.js?v=1"><\/script>');document.write('<script src="char_drake.js?v=4"><\/script>');}if(c==='wukong'){document.write('<script src="assets_wukong.js?v=3"><\/script>');document.write('<script src="char_wukong.js?v=4"><\/script>');}if(c==='kitsune'){document.write('<script src="char_kitsune.js?v=9"><\/script>');document.write('<script src="char_kitsune_fx.js"><\/script>');}if(c==='bastet'){document.write('<script src="assets_bastet.js?v=1"><\/script>');document.write('<script src="char_bastet.js?v=7"><\/script>');}if(c==='anubis'){document.write('<script src="char_anubis.js?v=5"><\/script>');document.write('<script src="char_anubis_fx.js"><\/script>');}if(c==='owl'){document.write('<script src="assets_owl.js"><\/script>');document.write('<script src="char_owl.js?v=3"><\/script>');document.write('<script src="char_owl_fx.js"><\/script>');}if(c==='wolf')document.write('<script src="wolf_fx.js?v=73"><\/script>');if((c==='wolf'||!c)&&!/[?&]wlfart=0/.test(location.search))document.write('<script src="assets_wolf.js?v=1"><\/script>');if(c==='croc'){document.write('<script src="char_croc.js?v=3"><\/script>');document.write('<script src="char_croc_fx.js?v=2"><\/script>');}if(c==='rhino'){document.write('<script src="char_rhino.js?v=2"><\/script>');document.write('<script src="char_rhino_fx.js"><\/script>');}if(c==='jaguar'){document.write('<script src="char_jaguar.js?v=2"><\/script>');document.write('<script src="char_jaguar_fx.js?v=2"><\/script>');}if(c==='cat'){document.write('<script src="assets_cat.js?v=2"><\/script>');document.write('<script src="char_cat.js?v=9"><\/script>');}if(c==='hippo'){document.write('<script src="assets_hippo.js?v=3"><\/script>');document.write('<script src="char_hippo.js?v=4"><\/script>');}if(c==='sheep'){document.write('<script src="assets_sheep.js?v=2"><\/script>');document.write('<script src="char_sheep.js?v=7"><\/script>');}if(c==='axolotl')document.write('<script src="assets_axolotl.js?v=2"><\/script>');if(c==='rhino')document.write('<script src="assets_rhino.js"><\/script>');})();</script>
 <script src="assets_banner.js"></script>
 <script src="assets_fenrir.js?v=2"></script>
 <script src="assets_snowwolf.js"></script>
@@ -687,7 +687,7 @@ document.write('<script src="vfx_layer.js"><\/script>');if(c==='jaguar')document
 <script src="maps/snowpine.js?v=3"></script>
 <script src="maps/viking-catalog.js"></script>
 <script src="maps/craft-halls.js?v=8"></script>
-<script src="maps/fieldmap.js?v=16"></script>
+<script src="maps/fieldmap.js?v=17"></script>
 <script src="maps/viking-maps.js"></script>
 <script src="maps/aztec-maps.js"></script>
 <script src="maps/egypt-maps.js"></script>
@@ -695,6 +695,7 @@ document.write('<script src="vfx_layer.js"><\/script>');if(c==='jaguar')document
 <script src="maps/japan-maps.js"></script>
 <script src="maps/capital-maps.js?v=19"></script>
 <script src="maps/wboss-arenas.js?v=2"></script>
+<script src="maps/sea-cat.js?v=1"></script>
 <script src="level_cap.js?v=1"></script>
 <script src="maps/level-zones.js?v=2"></script>
 <script src="maps/monster-roster.js"></script>
@@ -731,6 +732,8 @@ const BST_ART=CHAR==='bastet'&&typeof BST_SPR_META!=='undefined'&&typeof BST_SPR
 if(BST_ART){Object.assign(SPR_META,BST_SPR_META,{atkRemap:{}});Object.assign(SPR_ATLAS,BST_SPR_ATLAS);}   // Bastet curse priestess — owner's 20 clips 2026-11-24 (assets_bastet.js = tools/cliphero.py tools/clips/bastet_plan.json; attack / buff frame times = the wolf atlas she was benched on, NE attack = E's row as the wolf remap gave; sockets = her book's flame, the palm during the normal attack's thrust)
 const DRK_ART=CHAR==='drake'&&typeof DRK_SPR_META!=='undefined'&&typeof DRK_SPR_ATLAS!=='undefined';
 if(DRK_ART){Object.assign(SPR_META,DRK_SPR_META,{atkRemap:{}});Object.assign(SPR_ATLAS,DRK_SPR_ATLAS);}   // Forgeborn Drake — placeholder sprites from the owner's 8-view sheet 2026-11-23 (assets_drake.js = tools/statichero.py, views S SE E NE N; swap for clip sprites later)
+const WLF_ART=CHAR==='wolf'&&typeof WLF_SPR_META!=='undefined'&&typeof WLF_SPR_ATLAS!=='undefined';   /* ?wlfart=0 = the old wolf (assets.js stays: it is also the placeholder body of kitsune / anubis / lion / croc / raven) */
+if(WLF_ART){Object.assign(SPR_META,WLF_SPR_META);Object.assign(SPR_ATLAS,WLF_SPR_ATLAS);try{const hf=new Image();hf.src='assets/heroes/wolf/face.webp?v=1';window.HUD_FACE=hf;hf.onload=()=>{try{drawPortrait();}catch(_){}};}catch(_){}}   // Fenrir's Heir wolf — owner's clips 2026-11-25 (assets_wolf.js = tools/cliphero.py tools/clips/wolf_plan.json; every attack / buff / hurt frame time, contact and buff peak = the old wolf atlas, NE attack keeps the default remap to E; cellScale: the sheet is cut at height 230 but its boxes are in the old atlas's cell px (idle 356), so CHAR_SCALE stays 1 and every wolf effect, socket and fashion point keeps its numbers; sockets = the axe blade's runes; meta.head = head points for fashion, tools/headtrack.py)
 const CHAR_FILTER={jaguar:JAG_ART?'':'brightness(.42) saturate(.55) contrast(1.2)',rhino:RH_ART?'':'grayscale(.85) brightness(.82) contrast(1.15) sepia(.12)',axolotl:AXL_ART?'':'sepia(.4) hue-rotate(290deg) saturate(1.5) brightness(1.1)',croc:'sepia(.55) hue-rotate(55deg) saturate(1.35) brightness(.8) contrast(1.1)',owl:OW_ART?'':'grayscale(.9) brightness(1.32) contrast(.92) sepia(.1)',raven:'grayscale(.6) brightness(.5) contrast(1.25) sepia(.3) hue-rotate(200deg) saturate(1.6)',drake:DRK_ART?'':'sepia(.6) hue-rotate(-24deg) saturate(1.8) brightness(.78) contrast(1.15)'}[CHAR]||'';   // owl: PLACEHOLDER tint until Snowy Owl sprites exist
 const JH=k=>typeof window[k]==='function'?window[k]:null;
 /* =========================================================
@@ -1451,7 +1454,7 @@ const wolfRhythm=o=>{if(CHAR!=='wolf'||!o.auto||!LV.huntersRhythm)return false;p
 const critChance=(m,o)=>Math.max(0,D.crit-(o&&o._msNoSh?0:Math.floor(((m&&m.luk)||0)/5))+5*(LV.wolfInstinct||0));   // RO: the target's LUK/5 shields against crits (o._msNoSh: LUK 99 stat tier, milestones.js)
 const defMul=def=>100/(100+Math.max(0,def));                                    // DEF never reaches immunity
 const chaMul=e=>Math.max(.5,1+((D.dex||0)-Math.floor(((e.m&&e.m.vit)||0)/2))/100);   /* RO stats (CHA is gone): statuses we put on a monster last longer by our DEX against half its VIT, no upper cap */ //   /* owner 2026-11-19: no upper cap — the more CHA, the longer our statuses last on monsters */
-function statusProxy(e,st){return new Proxy(st,{set(t,k,v){const o=t[k]||0;if(e.koFix&&k==='stun')t[k]=v;else t[k]=v>o&&o>=0?o+(v-o)*chaMul(e):v;if(v>o&&window.ST_HOOK)ST_HOOK(e,k,t[k],o);return true;}});}   /* ST_HOOK: a status was put on (totem seals, seals.js) */
+function statusProxy(e,st){return new Proxy(st,{set(t,k,v){const o=t[k]||0;if(e.koFix&&k==='stun')t[k]=v;else t[k]=v>o&&o>=0?o+(v-o)*chaMul(e):v;if(v>o&&window.ST_HOOK)ST_HOOK(e,k,t[k],o);return true;}});}   /* ST_HOOK(e,key,now,before): a status was put on (free hook; the totem seals used it until they were removed 2026-11-25) */
 function missFx(x,y,txt,col){dmgNum(x,y,52,txt||'MISS','miss');}
 function hurt(e,mult,o={}){if(e.dead)return 0;const m=e.m||MON.frostling;const HT=hitType(o);o.magic=HT==='m'||(HT==='b'&&D.mag>D.patk);
   const crit=(!o.magic||!!o.owShot)&&(!!o.auto||!!o.critOK)&&(wolfRhythm(o)||!!o._msCrit||Math.random()*100<critChance(m,o))+(JH('jgCrit')?jgCrit(e,o):0);   /* o._msCrit: a counter crit from the stat tiers (milestones.js) */
@@ -5953,7 +5956,7 @@ const SHC=new Map(),GRC=new Map();
 function lruGet(m,k,max,make){let v=m.get(k);if(v){m.delete(k);m.set(k,v);return v;}v=make();m.set(k,v);if(m.size>max)m.delete(m.keys().next().value);return v;}
 function shadowSil(e){return lruGet(SHC,e.st+e.d+e.f,400,()=>{const t=tinted(e,'#1a1426'),p=8,c=document.createElement('canvas');c.width=t.width+2*p;c.height=t.height+2*p;const g=c.getContext('2d');g.filter='blur(5px)';g.drawImage(t,p,p);c.pad=p;return c;});}
 function gradedFrame(e,flt){return lruGet(GRC,e.st+e.d+e.f+'|'+flt,320,()=>{const r=frameRect(e.st,e.d,e.f),c=document.createElement('canvas');c.width=r[2];c.height=r[3];const g=c.getContext('2d');g.filter=flt;g.drawImage(SPRITE.img[e.st],r[0],r[1],r[2],r[3],0,0,r[2],r[3]);return c;});}
-function castShadow(e,x,y){const r=frameRect(e.st,e.d,e.f);if(!r)return;const [,, ,,bx,by,bw,bh]=r,pv=SPR_META.pivot,w=bw*SPR,h=bh*SPR,oy=(by-pv.y)*SPR;let img;try{img=shadowSil(e);}catch(_){return;}const pd=img.pad*w/bw;
+function castShadow(e,x,y){const r=frameRect(e.st,e.d,e.f);if(!r)return;const [,, ,,bx,by,bw,bh]=r,pv=SPR_META.pivot,w=bw*SPR,h=bh*SPR,oy=(by-pv.y)*SPR;let img;try{img=shadowSil(e);}catch(_){return;}const pd=img.pad*w/r[2];   /* pad is in sheet px (r[2] = bw unless the atlas has a cellScale) */
   /* on maps with the new light model (host.sun, the capital so far) the characters use the map's sun: the silhouette lies on the ground to the right (top pointing right),
      like every tree's and post's */
   const MH=curMap&&mapHost(),SU=MH&&MH.sun,put=()=>{if(isMir(e.d)){const bxm=SPR_META.cell.w-(bx+bw);ctx.translate((bxm-pv.x)*SPR+w,oy);ctx.scale(-1,1);ctx.drawImage(img,-pd,-pd,w+2*pd,h+2*pd);}else ctx.drawImage(img,(bx-pv.x)*SPR-pd,oy-pd,w+2*pd,h+2*pd);};
@@ -6118,11 +6121,11 @@ window.AF={levelUp:()=>{if(PS.lv<LV_CAP){PS.lv++;applyStats();player.hp=player.m
 <script src="drop_table.js?v=3"></script>
 <script src="pet_data.js?v=1"></script>
 <script src="rune_data.js?v=2"></script>
-<script src="items.js?v=31"></script>
-<script src="market.js?v=5"></script>
-<script src="npcs.js?v=12"></script>
+<script src="items.js?v=32"></script>
+<script src="market.js?v=6"></script>
+<script src="npcs.js?v=13"></script>
 <script src="monsters.js?v=2"></script>
-<script src="monster-sprites.js?v=4"></script>
+<script src="monster-sprites.js?v=5"></script>
 <script src="monster-catalog.js"></script>
 <script src="map_boss_kit.js?v=7"></script>
 <script src="map_bosses.js?v=8"></script>
@@ -6142,8 +6145,7 @@ window.AF={levelUp:()=>{if(PS.lv<LV_CAP){PS.lv++;applyStats();player.hp=player.m
 <script src="target_lock.js?v=7"></script>
 <script src="sp_rules.js?v=1"></script>
 <script src="totem_gems.js?v=38"></script>
-<script src="seals.js?v=1"></script>
-<script src="relics.js?v=3"></script>
+<script src="relics.js?v=4"></script>
 <script src="rune_roots_data.js?v=1"></script>
 <script src="totem_roots.js?v=2"></script>
 <script src="totem_ring.js?v=2"></script>
@@ -6187,12 +6189,12 @@ window.AF={levelUp:()=>{if(PS.lv<LV_CAP){PS.lv++;applyStats();player.hp=player.m
 <script src="fx_manifest.js?v=1"></script>
 <script src="fx_cfg.js?v=1"></script>
 <script src="testroom.js?v=2"></script>
-<script src="guide.js?v=12"></script>
-<script src="unlocks.js?v=1"></script>
+<script src="guide.js?v=13"></script>
+<script src="unlocks.js?v=2"></script>
 <script src="fashion_aura.js?v=2"></script>
 <script src="fashion_companion.js?v=1"></script>
 <script>/* offline cache (sw.js): pictures are kept on the device, so later visits barely download anything; ?nosw=1 removes it */
 if('serviceWorker' in navigator&&location.protocol==='https:'){if(/[?&]nosw=1/.test(location.search))navigator.serviceWorker.getRegistrations().then(a=>a.forEach(r=>r.unregister()));else window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));}</script>
-<script>/* fashion system: wolf sprite only for now */if(CHAR==='wolf')document.write('<script src="assets_fashion.js"><\/script><script src="assets_fur.js?v=3"><\/script><script src="assets_skin.js"><\/script><script src="assets_cloth.js?v=2"><\/script><script src="pwing_data.js?v=1"><\/script><script src="fashion.js?v=8"><\/script><script src="fashion_hats.js?v=2"><\/script>');</script>
+<script>/* fashion system: wolf sprite only for now */if(CHAR==='wolf')document.write('<script src="assets_fashion.js"><\/script>'+(WLF_ART?'':'<script src="assets_fur.js?v=3"><\/script><script src="assets_skin.js"><\/script><script src="assets_cloth.js?v=2"><\/script>')+'<script src="pwing_data.js?v=1"><\/script><script src="fashion.js?v=9"><\/script><script src="fashion_hats.js?v=2"><\/script>');   /* the new wolf sprite (WLF_ART) has no dye masks: fur / outfit colour is off until masks are made for it */</script>
 </body>
 </html>
