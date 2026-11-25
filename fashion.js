@@ -1122,8 +1122,8 @@ for(const k of ['cleaver','hatchet','buckler','boots','ringFury','ringSwift','ri
 const PWING=window.PWING;
 const PWIMG={};function pwImg(k,v){const key=k+v;let im=PWIMG[key];if(!im){im=new Image();im.src=PWING[k].dir+v+'.webp';PWIMG[key]=im;}return im.complete&&im.naturalWidth?im:null;}
 function pwingGeom(k,e,x,y,t,moving){const C=PWING[k],sd=srcDir(e.d),mir=isMir(e.d),tr=FASHION.head[e.st]&&FASHION.head[e.st][sd];if(!tr)return null;
-  const im=pwImg(k,sd);if(!im)return null;const hp=tr[Math.min(e.f,tr.length-1)],bo=BACK_OFF[sd]||[0,62];let ax=hp[0]+bo[0];if(mir)ax=SPR_META.cell.w-ax;const bk=sd==='N'||sd==='NE',ay=hp[1]+bo[1]+(bk?12:-10);
-  const [sx,sy]=c2s(ax,ay,x,y),r=C.root[sd],side=sd==='E',w=(side?C.span*.42:sd==='S'?C.span:sd==='N'?C.span*.88:sd==='NE'?C.span*.78:C.span*.85)*SPR,h=w*im.naturalHeight/im.naturalWidth;
+  const im=pwImg(k,sd);if(!im)return null;const HK=window.HERO_K||1,hp=tr[Math.min(e.f,tr.length-1)],bo=BACK_OFF[sd]||[0,62];let ax=hp[0]+bo[0]*HK;if(mir)ax=SPR_META.cell.w-ax;const bk=sd==='N'||sd==='NE',ay=hp[1]+(bo[1]+(bk?12:-10))*HK;   /* HERO_K: the Fenrir's Heir wolf is drawn bigger (index.html) */
+  const [sx,sy]=c2s(ax,ay,x,y),r=C.root[sd],side=sd==='E',w=(side?C.span*.42:sd==='S'?C.span:sd==='N'?C.span*.88:sd==='NE'?C.span*.78:C.span*.85)*SPR*HK,h=w*im.naturalHeight/im.naturalWidth;
   const sp=moving?7:2.6,amp=moving?.16:.07,ph=Math.sin(t*sp),front=sd==='N'||sd==='NE';
   return [{front,draw:()=>{if(GP==='fx')return;ctx.save();ctx.translate(sx,sy);if(mir)ctx.scale(-1,1);const W=im.naturalWidth,H=im.naturalHeight,rx=r[0]*W,ry=r[1]*H,k=w/W;
     if(side){ctx.rotate(-ph*amp*1.4);ctx.drawImage(im,-rx*k,-ry*k,w,h);}
@@ -1265,7 +1265,7 @@ function drawLookPreview(){const cv=document.getElementById('lkcv');if(!cv)retur
   const bg=g.createLinearGradient(0,0,0,cv.height);bg.addColorStop(0,'#dfe8f6');bg.addColorStop(1,'#b8c6de');g.fillStyle=bg;g.fillRect(0,0,cv.width,cv.height);
   g.fillStyle='rgba(40,60,100,.2)';g.beginPath();g.ellipse(110,262,40,10,0,0,TAU);g.fill();
   const d=EQDIRS[lkDir],st=Math.floor(performance.now()/2600)%2?'walk':'idle',D2=durs(st,d),T=D2.reduce((a,b)=>a+b,0);let ms=performance.now()%T,f=0;while(f<D2.length-1&&ms>=D2[f]){ms-=D2[f];f++;}
-  const old=ctx;ctx=g;g.setTransform(2.2,0,0,2.2,0,0);const X=110/2.2,Y=262/2.2;try{drawGear({st,d,f},X,Y,0,st==='walk');g.filter=armorFilter()||'none';drawFrame({st,d,f},X,Y,1);g.filter='none';drawGear({st,d,f},X,Y,1,st==='walk');}finally{ctx=old;}}
+  const old=ctx;ctx=g;const PS=2.2/(window.HERO_K||1);g.setTransform(PS,0,0,PS,0,0);const X=110/PS,Y=262/PS;try{drawGear({st,d,f},X,Y,0,st==='walk');g.filter=armorFilter()||'none';drawFrame({st,d,f},X,Y,1);g.filter='none';drawGear({st,d,f},X,Y,1,st==='walk');}finally{ctx=old;}}
 setInterval(()=>{const w=document.getElementById('lookw');if(w&&!w.classList.contains('open'))WGROW.pv=null;if(w&&w.classList.contains('open'))drawLookPreview();else if(w&&!lkSaved&&!window.__DYE_PV&&LOOK.ready&&(LOOK.cur!==lookLoad()||SKIN_CUR!==skinLoad()||CLOTH_CUR!==clothLoad())){SKIN_CUR=skinLoad();CLOTH_CUR=clothLoad();lookApply(lookLoad());}},80);
 function openLook(){const w=document.getElementById('lookw');lkDraft=LOOK.cur;lkSaved=false;w.classList.add('open');w.style.zIndex=40;buildLook();lookPrepare().then(()=>{if(w.classList.contains('open'))buildLook();});}
 (function(){const panel=document.getElementById('chsel');if(panel){const b=document.createElement('button');b.className='rob';b.id='lookbtn';b.textContent=WING_ONLY?'🪽 ปีกแฟชั่น':DYE_OK?'👗 แต่งตัว (สีขน · แฟชั่น)':'👗 แต่งตัว (แฟชั่น)';b.style.cssText='margin:6px 0 2px;width:100%';b.onclick=openLook;panel.after(b);}

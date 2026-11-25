@@ -240,7 +240,7 @@ let spDir=0,spRaf=0;const DIRS=['S','SW','W','NW','N','NE','E','SE'];
 function spLoop(){cancelAnimationFrame(spRaf);const cv=document.getElementById('cccv');if(!cv||ov.style.display==='none')return;const g=cv.getContext('2d');
   try{g.setTransform(1,0,0,1,0,0);g.clearRect(0,0,cv.width,cv.height);g.fillStyle='rgba(60,40,20,.2)';g.beginPath();g.ellipse(120,262,40,11,0,0,TAU);g.fill();
     const d=DIRS[spDir],D2=durs('idle',d),T=D2.reduce((a,b)=>a+b,0);let ms=performance.now()%T,f=0;while(f<D2.length-1&&ms>=D2[f]){ms-=D2[f];f++;}
-    const S=2.8,old=ctx;ctx=g;g.setTransform(S,0,0,S,0,0);try{const e={st:'idle',d,f},FG=typeof drawGear==='function';if(FG)drawGear(e,120/S,262/S,0,false);drawFrame(e,120/S,262/S,1);if(FG)drawGear(e,120/S,262/S,1,false);}finally{ctx=old;}}catch(err){}
+    const S=2.8/(window.HERO_K||1),old=ctx;ctx=g;g.setTransform(S,0,0,S,0,0);try{const e={st:'idle',d,f},FG=typeof drawGear==='function';if(FG)drawGear(e,120/S,262/S,0,false);drawFrame(e,120/S,262/S,1);if(FG)drawGear(e,120/S,262/S,1,false);}finally{ctx=old;}}catch(err){}
   spRaf=requestAnimationFrame(spLoop);}
 function go(k){location.href=location.pathname+'?char='+k;}
 function create(h,name,st){try{localStorage.setItem('af_prog_v1_'+h.k,JSON.stringify({mode:'play',save:{map:h.home},roll:st,name}));localStorage.removeItem('af_items_v1_'+h.k+'_play');localStorage.setItem('af_char',h.k);}catch(e){}go(h.k);}

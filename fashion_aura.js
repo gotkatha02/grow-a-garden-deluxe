@@ -270,7 +270,7 @@ const DIRS=['S','SE','E','NE','N','NW','W','SW'],BGS=[['หญ้า',['#a9c98a'
 let pv=null,pvC=null,tab='aura',dirI=1,bgI=0,pvT=null;   /* pv / pvC = what is being tried on (null = what is worn); tab 'aura' | 'comp' */
 const CPX=()=>window.COMP||null;   /* fashion_companion.js: floating totem sprites, a 2nd tab in this window */
 function heroDraw(g,X,Y,t){const d=DIRS[dirI],st='idle';let f=0;try{const D2=durs(st,d),Tt=D2.reduce((a,b)=>a+b,0);let ms=(t*1000)%Tt;while(f<D2.length-1&&ms>=D2[f]){ms-=D2[f];f++;}}catch(_){}
-  const e={st,d,f},old=ctx;ctx=g;try{g.save();g.translate(X,Y);g.scale(CHAR_SCALE,CHAR_SCALE);g.translate(-X,-Y);const FG=typeof drawGear==='function',pf=[typeof CHAR_FILTER!=='undefined'?CHAR_FILTER:'',FG&&typeof armorFilter==='function'?armorFilter():''].filter(Boolean).join(' ');
+  const e={st,d,f},old=ctx;ctx=g;try{g.save();g.translate(X,Y);const PK=CHAR_SCALE/(window.HERO_K||1);g.scale(PK,PK);g.translate(-X,-Y);const FG=typeof drawGear==='function',pf=[typeof CHAR_FILTER!=='undefined'?CHAR_FILTER:'',FG&&typeof armorFilter==='function'?armorFilter():''].filter(Boolean).join(' ');
     if(FG)drawGear(e,X,Y,0,false);drawFrame(e,X,Y,1,null,pf?gradedFrame(e,pf):null);if(FG)drawGear(e,X,Y,1,false);g.restore();}catch(_){}finally{ctx=old;}}
 function drawPv(){const c=win.querySelector('canvas.au-pv');if(!c||!win.classList.contains('open'))return;const dpr=Math.min(2,window.devicePixelRatio||1),cw=c.clientWidth||200,ch=c.clientHeight||222;
   if(c.width!==Math.round(cw*dpr)){c.width=Math.round(cw*dpr);c.height=Math.round(ch*dpr);}const g=c.getContext('2d');g.setTransform(1,0,0,1,0,0);

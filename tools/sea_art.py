@@ -68,7 +68,7 @@ P = {
  'ocWreckJpn': p(340, 'big', [.38, .12], 'unique'), 'ocWreckEgy': p(320, 'big', [.38, .11], 'unique'),
  'ocWreckAzt': p(320, 'big', [.38, .1], 'unique'), 'ocWhaleBones': p(380, 'big', [.34, .08], 'unique'),
  # S5 sea floats (bob on the water)
- 'ocFloatBarrel': p(80, 'water', None, 'semi'), 'ocBuoy': p(78, 'water', None, 'semi'), 'ocKelpRaft': p(124, 'water', None, 'common'),
+ 'ocFloatBarrel': p(80, 'water', None, 'semi'), 'ocBuoy': p(78, 'water', None, 'semi'), 'ocKelpRaft': p(124, 'water', None, 'semi'),
  'ocTotemLog': p(140, 'water', None, 'unique'), 'ocIslet': p(150, 'water', None, 'semi'), 'ocWaveCurl': p(124, 'water', None, 'common'),
  # S6 harbour houses (Rootarch Haven)
  'ocStiltHouse1': p(300, 'big', [.44, .2], 'unique'), 'ocStiltHouse2': p(290, 'big', [.44, .2], 'unique'),
