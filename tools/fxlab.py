@@ -10,6 +10,7 @@ It serves the repo itself on port 8765 when nothing is listening there (or start
       FXSEED=<n> in the environment seeds Math.random (physical hits can miss at random — seed both runs of a comparison)
       FXINIT='<js>' runs once in the page before the casts, e.g. FXINIT='{const h=hurt;hurt=function(e,m,o){o=o||{};o.sure=1;return h.call(this,e,m,o);}}' (no random MISS: effects also draw
       random numbers, so a changed effect shifts the seeded stream and a different hit can miss)
+      FXMAP=<map id> puts the test room on another map (e.g. FXMAP=egyF1 = desert sand; default vikF2 = snow): look at a hero's effects on more than one ground
 
   key 'basic' = one normal attack on the dummy. q= extra query string (e.g. q=vfx3=0 for the old look).
   Output: /home/claude/work/fx/<hero>_<tag>_<key>.png  /  /home/claude/work/fx/<hero>_<name>.mp4
@@ -41,7 +42,7 @@ async def boot(p, hero, room='one', q='', vw=1000, vh=600):
     await pg.add_init_script(STUB)
     if os.environ.get('FXSEED'):   # FXSEED=n: Math.random seeded (mulberry32) — physical hits can MISS at random, so old / new hit lists only match when both runs roll the same numbers
         await pg.add_init_script("(()=>{let s=%d>>>0;Math.random=function(){s=(s+0x6D2B79F5)>>>0;let t=s;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return ((t^(t>>>14))>>>0)/4294967296;};})();" % int(os.environ['FXSEED']))
-    url = 'http://localhost:8765/index.html?char=%s&map=vikF2&testroom=1&nosw=1&cb=%d%s' % (hero, time.time(), ('&' + q) if q else '')
+    url = 'http://localhost:8765/index.html?char=%s&map=%s&testroom=1&nosw=1&cb=%d%s' % (hero, os.environ.get('FXMAP', 'vikF2'), time.time(), ('&' + q) if q else '')   # FXMAP=<map id>: the test room on another map (default the snow field vikF2)
     await pg.goto(url)
     for _ in range(160):   # the start dialog can reload the page once (test-mode button): wait until a page stays up
         await pg.wait_for_timeout(500)

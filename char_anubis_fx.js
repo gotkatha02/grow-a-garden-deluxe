@@ -66,7 +66,8 @@ class UxWatch{constructor(){this.t=0;this.layer='none';this.seen=new WeakSet();t
     return true;}}
 function uxEnsure(){if(!fx.some(f=>f instanceof UxWatch))addFx(new UxWatch());}
 
-function installAnubisFx(){if(CHAR!=='anubis')return;if(window.TV)TV.toonify();UXF.forEach(uxImg);uxEnsure();
+function installAnubisFx(){if(CHAR!=='anubis')return;if(!/[?&]vfx3=0/.test(location.search))return;   /* 2026-11-25: the painted layer is the OLD look now (anubis_vfx.js draws the skills); it runs only with ?vfx3=0 */
+  if(window.TV)TV.toonify();UXF.forEach(uxImg);uxEnsure();
   for(const k in UX_CAST){const f=UX_CAST[k],s=SKILLS[k];if(!f||!s||!s.make||s._ux)continue;const mk=s.make;
     s.make=function(c){const a=mk.apply(this,arguments);if(a){try{uxEnsure();const cc=c||{};setFxTimer(.12,()=>f(cc));}catch(e){}}return a;};s._ux=1;}
   if(window._uxHook)return;window._uxHook=1;

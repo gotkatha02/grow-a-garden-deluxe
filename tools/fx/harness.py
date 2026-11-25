@@ -22,7 +22,7 @@ class Game:
         s.pg.on('response',lambda r:s.miss.append(r.url.split('/',3)[-1].split('?')[0]) if r.status>=400 and 'fonts.g' not in r.url else None)
         await s.pg.add_init_script(INIT)
         if os.environ.get('KEEPHUD')=='1':await s.pg.add_init_script('window.__KEEPHUD=1')   # KEEPHUD=1 = leave the HUD / hotbar on screen
-        await s.pg.goto('http://localhost:8765/index.html?char=%s&map=vikF2&testroom=1&nosw=1&cb=%d%s'%(s.hero,time.time(),s.extra))
+        await s.pg.goto('http://localhost:8765/index.html?char=%s&map=%s&testroom=1&nosw=1&cb=%d%s'%(s.hero,os.environ.get('MAP','vikF2'),time.time(),s.extra))   # MAP=<map id> = the test room on another map
         for i in range(60):
             await s.pg.wait_for_timeout(500)
             ok=await s.pg.evaluate("(()=>{try{return !!(document.getElementById('trbar')&&enemies.length>0&&player)}catch(e){return false}})()")
