@@ -1,0 +1,223 @@
+MONSTER SPRITE SHEETS — SEA (37 monsters)
+Game: Totem Legend, a 2D isometric fantasy MMORPG (Ragnarok Online feel). This region: the Sea of Five Shores (golden-root islands, turquoise lagoons, crystal coral reefs, golden kelp forests, a sunken ghost ship, the drowned cities of the five lands and a dark abyss where the last root of the Great Totem glows). Sea creatures that live underwater are drawn swimming in the air (walk type FLOATING or SLITHERING) — the game adds the water.
+
+=== HOW TO WORK WITH THIS FILE — READ EVERYTHING FIRST ===
+• This file lists 37 monsters. For each monster you draw ONE sprite-sheet image.
+• Draw ONE image per reply, in list order, starting with #1.
+• After each image write only "#<number> <name> done" and STOP. Wait for me.
+  - "next" = draw the next monster.   - "redo" = draw the same monster again.   - a number (e.g. "12") = draw that monster.
+• Before every image, re-read the STYLE, SHEET and WALK rules below. Every image must follow them exactly.
+• Never put text, numbers or labels inside the image.
+
+=== STYLE (copy the attached pictures) ===
+Friendly hand-painted chibi cartoon, cute-but-dangerous, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft light from the top-left, bright warm colours, clear readable silhouette. Not realistic, not painterly, not 3D. Chibi proportions (big head, short body) even for giants.
+
+=== SHEET (the same for every monster) ===
+• ONE 1536×1024 image, 5 rows. The SAME monster in every frame: identical design, colours and size, never redesigned between frames.
+• Facing DOWN-RIGHT (south-east), isometric 3/4 view from about 30° above.
+• Every frame in its own equal-size cell with empty space around it; feet (or lowest point) on the same baseline within each row; nothing cropped, nothing overlapping another frame.
+• Row 1 — IDLE, 4 frames: calm breathing — neutral, body rises slightly, neutral, body sinks slightly with one small detail moving (ear, tail, cloak, flame).
+• Row 2 — WALK, 4 frames: use the walk type given for the monster (see WALK TYPES).
+• Row 3 — ATTACK, 5 frames: the monster's own attack given in its entry — 1) ready, 2) wind-up, 3) strike at full reach toward down-right, 4) follow-through, 5) back to ready.
+• Row 4 — HURT, 2 frames: 1) hit from the front — head and body jerk back, eyes squeezed shut, 2) recoiling, about to recover.
+• Row 5 — DEATH, 5 frames: 1) staggers back, 2) falling, 3) hits the ground, 4) lying still, 5) the same pose fading away. Cartoon, no blood or gore.
+• Background: SOLID FLAT PURE GREEN (#00FF00) — no gradient, no ground, no shadows. NEVER use green on the monster: anything that would normally be green (leaves, skin, slime, jade, moss) is drawn teal, turquoise, blue, gold or autumn orange instead.
+• No text, no row labels, no numbers, no borders, no motion lines, no dust, no magic effects floating around the monster (small glows ON the body are fine).
+
+=== WALK TYPES ===
+• TWO LEGS — walking in place, legs MUST alternate: 1) LEFT leg forward and planted, 2) passing pose with the RIGHT leg lifted, 3) RIGHT leg forward and planted, 4) passing pose with the LEFT leg lifted. Frames 1 and 3 clearly show a different leg in front; arms swing opposite to the legs.
+• FOUR LEGS — trotting in place, diagonal pairs MUST alternate: 1) front-LEFT + back-RIGHT legs reach forward, 2) passing pose, legs under the body, 3) front-RIGHT + back-LEFT legs reach forward, 4) passing pose. Frames 1 and 3 clearly show different legs in front; tail swings.
+• FLOATING (ghosts, spirits, no legs) — 1) high, leaning forward, 2) middle, trailing parts swept back, 3) low, 4) middle, trailing parts swinging the other way. Nothing touches the ground.
+• MANY LEGS (insects, spiders, crabs, octopus) — legs move in two alternating groups: 1) group A reaches forward, 2) passing pose, 3) group B reaches forward, 4) passing pose. Frames 1 and 3 clearly differ.
+• FLYING (birds, bats, winged things) — hovering in place: 1) wings up, 2) wings half down, 3) wings fully down, 4) wings half up; the body bobs a little, feet tucked.
+• SLITHERING (snakes, worms, tails instead of legs) — 1) body S-curve bending left, 2) straightening, 3) S-curve bending right, 4) straightening. Frames 1 and 3 clearly mirror each other.
+• HOPPING (frogs, rabbits, slimes, one-legged things) — 1) crouched low, 2) pushing off, 3) highest point in the air, 4) landing squashed.
+
+=== MONSTERS ===
+
+#1 GOLDSHELL HERMIT CRAB
+   Walk: MANY LEGS
+   Look: small — a hermit crab with big friendly eyes on stalks and orange-red legs and claws, living in a large shiny golden spiral seashell with a tiny glowing golden root sprout on top.
+   Attack: pinches forward with its bigger claw.
+
+#2 COCONUT CRAB BRUTE
+   Walk: MANY LEGS
+   Look: large — a huge coconut crab with a deep blue and violet armoured shell, massive crushing claws, a cracked coconut stuck on one claw like a boxing glove, fierce little eyes.
+   Attack: smashes down with both claws.
+
+#3 THIEF GULL
+   Walk: FLYING
+   Look: small — a plump white-and-grey seagull with a cheeky grin, a tiny red bandana on its head and a stolen gold coin in its yellow beak.
+   Attack: dives and pecks.
+
+#4 TIDEPOOL STARFISH
+   Walk: HOPPING
+   Look: small — a chubby five-armed orange starfish standing on two of its arms, cream bumps on its skin, two big round eyes in the middle and a little pink tongue.
+   Attack: cartwheels forward and slaps with an arm.
+
+#5 FOAM SPRITE
+   Walk: FLOATING
+   Look: small — a playful spirit made of white sea foam and a curling turquoise wave, two bright cyan eyes, a tiny carved wooden totem charm hanging on it, a few bubbles stuck to its body (all painted solid).
+   Attack: rushes forward and splashes.
+
+#6 LAGOON RAY
+   Walk: FLYING
+   Look: medium — a turquoise-and-gold stingray gliding above the ground like a flying carpet, its wing-fins rippling, a cream belly, cute round eyes on top and a long whip tail with a gold barb.
+   Attack: whips its tail barb forward.
+
+#7 SHELLBACK TURTLE
+   Walk: FOUR LEGS
+   Look: medium — a gentle sea turtle with sandy-tan skin and flipper feet, its brown-and-amber shell carries a tiny golden root arch like a little island, sleepy kind eyes; it never attacks first.
+   Attack: headbutts with its shell.
+
+#8 BARNACLE GOLEM
+   Walk: TWO LEGS
+   Look: large — a golem of wet dark-grey sea rock covered in white barnacles and blue mussels, golden root tendrils tying its rock body together, glowing teal eyes in a rocky face.
+   Attack: a heavy two-fist slam.
+
+#9 NET WRAITH
+   Walk: FLOATING
+   Look: human-sized — a pale teal ghost tangled in an old fishing net with round glass floats, a long flowing body, hollow glowing eyes, a rusty fish hook on one hand (painted solid, not see-through).
+   Attack: throws its net forward.
+
+#10 BARREL MIMIC
+   Walk: HOPPING
+   Look: small — a wooden sea barrel with iron bands whose lid opens into a toothy mouth with a pink tongue, two crab claws poking out of its sides.
+   Attack: hops forward and bites.
+
+#11 DROWNED OARSMAN
+   Walk: TWO LEGS
+   Look: human-sized — an undead rower from a sunken Greek warship: pale blue-grey skin, a dented bronze helmet crusted with barnacles, a rotted white tunic, glowing teal eyes, holding a broken oar.
+   Attack: swings the oar.
+
+#12 PUFFER BOMB
+   Walk: FLOATING
+   Look: small — a round yellow-and-white spotted pufferfish with big worried eyes, puffed up with stubby spikes, tiny fins flapping.
+   Attack: puffs up bigger and body-slams.
+
+#13 CRYSTAL REEF SHARK
+   Walk: FLOATING
+   Look: large — a chubby blue shark with a white belly, clear blue crystal coral growing on its back fin and tail, one golden root tooth among its cartoon teeth, a cocky grin.
+   Attack: a lunging bite.
+
+#14 SPARK JELLY
+   Walk: FLOATING
+   Look: small — a glass-blue jellyfish (painted solid) with bright yellow lightning-zigzag patterns on its bell, two cute eyes and trailing ribbon tentacles.
+   Attack: zaps with its tentacles.
+
+#15 ARCHERFISH SNIPER
+   Walk: FLOATING
+   Look: small — a silver archerfish with bold black stripes, a tiny eye patch over one eye and a pointed mouth.
+   Attack: spits a jet of water forward.
+
+#16 MORAY EEL
+   Walk: SLITHERING
+   Look: medium — a long gold-and-violet spotted moray eel with a grumpy face, a big jaw and a frilly fin along its back.
+   Attack: a snapping lunge.
+
+#17 GIANT CLAM MIMIC
+   Walk: HOPPING
+   Look: medium — a giant clam with a wavy blue-and-purple shell rim; it opens to show a fake shiny pearl on its tongue and a row of teeth, two eyes on stalks.
+   Attack: snaps its shell shut.
+
+#18 KELP LURKER
+   Walk: FLOATING
+   Look: tall — a shy tall creature made of long golden-amber kelp blades with round air bladders like beads, two glowing cyan eyes peeking out of the kelp.
+   Attack: lashes with its kelp arms.
+
+#19 SWORDFISH DUELIST
+   Walk: FLOATING
+   Look: medium — a proud swordfish with a long silver-blue sword nose, a tiny bronze duelling helmet with a red plume and a tall sail fin.
+   Attack: charges and thrusts.
+
+#20 HIPPOCAMPUS
+   Walk: FLOATING
+   Look: large — a sea-horse of legend: the front of a horse with a turquoise fin mane and webbed hooves, the back a long curling gold-scaled fish tail, a bronze bridle.
+   Attack: rears up and strikes with its hooves.
+
+#21 LADLE GHOST
+   Walk: FLOATING
+   Look: human-sized — a funayurei ship ghost: a pale blue-white ghost in a wet white kimono with a triangular white headband, long dark hair, dripping, holding a big wooden ladle (painted solid).
+   Attack: scoops water and throws it forward.
+
+#22 ONIBI SQUID
+   Walk: FLOATING
+   Look: medium — a pale violet squid with blue ghost-fire flames burning on the tips of its tentacles, big round eyes and a wavy fin on its head.
+   Attack: sprays ink forward.
+
+#23 ANCHOR GOLEM
+   Walk: TWO LEGS
+   Look: large — a golem made of a giant rusty iron ship anchor, heavy chains for arms, broken ship planks as armour and a ghost-blue lantern glowing as its single eye.
+   Attack: slams with its anchor arm.
+
+#24 UMIBOZU
+   Walk: FLOATING
+   Look: very large — the grown-up umibozu sea spirit (the Umibozu Spawn of the Japanese coast is its child): a huge round dark sea-blue bald monk-like spirit rising out of a wave instead of legs, big white round eyes, a long string of white pearl prayer beads around its neck.
+   Attack: a big body slam.
+
+#25 ATLANTEAN HOPLITE
+   Walk: TWO LEGS
+   Look: human-sized — a living statue soldier of white marble and bronze, crusted with coral and barnacles, a crested bronze helmet, a round shield with a trident emblem, glowing teal eyes.
+   Attack: a spear thrust.
+
+#26 DROWNED SPHINX
+   Walk: FOUR LEGS
+   Look: large — a small sandstone sphinx statue come alive, its gold-and-blue striped headdress cracked, shells and orange coral growing on its back, glowing amber eyes.
+   Attack: a pouncing claw.
+
+#27 NINGYO
+   Walk: SLITHERING
+   Look: human-sized — a Japanese mermaid with a long white koi tail with red-orange patches, a short kimono top, long black hair with pearl hairpins, holding a folding fan.
+   Attack: slaps with her tail.
+
+#28 WAVE MAIDEN
+   Walk: FLOATING
+   Look: human-sized — a daughter of the Norse sea giant Aegir: a maiden whose body is a curling blue wave from the waist down, white foam hair in two long braids, silver arm rings and a fierce smile (all painted solid).
+   Attack: crashes forward like a wave.
+
+#29 FOURTH-SUN FISHMAN
+   Walk: TWO LEGS
+   Look: human-sized — an Aztec warrior turned into a fish-man by the great flood: a big round fish head with bulging eyes, turquoise and gold scales, a dripping red-and-gold feather headdress and an obsidian-edged club.
+   Attack: swings the club.
+
+#30 WATER SERPENT
+   Walk: SLITHERING
+   Look: large — a serpent made of flowing clear blue water (painted solid) with turquoise and gold Aztec plates along its back, gold eyes and a crest of white foam.
+   Attack: a striking water bite.
+
+#31 RAIN FROG PRIEST
+   Walk: HOPPING
+   Look: medium — a frog priest of the rain god with blue-purple skin, a big goggle-eyed ritual mask with fangs, a turquoise feather cape and a rattle staff hung with shells.
+   Attack: hops forward and slams down.
+
+#32 LANTERN ANGLER
+   Walk: FLOATING
+   Look: medium — a dark navy anglerfish with a huge toothy grin and tiny fins; its glowing lure is a golden root seed hanging on a thin stalk.
+   Attack: chomps forward.
+
+#33 GIANT ISOPOD
+   Walk: MANY LEGS
+   Look: medium — a big pale grey-violet armoured isopod with many little legs, segmented shell plates and two long antennae.
+   Attack: curls into a ball and rolls into you.
+
+#34 GULPER EEL
+   Walk: SLITHERING
+   Look: large — a black gulper eel with an enormous pouch mouth, tiny eyes and a long whip tail with a glowing pink tip.
+   Attack: a huge gulping bite.
+
+#35 ROOT CRYSTAL WISP
+   Walk: FLOATING
+   Look: medium — a spirit of the sunken totem root: a floating tangle of glowing golden roots around clear blue crystal shards, one big turquoise eye in the middle.
+   Attack: fires a burst of crystal shards forward.
+
+#36 ABYSS SQUID
+   Walk: FLOATING
+   Look: large — a deep purple squid with glowing blue spots along its body, huge round eyes and long arms with suckers.
+   Attack: grabs forward with two arms.
+
+#37 KRAKEN SPAWNLING
+   Walk: MANY LEGS
+   Look: medium — a baby kraken with dark red-violet skin, glowing yellow eyes, eight curling arms and small blue crystal root shards stuck on its head.
+   Attack: slaps with two arms.
+
+(End of list. Start with #1 when I say so.)

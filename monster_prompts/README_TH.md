@@ -4,6 +4,8 @@
 
 **วิธีใช้:** แชทใหม่ใน ChatGPT → แนบไฟล์เขต (.txt) + รูปปกแคมป์ไฟ + รูปมอนที่วาดแล้ว 1 ตัว (ตัวอย่างสไตล์) → พิมพ์ `อ่านไฟล์ทั้งหมด แล้วเริ่มวาด #1` → มันวาดทีละรูป พิมพ์ `next` = ตัวถัดไป · `redo` = วาดตัวเดิมใหม่ · เลข = วาดตัวนั้น · ถ้าเริ่มเพี้ยน (สไตล์ / พื้นไม่เขียว / ขาไม่สลับ) พิมพ์ `re-read the rules in the file, then redo` · ส่งชีตกลับมาพร้อมเลข #
 
+**08 Sea** = โซนทะเลห้าฝั่ง Lv 60–70 (ภาคขยายเพดาน 70 · ยังไม่มีในเกม — แมพ / เลเวลใน SEA_ZONE_TH.md · พรอมต์ภาพแมพ บอส NPC ใน SEA_ART_PROMPTS_TH.md) · ตัวที่อยู่ใต้น้ำวาดลอยว่ายกลางอากาศ เกมใส่น้ำเอง
+
 แก้ดีไซน์: tools/monster_prompt_data.py แล้วรัน `python3 tools/monster_prompts.py` · ได้ชีตแล้วตัดด้วย tools/monsheet.py → MS ใน monster-sprites.js และลบชื่อออกจาก MAP ใน monster-catalog.js
 
 | ไฟล์ | # | มอน | ชื่อไทย | แมพ | เดิน |
@@ -231,3 +233,40 @@
 | 07 Rift | 6 | Wyrm Spawn | ลูกเอเธอร์เวิร์ม | rift3 | FOUR LEGS |
 | 07 Rift | 7 | Void Sentinel | ผู้เฝ้าความว่างเปล่า | rift3 | TWO LEGS |
 | 07 Rift | 8 | Aether Drake | มังกรน้อยเอเธอร์ | rift3 | FLYING |
+| 08 Sea | 1 | Goldshell Hermit Crab | ปูเสฉวนเปลือกทอง | seaF1 | MANY LEGS |
+| 08 Sea | 2 | Coconut Crab Brute | ปูมะพร้าวยักษ์ | seaF1 | MANY LEGS |
+| 08 Sea | 3 | Thief Gull | นกนางนวลจอมขโมย | seaF1 | FLYING |
+| 08 Sea | 4 | Tidepool Starfish | ปลาดาวแอ่งน้ำลง | seaF1 | HOPPING |
+| 08 Sea | 5 | Foam Sprite | ภูตฟองคลื่น | seaF2 | FLOATING |
+| 08 Sea | 6 | Lagoon Ray | ปลากระเบนลากูน | seaF2 | FLYING |
+| 08 Sea | 7 | Shellback Turtle | เต่ากระดองราก | seaF2 | FOUR LEGS |
+| 08 Sea | 8 | Barnacle Golem | โกเลมเพรียง | seaF2 | TWO LEGS |
+| 08 Sea | 9 | Net Wraith | วิญญาณตาข่ายของราน | seaF3 | FLOATING |
+| 08 Sea | 10 | Barrel Mimic | ถังหลอก | seaF3 | HOPPING |
+| 08 Sea | 11 | Drowned Oarsman | ฝีพายจมน้ำ | seaF3 | TWO LEGS |
+| 08 Sea | 12 | Puffer Bomb | ปลาปักเป้าระเบิด | seaU1 | FLOATING |
+| 08 Sea | 13 | Crystal Reef Shark | ฉลามแนวคริสตัล | seaU1 | FLOATING |
+| 08 Sea | 14 | Spark Jelly | แมงกะพรุนไฟฟ้า | seaU1 | FLOATING |
+| 08 Sea | 15 | Archerfish Sniper | ปลาเสือพ่นน้ำ | seaU1 | FLOATING |
+| 08 Sea | 16 | Moray Eel | ปลาไหลมอเรย์ | seaU1 | SLITHERING |
+| 08 Sea | 17 | Giant Clam Mimic | หอยมือเสือหลอก | seaU2 | HOPPING |
+| 08 Sea | 18 | Kelp Lurker | ผีสาหร่ายทอง | seaU2 | FLOATING |
+| 08 Sea | 19 | Swordfish Duelist | นักดาบปลากระโทงแทง | seaU2 | FLOATING |
+| 08 Sea | 20 | Hippocampus | ฮิปโปแคมปัส | seaU2 | FLOATING |
+| 08 Sea | 21 | Ladle Ghost | ผีถือทัพพี | seaD1a | FLOATING |
+| 08 Sea | 22 | Onibi Squid | หมึกไฟผี | seaD1a | FLOATING |
+| 08 Sea | 23 | Anchor Golem | โกเลมสมอเรือ | seaD1b | TWO LEGS |
+| 08 Sea | 24 | Umibozu | อุมิโบซุ | seaD1b | FLOATING |
+| 08 Sea | 25 | Atlantean Hoplite | ทหารหินแอตแลนติส | seaU3 | TWO LEGS |
+| 08 Sea | 26 | Drowned Sphinx | สฟิงซ์จมน้ำ | seaU3 | FOUR LEGS |
+| 08 Sea | 27 | Ningyo | นินเงียว | seaU3 | SLITHERING |
+| 08 Sea | 28 | Wave Maiden | ธิดาคลื่นแห่งเอกีร์ | seaU3 | FLOATING |
+| 08 Sea | 29 | Fourth-Sun Fishman | ชาวปลาแห่งตะวันที่สี่ | seaU3 | TWO LEGS |
+| 08 Sea | 30 | Water Serpent | งูน้ำหยกฟ้า | seaH1 | SLITHERING |
+| 08 Sea | 31 | Rain Frog Priest | นักบวชกบฝน | seaH1 | HOPPING |
+| 08 Sea | 32 | Lantern Angler | ปลาตกเบ็ดโคมราก | seaD2a | FLOATING |
+| 08 Sea | 33 | Giant Isopod | ไอโซพอดยักษ์ | seaD2a | MANY LEGS |
+| 08 Sea | 34 | Gulper Eel | ปลาไหลปากกว้าง | seaD2b | SLITHERING |
+| 08 Sea | 35 | Root Crystal Wisp | วิญญาณรากคริสตัล | seaD2b | FLOATING |
+| 08 Sea | 36 | Abyss Squid | หมึกห้วงลึก | seaD2c | FLOATING |
+| 08 Sea | 37 | Kraken Spawnling | ลูกคราเคน | seaD2c | MANY LEGS |

@@ -9,7 +9,7 @@ W={'2':"TWO LEGS — walking in place, legs MUST alternate: 1) LEFT leg forward 
 's':"SLITHERING (snakes, worms, tails instead of legs) — 1) body S-curve bending left, 2) straightening, 3) S-curve bending right, 4) straightening. Frames 1 and 3 clearly mirror each other.",
 'h':"HOPPING (frogs, rabbits, slimes, one-legged things) — 1) crouched low, 2) pushing off, 3) highest point in the air, 4) landing squashed."}
 WN={'2':'TWO LEGS','4':'FOUR LEGS','6':'MANY LEGS','f':'FLOATING','w':'FLYING','s':'SLITHERING','h':'HOPPING'}
-ORDER=[('01','viking','Viking'),('02','capital','Capital'),('03','aztec','Aztec'),('04','greek','Greek'),('05','egypt','Egypt'),('06','japan','Japan'),('07','rift','Rift')]
+ORDER=[('01','viking','Viking'),('02','capital','Capital'),('03','aztec','Aztec'),('04','greek','Greek'),('05','egypt','Egypt'),('06','japan','Japan'),('07','rift','Rift'),('08','sea','Sea')]
 OUT=os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),'monster_prompts');os.makedirs(OUT,exist_ok=True)
 idx=[]
 for num,key,title in ORDER:

@@ -14,6 +14,7 @@ BAND = {'F1': (1, 6), 'F2': (1, 9), 'F5': (6, 12), 'F3': (8, 17), 'F6': (11, 17)
         'cata1': (27, 32), 'cata2': (32, 37), 'rift1': (55, 56), 'rift2': (56, 58), 'rift3': (58, 60)}
 
 def lvl(mid):
+    if mid in SEA_BAND: return min(70, SEA_BAND[mid][1] + 2), SEA_BAND[mid]
     k = mid if mid in BAND else ('F1' if mid == 'snowpine' else mid[3:])
     return min(60, BAND[k][1] + 2), BAND[k]
 
@@ -201,6 +202,40 @@ LANDS = [
  ]),
 ]
 
+# Planned regions: prompt files only (miniboss_prompts/7_sea.txt). Not in the game yet, so they stay out of mini_boss_data.js
+# and MINI_BOSS_TH.md. The sea is the Lv 60–70 expansion (SEA_ZONE_TH.md, owner 2026-11-25 'โซนทะเลผมจะให้เป็น60-70'):
+# its levels are written directly (no LVC squeeze) and its mini-bosses cap at 70.
+SEA_BAND = {'seaF1': (60, 62), 'seaF2': (61, 63), 'seaU1': (63, 65), 'seaU2': (64, 66), 'seaD1a': (65, 66), 'seaU3': (66, 68),
+            'seaD2a': (68, 69), 'seaD2b': (69, 70)}
+PLANNED = [
+ ('7_sea', 'SEA', 'ทะเล', 'the Sea of Five Shores (golden-root islands, lagoons, crystal reefs, golden kelp forests, a sunken ghost ship, the drowned cities of the five lands and the World-Root Well, Lv 60–70)', [
+  ('seaF1', 'หาดเปลือกหอยทอง', 'coconutCrabKing', 'Coconut Crab King', 'ราชาปูมะพร้าว', 'Coconut Crab Brute',
+   'ปูมะพร้าวที่แกะมะพร้าวได้ทั้งเกาะ ตั้งตัวเป็นราชาหาด เก็บของที่คลื่นซัดมาไว้เป็นสมบัติ',
+   "the king of the coconut crabs: a colossal coconut crab with a thick deep-blue and violet shell covered in old battle scars, one claw much bigger than the other, a crown made of a carved half coconut shell set with gold shells and pearls, a cape of old fishing net with glass floats and washed-up treasures caught in it (gold coins, a small ship's bell, a broken compass), fierce yellow eyes on stalks."),
+  ('seaF2', 'ลากูนรากโค้ง', 'islandbackMatriarch', 'Islandback Matriarch', 'แม่เต่าหลังเกาะ', 'Shellback Turtle',
+   'แม่ฝูงเต่าทะเลที่แก่ที่สุดในลากูน บนกระดองมีเกาะเล็กงอกรากทองขึ้นมา ชาวเต่าที่ท่าเรือเรียกนางว่ายาย (ไม่ตีก่อน)',
+   "a huge ancient sea-turtle matriarch with sandy-tan wrinkled skin, wise half-closed eyes and a white wispy beard; her wide brown-and-amber shell carries a small island: golden sand, a golden root arch, a tiny stone shrine with a glowing totem chip, shells and orange coral (no green plants); a necklace of carved wooden totem beads with one big pearl; four strong flippers."),
+  ('seaU1', 'แนวปะการังคริสตัล', 'crystalFinWarlord', 'Crystal Fin Warlord', 'จอมทัพฉลามครีบคริสตัล', 'Crystal Reef Shark',
+   'ฉลามที่ครีบงอกคริสตัลรากจนเป็นมงกุฎ คุมฝูงฉลามทั้งแนวปะการัง',
+   "a big muscular blue shark warlord with a white belly and a scarred grin, a huge clear blue crystal dorsal fin like a crown, smaller crystal spikes along its tail, a gold ring through its fin and an old broken harpoon stuck in its side as a trophy, swimming in a proud pose."),
+  ('seaU2', 'ป่าสาหร่ายยักษ์', 'tidecharger', 'Tidecharger', 'ไทด์ชาร์จเจอร์ ม้าน้ำจ่าฝูง', 'Hippocampus',
+   'ฮิปโปแคมปัสจ่าฝูงที่เคยลากรถศึกของเทพทะเล ตอนนี้วิ่งเฝ้าป่าสาหร่ายไม่ให้ใครเข้าใกล้',
+   "a big proud hippocampus stallion: the front of a powerful horse with a long flowing turquoise fin mane and webbed hooves, the back a long curling gold-scaled fish tail with a wide fan fin, a bronze chamfron helmet with a white horsehair crest and a royal-blue saddle cloth trimmed with pearls (no rider), rearing up."),
+  ('seaD1a', 'เรือผีจม ชั้น 1', 'onibiLanternLord', 'Onibi Lantern Lord', 'เจ้าโคมหมึกไฟผี', 'Onibi Squid',
+   'หมึกที่กลืนโคมผีของเรือเข้าไป ไฟผีเลยติดตัวมันตลอดกาล',
+   "a big pale violet squid lord with blue ghost-fire flames burning on all its tentacle tips (painted solid), a paper ship lantern shining pale blue from inside its mantle, a battered sailor's straw hat on its head, a sake gourd and a string of small shells tied to one arm, big round sly eyes."),
+  ('seaU3', 'ซากนครห้าแดน', 'atlanteanPolemarch', 'Atlantean Polemarch', 'แม่ทัพหินแอตแลนติส', 'Atlantean Hoplite',
+   'รูปปั้นแม่ทัพแห่งแอตแลนติสที่ยังสั่งทัพหินเฝ้าเมืองจม ทั้งที่เมืองหลับไปนับพันปี',
+   "a big statue general of white marble and bronze come alive: a tall bronze helmet with a crest of red coral instead of horsehair, a bronze breastplate with a trident emblem, a torn sea-blue cape, a big round bronze shield and a long trident spear, coral and barnacles on its shoulders, glowing teal cracks across the marble and glowing teal eyes."),
+  ('seaD2a', 'บ่อรากโลก ชั้น 1', 'abyssLanternQueen', 'Abyssal Lantern Queen', 'ราชินีโคมห้วงลึก', 'Lantern Angler',
+   'ปลาตกเบ็ดที่กลืนเมล็ดรากไปสามเมล็ด แสงของนางล่อทุกอย่างในบ่อให้ว่ายลงไปหา',
+   "a huge dark navy anglerfish queen with a jagged grin of gold teeth, three glowing golden root-seed lures hanging from a branched stalk on her head like a chandelier crown, a frill of glowing turquoise fins, small fierce eyes, pale old scars and a few gold rings caught on her fins."),
+  ('seaD2b', 'บ่อรากโลก ชั้น 2', 'rootknotWarden', 'Rootknot Warden', 'ผู้เฝ้าปมราก', 'Root Crystal Wisp',
+   'ปมของรากโทเท็มที่จมลึกที่สุด ลุกขึ้นเฝ้าทางลงสู่ปลายรากสุดท้าย',
+   "a large floating guardian made of a thick knot of glowing golden totem roots wrapped around a big clear blue crystal heart, smaller crystals growing out of the roots, four root arms ending in crystal claws, a carved totem-like face on the crystal with three glowing turquoise eyes, a ring of small crystal shards attached to its roots."),
+ ]),
+]
+
 KIN_TH = {"Snow Pup": "ลูกหมาป่าหิมะ", "Big Frostling": "ฟรอสต์ลิงใหญ่", "Thatch Troll": "โทรลหลังคาฟาง", "Runestone Golem": "โกเลมหินรูน", "Avalanche Ram": "แกะเขาหิมะถล่ม", "Narwhal Raider": "นาร์วาลจอมปล้น", "Mad Dwarf Ghost": "วิญญาณคนแคระ", "Gleipnir Weaver": "ช่างทอโซ่เกลปเนียร์", "Draugr": "เดรากร์", "Leafcutter Ant": "มดตัดใบ", "Baby Tapir": "ลูกสมเสร็จ", "Macaw Raider": "นกมาคอว์จอมปล้น", "Corn Spirit": "ภูตข้าวโพด", "Vine Snapper": "ดอกไม้กินคน", "Swamp Leech": "ปลิงหนองน้ำ", "Glowworm Swarm": "ฝูงหนอนเรืองแสง", "Obsidian Priest": "นักบวชออบซิเดียน", "Sun Sentinel": "ทหารเฝ้าสุริยะ", "Scarab": "ด้วงสคารับ", "Ibis": "นกไอบิส", "Cobra": "งูเห่า", "Desert Fox": "หมาจิ้งจอกทะเลทราย", "Desert Vulture": "แร้งทะเลทราย", "Granite Golem": "โกเลมแกรนิต", "Flesh Beetle": "ด้วงกินเนื้อ", "Royal Mummy": "มัมมี่ราชวงศ์", "Sekhmet Lioness": "สิงโตเซคเมต", "Mountain Goat": "แพะภูเขา", "Marble Crab": "ปูหินอ่อน", "Harpy": "ฮาร์ปี้", "Satyr": "ซาเทอร์", "Erymanthian Boar": "หมูป่าเอรีมันทอส", "Bronze Automaton": "หุ่นทองแดง", "Giant Ram": "แกะยักษ์", "Little Medusa": "งูเมดูซ่าน้อย", "Stone Bull": "กระทิงหิน", "Tanuki": "ทานุกิ", "Kappa": "กัปปะ", "Tengu": "เท็งงุ", "Red Panda": "แพนด้าแดง", "Little Octopus": "ปลาหมึกน้อย", "Onsen Capybara": "คาปิบาร่าออนเซ็น", "Giant Toad": "คางคกยักษ์", "Cursed Doll": "ตุ๊กตาสาป", "Ghost Samurai": "ซามูไรผี", "Wild Horse": "ม้าป่า", "Golden Stag": "กวางเขาทอง", "Giant Bee": "ผึ้งยักษ์", "Field Hawk": "เหยี่ยวทุ่ง", "Scarecrow Knight": "อัศวินหุ่นไล่กา", "Frog Bandit": "กบโจร", "Sewer Rat": "หนูท่อ", "Wraith Knight": "อัศวินวิญญาณ", "Rift Hound": "หมารอยแยก", "Shard Seraph": "เซราฟคริสตัล", "Aether Drake": "มังกรน้อยเอเธอร์"}   # Thai names of the kin (VK_MONS th)
 
 LEAD = {'nue': 'the yokai that rules the haunted castle'}   # header text when 'leader of its map\'s <kin> monsters' does not fit
@@ -268,15 +303,16 @@ BOARD_RULE = "• The KIN BOARD only shows what the kin look like. Draw the mini
 def build():
     out = os.path.join(ROOT, 'miniboss_prompts'); os.makedirs(out, exist_ok=True)
     tot = 0; rows = []; pics = kin_pics()
-    for fn, land, land_th, where, items in LANDS:
-        n = len(items); tot += n
+    for fn, land, land_th, where, items in LANDS + PLANNED:
+        n = len(items); plan = fn in {p[0] for p in PLANNED}
+        if not plan: tot += n
         lst = '\n'.join(f'  #{i+1} {e[3]}' for i, e in enumerate(items))
         ent = []
         for i, (mid, mth, key, en, th, kin, lore, look) in enumerate(items):
             lv, band = lvl(mid)
             kp = (f'\n   Kin: shown on the kin board as #{i+1} — keep its species, colours and main features (but no green), make it bigger, older and more decorated.' if kin in pics else '')
             ent.append(f'#{i+1} {en.upper()} — {LEAD.get(key, "leader of its map\'s "+kin+" monsters")} (map Lv {band[0]}–{band[1]}, mini-boss Lv {lv})\n   Look: {look}' + kp)
-            rows.append((land_th, mid, mth, key, en, th, kin, lv, band, mid in PASSIVE, lore))
+            if not plan: rows.append((land_th, mid, mth, key, en, th, kin, lv, band, mid in PASSIVE, lore))
         nb = [i + 1 for i, e in enumerate(items) if e[5] in pics]
         s = (f'MINI-BOSS MASTER PICTURES — {land} ({n} pictures)\n'
              f'Game: Totem Legend, a 2D isometric fantasy MMORPG (Ragnarok Online feel). Every field and dungeon map of {where} gets one MINI-BOSS: '

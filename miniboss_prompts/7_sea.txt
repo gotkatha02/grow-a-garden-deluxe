@@ -1,0 +1,57 @@
+MINI-BOSS MASTER PICTURES — SEA (8 pictures)
+Game: Totem Legend, a 2D isometric fantasy MMORPG (Ragnarok Online feel). Every field and dungeon map of the Sea of Five Shores (golden-root islands, lagoons, crystal reefs, golden kelp forests, a sunken ghost ship, the drowned cities of the five lands and the World-Root Well, Lv 60–70) gets one MINI-BOSS: the leader of that map's monsters — bigger, prouder and more decorated than its kin, with no special powers.
+Attached: the campfire key art (the art style to copy).
+
+=== HOW TO WORK WITH THIS FILE — READ EVERYTHING FIRST ===
+• This file lists 8 mini-bosses, numbered #1–#8. Draw ONE picture per reply, in order, starting with #1.
+• After each picture write only "#<number> <name> done" and STOP. Wait for me.
+  - "next" = draw the next number.   - "redo" = draw the same number again.   - a number (e.g. "4") = draw that number.
+• Before every picture, re-read STYLE and PICTURE RULES. Every picture must follow them exactly.
+• Never put text, numbers, labels, borders or speech bubbles inside a picture.
+
+=== STYLE (copy the attached pictures) ===
+Friendly hand-painted chibi cartoon, cute-but-dangerous, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft light from the top-left, bright warm colours, clear readable silhouette. Not realistic, not painterly, not 3D. Chibi proportions (big head, short body) even for giants.
+
+=== PICTURE RULES (every picture) ===
+• ONE mini-boss per picture, square 1024×1024, the whole body inside the picture with empty space on every side, nothing cropped.
+• Isometric 3/4 view from about 30° above, facing DOWN-RIGHT (south-east), a proud ready-to-fight pose with its weapon, horns or claws ready.
+• A mini-boss is the LEADER of the monsters of its map: bigger and heavier than them, with one clear leader mark (a crown, a helmet, battle scars, a cape or trophies) and one strong colour accent. Big readable shapes — it must still read clearly when shown small in the game.
+• Background: SOLID FLAT PURE GREEN (#00FF00) — no gradient, no ground, no floor, no shadow, no scenery. NEVER use green on the mini-boss: anything that would normally be green (leaves, moss, jade, frogs, kappa skin) is drawn teal, turquoise, blue, gold, purple or autumn orange instead.
+• No effects floating around it (no smoke clouds, sparkles, motion lines, flying leaves). Small glows ON the body (eyes, runes, lanterns, embers) are fine.
+• Paint everything SOLID — no see-through or half-transparent parts (ghosts, wings, robes, fire and glows are drawn opaque), because the green behind would show through them.
+
+=== MINI-BOSSES IN THIS FILE ===
+  #1 Coconut Crab King
+  #2 Islandback Matriarch
+  #3 Crystal Fin Warlord
+  #4 Tidecharger
+  #5 Onibi Lantern Lord
+  #6 Atlantean Polemarch
+  #7 Abyssal Lantern Queen
+  #8 Rootknot Warden
+
+=== ENTRIES ===
+
+#1 COCONUT CRAB KING — leader of its map's Coconut Crab Brute monsters (map Lv 60–62, mini-boss Lv 64)
+   Look: the king of the coconut crabs: a colossal coconut crab with a thick deep-blue and violet shell covered in old battle scars, one claw much bigger than the other, a crown made of a carved half coconut shell set with gold shells and pearls, a cape of old fishing net with glass floats and washed-up treasures caught in it (gold coins, a small ship's bell, a broken compass), fierce yellow eyes on stalks.
+
+#2 ISLANDBACK MATRIARCH — leader of its map's Shellback Turtle monsters (map Lv 61–63, mini-boss Lv 65)
+   Look: a huge ancient sea-turtle matriarch with sandy-tan wrinkled skin, wise half-closed eyes and a white wispy beard; her wide brown-and-amber shell carries a small island: golden sand, a golden root arch, a tiny stone shrine with a glowing totem chip, shells and orange coral (no green plants); a necklace of carved wooden totem beads with one big pearl; four strong flippers.
+
+#3 CRYSTAL FIN WARLORD — leader of its map's Crystal Reef Shark monsters (map Lv 63–65, mini-boss Lv 67)
+   Look: a big muscular blue shark warlord with a white belly and a scarred grin, a huge clear blue crystal dorsal fin like a crown, smaller crystal spikes along its tail, a gold ring through its fin and an old broken harpoon stuck in its side as a trophy, swimming in a proud pose.
+
+#4 TIDECHARGER — leader of its map's Hippocampus monsters (map Lv 64–66, mini-boss Lv 68)
+   Look: a big proud hippocampus stallion: the front of a powerful horse with a long flowing turquoise fin mane and webbed hooves, the back a long curling gold-scaled fish tail with a wide fan fin, a bronze chamfron helmet with a white horsehair crest and a royal-blue saddle cloth trimmed with pearls (no rider), rearing up.
+
+#5 ONIBI LANTERN LORD — leader of its map's Onibi Squid monsters (map Lv 65–66, mini-boss Lv 68)
+   Look: a big pale violet squid lord with blue ghost-fire flames burning on all its tentacle tips (painted solid), a paper ship lantern shining pale blue from inside its mantle, a battered sailor's straw hat on its head, a sake gourd and a string of small shells tied to one arm, big round sly eyes.
+
+#6 ATLANTEAN POLEMARCH — leader of its map's Atlantean Hoplite monsters (map Lv 66–68, mini-boss Lv 70)
+   Look: a big statue general of white marble and bronze come alive: a tall bronze helmet with a crest of red coral instead of horsehair, a bronze breastplate with a trident emblem, a torn sea-blue cape, a big round bronze shield and a long trident spear, coral and barnacles on its shoulders, glowing teal cracks across the marble and glowing teal eyes.
+
+#7 ABYSSAL LANTERN QUEEN — leader of its map's Lantern Angler monsters (map Lv 68–69, mini-boss Lv 70)
+   Look: a huge dark navy anglerfish queen with a jagged grin of gold teeth, three glowing golden root-seed lures hanging from a branched stalk on her head like a chandelier crown, a frill of glowing turquoise fins, small fierce eyes, pale old scars and a few gold rings caught on her fins.
+
+#8 ROOTKNOT WARDEN — leader of its map's Root Crystal Wisp monsters (map Lv 69–70, mini-boss Lv 70)
+   Look: a large floating guardian made of a thick knot of glowing golden totem roots wrapped around a big clear blue crystal heart, smaller crystals growing out of the roots, four root arms ending in crystal claws, a carved totem-like face on the crystal with three glowing turquoise eyes, a ring of small crystal shards attached to its roots.
