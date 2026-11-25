@@ -295,7 +295,8 @@ function install(){
   if(SKILLS.executioner&&!SKILLS.executioner._wea){const sk=SKILLS.executioner,mk=sk.make;sk._wea=1;sk.make=function(c){const a=mk.apply(this,arguments);if(CHAR==='wolf'&&a&&a.events){const t0=c&&c.target&&!c.target.dead?c.target:null;
     a.events.push({t:.1,f:()=>{const e=t0&&!t0.dead?t0:nearestEnemy(player.x,player.y,140,player.phi);if(e)window._wEA=addFx(new WExecAxe(e,e.boss?110:90));}});}return a;};}
   if(!window._wDrop){window._wDrop=1;const D=['RuneCircle','RuneShield','LightPillar'].map(n=>{try{return eval(n);}catch(e){return null;}}).filter(Boolean);
-    const A0=window.addFx;window.addFx=addFx=function(f){if(CHAR==='wolf'&&f&&D.some(c=>f instanceof c))return f;
+    const A0=window.addFx;window.addFx=addFx=function(f){if(f&&window.FXLIB&&(f instanceof FXLIB.k.Part||f instanceof FXLIB.k.Sys))return A0.apply(this,arguments);   /* 2026-11-25: pieces of the FXLIB kit (wolf_vfx5.js) share class names with the old ones (Bolt, Ring, Burst, Crack …): never filtered here */
+      if(CHAR==='wolf'&&f&&D.some(c=>f instanceof c))return f;
       if(wQuiet()&&f&&player.action.key==='executioner'&&f.constructor.name==='Guillotine'){if(window._wEA)window._wEA.drop();return f;}
       if(wQuiet()&&f&&player.action.key==='cycloneLeap'&&f.constructor.name==='CycloneRing'){fxI({_tvc:1,n:'w45_leap_spiral',x:player.x,y:player.y+2,z:0,ay:.96,w:120,life:.45,s0:.6,s1:1.1,fadeIn:.001,fadeOut:.5,follow:1});return f;}
       if(wQuiet()&&f&&player.action.key==='bloodRush'&&f.constructor.name==='Streak'&&f.a&&f.b){A0.call(this,(window.wV3&&window.wV3.streak&&window.wV3.streak(f.a,f.b))||new WStreak(f.a,f.b));return f;}

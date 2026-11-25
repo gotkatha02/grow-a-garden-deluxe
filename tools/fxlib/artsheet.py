@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Contact sheet of FXLIB sprites (the kit's own + a hero's art file), each in a few palettes.
 
-  python3 tools/fxlib/artsheet.py OUT.png [art=anubis_art.js] [names=anFlail,anAnkh,…|all] [pals=gold,duat] [scale=2] [rings=sun,duat,seal,ankh,life]
+  python3 tools/fxlib/artsheet.py OUT.png [art=anubis_art.js] [names=anFlail,anAnkh,…|all] [pals=gold,duat] [scale=2] [rings=sun,duat,seal,ankh,life]  (rings come from HIPART when the hippo art is loaded, else ANUART)
 """
 import sys, os, base64, time, socket, subprocess
 from playwright.sync_api import sync_playwright
@@ -18,7 +18,7 @@ JS = r"""
  pals.forEach((pl,pi)=>L.forEach((n,i)=>{const d=k.sprites[n],x=(i%cols)*cellW,y=(Math.floor(i/cols)*pals.length+pi)*cellH;const vn=d.n||1;
    for(let v=0;v<Math.min(vn,2);v++){const im=k.spr(n,pl,v),s=Math.min(scale,(cellW-10)/d.w/(Math.min(vn,2)),(cellH-22)/d.h),w=d.w*s,h=d.h*s;g.drawImage(im,x+5+v*(w+4),y+18+(cellH-22-h)/2,w,h);}
    g.fillStyle='#fff';g.fillText(n+' '+pl,x+3,y+3);}));
- rings.forEach((r,i)=>pals.forEach((pl,pi)=>{const im=window.ANUART&&ANUART.ring(r,pl);if(!im)return;const x=(i*pals.length+pi)*250,y=rows*cellH;g.save();g.translate(x+125,y+125);g.scale(1,.62);g.drawImage(im,-120,-120,240,240);g.restore();g.fillStyle='#fff';g.fillText(r+' '+pl,x+4,y+4);}));
+ rings.forEach((r,i)=>pals.forEach((pl,pi)=>{const im=(window.HIPART&&HIPART.ring(r,pl))||(window.ANUART&&ANUART.ring(r,pl));if(!im)return;const x=(i*pals.length+pi)*250,y=rows*cellH;g.save();g.translate(x+125,y+125);g.scale(1,.62);g.drawImage(im,-120,-120,240,240);g.restore();g.fillStyle='#fff';g.fillText(r+' '+pl,x+4,y+4);}));
  return c.toDataURL('image/png');}
 """
 def serve():

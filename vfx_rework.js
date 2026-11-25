@@ -69,7 +69,7 @@ Impact=SoftImpact;GRing=SoftRing;Crack=Fissure;
 if(CHAR==='rhino'){try{PunchBurst=SoftImpact;RhRing=SoftRing;}catch(e){}}
 
 /* =================== RHINO: force, weight, snow =================== */
-if(CHAR!=='rhino')return;
+if(CHAR!=='rhino'||!/[?&]vfx3=0/.test(location.search))return;   /* 2026-11-25: the rhino's own look is rhino_vfx.js now; this pass = ?vfx3=0 */
 /* pressure wave thrown by a punch / carried in front of a charge */
 class PunchWake{
   constructor(o){Object.assign(this,{t:0,life:.24,layer:'top',z:28,L:80,W:26,col:'#dfeeff'},o);}
