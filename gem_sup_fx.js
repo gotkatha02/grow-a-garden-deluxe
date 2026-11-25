@@ -23,6 +23,7 @@
 if(/[?&]gemfx=0/.test(location.search)||!window.GEMFX||!GEMFX.k||!GEMFX.mk)return;
 const {art,put,glow,star4,zig,bolt,PJ,T,CX,ENS,FX,body,onScr,rnd,eOut,TAU,add:_add0,ensureOv,burst}=GEMFX.k;
 const {rl,ellS,gRing,line3,gem,puff,floorWash,phiTo,PL,pz,CH,KY,ST,GroundPulse}=GEMFX.mk;
+const HK=window.HERO_K||1;   /* hero size (HERO_SIZE): pieces over the head follow it */
 const G=n=>{try{return (0,eval)(n);}catch(e){return undefined;}};
 
 /* ---- which skills carry which supports, and how strong (1 = C-gem hole, ½ per skill-hole support — the same sum as totem_gems sw()) ---- */
@@ -100,7 +101,7 @@ class EchoGhost extends Pc{constructor(g,s){super('top',.48);this.g=g;this.s=s;}
 const THC='#ffb13b',THD='#4a2604',THL='#fff0c2';
 let PIPS=null;
 class ThirdPips extends Pc{constructor(n,s){super('top',n>=3?1.0:1.2);this.n=n;this.s=s;}
-  draw(){const c=CX(),p=PL();if(!c||!p)return;const t=this.t,S=this.s,[x,y]=PJ(p.x,p.y,(p.z||0)+84),fade=Math.min(1,(this.life-t)/.28),
+  draw(){const c=CX(),p=PL();if(!c||!p)return;const t=this.t,S=this.s,[x,y]=PJ(p.x,p.y,(p.z||0)+84*HK),fade=Math.min(1,(this.life-t)/.28),
       merge=this.n>=3?Math.max(0,Math.min(1,(t-.4)/.14)):0;
     for(let i=0;i<3;i++){const lit=i<this.n,nw=i===this.n-1,u=nw?Math.min(1,t/.2):1,pop=nw?1+.6*Math.sin(Math.PI*u)*(1-.4*u):1,
         px=x+(i-1)*20*S*(1-merge),py=y-4*merge,r=8.2*S*pop*(1-.5*merge),a=fade*(1-merge);if(a<=.01)continue;
@@ -183,7 +184,7 @@ class QuickClock extends Pc{constructor(s){super('ground',.66);this.s=s;}
     line3(c,[[x,y],[x+Math.cos(h)*R*.88,y+Math.sin(h)*R*.88*KY]],2.6,QKC,QKD,a);gem(c,x,y,2.6,0,QKL,QKD,a);}}
 const TFC='#4aa8ff',TFD='#06224a',TFL='#dff2ff';
 class ThriftRefund extends Pc{constructor(s){super('top',.72);this.s=s;this.g=[0,1,2].map(i=>({a:(i-1)*.62+rnd(-.08,.08),h:rnd(40,48)+(i===1?8:0),spin:rnd(-7,7)}));}
-  draw(){const c=CX(),p=PL();if(!c||!p)return;const t=this.t,S=this.s,[x,y]=PJ(p.x,p.y,CH+18+pz());   /* SP kept: three mana gems jump out over the head and drop back in */
+  draw(){const c=CX(),p=PL();if(!c||!p)return;const t=this.t,S=this.s,[x,y]=PJ(p.x,p.y,CH+18*HK+pz());   /* SP kept: three mana gems jump out over the head and drop back in */
     for(const g of this.g){const u=Math.min(1,t/.56);if(u>=1)continue;const out=Math.sin(Math.PI*u),px=x+Math.sin(g.a)*30*out*S,py=y-g.h*out*S-Math.cos(g.a)*6*out;
       glow(px,py,14*S,TFC,.75);gem(c,px,py,5.4*S,Math.sin(t*g.spin)*.5,'#7cc4ff',TFD,1);star4(px+3*S,py-5*S,5*S*(.6+.4*Math.sin(t*20+g.a)),'#ffffff',.9);}
     if(t<.16){const k=t/.16;glow(x,y,22*S,TFC,.6*(1-k));}
@@ -238,7 +239,7 @@ class ImpactPow extends Pc{constructor(e,s){super('top',.5);const b=body(e);this
 
 /* =============================== buff side: the gems' pictures rise above the hero =============================== */
 class SupRise extends Pc{constructor(ids){super('top',1.05);this.ids=ids;ids.forEach(simg);}
-  draw(){const c=CX(),p=PL();if(!c||!p)return;const t=this.t,k=t/this.life,n=this.ids.length,[x,y]=PJ(p.x,p.y,(p.z||0)+86+16*eOut(k)),a=(t<.12?t/.12:1)*(k>.7?(1-k)/.3:1);
+  draw(){const c=CX(),p=PL();if(!c||!p)return;const t=this.t,k=t/this.life,n=this.ids.length,[x,y]=PJ(p.x,p.y,(p.z||0)+(86+16*eOut(k))*HK),a=(t<.12?t/.12:1)*(k>.7?(1-k)/.3:1);
     this.ids.forEach((id,i)=>{const im=SIMG[id],px=x+(i-(n-1)/2)*23,u=Math.min(1,Math.max(0,(t-i*.06)/.2)),s=u<1?20*eOut(u)*1.2:20*(1.2-.2*Math.min(1,(t-i*.06-.2)/.2));
       if(u<=0)return;glow(px,y,s*1.4,COL[id],.6*a);if(im.complete&&im.naturalWidth){c.save();c.globalAlpha=a;c.drawImage(im,px-s/2,y-s/2,s,s);c.restore();}else gem(c,px,y,s*.22,0,COL[id],'#1a1420',a);});}}
 const DTX=(o)=>{try{_add0(new DText(o));}catch(e){}};

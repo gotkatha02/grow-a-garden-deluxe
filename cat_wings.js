@@ -3,14 +3,15 @@
    wing-only wardrobe. Wing sets come from pwing_data.js (PWING, shared with the wolf). The anchor is the cat's hat centre
    tracked on every atlas frame (window.CAT_HAT from cat_mask.js) + a back offset in hat widths.
    drawGear(e,x,y,layer) is the engine's gear hook (layer 0 = behind the body, 1 = in front): S/SE/E behind, N/NE in front.
-   Saved in af_wings_<CHAR>; the item bonus is added in gearCalc like the wolf's costumes. */
+   Saved in af_wings_<CHAR>; the item bonus is added in gearCalc like the wolf's costumes.
+   2026-11-25 hero sizes: the wings grow with the cat (× HERO_K); the wardrobe preview shows the cat at the standard size. */
 (function(){if(typeof CHAR==='undefined'||CHAR!=='cat'||!window.PWING)return;
 const PW=window.PWING,KEY='af_wings_'+CHAR;let cur=null;try{cur=localStorage.getItem(KEY)||null;if(cur&&!PW[cur])cur=null;}catch(_){}
 const BK={S:[0,.80],SE:[-.10,.78],E:[-.30,.76],NE:[-.10,.66],N:[0,.62]};   /* back point = hat centre + [dx,dy]·hat width (cell px) */
 const IMG={};function img(k,v){const key=k+v;let im=IMG[key];if(!im){im=new Image();im.src=PW[k].dir+v+'.webp';IMG[key]=im;}return im.complete&&im.naturalWidth?im:null;}
 function geom(k,e,x,y,t,moving){const C=PW[k],H=window.CAT_HAT;if(!C||!H)return null;const sd=(SPR_META.mirror&&SPR_META.mirror[e.d])||e.d,mir=isMir(e.d),L=H.HAT[e.st]&&H.HAT[e.st][sd];if(!L)return null;
   const im=img(k,sd);if(!im)return null;const h=L[Math.min(e.f,L.length-1)],hw=H.HW[sd],b=BK[sd]||[0,.75];let ax=h[0]+b[0]*hw;if(mir)ax=SPR_META.cell.w-ax;const ay=h[1]+b[1]*hw;
-  const pv=SPR_META.pivot,sx=x+(ax-pv.x)*SPR,sy=y+(ay-pv.y)*SPR,r=C.root[sd],side=sd==='E',K=SPR/CHAR_SCALE,
+  const pv=SPR_META.pivot,sx=x+(ax-pv.x)*SPR,sy=y+(ay-pv.y)*SPR,r=C.root[sd],side=sd==='E',K=SPR*(window.HERO_K||1)/CHAR_SCALE,
     w=(side?C.span*.42:sd==='S'?C.span:sd==='N'?C.span*.88:sd==='NE'?C.span*.78:C.span*.85)*K,hh=w*im.naturalHeight/im.naturalWidth,
     sp=moving?7:2.6,amp=moving?.16:.07,ph=Math.sin(t*sp),front=sd==='N'||sd==='NE';
   return {front,draw(){ctx.save();ctx.translate(sx,sy);if(mir)ctx.scale(-1,1);const W=im.naturalWidth,rx=r[0]*W,ry=r[1]*im.naturalHeight,q=w/W;
@@ -44,7 +45,7 @@ function build(){const sel=preview!==null?preview:cur;w.innerHTML=`<h3>🪽 ป�
   w.querySelector('#cws').onclick=()=>{wear(preview===null?cur:(preview||null));preview=null;w.classList.remove('open');if(typeof msg==='function')msg('สวมปีกแล้ว');};}
 function draw(){if(!w.classList.contains('open'))return;const cv=document.getElementById('cwcv');if(!cv)return;const g=cv.getContext('2d');g.setTransform(1,0,0,1,0,0);g.clearRect(0,0,cv.width,cv.height);
   const d=DIRS[dir],stt='idle',D2=durs(stt,d),T=D2.reduce((a,b)=>a+b,0);let ms=performance.now()%T,f=0;while(f<D2.length-1&&ms>=D2[f]){ms-=D2[f];f++;}
-  const S=2.0,X=100/S,Y=225/S,old=ctx;ctx=g;g.setTransform(S,0,0,S,0,0);try{g.translate(X,Y);g.scale(CHAR_SCALE,CHAR_SCALE);g.translate(-X,-Y);const e={st:stt,d,f};drawGear(e,X,Y,0,false);drawFrame(e,X,Y,1);drawGear(e,X,Y,1,false);}finally{ctx=old;}}
+  const S=2.0,X=100/S,Y=225/S,old=ctx;ctx=g;g.setTransform(S,0,0,S,0,0);try{g.translate(X,Y);const PK=CHAR_SCALE/(window.HERO_K||1);g.scale(PK,PK);g.translate(-X,-Y);const e={st:stt,d,f};drawGear(e,X,Y,0,false);drawFrame(e,X,Y,1);drawGear(e,X,Y,1,false);}finally{ctx=old;}}
 setInterval(draw,60);
 window.openCatWings=function(){preview=null;build();w.classList.add('open');};
 const panel=document.getElementById('chsel');if(panel){const b=document.createElement('button');b.className='rob';b.id='cwingbtn';b.textContent='🪽 ปีกแฟชั่น';b.style.cssText='margin:6px 0 2px;width:100%';b.onclick=window.openCatWings;panel.after(b);}

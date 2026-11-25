@@ -171,6 +171,7 @@ function straw(x,y,z,n,o={}){const S=sys('top');for(let i=0;i<n;i++){const a=o.d
    --------------------------------------------------------------------- */
 window.K3={V,A,PAL,TAU,cl,eO,eI,eIO,back,lerp,R_,rt,scr,rgba,tint,art,surf,dustTint,KSprite,sprite,KArc,star,KGlint,KLine,KBurst,KRing,ring,KStreak,petals,whirlPetals,embers,dust,stones,straw,ensure};
 if(CHAR!=='cat')return;
+const HZK=window.HERO_K||1;   /* hero size (HERO_SIZE, 2026-11-25): the cat's hand / body pieces follow it */
 const KTV=window.KTV={on:1,PAL,petals,embers,dust,stones,straw};
 const zOf=e=>(e&&e.boss?40:26);
 /* seconds (real) until the i-th contact frame of an action that is running now */
@@ -202,9 +203,9 @@ const every=(k,sec,dt)=>{W.acc[k]=(W.acc[k]||0)+dt;if(W.acc[k]>=sec){W.acc[k]=0;
 /* the hand that holds the sword, good enough for glints and gathering light */
 /* in the iaido stance (atlas state 'charge', 2026-11-24) the power gathers at the paws on the hilt: cell px from the pivot per frame */
 const CHG_HILT=[[-25,97],[-14,88],[-4,76],[6,64],[8,61],[8,61],[8,61],[8,61]];
-const hand=()=>{let fr=null;try{fr=playerFrame();}catch(_){}if(fr&&fr.st==='charge'){const h=CHG_HILT[fr.f]||CHG_HILT[7],m=isMir(fr.d)?-1:1;return [player.x+m*h[0]*SPR,player.y+1,h[1]*SPR+(player.z||0)];}
-  return [player.x+Math.cos(player.phi)*10,player.y+Math.sin(player.phi)*8,44+(player.z||0)];};
-function kumoAt(i,t,front){const an=t*.45+i*TAU/4,sn=Math.sin(an);if((sn>=0)!==front)return;const [x,y]=P(player.x+Math.cos(an)*46,player.y+sn*30,6+3*Math.sin(t*1.7+i));art('kumo',x,y,38+6*sn,{a:W.ki*(front?.9:.7),ay:.8,under:'#3a5a8a',ua:.28,uy:2});}
+const hand=()=>{let fr=null;try{fr=playerFrame();}catch(_){}if(fr&&fr.st==='charge'){const h=CHG_HILT[fr.f]||CHG_HILT[7],m=isMir(fr.d)?-1:1;return [player.x+m*h[0]*SPR*HZK,player.y+1,h[1]*SPR*HZK+(player.z||0)];}
+  return [player.x+Math.cos(player.phi)*10*HZK,player.y+Math.sin(player.phi)*8*HZK,44*HZK+(player.z||0)];};
+function kumoAt(i,t,front){const an=t*.45+i*TAU/4,sn=Math.sin(an);if((sn>=0)!==front)return;const [x,y]=P(player.x+Math.cos(an)*46*HZK,player.y+sn*30*HZK,6+3*Math.sin(t*1.7+i));art('kumo',x,y,(38+6*sn)*HZK,{a:W.ki*(front?.9:.7),ay:.8,under:'#3a5a8a',ua:.28,uy:2});}
 /* ground half (called from the ground layer by KtGroundAura.draw) */
 KTV.groundAura=function(ga,x,y){ensure();if(!W.top||!fx.includes(W.top))W.top=addFx(new KWatchTop());W.ki=ga.ki;W.ash=ga.ash;const t=ga.t,still=typeof ktL==='function'&&ktL('kcStill')>0;
   if(ga.ki>0){const k=ga.ki,c=still?'150,235,200':'190,225,255';ctx.save();ctx.translate(x,y);ctx.scale(1,K);
@@ -261,7 +262,7 @@ KTV.focus=function(){sprite({follow:player,layer:'top',z:96,life:.62,fi:.03,fo:.
 KTV.cloak=function(){straw(player.x,player.y,36,9,{spd:170,up:170});ring({x:player.x,y:player.y,r0:10,r1:46,w:4,pal:PAL.gold,life:.3});};
 /* Nine Lives: nine spirit flames stand round the cat, one goes out */
 KTV.nine=function(){sprite({follow:player,layer:'top',z:0,life:1.25,fi:.05,fo:.3,paint:(f,x,y,s,a)=>{const t=f.t;for(let i=0;i<9;i++){const an=t*2.2+i*TAU/9,sn=Math.sin(an),out=i===0?cl((t-.3)/.22,0,1):0;if(out>=1)continue;
-      const [fx_,fy]=P(player.x+Math.cos(an)*42,player.y+sn*42,6+4*Math.sin(t*9+i));art('hitodamaG',fx_,fy,(13+2*sn)*(1-out),{ay:.9,sy:1+.12*Math.sin(t*14+i*2)+out*.6,a:1-out,under:'#7a4a12',ua:.4});}}});
+      const [fx_,fy]=P(player.x+Math.cos(an)*42*HZK,player.y+sn*42*HZK,6+4*Math.sin(t*9+i));art('hitodamaG',fx_,fy,(13+2*sn)*(1-out)*HZK,{ay:.9,sy:1+.12*Math.sin(t*14+i*2)+out*.6,a:1-out,under:'#7a4a12',ua:.4});}}});
   ring({x:player.x,y:player.y,r0:12,r1:70,w:6,pal:PAL.gold,life:.45});setTimeout(()=>{},0);addFx(new KGlint({x:player.x,y:player.y,z:50,s:26,col:'#ffc23a',life:.3}));
   addFx(new KSprite({x:player.x+42,y:player.y,z:10,life:.5,delay:.3,layer:'top',paint:()=>{}}));dust(player.x+42,player.y,2,{size:22,spd:20,life:.5,tint:'#e8e8f0|#8a8aa8',z:10});};
 
@@ -510,7 +511,7 @@ KTV.HIT.kcLunge=function(e,big){if(!big)return;const z=zOf(e);addFx(new KLine({e
 KTV.stanceOn=function(){const x=player.x,y=player.y;ring({x,y,r0:72,r1:22,w:6,pal:PAL.earth,life:.4,ease:eI,segs:4});stones(x,y,5,{spd:60,up:200});};
 KTV.stanceRelease=function(n,R){const x=player.x,y=player.y;addFx(new KArc({x,y,follow:1,fz:28,phi:player.phi,tilt:.1,a0:-Math.PI,a1:Math.PI,hit:0,lead:.02,sweep:.18,hold:.03,fade:.22,R:R*.88,W:34,pal:PAL.earth,ink:.5,N:48,emb:.6,glint:0}));
   addFx(new KBurst({x,y,z:30,R:60,n:12,pal:PAL.earth,life:.3}));ring({x,y,r0:18,r1:R*1.15,w:9,pal:PAL.earth,life:.45,segs:6,gap:.22});stones(x,y,10,{spd:300,up:260});dust(x,y,7,{ring:24,size:50,spd:110});};
-function orbitStone(i,t,front,k){const an=t*1.5+i*TAU/4,sn=Math.sin(an);if((sn>=0)!==front)return;const im=tx('shard',i%2?'#8a7262':'#6a584c',i),[x,y]=P(player.x+Math.cos(an)*36,player.y+sn*22,14+7*Math.sin(t*2.3+i*1.7)),s=10+2*sn;
+function orbitStone(i,t,front,k){const an=t*1.5+i*TAU/4,sn=Math.sin(an);if((sn>=0)!==front)return;const im=tx('shard',i%2?'#8a7262':'#6a584c',i),[x,y]=P(player.x+Math.cos(an)*36*HZK,player.y+sn*22*HZK,(14+7*Math.sin(t*2.3+i*1.7))*HZK),s=(10+2*sn)*HZK;
   ctx.save();ctx.globalAlpha=k;ctx.translate(x,y);ctx.rotate(t*1.2+i);ctx.drawImage(im,-s/2,-s/2,s,s);ctx.restore();}
 /* Avalanche Rush: the run throws a bow wave of dust and stones to both sides */
 KTV.avalancheRun=function(a,dt,phi,tRun,tEnd){if(!a._kv){a._kv=1;addFx(new KStreak({a:[player.x,player.y],b:[player.x,player.y],live:rt(Math.max(.05,tEnd-a.t)),pal:PAL.earth,w:14,life:.28}));}
@@ -521,7 +522,7 @@ KTV.avalancheSlam=function(R){addFx(new KBurst({x:player.x,y:player.y,z:26,R:64,
 KTV.watch=function(dt){W.sak=cl(W.sak+(hasBuff('kaSakura')?dt*4:-dt*3),0,1);W.st=cl((W.st||0)+(CAT.stance?dt*5:-dt*4),0,1);
   if(W.ash>.5&&every('ash',.11,dt))embers(player.x+R_(-16,16),player.y+R_(-6,6),R_(10,50),1,{spd:20,up:150,life:.7});
   if(hasBuff('kcShadow')&&!(W.cl&&fx.includes(W.cl[0])))W.cl=[addFx(new KClone(-1)),addFx(new KClone(1))];};
-KTV.groundExtra=function(t){const [x,y]=P(player.x,player.y,0);if(W.sak>0)art('blossom',x,y,86,{flat:1,rot:t*.5,a:.5*W.sak});
+KTV.groundExtra=function(t){const [x,y]=P(player.x,player.y,0);if(W.sak>0)art('blossom',x,y,86*HZK,{flat:1,rot:t*.5,a:.5*W.sak});
   if(W.st>0){art('mountain',x,y-3,122,{ay:.93,a:.6*W.st,under:'#2a1a0e',ua:.3});for(let i=0;i<4;i++)orbitStone(i,t,false,W.st);}};
 KTV.topExtra=function(t){if(W.st>0)for(let i=0;i<4;i++)orbitStone(i,t,true,W.st);};
 /* Flow shown as petals under the cat, the lunge mark, and the small texts the old overlay had */

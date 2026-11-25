@@ -25,6 +25,7 @@
    ===================================================================== */
 (()=>{
 if(typeof CHAR==='undefined'||CHAR!=='lion'||!window.K3||!window.VK||!window.KTA||/[?&]vfx3=0/.test(location.search))return;
+const HZK=window.HERO_K||1;   /* hero size (HERO_SIZE, 2026-11-25): hand / body heights of this file's pieces follow it */
 const {PAL,TAU,cl,eO,eI,back,lerp,R_,rt,scr,rgba,tint,art,sprite,star,KGlint,KBurst,KRing,ring,KStreak,KArc,embers,dust,ensure}=window.K3;
 const V=window.VK,{sys,tx,G}=V,A=window.KTA;
 /* palettes: [ink, deep, mid, lite, core] */
@@ -39,7 +40,7 @@ const zOf=e=>e?(e.boss?40:26)+(e.z||0):26;
 const qn2=n=>Math.max(1,Math.round(n*(typeof Q!=='undefined'?Math.max(.4,Q.p):1)));
 const later=(s,f)=>setFxTimer(s,f);
 const fwd=(d,phi=player.phi)=>[player.x+Math.cos(phi)*d,player.y+Math.sin(phi)*d];
-const hand=(phi=player.phi,side=0)=>{const c=Math.cos(phi),s=Math.sin(phi);return [player.x+c*17-s*side,player.y+s*17+c*side,40+(player.z||0)];};
+const hand=(phi=player.phi,side=0)=>{const c=Math.cos(phi),s=Math.sin(phi);return [player.x+(c*17-s*side)*HZK,player.y+(s*17+c*side)*HZK,40*HZK+(player.z||0)];};
 const isBolt=c=>c===LIC.bolt||c===LIC.bolt2||c==='#9adcff'||c==='#e8f8ff';
 const patch=(C,o)=>{if(typeof C!=='function')return;for(const k in o){if(!C.prototype['_'+k+'0'])C.prototype['_'+k+'0']=C.prototype[k];C.prototype[k]=o[k];}};
 const onUpd=(a,f)=>{const u=a.update;a.update=function(Ac,dt){const r=u?u.apply(this,arguments):undefined;try{f(Ac,dt);}catch(e){console.warn('lion fx',e);}return r;};};
@@ -153,7 +154,7 @@ function spirit(x,y,o={}){const z=o.z||72,w=o.w||116;sprite({layer:'ground',foll
 class DShield{constructor(o){Object.assign(this,{t:0,layer:'sorted',T:1,w:44,n:'aegisE',done:()=>false},o);this.flash=0;}
   get sy(){return player.y+Math.sin(player.phi)*16+1;}
   update(dt){this.t+=dt;this.flash=Math.max(0,this.flash-dt*3);if(!this.end&&(this.t>this.T||this.done())){this.end=this.t;}return !this.end||this.t-this.end<.25;}
-  pos(){return [player.x+Math.cos(player.phi)*16,player.y+Math.sin(player.phi)*16,30+(player.z||0)];}
+  pos(){return [player.x+Math.cos(player.phi)*16*HZK,player.y+Math.sin(player.phi)*16*HZK,30*HZK+(player.z||0)];}
   draw(){const t=this.t,g=back(cl(t/.13,0,1)),f=this.end?cl((t-this.end)/.25,0,1):0,[x,y]=P(...this.pos()),a=1-f,w=this.w*g*(1+this.flash*.25);if(a<=.01)return;
     glow(x,y,w*1.1,'#ffd23a',(.3+.6*this.flash)*a);art(this.n,x,y,w,{a,under:'#3a2206',ua:.3});if(this.flash>0){ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha=this.flash*.8;art(this.n,x,y,w,{});ctx.restore();}}}
 /* the arena of Labors of Heracles: Doric columns rise round the circle, a Greek-key ring on the floor */
@@ -218,11 +219,11 @@ patch(LiArc,{draw(){const k=this.t/this.life,a=1-k,[x0,y0]=P(this.a[0],this.a[1]
     ctx.save();ctx.globalCompositeOperation='lighter';band(q,w,[[2.4,'#1f4fae',.38*a]]);ctx.globalCompositeOperation='source-over';band(q,w,[[1,BLT[2],a],[.5,BLT[3],a],[.22,'#ffffff',a]]);ctx.restore();glow(x1,y1,20,BLT[2],.5*a);}});
 
 /* the lion's ground layer: storm-cloud shadow (+ Thunderhead's crackling mist), Laurel Crown ring, Laurel Rest glow, back halves (grip, eagle guard, wings) */
-const AETOS=(t)=>{const an=t*3;return [player.x+Math.cos(an)*44,player.y+Math.sin(an)*26,(player.z||0)+64,Math.sin(an),an];};
+const AETOS=(t)=>{const an=t*3;return [player.x+Math.cos(an)*44*HZK,player.y+Math.sin(an)*26*HZK,(player.z||0)+64*HZK,Math.sin(an),an];};
 function drawAetos(t,front){if(!hasBuff('lbAetos'))return;const [x,y,z,s,an]=AETOS(t);if((s>0)!==front)return;const [sx,sy]=P(x,y,z);glow(sx,sy,18,'#ffd86a',.4);
   art(Math.floor(t/.08)%2?'eagle1':'eagle0',sx,sy,34,{sx:Math.cos(an+Math.PI/2)<0?-1:1});}
-function drawWings(t,front){if(!hasBuff('lcAscend')||front)return;const a=bA('lcAscend'),[x,y]=P(player.x,player.y,(player.z||0)+46),fl=Math.sin(t*3)*.12;
-  glow(x,y-6,60,'#ffd86a',.22*a);art('wing',x+6,y,70,{ax:.1,ay:.85,rot:-.15+fl,a:a*.92});art('wing',x-6,y,70,{ax:.1,ay:.85,sx:-1,rot:.15-fl,a:a*.92});}
+function drawWings(t,front){if(!hasBuff('lcAscend')||front)return;const a=bA('lcAscend'),[x,y]=P(player.x,player.y,(player.z||0)+46*HZK),fl=Math.sin(t*3)*.12;
+  glow(x,y-6*HZK,60*HZK,'#ffd86a',.22*a);art('wing',x+6*HZK,y,70*HZK,{ax:.1,ay:.85,rot:-.15+fl,a:a*.92});art('wing',x-6*HZK,y,70*HZK,{ax:.1,ay:.85,sx:-1,rot:.15-fl,a:a*.92});}
 patch(LiGround,{draw(){const t=this.t,C=LI.cloud;
     if(C){const [x,y]=P(C.x,C.y,0),a=cl((gameTime-(C._t0||(C._t0=gameTime)))/.3,0,1)*cl((C.until-gameTime)/.4,0,1);ctx.save();ctx.translate(x,y);ctx.scale(1,K);const g=ctx.createRadialGradient(0,0,0,0,0,C.R);g.addColorStop(0,'rgba(20,28,56,.42)');g.addColorStop(1,'rgba(20,28,56,0)');
       ctx.globalAlpha=a;ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,C.R,0,TAU);ctx.fill();if(C.slow){ctx.globalCompositeOperation='lighter';ctx.strokeStyle='#5ac8ff';ctx.lineWidth=1.6;ctx.globalAlpha=.35*a;ctx.setLineDash([6,10]);ctx.lineDashOffset=-t*30;ctx.beginPath();ctx.arc(0,0,C.R*.92,0,TAU);ctx.stroke();}ctx.restore();
@@ -252,9 +253,9 @@ patch(LiTop,{update(dt){const r=this._update0(dt);try{this.acc=(this.acc||0)+dt;
       if(Math.random()<.25)zaps(ax+R_(-R,R)*.8,ay-R_(10,R),1,12,BLT[3],.8);for(let i=0;i<LI.aegis;i++)art('aegisE',ax+(i-(LI.aegis-1)/2)*16,ay-R*1.15-6,14,{a:.95});}else LV3.aeg=0;
     drawAetos(t,true);
     /* Overcharge: crackling blue on the body; Olympian Ascension: gold crackle */
-    if(hasBuff('lbOver')||hasBuff('lcAscend')){const asc=hasBuff('lcAscend'),[bx,by]=P(player.x,player.y,(player.z||0)+38);glow(bx,by,46,asc?'#ffd86a':BLT[2],.2+.07*Math.sin(t*9));if(Math.random()<.5)zaps(bx+R_(-16,16),by+R_(-30,20),1,18,asc?'#fff3a0':BLT[3],.9);}
+    if(hasBuff('lbOver')||hasBuff('lcAscend')){const asc=hasBuff('lcAscend'),[bx,by]=P(player.x,player.y,(player.z||0)+38*HZK);glow(bx,by,46*HZK,asc?'#ffd86a':BLT[2],.2+.07*Math.sin(t*9));if(Math.random()<.5)zaps(bx+R_(-16,16),by+R_(-30,20),1,18,asc?'#fff3a0':BLT[3],.9);}
     /* Nemean Hide: the gold of the lion's pelt shimmering on the body */
-    if(hasBuff('lnHide')){const a=bA('lnHide'),[bx,by]=P(player.x,player.y,(player.z||0)+36);glow(bx,by,40,'#ffc23a',(.18+.06*Math.sin(t*7))*a);}
+    if(hasBuff('lnHide')){const a=bA('lnHide'),[bx,by]=P(player.x,player.y,(player.z||0)+36*HZK);glow(bx,by,40*HZK,'#ffc23a',(.18+.06*Math.sin(t*7))*a);}
     /* Laurel Rest: a green-gold wreath turning over the head, healing light rising */
     if(hasBuff('lnRest')){const a=bA('lnRest'),[lx,ly]=P(player.x,player.y,pz-6);art('laurel',lx,ly,46,{flat:1,rot:t*.8,a:a*.95});}
     /* Laurel Crown: the gold crown worn on the head */
@@ -311,7 +312,7 @@ function installMk(){
       punches(a,1,(i,lead)=>fistTo(tgt,lead,{n:'fistB',pal:BLT,w:up?50:44,side:(player.basicIdx%2?7:-7),z0:up?10:null,dz:up?14:0,big:up}),.07);}catch(e){console.warn('lion basic fx',e);}return a;};mkBasic._lv=1;}
   /* ---- Basic ---- */
   wrapMk('lnPounce',(a,c)=>{const sx=player.x,sy=player.y;a.events.push({t:.012,f:()=>{addFx(new KStreak({a:[sx,sy],b:[player.x,player.y],z:40,w:6,life:.22,pal:['#5a3a10','#d8a040','#ffe08a','#fff6d8','#ffffff'],ink:.25,live:rt(.32)}));dust(sx,sy,5,{spd:90,size:34,life:.5,dir:player.phi+Math.PI,spread:.8});}});
-    onUpd(a,Ac=>{if(Ac.t<.3&&Math.random()<.35)leaves(player.x,player.y,(player.z||0)+30,1,{spd:30,up:20,g:120});});});
+    onUpd(a,Ac=>{if(Ac.t<.3&&Math.random()<.35)leaves(player.x,player.y,(player.z||0)+30*HZK,1,{spd:30,up:20,g:120});});});
   wrapMk('lnHide',(a)=>{gather({T:Math.max(.05,rt(a.windup)),pal:GLD,R:34,s:1.2});});
   wrapMk('lnRest',(a)=>{gather({T:Math.max(.05,rt(a.windup)),pal:LAU,R:30});});
   wrapMk('lnRoar',(a)=>{gather({T:Math.max(.05,rt(a.windup)),pal:GLD,R:36,s:1.3});});

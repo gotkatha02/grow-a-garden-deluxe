@@ -13,6 +13,7 @@
    ===================================================================== */
 (()=>{
 if(typeof CHAR==='undefined'||CHAR!=='kitsune'||!window.K3||!window.KTA||/[?&]vfx3=0/.test(location.search))return;
+const HZK=window.HERO_K||1;   /* hero size (HERO_SIZE, 2026-11-25): hand / body heights of this file's pieces follow it */
 const {V,PAL,TAU,cl,eO,eI,back,lerp,R_,rt,scr,art,tint,sprite,KArc,star,KGlint,KBurst,KRing,ring,KStreak,petals,embers,dust,stones,ensure}=window.K3;
 /* palettes: [ink, deep, mid, lite, core] */
 const FP=['#4a0c30','#d83a8c','#ff7ab8','#ffd0ea','#ffffff'],FB=['#102a5a','#3a8fe0','#7ad8ff','#d8f6ff','#ffffff'],MN=['#221e52','#6a6ae0','#a9b6ff','#e6ecff','#ffffff'],
@@ -23,7 +24,7 @@ const {sys}=V,A=window.KTA;
 function sparks(x,y,z,n,o={}){const S=sys('top'),p=o.p||FP,q=Math.max(1,Math.round(n*(typeof Q!=='undefined'?Math.max(.5,Q.p):1)));for(let i=0;i<q;i++){const im=A.get((p===FB?'wispB':'wispP')+(i%2));if(!im)return;const a=R_(0,TAU),v=R_(.3,1)*(o.spd==null?120:o.spd);
     S.add({im,asp:1.6,x:x+R_(-4,4),y:y+R_(-3,3),z:z+R_(-4,6),vx:Math.cos(a)*v,vy:Math.sin(a)*v*.7,vz:R_(.4,1)*(o.up==null?150:o.up),dr:2.2,g:-60,s0:R_(6,10)*(o.s||1),s1:1.5,life:R_(.32,.6),fi:.03,fo:.5,a0:1,delay:R_(0,.05)});}}
 const wisp=p=>(p===FB?'wispB':'wispP')+(((gameTime*11)|0)%2);
-const tip=()=>{const s=player.socket&&player.socket.w;return s&&isFinite(s[0])&&isFinite(s[2])?[s[0],s[1],s[2]]:[player.x+Math.cos(player.phi)*12,player.y+Math.sin(player.phi)*9,56+(player.z||0)];};
+const tip=()=>{const s=player.socket&&player.socket.w;return s&&isFinite(s[0])&&isFinite(s[2])?[s[0],s[1],s[2]]:[player.x+Math.cos(player.phi)*12*HZK,player.y+Math.sin(player.phi)*9*HZK,56*HZK+(player.z||0)];};
 const zOf=e=>(e&&e.boss?40:26);
 const KIV=window.KIV={on:1};
 if(window.TV&&TV.toonHeroes)TV.toonHeroes.delete('kitsune');
@@ -169,8 +170,8 @@ const hash=(a,b)=>{const s=Math.sin(a*12.9898+b*78.233)*43758.5453;return s-Math
 let MIR=null,AWK=null;
 function orbit(n,R,ry,z,spd,t,front,draw){for(let i=0;i<n;i++){const an=t*spd+i*TAU/n,sn=Math.sin(an);if((sn>=0)!==front)continue;const [x,y]=P(player.x+Math.cos(an)*R,player.y+sn*ry,z+(player.z||0));draw(x,y,i,sn,an);}}
 function sharedRings(t,front){
-  if(KI.shield>0&&KI.shieldUntil>gameTime)orbit(3,30,19,34,1.5,t,front,(x,y,i,sn)=>art('ofuda',x,y+3*Math.sin(t*3+i),11+1.5*sn,{rot:.12*Math.sin(t*2+i),under:GD[0],ua:.4}));
-  if(kL('kaWisp'))orbit(2,34,20,44,2.6,t,front,(x,y,i)=>art('wispB'+((((t*10)|0)+i)%2),x,y,13,{ay:.75,under:FB[0],ua:.3}));
+  if(KI.shield>0&&KI.shieldUntil>gameTime)orbit(3,30*HZK,19*HZK,34*HZK,1.5,t,front,(x,y,i,sn)=>art('ofuda',x,y+3*Math.sin(t*3+i),11+1.5*sn,{rot:.12*Math.sin(t*2+i),under:GD[0],ua:.4}));
+  if(kL('kaWisp'))orbit(2,34*HZK,20*HZK,44*HZK,2.6,t,front,(x,y,i)=>art('wispB'+((((t*10)|0)+i)%2),x,y,13,{ay:.75,under:FB[0],ua:.3}));
   if(hasBuff('kaVeil'))orbit(10,KB.kaVeil.R,KB.kaVeil.R*.8,0,.9,t,front,(x,y,i)=>art('wispP'+((((t*9)|0)+i)%2),x,y+2,15,{ay:.96,sy:1+.18*Math.sin(t*15+i*2),under:front?null:FP[0],ua:.3}));}
 KIV.ground=function(g){ensure();const t=gameTime,T=KI.torii,C=KI.circle;
   if(T){const [x,y]=P(T.x,T.y,0),R=KB.knTorii.R,a=cl((gameTime-(T.t0||0))/.3,0,1)*cl((T.until-gameTime)/.4,0,1);ctx.save();ctx.translate(x,y);ctx.scale(1,K);ctx.globalAlpha=a;const gr=ctx.createRadialGradient(0,0,R*.3,0,0,R);gr.addColorStop(0,'rgba(232,68,44,0)');gr.addColorStop(1,'rgba(232,68,44,.16)');ctx.fillStyle=gr;ctx.beginPath();ctx.arc(0,0,R,0,TAU);ctx.fill();
@@ -182,8 +183,8 @@ KIV.ground=function(g){ensure();const t=gameTime,T=KI.torii,C=KI.circle;
   for(const p of KI.petals){const a=cl((p.until-gameTime)/.4,0,1);for(let i=0;i<5;i++){const h1=hash(p.x+i,p.y),h2=hash(p.y,p.x+i*3),[x,y]=P(p.x+(h1-.5)*p.R*1.5,p.y+(h2-.5)*p.R*1.1,0);art('petal'+(i%3),x,y,9,{flat:1,rot:h1*6,a:a*.9});}}
   for(const l of KI.lanterns){const [x,y]=P(l.x,l.y,0);ctx.save();ctx.globalAlpha=.3;ctx.fillStyle='#2a1a1a';ctx.beginPath();ctx.ellipse(x,y,9,3.6,0,0,TAU);ctx.fill();ctx.globalAlpha=.3+.08*Math.sin(t*6+l.x);ctx.fillStyle='#ffb070';ctx.beginPath();ctx.ellipse(x,y,22,9,0,0,TAU);ctx.fill();ctx.restore();}
   const M=KI.mirror;if(M){const [x,y]=P(M.x,M.y,0);ctx.save();ctx.globalAlpha=.28;ctx.fillStyle='#14102a';ctx.beginPath();ctx.ellipse(x,y,15,6,0,0,TAU);ctx.fill();ctx.restore();}
-  if(kAwake()&&!(AWK&&AWK.end==null&&AWK.t<1e9&&fx.includes(AWK))){const [x,y]=P(player.x,player.y-6,6+(player.z||0));art('tails',x,y,128,{ay:.96,a:.62+.08*Math.sin(t*5),rot:.03*Math.sin(t*2.2),under:FP[0],ua:.2});}
-  if(hasBuff('kbMoonlight')){const [x,y]=P(player.x,player.y-4,74+(player.z||0));art('moonC',x,y,58,{a:.7,rot:-.5,under:MN[0],ua:.25});}
+  if(kAwake()&&!(AWK&&AWK.end==null&&AWK.t<1e9&&fx.includes(AWK))){const [x,y]=P(player.x,player.y-6,6+(player.z||0));art('tails',x,y,128*HZK,{ay:.96,a:.62+.08*Math.sin(t*5),rot:.03*Math.sin(t*2.2),under:FP[0],ua:.2});}
+  if(hasBuff('kbMoonlight')){const [x,y]=P(player.x,player.y-4,74*HZK+(player.z||0));art('moonC',x,y,58*HZK,{a:.7,rot:-.5,under:MN[0],ua:.25});}
   sharedRings(t,false);return true;};
 KIV.top=function(tp){const t=gameTime,pz=(player.z||0)+92*(typeof CHAR_SCALE==='number'?CHAR_SCALE:1),[x,y]=P(player.x,player.y,pz);
   /* the tails she has lit, as small fox fires over her head */

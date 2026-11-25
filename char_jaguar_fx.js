@@ -91,7 +91,7 @@ function installJaguarFx(){if(CHAR!=='jaguar')return;JXF.forEach(jxImg);
      (s2r) is not scaled, so it is scaled here — liveSocket (weapon trail, glints, embers at the blade) and headR (the slash arcs of
      slashAt / spriteSlash) both go through s2r. HUD portrait = her head from the front view (index.html drawPortrait). */
   if(typeof JAG_ART!=='undefined'&&JAG_ART&&typeof JAG_SPR_META!=='undefined'&&JAG_SPR_META.cell.w===720&&!window.__JG_S2R){window.__JG_S2R=1;
-    if(typeof s2r==='function'&&CHAR_SCALE!==1){const S0=s2r;s2r=function(p,d,x,y){const r=S0(p,d,x,y),k=CHAR_SCALE;return [x+(r[0]-x)*k,y+(r[1]-y)*k];};}
+    {const KB=CHAR_SCALE/(window.SOCK_K||1);if(typeof s2r==='function'&&Math.abs(KB-1)>1e-6){const S0=s2r;s2r=function(p,d,x,y){const r=S0(p,d,x,y),k=KB;return [x+(r[0]-x)*k,y+(r[1]-y)*k];};}}   /* s2r already carries the hero-size part (SOCK_K, 2026-11-25) → only the atlas part here */
     try{const hf=new Image();hf.src='assets/heroes/jaguar/face.webp?v=1';window.HUD_FACE=hf;hf.onload=()=>{try{drawPortrait();}catch(_){}};}catch(_){}}
   /* strikes: painted slash per strike */
   if(typeof jgStrikes==='function'){const _s=jgStrikes;jgStrikes=function(o){const aft=o.after;o=Object.assign({},o,{after:(a,hit,i,last)=>{try{const [n,w]=jxStrikePiece(o.key,i,last);

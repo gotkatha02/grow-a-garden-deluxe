@@ -15,6 +15,6 @@ for k, th, name, i, frac in PICK:
     dpr = inf['DPR']
     rowY = frac * inf['VH'] * dpr - TOP if frac else (sp['row'][1] - sp['cam'][1] * inf['K']) * inf['Z'] * dpr + inf['VH'] * dpr / 2 - TOP
     a = np.array(im).astype(float); col = lambda p: '#%02x%02x%02x' % tuple(int(v) for v in p.mean((0, 1)))
-    out.append(dict(k=k, th=th, map=inf['map'], src='bg/%s.webp' % k, w=im.width, h=im.height, z=inf['Z'] * dpr, rowY=round(rowY, 1), charK=inf['charK'], cf=inf['cf'], ct=col(a[:40]), cb=col(a[-40:])))
+    out.append(dict(k=k, th=th, map=inf['map'], src='bg/%s.webp' % k, w=im.width, h=im.height, z=inf['Z'] * dpr, rowY=round(rowY, 1), charK=1, cf=inf['cf'], ct=col(a[:40]), cb=col(a[-40:])))
     print(k, im.size, round(rowY, 1), inf['charK'])
 json.dump(out, open(WORK + '/bgs.json', 'w'), ensure_ascii=False)

@@ -24,6 +24,7 @@
    ===================================================================== */
 (()=>{
 if(typeof CHAR==='undefined'||CHAR!=='croc'||!window.K3||!window.KTA||/[?&]vfx3=0/.test(location.search))return;
+const HZK=window.HERO_K||1;   /* hero size (HERO_SIZE, 2026-11-25): hand / body heights of this file's pieces follow it */
 const {V,TAU,cl,eO,eI,back,lerp,R_,rt,tint,art,sprite,star,KGlint,KBurst,KRing,ring,KArc,embers,dust,stones,ensure}=window.K3;
 const {sys,tx}=V,AR=window.KTA;
 const TEMPO=()=>(typeof ACTION_TEMPO==='number'&&ACTION_TEMPO>0)?ACTION_TEMPO:.75;
@@ -39,7 +40,7 @@ const aKey=()=>{const a=player.action;return a?(a.key||''):'';};
 const sang=phi=>Math.atan2(Math.sin(phi)*K,Math.cos(phi));          /* a world direction as an angle on screen */
 const later=(s,f)=>setFxTimer(s,f);                                   /* game clock: pauses with hit-stop */
 /* the hands (where a thrust starts): a little in front of the chest */
-const hands=(phi=player.phi)=>[player.x+Math.cos(phi)*9,player.y+Math.sin(phi)*9,30+(player.z||0)];
+const hands=(phi=player.phi)=>[player.x+Math.cos(phi)*9*HZK,player.y+Math.sin(phi)*9*HZK,30*HZK+(player.z||0)];
 const brOf=k=>{const s=SKILLS[k];if(!s)return 'basic';if(s.br!=='C')return s.br;const d=(typeof CRX_DEFS!=='undefined'&&CRX_DEFS.find(x=>x.key===k));return d&&d.col||'basic';};
 
 /* ---------------------------------------------------------------------
@@ -384,12 +385,12 @@ hook('caSunpiercer',(a,c)=>{const ev=a.events,tA=(ev.find(e=>e.t>.05&&e.t<.8)||{
     addFx(new KBurst({x,y,z:30,R:70,n:14,pal:PAL.gold,life:.32,ink:.5}));ring({x,y,r0:14,r1:120,w:8,pal:PAL.gold,life:.5,segs:6,gap:.2});chips(x,y,20,10,{spd:260,up:280});dust(x,y,8,{ring:26,size:50,spd:120,life:.8});});});
 
 /* ---- Obsidian Rain: a leap, a jade streak behind; the spear is driven into the ground and black glass erupts round it ---- */
-function rainPlunge(){const x=player.x,y=player.y,z0=(player.z||0)+64;sprite({layer:'top',life:.16,fi:.01,fo:.06,paint:(f)=>{const k=eI(cl(f.t/.08,0,1)),[ax,ay]=P(x,y,z0),[bx,by]=P(x,y,Math.max(0,z0*(1-k)-6));
+function rainPlunge(){const x=player.x,y=player.y,z0=(player.z||0)+64*HZK;sprite({layer:'top',life:.16,fi:.01,fo:.06,paint:(f)=>{const k=eI(cl(f.t/.08,0,1)),[ax,ay]=P(x,y,z0),[bx,by]=P(x,y,Math.max(0,z0*(1-k)-6));
   ctx.save();for(const [w,c,al] of [[9,PAL.jade[0],.4],[6,PAL.jade[1],.9],[3.6,PAL.jade[2],1],[1.4,'#fff',1]]){ctx.globalAlpha=al;ctx.strokeStyle=c;ctx.lineWidth=w;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(ax,ay);ctx.lineTo(bx,by);ctx.stroke();}ctx.restore();
   art('spear',bx,by,40,{rot:Math.PI/2,ax:.985,ay:.5,under:'#031c17',ua:.4});}});}
 hook('caRain',(a,c)=>{const tL=a.windup,gx=c.gx!=null?c.gx:player.x,gy=c.gy!=null?c.gy:player.y;
   at(a,.01,()=>{const pts=[],T=rt(tL);dust(player.x,player.y,4,{size:30,spd:70,life:.6});
-    sprite({layer:'top',life:T+.3,fi:.01,fo:.25,paint:(f)=>{if(f.t<=T)pts.push([player.x,player.y,(player.z||0)+34,f.t]);const n=pts.length;if(n<2)return;ctx.save();ctx.lineCap='round';ctx.lineJoin='round';
+    sprite({layer:'top',life:T+.3,fi:.01,fo:.25,paint:(f)=>{if(f.t<=T)pts.push([player.x,player.y,(player.z||0)+34*HZK,f.t]);const n=pts.length;if(n<2)return;ctx.save();ctx.lineCap='round';ctx.lineJoin='round';
       for(const [w,c,al] of [[13,PAL.jade[0],.3],[9,PAL.jade[1],.85],[5.5,PAL.jade[2],1],[2,'#ffffff',1]]){ctx.strokeStyle=c;for(let i=Math.max(1,n-14);i<n;i++){const q0=pts[i-1],q1=pts[i],age=f.t-q1[3],k=(i-(n-14))/14;ctx.globalAlpha=al*cl(1-age/.35,0,1)*cl(k,0,1);ctx.lineWidth=w*cl(k,.15,1);
         const [x0,y0]=P(q0[0],q0[1],q0[2]),[x1,y1]=P(q1[0],q1[1],q1[2]);ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x1,y1);ctx.stroke();}}ctx.restore();}});});
   at(a,tL+.001,()=>{const x=player.x,y=player.y;for(let i=0;i<9;i++){const an=i/9*TAU+R_(-.2,.2),r=R_(30,72);addFx(new ObsSpike({x:x+Math.cos(an)*r,y:y+Math.sin(an)*r*.8,h:R_(30,52),w:R_(12,18),life:R_(.8,1.1),delay:r/72*.06,lean:Math.cos(an)*.45}));}
@@ -433,7 +434,7 @@ hook('cbDrag',(a,c)=>{const e=tgtOf(a,c)||ctgt(c,170);at(a,a.windup+.002,()=>{if
 /* ---- buffs: Defensive Scales (scutes close round the croc), River Stride (water at the feet), Iron Jaws (iron jaws clang shut twice),
         Feeding Frenzy (blood pulse, red eyes), Ancient Maw Awakening (the Cipactli spirit) ---- */
 function scaleShell(gold){const S=[];for(let i=0;i<8;i++)S.push({an:i/8*TAU,r0:R_(70,90)});const draw=(f,front)=>{const t=f.t,k=eO(cl(t/.26,0,1)),fl=cl((t-.24)/.12,0,1);
-    for(const q of S){const an=q.an+t*1.6,sn=Math.sin(an);if((sn>=0)!==front)continue;const r=lerp(q.r0,27,k),[x,y]=P(player.x+Math.cos(an)*r,player.y+sn*r*.9,10+16*k);
+    for(const q of S){const an=q.an+t*1.6,sn=Math.sin(an);if((sn>=0)!==front)continue;const r=lerp(q.r0,27,k)*HZK,[x,y]=P(player.x+Math.cos(an)*r,player.y+sn*r*.9,(10+16*k)*HZK);
       art(gold?'scuteG':'scute',x,y,15+3*sn,{sx:.55+.45*Math.abs(Math.cos(an)),under:'#0a1208',ua:.35});if(fl>0&&fl<1){ctx.globalCompositeOperation='lighter';star(x,y-2,9*Math.sin(Math.PI*fl),'#f4ffd8',0);ctx.globalCompositeOperation='source-over';}}};
   sprite({layer:'ground',follow:player,life:.62,fi:.03,fo:.2,paint:f=>draw(f,false)});sprite({layer:'top',follow:player,life:.62,fi:.03,fo:.2,paint:f=>draw(f,true)});
   ring({x:player.x,y:player.y,r0:12,r1:44,w:5,pal:gold?PAL.gold:PAL.jade,life:.4,segs:6,gap:.25,delay:.22});}
@@ -458,7 +459,7 @@ const W={acc:{},sc0:0,anc0:0,maw0:0};const every=(k,s,dt)=>{W.acc[k]=(W.acc[k]||
 class CWatchGround{constructor(){this.layer='ground';this.t=0;}update(dt){this.t+=dt;return CHAR==='croc';}
   draw(){const t=this.t;
     /* Defensive Scales: a faint ring of scutes stays at the feet while the next hit is guarded; Ancient Scales: gold */
-    for(const [b,n] of [['crScales','scute'],['crAncient','scuteG']])if(hasBuff(b))for(let i=0;i<6;i++){const an=t*.9+i*TAU/6,sn=Math.sin(an),[x,y]=P(player.x+Math.cos(an)*24,player.y+sn*21,3);art(n,x,y,11+2*sn,{flat:1,a:.55,rot:an});}
+    for(const [b,n] of [['crScales','scute'],['crAncient','scuteG']])if(hasBuff(b))for(let i=0;i<6;i++){const an=t*.9+i*TAU/6,sn=Math.sin(an),[x,y]=P(player.x+Math.cos(an)*24*HZK,player.y+sn*21*HZK,3);art(n,x,y,11+2*sn,{flat:1,a:.55,rot:an});}
     /* Feeding Frenzy: blood mist curls at the feet */
     if(hasBuff('crFeast')){const [x,y]=P(player.x,player.y,0);ctx.save();ctx.translate(x,y);ctx.scale(1,K);const g=ctx.createRadialGradient(0,0,4,0,0,46);g.addColorStop(0,'rgba(200,20,30,.32)');g.addColorStop(1,'rgba(200,20,30,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,46,0,TAU);ctx.fill();ctx.restore();}}}
 class CWatchTop{constructor(){this.layer='top';this.t=0;}
@@ -490,5 +491,5 @@ if(typeof CrOverlay!=='undefined')CrOverlay.prototype.draw=function(){const t=th
   for(const e of enemies){if(e.dead||!isOff(e))continue;const [x,y]=P(e.x,e.y,(e.boss?70:48));for(let i=0;i<3;i++){const an=t*6+i*TAU/3,sn=Math.sin(an);star(x+Math.cos(an)*13,y+sn*4,4+1.4*sn,'#ffb030',an);}}
   if(hasBuff('crMaw')&&player.socket&&player.socket.head){const [hx,hy]=player.socket.head,sd=dirSide(player.dir);ctx.save();ctx.globalCompositeOperation='lighter';
     for(const o of [-3,3]){const g=ctx.createRadialGradient(hx+sd*6+o,hy-2,0,hx+sd*6+o,hy-2,7);g.addColorStop(0,'rgba(255,210,90,.95)');g.addColorStop(1,'rgba(255,140,30,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(hx+sd*6+o,hy-2,7,0,TAU);ctx.fill();}
-    ctx.restore();const [x,y]=P(player.x,player.y,0);for(let i=0;i<4;i++){const u=(t*.8+i/4)%1,yy=y-26-u*40,xx=x-sd*(6+i*2);ctx.save();ctx.globalAlpha=Math.sin(Math.PI*u)*.8;art('scuteG',xx,yy,7,{});ctx.restore();}}};
+    ctx.restore();const [x,y]=P(player.x,player.y,0);for(let i=0;i<4;i++){const u=(t*.8+i/4)%1,yy=y-(26+u*40)*HZK,xx=x-sd*(6+i*2)*HZK;ctx.save();ctx.globalAlpha=Math.sin(Math.PI*u)*.8;art('scuteG',xx,yy,7,{});ctx.restore();}}};
 })();

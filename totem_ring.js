@@ -156,15 +156,15 @@ class RingFx{constructor(o){Object.assign(this,{t:0,layer:'top'},o);this.life=LI
 function fxAt(kind,x,y,o){try{addFx(new RingFx(Object.assign({kind,x,y},o||{})));}catch(e){}}
 /* lasting looks: bear-hide shield, owl eye ready, eagle circling, charge sparks, spirit wolves */
 class RingAura{constructor(){this.layer='top';this.t=0;}update(dt){this.t+=dt;return true;}
-  draw(){if(!ANY())return;const t=this.t,X=ctx;try{X.save();
-    if(RS.sh>0&&now()<RS.shT){const [sx,sy]=P(player.x,player.y,40),f=Math.max(.25,RS.sh/Math.max(1,RS.shMax));X.globalAlpha=.22+.18*f;X.fillStyle='#d89a5a';X.beginPath();X.ellipse(sx,sy,34,46,0,0,7);X.fill();
-      X.globalAlpha=.75*f+.2;X.strokeStyle='#7a4a22';X.lineWidth=2.6;X.setLineDash([6,4]);X.lineDashOffset=-t*20;X.beginPath();X.ellipse(sx,sy,34,46,0,0,7);X.stroke();X.setLineDash([]);}
-    const head=(a,dy,sz,al,bob)=>{const im=artImg(a);if(!im.complete||!im.naturalWidth)return;const [sx,sy]=P(player.x,player.y,118+dy+(bob?Math.sin(t*3)*4:0));X.globalAlpha=al;artFit(X,im,sx,sy,sz,sz);};
+  draw(){if(!ANY())return;const t=this.t,X=ctx,HK=window.HERO_K||1;try{X.save();   /* HK: the pieces round the hero follow its size (HERO_SIZE) */
+    if(RS.sh>0&&now()<RS.shT){const [sx,sy]=P(player.x,player.y,40*HK),f=Math.max(.25,RS.sh/Math.max(1,RS.shMax));X.globalAlpha=.22+.18*f;X.fillStyle='#d89a5a';X.beginPath();X.ellipse(sx,sy,34*HK,46*HK,0,0,7);X.fill();
+      X.globalAlpha=.75*f+.2;X.strokeStyle='#7a4a22';X.lineWidth=2.6;X.setLineDash([6,4]);X.lineDashOffset=-t*20;X.beginPath();X.ellipse(sx,sy,34*HK,46*HK,0,0,7);X.stroke();X.setLineDash([]);}
+    const head=(a,dy,sz,al,bob)=>{const im=artImg(a);if(!im.complete||!im.naturalWidth)return;const [sx,sy]=P(player.x,player.y,(118+dy)*HK+(bob?Math.sin(t*3)*4:0));X.globalAlpha=al;artFit(X,im,sx,sy,sz,sz);};
     if(A.owlNight&&RS.owlArm)head('owl',0,30,.85,1);
-    if(A.eagleSwoop&&RS.swoopArm){const im=artImg('eagle');if(im.complete&&im.naturalWidth){const an=t*2.2,[sx,sy]=P(player.x+Math.cos(an)*46,player.y+Math.sin(an)*20,150);X.globalAlpha=.85;artFit(X,im,sx,sy,34,34);}}
-    if(A.tbCharge&&RS.tbStk>0){for(let i=0;i<RS.tbStk;i++){const an=t*3+i*2.09,[sx,sy]=P(player.x+Math.cos(an)*22,player.y+Math.sin(an)*10,70);X.globalAlpha=.9;X.fillStyle='#ffd23a';X.strokeStyle='#3a1f14';X.lineWidth=1.4;
+    if(A.eagleSwoop&&RS.swoopArm){const im=artImg('eagle');if(im.complete&&im.naturalWidth){const an=t*2.2,[sx,sy]=P(player.x+Math.cos(an)*46*HK,player.y+Math.sin(an)*20*HK,150*HK);X.globalAlpha=.85;artFit(X,im,sx,sy,34,34);}}
+    if(A.tbCharge&&RS.tbStk>0){for(let i=0;i<RS.tbStk;i++){const an=t*3+i*2.09,[sx,sy]=P(player.x+Math.cos(an)*22*HK,player.y+Math.sin(an)*10*HK,70*HK);X.globalAlpha=.9;X.fillStyle='#ffd23a';X.strokeStyle='#3a1f14';X.lineWidth=1.4;
         X.beginPath();X.moveTo(sx,sy-7);X.lineTo(sx-4,sy+1);X.lineTo(sx,sy+1);X.lineTo(sx-2,sy+8);X.lineTo(sx+5,sy-1);X.lineTo(sx+1,sy-1);X.closePath();X.fill();X.stroke();}}
-    if(A.wolfPack&&RS.packStk>0&&now()<RS.packT){const [gx,gy]=P(player.x,player.y,0);X.globalAlpha=.6;X.strokeStyle='#a8c8ff';X.lineWidth=2;for(let i=0;i<RS.packStk;i++){X.beginPath();X.ellipse(gx,gy,26+i*8,(26+i*8)*KY(),0,t*2+i,t*2+i+2.2);X.stroke();}}
+    if(A.wolfPack&&RS.packStk>0&&now()<RS.packT){const [gx,gy]=P(player.x,player.y,0);X.globalAlpha=.6;X.strokeStyle='#a8c8ff';X.lineWidth=2;for(let i=0;i<RS.packStk;i++){X.beginPath();X.ellipse(gx,gy,(26+i*8)*HK,(26+i*8)*HK*KY(),0,t*2+i,t*2+i+2.2);X.stroke();}}
     for(const w of RS.wolves){const im=artImg('wolf');if(!im.complete||!im.naturalWidth)continue;const [sx,sy]=P(w.x,w.y,26+Math.abs(Math.sin(t*9+w.x))*6),al=Math.min(1,(w.until-now())*2);
       X.globalAlpha=.25*al;X.fillStyle='#a8c8ff';X.beginPath();X.ellipse(sx,sy+22,18,7,0,0,7);X.fill();X.globalAlpha=.82*al;artFit(X,im,sx,sy,48,48,w.fl&&RU.SPIRIT_HAVE.has('wolf'));}
     X.restore();}catch(err){}}}

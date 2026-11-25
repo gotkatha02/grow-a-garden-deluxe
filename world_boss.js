@@ -305,7 +305,7 @@ class AllyFx{constructor(a){this.a=a;this.layer='sorted';this.sy=a.y;this.t=0;}
     drawFrame(fe,x,y,al*(a.flash>0?.95:.8),null,img);
     if(a.flash>0||a.healT>0){ctx.globalCompositeOperation='lighter';drawFrame(fe,x,y,al*.35*Math.max(a.flash,a.healT>0?.6:0),null,img);ctx.globalCompositeOperation='source-over';}
     ctx.restore();
-    const hy=y-(MAP_CHAR*CHAR_SCALE*78)-6;ctx.save();ctx.globalAlpha=al;ctx.fillStyle=col;ctx.strokeStyle='#241808';ctx.lineWidth=1.2;
+    const hy=y-(MAP_CHAR*CHAR_SCALE*(window.META_K||1)*78)-6;ctx.save();ctx.globalAlpha=al;ctx.fillStyle=col;ctx.strokeStyle='#241808';ctx.lineWidth=1.2;
     ctx.beginPath();ctx.moveTo(x,hy-5);ctx.lineTo(x+4,hy);ctx.lineTo(x,hy+5);ctx.lineTo(x-4,hy);ctx.closePath();ctx.fill();ctx.stroke();
     if(a.hp<a.maxHp&&!a.dead){const w=26,k=a.hp/a.maxHp;ctx.fillStyle='rgba(0,0,0,.55)';ctx.fillRect(x-w/2,hy+7,w,3.5);ctx.fillStyle=k>.35?'#7ae08a':'#ff6a5a';ctx.fillRect(x-w/2+.5,hy+7.5,(w-1)*k,2.5);}
     ctx.restore();}}

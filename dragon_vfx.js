@@ -26,6 +26,7 @@
    ===================================================================== */
 (()=>{
 if(typeof CHAR==='undefined'||CHAR!=='dragon'||!window.K3||!window.VK||!window.KTA||/[?&]vfx3=0/.test(location.search))return;
+const HZK=window.HERO_K||1;   /* hero size (HERO_SIZE, 2026-11-25): hand / body heights of this file's pieces follow it */
 const {PAL,TAU,cl,eO,eI,back,lerp,R_,rt,scr,rgba,tint,art,sprite,star,KGlint,KBurst,KRing,ring,KStreak,KArc,embers,dust,stones,ensure}=window.K3;
 const stonesFx=(x,y,n)=>{try{stones(x,y,n,{spd:200,up:240,s:.9,col:'#8a8276'});}catch(_){}};
 const V=window.VK,{sys,tx,G}=V,A=window.KTA;
@@ -44,7 +45,7 @@ const qn2=n=>Math.max(1,Math.round(n*(typeof Q!=='undefined'?Math.max(.4,Q.p):1)
 const later=(s,f)=>setFxTimer(s,f);
 const fwd=(d,phi=player.phi)=>[player.x+Math.cos(phi)*d,player.y+Math.sin(phi)*d];
 /* the hands: a little in front of the chest (side = sideways offset, + is the right hand when facing the target) */
-const hand=(phi=player.phi,side=0)=>{const c=Math.cos(phi),s=Math.sin(phi);return [player.x+c*17-s*side,player.y+s*17+c*side,38+(player.z||0)];};
+const hand=(phi=player.phi,side=0)=>{const c=Math.cos(phi),s=Math.sin(phi);return [player.x+(c*17-s*side)*HZK,player.y+(s*17+c*side)*HZK,38*HZK+(player.z||0)];};
 const famOf=c=>c===DGC.cloud||c==='#e8e0ff'?'cloud':c===DGC.thunder?'thunder':c===DGC.gold?'gold':c===DGC.azure?'azure':'sea';
 const PF={sea:SEA,cloud:CLD,thunder:THU,gold:GLD,azure:AZU,jade:JAD,stone:STN};
 const patch=(C,o)=>{if(typeof C!=='function')return;for(const k in o){if(!C.prototype['_'+k+'0'])C.prototype['_'+k+'0']=C.prototype[k];C.prototype[k]=o[k];}};
@@ -174,7 +175,7 @@ class DDome{constructor(o){Object.assign(this,{t:0,layer:'sorted',w:118,T:2},o);
 class DShield{constructor(o){Object.assign(this,{t:0,layer:'sorted',T:1,w:46},o);this.flash=0;this.used=DG.guardUsed;}
   get sy(){return player.y+Math.sin(player.phi)*16+1;}
   update(dt){this.t+=dt;if(DG.guardUsed&&!this.used){this.used=1;this.flash=1;this.block();}this.flash=Math.max(0,this.flash-dt*3);return this.t<this.T+.25;}
-  pos(){return [player.x+Math.cos(player.phi)*16,player.y+Math.sin(player.phi)*16,30+(player.z||0)];}
+  pos(){return [player.x+Math.cos(player.phi)*16*HZK,player.y+Math.sin(player.phi)*16*HZK,30*HZK+(player.z||0)];}
   block(){const [x,y,z]=this.pos();addFx(new KBurst({x,y,z,R:40,n:12,life:.26,pal:GLD,ink:.4}));const S=sys('top');G.flare(S,x,y,z,90,'#ffd23a',.28);umes(x,y,z,6,{spd:170,up:150});
     ring({x:player.x,y:player.y,r0:12,r1:70,w:7,pal:GLD,life:.32,segs:4,gap:.25});if(dL('dcStone'))this.stone=1;}
   draw(){const t=this.t,g=back(cl(t/.13,0,1)),f=cl((t-this.T)/.25,0,1),[x,y]=P(...this.pos()),a=(1-f),w=this.w*g*(1+this.flash*.25);if(a<=.01)return;
@@ -263,14 +264,14 @@ patch(DgArc,{draw(){const k=this.t/this.life,a=1-k,mir=hasBuff('dkMirror')&&Math
 
 /* the dragon's ground layer: clouds (+ rain ripples), Mirror Pond, Still Mind, and what is behind the dragon (pearls, coil, flames, the sovereign cloud) */
 const ORB={n:0},RAIN=[],RIP=[];let lastStorm=null,lastWall=null,lastMael=null,coilOn=0,orbsSeen=0;
-function orbPos(i,t){const an=t*2.4+i*TAU/DG_BAL.orb.cap;return [player.x+Math.cos(an)*30,player.y+Math.sin(an)*18,(player.z||0)+44+3*Math.sin(an*2+t),Math.sin(an)];}
+function orbPos(i,t){const an=t*2.4+i*TAU/DG_BAL.orb.cap;return [player.x+Math.cos(an)*30*HZK,player.y+Math.sin(an)*18*HZK,(player.z||0)+(44+3*Math.sin(an*2+t))*HZK,Math.sin(an)];}
 function drawOrbs(t,front){for(let i=0;i<DG.orbs;i++){const [x,y,z,s]=orbPos(i,t);if((s>0)!==front)continue;const [sx,sy]=P(x,y,z);
     for(let j=1;j<=3;j++){const [tx0,ty0,tz0]=orbPos(i,t-j*.045),[qx,qy]=P(tx0,ty0,tz0);glow(qx,qy,9-j*1.5,'#c8b8ff',.25*(1-j/4));}glow(sx,sy,15,'#c8b8ff',.5);art('pearl',sx,sy,17,{rot:t*2});}}
-function coilPts(i,t){const pts=[];for(let j=0;j<=12;j++){const an=-t*3+i*Math.PI+j*.17,x=player.x+Math.cos(an)*40,y=player.y+Math.sin(an)*26,z=(player.z||0)+38+6*Math.sin(an*2+t*3);pts.push({x,y,z,front:Math.sin(an)>0,an});}return pts;}
+function coilPts(i,t){const pts=[];for(let j=0;j<=12;j++){const an=-t*3+i*Math.PI+j*.17,x=player.x+Math.cos(an)*40*HZK,y=player.y+Math.sin(an)*26*HZK,z=(player.z||0)+(38+6*Math.sin(an*2+t*3))*HZK;pts.push({x,y,z,front:Math.sin(an)>0,an});}return pts;}
 function drawCoil(t,front){const on=hasBuff('dkCoil');if(!on)return;const a=cl((player.buffs.dkCoil?player.buffs.dkCoil.t:1)/.4,0,1);
   for(let i=0;i<2;i++){const p=i?CLD:AZU,pts=coilPts(i,t);for(const R of runs(pts,q=>q.front===front)){const q=R.map(o=>P(o.x,o.y,o.z)).map(s=>[s[0],s[1]]),w=R.map(o=>{const j=pts.indexOf(o);return 1+4.5*(1-j/12);});ctx.save();band(q,w,tones(p,a*.85));ctx.restore();}
     const h=pts[0];if(h.front===front){const [x,y]=P(h.x,h.y,h.z),n=pts[1],[x2,y2]=P(n.x,n.y,n.z),ang=Math.atan2(y-y2,x-x2);glow(x,y,14,p[2],.4*a);art(i?'dheadC':'dhead',x,y,28,{rot:ang,sy:Math.cos(ang)<0?-1:1,ax:.3,a});}}}
-function drawFlames(t,front){if(!hasBuff('dcAwaken'))return;const b=player.buffs.dcAwaken,a=cl((b?b.t:1)/.5,0,1),[hx,hy]=P(player.x,player.y,(player.z||0)+60);
+function drawFlames(t,front){if(!hasBuff('dcAwaken'))return;const b=player.buffs.dcAwaken,a=cl((b?b.t:1)/.5,0,1),[hx,hy]=P(player.x,player.y,(player.z||0)+60*HZK);
   if(front){glow(hx,hy,46,'#4ab8ff',(.18+.06*Math.sin(t*8))*a);return;}
   for(let i=0;i<7;i++){const an=-Math.PI/2+(i-3)*.46,r=15+2.5*Math.sin(t*9+i),x=hx+Math.cos(an)*r,y=hy+Math.sin(an)*r*.8,s=(.75+.3*Math.abs(Math.sin(t*(7+i)+i*1.7)))*(i%2?.8:1);art('flameB',x,y,9*s,{rot:an+Math.PI/2+.25*Math.sin(t*5+i),ay:.9,a:a*.72});}}
 function drawSovereign(front){if(!hasBuff('dcSovereign'))return;const b=player.buffs.dcSovereign,a=cl((b?b.t:1)/.4,0,1)*cl((gameTime-(DV.sovT||0))/.25,0,1),[x,y]=P(player.x,player.y,0),t=gameTime;
@@ -295,7 +296,7 @@ patch(DgTop,{update(dt){const r=this._update0(dt);
     for(const c of DG.clouds){if(!c.rain)continue;const n=dt*60;for(let i=0;i<n*Q.p;i++){const a=R_(0,TAU),d=c.R*Math.sqrt(Math.random())*.95;RAIN.push({x:c.x+Math.cos(a)*d,y:c.y+Math.sin(a)*d*.8,z:R_(80,110),v:R_(480,560)});}}
     for(let i=RAIN.length-1;i>=0;i--){const d=RAIN[i];d.z-=d.v*dt;if(d.z<=0){if(Math.random()<.4)RIP.push({x:d.x,y:d.y,t:0});RAIN.splice(i,1);}}if(RAIN.length>500)RAIN.splice(0,RAIN.length-500);
     for(let i=RIP.length-1;i>=0;i--){RIP[i].t+=dt;if(RIP[i].t>.3)RIP.splice(i,1);}return r;},
-  draw(){const t=this.t,pz=(player.z||0)+80;
+  draw(){const t=this.t,pz=(player.z||0)+80*HZK;
     /* Flow 0–5: drops of sea above the head (gold rim while Ocean Never Rests holds it full) */
     if(DG.flow>0){const [x,y]=P(player.x,player.y,pz),lock=DG.flowLock>gameTime;for(let i=0;i<DG_BAL.flow.cap;i++){const on=i<DG.flow,px=x+(i-2)*10,py=y+Math.abs(i-2)*2.2,s=on&&i===DG.flow-1?1+(DG.flowPop||0)*.5:1;
         if(on){glow(px,py,9,lock?'#ffd23a':'#2fa8f0',.5);art('drop',px,py,8.5*s,{under:'#04203a',ua:.5});}else{ctx.save();ctx.globalAlpha=.45;const im=tint('drop','#0a1a2a');if(im)ctx.drawImage(im,px-3.6,py-5.1,7.2,10.2);ctx.restore();}}}

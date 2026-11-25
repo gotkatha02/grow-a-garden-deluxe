@@ -206,30 +206,31 @@ function drawAt(g,key,x,y,s,t,hero){const au=AU[key];if(!au)return;drawFloor(g,a
 let cur=null;try{cur=localStorage.getItem(KEY)||null;if(cur&&!AU[cur])cur=null;}catch(_){}
 const FORCE=(location.search.match(/[?&]aura=([a-z]+)/)||[])[1];if(FORCE&&AU[FORCE])cur=FORCE;
 const SC=()=>{const b=SPR_BASE*MAP_CHAR;return (typeof SPR==='number'&&SPR>0?SPR:b)/b;};   /* towns with charK draw heroes bigger: the aura follows */
+const SCH=()=>SC()*(window.HERO_K||1);   /* in the world the aura also follows the hero's own size (HERO_SIZE, 2026-11-25); previews show the standard size */
 const live=()=>!!(cur&&AU[cur]&&!window.__AURA_OFF);
 function heroA(){if(!player||player.dead||player.hp<=0)return 0;let a=1;try{if(typeof JH==='function'&&JH('jgPlayerAlpha'))a=jgPlayerAlpha();}catch(_){}return Math.max(0,Math.min(1,a));}
 class AuraGround{constructor(){this.layer='ground';this.__gt='-';}update(){return live();}
-  draw(){const au=AU[cur],a=heroA();if(!au||a<=.01)return;const [x,y]=P(player.x,player.y,0);drawFloor(ctx,au,x,y,SC(),gameTime,a*Math.max(0,1-(player.z||0)/80));}}
+  draw(){const au=AU[cur],a=heroA();if(!au||a<=.01)return;const [x,y]=P(player.x,player.y,0);drawFloor(ctx,au,x,y,SCH(),gameTime,a*Math.max(0,1-(player.z||0)/80));}}
 class AuraBody{constructor(side){this.layer='sorted';this.side=side;this.__gt='-';this.sy=player.y+side*.6;}
   update(){this.sy=player.y+this.side*.6;return live();}
-  draw(){const au=AU[cur],a=heroA();if(!au||a<=.01)return;const [x,y]=P(player.x,player.y,0);au.body(ctx,x,y,player.z||0,SC(),gameTime,this.side,a);}}
+  draw(){const au=AU[cur],a=heroA();if(!au||a<=.01)return;const [x,y]=P(player.x,player.y,0);au.body(ctx,x,y,player.z||0,SCH(),gameTime,this.side,a);}}
 /* ---- walk trail ---- */
 class TrPetal{constructor(x,y,ux,uy,sd){this.layer='sorted';this.__gt='-';this._aurT=1;const o=rnd(4,11);this.x=x-ux*6-uy*sd*o;this.y=y-uy*6+ux*sd*o;this.sy=this.y;this.t=0;
     this.z0=rnd(26,50);this.T1=rnd(.8,1.1);this.T2=1.25;this.r0=rnd(0,TA);this.vr=(Math.random()<.5?-1:1)*rnd(1.6,3.2);this.ph=rnd(0,TA);this.im=Math.random()<.35;}
   update(dt){this.t+=dt;if(this.t>=this.T1)this.layer='ground';return this.t<this.T1+this.T2&&live();}
-  draw(){const s=SC(),im=this.im?T.petD:T.pet;
+  draw(){const s=SCH(),im=this.im?T.petD:T.pet;
     if(this.t<this.T1){const k=this.t/this.T1,[x,y]=P(this.x+Math.sin(this.t*3.4+this.ph)*5*s*(1-k*.6),this.y,this.z0*s*Math.pow(1-k,1.15));
       spr(ctx,im,x,y,8.5*s,this.r0+this.vr*this.t,Math.cos(this.t*4.6+this.ph),Math.min(1,this.t/.12));}
     else{const k=(this.t-this.T1)/this.T2,[x,y]=P(this.x+Math.sin(this.T1*3.4+this.ph)*5*s*.4,this.y,0),w=8.5*s,h=w*im.uh/im.uw;
       ctx.save();ctx.globalAlpha=.95*Math.pow(1-k,.8);ctx.translate(x,y);ctx.scale(1,K);ctx.rotate(this.r0+this.vr*this.T1);ctx.drawImage(im,-w/2,-h/2,w,h);ctx.restore();}}}
 class TrEmber{constructor(x,y,ux,uy,sd){this.layer='ground';this.__gt='-';this._aurT=1;this.x=x-uy*sd*4.5;this.y=y+ux*sd*4.5;this.t=0;this.T=1.35;this.rot=Math.atan2(uy,ux);this.ph=rnd(0,TA);}
   update(dt){this.t+=dt;return this.t<this.T&&live();}
-  draw(){const s=SC(),k=this.t/this.T,[x,y]=P(this.x,this.y,0),w=14*s,hh=w*14/18;ctx.save();ctx.translate(x,y);ctx.scale(1,K);ctx.rotate(this.rot);ctx.globalAlpha=Math.pow(1-k,.7)*Math.min(1,this.t/.08);ctx.drawImage(T.scorch,-w/2,-hh/2,w,hh);ctx.restore();
+  draw(){const s=SCH(),k=this.t/this.T,[x,y]=P(this.x,this.y,0),w=14*s,hh=w*14/18;ctx.save();ctx.translate(x,y);ctx.scale(1,K);ctx.rotate(this.rot);ctx.globalAlpha=Math.pow(1-k,.7)*Math.min(1,this.t/.08);ctx.drawImage(T.scorch,-w/2,-hh/2,w,hh);ctx.restore();
     const fk=1-this.t/1.05;if(fk>0)for(let i=0;i<2;i++){const h=(8-i*2.4)*s*Math.pow(fk,.8)*(1+.15*Math.sin(this.t*14+i*2+this.ph));sprB(ctx,T.flame,x+(i?3:-2.5)*s,y+(i?.8:-.6)*s,h*.56,h,Math.min(1,fk*1.6),i);}
     const ek=(this.t-.1)/1;if(ek>0&&ek<1)spr(ctx,T.spark,x+Math.sin(this.t*5+this.ph)*3*s,y-ek*34*s,5.4*s*(1-ek*.5),0,1,Math.pow(1-ek,.8));}}
 class TrFrost{constructor(x,y,ux,uy,sd){this.layer='ground';this.__gt='-';this._aurT=1;this.x=x-uy*sd*4.5;this.y=y+ux*sd*4.5;this.t=0;this.T=1.9;this.rot=rnd(0,TA);}
   update(dt){this.t+=dt;return this.t<this.T&&live();}
-  draw(){const s=SC(),k=this.t/this.T,[x,y]=P(this.x,this.y,0),pop=Math.min(1,this.t/.14),sc=.55+.45*pop+.08*Math.sin(Math.min(1,this.t/.3)*Math.PI),w=12*s*sc;
+  draw(){const s=SCH(),k=this.t/this.T,[x,y]=P(this.x,this.y,0),pop=Math.min(1,this.t/.14),sc=.55+.45*pop+.08*Math.sin(Math.min(1,this.t/.3)*Math.PI),w=12*s*sc;
     ctx.save();ctx.translate(x,y);ctx.scale(1,K);ctx.rotate(this.rot);ctx.globalAlpha=Math.pow(1-k,.9)*pop;ctx.drawImage(T.fprint,-w/2,-w/2,w,w);ctx.restore();
     if(this.t<.4){const p=Math.sin(this.t/.4*Math.PI);spr(ctx,T.glint,x,y-3*s,7*s*p,0,1,p);}}}
 let G=null,B0=null,B1=null,last=null,lastMap,stepSide=1;

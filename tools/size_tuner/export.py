@@ -28,8 +28,10 @@ HEROES = [
  ('lion','สิงโต','Olympian Lion','กรีก',('pic','assets/heroes/lion/select.webp',None)),
  ('drake','มังกรไฟ','Forgeborn Drake','กรีก',('atlas','assets_drake.js','DRK_',1.55)),
 ]
-# 'now' = what the game shows today, as a height relative to the standard (hippo: CHAR_SCALE 1.39 x HERO_SIZE .9 = 1.57 x .80)
-NOW = {'wolf':1.4,'axolotl':.85,'hippo':round(.9*1.39/1.57,2)}
+# 'now' = what the game shows today, as a height relative to the standard = index.html HERO_SIZE (every CHAR_SCALE base draws the standard height)
+import re as _re
+_m = _re.search(r'const HERO_SIZE=\{([^}]*)\}', open(REPO + '/index.html', encoding='utf-8').read())
+NOW = {k: float(v) for k, v in _re.findall(r'(\w+):([\d.]+)', _m.group(1))} if _m else {}
 def key_green(im):
     a = np.array(im.convert('RGBA')).astype(np.float32)
     r,g,b = a[...,0],a[...,1],a[...,2]

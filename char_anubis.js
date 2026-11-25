@@ -201,8 +201,8 @@ class UTop{constructor(){this.t=0;this.layer='top';}update(dt){this.t+=dt;ANU.mo
     const c=ANU.cond;if(c&&!c.dead&&ANU.sin>0){const [cx,cy]=P(c.x,c.y,(c.boss?72:52)*(c.sc||1));for(let i=0;i<ANU.sin;i++){const px=cx-8+i*8;uGlow(px,cy,7,UC.blue,.6);ctx.fillStyle='#d8e8ff';ctx.fillRect(px-1.5,cy-3-ANU.sinPop*2,3,6);}}
     const s=ANU.spin;if(s){for(let i=0;i<2;i++){const a=this.t*16+i*Math.PI;uChain(player.x,player.y,player.x+Math.cos(a)*s.R*.8,player.y+Math.sin(a)*s.R*.8,30);uBall(player.x+Math.cos(a)*s.R*.8,player.y+Math.sin(a)*s.R*.8,30,s.wheel?14:9,s.wheel?UC.sun:UC.gold);}if(s.wheel)uGlow(x,y+50,s.R*.6,UC.sun,.18);}
     for(const D of ANU.devils){const [dx,dy]=P(D.x,D.y,30);ctx.save();ctx.strokeStyle=hexA(UC.sand,.8);ctx.lineWidth=3;for(let i=0;i<4;i++){ctx.beginPath();ctx.ellipse(dx,dy-i*12,16+i*6,6+i*2,0,this.t*8+i,this.t*8+i+4.4);ctx.stroke();}ctx.restore();}
-    if(ANU.shield>0&&ANU.shieldUntil>gameTime){const [sx,sy]=P(player.x,player.y,36);ctx.save();ctx.strokeStyle=hexA('#f4ead2',.8);ctx.lineWidth=2;ctx.setLineDash([6,4]);ctx.beginPath();ctx.arc(sx,sy-6,38,this.t*2,this.t*2+TAU);ctx.stroke();ctx.restore();}
-    if(ANU.guard>0&&ANU.guardUntil>gameTime){const [gx,gy]=P(player.x,player.y,30);ctx.save();ctx.strokeStyle=hexA(UC.gold,.8);ctx.lineWidth=3;ctx.setLineDash([3,3]);ctx.beginPath();ctx.arc(gx,gy,44,this.t*6,this.t*6+TAU);ctx.stroke();ctx.restore();}
+    if(ANU.shield>0&&ANU.shieldUntil>gameTime){const HZ=window.HERO_K||1,[sx,sy]=P(player.x,player.y,36*HZ);ctx.save();ctx.strokeStyle=hexA('#f4ead2',.8);ctx.lineWidth=2;ctx.setLineDash([6,4]);ctx.beginPath();ctx.arc(sx,sy-6*HZ,38*HZ,this.t*2,this.t*2+TAU);ctx.stroke();ctx.restore();}
+    if(ANU.guard>0&&ANU.guardUntil>gameTime){const HZ=window.HERO_K||1,[gx,gy]=P(player.x,player.y,30*HZ);ctx.save();ctx.strokeStyle=hexA(UC.gold,.8);ctx.lineWidth=3;ctx.setLineDash([3,3]);ctx.beginPath();ctx.arc(gx,gy,44*HZ,this.t*6,this.t*6+TAU);ctx.stroke();ctx.restore();}
     if(uAvatar())uGlow(x,y+40,56,UC.gold,.25+.1*Math.sin(this.t*8));
     if(ANU.gateT>gameTime)uGlow(x,y+50,40,'#3a1a5a',.5);}}
 class UCore{constructor(){this.t=0;this.layer='none';this.tk=0;}draw(){}

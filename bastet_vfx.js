@@ -61,7 +61,7 @@ const CS=()=>typeof CHAR_SCALE==='number'?CHAR_SCALE:1;
    CHAR_SCALE× about her feet but the engine's live socket is not scaled, so it is scaled here (the hand glow and every piece that
    starts at tip() then sit on the flame / the palm). Without her sprite: the placeholder's weapon socket, as before. */
 const OWN=typeof BST_ART!=='undefined'&&!!BST_ART;
-if(OWN&&typeof liveSocket==='function'){const LS0=liveSocket;liveSocket=function(){const s=LS0.apply(this,arguments),k=CS();if(!s||k===1)return s;
+if(OWN&&typeof liveSocket==='function'){const LS0=liveSocket;liveSocket=function(){const s=LS0.apply(this,arguments),k=CS()/(window.SOCK_K||1);if(!s||Math.abs(k-1)<1e-6)return s;   /* s2r already carries the hero-size part (SOCK_K) */
   const [x,y]=P(player.x,player.y,player.z||0),f=q=>[x+(q[0]-x)*k,y+(q[1]-y)*k],head=f(s.head),grip=f(s.grip);return {head,grip,w:r2w(head),inner:[(head[0]+grip[0])/2,(head[1]+grip[1])/2]};};}
 /* her painted sprite has fine detail: the coloured rim the engine draws round the hero during an action (player.glow) is softened ×.45,
    as the dragon / lion do (the hand glow at the socket stays) */

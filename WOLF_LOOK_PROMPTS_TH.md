@@ -9,7 +9,9 @@
 
 **2026-11-25 08:34 คลิปมาแล้ว 19 คลิป → ร่างใหม่อยู่ในเกมแล้ว** (`assets_wolf.js`, ดู CLAUDE.md 'Wolf sprite BUILT') · ขาดคลิปฟันขวานเฉียงหลัง (NE): ทิศนั้นยืมท่าฟันด้านข้างแบบเดิม · หน้าในช่อง HUD = `assets/heroes/wolf/face.webp` (จากภาพยืนหน้าตรง) · แฟชั่น: เจ้าของบอก 'แฟชั่นไม่ต้องใส่ ใส่แค่ปีก' → ร่างใหม่ใส่ได้แค่ปีก (หมวก / หน้า / ไหล่ / ผ้าคลุม / ของติดหลัง / สกินขวาน / สีขน-สีชุดปิด)
 
-**เลือกแล้ว 2026-11-24 20:28: แบบ 1 ทายาทเฟนรีร์** ("เอาอันนี้ เก็บภาพซ้ายไว้ด้วย จะเอาไปทำภาพในหน้าเลือกตัวละคร") → ชีต `assets/heroes/wolf/sheet_fenrir_heir.webp` · ภาพใหญ่ด้านซ้ายตัดพื้นออกแล้ว `assets/heroes/wolf/bigpose_fenrir_heir.webp` และเป็นภาพหน้าเลือกตัวแล้ว (`select.webp`) · หน้าตา + พรอมต์ภาพยืน 5 มุม: หัวข้อ 'เลือกแล้ว' ท้ายไฟล์ · คลิปท่า 20 ตัว: `WOLF_CLIP_PROMPTS_TH.md` · ภาพยืน 5 มุมครบแล้ว (20:50 สี่มุม + 20:57 มุมเฉียงหลัง → `assets/heroes/wolf/view_S|SE|E|NE|N.webp`) · ภาพตั้งต้นส่งครบ 5 ทิศแล้ว → รอคลิป 20 อัน
+**เลือกแล้ว 2026-11-24 20:28: แบบ 1 ทายาทเฟนรีร์** ("เอาอันนี้ เก็บภาพซ้ายไว้ด้วย จะเอาไปทำภาพในหน้าเลือกตัวละคร") → ชีต `assets/heroes/wolf/sheet_fenrir_heir.webp` · ภาพใหญ่ด้านซ้ายตัดพื้นออกแล้ว `assets/heroes/wolf/bigpose_fenrir_heir.webp` และเป็นภาพหน้าเลือกตัวแล้ว (`select.webp`) · หน้าตา + พรอมต์ภาพยืน 5 มุม: หัวข้อ 'เลือกแล้ว' ท้ายไฟล์ · คลิปท่า 20 ตัว: `WOLF_CLIP_PROMPTS_TH.md` · ภาพยืน 5 มุมครบแล้ว (20:50 สี่มุม + 20:57 มุมเฉียงหลัง → `assets/heroes/wolf/view_S|SE|E|NE|N.webp`) · ภาพตั้งต้นส่งครบ 5 ทิศแล้ว → รอคลิป 20 อัน · **ร่างชิบิ 2026-11-25 11:10:** เจ้าของวาดชุดเดิมใหม่เป็นสัดส่วนชิบิ (`assets/heroes/wolf/sheet_fenrir_chibi.webp`) → พรอมต์ภาพยืน 5 มุมเว้นที่ว่างไว้ทำอนิเมชัน: หัวข้อ 'ร่างชิบิ' ท้ายไฟล์
+
+**ชุดขั้น 2 แยกสาย A / B (2026-11-25 12:03):** เจ้าของขอชุดเลื่อนขั้นตามสาย → 4 แบบ (A1 ผู้คลั่งศึกแห่งวัลฮัลลา · A2 นักล่าจันทร์เลือด · B1 ปราชญ์รูนพายุ · B2 กวีอัสนี) ส่งกล่องพรอมต์ในแชตแล้ว รอภาพ: หัวข้อ 'ชุดขั้น 2' ท้ายไฟล์
 
 ## หมาป่าผูกกับลุคเดิมมากกว่าทุกตัว
 - **สไปร์ท `assets.js`** เป็นร่างของหมาป่า และเป็นร่างชั่วคราวของอีก 5 ตัว (จิ้งจอก อนูบิส สิงโต จระเข้ อีกา) · ความสูงของหมาป่าเป็นไม้บรรทัดของฮีโร่ทุกตัว (`CHAR_SCALE` วัดเทียบหมาป่า)
@@ -248,3 +250,269 @@ Picture 5 — BACK view: his back faces us, like the back view on the sheet: the
 3. **สไปร์ทจากคลิป** — `cliphero.py` → **ไฟล์ใหม่ `assets_wolf.js`** โหลดเฉพาะตอนเล่นหมาป่า (`assets.js` เดิมไม่แตะ = ร่างชั่วคราวของจิ้งจอก อนูบิส สิงโต จระเข้ อีกา) · เวลาเฟรมเท่า `assets.js` ทุกทิศ = ดาเมจ / จังหวะไม่เปลี่ยน (ตารางอยู่ท้าย `WOLF_CLIP_PROMPTS_TH.md`) · ตัวยืนสูงบนจอเท่าเดิม (ไม้บรรทัดของทุกตัว)
 4. **ของที่ผูกกับสไปร์ท** — ตำแหน่งหัวขวานทุกเฟรม (เอฟเฟกต์ฟันขวาน) · จุดหัว / หลัง / มือของแฟชั่น แล้วจูนหมวก ปีก ผ้าคลุมทีละชิ้น · หน้ากากสีขน / สีชุดตอนสร้างตัว (ทำใหม่ หรือซ่อนไว้ก่อน) · หน้า HUD (ตัดหัวจากภาพหน้าตรง)
 5. **ทีหลัง** — ไอคอนสกิล 63 + พื้นหลังผังสกิล 4 ภาพ + ภาพหน้าโหลด 7 ภาพที่มีหมาป่า ตามลุคใหม่ · ท่านั่ง 8 ทิศ
+
+## ร่างชิบิ (2026-11-25 11:10)
+- เจ้าของส่งชีตใหม่ + "ชอบเีไซน์แบบนี้ ขอพร้อมให้ chat gpt ทำรูปทีละมุมพื้นหลังเขียวกับเว้นพื้นที่เอาไว้ทำอนิเมชั่นให้มันขยับได้หน่อย" → ชีตเก็บที่ `assets/heroes/wolf/sheet_fenrir_chibi.webp` (1536×1024 พื้นครีม: ภาพใหญ่ซ้าย + ภาพหมุนรอบตัว หน้า / ข้าง / หลัง ไม่มีท่าสู้)
+- เป็นชุดเดิมของทายาทเฟนรีร์ วาดใหม่เป็นสัดส่วนชิบิ (หัวโต ตัวสั้น ตาโต) = แก้เรื่องลายเส้น / สัดส่วนผู้ใหญ่ที่ไม่เข้ากับฮีโร่ตัวอื่น (ร่างในเกมตอนนี้ต้องขยาย ×1.4 ให้หัวเท่าตัวอื่น) · ไม่มีสีเขียวบนตัว (นับแล้ว 0 จุด) → ตัดพื้นเขียวได้ปลอดภัย
+
+**หน้าตาตามที่วาดออกมา:**
+- **หัว:** หมาป่าเต็มตัว ขนขาวฟู เงาชมพูม่วงอ่อน · หูตั้งใหญ่ ในหูชมพู · ตาฟ้าน้ำแข็งโต เงา คิ้วเข้มคม · จมูกดำเล็ก · ยิ้มมั่นใจปิดปาก · แผลเป็นสีแดงพาดคิ้วเหนือ **ตาขวา** (ภาพหน้าตรงอยู่ฝั่งซ้ายของภาพ)
+- **เปีย:** เส้นเล็กขาว ลูกปัดเงินกลม 3 เม็ด ห้อยข้าง **แก้มขวา** (ร่างเดิมเป็นห่วง 2 ห่วงหลังหู)
+- **คอ / ไหล่:** ขนคอสีครีมฟูหนา บนผ้าคลุมสั้นสีแดงเข้มคลุมไหล่ทั้งสองข้างถึงกลางหลัง มีแถบลายซิกแซกสีครีมใกล้ชาย · เข็มกลัดเงินกลมลายปม · **บ่าซ้าย** = เกราะบ่าเหล็กรูปหัวหมาป่าคำราม ตาฟ้า
+- **ตัว:** เสื้อแขนกุดสีกรมเข้ม ขอบลายปมเงิน ซับในแดง · สายลายปมเงินพาดจากเข็มกลัดลงถึงเข็มขัด · เข็มขัดหนังน้ำตาล หัวเข็มขัดเงินกลมใหญ่ · แผ่นหน้าลายปมเงิน-ครีมห้อยยาวถึงกลางต้นขา
+- **แขน:** แขนเปลือยขนขาว ปลอกแขนหนังน้ำตาลเข้มทั้งสองข้าง · **ข้อมือซ้าย** = กำไลเหล็กมีโซ่ขาดข้อใหญ่ห้อย · กำปั้นขาวกลมโต
+- **ขา:** กางเกงพองสั้นสีถ่าน · ขอบขนครีมหนา · บูทหนังน้ำตาล สายไขว้
+- **หาง:** พวงขาวใหญ่ฟูมาก
+- **ขวาน (มือขวา):** ยาวกว่าตัว · ด้ามแดงพันลายไขว้สีเข้ม มีช่วงหนังเข้ม + ห่วงทองแดงใกล้สองปลาย · หัวเหล็กเงินบนสุด · ปลายด้ามเงินแหลมล่างสุด · ใบเงินรูปจันทร์เสี้ยวใบเดียว แถบรูนสีฟ้าตามขอบด้านใน · หัวหมาป่าเหล็กตาฟ้าตรงโคนใบ
+
+**บนชีตต้องระวัง** (ใส่ในพรอมต์แล้ว):
+- ภาพข้างบนชีต **หันซ้าย** แต่เกมใช้ภาพหันขวา → พรอมต์ภาพ 3 บอกว่าเป็นภาพกลับด้านของภาพข้างบนชีต (เห็นซีกขวา: ขวานอยู่มือใกล้ เกราะบ่ากับโซ่อยู่ซีกไกล)
+- เข็มกลัดอยู่คนละข้างระหว่างภาพใหญ่กับภาพหน้าตรง → พรอมต์ไม่ระบุข้าง
+- ภาพหมุนรอบตัวมีแค่หน้า / ข้าง / หลัง → เฉียงหน้า / เฉียงหลังบอกตำแหน่งขวาน โซ่ เกราะบ่า หาง เป็นคำ (ด้านเดียวกับร่างผู้ใหญ่)
+
+### ภาพยืน 5 มุม (ส่งในแชตแล้ว 2026-11-25 11:16)
+- กล่องละมุม ครบในตัว (สไตล์ + รูปแบบ + พื้นเขียว + หน้าตา + ท่า + ที่ว่าง) ไม่มีพรอมต์ 0 · ส่งในแชต ChatGPT เดิมที่เจนชีต แนบชีตไปทุกข้อความ (แชตใหม่: แนบชีต + `keyart_style_ld3.jpg`)
+- **ที่ว่างไว้ทำอนิเมชัน:** ปลายขวานถึงพื้นรองเท้าสูงราวครึ่งภาพ · เท้าสูงจากขอบล่าง ~15% · เหนือขวานว่างราว 1/3 ภาพ · ซ้ายขวาว่างกว้าง · ขนาด / ตำแหน่งเท่ากันทุกภาพ → ภาพตั้งต้นวีดีโอยังตัดด้วย `tools/dir8cut.py startv` ให้สเกลเดียวกันทุกมุม
+- ท่ายืนเดียวกันทุกภาพ: ถือขวานตั้งข้างตัว ปลายด้ามแตะพื้น ใบขวานเหนือหัว กำหมัดซ้ายมีโซ่ห้อย ปากปิด
+
+แก้ภาพ (ต่อท้ายแล้วส่ง):
+- หันผิดทาง → `Redo picture 3: he must face the RIGHT side of the picture.`
+- ตัวใหญ่เต็มภาพ ไม่มีที่ว่าง → `Redo picture 1: draw him much smaller — from the top of his axe to his boots only half of the picture's height, with wide empty green space all around.`
+- ขวาน / โซ่สลับข้าง (มุมหน้า) → `Redo picture 1: the axe must be on the LEFT side of the picture and the broken chain on the RIGHT side.`
+- มีเอฟเฟกต์ติดมา → `Redo picture 2: no glow, no runes in the air, no ice, no lightning, no red energy — just the wolf standing.`
+- มุมหลังเห็นหน้า → `Redo picture 4: turn him further away, we must not see his eyes or his face.`
+- แก้แค่บางส่วน → ใช้แปรงเลือกเฉพาะจุดใน ChatGPT (สั่งแก้ทั้งภาพ มันจะวาดใหม่หมด)
+
+#### ภาพ — หน้าตรง (S)
+```
+Picture 1 of 5 — FRONT view: he faces straight toward us, like the front view on the sheet. The greataxe stands on the LEFT side of the picture (his right hand); his left fist with the cuff and the broken chain is on the RIGHT side, and the wolf-head pauldron is on the shoulder on the right side. The scar and the braid are on the left side of his face. His bushy tail peeks out behind him.
+
+Draw the white wolf warrior from the attached character sheet: the same character in the same drawing style — a friendly hand-painted chibi cartoon with thick clean dark-brown outlines and flat cel shading in 2–3 tones, bright and warm. Not realistic, not painterly, not 3D.
+
+ONE square picture showing only this one wolf, alone, on a plain flat pure green background (#00FF00): no gradient, no floor, no shadow under him, no other views, no text, no logo, no frame.
+
+His look, exactly as on the sheet: a chibi white wolf with a big head and a short sturdy body. Fluffy snow-white fur with soft pink-lavender shading, big upright ears with pink insides, big glossy ice-blue eyes under sharp dark brows, a small black nose, a calm confident closed-mouth smile, and a red scar slash across the brow above his RIGHT eye. A thin white braid with three round silver beads hangs beside his RIGHT cheek. A thick shaggy cream fur collar on a short crimson cape that covers both shoulders and his upper back, with a cream zigzag band near its hem; a round silver knotwork brooch on his chest. On his LEFT shoulder a steel pauldron shaped like a snarling wolf head with ice-blue eyes. A sleeveless deep-navy tunic with silver Norse knotwork trim and a crimson lining: a silver knotwork strap runs from the brooch to a brown leather belt with a big round silver knotwork buckle, and a long silver-and-cream knotwork panel hangs down the front to mid-thigh. Bare white-furred arms with dark brown leather bracers on both forearms; on his LEFT wrist a steel cuff with a broken chain of big steel links hanging from it. Big round white fists. Short baggy charcoal trousers, thick cream fur cuffs above brown leather boots with crisscross straps. A huge bushy white tail. His greataxe, taller than he is, in his RIGHT hand: a crimson haft with a dark criss-cross wrap and dark leather and bronze bands near both ends, a silver steel cap on top, a pointed silver steel end at the bottom, and one broad crescent blade of silver steel with bright ice-blue rune marks painted along its inner edge and a carved steel wolf head with ice-blue eyes where the blade meets the haft.
+
+Pose, the same in all five pictures: standing still in a firm ready stance, feet shoulder-width apart; the greataxe held upright in his right hand beside him, its pointed end resting on the ground and the blade above his head, never hiding his face; his left fist clenched at his side with the broken chain hanging from the cuff; his tail curving out behind him; mouth closed, calm and confident.
+
+IMPORTANT, leave room for animation — draw him SMALL: from the top of his axe to the soles of his boots he fills only about HALF of the picture's height. He stands in the middle with his boots about 15% above the bottom edge, empty green space above the axe (about a third of the picture) and wide empty green margins on both sides, so a later animation can lift and swing the big axe without leaving the picture. The whole axe, both ears and his whole tail stay inside the picture. Same size and same position in all five pictures.
+
+No green anywhere on him (his blues are navy and ice blue). No glow, no light rays, no sparkles, no ice, no lightning, no red energy, no motion lines, no effects.
+```
+
+#### ภาพ — เฉียงหน้า (หันขวา) (SE)
+```
+Picture 2 of 5 — FRONT THREE-QUARTER view: he is turned toward the RIGHT side of the picture, facing down and to the right. We see his face with his muzzle pointing to the right and mostly his right side: the scar over his near eye, the braid beside his near cheek. His near hand holds the upright greataxe on the left side of the picture, in front of him; his far fist with the broken chain is on the right side, partly behind his body, with the wolf-head pauldron on that far shoulder. His bushy tail curves out behind him on the left side of the picture.
+
+Draw the white wolf warrior from the attached character sheet: the same character in the same drawing style — a friendly hand-painted chibi cartoon with thick clean dark-brown outlines and flat cel shading in 2–3 tones, bright and warm. Not realistic, not painterly, not 3D.
+
+ONE square picture showing only this one wolf, alone, on a plain flat pure green background (#00FF00): no gradient, no floor, no shadow under him, no other views, no text, no logo, no frame.
+
+His look, exactly as on the sheet: a chibi white wolf with a big head and a short sturdy body. Fluffy snow-white fur with soft pink-lavender shading, big upright ears with pink insides, big glossy ice-blue eyes under sharp dark brows, a small black nose, a calm confident closed-mouth smile, and a red scar slash across the brow above his RIGHT eye. A thin white braid with three round silver beads hangs beside his RIGHT cheek. A thick shaggy cream fur collar on a short crimson cape that covers both shoulders and his upper back, with a cream zigzag band near its hem; a round silver knotwork brooch on his chest. On his LEFT shoulder a steel pauldron shaped like a snarling wolf head with ice-blue eyes. A sleeveless deep-navy tunic with silver Norse knotwork trim and a crimson lining: a silver knotwork strap runs from the brooch to a brown leather belt with a big round silver knotwork buckle, and a long silver-and-cream knotwork panel hangs down the front to mid-thigh. Bare white-furred arms with dark brown leather bracers on both forearms; on his LEFT wrist a steel cuff with a broken chain of big steel links hanging from it. Big round white fists. Short baggy charcoal trousers, thick cream fur cuffs above brown leather boots with crisscross straps. A huge bushy white tail. His greataxe, taller than he is, in his RIGHT hand: a crimson haft with a dark criss-cross wrap and dark leather and bronze bands near both ends, a silver steel cap on top, a pointed silver steel end at the bottom, and one broad crescent blade of silver steel with bright ice-blue rune marks painted along its inner edge and a carved steel wolf head with ice-blue eyes where the blade meets the haft.
+
+Pose, the same in all five pictures: standing still in a firm ready stance, feet shoulder-width apart; the greataxe held upright in his right hand beside him, its pointed end resting on the ground and the blade above his head, never hiding his face; his left fist clenched at his side with the broken chain hanging from the cuff; his tail curving out behind him; mouth closed, calm and confident.
+
+IMPORTANT, leave room for animation — draw him SMALL: from the top of his axe to the soles of his boots he fills only about HALF of the picture's height. He stands in the middle with his boots about 15% above the bottom edge, empty green space above the axe (about a third of the picture) and wide empty green margins on both sides, so a later animation can lift and swing the big axe without leaving the picture. The whole axe, both ears and his whole tail stay inside the picture. Same size and same position in all five pictures.
+
+No green anywhere on him (his blues are navy and ice blue). No glow, no light rays, no sparkles, no ice, no lightning, no red energy, no motion lines, no effects.
+```
+
+#### ภาพ — ข้าง (หันขวา) (E)
+```
+Picture 3 of 5 — SIDE view facing RIGHT: his muzzle points to the right edge of the picture. This is the MIRROR image of the side view on the sheet (that one faces left): here we see his RIGHT side — one ear, one eye with the scar over it, the braid beside his cheek. His near hand holds the greataxe upright just in front of him, its pointed end on the ground in front of his boots and the blade above his head, the whole axe visible and not hiding his face. His left arm, the pauldron and the chain are on his far side, mostly hidden behind his body. His bushy tail curves out behind him on the left side of the picture.
+
+Draw the white wolf warrior from the attached character sheet: the same character in the same drawing style — a friendly hand-painted chibi cartoon with thick clean dark-brown outlines and flat cel shading in 2–3 tones, bright and warm. Not realistic, not painterly, not 3D.
+
+ONE square picture showing only this one wolf, alone, on a plain flat pure green background (#00FF00): no gradient, no floor, no shadow under him, no other views, no text, no logo, no frame.
+
+His look, exactly as on the sheet: a chibi white wolf with a big head and a short sturdy body. Fluffy snow-white fur with soft pink-lavender shading, big upright ears with pink insides, big glossy ice-blue eyes under sharp dark brows, a small black nose, a calm confident closed-mouth smile, and a red scar slash across the brow above his RIGHT eye. A thin white braid with three round silver beads hangs beside his RIGHT cheek. A thick shaggy cream fur collar on a short crimson cape that covers both shoulders and his upper back, with a cream zigzag band near its hem; a round silver knotwork brooch on his chest. On his LEFT shoulder a steel pauldron shaped like a snarling wolf head with ice-blue eyes. A sleeveless deep-navy tunic with silver Norse knotwork trim and a crimson lining: a silver knotwork strap runs from the brooch to a brown leather belt with a big round silver knotwork buckle, and a long silver-and-cream knotwork panel hangs down the front to mid-thigh. Bare white-furred arms with dark brown leather bracers on both forearms; on his LEFT wrist a steel cuff with a broken chain of big steel links hanging from it. Big round white fists. Short baggy charcoal trousers, thick cream fur cuffs above brown leather boots with crisscross straps. A huge bushy white tail. His greataxe, taller than he is, in his RIGHT hand: a crimson haft with a dark criss-cross wrap and dark leather and bronze bands near both ends, a silver steel cap on top, a pointed silver steel end at the bottom, and one broad crescent blade of silver steel with bright ice-blue rune marks painted along its inner edge and a carved steel wolf head with ice-blue eyes where the blade meets the haft.
+
+Pose, the same in all five pictures: standing still in a firm ready stance, feet shoulder-width apart; the greataxe held upright in his right hand beside him, its pointed end resting on the ground and the blade above his head, never hiding his face; his left fist clenched at his side with the broken chain hanging from the cuff; his tail curving out behind him; mouth closed, calm and confident.
+
+IMPORTANT, leave room for animation — draw him SMALL: from the top of his axe to the soles of his boots he fills only about HALF of the picture's height. He stands in the middle with his boots about 15% above the bottom edge, empty green space above the axe (about a third of the picture) and wide empty green margins on both sides, so a later animation can lift and swing the big axe without leaving the picture. The whole axe, both ears and his whole tail stay inside the picture. Same size and same position in all five pictures.
+
+No green anywhere on him (his blues are navy and ice blue). No glow, no light rays, no sparkles, no ice, no lightning, no red energy, no motion lines, no effects.
+```
+
+#### ภาพ — เฉียงหลัง (หันขวา) (NE)
+```
+Picture 4 of 5 — BACK THREE-QUARTER view: he is turned away from us, facing up and to the RIGHT. We see mostly his back: the crimson cape with its cream zigzag band and fur collar, the back of his head with both ears, the braid on the right side of his head, and his bushy tail curving out toward the left; of his face only the edge of his muzzle on the right — not his eyes. His near hand holds the upright greataxe on the right side of the picture; his far fist with the broken chain shows on the left, partly behind his body, with the wolf-head pauldron on that far shoulder.
+
+Draw the white wolf warrior from the attached character sheet: the same character in the same drawing style — a friendly hand-painted chibi cartoon with thick clean dark-brown outlines and flat cel shading in 2–3 tones, bright and warm. Not realistic, not painterly, not 3D.
+
+ONE square picture showing only this one wolf, alone, on a plain flat pure green background (#00FF00): no gradient, no floor, no shadow under him, no other views, no text, no logo, no frame.
+
+His look, exactly as on the sheet: a chibi white wolf with a big head and a short sturdy body. Fluffy snow-white fur with soft pink-lavender shading, big upright ears with pink insides, big glossy ice-blue eyes under sharp dark brows, a small black nose, a calm confident closed-mouth smile, and a red scar slash across the brow above his RIGHT eye. A thin white braid with three round silver beads hangs beside his RIGHT cheek. A thick shaggy cream fur collar on a short crimson cape that covers both shoulders and his upper back, with a cream zigzag band near its hem; a round silver knotwork brooch on his chest. On his LEFT shoulder a steel pauldron shaped like a snarling wolf head with ice-blue eyes. A sleeveless deep-navy tunic with silver Norse knotwork trim and a crimson lining: a silver knotwork strap runs from the brooch to a brown leather belt with a big round silver knotwork buckle, and a long silver-and-cream knotwork panel hangs down the front to mid-thigh. Bare white-furred arms with dark brown leather bracers on both forearms; on his LEFT wrist a steel cuff with a broken chain of big steel links hanging from it. Big round white fists. Short baggy charcoal trousers, thick cream fur cuffs above brown leather boots with crisscross straps. A huge bushy white tail. His greataxe, taller than he is, in his RIGHT hand: a crimson haft with a dark criss-cross wrap and dark leather and bronze bands near both ends, a silver steel cap on top, a pointed silver steel end at the bottom, and one broad crescent blade of silver steel with bright ice-blue rune marks painted along its inner edge and a carved steel wolf head with ice-blue eyes where the blade meets the haft.
+
+Pose, the same in all five pictures: standing still in a firm ready stance, feet shoulder-width apart; the greataxe held upright in his right hand beside him, its pointed end resting on the ground and the blade above his head, never hiding his face; his left fist clenched at his side with the broken chain hanging from the cuff; his tail curving out behind him; mouth closed, calm and confident.
+
+IMPORTANT, leave room for animation — draw him SMALL: from the top of his axe to the soles of his boots he fills only about HALF of the picture's height. He stands in the middle with his boots about 15% above the bottom edge, empty green space above the axe (about a third of the picture) and wide empty green margins on both sides, so a later animation can lift and swing the big axe without leaving the picture. The whole axe, both ears and his whole tail stay inside the picture. Same size and same position in all five pictures.
+
+No green anywhere on him (his blues are navy and ice blue). No glow, no light rays, no sparkles, no ice, no lightning, no red energy, no motion lines, no effects.
+```
+
+#### ภาพ — หลัง (N)
+```
+Picture 5 of 5 — BACK view: his back faces us, like the back view on the sheet: the back of his head with both ears, the braid on the right side of his head, the crimson cape with its cream zigzag band across his shoulders and upper back, the back of the tunic and belt, and his bushy tail hanging behind him; no face. The greataxe stands on the RIGHT side of the picture (his right hand); his left fist with the cuff and the broken chain is on the LEFT side, and the wolf-head pauldron is on the shoulder on the left side.
+
+Draw the white wolf warrior from the attached character sheet: the same character in the same drawing style — a friendly hand-painted chibi cartoon with thick clean dark-brown outlines and flat cel shading in 2–3 tones, bright and warm. Not realistic, not painterly, not 3D.
+
+ONE square picture showing only this one wolf, alone, on a plain flat pure green background (#00FF00): no gradient, no floor, no shadow under him, no other views, no text, no logo, no frame.
+
+His look, exactly as on the sheet: a chibi white wolf with a big head and a short sturdy body. Fluffy snow-white fur with soft pink-lavender shading, big upright ears with pink insides, big glossy ice-blue eyes under sharp dark brows, a small black nose, a calm confident closed-mouth smile, and a red scar slash across the brow above his RIGHT eye. A thin white braid with three round silver beads hangs beside his RIGHT cheek. A thick shaggy cream fur collar on a short crimson cape that covers both shoulders and his upper back, with a cream zigzag band near its hem; a round silver knotwork brooch on his chest. On his LEFT shoulder a steel pauldron shaped like a snarling wolf head with ice-blue eyes. A sleeveless deep-navy tunic with silver Norse knotwork trim and a crimson lining: a silver knotwork strap runs from the brooch to a brown leather belt with a big round silver knotwork buckle, and a long silver-and-cream knotwork panel hangs down the front to mid-thigh. Bare white-furred arms with dark brown leather bracers on both forearms; on his LEFT wrist a steel cuff with a broken chain of big steel links hanging from it. Big round white fists. Short baggy charcoal trousers, thick cream fur cuffs above brown leather boots with crisscross straps. A huge bushy white tail. His greataxe, taller than he is, in his RIGHT hand: a crimson haft with a dark criss-cross wrap and dark leather and bronze bands near both ends, a silver steel cap on top, a pointed silver steel end at the bottom, and one broad crescent blade of silver steel with bright ice-blue rune marks painted along its inner edge and a carved steel wolf head with ice-blue eyes where the blade meets the haft.
+
+Pose, the same in all five pictures: standing still in a firm ready stance, feet shoulder-width apart; the greataxe held upright in his right hand beside him, its pointed end resting on the ground and the blade above his head, never hiding his face; his left fist clenched at his side with the broken chain hanging from the cuff; his tail curving out behind him; mouth closed, calm and confident.
+
+IMPORTANT, leave room for animation — draw him SMALL: from the top of his axe to the soles of his boots he fills only about HALF of the picture's height. He stands in the middle with his boots about 15% above the bottom edge, empty green space above the axe (about a third of the picture) and wide empty green margins on both sides, so a later animation can lift and swing the big axe without leaving the picture. The whole axe, both ears and his whole tail stay inside the picture. Same size and same position in all five pictures.
+
+No green anywhere on him (his blues are navy and ice blue). No glow, no light rays, no sparkles, no ice, no lightning, no red energy, no motion lines, no effects.
+```
+
+### ต่อไป
+1. 5 ภาพมา → `assets/heroes/wolf/view_*.webp` (ภาพร่างผู้ใหญ่อยู่ในประวัติ git) → ภาพตั้งต้น `startv` (900², สเกลเดียวกันทุกมุม)
+2. แก้คำบรรยายหน้าตาในรายการ 'wolf' ของ `tools/clip_prompts.py` ให้ตรงร่างชิบิ แล้วสร้าง `WOLF_CLIP_PROMPTS_TH.md` ใหม่ → คลิป 20 ตัว (รวมท่าฟันมุมเฉียงหลังที่ร่างผู้ใหญ่ยังขาด)
+3. `cliphero.py` + `wolf_plan.json` ใหม่ → `assets_wolf.js` (เวลาเฟรมเท่าเดิมทุกทิศ) → `headtrack.py` · `HERO_SIZE.wolf` น่าจะกลับมาใกล้ 1 (วัดใหม่ / ให้เจ้าของปรับในหน้าปรับขนาดฮีโร่ `tools/size_tuner`) · หน้า HUD + ภาพหน้าเลือกตัวจากภาพใหญ่ของชีตชิบิ (ถ้าเจ้าของต้องการ)
+
+## ชุดขั้น 2 แยกสาย A / B (2026-11-25 12:03)
+เจ้าของ: "ช่วยดีไซน์ชุดขั้นต่อไปของหมาป่าหน่อย อันนี้จะทำเป็นแยกสายไป ดีไซน์ตาม สายa/b"
+
+- **ชุดขั้น 1** = ร่างชิบิทายาทเฟนรีร์ (`sheet_fenrir_chibi.webp`) ใส่ตั้งแต่สร้างตัว · **ชุดขั้น 2** = ชุดที่โตขึ้นตามสายที่เล่น: สาย A Berserker (ไฟต์เตอร์ ATK) · สาย B Runic (จอมเวท MATK)
+- **ตัวเดิมทุกอย่าง:** หน้า ขนขาว ตาฟ้า แผลเป็นเหนือตาขวา เปียข้างแก้มขวา หางฟู กำปั้นกลม โซ่ขาดที่ข้อมือซ้าย ขวานมือขวา สัดส่วนชิบิ และความสูงเท่าเดิม → เปลี่ยนแค่ชุดกับอาวุธ (ขนาดในเกมไม่ต้องปรับใหม่)
+- **ดูสีแวบเดียวรู้สาย:** สาย A = แดง-ดำ-ทอง · สาย B = กรม-ขาว-ฟ้าน้ำแข็ง-เงิน · ชุดขั้น 1 มีทั้งสองอย่างผสมกันอยู่ (ผ้าคลุมแดง + เสื้อกรม + รูนฟ้าบนขวาน) ขั้น 2 แยกเป็นสีของสายเดียว
+- **อาวุธยังเป็นขวานยาวกว่าตัว ถือมือขวา** → ท่าฟันทุกสกิลยังใช้ได้ ทรงขวานบอกสาย
+- **กติกาเดิม:** หัว หู หน้าเห็นเสมอ (ไม่มีหมวก / ฮู้ด) · ผ้าคลุมไม่เกินกลางหลัง (หลังโล่ง ปีกแฟชั่นยังใส่ได้) · ไม่ยาวเกินเข่า · ไม่มีสีเขียว · รูนเป็นขีดเหลี่ยม ๆ ไม่ใช่ตัวอักษรจริง · ไม่มีเลือด
+
+| แบบ | สีหลัก | จุดที่เห็นชัดในเกม | ผูกกับสกิล |
+|---|---|---|---|
+| **A1 ผู้คลั่งศึกแห่งวัลฮัลลา** ⭐ | แดง · เหล็กดำ · ทอง | ขวานสองใบหลังชนกัน ขอบทอง รูนแดง · เกราะบ่าซ้ายหัวหมาป่าเหล็กดำ ตาแดงถ่าน · ห่วงคอทอง · ลายสีศึกแดงใต้ตาซ้าย · โซ่พันแขนซ้ายสองรอบ ปลายเป็นห่วงทอง · ลูกปัดเปียสีทอง | Valhalla's Wrath (ประตูทอง ขวานทอง-แดง วิญญาณนักรบ) · War Fury · Blood Cleave · Hall of Heroes · Einherjar's Call (C) |
+| **A2 นักล่าจันทร์เลือด** | ดำ · แดง · ขาวกระดูก · เงิน | ขวานใบเดียวรูปจันทร์เสี้ยวขอบในหยัก ขอบเรืองแดง อัญมณีพระจันทร์แดง · ผ้าพันคอดำชายขาดปลิว · โซ่เส้นที่สองสะพายไขว้อก · ลายกรงเล็บแดงบนแก้มซ้าย · ผ้าพันแขน | Savage Rend · Vampiric Axe · Executioner · Blood Rush · Predator's Leap |
+| **B1 ปราชญ์รูนพายุ** ⭐ | กรม · ขาว · ฟ้าน้ำแข็ง · เงิน | ขวานใบคริสตัลน้ำแข็งกรอบเงิน + เขี้ยวสายฟ้าเงินบนยอด · เกราะบ่าซ้ายหัวหมาป่าคริสตัลน้ำแข็ง · เสื้อคลุมขาว-กรมยาวเหนือเข่า แยก 4 แผ่น · มงกุฎเงินเส้นบาง · ลายรูนฟ้าบนแขน · ค้อนเงินเล็กที่เข็มขัด (มยอลเนียร์) · ลูกปัดเปียคริสตัล | Frost Fang · Ice Prison · Blizzard · Rune Guard / Rune Storm · Thunder Fang / Thunder Spear · Ragnarok's Judgment |
+| **B2 กวีอัสนี** | เทาฟ้าพายุ · ขาว · กรม · ทองไฟฟ้า | ขวาน-ค้อน (ใบขวานด้านหน้า หัวค้อนด้านหลัง) · ผ้าคลุมขนฟูเหมือนเมฆพายุ ขอบซิกแซกทอง · ผ้าคาดผมลายสายฟ้า · เกราะบ่าหัวหมาป่ามีเขาสายฟ้าทอง · จี้ค้อน | Thunder Fang · Lightning Pursuit · Storm Step · Tempest Field · Ragnarok's Judgment |
+
+**วิธีส่ง**
+1. ส่งในแชต ChatGPT ที่ทำชีตชิบิ แนบชีตชิบิไปทุกข้อความ (มันจำตัวได้) · ถ้าเปิดแชตใหม่ แนบ `sheet_fenrir_chibi` + `keyart_style_ld3.jpg` (ส่งให้ในแชตแล้วทั้งสองรูป)
+2. ส่งทีละกล่อง ข้อความละ 1 ภาพ
+3. เลือกสายละ 1 แบบ หรือผสมส่วนที่ชอบ (ประโยคผสมอยู่ใต้กล่อง)
+
+### แบบ A1 — ผู้คลั่งศึกแห่งวัลฮัลลา (Valhalla Berserker) ⭐ แนะนำสาย A
+```
+SECOND-TIER OUTFIT — BERSERKER PATH, design A1 "Valhalla Berserker". Design sheet for the white wolf warrior on the attached character sheet: he has risen on the Berserker path and his outfit has grown with him. Same wolf, same face, same chibi proportions and the same height as on the sheet — only his outfit and his weapon are new. It must read as a clear upgrade of his first outfit: grander and stronger, but the same character.
+
+Style: exactly the drawing style of the attached pictures — a friendly hand-painted chibi cartoon with thick clean dark-brown outlines and flat cel shading in 2–3 tones, soft cartoon glow, bright and warm. Not realistic, not painterly, not 3D.
+
+Format: ONE landscape design sheet (1536×1024) on a plain flat cream background, laid out like the attached sheet: one big full-body pose on the left; on the right a turnaround of three smaller full-body views in a row, all the same size — front view, side view facing RIGHT, back view — each on a soft round floor shadow. In the front view the axe is on the LEFT side of the picture (his right hand) and the chain on the RIGHT side; the side view shows his right side with the axe in the near hand; in the back view the axe is on the RIGHT side of the picture. No text, no labels, no logo, no frame, no other characters.
+
+Keep him exactly as on the sheet: a chibi white wolf with a big head and a short sturdy body, fluffy snow-white fur with soft pink-lavender shading, big upright ears with pink insides, big glossy ice-blue eyes under sharp dark brows, a small black nose, a red scar slash across the brow above his RIGHT eye, a thin white braid beside his RIGHT cheek, big round white fists and a huge bushy white tail. The broken chain still hangs from a cuff on his LEFT wrist and his greataxe is in his RIGHT hand.
+
+New outfit — crimson, blackened iron and gold, the colours of a champion of Valhalla:
+- Two short crimson war-paint stripes under his LEFT eye; the three beads on his braid are now gold.
+- A thick twisted gold neck ring over a shaggy cream fur collar.
+- A crimson war cape over both shoulders, down to his mid-back, with a gold border and a few ragged battle-torn points at the hem.
+- On his LEFT shoulder a big blackened-iron pauldron shaped like a snarling wolf head, with glowing ember-red eyes and gold trim; on his RIGHT shoulder a small black iron plate with gold rivets.
+- A sleeveless black leather and dark iron brigandine vest with gold rivets and a crimson lining, a wide black belt with a big gold wolf-head buckle, a crimson front panel with gold knotwork down to mid-thigh, and small black iron plates over his hips.
+- Bare white-furred arms with crimson war-paint bands round the upper arms, gold arm rings, black iron bracers edged in gold; the broken chain is wrapped twice round his LEFT forearm, its broken end hanging with one big gold link.
+- Short baggy dark-crimson trousers, black iron knee guards, thick cream fur cuffs above brown boots with gold buckles.
+
+His new greataxe, as tall as the old one: a DOUBLE-bladed battle axe — two broad crescent blades back to back, blackened steel with a bright gold edge and bright crimson rune marks, a gold wolf head with red eyes in the middle, a crimson haft with gold bands and a pointed iron end.
+
+Big pose: three-quarter view facing down-right, the double axe resting on his right shoulder, his left fist raised in front of him with the chain wrapped round it, a fierce grin with one fang showing, his tail bristling.
+Turnaround views: standing still in a firm stance, the weapon upright in his right hand beside him with its end on the ground, his left fist at his side with the chain.
+
+Rules: no green anywhere on him. Head, ears and face always visible — no helmet, hat or hood. The cape or mantle stops at his mid-back, so his back stays clear. Nothing longer than his knees except his tail. Rune marks are simple angular scratches, not real letters. No blood. No effects in the turnaround views: no sparks, snow, lightning or aura around him (bright rune marks on his outfit and weapon are fine).
+```
+
+### แบบ A2 — นักล่าจันทร์เลือด (Blood-Moon Reaver)
+```
+SECOND-TIER OUTFIT — BERSERKER PATH, design A2 "Blood-Moon Reaver". Design sheet for the white wolf warrior on the attached character sheet: he has risen on the Berserker path and his outfit has grown with him. Same wolf, same face, same chibi proportions and the same height as on the sheet — only his outfit and his weapon are new. It must read as a clear upgrade of his first outfit: grander and stronger, but the same character.
+
+Style: exactly the drawing style of the attached pictures — a friendly hand-painted chibi cartoon with thick clean dark-brown outlines and flat cel shading in 2–3 tones, soft cartoon glow, bright and warm. Not realistic, not painterly, not 3D.
+
+Format: ONE landscape design sheet (1536×1024) on a plain flat cream background, laid out like the attached sheet: one big full-body pose on the left; on the right a turnaround of three smaller full-body views in a row, all the same size — front view, side view facing RIGHT, back view — each on a soft round floor shadow. In the front view the axe is on the LEFT side of the picture (his right hand) and the chain on the RIGHT side; the side view shows his right side with the axe in the near hand; in the back view the axe is on the RIGHT side of the picture. No text, no labels, no logo, no frame, no other characters.
+
+Keep him exactly as on the sheet: a chibi white wolf with a big head and a short sturdy body, fluffy snow-white fur with soft pink-lavender shading, big upright ears with pink insides, big glossy ice-blue eyes under sharp dark brows, a small black nose, a red scar slash across the brow above his RIGHT eye, a thin white braid beside his RIGHT cheek, big round white fists and a huge bushy white tail. The broken chain still hangs from a cuff on his LEFT wrist and his greataxe is in his RIGHT hand.
+
+New outfit — black, crimson, bone white and moon silver, the colours of a night hunter:
+- Three thin crimson war-paint claw marks across his LEFT cheek; a small silver crescent-moon bead at the end of his braid.
+- A short black scarf-mantle wrapped round his neck and shoulders with a crimson lining, its two torn tails fluttering behind him, no lower than his mid-back.
+- On his LEFT shoulder a dark steel pauldron shaped like a snarling wolf head with red eyes, under a silver crescent moon.
+- A dark crimson leather jerkin with a black leather X-harness across the chest, studded with small silver crescent moons; a second length of the same broken chain worn diagonally across his chest like a bandolier.
+- A black belt with a round silver buckle set with a red moon gem, and a ragged crimson cloth panel at the front down to mid-thigh.
+- Bare white-furred arms with cream linen wraps on the forearms; the cuff with its broken chain still on his LEFT wrist.
+- Short baggy black trousers with crimson wraps at the shins, thick cream fur cuffs and dark boots.
+
+His new greataxe, as tall as the old one: one huge crescent-moon blade of dark steel with a jagged inner edge and a bright crimson edge line, a round red moon gem where the blade meets the haft, a black haft wrapped in crimson cord with silver bands and a pointed steel end.
+
+Big pose: three-quarter view facing down-right, a low hunter's crouch leaning forward, the moon axe held low behind him in his right hand, his left hand open with the fingers spread like claws, eyes narrowed, a fierce grin.
+Turnaround views: standing still in a firm stance, the weapon upright in his right hand beside him with its end on the ground, his left fist at his side with the chain.
+
+Rules: no green anywhere on him. Head, ears and face always visible — no helmet, hat or hood. The cape or mantle stops at his mid-back, so his back stays clear. Nothing longer than his knees except his tail. Rune marks are simple angular scratches, not real letters. No blood. No effects in the turnaround views: no sparks, snow, lightning or aura around him (bright rune marks on his outfit and weapon are fine).
+```
+
+### แบบ B1 — ปราชญ์รูนพายุ (Storm-Rune Sage) ⭐ แนะนำสาย B
+```
+SECOND-TIER OUTFIT — RUNIC PATH, design B1 "Storm-Rune Sage". Design sheet for the white wolf warrior on the attached character sheet: he has risen on the Runic path and his outfit has grown with him. Same wolf, same face, same chibi proportions and the same height as on the sheet — only his outfit and his weapon are new. It must read as a clear upgrade of his first outfit: grander and stronger, but the same character.
+
+Style: exactly the drawing style of the attached pictures — a friendly hand-painted chibi cartoon with thick clean dark-brown outlines and flat cel shading in 2–3 tones, soft cartoon glow, bright and warm. Not realistic, not painterly, not 3D.
+
+Format: ONE landscape design sheet (1536×1024) on a plain flat cream background, laid out like the attached sheet: one big full-body pose on the left; on the right a turnaround of three smaller full-body views in a row, all the same size — front view, side view facing RIGHT, back view — each on a soft round floor shadow. In the front view the axe is on the LEFT side of the picture (his right hand) and the chain on the RIGHT side; the side view shows his right side with the axe in the near hand; in the back view the axe is on the RIGHT side of the picture. No text, no labels, no logo, no frame, no other characters.
+
+Keep him exactly as on the sheet: a chibi white wolf with a big head and a short sturdy body, fluffy snow-white fur with soft pink-lavender shading, big upright ears with pink insides, big glossy ice-blue eyes under sharp dark brows, a small black nose, a red scar slash across the brow above his RIGHT eye, a thin white braid beside his RIGHT cheek, big round white fists and a huge bushy white tail. The broken chain still hangs from a cuff on his LEFT wrist and his greataxe is in his RIGHT hand.
+
+New outfit — deep navy, snow white, silver and glowing ice blue, the colours of a rune sage of frost and storm:
+- Small bright ice-blue rune marks under his LEFT eye; the three beads on his braid are now clear ice-crystal beads; a thin silver circlet across his forehead between the ears with one small ice-blue rune gem.
+- A short deep-navy mantle over both shoulders, down to his mid-back, with a thick snow-white fur collar and a silver rune-stitched band along its hem.
+- On his LEFT shoulder the wolf-head pauldron rebuilt in clear pale-blue ice crystal set in silver, with glowing ice-blue eyes.
+- A layered snow-white and navy robe-tunic with silver knotwork trim and ice-blue rune stitching, split into four panels that end just above his knees; a silver belt with a round carved rune-stone buckle with an ice-blue rune; a small leather pouch with three carved rune tiles on his right hip and a small silver hammer charm hanging from the belt.
+- Bare white-furred forearms with thin bright ice-blue rune lines, navy leather bracers with silver rune plates; the broken chain on his LEFT wrist is now frosted silver, its links carved with tiny ice-blue runes.
+- Navy trousers, thick white fur cuffs and boots with silver toe caps.
+
+His new greataxe, as tall as the old one: a long navy-and-silver haft, one crescent blade of clear ice-blue crystal set in a silver frame with white rune lines, a silver wolf head with ice-blue eyes where the blade meets the haft, and a small forked silver lightning prong on top.
+
+Big pose: three-quarter view facing down-right, standing tall, the axe upright in his right hand, his left hand open palm-up in front of his chest with three small glowing ice-blue rune stones floating above it and a few snowflakes, a soft frosty glow around the axe blade, a calm focused smile.
+Turnaround views: standing still in a firm stance, the weapon upright in his right hand beside him with its end on the ground, his left fist at his side with the chain.
+
+Rules: no green anywhere on him. Head, ears and face always visible — no helmet, hat or hood. The cape or mantle stops at his mid-back, so his back stays clear. Nothing longer than his knees except his tail. Rune marks are simple angular scratches, not real letters. No blood. No effects in the turnaround views: no sparks, snow, lightning or aura around him (bright rune marks on his outfit and weapon are fine). Ice blue means a clear cold blue with more blue than green — never teal, never green.
+```
+
+### แบบ B2 — กวีอัสนี (Thunder Skald)
+```
+SECOND-TIER OUTFIT — RUNIC PATH, design B2 "Thunder Skald". Design sheet for the white wolf warrior on the attached character sheet: he has risen on the Runic path and his outfit has grown with him. Same wolf, same face, same chibi proportions and the same height as on the sheet — only his outfit and his weapon are new. It must read as a clear upgrade of his first outfit: grander and stronger, but the same character.
+
+Style: exactly the drawing style of the attached pictures — a friendly hand-painted chibi cartoon with thick clean dark-brown outlines and flat cel shading in 2–3 tones, soft cartoon glow, bright and warm. Not realistic, not painterly, not 3D.
+
+Format: ONE landscape design sheet (1536×1024) on a plain flat cream background, laid out like the attached sheet: one big full-body pose on the left; on the right a turnaround of three smaller full-body views in a row, all the same size — front view, side view facing RIGHT, back view — each on a soft round floor shadow. In the front view the axe is on the LEFT side of the picture (his right hand) and the chain on the RIGHT side; the side view shows his right side with the axe in the near hand; in the back view the axe is on the RIGHT side of the picture. No text, no labels, no logo, no frame, no other characters.
+
+Keep him exactly as on the sheet: a chibi white wolf with a big head and a short sturdy body, fluffy snow-white fur with soft pink-lavender shading, big upright ears with pink insides, big glossy ice-blue eyes under sharp dark brows, a small black nose, a red scar slash across the brow above his RIGHT eye, a thin white braid beside his RIGHT cheek, big round white fists and a huge bushy white tail. The broken chain still hangs from a cuff on his LEFT wrist and his greataxe is in his RIGHT hand.
+
+New outfit — storm blue-grey, white, navy and electric gold, the colours of a skald of the thunder god:
+- A navy headband between his ears with a gold lightning zigzag; a small gold lightning-bolt clasp at the end of his braid.
+- A puffy storm-cloud mantle of blue-grey fur over both shoulders, down to his mid-back, edged with gold lightning zigzags.
+- On his LEFT shoulder a silver wolf-head pauldron with two small gold lightning-bolt horns and ice-blue eyes.
+- A navy sleeveless tunic with white panels and gold zigzag lightning trim, a silver hammer pendant on his chest, a wide navy belt with a round gold knotwork buckle, and a white front panel with a gold lightning stripe down to mid-thigh.
+- Bare white-furred arms with gold arm rings and navy bracers with gold zigzag edges; the broken chain on his LEFT wrist now has gold-capped links.
+- Short navy trousers, thick white fur cuffs and dark boots with gold straps.
+
+His new weapon, as tall as the old axe: a storm axe-hammer — a bearded axe blade of bright steel with a gold edge and electric-blue lightning-zigzag marks on one side, a heavy hammer head on the back, a navy haft with silver bands and a pointed silver end.
+
+Big pose: three-quarter view facing down-right, the axe-hammer raised high overhead in his right hand with small golden sparks crackling along its blade, his left fist punched forward, a mighty battle shout.
+Turnaround views: standing still in a firm stance, the weapon upright in his right hand beside him with its end on the ground, his left fist at his side with the chain.
+
+Rules: no green anywhere on him. Head, ears and face always visible — no helmet, hat or hood. The cape or mantle stops at his mid-back, so his back stays clear. Nothing longer than his knees except his tail. Rune marks are simple angular scratches, not real letters. No blood. No effects in the turnaround views: no sparks, snow, lightning or aura around him (bright rune marks on his outfit and weapon are fine). Ice blue means a clear cold blue with more blue than green — never teal, never green.
+```
+
+**แก้ภาพ** (ต่อท้ายแล้วส่ง):
+- หน้า / ตัวไม่เหมือนชีต → `Redo: keep his face, fur, eyes and body exactly like the attached sheet — same chibi proportions and the same height; only the outfit and the weapon are new.`
+- ภาพข้างหันซ้าย → `Redo: the side view must face the RIGHT side of the picture.`
+- อาวุธ / โซ่สลับข้าง → `Redo: the weapon is in his RIGHT hand (the left side of the picture in the front view) and the broken chain is on his LEFT wrist.`
+- ใส่หมวก / ฮู้ดมา → `Redo: no helmet, hat or hood — both ears and his whole face must stay visible.`
+- มีสีเขียว / ฟ้าอมเขียว → `Redo: replace every green or teal part with ice blue, navy or silver.`
+- ดูไม่เหมือนเลื่อนขั้น → `Make the upgrade stronger: a bigger pauldron, more gold (or silver) trim and a grander weapon, but keep the same character and the chibi proportions.`
+- ผสม → `Draw design A1 again, but give him the weapon of design A2.` (เปลี่ยนชื่อแบบ / ส่วนได้)
+- แก้แค่บางส่วน → ใช้แปรงเลือกเฉพาะจุดใน ChatGPT (สั่งแก้ทั้งภาพ มันจะวาดใหม่หมด)
+
+**เลือกแล้วทำอะไรต่อ (เข้าเกม)**
+- เปลี่ยนชุดตอนไหน (เสนอ เจ้าของยังไม่เคาะ): ถึง Lv 30 → ใส่ชุดขั้น 2 ของสายที่ลงแต้มสกิลมากกว่า (ตรงกับ 'บทบาทตามบิลด์' ของ roles.js) · ล้างแต้มไปอีกสาย ชุดเปลี่ยนตาม · อยากใส่ชุดขั้น 1 ต่อ เลือกได้ในหน้าแฟชั่น
+- ต่อสาย: ภาพยืน 5 มุมพื้นเขียวเว้นที่ว่าง (โครงเดียวกับหัวข้อ 'ร่างชิบิ') → ภาพตั้งต้น `startv` → คลิป 20 ตัว → `assets_wolf_a.js` / `assets_wolf_b.js` โหลดเฉพาะสายที่ใส่ · เวลาเฟรมเท่าชุดขั้น 1 ทุกทิศ → จังหวะโดนของทุกสกิลไม่เปลี่ยน · สูงเท่าชุดขั้น 1 → `HERO_SIZE.wolf` เดิม
+- ตำแหน่งหัวขวานที่เอฟเฟกต์ตาม (cliphero 'axe') ตอนนี้หาจากรูนสีฟ้าบนใบขวาน → ชุด A รูนแดง / ทอง ต้องตั้งสีให้ตัวหา (หรือใช้ axeFix) · ชุด B ใช้ได้เลย
+- หน้าในช่อง HUD / ภาพหน้าเลือกตัวตามสาย (ถ้าต้องการ) · ไอคอนสกิล / ภาพพื้นหลังต้นไม้สกิล ยังเป็นร่างเก่า
+- ข้อความพรอมต์มาจาก `/home/claude/work/wolft2/prompts.py` (ไม่อยู่ใน repo) — แก้ในไฟล์นี้ตรง ๆ ได้

@@ -12,10 +12,11 @@
    ===================================================================== */
 (function(){'use strict';
 window.createSnowPineHost=function(base){
-/* owner 2026-11-23 'แมพเล็กแคบ ต้นไม้เยอะ มอนน้อย … แบบแรคนารอค': laid out x2.5 (F 2/3 -> 5/3, 4800x3600 -> 12000x9000, like the other
+/* owner 2026-11-25 'แมพใหญ่ไป … ปรับให้หน่อย': x2 like the other fields (F 4/3 = 9600x7200, forest G_UP .13), ground details gathered in patches.
+   owner 2026-11-23 'แมพเล็กแคบ ต้นไม้เยอะ มอนน้อย … แบบแรคนารอค': laid out x2.5 (F 2/3 -> 5/3, 4800x3600 -> 12000x9000, like the other
    fields), forest masses about a third of what they were (G_UP), no rocks / logs / stumps / bushes in the open (only trees),
    monsters spread over the whole map by spawnFieldMons in index.html */
-const F=5/3,K2=F/(2/3),W=Math.round(7200*F),H=Math.round(5400*F),CH=512,G_UP=.19,CELL=12,COLS=Math.ceil(W/CELL),ROWS=Math.ceil(H/CELL);
+const F=4/3,K2=F/(2/3),W=Math.round(7200*F),H=Math.round(5400*F),CH=512,G_UP=.13,CELL=12,COLS=Math.ceil(W/CELL),ROWS=Math.ceil(H/CELL);
 
 /* ---------- art: file, draw scale, anchor (foot point in the image, 0..1), collision ---------- */
 const ART={
@@ -32,7 +33,9 @@ const IMG={};let loaded=0,ready=false,failed=false;const NAMES=Object.keys(ART);
 /* warps to the neighbouring Viking maps (ids match maps/viking-maps.js) */
 /* level text comes from maps/level-zones.js (MAP_ZONE) when the label is read */
 const zl=(name,id,fb)=>({get label(){const z=window.MAP_ZONE&&MAP_ZONE[id];return name+' Lv '+(z?z[0]+'–'+z[1]:fb);}});
-const warps=[{id:'toT',x:4330*K2,y:560*K2,to:'frostheim',at:'toF1',label:'ฟรอสต์เฮล์ม'},Object.assign(zl('หมู่บ้านไวกิ้งร้าง','vikF5','18–26'),{id:'toF5',x:420*K2,y:3420*K2,to:'vikF5',at:'toF1'}),Object.assign(zl('ทุ่งหินรูน','vikF3','10–18'),{id:'toF3',x:1300*K2,y:560*K2,to:'vikF3',at:'toF1'})];
+/* 2026-11-25 'วาร์ปอยู่กลางแมพ … ควรอยู่ริมๆขอบๆแมพ': the warps stand at the map edge (180 px in), the main path runs on to the town warp
+   and the runestone-shrine branch on up to the Rune Field warp */
+const WE=180,warps=[{id:'toT',x:6495*F,y:WE,to:'frostheim',at:'toF1',label:'ฟรอสต์เฮล์ม'},Object.assign(zl('หมู่บ้านไวกิ้งร้าง','vikF5','18–26'),{id:'toF5',x:515*F,y:5400*F-WE,to:'vikF5',at:'toF1'}),Object.assign(zl('ทุ่งหินรูน','vikF3','10–18'),{id:'toF3',x:1950*F,y:WE,to:'vikF3',at:'toF1'})];
 for(const n of NAMES){const im=new Image();im.onload=()=>{if(++loaded===NAMES.length)build();};im.onerror=()=>{failed=true;};im.src=base+n+'.webp';IMG[n]=im;}
 
 /* ---------- deterministic helpers ---------- */
@@ -56,9 +59,9 @@ const PD=[1,-.59],SD=[1,.57];const nd=v=>{const l=Math.hypot(v[0],v[1]);return [
 const f=(x,y)=>[x*F,y*F],near=(dir,d,sg)=>[B[0]+sg*dir[0]*d*F,B[1]+sg*dir[1]*d*F];
 const LAYOUT={
   spawn:f(1000,4600),
-  path:[f(420,5400),f(640,5080),f(1000,4600),f(1400,4420),f(1950,4300),near(pd,330,-1),B,near(pd,330,1),f(3450,3330),f(3950,3080),f(4450,2980),f(5000,2560),f(5550,1960),f(6150,1300),f(6560,760)],
+  path:[f(420,5400),f(640,5080),f(1000,4600),f(1400,4420),f(1950,4300),near(pd,330,-1),B,near(pd,330,1),f(3450,3330),f(3950,3080),f(4450,2980),f(5000,2560),f(5550,1960),f(6150,1300),f(6560,760),[6495*F,WE]],
   branches:[
-    [f(3950,3080),f(3700,2650),f(3150,2200),f(2650,1780),f(2250,1560)],          // to the runestone shrine
+    [f(3950,3080),f(3700,2650),f(3150,2200),f(2650,1780),f(2250,1560),f(2050,1500),f(1960,1000),f(1950,520),[1950*F,WE]],   // past the runestone shrine up to the Rune Field warp
     [f(5000,2560),f(5450,2980),f(5800,3400),f(6050,3760)],                      // to the hunters' camp
     [f(1400,4420),f(1250,3900),f(1150,3350),f(1300,3050)]],                     // up to the frozen pond
   stream:[f(1500,2730),f(1800,3250),f(2150,3600),near(sd,300,-1),B,near(sd,300,1),f(3300,4500),f(3420,4950),f(3460,5400)],
@@ -147,7 +150,8 @@ function build(){try{
   /* flat ground details (baked into the ground) */
   for(let gy=30;gy<H;gy+=60)for(let gx=30;gx<W;gx+=60){const x=gx+R(-26,26),y=gy+R(-26,26),de=edgeDist(x,y);if(de<edgeBand(x,y)-140)continue;
     if(nearStream(x,y,18)||inLandmark(x,y,20))continue;const onP=nearPath(x,y,-10);if(onP)continue;const n=fbm(x/760,y/760);
-    if(rnd()>(n>.5?.2:.1))continue;const r=rnd();
+    /* 2026-11-25: gathered in patches with clean snow between (they read as litter when spread evenly) */
+    const gc=.25+1.5*Math.max(0,Math.min(1,(vnoise(x/300+13.7,y/300+29.1)-.38)/.3));if(rnd()>(n>.5?.16:.08)*gc)continue;const r=rnd();
     const t=n>.55?(r<.25?'cones':r<.33?'shrooms':r<.45?'branch':r<.8?'grassS':'rockS'):(r<.4?'grassS':r<.6?'grassL':r<.8?'mound':r<.88?'rockS':r<.92?'puddle':r<.97?'branch':'cones');
     const dd=add(t,x,y,{v:R(.75,1.1),cast:0});if(t==='grassS'||t==='grassL'){dd.sway=1.6;dd.ph=rnd()*6.28;const k=((x/CH)|0)+','+((y/CH)|0);(grassB.get(k)||grassB.set(k,[]).get(k)).push(dd);}else decals.push(dd);}
   decals.sort((a,b)=>a.y-b.y);

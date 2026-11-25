@@ -71,8 +71,9 @@ const live=()=>!!(cur&&CP[cur]&&!window.__COMP_OFF);
 const SC=()=>{const b=SPR_BASE*MAP_CHAR;return (typeof SPR==='number'&&SPR>0?SPR:b)/b;};
 function heroA(){if(!player||player.dead||player.hp<=0)return 0;let a=1;try{if(typeof JH==='function'&&JH('jgPlayerAlpha'))a=jgPlayerAlpha();}catch(_){}return Math.max(0,Math.min(1,a));}
 const hf=()=>Math.cos(player.phi||0)>=0?1:-1;
-class CompFx{constructor(k){this.k=k;this.layer='sorted';this.__gt='-';this.t=Math.random()*9;this.vx=this.vy=0;this.fl=hf();this.face=this.fl;this.rot=0;this.kx=this.ky=1;this.z=52;this.hvx=this.hvy=0;this.px=player.x;this.py=player.y;this.place();}   /* kx / ky = squash; sy = the sorted layer's depth key */
-  target(){const s=SC();return [player.x-hf()*38*s,player.y-5];}
+const HK=()=>window.HERO_K||1;   /* hero size (HERO_SIZE, 2026-11-25): it floats beside the shoulder of a big or small hero; its own size stays */
+class CompFx{constructor(k){this.k=k;this.layer='sorted';this.__gt='-';this.t=Math.random()*9;this.vx=this.vy=0;this.fl=hf();this.face=this.fl;this.rot=0;this.kx=this.ky=1;this.z=52*HK();this.hvx=this.hvy=0;this.px=player.x;this.py=player.y;this.place();}   /* kx / ky = squash; sy = the sorted layer's depth key */
+  target(){const s=SC();return [player.x-hf()*38*s*HK(),player.y-5];}
   place(){const [tx,ty]=this.target();this.x=tx;this.y=ty;this.sy=ty;this.vx=this.vy=0;}
   update(dt){if(this.gone||!live()||this.k!==cur)return false;dt=Math.min(dt,.05);this.t+=dt;
     /* the hero's own speed (smoothed, capped) leads the target a little, so a walking hero does not leave it far behind */
@@ -84,7 +85,7 @@ class CompFx{constructor(k){this.k=k;this.layer='sorted';this.__gt='-';this.t=Ma
     this.fl+=Math.sign(this.face-this.fl)*Math.min(Math.abs(this.face-this.fl),dt*6.5);   /* turns round like a card */
     this.rot+=((Math.max(-.26,Math.min(.26,this.vx/340)))-this.rot)*Math.min(1,dt*6);   /* leans into its motion */
     const st=Math.min(.07,sp/2600);this.kx+=(1+st-this.kx)*Math.min(1,dt*8);this.ky+=(1-st-this.ky)*Math.min(1,dt*8);
-    const zt=player.sitting?38:52;this.z+=(zt-this.z)*Math.min(1,dt*2.5);
+    const zt=(player.sitting?38:52)*HK();this.z+=(zt-this.z)*Math.min(1,dt*2.5);
     this.sy=this.y;return true;}
   draw(){const a=heroA();if(a<=.01)return;const cp=CP[this.k],s=SC(),zz=(this.z+4*Math.sin(this.t*1.6+cp.ph))*s,[gx,gy]=P(this.x,this.y,0);
     ctx.save();ctx.globalAlpha=.2*a;ctx.drawImage(SHD,gx-11*s,gy-4*s,22*s,8*s);ctx.restore();

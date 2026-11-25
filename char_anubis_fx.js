@@ -74,7 +74,7 @@ function installAnubisFx(){if(CHAR!=='anubis')return;if(window.TV)TV.toonify();U
   const SL=window.uSlam;window.uSlam=function(x,y,R){try{uxGround('meteor_crater',x,y,R*1.9,{life:.9,s0:.4,s1:1.05,fadeIn:.01,glow:.5});}catch(_){}return SL.apply(this,arguments);};
   /* chain lasso / soul hook: the painted chain is stretched from the hero to the ball */
   const TD=UThrow.prototype.draw;UThrow.prototype.draw=function(){const hook=this.col===UC.blue||this.col==='#6a3aa8'||this.speed>=900,n=hook?'soul_hook':'chain_lasso',im=uxImg(n);
-    const [x0,y0]=P(player.x,player.y,30),[x1,y1]=P(this.x,this.y,30),L=Math.hypot(x1-x0,y1-y0);if(window.TV&&gameTime-(this._tv||0)>.04){this._tv=gameTime;TV.trailFx(x1,y1,Math.atan2(y1-y0,x1-x0)+((this.dir||1)>0?0:Math.PI),hook?'shadow':'sand',{n:2});}if(!im||L<24)return TD.call(this);
+    const [x0,y0]=P(player.x,player.y,30*(window.HERO_K||1)),[x1,y1]=P(this.x,this.y,30),L=Math.hypot(x1-x0,y1-y0);if(window.TV&&gameTime-(this._tv||0)>.04){this._tv=gameTime;TV.trailFx(x1,y1,Math.atan2(y1-y0,x1-x0)+((this.dir||1)>0?0:Math.PI),hook?'shadow':'sand',{n:2});}if(!im||L<24)return TD.call(this);
     const r=Math.atan2(y1-y0,x1-x0),h=Math.max(22,L*im.naturalHeight/im.naturalWidth);ctx.save();ctx.translate(x0,y0);ctx.rotate(r);if(Math.cos(r)<0)ctx.scale(1,-1);
     ctx.drawImage(im,0,-h/2,L+h*.4,h);ctx.restore();};
   /* sky pillars → judgment light / Ra's falling sun / Anubis head / soul strike */

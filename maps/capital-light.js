@@ -144,7 +144,7 @@ for(const o of L){if(!DOOR.test(o.n))continue;const c=C[o.n];const by=o.y+(c?c.h
 
 const old=V.capT;
 V.capT=Object.assign({},{theme:'capital',dirtTex:'cpDirt',lakeTex:'cpWater',seaTex:'cpWater',streamTex:'cpWater',cobbleTex:'cpPave'},{
-  name:old.name,lv:old.lv,seed:612,W:4400,H:3600,mons:false,city:1,charK:old.charK||1.35,spawnN:0,
+  name:old.name,lv:old.lv,seed:612,W:4400,H:3600,mons:false,city:1,charK:1/* was 1.35 (heroes drawn bigger here than in any other town); 1 since 2026-11-25 so the biggest hero fits through the guild hall door (HERO_SIZE in index.html) */,spawnN:0,
   ground:'cpGrass',mood:'light',paveMerge:1,trailKind:'none',trails:[],roadWear:.85,fringe:.22,stepTex:'grMarble',
   doorRe:'^cp(House[AB]|Tall[12]|Inn|Tavern|Smith|Bakery|Bank|Potion|Tool|Clock|Armor|Weapon|Flower|Turret|RH[1-6])$',
   texScale:{cpPave:.5,grMarble:.5,cpPlaza:.55,cpGrass:.7,cpDirt:.6},

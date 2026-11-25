@@ -210,7 +210,7 @@ const CAPKIT={way:['cpMilestone','cpLampWood','cpWayShrine','cpSignWood','cpFenc
    owner 2026-11-23 'แมพเล็กแคบ ต้นไม้เยอะ เดินไปทางไหนก็ติด … แบบแรคนารอค': fields x2.5 (was x2), forest masses (groves) about a third of
    what they were (threshold +.15 instead of +.085), so the open ground runs on; monsters are spread over the whole map by
    spawnFieldMons in index.html (not in packs at these spawn points any more — the points stay for bosses and the random-warp wing). */
-function scaleField(c0){if(c0._scaled||c0.mons===false||c0.mood==='town'||c0.townish||c0.city)return c0;const DG=!!(c0.walls||c0.maze),S=c0.fieldScale??(DG?(c0.maze?1.25:1.4):2.5);
+function scaleField(c0){if(c0._scaled||c0.mons===false||c0.mood==='town'||c0.townish||c0.city)return c0;const DG=!!(c0.walls||c0.maze),S=c0.fieldScale??(DG?(c0.maze?1.25:1.4):2);
   const c=JSON.parse(JSON.stringify(c0));c._scaled=1;const pt=p=>Array.isArray(p)?p.map((v,i)=>typeof v==='number'&&i<2?v*S:v):p;
   c.W=Math.round(c.W*S);c.H=Math.round(c.H*S);if(c.bridge)c.bridge=pt(c.bridge);if(c.stream)c.stream=c.stream.map(pt);
   if(c.trails)c.trails=c.trails.map(T=>T.map(pt));for(const r of c.roads||[])if(r.pts)r.pts=r.pts.map(pt);
@@ -225,16 +225,52 @@ function scaleField(c0){if(c0._scaled||c0.mons===false||c0.mood==='town'||c0.tow
   /* fewer solid groves, more things to look at between them */
   c.clean=1;c.decals=[];c.spawnGroup=[3,5];
   if(DG){/* caves and tombs have no trees: a few props stay so the rooms are not bare */c.propDens=(c.propDens??1)*.3;c.spawnN=Math.round((c.spawnN||24)*S*S);c.spawnGroup=[2,4];return c;}
-  const CT=window.VK_CAT||{},tree=n=>CT[n]&&CT[n].t==='tree';for(const k of ['open','edge','under','bankSet'])if(c[k]){c[k]=c[k].filter(tree);if(!c[k].length&&k!=='open'&&k!=='edge')delete c[k];}
+  const CT=window.VK_CAT||{},tree=n=>CT[n]&&CT[n].t==='tree';
+  /* 2026-11-25: the land's small plants (ferns, flowering shrubs, berry bushes, lavender, azaleas…) come back as soft decor you walk through —
+     at forest edges and among the meadow flowers; rocks, logs, stumps and ruins stay out */
+  {const PL=/fern|monstera|hib|flow|leaf|helicon|cacao|shrub|bush|berry|grass|cattail|azalea|hydrang|lavender|poppy|rose|sunflower|tulip|reed|papyrus|ginger|bamboo|thistle|heather|lily|camell|iris|hosta|agave|aloe|cactus|sprout/i,NP=/log|stump|rock|stone|ruin|skull|bone|pillar|block|pot|jar|statue|crate|barrel|cart|sign|torch|lantern|brazier|fence|tomb|grave/i;
+   c._decor=[...new Set([...(c.under||[]),...(c.open||[]),...(c.edge||[]),...(c.bankSet||[])])].filter(n=>CT[n]&&CT[n].t==='prop'&&PL.test(n)&&!NP.test(n));}
+  for(const k of ['open','edge','under','bankSet'])if(c[k]){c[k]=c[k].filter(tree);if(!c[k].length&&k!=='open'&&k!=='edge')delete c[k];}
   /* fewer solid groves = more room to walk */
-  if(c.groves)c.groves.thr=(c.groves.thr??.52)+.15;c.openTrees=(c.openTrees??.06)*.6;
+  if(c.groves)c.groves.thr=(c.groves.thr??.52)+.11;c.openTrees=(c.openTrees??.06)*.6;
   c.spawnN=Math.round((c.spawnN||32)*S*S*.9);c.spawnGap=(c.spawnGap||320)*.85;
+  c._pretty=c0.noPretty?0:1;edgeWarps(c);
   return c;}
+/* owner 2026-11-25 'วาร์ปก็อยู่กลางแมพ บางทีมันควรอยู่ริมๆขอบๆแมพ': every field warp moves out to the map edge nearest to it (WE map px from
+   that edge; never toward the sea side, never into the sea band or a lake). A trail that ended at the warp runs on to its new place (the old
+   end stays as a waypoint, so the curve is kept), a warp no trail reached gets a short trail to the nearest trail, and the pieces that stood
+   with it (cave mouths, gates, signposts within 400 px) move along. A map can keep its warps with keepWarps:1. */
+function edgeWarps(c){if(c.keepWarps||!c.warps)return;const WE=180,sea=c.sea,SS={E:'R',W:'L',S:'B',N:'T'}[sea&&sea.side];
+  const inSea=(x,y)=>{if(!sea)return false;const dd=(sea.d||0)+(sea.amp||0)+260;return SS==='R'?x>c.W-dd:SS==='L'?x<dd:SS==='B'?y>c.H-dd:y<dd;};
+  const inLk=(x,y)=>(c.lakes||[]).some(l=>((x-l.x)/(l.rx+140))**2+((y-l.y)/(l.ry+140))**2<1);
+  for(const w of c.warps){const E=[['L',w.x],['T',w.y],['R',c.W-w.x],['B',c.H-w.y]].filter(e=>e[0]!==SS).sort((a,b)=>a[1]-b[1]);
+    for(const [sd,dist] of E){if(dist<=WE+60)break;const nx=sd==='L'?WE:sd==='R'?c.W-WE:w.x,ny=sd==='T'?WE:sd==='B'?c.H-WE:w.y;if(inSea(nx,ny)||inLk(nx,ny))continue;
+      const ox=w.x,oy=w.y,dx=nx-ox,dy=ny-oy;w.x=nx;w.y=ny;w._from=[ox,oy];let tied=false;
+      for(const T of c.trails||[])for(const e of [0,T.length-1]){const q=T[e];if(!Array.isArray(q)||Math.hypot(q[0]-ox,q[1]-oy)>560)continue;tied=true;if(e)T.push([nx,ny]);else T.unshift([nx,ny]);}
+      if(!tied&&c.trails&&c.trails.length){let b=null,bd=1e9;for(const T of c.trails)for(const q of T)if(Array.isArray(q)){const d=Math.hypot(q[0]-ox,q[1]-oy);if(d<bd){bd=d;b=q;}}if(b&&bd<2600)c.trails.push([[b[0],b[1]],[ox,oy],[nx,ny]]);}
+      for(const l of c.land||[])if(Math.hypot(l.x-ox,l.y-oy)<400){l.x=Math.max(140,Math.min(c.W-140,l.x+dx));l.y=Math.max(220,Math.min(c.H-70,l.y+dy));}
+      break;}}
+  autoTrails(c);}
+/* fields that never had a trail get a path network: the two warps farthest apart are joined through a junction between the warps and the
+   map centre, every other warp branches off that junction; each leg bends a little, to the side that keeps it out of lakes and the sea */
+function autoTrails(c){const ws=c.warps;if(!ws||ws.length<2||(c.trails&&c.trails.length)||c.noAutoTrails)return;
+  const sd=c.seed||7,rr=k=>{const v=Math.sin(sd*12.9898+k*78.233)*43758.5453;return v-Math.floor(v);},sea=c.sea,SS={E:'R',W:'L',S:'B',N:'T'}[sea&&sea.side];
+  const wet=(x,y)=>{if(sea){const dd=(sea.d||0)+(sea.amp||0)+200;if(SS==='R'?x>c.W-dd:SS==='L'?x<dd:SS==='B'?y>c.H-dd:SS==='T'?y<dd:false)return true;}return (c.lakes||[]).some(l=>((x-l.x)/(l.rx+160))**2+((y-l.y)/(l.ry+160))**2<1);};
+  let mx=0,my=0;for(const w of ws){mx+=w.x;my+=w.y;}mx/=ws.length;my/=ws.length;let J=[(mx+c.W/2)/2+(rr(1)-.5)*c.W*.1,(my+c.H/2)/2+(rr(2)-.5)*c.H*.1];
+  for(let k=0;k<12&&wet(J[0],J[1]);k++)J=[J[0]+(c.W/2-J[0])*.3,J[1]+(c.H/2-J[1])*.3];
+  const leg=(a,b,k)=>{const dx=b[0]-a[0],dy=b[1]-a[1],L=Math.hypot(dx,dy)||1,nx=-dy/L,ny=dx/L,o0=(rr(k)-.5)*L*.3;
+    for(const o of [o0,-o0,o0*1.8,-o0*1.8,0]){const m=[a[0]+dx*.5+nx*o,a[1]+dy*.5+ny*o];let ok=true;for(let t=.1;t<.95&&ok;t+=.1){const u=1-t,x=u*u*a[0]+2*u*t*m[0]+t*t*b[0],y=u*u*a[1]+2*u*t*m[1]+t*t*b[1];if(wet(x,y))ok=false;}
+      if(ok||o===0)return [[a[0],a[1]],m,[b[0],b[1]]];}};
+  let bi=0,bj=1,bd=-1;for(let i=0;i<ws.length;i++)for(let j=i+1;j<ws.length;j++){const d=Math.hypot(ws[i].x-ws[j].x,ws[i].y-ws[j].y);if(d>bd){bd=d;bi=i;bj=j;}}
+  const l1=leg([ws[bi].x,ws[bi].y],J,3),l2=leg(J,[ws[bj].x,ws[bj].y],4);c.trails=[l1.concat(l2.slice(1))];
+  ws.forEach((w,i)=>{if(i!==bi&&i!==bj)c.trails.push(leg(J,[w.x,w.y],10+i));});}
 window.createFieldHost=function(base,cfg){if(!cfg._id&&window.VK_MAPS)for(const k in VK_MAPS)if(VK_MAPS[k]===cfg){cfg._id=k;break;}cfg=scaleField(cfg);
 const W=cfg.W,H=cfg.H,CH=512,CELL=12,COLS=Math.ceil(W/CELL),ROWS=Math.ceil(H/CELL),CAT=window.VK_CAT;
 const MOOD=cfg.mood||'sun',CAVE=MOOD==='cave'||MOOD==='mine'||MOOD==='rift';
 /* region theme: water textures, trail tint, shadow colour, floating particles */
 const THEME=cfg.theme||'snow',SNOWTH=THEME==='snow';
+/* 2026-11-25 'เอาให้สวยๆ': levelling fields get bigger forest masses with soft edges, real worn paths, flower meadows and soft ground patches */
+const PRETTY=!!cfg._pretty&&!(cfg.walls||cfg.maze)&&THEME!=='sea';
 const LAKETEX=cfg.lakeTex||'texSeaIce',SEATEX=cfg.seaTex||'texSea',COBTEX=cfg.cobbleTex||'texCobble',DIRTTEX=cfg.dirtTex||'dirt';
 const TH={snow:{tr:['rgba(118,108,178,.17)','rgba(255,250,245,.22)'],lakeRim:'#5d7fb0',st:['#4f7fae','#6cade0','#8cc6ec'],sh:'#8c86c4'},
   jungle:{tr:['rgba(96,64,20,.2)','rgba(225,205,140,.13)'],lakeRim:'#3f7a5c',st:['#2d8a8a','#3fb7b0','#7ee0d0'],sh:'#2c4a1c'},
@@ -246,10 +282,12 @@ const TH={snow:{tr:['rgba(118,108,178,.17)','rgba(255,250,245,.22)'],lakeRim:'#5
   greek:{tr:['rgba(120,90,40,.16)','rgba(255,245,215,.16)'],lakeRim:'#6a8a5a',st:['#1f7ab0','#3fa8d8','#8ad8f0'],sh:'#4a5a2a'},
   temple:{tr:['rgba(60,40,10,.2)','rgba(255,230,160,.12)'],lakeRim:'#3f7a5c',st:['#2d8a8a','#3fb7b0','#7ee0d0'],sh:'#2a1e10'},
   sea:{tr:['rgba(150,105,55,.15)','rgba(255,248,225,.2)'],lakeRim:'#b8945a',st:['#1f9ab0','#3fc8d0','#9ae8ea'],sh:'#7a5a2c'}}[THEME]||{};
+if(PRETTY&&SNOWTH&&TH.tr)TH.tr=['rgba(108,98,172,.3)','rgba(255,252,248,.36)'];
 
 /* ---------- assets: only what this map uses ---------- */
-const need=new Set([cfg.ground||'snow',DIRTTEX,cfg.trailKind==='cobble'?COBTEX:DIRTTEX]);
-const addAll=a=>{if(a)for(const n of a)need.add(n);};
+const PATHTEX=cfg.pathTex||(THEME==='desert'?'egCracked':THEME==='necro'?DIRTTEX:'cpDirt');
+const need=new Set([cfg.ground||'snow',DIRTTEX,cfg.trailKind==='cobble'?COBTEX:DIRTTEX]);if(PRETTY&&!SNOWTH)need.add(PATHTEX);
+const addAll=a=>{if(a)for(const n of a)need.add(n);};if(PRETTY)addAll(cfg._decor);
 addAll(cfg.border&&cfg.border.set);addAll(cfg.groves&&cfg.groves.set);addAll(cfg.open);addAll(cfg.edge);addAll(cfg.decals);addAll(cfg.grass);addAll(cfg.seaSet);addAll(cfg.bankSet);
 if(cfg.patches)for(const p of cfg.patches)need.add(p.tex);if(cfg.vign)for(const v of cfg.vign.sets){addAll(v.set);addAll(v.main);}if(cfg.land)for(const l of cfg.land)need.add(l.n);if(cfg.wayKit)for(const k in cfg.wayKit)for(const n of cfg.wayKit[k])if(CAT[n])need.add(n);if(cfg.clusters)for(const c of cfg.clusters)addAll(c.set);
 if(cfg.walls){need.add(cfg.walls.face);need.add(cfg.walls.top);}
@@ -318,7 +356,7 @@ function seaDepth(x,y){if(!SEA)return -1e9;const s=SEA.side,a=SEA.amp||220,along
 const isSea=(x,y)=>seaDepth(x,y)>0;
 /* cfg.sea.inland=[near,far,plus] (map px from the waterline): no groves nearer than `near`, they fade in up to `far`, and are `plus` denser beyond.
    Gives a beach its zones: water → open sand → scattered palms → palm forest. Used by every grove / forest-edge test. */
-const GBI=SEA&&SEA.inland;function gN(x,y){let n=fbm(x/760,y/760);if(GBI){const L=-seaDepth(x,y),a=GBI;n+=L<a[0]?-.35:L<a[1]?-.35+(.35+a[2])*((L-a[0])/(a[1]-a[0])):a[2];}return n;}
+const GBI=SEA&&SEA.inland;const GSC=cfg.groveScale||(PRETTY?980:760);function gN(x,y){let n=fbm(x/GSC,y/GSC);if(GBI){const L=-seaDepth(x,y),a=GBI;n+=L<a[0]?-.35:L<a[1]?-.35+(.35+a[2])*((L-a[0])/(a[1]-a[0])):a[2];}return n;}
 const inLake=(x,y,pad=0)=>{if(!cfg.lakes)return false;for(const l of cfg.lakes){const n=(vnoise(x/120,y/120)-.5)*.25+(vnoise(x/330+l.x*.01,y/330)-.5)*.75;if(((x-l.x)/(l.rx+pad))**2+((y-l.y)/(l.ry+pad))**2<1+n)return true;}return false;};
 
 /* ---------- built data ---------- */
@@ -379,7 +417,7 @@ if(cfg.paddies){const P=cfg.paddies;let y=P.y;for(let j=0;j<P.ny;j++){const h=P.
     while(x<P.x+P.cols*P.w){const w=P.w*(.6+.9*hash(x|0,j*13));if(!(P.skip&&P.skip.some(k=>Math.abs(k[0]-(x+w/2))<k[2]&&Math.abs(k[1]-(y+h/2))<k[2]))&&hash(x|0,j)>.08)CANALS.push([x|0,y|0,(x+w)|0,(y+h)|0,P.tex||'jpRice',1]);x+=w+P.gap;}
     y+=h+P.gap;}}
 /* organic streets: a smoothed centre line with a wavering width; squares: lumpy ovals */
-const ROADS=[],SQUARES=[];let PM0=null,PM1=null;
+const ROADS=[],SQUARES=[];let PM0=null,PM1=null,PATHS=false;
 function roadPoly(pts,w,sd){const s=spline(pts,14),L=[],Rr=[];s.forEach((p,i)=>{const end=Math.min(1,i/3,(s.length-1-i)/3),ww=w*(.82+.36*vnoise(i*.05+sd,sd*.7))*(.75+.25*end)/2,
     e1=(vnoise(i*.31+sd,4.1)-.5)*7,e2=(vnoise(i*.31+sd,9.3)-.5)*7;L.push([p[0]+p[2]*(ww+e1),p[1]+p[3]*(ww+e1)]);Rr.push([p[0]-p[2]*(ww+e2),p[1]-p[3]*(ww+e2)]);});
   /* rounded, slightly ragged ends instead of a square cut */
@@ -470,6 +508,14 @@ function build(){try{
   const AN=[...warps.map(w=>[w.x,w.y,260]),...(cfg.land||[]).map(l=>[l.x,l.y,200]),...clearings.map(c=>[c[0],c[1],c[2]*.6])];if(B)AN.push([...B,300]);
   const T=cfg.trails||[];T.forEach((pts,ti)=>{let p=expand(pts,pd);if(ti>0){const st=p[0];let best=null,bd=1e9;for(const Q of trails)for(const q of Q){const d=Math.hypot(q[0]-st[0],q[1]-st[1]);if(d<bd){bd=d;best=q;}}if(best&&bd<300){p[0]=[best[0],best[1]];AN.push([best[0],best[1],160]);}}
     trails.push(mkTrail(p,ti?(cfg.trailW||104)*.74:(cfg.trailW||104),ti*17+(cfg.seed||1),AN));});
+  /* 2026-11-25: on the levelling fields the trails are real worn paths (the organic-street painter with the land's own soil, worn through
+     in places, grass creeping over the edges) instead of a faint trample nobody could see */
+  if(PRETTY&&TRAMP&&!SNOWTH&&!cfg.noPath){const PT=PATHTEX;trails.forEach((P,ti)=>{const pts=[];for(let i=0;i<P.length;i+=5)pts.push([P[i][0],P[i][1]]);const L=P[P.length-1];pts.push([L[0],L[1]]);
+      if(pts.length>2){const r=roadPoly(pts,(ti?.66:.84)*(cfg.trailW||104),ti*7.3+2.9);r.tex=PT;r.trail=1;
+        /* the chunks this path really crosses (its bounding box covers half the map) */
+        r.ck=new Set();const mg=r.w*.6+70;for(const q of r.s)for(let cj=Math.floor((q[1]-mg)/512);cj<=Math.floor((q[1]+mg)/512);cj++)for(let ci=Math.floor((q[0]-mg)/512);ci<=Math.floor((q[0]+mg)/512);ci++)r.ck.add(ci+','+cj);
+        ROADS.push(r);}});PATHS=ROADS.some(r=>r.trail);}
+  if(PRETTY)for(const P of cfg.patches||[]){if(P.soft==null)P.soft=.045;if(P.rim==null)P.rim=false;if(P.a==null)P.a=.8;}
   if(cfg.stream){stream=wander(spline(expand(cfg.stream,sd),10),110,90,B?[B]:[]);stream.forEach((p,i)=>{const nb=B&&Math.hypot(p[0]-B[0],p[1]-B[1])<230;p.push(nb?86:Math.max(56,Math.min(112,84*(.65+.7*vnoise(i*.02,9.1)))));});}
   for(const P of trails)for(let i=0;i<P.length;i++){const p=P[i],w=p[4],c=p[5];
     if(KIND==='cobble'){if(i%2===0)dirt.push([p[0]+R(-4,4),p[1]+R(-4,4),w*R(.44,.54)]);continue;}
@@ -544,7 +590,7 @@ function build(){try{
   const BSP=cfg.border&&cfg.border.sp||58;
   /* 2026-11-23 'ต้นไม้เยอะ เดินไปทางไหนก็ติด': on the scaled levelling fields the thinning ring of trees round a forest mass is narrower
      and sparser (band .035 / density .24 instead of .05 / .32), and the loose trees of the prop pass below come at half the rate */
-  const FLD=!!(cfg._scaled&&!WALLS&&!cfg.maze),FRB=FLD?.035:.05,FRD=FLD?.24:.32,PDF=FLD?.5:1;
+  const FLD=!!(cfg._scaled&&!WALLS&&!cfg.maze),FRB=PRETTY?.05:FLD?.035:.05,FRD=PRETTY?.3:FLD?.24:.32,PDF=PRETTY?.7:FLD?.5:1;
   for(let gy=40;gy<H;gy+=44)for(let gx=40;gx<W;gx+=44){const x=gx+R(-19,19),y=gy+R(-19,19);if(x<20||y<20||x>W-20||y>H-20)continue;
     if(WALLS)break;if(water(x,y,40))continue;const de=edgeDist(x,y),band=edgeBand(x,y),n=gN(x,y);let D,sp,set;
     /* RO-style: a grove is a solid mass (blocked, packed with trees); outside it only a rare lone tree */
@@ -555,6 +601,8 @@ function build(){try{
     if(warps.some(w=>Math.abs(x-w.x)<190&&y>w.y-90&&y<w.y+300)||laneD(x,y)<70)continue;
     if(inPave(x,y,de<band?20:50))continue;
     if(rnd()>D||!far(x,y,sp))continue;PX=x;PY=y;const big=rnd(),tv=big<.18?R(1.15,1.32):big<.4?R(.72,.86):R(.9,1.1),pn=pickFill(set,x,y);
+    /* 2026-11-25 warps stand at the map edge now: a wide piece (cliff, boulder) keeps its whole footprint out of the warp's gap and lane */
+    if(PRETTY&&pn&&CAT[pn]){const ex=CAT[pn].w*tv*.5;if(warps.some(w=>Math.abs(x-w.x)<190+ex&&Math.abs(y-w.y)<220+ex*.6)||laneD(x,y)<70+ex)continue;}
     /* scaled fields: rocks / cliff chunks of a rock 'grove' (Egypt, Greek hills, ice fields) stay in the mass and its edge — no lone boulders scattered over the open ground, half as many at the edge */
     if(FLD&&pn&&set===GS&&n<=gthr-.012&&CAT[pn]&&CAT[pn].t!=='tree'&&(n<=gthr-FRB||rnd()<.5))continue;
     put(mk(pn,x,y,{v:fringe?R(.62,.88):tv}));
@@ -586,6 +634,13 @@ function build(){try{
     if(cfg.clean)continue;
     if(rnd()>(n>.5?.13:.075)*(cfg.decalDens??1)*(AUTO_G.length?1.7:DESERT?.35:1)*gcl)continue;const useG=GR.length&&(!DC.length||rnd()<.55);const t=useG?pick(GR):DC.length?pickCap(DC,x,y):null;if(!t)continue;
     const dd=mk(t,x,y,{v:R(.75,1.1),cast:0});if(!dd)continue;if(useG||dd.sway>.8){dd.sway=1.6;const k=((x/CH)|0)+','+((y/CH)|0);(grassB.get(k)||grassB.set(k,[]).get(k)).push(dd);}else decals.push(dd);}
+  /* 2026-11-25 flower meadows: the land's flowers and grass in clumps on the open ground — flat, baked into the ground, never on a path,
+     in water, at a landmark or inside a forest mass; a slow noise field decides which meadows bloom */
+  {const MEAD=PRETTY&&!CAVE?(SNOWTH?['snD02','snD03','snD04','snD04','snD05']:AUTO_G):[];if(MEAD.length)for(let gy=90;gy<H;gy+=190)for(let gx=90;gx<W;gx+=190){const x=gx+R(-75,75),y=gy+R(-75,75),m=vnoise(x/620+71.3,y/620+19.7);if(m<.46||rnd()>.68)continue;
+    if(edgeDist(x,y)<edgeBand(x,y)+40||gN(x,y)>gthr-.03||water(x,y,40)||nearTrail(x,y,30)||nearStream(x,y,40)||inLand(x,y,70)||inPave(x,y,30))continue;
+    const k1=pick(MEAD),k2=rnd()<.45?pick(MEAD):k1,n=6+((rnd()*8)|0),rx=R(50,110);
+    for(let i=0;i<n;i++){const a=rnd()*6.283,r=Math.sqrt(rnd()),px=x+Math.cos(a)*rx*r,py=y+Math.sin(a)*rx*.6*r;if(water(px,py,10)||nearTrail(px,py,6)||inLand(px,py,30))continue;
+      const dd=mk(i%3===2?k2:k1,px,py,{v:R(.7,1.05),cast:0});if(dd){dd.sway=0;decals.push(dd);}}}}
   /* buildings that really stand on the ground: a stone doorstep in front of the door, a short walk to the street below it,
      and weeds growing along the foot of the walls (never in front of the door) */
   if(cfg.doorRe){const re=new RegExp(cfg.doorRe),KP=PAVES.filter(p=>(p.kerb??8)>0);for(const o of objs){if(!o.land||!re.test(o.n))continue;const dw=Math.max(54,o.w*.24),dx=(o.doorX||0)*o.w*(o.flip?-1:1);
@@ -603,6 +658,15 @@ function build(){try{
   for(const L of cfg.lawns||[]){const r=L.r,m=L.m??26,st=L.step??40,LG=L.g||LAWN_G,jk=st/40;for(let y=r[1]+m;y<r[3]-m*.6;y+=st)for(let x=r[0]+m;x<r[2]-m;x+=st){const px=x+R(-15,15)*jk,py=y+R(-12,12)*jk;
       if(objs.some(o=>!o.tree?false:Math.abs(o.x-px)<o.w*.16&&Math.abs(o.y-py)<16))continue;const LF=L.f||LAWN_F,fl=LF.length&&rnd()<(L.flowers??.16);if(!fl&&rnd()>(L.keep??.42))continue;
       const t=fl?pick(LF):pick(LG);const dd=mk(t,px,py,{v:R(.7,1),cast:0});if(!dd)continue;if(!fl){dd.sway=1.6;const k=((px/CH)|0)+','+((py/CH)|0);(grassB.get(k)||grassB.set(k,[]).get(k)).push(dd);}else decals.push(dd);}}
+  /* 2026-11-25 soft decor: a small plant or two at the feet of the trees on a forest's edge and of the lone trees, and in some meadows —
+     drawn standing (depth-sorted) but never solid, so the edges of the forest look lush without anything to get stuck on */
+  if(PRETTY&&cfg._decor&&cfg._decor.length&&!CAVE){const DS=cfg._decor.filter(n=>IMG[n]&&IMG[n].naturalWidth),add=[];
+    if(DS.length){const putD=(px,py,v)=>{if(water(px,py,8)||nearTrail(px,py,4)||inLand(px,py,24)||inPave(px,py,4)||inRP(px,py))return;const t=mk(pickCap(DS,px,py),px,py,{v,cast:0});if(!t)return;t.solid=[];t.ell=null;add.push(t);};
+      for(const o of objs){if(!o.tree||o.land)continue;const n=gN(o.x,o.y);if(n>gthr-.012&&edgeDist(o.x,o.y)>=edgeBand(o.x,o.y))continue;if(rnd()>.42)continue;
+        const base=o.y+o.h*(1-o.ay),k=rnd()<.4?2:1;for(let i=0;i<k;i++){const sd=rnd()<.5?-1:1;putD(o.x+sd*o.w*R(.22,.42),base+R(4,22),R(.62,.86));}}
+      for(let gy=120;gy<H;gy+=300)for(let gx=120;gx<W;gx+=300){const x=gx+R(-110,110),y=gy+R(-110,110);if(vnoise(x/620+71.3,y/620+19.7)<.5||rnd()>.3)continue;
+        if(edgeDist(x,y)<edgeBand(x,y)+60||gN(x,y)>gthr-.03||nearTrail(x,y,40))continue;const k=1+(rnd()<.5?1:0);for(let i=0;i<k;i++)putD(x+R(-60,60),y+R(-30,30),R(.7,.95));}}
+    for(const t of add)objs.push(t);}
   /* ground cover IN FRONT of every object's foot: tufts depth-sorted just below the painted base, so they overlap the bottom edge
      and the object looks rooted in the ground instead of standing on it */
   if(AUTO_G.length&&!CAVE&&cfg.footGrass!==0){const re=cfg.doorRe?new RegExp(cfg.doorRe):null,town=!!cfg.doorRe||!!cfg.city,add=[];
@@ -611,6 +675,12 @@ function build(){try{
       for(let k=0;k<n;k++){const u=R(-spread,spread);if(re&&re.test(o.n)&&Math.abs(u)<.13)continue;const px=o.x+u*o.w,py=base+R(-3,5);if(water(px,py,2)||inPave(px,py,-14)||inRP(px,py))continue;
         const t=mk(pick(AUTO_G),px,py,{v:R(.5,.85),cast:0});if(!t)continue;t.sway=1.3;t.solid=[];t.ell=null;add.push(t);}}
     for(const t of add)objs.push(t);}
+  /* 2026-11-25 the forest goes on past the map edge: two rows of the border's trees outside the map (never solid), so a warp at the edge
+     and the camera's edge margin show forest instead of the empty canvas */
+  if(PRETTY&&!CAVE&&BS&&BS.length){const OT=BS.filter(n=>CAT[n]&&CAT[n].t==='tree'),S0=OT.length?OT:BS;
+    const outT=(x,y)=>{const o=mk(S0[Math.floor(rnd()*S0.length)],x,y,{v:R(.95,1.25)});if(o){o.solid=[];o.ell=null;o.outside=1;objs.push(o);}};
+    for(let x=-60;x<W+60;x+=R(60,90)){outT(x,R(-70,-10));outT(x+R(-30,30),R(-170,-110));outT(x,H+R(20,80));outT(x+R(-30,30),H+R(110,190));}
+    for(let y=-40;y<H+120;y+=R(55,80)){outT(R(-80,-20),y);outT(R(-190,-120),y+R(-25,25));outT(W+R(20,80),y);outT(W+R(120,190),y+R(-25,25));}}
   decals.sort((a,b)=>a.y-b.y);
   for(const o of objs.concat(seaObjs)){const k=((o.x/CH)|0)+','+((o.y/CH)|0);(buckets.get(k)||buckets.set(k,[]).get(k)).push(o);}
   buildGrid();
@@ -785,7 +855,17 @@ function bakeRaw(ci,cj){if(!bakeOut){bakeOut=document.createElement('canvas');ba
   for(const G of [cfg.groundImg,...(cfg.groundImgs||[])])if(G&&IMG[G.n]&&IMG[G.n].naturalWidth){const r=G.r,im=IMG[G.n];if(!(r[2]<x0-BP||r[0]>x1+BP||r[3]<y0-BP||r[1]>y1+BP)){q.drawImage(im,r[0],r[1],r[2]-r[0],r[3]-r[1]);
     const tp=G.detail&&pat(q,G.detail);if(tp){q.save();q.beginPath();q.rect(r[0],r[1],r[2]-r[0],r[3]-r[1]);q.clip();q.globalCompositeOperation='soft-light';q.globalAlpha=G.detailA??.35;q.fillStyle=tp;q.fillRect(x0,y0,CH,CH);q.restore();}}}
   /* organic streets, blended in: a soft worn-earth fringe, then the stones through a feathered mask with worn holes, no hard outline */
-  {const vis=[...SQUARES,...ROADS].filter(o=>{const b=o.bb;return !(b[2]<x0-60||b[0]>x1+60||b[3]<y0-60||b[1]>y1+60);});
+  /* 2026-11-25 worn field paths (trails of the levelling fields): one soft mask, worn through in places, filled with the path soil, a faint
+     dark edge underneath — a light version of the street painter below (no kerb fringe, no grime: about half the painting time per chunk) */
+  {const tv=PATHS?ROADS.filter(o=>o.trail&&o.ck.has(ci+','+cj)):[];
+   if(tv.length){const a=padC(3),g=a.g;g.setTransform(1,0,0,1,0,0);g.globalCompositeOperation='source-over';g.clearRect(0,0,CH+120,CH+120);g.translate(-x0+60,-y0+60);
+     g.filter='blur(4px)';g.fillStyle='#000';for(const o of tv){const P=new Path2D();o.poly.forEach((p,i)=>i?P.lineTo(p[0],p[1]):P.moveTo(p[0],p[1]));P.closePath();g.fill(P);}g.filter='none';g.setTransform(1,0,0,1,0,0);
+     const b=tmpC(4),h=b.g;h.setTransform(1,0,0,1,0,0);h.globalCompositeOperation='copy';h.drawImage(a.c,60,60,CH,CH,0,0,CH,CH);
+     const m=patchMask({scale:150,thr:cfg.roadWear??.62,o:3.3},x0,y0);if(m){h.globalCompositeOperation='destination-out';h.globalAlpha=.7;h.drawImage(m,0,0,CH,CH);h.globalAlpha=1;}
+     h.globalCompositeOperation='source-in';h.translate(-x0,-y0);h.fillStyle=pat(h,tv[0].tex)||'#b98a5a';h.fillRect(x0,y0,CH,CH);h.setTransform(1,0,0,1,0,0);h.globalCompositeOperation='source-over';
+     const d=tmpC(7);d.g.globalCompositeOperation='copy';d.g.drawImage(b.c,0,0);d.g.globalCompositeOperation='source-in';d.g.fillStyle='rgb(70,50,28)';d.g.fillRect(0,0,CH,CH);d.g.globalCompositeOperation='source-over';
+     q.globalAlpha=.28;q.drawImage(d.c,x0,y0+3);q.globalAlpha=1;q.drawImage(b.c,x0,y0);}}
+  {const vis=[...SQUARES,...ROADS].filter(o=>{if(o.trail)return false;const b=o.bb;return !(b[2]<x0-60||b[0]>x1+60||b[3]<y0-60||b[1]>y1+60);});
    if(vis.length){const path=o=>{const P=new Path2D();o.poly.forEach((p,i)=>i?P.lineTo(p[0],p[1]):P.moveTo(p[0],p[1]));P.closePath();return P;};
     const a=padC(3),g=a.g;g.setTransform(1,0,0,1,0,0);g.globalCompositeOperation='source-over';g.clearRect(0,0,CH+120,CH+120);g.translate(-x0+60,-y0+60);
     /* 1 · worn earth fringe */
@@ -872,7 +952,7 @@ function bakeRaw(ci,cj){if(!bakeOut){bakeOut=document.createElement('canvas');ba
         q.save();q.translate(p[0]-ox*o,p[1]-oy*o-hh*.25);if(fl)q.scale(-1,1);q.globalAlpha=.94;q.drawImage(im,-w/2,-hh*.6,w,hh);q.restore();}}}
     else for(const p of coast){if(!inR(p[0],p[1],70))continue;const h=hash(p[0]|0,p[1]|0);if(h>.09)continue;const n=(GREEK?'grBank':JAPAN?'jpBank':'bkS')+(JAPAN?[0,1,5,1,5,0,1,5][((h*90)|0)%8]:(((h*90)|0)%8)),im=IMG[n],c=CAT[n];if(!im||!im.naturalWidth)continue;const k=.7+h*6,w=c.w*k,hh=c.h*k;q.drawImage(im,p[0]-ox*10-w/2,p[1]-oy*10-hh*.7,w,hh);}}
   /* trails */
-  if(TRAMP)trample(q,trails,inR);
+  if(TRAMP&&!PATHS)trample(q,trails,inR);
   {const vis=TRAMP?[]:dirt.filter(d=>inR(d[0],d[1],d[2]+4));if(vis.length){const cob=KIND==='cobble';q.fillStyle=cob?'#5a4048':'#8a5a40';q.beginPath();for(const d of vis){q.moveTo(d[0]+d[2]+2,d[1]+1.5);q.arc(d[0],d[1]+1.5,d[2]+2,0,7);}q.fill();
     q.fillStyle=pat(q,cob?COBTEX:DIRTTEX);q.beginPath();for(const d of vis){q.moveTo(d[0]+d[2],d[1]);q.arc(d[0],d[1],d[2],0,7);}q.fill();
     if(CAVE){q.fillStyle='rgba(30,18,40,.5)';q.fill();}}}
@@ -1117,6 +1197,9 @@ function drawBase(g,t,night){if(!ready)return false;bakesThisFrame=0;const v=vie
       g.save();g.translate(ax?(ax<0?x1+x0:x0+x1):0,ay?(ay<0?y1+y0:y0+y1):0);g.scale(ax?-1:1,ay?-1:1);
       g.drawImage(im,sx0*kx,sy0*ky,(sx1-sx0)*kx,(sy1-sy0)*ky,ax?(ax<0?x0:x0):x0,ay?y0:y0,x1-x0,y1-y0);g.restore();
       g.fillStyle='rgba(12,10,20,.28)';g.fillRect(x0,y0,x1-x0,y1-y0);}g.imageSmoothingQuality=sq;}}
+  /* levelling fields: the ground goes on past the edge too, in the shade of the forest standing there */
+  if(PRETTY&&!CAVE&&(v.x0<0||v.y0<0||v.x1>W||v.y1>H)){const p=pat(g,GROUND);if(p){const R4=[[v.x0,v.y0,Math.min(0,v.x1),v.y1],[Math.max(W,v.x0),v.y0,v.x1,v.y1],[Math.max(0,v.x0),v.y0,Math.min(W,v.x1),Math.min(0,v.y1)],[Math.max(0,v.x0),Math.max(H,v.y0),Math.min(W,v.x1),v.y1]];
+    g.save();for(const [f,a] of [[p,1],[SNOWTH?'rgba(58,66,118,.3)':DESERT?'rgba(70,44,20,.32)':'rgba(16,26,14,.42)',1]]){g.fillStyle=f;for(const r of R4)if(r[2]>r[0]&&r[3]>r[1])g.fillRect(r[0],r[1],r[2]-r[0],r[3]-r[1]);}g.restore();}}
   const i0=Math.max(0,Math.floor(v.x0/CH)),i1=Math.min(Math.ceil(W/CH)-1,Math.floor(v.x1/CH)),j0=Math.max(0,Math.floor(v.y0/CH)),j1=Math.min(Math.ceil(H/CH)-1,Math.floor(v.y1/CH));
   const cx=(v.x0+v.x1)/2,cy=(v.y0+v.y1)/2,list=[];for(let j=j0;j<=j1;j++)for(let i=i0;i<=i1;i++)list.push([i,j,(i*CH+CH/2-cx)**2+(j*CH+CH/2-cy)**2]);list.sort((a,b)=>a[2]-b[2]);
   /* the plain ground pattern only fills the tiles whose baked chunk is not ready yet (painting the whole screen twice was the biggest cost) */

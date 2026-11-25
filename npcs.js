@@ -145,7 +145,7 @@ const HALLDEF=[
          mkNpc('cap_armor','บาเจอร์','ร้านชุดเกราะ','🛡',290,{x:1100,y:460},n=>gearShop(n,'armor'),()=>hlOpen==='cap_armor','เกราะดีช่วยชีวิตได้นะ ลองดูสิ')]}];
 let hlOpen=null;
 for(const H of HALLDEF){H.L={npc:H.art.npc,start:H.art.start,exit:H.art.exit};H.img={room:loadImg('assets/rooms/'+H.key)};H.face={pose:'front',flip:false,t:-9,prev:null};H.townName='เมืองหลวง';H.npc=H.npcs[0].npc;
-  for(const n of H.npcs)n.art={npcH:n.h};
+  for(const n of H.npcs)n.art={npcH:n.h,fit:H.art.fit};
   MAPDEF[H.rid]={name:H.name,lv:'เมืองหลวง',MS:1.0,mk:()=>createRoomHost(H)};NAV_MAPS[H.rid]=1;ROOMS[H.rid]=H;AF_ROOM_TOWN[H.rid]=H.map;}
 
 /* ---------------- the room host (same interface the game's map hosts have) ---------------- */
@@ -209,7 +209,7 @@ function createRoomHost(C){const A=C.art,W=A?A.W:ROOM_W,H=A?A.H:ROOM_H,CELL=16,C
     drawBase(g,t){drawRoom(g,t);},
     drawSorted(g,t,night,items){const all=items.slice().concat(furniture(g,t),npcItem(),fgItems(g));
       if(A&&A.fires&&C.img.room.ok)A.fires.forEach((f,i)=>{if(f.front)all.push({depth:1e9+1,draw:()=>drawFire(g,C.img.room.img,f,t,i*2.3+1)});});   // fires that stand in front (braziers by the door)
-      if(A&&A.charScale>1)all.push({depth:ply.y-.5,draw:()=>{const r=17*MAP_CHAR*A.charScale*CHAR_SCALE;g.save();g.translate(ply.x,ply.y+1);g.scale(1,.3);const gr=g.createRadialGradient(0,0,0,0,0,r*1.3);gr.addColorStop(0,'rgba(16,12,22,.42)');gr.addColorStop(.6,'rgba(16,12,22,.2)');gr.addColorStop(1,'rgba(16,12,22,0)');g.fillStyle=gr;g.fillRect(-r*1.4,-r*1.4,r*2.8,r*2.8);g.restore();}});all.sort((a,b)=>a.depth-b.depth);for(const it of all)it.draw();
+      if(A&&A.charScale>1)all.push({depth:ply.y-.5,draw:()=>{const r=17*MAP_CHAR*roomK(C)*CHAR_SCALE*(window.META_K||1);g.save();g.translate(ply.x,ply.y+1);g.scale(1,.3);const gr=g.createRadialGradient(0,0,0,0,0,r*1.3);gr.addColorStop(0,'rgba(16,12,22,.42)');gr.addColorStop(.6,'rgba(16,12,22,.2)');gr.addColorStop(1,'rgba(16,12,22,0)');g.fillStyle=gr;g.fillRect(-r*1.4,-r*1.4,r*2.8,r*2.8);g.restore();}});all.sort((a,b)=>a.depth-b.depth);for(const it of all)it.draw();
       if(debug){g.save();g.fillStyle='rgba(220,40,40,.28)';for(let j=0;j<ROWS;j++)for(let i=0;i<COLS;i++)if(grid[j*COLS+i])g.fillRect(i*CELL,j*CELL,CELL,CELL);g.restore();}return true;},
     foreground(g,t){const E=L.exit,b=Math.sin(t*.005)*4;
       if(A){roomLight(g,A,t);}
@@ -252,7 +252,13 @@ function roomLight(g,A,t){g.save();g.globalCompositeOperation='lighter';
    Two drawings: front (standing straight, the default) and side (3/4, looking to screen-left; mirrored when the hero is on the right).
    Idle: the picture is drawn in thin horizontal strips and gently deformed — breathing lifts the chest and shoulders, the upper body
    sways a little more than the feet, so it reads as alive without a sprite sheet. Pose changes cross-fade with a small squash. */
-const npcH=C=>C.art&&C.art.npcH||C.h||84,roomK=C=>C&&C.art&&C.art.charScale||1;
+/* room scale (owner 2026-11-25 'เวลาเข้าบ้านเข้าห้องตีเหล็ก ทำให้ขนาดมันสมจริงหน่อย ไม่ใช่ใหญ่เกินไป'): art.charScale = how big the
+   characters are drawn in that picture; art.fit shrinks the heroes AND the room's NPCs together (talk / exit distances keep roomK0).
+   ?roomfit=<k> tries one factor for every room. */
+const RFQ=+((location.search.match(/[?&]roomfit=([\d.]+)/)||[])[1])||0;
+const ROOM_FIT=.7;   /* every room: heroes and NPCs × .7 (counters at chest height, the anvil at the waist; an average-size hero now fits the room's exit door) */
+const rfit=C=>RFQ||(C&&C.art&&C.art.fit)||ROOM_FIT;
+const npcH=C=>(C.art&&C.art.npcH||C.h||84)*rfit(C),roomK0=C=>C&&C.art&&C.art.charScale||1,roomK=C=>roomK0(C)*rfit(C);
 function turnTo(C,pose,flip){const F=C.face;if(F.pose===pose&&F.flip===flip)return;F.prev={pose:F.pose,flip:F.flip};F.pose=pose;F.flip=flip;F.t=performance.now();}
 function warpDraw(g,im,ax,x,y,h,t,seed,alpha){const w=h*im.width/im.height,N=30,iw=im.width,ih=im.height,
     br=Math.sin(t/3200*6.2832+seed),sw=Math.sin(t/4700*6.2832+seed*1.7),sw2=Math.sin(t/4700*6.2832+seed*1.7-.9);
@@ -313,7 +319,7 @@ function npcHit(sx,sy){const R=ROOMS[curMap];if(!R)return null;for(const C of (R
 function doorHit(sx,sy){if(!curMap)return null;for(const d of townDoors(curMap)){const [x,y]=screenOf(d.o.x,d.y),[,top]=screenOf(d.o.x,d.y-d.h*.62-46);if(Math.abs(sx-x)<d.w*.42*Z&&sy<y+20*Z&&sy>top)return d;}return null;}
 addEventListener('pointerdown',e=>{if(e.target!==cvs||e.button!==0||targeting||!curMap)return;
   const C=npcHit(e.clientX,e.clientY);if(C){e.stopImmediatePropagation();const p=W2M(player.x,player.y),NPp=C.pos||C.L.npc;
-    const k=roomK(ROOMS[curMap]);if(Math.hypot(p.x-NPp.x,p.y-NPp.y)<120*Math.sqrt(k)){talk(C);return;}
+    const k=roomK0(ROOMS[curMap]);if(Math.hypot(p.x-NPp.x,p.y-NPp.y)<120*Math.sqrt(k)){talk(C);return;}
     const [wx,wy]=M2W({x:NPp.x,y:NPp.y+40+30*k});command({kind:'move',x:wx,y:wy});pend={C,t:performance.now()};return;}
   const d=doorHit(e.clientX,e.clientY);if(d){e.stopImmediatePropagation();const [wx,wy]=M2W({x:d.x,y:d.y});command({kind:'move',x:wx,y:wy});}},true);
 cvs.addEventListener('pointermove',e=>{if(!curMap)return;const on=!!(npcHit(e.clientX,e.clientY)||doorHit(e.clientX,e.clientY));if(on!==cvs._npcHover){cvs._npcHover=on;cvs.style.cursor=on?'pointer':'';}});
@@ -321,7 +327,7 @@ function tick(){requestAnimationFrame(tick);if(!curMap||mapFadeDir)return;const 
   if(R){const E=R.L.exit,d=Math.hypot(p.x-E.x,p.y-E.y),sm=document.getElementById('smw'),smOpen=sm&&sm.classList.contains('open');
     /* keeps facing the hero while its window is open (and turns with them), back to standing straight a moment after it closes */
     for(const n of (R.npcs||[R])){const F=n.face,open=n.isOpen?n.isOpen():smOpen;if(F.pose==='side'){const nx=M2W(n.pos||R.L.npc)[0];if(open){F.until=performance.now()+1600;if((player.x>nx+6)!==F.flip&&Math.abs(player.x-nx)>14)turnTo(n,'side',player.x>nx);}else if(performance.now()>(F.until||0))turnTo(n,'front',false);}}
-    if(pend){const Pp=pend.C.pos||R.L.npc;if(Math.hypot(p.x-Pp.x,p.y-Pp.y)<125*Math.sqrt(roomK(R)))talk(pend.C);else if(!player.moveT&&performance.now()-pend.t>400)pend=null;}
+    if(pend){const Pp=pend.C.pos||R.L.npc;if(Math.hypot(p.x-Pp.x,p.y-Pp.y)<125*Math.sqrt(roomK0(R)))talk(pend.C);else if(!player.moveT&&performance.now()-pend.t>400)pend=null;}
     if(d>E.r+50)lock=false;else if(d<E.r&&!lock){lock=true;const dr=DOOR[R.rid||RID(R.key)];const o=dr?{x:dr.x,y:dr.y+70}:outsideGuess(R);mapTravel(R.map,o);}
     return;}
   const DS=townDoors(curMap);if(!DS.length)return;patchTown(curMap);const dd=DS.map(D=>[D,Math.hypot(p.x-D.x,p.y-D.y)]).sort((a,b)=>a[1]-b[1])[0],D=dd[0],d=dd[1];

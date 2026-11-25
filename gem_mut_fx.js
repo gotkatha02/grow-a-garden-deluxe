@@ -19,7 +19,7 @@ if(/[?&]gemfx=0/.test(location.search)||!window.GEMFX||!GEMFX.k)return;
 const {art,put,glow,star4,PJ,T,CX,ENS,FX,body,onScr,rnd,eOut,TAU,add:_add0}=GEMFX.k;
 const PL=()=>{try{return player;}catch(e){return null;}};
 const pz=()=>{const p=PL();return (p&&p.z)||0;};
-const CH=36;   /* hero chest height (every hero is drawn ~72 tall) */
+const HK=window.HERO_K||1,CH=36*HK;   /* hero chest height (every hero is drawn ~72 tall × its own size HERO_K) */
 const KY=(()=>{try{const a=PJ(0,0,0),b=PJ(0,100,0);return (b[1]-a[1])/100||.62;}catch(e){return .62;}})();
 
 /* ---- which skills carry which of the nine (follow-ups carry the hit side of their starter's gem) ---- */
@@ -272,7 +272,7 @@ const LAST={};                                                      /* last cast
 const PW=46,PH=PW*150/80;                                           /* pole size in world units */
 const NEED={g:0,t:0,s:0};
 
-function tokPos(k,i,mx,idx){const p=PL(),tk=TKS[k],an=T()*2.1+tk.off+i*TAU/Math.max(1,mx),R=28+idx*7;return {x:p.x+Math.cos(an)*R,y:p.y+Math.sin(an)*R,z:42+idx*6+3*Math.sin(T()*3.2+i*1.7)+pz(),back:Math.sin(an)<0};}
+function tokPos(k,i,mx,idx){const p=PL(),tk=TKS[k],an=T()*2.1+tk.off+i*TAU/Math.max(1,mx),R=(28+idx*7)*HK;return {x:p.x+Math.cos(an)*R,y:p.y+Math.sin(an)*R,z:(42+idx*6)*HK+3*Math.sin(T()*3.2+i*1.7)+pz(),back:Math.sin(an)<0};}
 function drawTokens(back){const c=CX();if(!c)return;const t=T();let idx=0;
   for(const k in TKS){const tk=TKS[k],ia=.55+.45*Math.max(0,1-(t-(tk.act||0)-5)/1.5);   /* full and unused for a while: the tokens rest at half light */
     for(let i=0;i<tk.ch;i++){const w=tokPos(k,i,tk.mx,idx);if(w.back!==back)continue;const [x,y]=PJ(w.x,w.y,w.z),pa=tk.pop[i]!=null?Math.min(1,(t-tk.pop[i])/.25):1,s=pa<1?.3+.9*eOut(pa):1;
@@ -280,15 +280,15 @@ function drawTokens(back){const c=CX();if(!c)return;const t=T();let idx=0;
 function domeDraw(front){if(!DM.on&&!DM.fading)return;const c=CX(),p=PL();if(!c||!p)return;const t=T(),age=t-DM.t0;let a=1,sy=1;
   if(age<.32){const u=age/.32;sy=u<.6?.25+.9*eOut(u/.6):1.15-.15*((u-.6)/.4);a=Math.min(1,u*3.5);}
   if(DM.fading)a*=Math.max(0,1-(t-DM.fadeT)/.3);if(a<=.01)return;
-  const [x,y]=PJ(p.x,p.y,0),W=92,o={ay:94/122,sy};
-  if(!front){put('domeB',x,y,W,Object.assign({a:a*.95},o));const gd=ST();if(gd&&gd.GU.guardT>t)gRing(c,x,y,46,1.8,'#eef4ff','#2e3e60',.55*a);return;}
-  glow(x,y-34,40,'#9cc0ff',.22*a);put('domeF',x,y,W,Object.assign({a},o));const dep=1-DM.sh/Math.max(1e-6,DM.sh0);if(dep>.04)put('domeX',x,y,W,Object.assign({a:a*Math.min(1,dep*1.5)},o));
-  const fl=Math.max(0,1-(t-DM.hitT)/.26);if(fl>0){put('domeF',x,y,W,Object.assign({a:a*fl,add:1},o));glow(x,y-40,48,'#bcd4ff',.35*fl*a);}}
-function rageGround(){if(!RG.on&&RG.k<=0)return;const c=CX(),p=PL();if(!c||!p)return;const t=T(),k=RG.k,[x,y]=PJ(p.x,p.y,0),pu=1+.07*Math.sin(t*13),n=12,R1=34*pu,R2=24*pu;
+  const [x,y]=PJ(p.x,p.y,0),W=92*HK,o={ay:94/122,sy};
+  if(!front){put('domeB',x,y,W,Object.assign({a:a*.95},o));const gd=ST();if(gd&&gd.GU.guardT>t)gRing(c,x,y,46*HK,1.8,'#eef4ff','#2e3e60',.55*a);return;}
+  glow(x,y-34*HK,40*HK,'#9cc0ff',.22*a);put('domeF',x,y,W,Object.assign({a},o));const dep=1-DM.sh/Math.max(1e-6,DM.sh0);if(dep>.04)put('domeX',x,y,W,Object.assign({a:a*Math.min(1,dep*1.5)},o));
+  const fl=Math.max(0,1-(t-DM.hitT)/.26);if(fl>0){put('domeF',x,y,W,Object.assign({a:a*fl,add:1},o));glow(x,y-40*HK,48*HK,'#bcd4ff',.35*fl*a);}}
+function rageGround(){if(!RG.on&&RG.k<=0)return;const c=CX(),p=PL();if(!c||!p)return;const t=T(),k=RG.k,[x,y]=PJ(p.x,p.y,0),pu=1+.07*Math.sin(t*13),n=12,R1=34*pu*HK,R2=24*pu*HK;
   c.save();c.translate(x,y);c.scale(1,KY);c.rotate(t*.7);c.beginPath();for(let i=0;i<n*2;i++){const r=i%2?R2:R1,an=i/(n*2)*TAU;c.lineTo(Math.cos(an)*r,Math.sin(an)*r);}c.closePath();
   c.globalAlpha=.34*k;const g=c.createRadialGradient(0,0,0,0,0,R1);g.addColorStop(0,'rgba(226,67,90,0)');g.addColorStop(.6,'rgba(226,67,90,.55)');g.addColorStop(1,'rgba(110,8,26,.85)');c.fillStyle=g;c.fill();
   c.globalAlpha=.8*k;c.strokeStyle='#5a0614';c.lineWidth=3.4;c.stroke();c.globalCompositeOperation='lighter';c.strokeStyle='#ff6a86';c.lineWidth=1.4;c.stroke();c.restore();
-  for(let i=0;i<5;i++){const an=-Math.PI*(.04+.92*i/4),[fx,fy]=PJ(p.x+Math.cos(an)*22,p.y+Math.sin(an)*12,0),s=(i%4?46:36)*(1+.12*Math.sin(t*9+i*1.7))*k;put('rflame',fx,fy,s*.62,{ay:.92,a:.9*k,rot:Math.cos(an)*.25+Math.sin(t*6+i)*.1});}}   /* crimson flames framing the hero from behind */
+  for(let i=0;i<5;i++){const an=-Math.PI*(.04+.92*i/4),[fx,fy]=PJ(p.x+Math.cos(an)*22*HK,p.y+Math.sin(an)*12*HK,0),s=(i%4?46:36)*HK*(1+.12*Math.sin(t*9+i*1.7))*k;put('rflame',fx,fy,s*.62,{ay:.92,a:.9*k,rot:Math.cos(an)*.25+Math.sin(t*6+i)*.1});}}   /* crimson flames framing the hero from behind */
 function rageTop(){if(!RG.w.length)return;const c=CX();if(!c)return;for(const w of RG.w){const [x,y]=PJ(w.x,w.y,w.z),a=Math.min(1,(w.l-w.t)/.25)*Math.min(1,w.t/.08);put('rflame',x,y,w.s*.62,{ay:.85,a:a*.9});}}
 function poleGround(){const c=CX();if(!c)return;const t=T();
   for(const [p,P] of POLES){const [x,y]=PJ(P.x,P.y,0);if(!onScr(x,y))continue;const life=P.sinkT?Math.max(0,1-Math.max(0,t-P.sinkT)/.45):Math.min(1,(t-P.born)/.35);
