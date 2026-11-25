@@ -1,7 +1,7 @@
 """Big pose off a design sheet (owner 2026-11-24 'เอาอันนี้ภาพซ้ายเอาไปใส่หน้าเลือกตัว'): ChatGPT's design sheets
 (1536x1024, cream background, the big pose on the LEFT, turnaround + action poses on the right) -> the big pose alone on a
 transparent background, for the create screen (then tools/select_cut.py assets/heroes <hero>=OUT.png).
-usage: python3 -I tools/bigpose_cut.py SHEET OUT.png [xmax=585] [ymin_shadow=900] [pockets=1] [minpiece=10]
+usage: python3 -I tools/bigpose_cut.py SHEET OUT.png [xmax=585] [ymin_shadow=900] [pockets=1] [minpiece=10] [drop=x,y]
 - background = pixels near the cream (border median), plus below ymin_shadow pixels near the cream -> floor-shadow-tan
   segment (the tan is measured from the bottom band), flood-filled from the border; so the soft floor shadow goes too
 - shadow=R,G,B: the floor-shadow colour by hand when the sheet's shadow is not the usual warm tan (owl 2026-11-24: pink-lilac
@@ -20,6 +20,9 @@ usage: python3 -I tools/bigpose_cut.py SHEET OUT.png [xmax=585] [ymin_shadow=900
 - rimfix=1: rim pixels whose nearest interior pixel is as light as the background (a thin dark line with cream fur or a
   highlight behind it, next to a removed pocket) are un-mixed against the most different kept pixel within 2 px instead of
   being kept solid (owl 2026-11-24: light crumbs inside the crossbow loop and between the bow cords)
+- drop=x,y;x,y: remove a whole figure that TOUCHES the big pose (croc 2026-11-25: the big pose's water splash met the
+  action pose under it at a few pixels, so the biggest piece was both) — give a point inside it; it is flood-filled
+  without crossing light water spray, grown 2 px and painted cream before the cut
 - kept: the biggest piece + small pieces whose box lies left of xmax (sparkles / chips of the big pose; the right-hand
   figures' bits stay out) · specks under minpiece px dropped
 - rim pixels (<= 2 px from the background) are un-mixed against the background colour they sit on (cream or tan), using
@@ -34,6 +37,21 @@ XMAX = int(kw.get('xmax', 585)); YSH = int(kw.get('ymin_shadow', 900)); POCK = i
 a = np.asarray(Image.open(src).convert('RGB')).astype(np.float32)
 H, W, _ = a.shape
 cream = np.median(np.concatenate([a[0], a[-1], a[:, 0], a[:, -1]]), 0)
+if 'drop' in kw:
+    # croc 2026-11-25: the big pose's water splash touched the action pose under it, so both were one piece. drop=x,y;x,y
+    # = a point inside each figure to remove: that figure is flood-filled through non-cream pixels but NOT through light
+    # water (sky-blue spray and its white core, which is how the two touched), grown 2 px and painted cream before the cut
+    d0 = np.sqrt(((a - cream) ** 2).sum(-1)); lum = a.mean(-1)
+    water = ((a[..., 2] > a[..., 0] + 12) & (lum > 140)) | ((lum > 222) & (d0 >= 16))
+    dl, _ = ndi.label((d0 >= 16) & ~water, structure=np.ones((3, 3)))
+    for pt in kw['drop'].split(';'):
+        x, y = (int(v) for v in pt.split(','))
+        if not dl[y, x]:
+            print('drop point', x, y, 'is not on a figure'); continue
+        T = dl == dl[y, x]
+        sl = ndi.find_objects(T.astype(int))[0]
+        print('dropped figure', int(T.sum()), 'px x', sl[1].start, sl[1].stop, 'y', sl[0].start, sl[0].stop)
+        a[ndi.binary_dilation(T, iterations=2)] = cream
 # floor shadow colour: mode of the warm tan pixels in the bottom band
 band = a[YSH:].reshape(-1, 3)
 dc = np.sqrt(((band - cream) ** 2).sum(-1))

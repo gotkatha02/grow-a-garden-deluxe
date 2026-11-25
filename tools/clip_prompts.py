@@ -339,6 +339,7 @@ V=assets/heroes/jaguar; python3 -I tools/dir8cut.py startv <โฟลเดอ�
 - ห้ามเบลอ · ห้ามรอยฟันสีแดง / แสงที่ใบมีด / ดวงอาทิตย์ดำ / ควันม่วงแบบในชีต (เอฟเฟกต์ใส่ด้วยโค้ดในเกม) · กล้องนิ่งไม่ซูม · พื้นเขียวตลอด · ตัว + มีดสองเล่ม + ผม + หางอยู่ในกรอบตลอด
 - ไม่ระบุมือซ้าย / ขวาในพรอมต์คลิป (ภาพตั้งต้นบอกเองว่าอะไรอยู่ฝั่งไหน)""",
   footer="""## ตอนคลิปมาถึง (โน้ตสำหรับแชตที่ทำต่อ)
+- **คลิปครบ 20 อันมาแล้ว 2026-11-24 22:05 → ใส่เกมแล้ว** (`assets_jaguar.js` สร้างจาก `tools/clips/jaguar_plan.json` — ทุกการเลือกเฟรมเขียนไว้ใน `_note` ของไฟล์นั้น): อัปโหลด 1000001249–1268 มาเป็น buff, attack, walk, idle ต่อทิศ SE, S, E, NE, N · เวลาเฟรม attack / buff / walk / hurt = atlas เดิมทุกทิศ (เช็กแล้ว: 35 แอ็กชัน × 8 ทิศ ลำดับเฟรม + เวลา event เท่าเดิมทุกอัน, จังหวะโดนของ 26 สกิลเท่าเดิมเมื่อปิดการตีพลาดแบบสุ่ม) · คลิปทุกทิศมีเอฟเฟกต์ที่โมเดลแอบใส่ (รอยฟัน แสงขาว กากบาท ประกาย) → ท่าตีกระโดดจากท่าง้างไปท่าจบตรงเฟรมโดน · ชูมีด S / N ใช้เฟรมตอนลดมีดเล่นถอยหลัง (ช่วงยกจริงมีรอยแดง / แสงขาวเหลือง) · ใบมีดสว่างขาวใน NE 7–8 ปรับให้ดำด้วยตัวเลือกใหม่ `deglow` · socket = ใบมีดจริง (head = ปลายมีด, grip = โคนมีดที่การ์ดทอง) ตัวเลือกใหม่ `blade` · CHAR_SCALE.jaguar 1.57 (เดิม .94) และ char_jaguar_fx.js ขยายจุดมีดตาม CHAR_SCALE (s2r) ให้รอยฟัน / แสงที่มีดตรงมีด · หน้า HUD `assets/heroes/jaguar/face.webp` · หน้าเลือกตัว = ภาพใหญ่ซ้ายของชีต (`tools/bigpose_cut.py` → `tools/select_cut.py`, SELV jaguar 2)
 - คลิปตี SE (เจ้าของส่ง 2026-11-24 19:41, `…1000001250.mp4`, 480² 24 fps 124 เฟรม, พรอมต์เดิม): ยืน 0–8 · กางแขน 9–13 · ยกมีดเหนือหัว 14–21 (มีดเล่มหลังลากรอยโค้งแดง: 15–18 ลบได้ด้วยตัวเลือก `unstreak` ของ cliphero, 19–21 รอยทับผม ห้ามใช้) · เหวี่ยง 22–24 + รอยโค้งแดงขาว 22–35 · แสงขาว + กากบาท 36–46 · ท่าจบมีดชี้หน้า 47–59 (47–51 มีจุดประกายเล็ก คีย์ลบเอง) · กลับ 60–67 · ยืน 68+ → แถว SE 12 เฟรม = 9, 12, 16u, 18u, **47** (contact), 52, 56, 60, 62, 64, 66, 69 (u = `"unstreak":{"attack/SE":[16,18]}`) ตรวจด้วยภาพแล้ว · ท่าจบไม่มีเฟรมเหวี่ยงกลางทาง (ทุกเฟรมเหวี่ยงโดนรอยแดงทับ) → กระโดดจากท่ายกมีดไปท่าจบตรงจังหวะโดน แล้วให้เอฟเฟกต์ฟันของเกมเล่นตรงนั้น
 - ตัดด้วย `tools/cliphero.py` + แผนใหม่ `tools/clips/jaguar_plan.json` (ดู `tools/clips/sheep_plan.json` / `wukong_plan.json`: loop ช่วงที่ลืมตา, เลือกเฟรมเลี่ยงแสง / รอยฟันที่โมเดลแอบใส่, flipDirs ถ้ามีคลิปหันผิดฝั่ง, perDir ถ้าคลิปบางทิศถ่ายมาเล็ก / ใหญ่กว่า) → เขียนทับ `assets_jaguar.js` ด้วย prefix เดิม JAG (index.html สลับ atlas ด้วย JAG_ART อยู่แล้ว atkRemap {}) · แก้ขนาดไฟล์ในตาราง MB ของหน้าโหลด + ใส่ ?v= ให้ assets_jaguar.js
 - **เวลาเฟรมต้องเท่า atlas เดิมทุกทิศ** (ลุคเดิมจากคลิป) → จังหวะโดน / ปล่อยสกิลเท่าเดิม bench ไม่เปลี่ยน · เช็ก `python3 tools/fxlab.py hits jaguar` ก่อน / หลัง:
@@ -642,13 +643,13 @@ V=assets/heroes/rhino; python3 -I tools/dir8cut.py startv <โฟลเดอร
               "back of the navy kilt, the gold wrist cuffs, the linen shin wraps, the gold sandals, his big bushy black tail "
               "and the gold chain with the dark spiked ball stay exactly the same.") for d in ('NE', 'N')},
   spos=dict.fromkeys(DIRS, 'wrapped around his fist at his side with the spiked ball hanging beside his leg'),
-  blink=", his tall ears twitch once, and he blinks once",
+  blink=", and his tall ears twitch once; his eyes stay open for the whole clip",
   vis=" His swinging arm, the chain and the whole spiked ball stay visible beside his body during the whole swing.",
   fmt={'pvis': ('', " His raised fist and the dangling ball stay visible above his shoulder while he holds the pose."),
        'chin': (', lifting his chin proudly', '')},
   inframe="his whole body, both tall ears, the whole chain and spiked ball, and his whole tail stay inside the frame.",
   nofx="No shadow, no flash, no glow, no sparkles, no particles, no smoke, no sand, no dust, no light trails, no streaks "
-       "of colour, no golden swirls, no purple fire, no magic effects, no text.",
+       "of colour, no motion lines, no golden swirls, no purple fire, no magic effects, no symbols, no text.",
   act={
    'idle': "Idle loop of {who}. {facing} He stands tall in a relaxed, ready stance, the gold chain {spos}, his other hand "
            "loosely closed at his side, and breathes slowly: his chest rises and falls, the striped headcloth and the white "
@@ -657,11 +658,13 @@ V=assets/heroes/rhino; python3 -I tools/dir8cut.py startv <โฟลเดอร
    'walk': "Walk loop of {who}. {facing} He walks in place, like on a treadmill, toward the way he is facing: light, "
            "confident steps (about two steps per second) in his gold sandals, the spiked ball swinging a little on its "
            "chain from his fist beside his leg, his other arm swinging a little, the striped headcloth bouncing and his "
-           "bushy tail swaying behind him. He does not move across the frame and the ground does not move. The last frame "
-           "matches the first frame so the clip loops.",
+           "bushy tail swaying behind him. He does not move across the frame, he does not come closer to the "
+           "camera or move away from it, and the ground does not move. The last frame matches the first frame so the clip "
+           "loops.",
    'attack': "Flail swing of {who}. {facing} He swings his chain arm up and back so the spiked ball rises over his shoulder "
              "in a short wind-up, then swings it forward and down in one powerful diagonal arc toward the way he is facing, "
-             "until his arm points forward and the ball is low in front of him at the end of its chain; he holds that pose "
+             "until his arm points forward and the ball is low in front of him at the end of its chain, just above the ground "
+             "without touching it; he holds that pose "
              "for a moment, then lets the ball swing back to hang at his side, returns to his starting pose and stands still "
              "for the rest of the clip. The whole move takes about one second. His feet stay in place.{vis} The chain stays "
              "the same length and the ball stays exactly as drawn, and the air around them stays empty and plain green in "
@@ -681,7 +684,7 @@ V=assets/heroes/rhino; python3 -I tools/dir8cut.py startv <โฟลเดอร
 ## ลำดับงาน
 1. **ภาพยืน 5 มุม ✓** (2026-11-24 21:58 เจ้าของส่งมา 5 ภาพ ไม่มีข้อความ) → `assets/heroes/anubis/view_S|SE|E|NE|N.webp` · 1254² พื้นเขียว หันขวาทุกภาพ ตัวสูง 1173–1196 px (ต่างกัน 2 %) · ไม่มีสีเขียวบนตัว (จุดเขียวอ่อนๆ = ขอบเส้นที่ติดพื้นหลัง · ช่องเขียวในตัว = รูห่วงโซ่ / ระหว่างแขนกับตัว เป็นพื้นหลังจริง) · กำปั้นพันโซ่อยู่ฝั่งถูกทุกมุม (หน้า / เฉียงหน้า: ซ้ายภาพ · ข้าง: ฝั่งใกล้ · เฉียงหลัง / หลัง: ขวาภาพ) ลูกตุ้มห้อยระดับเข่า มือว่างกำหลวมๆ · มุมเฉียงหลังเห็นข้างปากด้านขวา + ปลายเส้นตาทองนิดเดียว · มุมหลังเห็นหูสองข้าง ผ้าโพกคลุมหลังหัวลงมาถึงผ้าคลุมไหล่ · ไม่มีตะขอ ไม่มีเอฟเฟกต์
 2. **ภาพตั้งต้น ✓** ส่งแล้ว 2026-11-24 → `anubis_1_S.png … anubis_5_N.png` (ไม่เก็บในรีโป สร้างใหม่ด้วยคำสั่งข้างล่างได้ทุกเมื่อ)
-3. **คลิป 20 ตัว** — รอคลิป · พรอมต์ในไฟล์นี้ แนบภาพตั้งต้นของทิศนั้นทุกคลิป
+3. **คลิป 20 ตัว** — รอคลิป · พรอมต์ในไฟล์นี้ แนบภาพตั้งต้นของทิศนั้นทุกคลิป · 2026-11-25 19:14 เจ้าของขอพรอมต์อีกรอบ ('ขอพร้อมทำอนิเมชั่นอนูบิส') → ภาพตั้งต้นทำใหม่ (คำสั่งเดิม ตัวเลขเดิม) + พรอมต์ 20 กล่องส่งในแชท ทิศละข้อความ · ปรับตามบทเรียนแรด / หมาป่า: ยืนลืมตาตลอด · เดินไม่เข้าหากล้อง · ลูกตุ้มหยุดเหนือพื้น · ห้ามเส้นความเร็ว / สัญลักษณ์
 
 ## ภาพตั้งต้น
 - `anubis_<n>_<ทิศ>.png` 900×900 สี่เหลี่ยม แบบฮิปโป / จากัวร์ / หมาป่า / แรด · หูสูงมาก + ต้องมีที่ให้เหวี่ยงลูกตุ้มข้ามไหล่ ฟาดไปข้างหน้า และชูกำปั้นเหนือหัว (ลูกตุ้มห้อยข้างหัว) → ht 480 · เท้าที่ 88 % แบบแรด (มุมหน้า 'ต่ำตรงหน้า' อยู่ต่ำกว่าเท้าในภาพ ลูกตุ้มต้องมีที่ลง) · ผลที่วัดได้ (สเกล .404 ทุกทิศ): ตัวสูง 475–483 px = ~253–258 px ในคลิป 480p · เหนือหูว่าง .64–.67 เท่าตัว · ซ้าย / ขวา S .62 / .70 · SE .65 / .69 · E .69 / .73 · NE .70 / .64 · N .69 / .65 · ใต้เท้า 107–108 px = .22 เท่าตัว
@@ -693,14 +696,15 @@ V=assets/heroes/anubis; python3 -I tools/dir8cut.py startv <โฟลเดอ�
 ## วิธีใช้
 แนบภาพตั้งต้นของทิศนั้น + วางพรอมต์ทีละตัว → 4 คลิปต่อทิศ (ยืน · เดิน · เหวี่ยงลูกตุ้ม · ชูกำปั้น) · คลิปละ 3–5 วิ · ไม่ต้องทำทิศซ้าย (เกมกลับด้านเอง) · ส่งกลับเรียง S → SE → E → NE → N ทิศละ ยืน → เดิน → เหวี่ยง → ชู (สลับได้ ดูเองว่าคลิปไหนเป็นท่าอะไร)
 
-## กติกาที่อยู่ในทุกพรอมต์ (บทเรียนจากคลิปลิง / แอคโซลอเติล / มังกรลุคเดิม / แกะ / บาสเต็ด / ฮิปโป / จากัวร์)
+## กติกาที่อยู่ในทุกพรอมต์ (บทเรียนจากคลิปลิง / แอคโซลอเติล / มังกรลุคเดิม / แกะ / บาสเต็ด / ฮิปโป / จากัวร์ / หมาป่า / แรด)
 - ประโยคบอกทิศขึ้นต้นทุกพรอมต์ กันโมเดลหมุนตัวหันหากล้อง (มุมหลังโดนบ่อย)
-- ล็อกหน้า (ตาทองเส้นอายไลเนอร์ทอง คาดหน้าผากทอง ปากดำ ยิ้มปากปิด สีหน้ามั่นใจ) ในมุมที่เห็นหน้า · มุมหลัง (NE, N) ใช้ประโยค 'เห็นแค่หลังหัว หน้าไม่หันมา' แทน ไม่มีกะพริบตา
+- ล็อกหน้า (ตาทองเส้นอายไลเนอร์ทอง คาดหน้าผากทอง ปากดำ ยิ้มปากปิด สีหน้ามั่นใจ) ในมุมที่เห็นหน้า · มุมหลัง (NE, N) ใช้ประโยค 'เห็นแค่หลังหัว หน้าไม่หันมา' แทน
+- ท่ายืนมุมหน้า: **ลืมตาตลอดคลิป** แทน 'กะพริบตา 1 ครั้ง' (คลิปยืนของแรดหลับตาตลอดช่วงที่ขยับ · หมาป่า / จากัวร์ / บาสเต็ด / แกะ หลับตาเป็นช่วงยาว ต้องตัดทิ้ง)
 - ล็อกของติดตัว: หูสูงตั้งพ้นผ้า · ผ้าโพกลายทางน้ำเงินทอง · ผ้าคลุมไหล่ขาวแถบซิกแซกทอง · เข็มกลัดอังค์ทองกลม · เสื้อดำขลิบทอง · เข็มขัดทองหัวกลม · กระโปรงกรมแผงอังค์ · กำไลทอง · ผ้าพันแข้ง · รองเท้าทอง · หางพวงดำ · โซ่ทองพันกำปั้น + ลูกตุ้มหนามอังค์
-- เดินอยู่กับที่แบบลู่วิ่ง ~2 ก้าว/วิ ลูกตุ้มแกว่งนิดๆ ข้างขา
-- เหวี่ยงลูกตุ้ม = เหวี่ยงแขนขึ้นไปข้างหลังให้ลูกตุ้มข้ามไหล่ แล้วฟาดลงทแยงไปข้างหน้าจนแขนชี้ไปข้างหน้า ลูกตุ้มอยู่ต่ำตรงหน้าสุดปลายโซ่ ค้างนิดนึง ปล่อยกลับมาห้อยข้างตัว ยืนนิ่งจนจบคลิป · **ไม่ใช้คำว่า attack / slash / smash ในพรอมต์** (คลิปแรกของจากัวร์: โมเดลวาดรอยฟัน แสงขาว ตัว X ทับท่า) + สั่งให้อากาศรอบลูกตุ้มเป็นพื้นเขียวเปล่าทุกเฟรม · โซ่ยาวเท่าเดิม · มุมหลังสั่งให้แขน โซ่ ลูกตุ้มยังเห็นข้างตัว
+- เดินอยู่กับที่แบบลู่วิ่ง ~2 ก้าว/วิ ลูกตุ้มแกว่งนิดๆ ข้างขา · **ไม่เดินเข้าหา / ออกจากกล้อง** (คลิปเดินหน้าตรงของหมาป่าเดินเข้าหากล้องจนตัวโตขึ้น 1.4 เท่า)
+- เหวี่ยงลูกตุ้ม = เหวี่ยงแขนขึ้นไปข้างหลังให้ลูกตุ้มข้ามไหล่ แล้วฟาดลงทแยงไปข้างหน้าจนแขนชี้ไปข้างหน้า ลูกตุ้มอยู่ต่ำตรงหน้าสุดปลายโซ่ **เหนือพื้น ไม่แตะพื้น** (แรด / ฮิปโป: อาวุธกระทบพื้น → โมเดลใส่น้ำแข็ง ฝุ่น แสงขาวที่พื้นเอง) ค้างนิดนึง ปล่อยกลับมาห้อยข้างตัว ยืนนิ่งจนจบคลิป · **ไม่ใช้คำว่า attack / slash / smash ในพรอมต์** (คลิปแรกของจากัวร์: โมเดลวาดรอยฟัน แสงขาว ตัว X ทับท่า) + สั่งให้อากาศรอบลูกตุ้มเป็นพื้นเขียวเปล่าทุกเฟรม · โซ่ยาวเท่าเดิม · มุมหลังสั่งให้แขน โซ่ ลูกตุ้มยังเห็นข้างตัว
 - ชูกำปั้น = ชูกำปั้นที่พันโซ่ขึ้นเหนือหัว ลูกตุ้มห้อยข้างหัว อีกมือแบหงายข้างตัว อกผาย ค้างนิ่ง ~1 วิ แล้ววางลง — เกมใช้ทั้งคลิปกับสกิลร่ายทุกท่า
-- ห้ามเบลอ · ห้ามวงทอง ฝุ่นทราย ไฟม่วง แบบในชีต (เอฟเฟกต์ใส่ในเกม: `char_anubis.js` + ภาพวาด `char_anubis_fx.js`) · กล้องนิ่งไม่ซูม · พื้นเขียวตลอด · ตัว + หู + โซ่ + ลูกตุ้ม + หางอยู่ในกรอบตลอด
+- ห้ามเบลอ · ห้ามเส้นความเร็ว / สัญลักษณ์ (คลิปยืน NE ของฮิปโปมีเส้น '!' สีเหลือง) · ห้ามวงทอง ฝุ่นทราย ไฟม่วง แบบในชีต (เอฟเฟกต์ใส่ในเกม: `char_anubis.js` + ภาพวาด `char_anubis_fx.js`) · กล้องนิ่งไม่ซูม · พื้นเขียวตลอด · ตัว + หู + โซ่ + ลูกตุ้ม + หางอยู่ในกรอบตลอด
 - ไม่ระบุมือซ้าย / ขวาในพรอมต์คลิป (ภาพตั้งต้นบอกเองว่าโซ่อยู่ฝั่งไหน)""",
   footer="""## ตอนคลิปมาถึง (โน้ตสำหรับแชตที่ทำต่อ)
 - ตัดด้วย `tools/cliphero.py` + แผนใหม่ `tools/clips/anubis_plan.json` (ดู `hippo_plan.json` / `bastet_plan.json`: loop ช่วงที่ลืมตา, เลือกเฟรมเลี่ยงรอยวง / ฝุ่น / แสงที่โมเดลแอบใส่, flipDirs ถ้ามีคลิปหันผิดฝั่ง, perDir ถ้าคลิปบางทิศถ่ายมาเล็ก / ใหญ่กว่า, "unstreak")
@@ -806,6 +810,106 @@ V=assets/heroes/owl; python3 -I tools/dir8cut.py startv <โฟลเดอร�
 - **หน้า HUD:** ตอนนี้ใช้ `OW_PORTRAIT` ที่ฝังใน `assets_owl.js` เดิม (หายไปเมื่อเขียน atlas ใหม่ถ้าไม่ใส่) → ตัดหัวจาก view_S เป็น `assets/heroes/owl/face.webp` แล้วตั้ง window.HUD_FACE ใน installOwl (แบบลิง / แกะ / ฮิปโป / บาสเต็ด) · CHAR_FILTER ของนกฮูกเป็น '' อยู่แล้วเมื่อมี OW_ART
 - หน้าเลือกตัว = ภาพใหญ่ของชีตแล้ว (`select.webp`, SELV owl 2)
 - ยังเป็นลุคเก่า: ไอคอนสกิล 48 (+ ex_ 7 เป็นโค้ด), พื้นหลังผังสกิล 4 ภาพ, ภาพหน้าโหลด ld1 ld4 ld8 · ภาพเอฟเฟกต์ 36 ภาพไม่มีตัวนกฮูก ใช้ต่อได้ · ยังไม่มี: ท่านั่ง (hero_sit.js)"""),
+ 'croc': dict(
+  title='จระเข้ ลุคใหม่ (นักล่าแห่งทะเลสาบ · Lake Predator)',
+  who='the crocodile warrior in this picture', P='He', p='he', pos='his', weapon='harpoon',
+  face="Keep his face exactly as in the picture: the same small fierce amber-gold eyes under the same heavy brow ridges, "
+       "the same red scar across his snout and the same confident toothy grin with his jaws closed.",
+  back_face={'NE': "We see him mostly from behind: the back of his head and the row of orange-gold spikes running down his "
+                   "neck and back; of his face only the side of his long snout on the right, as in the picture; his face "
+                   "never turns toward us.",
+             'N': "We only see the back of his head and the row of orange-gold spikes running down his neck, his back and "
+                  "his tail, as in the picture; his face never turns toward us."},
+  keep={d: ("His fang necklace with the gold caps, the torn red sash with its cream stepped pattern, the thick rope belt "
+            "with the netted gourd, the dark brown loincloth flap with its orange zigzag border, the navy-blue arm and leg "
+            "wraps with their gold bands, the gold armbands, the orange-gold spikes along his back and tail, his long tail "
+            "and the harpoon with its black-violet barbed obsidian head, its rope coil and its gold bands stay exactly the "
+            "same.") for d in ('S', 'SE', 'E')}
+       | {d: ("The torn red sash with its cream stepped pattern, the thick rope belt, the navy-blue arm and leg wraps with "
+              "their gold bands, the gold armbands, the row of orange-gold spikes down his back and tail, his long tail and "
+              "the harpoon with its black-violet barbed obsidian head, its rope coil and its gold bands stay exactly the "
+              "same.") for d in ('NE', 'N')},
+  spos=dict.fromkeys(DIRS, 'upright in one hand beside him, its gold end resting on the ground'),
+  blink="; his eyes stay open for the whole clip",
+  vis=" His arms and the whole harpoon stay visible beside his body during the whole thrust.",
+  fmt={'pvis': ('', " His raised arms and the whole harpoon stay visible above his shoulders while he holds the pose."),
+       'chin': (', lifting his chin proudly', '')},
+  inframe="his whole body, his whole tail and the whole harpoon, from its obsidian head to its gold end, stay inside the frame.",
+  nofx="No shadow, no flash, no glow, no sparkles, no particles, no smoke, no water, no splashes, no drops, no dust, no "
+       "light trails, no streaks of colour, no motion lines, no magic effects, no symbols, no text.",
+  act={
+   'idle': "Idle loop of {who}. {facing} He stands in a heavy, relaxed, ready stance, the harpoon {spos}, his other hand a "
+           "loose fist at his side, and breathes slowly: his big chest rises and falls, the torn red sash and the fang "
+           "necklace stir a little, the rope coil on the harpoon sways and his long tail sways slowly on the ground{blink}. "
+           "The last frame matches the first frame so the clip loops.",
+   'walk': "Walk loop of {who}. {facing} He walks in place, like on a treadmill, toward the way he is facing: heavy, steady "
+           "steps (about two steps per second) on his big clawed feet, the harpoon held upright in one hand beside him with "
+           "its gold end just above the ground, bobbing a little with each step, his other arm swinging a little, the red "
+           "sash swaying and his long, heavy tail swinging from side to side behind him. He does not move across the frame, "
+           "he does not come closer to the camera or move away from it, and the ground does not move. The last frame "
+           "matches the first frame so the clip loops.",
+   'attack': "Harpoon thrust of {who}. {facing} He grips the harpoon with both hands and pulls it back beside his body in a "
+             "short wind-up, the obsidian head pointing toward the way he is facing; then he steps into it and drives the "
+             "harpoon straight forward toward the way he is facing in one powerful thrust, until his arms are fully "
+             "stretched and the obsidian head is far in front of him at chest height; he holds that pose for a moment, then "
+             "pulls the harpoon back, returns to his starting pose holding it upright beside him and stands still for the "
+             "rest of the clip. The whole move takes about one second. His back foot stays in place.{vis} The harpoon stays "
+             "straight and the same length, its head stays exactly as drawn, and the air around it stays empty and plain "
+             "green in every frame. Clean outlines in every frame, no motion blur.",
+   'buff': "Power pose of {who}. {facing} He plants his feet wide and raises the harpoon high above his shoulder with both "
+           "hands, like a hunter ready to strike, the obsidian head pointing forward and up toward the way he is facing, his "
+           "chest puffed out{chin}; he holds that pose still for about one second — he does not throw the harpoon — then "
+           "lowers it, returns to his starting pose holding it upright beside him and stands still for the rest of the clip. "
+           "His feet stay in place.{pvis} The raised harpoon and its rope coil stay inside the frame. Clean outlines in "
+           "every frame, no motion blur."},
+  dirname={'S': 'หน้าตรง', 'SE': 'เฉียงหน้า หันขวา', 'E': 'ข้าง หันขวา', 'NE': 'เฉียงหลัง หันขวา', 'N': 'หลัง'},
+  actname={'idle': 'ยืน (idle · วนลูป)',
+           'walk': 'เดิน (walk · วนลูป · เกมใช้ตอน Body Crush / Low Ambush / ถอยตั้งท่า Sunpiercer ด้วย)',
+           'attack': 'แทงฉมวก (attack · ตีปกติ + สกิลแทงทุกท่า + สกิลงับ — เกมเล่นช่วงง้าง → แทงสุดแขน (เฟรมโดน) ซ้ำตอนแทงรัว)',
+           'buff': 'ชูฉมวก (buff · สกิลร่าย บัฟ Tail Sweep Obsidian Rain อัลติ — เกมปล่อยสกิลที่เฟรมชูสุด)'},
+  start='croc_{n}_{d}.png',
+  header="""เจ้าของส่งชีตแบบ 3 'นักล่าแห่งทะเลสาบ' 2026-11-25 19:27 (ภาพเดียว ไม่มีข้อความ → ถือว่าเลือกแบบนี้) · ชีต `assets/heroes/croc/sheet_lake_predator.webp` · ภาพใหญ่ = หน้าเลือกตัวแล้ว · หน้าตา + พรอมต์ภาพยืน 5 มุม: `CROC_LOOK_PROMPTS_TH.md` หัวข้อ 'เลือกแล้ว'
+
+## ลำดับงาน
+1. **ภาพยืน 5 มุม** — พรอมต์ส่งในแชตแล้ว 2026-11-25 · รอภาพ → `assets/heroes/croc/view_S|SE|E|NE|N.webp`
+2. **ภาพตั้งต้น** — ทำจากภาพยืนด้วยคำสั่งข้างล่าง แล้วส่งให้เจ้าของ
+3. **คลิป 20 ตัว** — พรอมต์ในไฟล์นี้ แนบภาพตั้งต้นของทิศนั้นทุกคลิป
+
+## ภาพตั้งต้น
+- `croc_<n>_<ทิศ>.png` **1200×900 แนวนอน (4:3)** ไม่ใช่สี่เหลี่ยมจัตุรัส: ฉมวกยาวกว่าตัว ตอนแทงสุดแขนในมุมข้างปลายฉมวกพุ่งไปข้างหน้าเกือบ 1.3 เท่าความสูงตัว → ภาพ 900² แคบไป (บาสเต็ดเคยใช้ 480×640 แนวตั้ง เครื่องมือของเจ้าของเก็บสัดส่วนตามภาพ) · ht นับรวมฉมวกที่ตั้งข้างตัว (ฉมวกสูงกว่าหัวราว 1/3 ตัว) → ตัวจระเข้สูงราว 390 px = ~208 px ในคลิป 480p (แบบหมาป่าที่ขวานสูงกว่าหัว) · เท้าที่ 88 % แบบแรด / อนูบิส · **ตัวเลขนี้เป็นแผน วัดใหม่ตอนภาพยืนมาถึง** (สูงพอให้ชูฉมวกเหนือไหล่ กว้างพอให้แทงสุดแขนในมุมข้าง)
+```
+V=assets/heroes/croc; python3 -I tools/dir8cut.py startv <โฟลเดอร์> S=$V/view_S.webp SE=$V/view_SE.webp E=$V/view_E.webp NE=$V/view_NE.webp N=$V/view_N.webp size=1200x900 feet=.88 ht=520 clean=0
+```
+→ start_<ทิศ>.png → ตั้งชื่อใหม่ croc_1_S … croc_5_N · ทุกทิศใช้สเกลของมุมหน้า (ใส่ S ก่อนเสมอ) · clean=0 = ไม่ทาจุดเขียวในตัว (ชุดไม่มีสีเขียวเลย: ผ้าพันน้ำเงิน ≈ RGB 57, 63, 100 · ใบออบซิเดียน ≈ 75, 56, 73 · ช่องในห่วงเชือก ระหว่างแขนกับตัว ระหว่างขา เป็นพื้นหลังจริง)
+
+## วิธีใช้
+แนบภาพตั้งต้นของทิศนั้น + วางพรอมต์ทีละตัว → 4 คลิปต่อทิศ (ยืน · เดิน · แทงฉมวก · ชูฉมวก) · คลิปละ 3–5 วิ · ไม่ต้องทำทิศซ้าย (เกมกลับด้านเอง) · ส่งกลับเรียง S → SE → E → NE → N ทิศละ ยืน → เดิน → แทง → ชู (สลับได้ ดูเองว่าคลิปไหนเป็นท่าอะไร)
+
+## กติกาที่อยู่ในทุกพรอมต์ (บทเรียนจากคลิปลิง / แอคโซลอเติล / มังกรลุคเดิม / แกะ / บาสเต็ด / ฮิปโป / จากัวร์ / หมาป่า / แรด)
+- ประโยคบอกทิศขึ้นต้นทุกพรอมต์ กันโมเดลหมุนตัวหันหากล้อง (มุมหลังโดนบ่อย)
+- ล็อกหน้า (ตาอำพัน สันคิ้วหนา แผลเป็นบนจมูก ยิ้มเห็นฟันแต่หุบปาก) ในมุมที่เห็นหน้า · มุมหลัง (NE, N) ใช้ประโยค 'เห็นแค่หลังหัวกับแนวหนาม หน้าไม่หันมา' แทน
+- ท่ายืนมุมหน้า: **ลืมตาตลอดคลิป** (คลิปยืนของแรดหลับตาตลอดช่วงที่ขยับ · หมาป่า / จากัวร์ / บาสเต็ด / แกะ หลับตาเป็นช่วงยาว ต้องตัดทิ้ง)
+- ล็อกของติดตัว: สร้อยเขี้ยวครอบทอง · ผ้าแดงลายขั้นบันได · เข็มขัดเชือก + น้ำเต้าในตาข่าย · ผ้าเตี่ยวน้ำตาลขอบซิกแซก · ผ้าพันแขนขาน้ำเงินกรม + แถบทอง · ปลอกแขนทอง · หนามส้มทองตามหลังกับหาง · หางยาว · ฉมวกหัวออบซิเดียนมีเงี่ยง เชือกขด แถบทอง
+- เดินอยู่กับที่แบบลู่วิ่ง ~2 ก้าว/วิ ฉมวกตั้งในมือ ปลายด้ามลอยเหนือพื้น หางส่ายตาม · **ไม่เดินเข้าหา / ออกจากกล้อง** (คลิปเดินหน้าตรงของหมาป่าเดินเข้าหากล้องจนตัวโตขึ้น 1.4 เท่า)
+- แทงฉมวก = จับสองมือ ดึงไปข้างตัว (ง้าง) แล้วก้าวพุ่งแทงตรงไปข้างหน้าจนแขนเหยียดสุด หัวฉมวกไกลสุดระดับอก (= เฟรมโดน) ค้างนิด ดึงกลับ ยืนนิ่งจนจบคลิป · ฉมวกตรง ยาวเท่าเดิม · **ไม่ใช้คำว่า attack / stab / strike ในพรอมต์** (คลิปแรกของจากัวร์: โมเดลวาดรอยฟัน แสงขาว ตัว X ทับท่า) + สั่งให้อากาศรอบฉมวกเป็นพื้นเขียวเปล่าทุกเฟรม · มุมหลังสั่งให้แขนกับฉมวกยังเห็นข้างตัว
+- ชูฉมวก = ยืนกางขา ชูฉมวกสองมือเหนือไหล่แบบนักล่าเตรียมพุ่ง หัวฉมวกชี้ไปข้างหน้าเฉียงขึ้น อกผาย ค้างนิ่ง ~1 วิ (ไม่ขว้างออกไป) แล้ววางลง — เกมใช้ทั้งคลิปกับสกิลร่ายทุกท่า + Tail Sweep (เล่นเร็ว 2.2 เท่า หางเป็นภาพโค้ด) + Obsidian Rain (เล่นถึงจุดชูสุดตอนกระโดด แล้วต่อเฟรมแทงตอนปักลงพื้น)
+- ห้ามเบลอ · ห้ามเส้นความเร็ว / สัญลักษณ์ (คลิปยืน NE ของฮิปโปมีเส้น '!' สีเหลือง) · ห้ามน้ำกระเซ็น น้ำหยด ประกาย แบบในชีต (เอฟเฟกต์ใส่ในเกม: `croc_art.js` + `croc_vfx3.js`) · กล้องนิ่งไม่ซูม · พื้นเขียวตลอด · ตัว + หาง + ฉมวกทั้งด้ามอยู่ในกรอบตลอด
+- ไม่ระบุมือซ้าย / ขวาในพรอมต์คลิป (ภาพตั้งต้นบอกเองว่าฉมวกอยู่ฝั่งไหน)""",
+  footer="""## ตอนคลิปมาถึง (โน้ตสำหรับแชตที่ทำต่อ)
+- ตัดด้วย `tools/cliphero.py` + แผนใหม่ `tools/clips/croc_plan.json` (ดู `rhino_plan.json` / `bastet_plan.json`: loop ช่วงที่ลืมตา, เลือกเฟรมเลี่ยงรอยฟัน / น้ำ / แสงที่โมเดลแอบใส่, flipDirs ถ้ามีคลิปหันผิดฝั่ง, perDir ถ้าคลิปบางทิศถ่ายมาเล็ก / ใหญ่กว่า, "unstreak", "breath" ถ้าต้องใช้ช่วงยืนนิ่ง)
+- **เขียนเป็นไฟล์ใหม่ `assets_croc.js`** (prefix ใหม่ เช่น CRK → CRK_SPR_META / CRK_SPR_ATLAS · อย่าใช้ CRC = ตารางสีของจระเข้ในโค้ด) + สลับเข้าใน index.html แบบ BST_ART เฉพาะ `?char=croc` (เช่น `?crkart=0` = ร่างเก่า) + รายการ document.write + ตาราง MB ของหน้าโหลด · **ห้ามเขียนทับ `assets.js`**: มันคือร่างชั่วคราวของจิ้งจอก อนูบิส สิงโต อีกา (และจระเข้ตอนนี้) + หมาป่าเก่า (`?wlfart=0`)
+- **เวลาเฟรมต้องเท่า `assets.js` ทุกทิศ** (จระเข้ถูก bench กับเวลานี้) → จังหวะโดน / ปล่อยสกิลเท่าเดิม · เช็ก `python3 tools/fxlab.py hits croc` ก่อน / หลัง:
+  - attack 12 เฟรม 900 ms · S [80,50,90,50,50,50,70,200,50,50,50,110] contact 6 (โดนที่ 370 ms) · SE [50,50,190,70,90,50,50,50,50,50,90,110] contact 4 (360 ms) · E [80,50,50,100,50,120,60,120,50,50,50,120] contact 6 (450 ms) · N [110,120,50,50,70,50,120,70,50,50,50,110] contact 6 (450 ms) · NE: atlas เดิมให้เกมเล่นแถว E แทน (atkRemap NE→E) → คลิป NE ใหม่ใช้เวลาเฟรม + contact ของ E แล้วตั้ง atkRemap {} (แบบบาสเต็ด)
+  - **เฟรมที่เกมใช้จริงในท่าตี** (`crStrike` ใน index.html): เฟรม contact = แทงสุดแขน หัวฉมวกไกลสุด (ดาเมจ) · contact−3 = ง้างฉมวกไปข้างตัว (ค้าง 260 ms ตอน Temple Execution, 700 ms ตอน Sunpiercer ชาร์จแสงทอง, 60 ms ตอน Spear Thrust) · แทงรัว (Serpent Thrust ฯลฯ) เล่น contact−2 … contact+1 ซ้ำเร็ว 2.6 เท่า → แทงต้องเป็นเส้นตรงชัด ไม่เบลอ · งับ (Snap, Crushing Bite, Savage Jaw, Jaw Lock, Ripping Bite) ใช้คลิปเดียวกัน (ปากจระเข้ที่งับเป็นภาพโค้ด `JawSnap` ที่ตัวศัตรู) · Obsidian Rain ค้าง contact 120 ms ตอนปักลงพื้นหลังกระโดด · Death Roll = contact−1 → contact แล้ววนเฟรมแรกของท่าเดิน / ท่าโดนตี 8 ทิศ (`rollSeq`) แล้วค้าง contact 180 ms
+  - buff 12 เฟรม 1.4 วิ peak 7 · S [170,50,50,230,50,110,390,50,50,50,50,150] (1,050 ms) · E [70,50,50,50,50,70,170,580,50,50,50,160] (510) · NE [80,60,50,50,50,50,120,160,480,60,60,180] (460) · N [130,50,50,50,50,110,260,450,60,50,50,90] (700) · SE 6 เฟรม [220×6] peak 3 (660) → เฟรม peak = ชูฉมวกสุด · Awakening ค้าง peak 600 ms
+  - walk 8 × 100 ms (E สลับ 110 / 90) รอบละ 0.8 วิ · idle 12 เฟรม 2.4 วิ · hurt 7 เฟรม 550 ms · walk ใช้ตอน Body Crush (พุ่งชน), Low Ambush, Sunpiercer (เฟรม 0–3 ตอนถอยตั้งท่า)
+- **socket:** `sockets` attack + buff ใส่ไว้ที่หัวฉมวก (cliphero 'orb' จับหัวออบซิเดียนม่วงดำ หรือ orbFix อ่านด้วยตา) · เอฟเฟกต์หอก v3 (`croc_vfx3.js` Lance / SpearLine) คำนวณจากตัวฮีโร่ + ทิศ ไม่ได้อ่านจุดนี้ ประกายตอนชาร์จ Sunpiercer ใช้ `spearTip()` (ระยะคงที่หน้าตัว)
+- **ขนาด:** `CHAR_SCALE.croc` ตอนนี้ 1 (ร่างหมาป่า) · ทุกตัววัดเทียบความสูงตอนยืนของหมาป่าเก่า (S idle 196 cell px ที่สเกล atlas .55) ไม่นับฉมวก → แล้ว `HERO_SIZE.croc` .882 คูณต่อเอง (ตัวใหญ่กลุ่มเดียวกับแรด)
+- **สีย้อม:** `CHAR_FILTER.croc` (ย้อมร่างหมาป่าเป็นเขียวเทา) → ตั้ง '' เมื่อมีร่างใหม่ (แบบ BST_ART / OW_ART)
+- **หน้า HUD:** ตอนนี้ใช้หน้า default (หมาป่า) → ตัดหัวจาก view_S เป็น `assets/heroes/croc/face.webp` แล้วตั้ง window.HUD_FACE ใน installCroc (แบบลิง / แกะ / ฮิปโป / บาสเต็ด / แรด)
+- **ปากจระเข้ในเอฟเฟกต์:** `croc_art.js` สกินธรรมดา 'n' ยังเป็นจานสีเขียว → เปลี่ยนเป็นน้ำตาลโคลน / ครีมแทน ให้ตรงตัวใหม่ (สกิน g ทอง / i เหล็ก คงไว้)
+- หน้าเลือกตัว = ภาพใหญ่ของชีตแล้ว (`select.webp`, SELV croc 2)
+- ยังเป็นลุคเก่า: ไอคอนสกิล 49 (+ ex_ 18 เป็นโค้ด), พื้นหลังผังสกิล 4 ภาพ (`SKILL_BG_ALL.croc` 012–015), ภาพหน้าโหลด ld1 ld2 ld8 · ยังไม่มี: ท่านั่ง (hero_sit.js)"""),
 }
 
 def build(h, d, a):
