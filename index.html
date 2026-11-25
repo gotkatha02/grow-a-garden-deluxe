@@ -687,13 +687,14 @@ document.write('<script src="vfx_layer.js"><\/script>');if(c==='jaguar')document
 <script src="maps/snowpine.js?v=3"></script>
 <script src="maps/viking-catalog.js"></script>
 <script src="maps/craft-halls.js?v=8"></script>
-<script src="maps/fieldmap.js?v=18"></script>
+<script src="maps/fieldmap.js?v=19"></script>
 <script src="maps/viking-maps.js"></script>
 <script src="maps/aztec-maps.js"></script>
 <script src="maps/egypt-maps.js"></script>
 <script src="maps/greek-maps.js"></script>
 <script src="maps/japan-maps.js"></script>
 <script src="maps/capital-maps.js?v=19"></script>
+<script src="maps/capital-light.js?v=4"></script>
 <script src="maps/wboss-arenas.js?v=2"></script>
 <script src="maps/sea-cat.js?v=1"></script>
 <script src="maps/sea-maps.js?v=1"></script>
@@ -709,7 +710,9 @@ document.write('<script src="vfx_layer.js"><\/script>');if(c==='jaguar')document
 const CHAR=(()=>{const OK=['wolf','jaguar','rhino','axolotl','croc','owl','cat','hippo','sheep','dragon','lion','kitsune','bastet','anubis','raven','wukong','drake'];let h='';try{const q=new URLSearchParams(location.search).get('char');if(q)return q;h=(location.hash||'').slice(1);}catch(e){}if(OK.includes(h))return h;try{return localStorage.getItem('af_char')||'wolf';}catch(e){return 'wolf';}})();
 const BASIC_KEY=CHAR==='jaguar'?'jgTwinFang':CHAR==='rhino'?'rhFist':CHAR==='axolotl'?'axFlick':CHAR==='croc'?'crThrust':CHAR==='owl'?'owAuto':CHAR==='cat'?'knCombo':CHAR==='hippo'?'hnCombo':CHAR==='sheep'?'snCombo':CHAR==='dragon'?'dnCombo':CHAR==='lion'?'lnCombo':CHAR==='raven'?'vnSpear':CHAR==='drake'?'znHammer':CHAR==='wukong'?'gnStaff':CHAR==='kitsune'?'knStaff':CHAR==='bastet'?'bnTome':CHAR==='anubis'?'anFlail':'wolfCombo';
 const BASIC_RANGE=CHAR==='axolotl'?220:CHAR==='croc'?104:CHAR==='owl'?230:CHAR==='cat'?64:CHAR==='hippo'?66:CHAR==='sheep'?64:CHAR==='dragon'?60:CHAR==='lion'?60:CHAR==='raven'?90:CHAR==='drake'?70:CHAR==='wukong'?70:CHAR==='kitsune'?200:CHAR==='bastet'?200:CHAR==='anubis'?90:52;
-const CHAR_SCALE={jaguar:typeof JAG_SPR_META!=='undefined'&&JAG_SPR_META.cell.w===720?1.57:.94,rhino:.96,axolotl:typeof AXL_SPR_META!=='undefined'?1.57:1,croc:1,owl:.97,cat:1.59,hippo:1.39,sheep:1.57,dragon:1.64,lion:1,kitsune:1,bastet:typeof BST_SPR_META!=='undefined'&&!/[?&]bstart=0/.test(location.search)?1.56:1,anubis:1,raven:1,drake:typeof DRK_SPR_META!=='undefined'?1.55:1,wukong:1.57}[CHAR]||1; // every hero drawn as tall as the wolf (owner 2026-11-19)
+const HERO_SIZE={wolf:1.4,axolotl:.85,hippo:.9};   /* owner 2026-11-25 'อยากให้ใหญ่อีก ไม่ต้องขนาดเท่ากันทุกตัวก็ได้ บางตัวก็เล็กกว่าเพื่อน เช่น แอคเซอลอท ฮิปโป': heroes need not all be the same height any more. The new wolf (Fenrir's Heir, adult proportions) is drawn bigger through his atlas boxes (WLF meta below, CHAR_SCALE stays 1 so every socket user follows); every other hero through CHAR_SCALE (their effect code already reads CHAR_SCALE). HERO_K = this hero's size (soft shadow pool, axe-swing shoulder, wing size, previews); ?hsize=<k> tries another size (?wlfk= kept for the wolf) */
+const HERO_K=(()=>{if(CHAR==='wolf'&&(typeof WLF_SPR_META==='undefined'||/[?&]wlfart=0/.test(location.search)))return 1;const q=+((location.search.match(/[?&](?:hsize|wlfk)=([\d.]+)/)||[])[1]);return Math.max(.6,Math.min(1.8,q||HERO_SIZE[CHAR]||1));})();window.HERO_K=HERO_K;window.META_K=CHAR==='wolf'?HERO_K:1;
+const CHAR_SCALE=({jaguar:typeof JAG_SPR_META!=='undefined'&&JAG_SPR_META.cell.w===720?1.57:.94,rhino:.96,axolotl:typeof AXL_SPR_META!=='undefined'?1.57:1,croc:1,owl:.97,cat:1.59,hippo:1.39,sheep:1.57,dragon:1.64,lion:1,kitsune:1,bastet:typeof BST_SPR_META!=='undefined'&&!/[?&]bstart=0/.test(location.search)?1.56:1,anubis:1,raven:1,drake:typeof DRK_SPR_META!=='undefined'?1.55:1,wukong:1.57}[CHAR]||1)*(CHAR==='wolf'?1:HERO_K); // every hero drawn as tall as the wolf (owner 2026-11-19); × HERO_K = the hero's own size since 2026-11-25
 /* Jaguar: swap in its own sprite sheets (same schema as the Wolf set). If the file is missing the tinted Wolf sprite is used as before. */
 const JAG_ART=CHAR==='jaguar'&&typeof JAG_SPR_META!=='undefined'&&typeof JAG_SPR_ATLAS!=='undefined';
 if(JAG_ART){Object.assign(SPR_META,JAG_SPR_META,{atkRemap:{}});Object.assign(SPR_ATLAS,JAG_SPR_ATLAS);}
@@ -734,7 +737,7 @@ if(BST_ART){Object.assign(SPR_META,BST_SPR_META,{atkRemap:{}});Object.assign(SPR
 const DRK_ART=CHAR==='drake'&&typeof DRK_SPR_META!=='undefined'&&typeof DRK_SPR_ATLAS!=='undefined';
 if(DRK_ART){Object.assign(SPR_META,DRK_SPR_META,{atkRemap:{}});Object.assign(SPR_ATLAS,DRK_SPR_ATLAS);}   // Forgeborn Drake — placeholder sprites from the owner's 8-view sheet 2026-11-23 (assets_drake.js = tools/statichero.py, views S SE E NE N; swap for clip sprites later)
 const WLF_ART=CHAR==='wolf'&&typeof WLF_SPR_META!=='undefined'&&typeof WLF_SPR_ATLAS!=='undefined';   /* ?wlfart=0 = the old wolf (assets.js stays: it is also the placeholder body of kitsune / anubis / lion / croc / raven) */
-const HERO_K=WLF_ART?Math.max(.8,Math.min(1.8,+((location.search.match(/[?&]wlfk=([\d.]+)/)||[])[1])||1.25)):1;window.HERO_K=HERO_K;   /* owner 2026-11-25 'ลายเส้นไม่เข้ากับเกม … อาจจะต้องตัวใหญ่กว่าตัวอื่นด้วย': Fenrir's Heir has adult proportions (small head, fine lines), so he is drawn HERO_K× taller than the chibi heroes — his head and line weight then match theirs. Applied to the atlas boxes / pivot / sockets / head points (cell units), so CHAR_SCALE stays 1 and every socket user follows; the soft shadow, the axe-swing shoulder and the painted wings read HERO_K. ?wlfk=1 = old size */
+/* Fenrir's Heir has adult proportions (small head, fine lines) → drawn HERO_SIZE.wolf× taller than the chibi heroes (owner 2026-11-25 'ลายเส้นไม่เข้ากับเกม … อาจจะต้องตัวใหญ่กว่าตัวอื่นด้วย' → 'อยากให้ใหญ่อีก'): the atlas boxes / pivot / sockets / head points are scaled here, so CHAR_SCALE stays 1 and every socket user follows */
 if(WLF_ART&&HERO_K!==1){const k=HERO_K,sc=p=>Array.isArray(p)?p.map(v=>typeof v==='number'?v*k:sc(v)):(p&&typeof p==='object'?Object.fromEntries(Object.entries(p).map(([a,b])=>[a,sc(b)])):p),M=WLF_SPR_META;
   M.cell={w:M.cell.w*k,h:M.cell.h*k};M.pivot={x:M.pivot.x*k,y:M.pivot.y*k};for(const st in M.states)for(const d in M.states[st].dirs){const D=M.states[st].dirs[d];D.f=D.f.map(f=>[f[0],f[1],f[2],f[3],f[4]*k,f[5]*k,f[6]*k,f[7]*k]);}
   if(M.sockets)M.sockets=sc(M.sockets);if(M.head)M.head=sc(M.head);}
@@ -6144,7 +6147,7 @@ window.AF={levelUp:()=>{if(PS.lv<LV_CAP){PS.lv++;applyStats();player.hp=player.m
 <script src="boss_fenrir.js?v=8"></script>
 <script src="progress.js?v=2"></script>
 <script src="roles.js?v=4"></script>
-<script src="char_create.js?v=16"></script>
+<script src="char_create.js?v=17"></script>
 <script src="skill_shapes.js?v=5"></script>
 <script src="mobile.js?v=7"></script>
 <script src="target_lock.js?v=7"></script>
@@ -6200,6 +6203,6 @@ window.AF={levelUp:()=>{if(PS.lv<LV_CAP){PS.lv++;applyStats();player.hp=player.m
 <script src="fashion_companion.js?v=1"></script>
 <script>/* offline cache (sw.js): pictures are kept on the device, so later visits barely download anything; ?nosw=1 removes it */
 if('serviceWorker' in navigator&&location.protocol==='https:'){if(/[?&]nosw=1/.test(location.search))navigator.serviceWorker.getRegistrations().then(a=>a.forEach(r=>r.unregister()));else window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));}</script>
-<script>/* fashion system: wolf sprite only for now */if(CHAR==='wolf')document.write('<script src="assets_fashion.js"><\/script>'+(WLF_ART?'':'<script src="assets_fur.js?v=3"><\/script><script src="assets_skin.js"><\/script><script src="assets_cloth.js?v=2"><\/script>')+'<script src="pwing_data.js?v=1"><\/script><script src="fashion.js?v=10"><\/script><script src="fashion_hats.js?v=2"><\/script>');   /* the new wolf sprite (WLF_ART) has no dye masks: fur / outfit colour is off until masks are made for it */</script>
+<script>/* fashion system: wolf sprite only for now */if(CHAR==='wolf')document.write('<script src="assets_fashion.js"><\/script>'+(WLF_ART?'':'<script src="assets_fur.js?v=3"><\/script><script src="assets_skin.js"><\/script><script src="assets_cloth.js?v=2"><\/script>')+'<script src="pwing_data.js?v=1"><\/script><script src="fashion.js?v=11"><\/script><script src="fashion_hats.js?v=2"><\/script>');   /* the new wolf sprite (WLF_ART) has no dye masks: fur / outfit colour is off until masks are made for it */</script>
 </body>
 </html>
