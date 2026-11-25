@@ -402,5 +402,27 @@ def doc(rows, tot):
 """
     with open(os.path.join(ROOT, 'MINI_BOSS_TH.md'), 'w', encoding='utf-8') as f: f.write(md)
 
+SINGLE = """Draw ONE mini-boss master picture for my 2D isometric fantasy MMORPG (Ragnarok Online feel). Copy the art style of the attached pictures: friendly hand-painted chibi cartoon, cute-but-dangerous, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft light from the top-left, bright warm colours, clear readable silhouette. Not realistic, not painterly, not 3D. Chibi proportions (big head, short body) even for giants.
+Picture: square 1024×1024, ONE creature alone, the whole body inside the picture with empty space on every side, nothing cropped. Isometric 3/4 view from about 30° above, facing DOWN-RIGHT (south-east), a proud ready-to-fight pose with its weapon, horns or claws ready.
+It is {lead}: bigger and heavier than them, with one clear leader mark (a crown, a helmet, battle scars, a cape or trophies) and one strong colour accent. Big readable shapes — it must still read clearly when shown small in the game. If a picture of {kin} is attached, keep its species, colours and main features and make it bigger, older and more decorated.
+{name}: {look}
+{extra}Background: SOLID FLAT PURE GREEN (#00FF00) — no gradient, no ground, no floor, no shadow, no scenery. NEVER use green on it: anything that would normally be green is drawn teal, turquoise, blue, gold, purple or autumn orange instead. No effects floating around it (no smoke, sparkles, motion lines, flying leaves); small glows ON the body are fine. Paint everything SOLID — nothing see-through. No text, no numbers, no labels, no border."""
+
+def single(fn, a=1, b=99):
+    """one self-contained prompt per mini-boss, to paste box by box in chat (owner 2026-11-25 08:09) — prints Markdown, writes nothing"""
+    fn = next(f for f, *_ in LANDS + PLANNED if f == fn or f.split('_', 1)[1] == fn)
+    items = next(p[4] for p in LANDS + PLANNED if p[0] == fn)
+    for i, (mid, mth, key, en, th, kin, lore, look) in enumerate(items, 1):
+        if not a <= i <= b: continue
+        lv, band = lvl(mid)
+        lead = (LEAD[key] + ', the leader of the monsters of its map') if key in LEAD else f'the LEADER of the {kin} monsters of its map'
+        x = "It lives in the sea, but draw NO water, waves or bubbles around it — the game adds the water.\n" if 'sea' in fn else ''
+        print(f'**#{i} {en}** · {th} (Lv {lv} · {mth})\n```\n' + SINGLE.format(lead=lead, kin=f'its kin (the {kin} monster)', name=en.upper(), look=look, extra=x) + '\n```\n')
+
 if __name__ == '__main__':
-    build()
+    import sys
+    if len(sys.argv) > 2 and sys.argv[1] == 'single':
+        r = (sys.argv[3] if len(sys.argv) > 3 else '1-99').split('-')
+        single(sys.argv[2], int(r[0]), int(r[-1]))
+    else:
+        build()

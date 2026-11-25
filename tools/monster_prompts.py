@@ -10,6 +10,32 @@ W={'2':"TWO LEGS — walking in place, legs MUST alternate: 1) LEFT leg forward 
 'h':"HOPPING (frogs, rabbits, slimes, one-legged things) — 1) crouched low, 2) pushing off, 3) highest point in the air, 4) landing squashed."}
 WN={'2':'TWO LEGS','4':'FOUR LEGS','6':'MANY LEGS','f':'FLOATING','w':'FLYING','s':'SLITHERING','h':'HOPPING'}
 ORDER=[('01','viking','Viking'),('02','capital','Capital'),('03','aztec','Aztec'),('04','greek','Greek'),('05','egypt','Egypt'),('06','japan','Japan'),('07','rift','Rift'),('08','sea','Sea')]
+# One self-contained prompt per monster, to paste box by box in chat (owner 2026-11-25 08:09: the whole sea prompt .md attached to ChatGPT came out a mess).
+# usage: python3 tools/monster_prompts.py single sea 1-11   (region key or file number, optional range) — prints Markdown, writes nothing.
+SINGLE="""Make ONE sprite sheet of a monster for my 2D isometric fantasy MMORPG (Ragnarok Online feel). Copy the art style of the attached pictures: friendly hand-painted chibi cartoon, cute-but-dangerous, thick clean dark-brown outlines (not black), cel shading with 2–3 flat tones, soft light from the top-left, bright warm colours, clear readable silhouette. Not realistic, not painterly, not 3D. Chibi proportions (big head, short body) even for giants.
+Monster: {name}{size} — {look}.
+Sheet: ONE 1536×1024 image, 5 rows. The SAME monster in every frame — identical design, colours and size, never redesigned. Facing DOWN-RIGHT (south-east), isometric 3/4 view from about 30° above. Every frame in its own equal-size cell with empty space around it; feet (or lowest point) on the same baseline in each row; nothing cropped, nothing overlapping another frame.
+Row 1 — IDLE, 4 frames: calm breathing — neutral, body rises slightly, neutral, body sinks slightly with a small detail moving.
+Row 2 — WALK, 4 frames, {walk}
+Row 3 — ATTACK, 5 frames: {attack} — 1) ready, 2) wind-up, 3) strike at full reach toward down-right, 4) follow-through, 5) back to ready.
+Row 4 — HURT, 2 frames: 1) hit from the front, head and body jerk back, eyes squeezed shut, 2) recoiling, about to recover.
+Row 5 — DEATH, 5 frames: 1) staggers back, 2) falling, 3) hits the ground, 4) lying still, 5) the same pose fading away. Cartoon, no blood.
+{extra}Background: SOLID FLAT PURE GREEN (#00FF00), no gradient, no ground, no shadows. NEVER use green on the monster: anything that would normally be green is drawn teal, turquoise, blue, gold or autumn orange instead. No text, no row labels, no numbers, no borders, no motion lines, no dust or magic effects around it (small glows ON the body are fine)."""
+SINGLE_X={'sea':"It is a sea creature, but draw NO water, waves, bubbles or sea floor around it — the game adds the water.\n"}
+import sys
+if len(sys.argv)>2 and sys.argv[1]=='single':
+    key=next(k for n,k,t in ORDER if sys.argv[2] in (n,k))
+    world,ms=L[key]
+    a,b=1,len(ms)
+    if len(sys.argv)>3: r=sys.argv[3].split('-'); a=int(r[0]); b=int(r[-1])
+    for i,(n,th,mp,w,d,att) in enumerate(ms,1):
+        if not a<=i<=b: continue
+        size,_,look=d.partition(' — ')
+        if not look: size,look='',d
+        wk=W[w].split(' — ',1)[1]
+        print(f"**#{i} {n}** · {th} ({mp})\n```\n"+SINGLE.format(name=n.upper(),size=f' ({size})' if size else '',look=look,walk=WN[w].lower()+': '+wk,
+              attack=att,extra=SINGLE_X.get(key,''))+"\n```\n")
+    sys.exit(0)
 OUT=os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),'monster_prompts');os.makedirs(OUT,exist_ok=True)
 idx=[]
 for num,key,title in ORDER:

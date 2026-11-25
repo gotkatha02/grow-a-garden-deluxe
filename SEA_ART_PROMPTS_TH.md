@@ -2,6 +2,7 @@
 
 เจ้าของ 07:22: *"โซนทะเลผมจะให้เป็น 60-70 ขอพร้อมเจนรูปด้วย"*
 สถานะ: **พรอมต์อย่างเดียว ยังไม่มีอะไรในเกม** · แผนโซน เรื่อง แมพ เลเวล: SEA_ZONE_TH.md
+08:09 เจ้าของแนบไฟล์นี้ทั้งไฟล์ให้ ChatGPT แล้วมันวาดมั่ว → **ทุกกล่องสมบูรณ์ในตัวแล้ว** (ไม่มีพรอมต์ 0) และส่งเป็นกล่องในแชทแทน · มอน / มินิบอสทีละกล่อง: `python3 tools/monster_prompts.py single sea 1-11` · `python3 tools/miniboss_prompts.py single 7_sea 1-2`
 
 ---
 
@@ -31,18 +32,25 @@
 **ไม่ต้องเจน (โค้ดทำ):** แสงคลื่นบนพื้น ลำแสงจากผิวน้ำ ฟอง ละอองลอย สีฟ้าตามความลึก ความมืดห้วงลึก สาหร่ายไหว ฝูงปลาเล็ก โดมฟองอากาศคลุมวังมุก ฟองอากาศรอบตัวฮีโร่
 **ใช้ของที่มีอยู่แล้ว (ไม่ต้องเจนซ้ำ):** ต้นมะพร้าว / อินทผลัม (azPalmTall · azPalmShort · azPalmSmall · azPalmFruit · egPalmLean · egPalmTwin) · เรือญี่ปุ่น jpShip (จอดที่ท่า) · ท่าน้ำ azDock / azDock2 · ราวตากแห grNetRack / jpNetRack · ตลิ่งลำธาร grBank0–7 · หลังกำแพงถ้ำ caveTop
 
-## 1. รูปที่ต้องแนบ (ผมทำให้แล้ว อยู่ใน repo ส่งให้ในแชทนี้ด้วย)
-- **รูปปกแคมป์ไฟ** `assets/loading/ld5.webp` = สไตล์เกม → แนบทุกแชท
-- **`tools/ref/sea_map_ref.jpg`** = ของประกอบแมพที่มีในเกมแล้ว 12 ชิ้น (ไม่มีหิมะ) → บอกมุมกล้อง ความหนาเส้น สีของชิ้นส่วนแมพ → แนบในแชทแมพ
-- **`tools/ref/npc_ref.jpg`** = NPC ที่มีในเกม (บีเวอร์คลัง · ช่างวอลรัส · ช่างทานุกิ) → แนบในแชท NPC
-- **`tools/ref/room_ref.jpg`** = ห้องช่างญี่ปุ่นที่มีในเกม → แนบตอนเจนห้องช่าง
-- **`assets/ui/worldmap_bg.webp`** = ภาพแผนที่โลกตอนนี้ → แนบตอนแก้แผนที่โลก
-- **รูปบอสที่เคยเจน 1 รูป** (เช่น ควอทซัลโคอาทล์ หรือ ไทฟอน) → แนบในแชทบอส
-- พอได้ **ภาพปกทะเล (ข้อ 2.1)** ที่ชอบแล้ว ให้แนบมันเพิ่มในแชทแมพ / มอน / บอสของทะเลทุกแชท จะได้สีและบรรยากาศเดียวกันทั้งโซน
+## 1. วิธีส่ง + รูปที่ต้องแนบ
+- **ห้ามแนบไฟล์นี้ให้ ChatGPT** — มีภาษาไทย ตาราง และพรอมต์หลายสิบอันปนกัน มันจะวาดมั่ว · ก๊อป **ทีละกล่อง** วางทีละข้อความ ได้รูปแล้วค่อยส่งกล่องถัดไป
+- ทุกกล่องสมบูรณ์ในตัว (สไตล์ ขนาด พื้นหลังครบ) ไม่ต้องส่งพรอมต์ 0 ส่งกล่องไหนก่อนก็ได้
+- แนบรูปตามตารางนี้ **ครั้งเดียวในข้อความแรกของแชทนั้น** แล้ววางกล่องต่อกันในแชทเดิม
+- ภาพเริ่มเพี้ยนหลัง ~12 รูป (สไตล์เปลี่ยน พื้นไม่เขียว ของชนกัน) → เปิดแชทใหม่ แนบรูปเดิมอีกครั้ง แล้ววางกล่องต่อ
 
-**วิธีส่ง**
-- แชทแมพ: แนบ ld5 + sea_map_ref.jpg → ส่งพรอมต์ 0 (ข้อ 3.0) รอตอบ OK → ส่งทีละกล่อง (T…, W…, S…) ได้รูปแล้วส่งกล่องถัดไป
-- ภาพเริ่มเพี้ยนหลังเจนไป ~15 รูป (สไตล์เปลี่ยน พื้นไม่เขียว ของชนกัน) → เปิดแชทใหม่ ส่งพรอมต์ 0 ใหม่
+| แชท | แนบ | กล่อง |
+|---|---|---|
+| ภาพปก | รูปปกแคมป์ไฟ `assets/loading/ld5.webp` | 2.1 |
+| แผนที่โลก | `assets/ui/worldmap_bg.webp` + ใช้แปรงเลือกทะเลมุมขวาล่างก่อนส่ง | 2.2 |
+| พื้นลายซ้ำ | `tools/ref/sea_tex_ref.jpg` (พื้นในเกม 12 แบบ = ความนุ่ม ขนาดลาย ไม่มีเส้นขอบ) | T1–T15 |
+| ของประกอบแมพ + กำแพง | ld5 + `tools/ref/sea_map_ref.jpg` (ชิ้นแมพในเกม 12 ชิ้น) | S1–S21 · W1–W3 |
+| NPC | ld5 + `tools/ref/npc_ref.jpg` | N1–N4 |
+| ห้องช่าง | ld5 + `tools/ref/room_ref.jpg` | R1 |
+| บอส | ld5 + รูปบอสที่เคยเจน 1 รูป (เช่น `assets/bosses/aztec/quetzalcoatl.png`) | B1–B5 |
+| มอน | ld5 (+ แผ่นมอนของเกมที่ชอบ 1 แผ่นเป็นตัวอย่าง) | ทีละตัว: `python3 tools/monster_prompts.py single sea 1-11` (หรือแบบไฟล์เดิม `monster_prompts/08_sea.txt` + "อ่านไฟล์ทั้งหมด แล้วเริ่มวาด #1") |
+| มินิบอส | ld5 (+ แผ่นมอนลูกน้องของมันถ้ามีแล้ว) | ทีละตัว: `python3 tools/miniboss_prompts.py single 7_sea 1-2` (หรือไฟล์ `miniboss_prompts/7_sea.txt`) |
+
+- พอได้ **ภาพปกทะเล (ข้อ 2.1)** ที่ชอบแล้ว แนบมันเพิ่มในแชทของประกอบ / มอน / บอสของทะเลได้ จะได้สีและบรรยากาศเดียวกันทั้งโซน
 - ชิ้นไหนไม่ถูกใจ: แปรงเลือกเฉพาะชิ้นนั้นแล้วสั่งวาดใหม่ อย่าสั่งแก้ทั้งรูป (มันจะวาดใหม่หมด)
 - มีสีเขียวติดบนของในแผ่นพื้นเขียว → แปรงเลือกชิ้นนั้นสั่งเปลี่ยนสี (ตอนตัด สีเขียวบนของจะหายไปด้วย)
 - พื้นลายซ้ำที่ต่อขอบไม่เนียน ไม่เป็นไร ผมแก้รอยต่อเองตอนตัด
@@ -71,113 +79,148 @@ Edit only the selected area of this fantasy world map and keep everything outsid
 
 ---
 
-## 3. แมพ: พรอมต์กลาง + พื้นลายซ้ำ + กำแพง
+## 3. แมพ: พื้นลายซ้ำ + กำแพง
 
-### 3.0 พรอมต์กลาง (ส่งครั้งแรกของทุกแชทแมพ · แนบ ld5 + sea_map_ref.jpg)
-```
-I'm making a new sea region for my 2D isometric fantasy MMORPG (Ragnarok Online feel): golden-root islands, a harbour town, turquoise lagoons, coral reefs, golden kelp forests, a sunken ghost ship, drowned cities and a dark abyss. Attached: (1) the campfire key art = the art style to copy exactly, (2) a board of map pieces that are already in my game = the camera angle, outline weight, colours and finish to match. Never copy the board's layout or its objects.
-Style for every picture: friendly hand-painted chibi cartoon like the key art, clean dark-brown outlines, cel shading with 2–3 flat tones, soft light from the top-left, bright warm saturated colours, big clear shapes with simple texture (no tiny noisy detail, no photo texture). Not realistic, not painterly, not 3D. Never any text, letters, numbers, logos, UI or characters unless I ask for one.
-Underwater things are drawn fully lit in their own bright colours, not tinted blue, with no water drawn around them — I add the underwater blue, light rays, bubbles and floating specks in the game.
-I will ask for three kinds of picture, one per reply:
-TEXTURE = a 1024×1024 square of ground seen from straight above. Flat even light, no shadows falling into it, no big landmark and no object, small details spread evenly. It must tile seamlessly: its left edge continues into its right edge and its top edge into its bottom edge.
-PIECES = a 1536×1024 sheet of separate objects in the grid I give (2×2, 3×2 or 4×3), one object per cell, each centred in its cell and as big as the cell allows with clear empty space around it — nothing touches a neighbour or the image edge. The same high three-quarter top-down camera as the board (about 35° from above). Each object stands upright on its own small footing (a little sand, rock or planks right under it) with no other ground and no cast shadow. Objects that stand in the sea have only a thin white foam ring where they meet the water. Flat objects (piers, pools, mats) are drawn lying flat on the ground from the same camera.
-WALL = a 1536×1024 picture of one long straight dungeon wall seen from the front, drawn across the full width as a band about 300 pixels tall in the middle of the image, repeating seamlessly left to right: its top edge is the wall's top rim, its bottom edge is where it meets the floor, flat background above and below.
-Background for PIECES and WALL: solid flat pure GREEN (#00FF00), or solid flat pure MAGENTA (#FF00FF) when I say so — never use the background colour on the objects (green background: no green on the objects; magenta background: no pink, purple or magenta on the objects).
-Reply only "OK" now. Then draw exactly one picture for each prompt I send.
-```
-
-### 3.1 พื้นลายซ้ำ (ชื่อไฟล์ในวงเล็บ = ชื่อที่ผมจะตั้งตอนตัด)
+### 3.1 พื้นลายซ้ำ (แชทใหม่ · แนบ sea_tex_ref.jpg · ชื่อไฟล์ในวงเล็บ = ชื่อที่ผมจะตั้งตอนตัด)
 
 **ชุด 1 — ผิวน้ำ**
 
 T1 ทรายหาด (`ocSand`) — พื้นหลักของหาด / ท่าเรือ
 ```
-TEXTURE — GOLDSHELL SAND: warm golden beach sand with soft wind ripples, a few tiny scattered flecks of golden and cream shell and small round pebbles. Bright and warm.
+Draw ONE seamless ground texture for my 2D fantasy game map. Look: like the attached board of ground textures from my game — soft hand-painted, simple clean shapes, gentle shading, mild contrast, NO dark outlines, details the same size as on the board (do not copy them).
+Format: square 1024×1024, the ground seen from straight above, filling the whole square edge to edge — no border, frame, vignette, dark corners, objects, characters or text. Even light, no cast shadows, details spread evenly. It must tile seamlessly left↔right and top↔bottom.
+Ground — GOLDSHELL SAND: warm golden beach sand with soft wind ripples, a few tiny scattered flecks of golden and cream shell and small round pebbles. Bright and warm.
 ```
 T2 ทรายเปียกตอนน้ำลง (`ocWetSand`) — ทางเดิน / ริมน้ำ / สันทรายตอนน้ำลง
 ```
-TEXTURE — WET SAND AT LOW TIDE: darker caramel wet sand with long tide ripples, a few small shallow puddles reflecting pale sky blue, tiny crab holes and little bubble dots.
+Draw ONE seamless ground texture for my 2D fantasy game map. Look: like the attached board of ground textures from my game — soft hand-painted, simple clean shapes, gentle shading, mild contrast, NO dark outlines, details the same size as on the board (do not copy them).
+Format: square 1024×1024, the ground seen from straight above, filling the whole square edge to edge — no border, frame, vignette, dark corners, objects, characters or text. Even light, no cast shadows, details spread evenly. It must tile seamlessly left↔right and top↔bottom.
+Ground — WET SAND AT LOW TIDE: darker caramel wet sand with long tide ripples, a few small shallow puddles reflecting pale sky blue, tiny crab holes and little bubble dots.
 ```
 T3 น้ำตื้นลากูน (`ocLagoon`)
 ```
-TEXTURE — LAGOON SHALLOWS: very clear shallow turquoise water over pale golden sand; the sand ripples show through the water, soft bright net-like light patterns on the sand, a few small sparkles. Even colour everywhere, no breaking waves, no foam.
+Draw ONE seamless ground texture for my 2D fantasy game map. Look: like the attached board of ground textures from my game — soft hand-painted, simple clean shapes, gentle shading, mild contrast, NO dark outlines, details the same size as on the board (do not copy them).
+Format: square 1024×1024, the ground seen from straight above, filling the whole square edge to edge — no border, frame, vignette, dark corners, objects, characters or text. Even light, no cast shadows, details spread evenly. It must tile seamlessly left↔right and top↔bottom.
+Ground — LAGOON SHALLOWS: very clear shallow turquoise water over pale golden sand; the sand ripples show through the water, soft bright net-like light patterns on the sand, a few small sparkles. Even colour everywhere, no breaking waves, no foam.
 ```
 T4 ทะเลลึก (`ocDeep`)
 ```
-TEXTURE — OPEN SEA: deep teal-blue sea seen from above, small rounded wave shapes and little white wave caps spread evenly, a few light sparkles.
+Draw ONE seamless ground texture for my 2D fantasy game map. Look: like the attached board of ground textures from my game — soft hand-painted, simple clean shapes, gentle shading, mild contrast, NO dark outlines, details the same size as on the board (do not copy them).
+Format: square 1024×1024, the ground seen from straight above, filling the whole square edge to edge — no border, frame, vignette, dark corners, objects, characters or text. Even light, no cast shadows, details spread evenly. It must tile seamlessly left↔right and top↔bottom.
+Ground — OPEN SEA: deep teal-blue sea seen from above, small rounded wave shapes and little white wave caps spread evenly, a few light sparkles.
 ```
 T5 ทางเดินไม้ท่าเรือ (`ocPlanks`)
 ```
-TEXTURE — HARBOUR BOARDWALK: weathered driftwood planks in long straight rows running left to right, pale grey-brown wood with dark gaps between the planks, iron nails, a few white salt stains and tiny shells caught in the cracks.
+Draw ONE seamless ground texture for my 2D fantasy game map. Look: like the attached board of ground textures from my game — soft hand-painted, simple clean shapes, gentle shading, mild contrast, NO dark outlines, details the same size as on the board (do not copy them).
+Format: square 1024×1024, the ground seen from straight above, filling the whole square edge to edge — no border, frame, vignette, dark corners, objects, characters or text. Even light, no cast shadows, details spread evenly. It must tile seamlessly left↔right and top↔bottom.
+Ground — HARBOUR BOARDWALK: weathered driftwood planks in long straight rows running left to right, pale grey-brown wood with dark gaps between the planks, iron nails, a few white salt stains and tiny shells caught in the cracks.
 ```
 T6 ลานหินฝังเปลือกหอย (`ocShellPave`) — ถนน / ลานในเมืองท่า
 ```
-TEXTURE — SHELL MOSAIC PAVING: rounded pale sandstone paving stones with flat seashells inlaid in them and small turquoise sea-glass pieces in the joints; thin golden root lines run through a few stones like veins.
+Draw ONE seamless ground texture for my 2D fantasy game map. Look: like the attached board of ground textures from my game — soft hand-painted, simple clean shapes, gentle shading, mild contrast, NO dark outlines, details the same size as on the board (do not copy them).
+Format: square 1024×1024, the ground seen from straight above, filling the whole square edge to edge — no border, frame, vignette, dark corners, objects, characters or text. Even light, no cast shadows, details spread evenly. It must tile seamlessly left↔right and top↔bottom.
+Ground — SHELL MOSAIC PAVING: rounded pale sandstone paving stones with flat seashells inlaid in them and small turquoise sea-glass pieces in the joints; thin golden root lines run through a few stones like veins.
 ```
 
 **ชุด 2 — น้ำตื้น**
 
 T7 ทรายพื้นทะเล (`ocSeabed`) — พื้นหลักใต้น้ำ
 ```
-TEXTURE — SEABED SAND: pale cream seabed sand with soft round ripple marks, tiny scattered shells, small pebbles and a few sand dollars. Bright true colours (the game tints it blue).
+Draw ONE seamless ground texture for my 2D fantasy game map. Look: like the attached board of ground textures from my game — soft hand-painted, simple clean shapes, gentle shading, mild contrast, NO dark outlines, details the same size as on the board (do not copy them).
+Format: square 1024×1024, the ground seen from straight above, filling the whole square edge to edge — no border, frame, vignette, dark corners, objects, characters or text. Even light, no cast shadows, details spread evenly. It must tile seamlessly left↔right and top↔bottom.
+It is the sea floor: true bright colours, not tinted blue, no water drawn over it (the game adds the water).
+Ground — SEABED SAND: pale cream seabed sand with soft round ripple marks, tiny scattered shells, small pebbles and a few sand dollars.
 ```
 T8 พื้นแนวปะการัง (`ocReefFloor`)
 ```
-TEXTURE — CORAL REEF FLOOR: sand mixed with broken coral rubble in pink, orange and white, small clear-blue crystal chips and tiny shells.
+Draw ONE seamless ground texture for my 2D fantasy game map. Look: like the attached board of ground textures from my game — soft hand-painted, simple clean shapes, gentle shading, mild contrast, NO dark outlines, details the same size as on the board (do not copy them).
+Format: square 1024×1024, the ground seen from straight above, filling the whole square edge to edge — no border, frame, vignette, dark corners, objects, characters or text. Even light, no cast shadows, details spread evenly. It must tile seamlessly left↔right and top↔bottom.
+It is the sea floor: true bright colours, not tinted blue, no water drawn over it (the game adds the water).
+Ground — CORAL REEF FLOOR: sand mixed with broken coral rubble in pink, orange and white, small clear-blue crystal chips and tiny shells.
 ```
 T9 พื้นป่าสาหร่าย (`ocKelpFloor`)
 ```
-TEXTURE — KELP FOREST FLOOR: darker golden-brown sand with fallen golden-amber kelp blades lying flat in loose curls, rounded grey stones and a few small shells.
+Draw ONE seamless ground texture for my 2D fantasy game map. Look: like the attached board of ground textures from my game — soft hand-painted, simple clean shapes, gentle shading, mild contrast, NO dark outlines, details the same size as on the board (do not copy them).
+Format: square 1024×1024, the ground seen from straight above, filling the whole square edge to edge — no border, frame, vignette, dark corners, objects, characters or text. Even light, no cast shadows, details spread evenly. It must tile seamlessly left↔right and top↔bottom.
+It is the sea floor: true bright colours, not tinted blue, no water drawn over it (the game adds the water).
+Ground — KELP FOREST FLOOR: darker golden-brown sand with fallen golden-amber kelp blades lying flat in loose curls, rounded grey stones and a few small shells.
 ```
 T10 ดาดฟ้าเรือจม (`ocDeck`) — พื้นดันเจี้ยนเรือผี
 ```
-TEXTURE — SUNKEN SHIP DECK: old dark wet wooden deck planks in long straight rows running left to right, iron nails, a few barnacles and tiny shells stuck in the gaps, pale water stains.
+Draw ONE seamless ground texture for my 2D fantasy game map. Look: like the attached board of ground textures from my game — soft hand-painted, simple clean shapes, gentle shading, mild contrast, NO dark outlines, details the same size as on the board (do not copy them).
+Format: square 1024×1024, the ground seen from straight above, filling the whole square edge to edge — no border, frame, vignette, dark corners, objects, characters or text. Even light, no cast shadows, details spread evenly. It must tile seamlessly left↔right and top↔bottom.
+It is the sea floor: true bright colours, not tinted blue, no water drawn over it (the game adds the water).
+Ground — SUNKEN SHIP DECK: old dark wet wooden deck planks in long straight rows running left to right, iron nails, a few barnacles and tiny shells stuck in the gaps, pale water stains.
 ```
 T11 หลุมน้ำลึก (`ocTrench`) — "บึง" ของแมพใต้น้ำ = หลุมดำลงห้วงลึก (เดินข้ามไม่ได้)
 ```
-TEXTURE — DEEP SINKHOLE: looking down into very deep dark navy-blue water, soft lighter blue swirls and a few tiny glowing pale specks; no floor visible.
+Draw ONE seamless ground texture for my 2D fantasy game map. Look: like the attached board of ground textures from my game — soft hand-painted, simple clean shapes, gentle shading, mild contrast, NO dark outlines, details the same size as on the board (do not copy them).
+Format: square 1024×1024, the ground seen from straight above, filling the whole square edge to edge — no border, frame, vignette, dark corners, objects, characters or text. Even light, no cast shadows, details spread evenly. It must tile seamlessly left↔right and top↔bottom.
+It is the sea floor: true bright colours, not tinted blue, no water drawn over it (the game adds the water).
+Ground — DEEP SINKHOLE: looking down into very deep dark navy-blue water, soft lighter blue swirls and a few tiny glowing pale specks; no floor visible.
 ```
 
 **ชุด 3 — น้ำกลาง**
 
 T12 พื้นนครจม (`ocRuinPave`)
 ```
-TEXTURE — DROWNED CITY PAVING: big old cream-and-grey stone paving slabs with faded mosaic bands of waves, shells and fish, cracks with coral crust growing in them and drifts of pale sand.
+Draw ONE seamless ground texture for my 2D fantasy game map. Look: like the attached board of ground textures from my game — soft hand-painted, simple clean shapes, gentle shading, mild contrast, NO dark outlines, details the same size as on the board (do not copy them).
+Format: square 1024×1024, the ground seen from straight above, filling the whole square edge to edge — no border, frame, vignette, dark corners, objects, characters or text. Even light, no cast shadows, details spread evenly. It must tile seamlessly left↔right and top↔bottom.
+It is the sea floor: true bright colours, not tinted blue, no water drawn over it (the game adds the water).
+Ground — DROWNED CITY PAVING: big old cream-and-grey stone paving slabs with faded mosaic bands of waves, shells and fish, cracks with coral crust growing in them and drifts of pale sand.
 ```
 T13 พื้นวังมุก (`ocNacre`)
 ```
-TEXTURE — PEARL PALACE FLOOR: smooth pearl-white nacre tiles with a soft rainbow sheen, thin gold seams between the tiles and a small inlaid pearl at every tile corner.
+Draw ONE seamless ground texture for my 2D fantasy game map. Look: like the attached board of ground textures from my game — soft hand-painted, simple clean shapes, gentle shading, mild contrast, NO dark outlines, details the same size as on the board (do not copy them).
+Format: square 1024×1024, the ground seen from straight above, filling the whole square edge to edge — no border, frame, vignette, dark corners, objects, characters or text. Even light, no cast shadows, details spread evenly. It must tile seamlessly left↔right and top↔bottom.
+It is the sea floor: true bright colours, not tinted blue, no water drawn over it (the game adds the water).
+Ground — PEARL PALACE FLOOR: smooth pearl-white nacre tiles with a soft rainbow sheen, thin gold seams between the tiles and a small inlaid pearl at every tile corner.
 ```
 T14 พื้นวิหารจมน้ำ (`ocTempleStone`)
 ```
-TEXTURE — DROWNED TEMPLE FLOOR: big turquoise and sand-coloured stone blocks carved with gold step patterns, a thin film of shallow water shining in some joints, tiny shells.
+Draw ONE seamless ground texture for my 2D fantasy game map. Look: like the attached board of ground textures from my game — soft hand-painted, simple clean shapes, gentle shading, mild contrast, NO dark outlines, details the same size as on the board (do not copy them).
+Format: square 1024×1024, the ground seen from straight above, filling the whole square edge to edge — no border, frame, vignette, dark corners, objects, characters or text. Even light, no cast shadows, details spread evenly. It must tile seamlessly left↔right and top↔bottom.
+It is the sea floor: true bright colours, not tinted blue, no water drawn over it (the game adds the water).
+Ground — DROWNED TEMPLE FLOOR: big turquoise and sand-coloured stone blocks carved with gold step patterns, a thin film of shallow water shining in some joints, tiny shells.
 ```
 
 **ชุด 4 — ห้วงลึก**
 
 T15 พื้นห้วงลึก (`ocAbyss`)
 ```
-TEXTURE — ABYSS FLOOR: dark blue-black volcanic rock with faint glowing golden and turquoise root veins running through it, tiny glowing specks and a few small pale fish bones.
+Draw ONE seamless ground texture for my 2D fantasy game map. Look: like the attached board of ground textures from my game — soft hand-painted, simple clean shapes, gentle shading, mild contrast, NO dark outlines, details the same size as on the board (do not copy them).
+Format: square 1024×1024, the ground seen from straight above, filling the whole square edge to edge — no border, frame, vignette, dark corners, objects, characters or text. Even light, no cast shadows, details spread evenly. It must tile seamlessly left↔right and top↔bottom.
+It is the sea floor: true bright colours, not tinted blue, no water drawn over it (the game adds the water).
+Ground — ABYSS FLOOR: dark blue-black volcanic rock with faint glowing golden and turquoise root veins running through it, tiny glowing specks and a few small pale fish bones.
 ```
 
-### 3.2 กำแพงดันเจี้ยน (แถบยาว ต่อซ้ายขวาได้ · พื้นเขียว)
+### 3.2 กำแพงดันเจี้ยน (แชทของประกอบ · แนบ ld5 + sea_map_ref.jpg · แถบยาว ต่อซ้ายขวาได้ · พื้นเขียว)
 
 W1 ผนังในท้องเรือผี (`ocWallHull`) — ชุด 2
 ```
-WALL — INSIDE A SUNKEN SHIP: curved dark wooden hull planks with thick wooden ribs every few steps, round brass portholes glowing pale ghost-blue, barnacles, hanging ropes and small paper lanterns burning with blue ghost fire.
+Draw ONE long dungeon wall strip for my 2D isometric fantasy MMORPG. Art style: copy the attached key art and the attached board of map pieces (not their objects): friendly hand-painted chibi cartoon, clean dark-brown outlines, cel shading with 2–3 flat tones, light from the top-left, bright warm colours, big clear shapes, simple texture. Not realistic, not 3D.
+Format: 1536×1024. The wall seen straight from the front, drawn as a horizontal band about 300 px tall across the FULL width in the middle of the image: the band's top edge is the top rim of the wall, its bottom edge is where it meets the floor. It repeats seamlessly left↔right. Above and below the band: solid flat pure GREEN (#00FF00); no green on the wall. No characters, nothing standing in front of the wall, no text.
+It is under the sea: true bright colours, not tinted blue, no water or bubbles (the game adds the water).
+Wall — INSIDE A SUNKEN SHIP: curved dark wooden hull planks with thick wooden ribs every few steps, round brass portholes glowing pale ghost-blue, barnacles, hanging ropes and small paper lanterns burning with blue ghost fire.
 ```
 W2 ผนังวิหารจมน้ำ (`ocWallTemple`) — ชุด 3
 ```
-WALL — DROWNED AZTEC TEMPLE: big carved stone blocks in turquoise, cream and gold; a band of carvings of water swirls, shells and the round face of a water goddess with round earrings repeated along the wall; thin streams of water trickle down the face.
+Draw ONE long dungeon wall strip for my 2D isometric fantasy MMORPG. Art style: copy the attached key art and the attached board of map pieces (not their objects): friendly hand-painted chibi cartoon, clean dark-brown outlines, cel shading with 2–3 flat tones, light from the top-left, bright warm colours, big clear shapes, simple texture. Not realistic, not 3D.
+Format: 1536×1024. The wall seen straight from the front, drawn as a horizontal band about 300 px tall across the FULL width in the middle of the image: the band's top edge is the top rim of the wall, its bottom edge is where it meets the floor. It repeats seamlessly left↔right. Above and below the band: solid flat pure GREEN (#00FF00); no green on the wall. No characters, nothing standing in front of the wall, no text.
+It is under the sea: true bright colours, not tinted blue, no water or bubbles (the game adds the water).
+Wall — DROWNED AZTEC TEMPLE: big carved stone blocks in turquoise, cream and gold; a band of carvings of water swirls, shells and the round face of a water goddess with round earrings repeated along the wall; thin streams of water trickle down the face.
 ```
 W3 ผนังบ่อรากโลก (`ocWallRoot`) — ชุด 4
 ```
-WALL — THE WORLD-ROOT WELL: a wall of giant twisted dark roots grown into black rock, golden and turquoise light glowing in the roots' cracks, small glowing crystal buds and tiny glowing sea anemones.
+Draw ONE long dungeon wall strip for my 2D isometric fantasy MMORPG. Art style: copy the attached key art and the attached board of map pieces (not their objects): friendly hand-painted chibi cartoon, clean dark-brown outlines, cel shading with 2–3 flat tones, light from the top-left, bright warm colours, big clear shapes, simple texture. Not realistic, not 3D.
+Format: 1536×1024. The wall seen straight from the front, drawn as a horizontal band about 300 px tall across the FULL width in the middle of the image: the band's top edge is the top rim of the wall, its bottom edge is where it meets the floor. It repeats seamlessly left↔right. Above and below the band: solid flat pure GREEN (#00FF00); no green on the wall. No characters, nothing standing in front of the wall, no text.
+It is under the sea: true bright colours, not tinted blue, no water or bubbles (the game adds the water).
+Wall — THE WORLD-ROOT WELL: a wall of giant twisted dark roots grown into black rock, golden and turquoise light glowing in the roots' cracks, small glowing crystal buds and tiny glowing sea anemones.
 ```
 
 ---
 
-## 4. แมพ: ของประกอบ (แชทแมพเดิม ต่อจากพื้น)
+## 4. แมพ: ของประกอบ (แชทใหม่ · แนบ ld5 + sea_map_ref.jpg)
 
 ตารางชื่อชิ้น (ลำดับ = อ่านซ้ายไปขวา แถวบนก่อน) อยู่ใต้แต่ละกล่อง · ขนาดในเกมผมตั้งเองตอนตัด
 
@@ -185,8 +228,11 @@ WALL — THE WORLD-ROOT WELL: a wall of giant twisted dark roots grown into blac
 
 **S1 รากทอง** — เอกลักษณ์ของโซน: รากโทเท็มที่จมทะเลดันขึ้นมาเป็นซุ้ม · ใช้แทน "ต้นไม้" ในแมพผิวน้ำ
 ```
-PIECES — GOLDEN ROOTS, 3×2, green background. These are the sunken roots of a giant world-totem that pushed up through the sea floor: thick living roots with twisted rope-like golden bark, glowing gold-turquoise veins, white barnacles and small shells clinging to them.
-(1) a giant root arch rising out of the sand and curving back down into it, wide and tall enough for heroes to walk under (about 4 heroes tall);
+Draw ONE sheet of separate map objects for my 2D isometric fantasy MMORPG. Art style: copy the attached key art and the attached board of map pieces from my game (camera, outline weight, finish — not their objects or the beige background): friendly hand-painted chibi cartoon, clean dark-brown outlines, cel shading with 2–3 flat tones, light from the top-left, bright warm colours, big clear shapes, simple texture. Not realistic, not 3D.
+Format: 1536×1024, a grid of 3 columns × 2 rows = exactly 6 separate objects, one per cell, in list order (left to right, top row first), each centred and as big as its cell allows with empty space around it — nothing touches another object or the edge. Not a scene: no landscape, no characters. High three-quarter view from about 35° above. Each object stands on a small footing of its own (a little sand, rock or planks), no cast shadow; things standing in the sea get only a thin white foam ring, no water.
+Background: solid flat pure GREEN (#00FF00); no green on the objects. No text, numbers, labels or grid lines.
+Objects — GOLDEN ROOTS. These are the sunken roots of a giant world-totem that pushed up through the sea floor: thick living roots with twisted rope-like golden bark, glowing gold-turquoise veins, white barnacles and small shells clinging to them.
+(1) a giant root arch rising out of the sand and curving back down into it, wide and tall enough to walk under;
 (2) the same kind of root arch standing in the sea, a thin foam ring at both feet;
 (3) a thick root tip breaking up out of the sand and ending in a big glowing clear-blue crystal;
 (4) a low twisted root stump with shells, one small new root sprout and a coil of old rope around it;
@@ -197,7 +243,10 @@ PIECES — GOLDEN ROOTS, 3×2, green background. These are the sunken roots of a
 
 **S2 หินชายฝั่ง**
 ```
-PIECES — COAST ROCKS, 3×2, green background. Warm grey and sandy rock, white barnacles, orange starfish; any seaweed is golden-brown.
+Draw ONE sheet of separate map objects for my 2D isometric fantasy MMORPG. Art style: copy the attached key art and the attached board of map pieces from my game (camera, outline weight, finish — not their objects or the beige background): friendly hand-painted chibi cartoon, clean dark-brown outlines, cel shading with 2–3 flat tones, light from the top-left, bright warm colours, big clear shapes, simple texture. Not realistic, not 3D.
+Format: 1536×1024, a grid of 3 columns × 2 rows = exactly 6 separate objects, one per cell, in list order (left to right, top row first), each centred and as big as its cell allows with empty space around it — nothing touches another object or the edge. Not a scene: no landscape, no characters. High three-quarter view from about 35° above. Each object stands on a small footing of its own (a little sand, rock or planks), no cast shadow; things standing in the sea get only a thin white foam ring, no water.
+Background: solid flat pure GREEN (#00FF00); no green on the objects. No text, numbers, labels or grid lines.
+Objects — COAST ROCKS. Warm grey and sandy rock, white barnacles, orange starfish; any seaweed is golden-brown.
 (1) a big round beach boulder with barnacles and two starfish;
 (2) a rock pool: a ring of low rocks holding a small pool of clear turquoise water with a starfish and shells inside;
 (3) a tall sea stack (a pillar of rock) standing in the sea with a thin foam ring;
@@ -209,14 +258,20 @@ PIECES — COAST ROCKS, 3×2, green background. Warm grey and sandy rock, white 
 
 **S3 ของบนหาด (12 ชิ้น)**
 ```
-PIECES — BEACH BITS, 4×3, green background:
+Draw ONE sheet of separate map objects for my 2D isometric fantasy MMORPG. Art style: copy the attached key art and the attached board of map pieces from my game (camera, outline weight, finish — not their objects or the beige background): friendly hand-painted chibi cartoon, clean dark-brown outlines, cel shading with 2–3 flat tones, light from the top-left, bright warm colours, big clear shapes, simple texture. Not realistic, not 3D.
+Format: 1536×1024, a grid of 4 columns × 3 rows = exactly 12 separate objects, one per cell, in list order (left to right, top row first), each centred and as big as its cell allows with empty space around it — nothing touches another object or the edge. Not a scene: no landscape, no characters. High three-quarter view from about 35° above. Each object stands on a small footing of its own (a little sand, rock or planks), no cast shadow; things standing in the sea get only a thin white foam ring, no water.
+Background: solid flat pure GREEN (#00FF00); no green on the objects. No text, numbers, labels or grid lines.
+Objects — BEACH BITS:
 (1) a pile of colourful seashells; (2) one big spiral conch shell; (3) two starfish, one orange and one blue; (4) a cute sandcastle with shell decorations and a tiny blank flag; (5) a bleached driftwood log; (6) a forked driftwood branch; (7) a fishing net hung between two poles with round glass floats; (8) a wicker crab trap; (9) a washed-up wooden barrel lying on its side; (10) a broken wooden crate with gold coins spilling out; (11) a cluster of round glass fishing floats in rope nets; (12) a small overturned rowboat on the sand.
 ```
 `ocShells` `ocConch` `ocStarfish` `ocSandcastle` / `ocDriftLog` `ocDriftBranch` `ocNetPoles` `ocCrabTrap` / `ocBarrel` `ocCrateCoins` `ocFloats` `ocRowboat`
 
 **S4 ซากเรือ 5 แดน** — ชายฝั่งเรือแตก (แมพบอสราน)
 ```
-PIECES — WRECKS OF THE FIVE LANDS, 3×2, green background. Each wreck lies on its own small patch of sand, about 5 heroes long:
+Draw ONE sheet of separate map objects for my 2D isometric fantasy MMORPG. Art style: copy the attached key art and the attached board of map pieces from my game (camera, outline weight, finish — not their objects or the beige background): friendly hand-painted chibi cartoon, clean dark-brown outlines, cel shading with 2–3 flat tones, light from the top-left, bright warm colours, big clear shapes, simple texture. Not realistic, not 3D.
+Format: 1536×1024, a grid of 3 columns × 2 rows = exactly 6 separate objects, one per cell, in list order (left to right, top row first), each centred and as big as its cell allows with empty space around it — nothing touches another object or the edge. Not a scene: no landscape, no characters. High three-quarter view from about 35° above. Each object stands on a small footing of its own (a little sand, rock or planks), no cast shadow; things standing in the sea get only a thin white foam ring, no water.
+Background: solid flat pure GREEN (#00FF00); no green on the objects. No text, numbers, labels or grid lines.
+Objects — WRECKS OF THE FIVE LANDS. Each wreck lies on its own small patch of sand:
 (1) a Viking longship broken in the middle, dragon-head prow, round shields along the side, a torn red-and-white striped sail;
 (2) a Greek warship tilted on its side, a big painted eye on the bow, a bronze ram, broken oars;
 (3) a Japanese wooden cargo ship with a torn square straw-mat sail and a red lacquer stern;
@@ -228,14 +283,20 @@ PIECES — WRECKS OF THE FIVE LANDS, 3×2, green background. Each wreck lies on 
 
 **S5 ของลอยน้ำ** — ลอยโยกในทะเล
 ```
-PIECES — SEA FLOATS, 3×2, green background. Things that float on the sea; each has only a thin foam ring at the waterline, no water around it:
+Draw ONE sheet of separate map objects for my 2D isometric fantasy MMORPG. Art style: copy the attached key art and the attached board of map pieces from my game (camera, outline weight, finish — not their objects or the beige background): friendly hand-painted chibi cartoon, clean dark-brown outlines, cel shading with 2–3 flat tones, light from the top-left, bright warm colours, big clear shapes, simple texture. Not realistic, not 3D.
+Format: 1536×1024, a grid of 3 columns × 2 rows = exactly 6 separate objects, one per cell, in list order (left to right, top row first), each centred and as big as its cell allows with empty space around it — nothing touches another object or the edge. Not a scene: no landscape, no characters. High three-quarter view from about 35° above. Each object stands on a small footing of its own (a little sand, rock or planks), no cast shadow; things standing in the sea get only a thin white foam ring, no water.
+Background: solid flat pure GREEN (#00FF00); no green on the objects. No text, numbers, labels or grid lines.
+Objects — SEA FLOATS. Things that float on the sea; each has only a thin foam ring at the waterline, no water around it:
 (1) a floating wooden barrel; (2) a red-and-white buoy with a small brass bell; (3) a floating raft of golden-brown seaweed with round air bladders; (4) a carved wooden totem pole floating on its side, with a bear face and a thunderbird face, barnacles on it; (5) a tiny rocky islet with a small golden root sprout and two shells; (6) a small breaking wave crest of white foam.
 ```
 `ocFloatBarrel` `ocBuoy` `ocKelpRaft` / `ocTotemLog` `ocIslet` `ocWaveCurl`
 
 **S6 บ้านเมืองท่า (4 หลัง)**
 ```
-PIECES — HARBOUR TOWN HOUSES, 2×2, green background. The town of Rootarch Haven, home of friendly sea-turtle folk, built on top of giant golden roots that arch out of the sea; each building about 3 heroes tall, front door facing the viewer:
+Draw ONE sheet of separate map objects for my 2D isometric fantasy MMORPG. Art style: copy the attached key art and the attached board of map pieces from my game (camera, outline weight, finish — not their objects or the beige background): friendly hand-painted chibi cartoon, clean dark-brown outlines, cel shading with 2–3 flat tones, light from the top-left, bright warm colours, big clear shapes, simple texture. Not realistic, not 3D.
+Format: 1536×1024, a grid of 2 columns × 2 rows = exactly 4 separate objects, one per cell, in list order (left to right, top row first), each centred and as big as its cell allows with empty space around it — nothing touches another object or the edge. Not a scene: no landscape, no characters. High three-quarter view from about 35° above. Each object stands on a small footing of its own (a little sand, rock or planks), no cast shadow; things standing in the sea get only a thin white foam ring, no water.
+Background: solid flat pure GREEN (#00FF00); no green on the objects. No text, numbers, labels or grid lines.
+Objects — HARBOUR TOWN HOUSES. The town of Rootarch Haven, home of friendly sea-turtle folk, built on top of giant golden roots that arch out of the sea; every building has its front door facing the viewer:
 (1) a stilt house on top of a golden root arch: wooden walls, a roof of overlapping big seashell plates, round windows, a rope ladder, lanterns and shell wind chimes;
 (2) a stilt house on wooden piles wrapped by roots, a thatched roof of dried golden kelp, a small balcony with drying fish and nets;
 (3) the turtle elder's round hut: a big dome roof shaped like a sea-turtle shell with hexagon plates, a round wooden door, a carved totem post beside the door;
@@ -245,8 +306,11 @@ PIECES — HARBOUR TOWN HOUSES, 2×2, green background. The town of Rootarch Hav
 
 **S7 สถานที่สำคัญเมืองท่า (4 หลัง)**
 ```
-PIECES — HARBOUR TOWN LANDMARKS, 2×2, green background:
-(1) a tall lighthouse built around a twisted golden root, spiral wooden stairs, a seashell-shingle roof and a lamp room with a big glowing turquoise totem crystal instead of a fire (about 6 heroes tall);
+Draw ONE sheet of separate map objects for my 2D isometric fantasy MMORPG. Art style: copy the attached key art and the attached board of map pieces from my game (camera, outline weight, finish — not their objects or the beige background): friendly hand-painted chibi cartoon, clean dark-brown outlines, cel shading with 2–3 flat tones, light from the top-left, bright warm colours, big clear shapes, simple texture. Not realistic, not 3D.
+Format: 1536×1024, a grid of 2 columns × 2 rows = exactly 4 separate objects, one per cell, in list order (left to right, top row first), each centred and as big as its cell allows with empty space around it — nothing touches another object or the edge. Not a scene: no landscape, no characters. High three-quarter view from about 35° above. Each object stands on a small footing of its own (a little sand, rock or planks), no cast shadow; things standing in the sea get only a thin white foam ring, no water.
+Background: solid flat pure GREEN (#00FF00); no green on the objects. No text, numbers, labels or grid lines.
+Objects — HARBOUR TOWN LANDMARKS:
+(1) a tall lighthouse built around a twisted golden root, spiral wooden stairs, a seashell-shingle roof and a lamp room with a big glowing turquoise totem crystal instead of a fire;
 (2) an open-air smithy under a shell roof: a stone forge with a glowing fire, an anvil shaped like a ship's anchor, tools on the wall, a water barrel;
 (3) a storage warehouse on stilts with crates and barrels stacked by the door and a small wooden crane arm holding a cargo net;
 (4) a round tavern with a giant conch shell as its chimney, warm window lights, a blank hanging sign shaped like a fish and two small tables outside.
@@ -255,7 +319,10 @@ PIECES — HARBOUR TOWN LANDMARKS, 2×2, green background:
 
 **S8 ท่าเรือ**
 ```
-PIECES — HARBOUR, 3×2, green background:
+Draw ONE sheet of separate map objects for my 2D isometric fantasy MMORPG. Art style: copy the attached key art and the attached board of map pieces from my game (camera, outline weight, finish — not their objects or the beige background): friendly hand-painted chibi cartoon, clean dark-brown outlines, cel shading with 2–3 flat tones, light from the top-left, bright warm colours, big clear shapes, simple texture. Not realistic, not 3D.
+Format: 1536×1024, a grid of 3 columns × 2 rows = exactly 6 separate objects, one per cell, in list order (left to right, top row first), each centred and as big as its cell allows with empty space around it — nothing touches another object or the edge. Not a scene: no landscape, no characters. High three-quarter view from about 35° above. Each object stands on a small footing of its own (a little sand, rock or planks), no cast shadow; things standing in the sea get only a thin white foam ring, no water.
+Background: solid flat pure GREEN (#00FF00); no green on the objects. No text, numbers, labels or grid lines.
+Objects — HARBOUR:
 (1) a long straight wooden pier on posts with rope railings, drawn lying flat from the same camera, a thin foam ring around each post;
 (2) the end of a pier with mooring posts, a small lamp post and coiled ropes;
 (3) a ferry gate: a wooden archway at the start of a pier with five small pennants showing simple emblems (a raven, a pegasus, a scarab, a crane, a feathered serpent) and a hanging lantern;
@@ -267,7 +334,10 @@ PIECES — HARBOUR, 3×2, green background:
 
 **S9 เรือจอดท่า** — เรือข้ามฟาก 5 สาย (เรือญี่ปุ่นใช้ jpShip ที่มีแล้ว)
 ```
-PIECES — SHIPS IN HARBOUR, 3×2, green background. Each ship floats with only a thin foam ring at the waterline, sails up, about 6 heroes long:
+Draw ONE sheet of separate map objects for my 2D isometric fantasy MMORPG. Art style: copy the attached key art and the attached board of map pieces from my game (camera, outline weight, finish — not their objects or the beige background): friendly hand-painted chibi cartoon, clean dark-brown outlines, cel shading with 2–3 flat tones, light from the top-left, bright warm colours, big clear shapes, simple texture. Not realistic, not 3D.
+Format: 1536×1024, a grid of 3 columns × 2 rows = exactly 6 separate objects, one per cell, in list order (left to right, top row first), each centred and as big as its cell allows with empty space around it — nothing touches another object or the edge. Not a scene: no landscape, no characters. High three-quarter view from about 35° above. Each object stands on a small footing of its own (a little sand, rock or planks), no cast shadow; things standing in the sea get only a thin white foam ring, no water.
+Background: solid flat pure GREEN (#00FF00); no green on the objects. No text, numbers, labels or grid lines.
+Objects — SHIPS IN HARBOUR. Each ship floats with only a thin foam ring at the waterline, sails up:
 (1) a Viking dragon longship with a red-and-white striped sail and round shields;
 (2) a Greek warship with a white sail, a bronze ram and a big painted eye on the bow;
 (3) a large Egyptian reed ship with a blue-and-gold sail and a curled papyrus prow and stern;
@@ -279,7 +349,10 @@ PIECES — SHIPS IN HARBOUR, 3×2, green background. Each ship floats with only 
 
 **S10 ของในท่าเรือ (12 ชิ้น)**
 ```
-PIECES — HARBOUR BITS, 4×3, green background:
+Draw ONE sheet of separate map objects for my 2D isometric fantasy MMORPG. Art style: copy the attached key art and the attached board of map pieces from my game (camera, outline weight, finish — not their objects or the beige background): friendly hand-painted chibi cartoon, clean dark-brown outlines, cel shading with 2–3 flat tones, light from the top-left, bright warm colours, big clear shapes, simple texture. Not realistic, not 3D.
+Format: 1536×1024, a grid of 4 columns × 3 rows = exactly 12 separate objects, one per cell, in list order (left to right, top row first), each centred and as big as its cell allows with empty space around it — nothing touches another object or the edge. Not a scene: no landscape, no characters. High three-quarter view from about 35° above. Each object stands on a small footing of its own (a little sand, rock or planks), no cast shadow; things standing in the sea get only a thin white foam ring, no water.
+Background: solid flat pure GREEN (#00FF00); no green on the objects. No text, numbers, labels or grid lines.
+Objects — HARBOUR BITS:
 (1) a pearl lamp post: a glowing pearl held in a shell on a wooden post; (2) a stack of wooden crates; (3) a group of barrels; (4) a mooring bollard with a coil of rope; (5) a stack of lobster pots; (6) a wooden rack hung with drying fish; (7) a signpost with five blank arrow boards; (8) a driftwood bench; (9) a big iron anchor standing as a display; (10) a small cooking fire with fish on sticks; (11) a rack of oars and harpoons; (12) a wooden treasure chest decorated with shells.
 ```
 `ocPearlLamp` `ocCrates` `ocBarrels` `ocBollard` / `ocLobsterPots` `ocFishRack` `ocSignpost` `ocBench` / `ocAnchorPost` `ocCookFire` `ocOarRack` `ocChest`
@@ -288,8 +361,12 @@ PIECES — HARBOUR BITS, 4×3, green background:
 
 **S11 ต้นปะการัง** — "ต้นไม้" ของแมพใต้น้ำ
 ```
-PIECES — CORAL TREES, 3×2, green background. Each stands on a small patch of sand; no fish:
-(1) a big branching coral tree in bright pink, about 3 heroes tall;
+Draw ONE sheet of separate map objects for my 2D isometric fantasy MMORPG. Art style: copy the attached key art and the attached board of map pieces from my game (camera, outline weight, finish — not their objects or the beige background): friendly hand-painted chibi cartoon, clean dark-brown outlines, cel shading with 2–3 flat tones, light from the top-left, bright warm colours, big clear shapes, simple texture. Not realistic, not 3D.
+Format: 1536×1024, a grid of 3 columns × 2 rows = exactly 6 separate objects, one per cell, in list order (left to right, top row first), each centred and as big as its cell allows with empty space around it — nothing touches another object or the edge. Not a scene: no landscape, no characters. High three-quarter view from about 35° above. Each object stands on a small footing of its own (a little sand, rock or planks), no cast shadow; things standing in the sea get only a thin white foam ring, no water.
+Underwater things: paint them in their own bright colours, not tinted blue, with no water, bubbles or light rays around them (the game adds the water).
+Background: solid flat pure GREEN (#00FF00); no green on the objects. No text, numbers, labels or grid lines.
+Objects — CORAL TREES. Each stands on a small patch of sand; no fish:
+(1) a big branching coral tree in bright pink;
 (2) a wide fan coral in orange-red;
 (3) a clump of purple staghorn coral;
 (4) coral growing on a glowing golden root, with clear-blue crystal tips;
@@ -300,8 +377,12 @@ PIECES — CORAL TREES, 3×2, green background. Each stands on a small patch of 
 
 **S12 สาหร่ายทอง** — **พื้นแดงม่วง** (สาหร่ายสีทองอมเขียว กันตัดหาย)
 ```
-PIECES — GOLDEN KELP, 3×2, MAGENTA background (no pink, purple or magenta on the objects). The kelp here is golden-amber with round air bladders and long wavy blades; each stands on a few stones:
-(1) one very tall giant kelp stalk, about 4 heroes tall;
+Draw ONE sheet of separate map objects for my 2D isometric fantasy MMORPG. Art style: copy the attached key art and the attached board of map pieces from my game (camera, outline weight, finish — not their objects or the beige background): friendly hand-painted chibi cartoon, clean dark-brown outlines, cel shading with 2–3 flat tones, light from the top-left, bright warm colours, big clear shapes, simple texture. Not realistic, not 3D.
+Format: 1536×1024, a grid of 3 columns × 2 rows = exactly 6 separate objects, one per cell, in list order (left to right, top row first), each centred and as big as its cell allows with empty space around it — nothing touches another object or the edge. Not a scene: no landscape, no characters. High three-quarter view from about 35° above. Each object stands on a small footing of its own (a little sand, rock or planks), no cast shadow; things standing in the sea get only a thin white foam ring, no water.
+Underwater things: paint them in their own bright colours, not tinted blue, with no water, bubbles or light rays around them (the game adds the water).
+Background: solid flat pure MAGENTA (#FF00FF); no pink, purple or magenta on the objects. No text, numbers, labels or grid lines.
+Objects — GOLDEN KELP. The kelp here is golden-amber with round air bladders and long wavy blades; each stands on a few stones:
+(1) one very tall giant kelp stalk;
 (2) a cluster of three kelp stalks of different heights;
 (3) a short bushy kelp clump;
 (4) two tall kelp stalks crossing into an arch;
@@ -312,14 +393,22 @@ PIECES — GOLDEN KELP, 3×2, MAGENTA background (no pink, purple or magenta on 
 
 **S13 ของในแนวปะการัง (12 ชิ้น)**
 ```
-PIECES — REEF BITS, 4×3, green background:
+Draw ONE sheet of separate map objects for my 2D isometric fantasy MMORPG. Art style: copy the attached key art and the attached board of map pieces from my game (camera, outline weight, finish — not their objects or the beige background): friendly hand-painted chibi cartoon, clean dark-brown outlines, cel shading with 2–3 flat tones, light from the top-left, bright warm colours, big clear shapes, simple texture. Not realistic, not 3D.
+Format: 1536×1024, a grid of 4 columns × 3 rows = exactly 12 separate objects, one per cell, in list order (left to right, top row first), each centred and as big as its cell allows with empty space around it — nothing touches another object or the edge. Not a scene: no landscape, no characters. High three-quarter view from about 35° above. Each object stands on a small footing of its own (a little sand, rock or planks), no cast shadow; things standing in the sea get only a thin white foam ring, no water.
+Underwater things: paint them in their own bright colours, not tinted blue, with no water, bubbles or light rays around them (the game adds the water).
+Background: solid flat pure GREEN (#00FF00); no green on the objects. No text, numbers, labels or grid lines.
+Objects — REEF BITS:
 (1) a brain-coral boulder; (2) a cluster of orange-and-white sea anemones; (3) a giant clam, closed; (4) the same giant clam open, with a big white pearl; (5) a sunken treasure chest, half open, with gold coins; (6) a pile of old clay amphorae with shells; (7) a rusty anchor stuck in the sand; (8) a rock covered with starfish; (9) a cluster of spiky purple sea urchins; (10) a barnacle-covered rock; (11) a cluster of clear-blue crystal shards; (12) a sunken bronze ship's bell lying on its side.
 ```
 `ocBrainCoral` `ocAnemone` `ocClam` `ocClamOpen` / `ocTreasure` `ocAmphorae` `ocAnchor` `ocStarRock` / `ocUrchins` `ocBarnRock` `ocCrystals` `ocBell`
 
 **S14 ของในเรือผีจม**
 ```
-PIECES — SUNKEN GHOST SHIP, 3×2, green background. Inside a Japanese ghost ship at the bottom of the sea:
+Draw ONE sheet of separate map objects for my 2D isometric fantasy MMORPG. Art style: copy the attached key art and the attached board of map pieces from my game (camera, outline weight, finish — not their objects or the beige background): friendly hand-painted chibi cartoon, clean dark-brown outlines, cel shading with 2–3 flat tones, light from the top-left, bright warm colours, big clear shapes, simple texture. Not realistic, not 3D.
+Format: 1536×1024, a grid of 3 columns × 2 rows = exactly 6 separate objects, one per cell, in list order (left to right, top row first), each centred and as big as its cell allows with empty space around it — nothing touches another object or the edge. Not a scene: no landscape, no characters. High three-quarter view from about 35° above. Each object stands on a small footing of its own (a little sand, rock or planks), no cast shadow; things standing in the sea get only a thin white foam ring, no water.
+Underwater things: paint them in their own bright colours, not tinted blue, with no water, bubbles or light rays around them (the game adds the water).
+Background: solid flat pure GREEN (#00FF00); no green on the objects. No text, numbers, labels or grid lines.
+Objects — SUNKEN GHOST SHIP. Inside a Japanese ghost ship at the bottom of the sea:
 (1) a broken mast leaning, with a torn sail and tangled ropes;
 (2) a ship's steering wheel on its wooden post;
 (3) cargo barrels and crates tied together in a rope net;
@@ -333,9 +422,13 @@ PIECES — SUNKEN GHOST SHIP, 3×2, green background. Inside a Japanese ghost sh
 
 **S15 ซากนคร: กรีก + อียิปต์** (แอตแลนติส · เฮราคลีออน เมืองจมจริงของอียิปต์)
 ```
-PIECES — DROWNED RUINS: GREEK AND EGYPTIAN, 3×2, green background. Ancient ruins at the bottom of the sea, crusted with coral, shells and barnacles:
+Draw ONE sheet of separate map objects for my 2D isometric fantasy MMORPG. Art style: copy the attached key art and the attached board of map pieces from my game (camera, outline weight, finish — not their objects or the beige background): friendly hand-painted chibi cartoon, clean dark-brown outlines, cel shading with 2–3 flat tones, light from the top-left, bright warm colours, big clear shapes, simple texture. Not realistic, not 3D.
+Format: 1536×1024, a grid of 3 columns × 2 rows = exactly 6 separate objects, one per cell, in list order (left to right, top row first), each centred and as big as its cell allows with empty space around it — nothing touches another object or the edge. Not a scene: no landscape, no characters. High three-quarter view from about 35° above. Each object stands on a small footing of its own (a little sand, rock or planks), no cast shadow; things standing in the sea get only a thin white foam ring, no water.
+Underwater things: paint them in their own bright colours, not tinted blue, with no water, bubbles or light rays around them (the game adds the water).
+Background: solid flat pure GREEN (#00FF00); no green on the objects. No text, numbers, labels or grid lines.
+Objects — DROWNED RUINS: GREEK AND EGYPTIAN. Ancient ruins at the bottom of the sea, crusted with coral, shells and barnacles:
 (1) a toppled white marble column whose capital is shaped like a trident;
-(2) a broken marble statue of a bearded sea god holding a trident, one arm missing, about 3 heroes tall;
+(2) a broken marble statue of a bearded sea god holding a trident, one arm missing;
 (3) a standing marble archway with a broken top;
 (4) a colossal pharaoh head statue half buried in the sand, striped headdress, starfish on it;
 (5) a sandstone sphinx statue lying in the sand;
@@ -345,7 +438,11 @@ PIECES — DROWNED RUINS: GREEK AND EGYPTIAN, 3×2, green background. Ancient ru
 
 **S16 ซากนคร: ญี่ปุ่น + ไวกิ้ง + แอซเท็ก** (ประตูวังริวงู · โถงของเอกีร์ · วิหารตะวันที่สี่)
 ```
-PIECES — DROWNED RUINS: JAPANESE, NORSE AND AZTEC, 3×2, green background. Ancient ruins at the bottom of the sea, crusted with coral, shells and barnacles:
+Draw ONE sheet of separate map objects for my 2D isometric fantasy MMORPG. Art style: copy the attached key art and the attached board of map pieces from my game (camera, outline weight, finish — not their objects or the beige background): friendly hand-painted chibi cartoon, clean dark-brown outlines, cel shading with 2–3 flat tones, light from the top-left, bright warm colours, big clear shapes, simple texture. Not realistic, not 3D.
+Format: 1536×1024, a grid of 3 columns × 2 rows = exactly 6 separate objects, one per cell, in list order (left to right, top row first), each centred and as big as its cell allows with empty space around it — nothing touches another object or the edge. Not a scene: no landscape, no characters. High three-quarter view from about 35° above. Each object stands on a small footing of its own (a little sand, rock or planks), no cast shadow; things standing in the sea get only a thin white foam ring, no water.
+Underwater things: paint them in their own bright colours, not tinted blue, with no water, bubbles or light rays around them (the game adds the water).
+Background: solid flat pure GREEN (#00FF00); no green on the objects. No text, numbers, labels or grid lines.
+Objects — DROWNED RUINS: JAPANESE, NORSE AND AZTEC. Ancient ruins at the bottom of the sea, crusted with coral, shells and barnacles:
 (1) a big red sea shrine gate with faded paint, coral around its feet;
 (2) a stone lantern with a sea anemone growing on top;
 (3) the front of a sunken Norse hall: two carved wooden pillars and a beam ending in a dragon head, round shields on the pillars;
@@ -357,8 +454,12 @@ PIECES — DROWNED RUINS: JAPANESE, NORSE AND AZTEC, 3×2, green background. Anc
 
 **S17 วังมุกใต้สมุทร (4 หลัง)** — เมืองใต้น้ำ (โดมฟองอากาศ = โค้ด)
 ```
-PIECES — PEARL PALACE TOWN, 2×2, green background. An undersea town of shells and pearls (the bubble dome over it is added in the game, do not draw it):
-(1) the Pearl Palace: a grand palace of pearl-white nacre and pink coral with shell-shaped domes, gold trim and a huge pearl on its highest dome (about 7 heroes tall);
+Draw ONE sheet of separate map objects for my 2D isometric fantasy MMORPG. Art style: copy the attached key art and the attached board of map pieces from my game (camera, outline weight, finish — not their objects or the beige background): friendly hand-painted chibi cartoon, clean dark-brown outlines, cel shading with 2–3 flat tones, light from the top-left, bright warm colours, big clear shapes, simple texture. Not realistic, not 3D.
+Format: 1536×1024, a grid of 2 columns × 2 rows = exactly 4 separate objects, one per cell, in list order (left to right, top row first), each centred and as big as its cell allows with empty space around it — nothing touches another object or the edge. Not a scene: no landscape, no characters. High three-quarter view from about 35° above. Each object stands on a small footing of its own (a little sand, rock or planks), no cast shadow; things standing in the sea get only a thin white foam ring, no water.
+Underwater things: paint them in their own bright colours, not tinted blue, with no water, bubbles or light rays around them (the game adds the water).
+Background: solid flat pure GREEN (#00FF00); no green on the objects. No text, numbers, labels or grid lines.
+Objects — PEARL PALACE TOWN. An undersea town of shells and pearls (the bubble dome over it is added in the game, do not draw it):
+(1) the Pearl Palace: a grand palace of pearl-white nacre and pink coral with shell-shaped domes, gold trim and a huge pearl on its highest dome;
 (2) a house made of a giant spiral conch shell, a round door and round windows, small pearl lanterns;
 (3) a house made of a giant scallop shell with a coral chimney;
 (4) a storage house made of a giant nautilus shell with a counter and crates in front.
@@ -367,16 +468,24 @@ PIECES — PEARL PALACE TOWN, 2×2, green background. An undersea town of shells
 
 **S18 ของในวังมุก (12 ชิ้น)**
 ```
-PIECES — PEARL PALACE BITS, 4×3, green background:
+Draw ONE sheet of separate map objects for my 2D isometric fantasy MMORPG. Art style: copy the attached key art and the attached board of map pieces from my game (camera, outline weight, finish — not their objects or the beige background): friendly hand-painted chibi cartoon, clean dark-brown outlines, cel shading with 2–3 flat tones, light from the top-left, bright warm colours, big clear shapes, simple texture. Not realistic, not 3D.
+Format: 1536×1024, a grid of 4 columns × 3 rows = exactly 12 separate objects, one per cell, in list order (left to right, top row first), each centred and as big as its cell allows with empty space around it — nothing touches another object or the edge. Not a scene: no landscape, no characters. High three-quarter view from about 35° above. Each object stands on a small footing of its own (a little sand, rock or planks), no cast shadow; things standing in the sea get only a thin white foam ring, no water.
+Underwater things: paint them in their own bright colours, not tinted blue, with no water, bubbles or light rays around them (the game adds the water).
+Background: solid flat pure GREEN (#00FF00); no green on the objects. No text, numbers, labels or grid lines.
+Objects — PEARL PALACE BITS:
 (1) a lamp: a glowing pearl on a coral stand; (2) a coral bench; (3) a stall of pearls and jewellery under a shell canopy; (4) a stall of colourful sea-glass pots; (5) a banner of golden kelp cloth on a pole with a pearl emblem; (6) a giant pearl on a gold stand; (7) a seahorse statue; (8) a small coral archway; (9) a basket of shells, coins and pearls; (10) a signpost made of a shell mosaic plate (blank); (11) an open giant clam used as a bed; (12) a coral planter with orange sea anemones.
 ```
 `ocCoralLamp` `ocCoralBench` `ocStallJewel` `ocStallGlass` / `ocKelpBanner` `ocGiantPearl` `ocSeahorseStatue` `ocCoralGate` / `ocTreasureBasket` `ocMosaicSign` `ocClamBed` `ocAnemonePlanter`
 
 **S19 วิหารจมน้ำ** — แมพบอสชาลชิวทลีกเว (แท่นยืน = กลไกน้ำท่วม)
 ```
-PIECES — DROWNED TEMPLE, 3×2, green background. An Aztec temple of the water goddess at the bottom of the sea, turquoise, cream and gold stone:
-(1) a statue of the water goddess (big headdress of blue and white cotton bands with turquoise discs, round earrings, a skirt of turquoise beads) with water pouring from her open hands, about 4 heroes tall;
-(2) a raised square stone platform with steps on the front, big enough for four heroes to stand on;
+Draw ONE sheet of separate map objects for my 2D isometric fantasy MMORPG. Art style: copy the attached key art and the attached board of map pieces from my game (camera, outline weight, finish — not their objects or the beige background): friendly hand-painted chibi cartoon, clean dark-brown outlines, cel shading with 2–3 flat tones, light from the top-left, bright warm colours, big clear shapes, simple texture. Not realistic, not 3D.
+Format: 1536×1024, a grid of 3 columns × 2 rows = exactly 6 separate objects, one per cell, in list order (left to right, top row first), each centred and as big as its cell allows with empty space around it — nothing touches another object or the edge. Not a scene: no landscape, no characters. High three-quarter view from about 35° above. Each object stands on a small footing of its own (a little sand, rock or planks), no cast shadow; things standing in the sea get only a thin white foam ring, no water.
+Underwater things: paint them in their own bright colours, not tinted blue, with no water, bubbles or light rays around them (the game adds the water).
+Background: solid flat pure GREEN (#00FF00); no green on the objects. No text, numbers, labels or grid lines.
+Objects — DROWNED TEMPLE. An Aztec temple of the water goddess at the bottom of the sea, turquoise, cream and gold stone:
+(1) a statue of the water goddess (big headdress of blue and white cotton bands with turquoise discs, round earrings, a skirt of turquoise beads) with water pouring from her open hands;
+(2) a raised square stone platform with steps on the front, big enough for a small group to stand on;
 (3) a stone brazier burning with blue-white magic fire;
 (4) a carved feathered-serpent pillar with turquoise and gold feathers;
 (5) a round flood pool: a low carved stone ring around a pool of turquoise water, lying flat;
@@ -388,8 +497,12 @@ PIECES — DROWNED TEMPLE, 3×2, green background. An Aztec temple of the water 
 
 **S20 บ่อรากโลก**
 ```
-PIECES — THE WORLD-ROOT WELL, 3×2, green background. The dark abyss where the last root of the Great Totem glows; things that glow are drawn bright:
-(1) a giant root column rising from black rock, golden bark with turquoise light in its cracks, about 5 heroes tall;
+Draw ONE sheet of separate map objects for my 2D isometric fantasy MMORPG. Art style: copy the attached key art and the attached board of map pieces from my game (camera, outline weight, finish — not their objects or the beige background): friendly hand-painted chibi cartoon, clean dark-brown outlines, cel shading with 2–3 flat tones, light from the top-left, bright warm colours, big clear shapes, simple texture. Not realistic, not 3D.
+Format: 1536×1024, a grid of 3 columns × 2 rows = exactly 6 separate objects, one per cell, in list order (left to right, top row first), each centred and as big as its cell allows with empty space around it — nothing touches another object or the edge. Not a scene: no landscape, no characters. High three-quarter view from about 35° above. Each object stands on a small footing of its own (a little sand, rock or planks), no cast shadow; things standing in the sea get only a thin white foam ring, no water.
+Underwater things: paint them in their own bright colours, not tinted blue, with no water, bubbles or light rays around them (the game adds the water).
+Background: solid flat pure GREEN (#00FF00); no green on the objects. No text, numbers, labels or grid lines.
+Objects — THE WORLD-ROOT WELL. The dark abyss where the last root of the Great Totem glows; things that glow are drawn bright:
+(1) a giant root column rising from black rock, golden bark with turquoise light in its cracks;
 (2) a cluster of glowing clear-blue crystal roots;
 (3) a hydrothermal vent chimney of black rock with glowing orange cracks (no smoke);
 (4) a whale skeleton lying on the abyss floor with small glowing sea lilies growing between the ribs;
@@ -400,7 +513,11 @@ PIECES — THE WORLD-ROOT WELL, 3×2, green background. The dark abyss where the
 
 **S21 ของในห้วงลึก (12 ชิ้น)**
 ```
-PIECES — ABYSS BITS, 4×3, green background:
+Draw ONE sheet of separate map objects for my 2D isometric fantasy MMORPG. Art style: copy the attached key art and the attached board of map pieces from my game (camera, outline weight, finish — not their objects or the beige background): friendly hand-painted chibi cartoon, clean dark-brown outlines, cel shading with 2–3 flat tones, light from the top-left, bright warm colours, big clear shapes, simple texture. Not realistic, not 3D.
+Format: 1536×1024, a grid of 4 columns × 3 rows = exactly 12 separate objects, one per cell, in list order (left to right, top row first), each centred and as big as its cell allows with empty space around it — nothing touches another object or the edge. Not a scene: no landscape, no characters. High three-quarter view from about 35° above. Each object stands on a small footing of its own (a little sand, rock or planks), no cast shadow; things standing in the sea get only a thin white foam ring, no water.
+Underwater things: paint them in their own bright colours, not tinted blue, with no water, bubbles or light rays around them (the game adds the water).
+Background: solid flat pure GREEN (#00FF00); no green on the objects. No text, numbers, labels or grid lines.
+Objects — ABYSS BITS:
 (1) a dark rock with glowing golden veins; (2) a cluster of white tube worms with red tips; (3) a glowing sea lily on a long stalk; (4) a pale lacy glass sponge (painted solid); (5) a small black vent; (6) a rock with huge round sucker marks and scratches; (7) a giant fossil tooth; (8) an empty giant isopod shell; (9) a rock splashed with black ink; (10) a few small crystal shards; (11) a glowing root tip; (12) a small glowing deep-sea coral.
 ```
 `ocAbyssRock` `ocTubeWorms` `ocSeaLily` `ocGlassSponge` / `ocVentSmall` `ocSuckerRock` `ocFossilTooth` `ocIsopodShell` / `ocInkRock` `ocCrystalBits` `ocRootTip` `ocDeepCoral`
@@ -412,29 +529,34 @@ PIECES — ABYSS BITS, 4×3, green background:
 ชาวเมืองท่าซุ้มราก: ผู้เฒ่าเต่า (เส้นเรื่อง) · หนูแมวน้ำ (คลัง) · ช่างกุ้งมังกร (ช่างตีเหล็ก) · กัปตันกระทุง (เรือข้ามฟาก) — วังมุกใต้น้ำใช้ NPC ชุดเดียวกัน
 1 รูป = ตัวเดียว 2 ท่า (ซ้าย = หน้าตรง · ขวา = หันไปทางซ้ายตอนคุย) ผมตัดแยกเป็น `_front` / `_side` แบบ NPC เดิม
 
-**N0 พรอมต์กลาง (แชทใหม่ · แนบ ld5 + npc_ref.jpg)**
-```
-I'm making townspeople for my 2D fantasy MMORPG: friendly animal-folk shown as full-body chibi standing pictures. Attached: (1) the campfire key art = the art style, (2) a board of NPCs already in my game = their proportions, outline weight and finish (never copy their designs).
-Every picture: ONE character drawn TWICE side by side on a 1536×1024 image. LEFT = standing straight and facing the viewer (front view) in a friendly idle pose. RIGHT = the same character in a three-quarter view turned toward the screen-left, as if talking to someone on the left. Same size, same height, feet on the same baseline, whole body visible with empty space around it, each figure about 75% of the image height. Chibi proportions (the head about a third of the height) like the board.
-Style: friendly hand-painted chibi cartoon, thick clean dark-brown outlines, cel shading with 2–3 flat tones, soft light from the top-left, bright warm colours. Not realistic, not 3D.
-Background: solid flat pure GREEN (#00FF00), no ground, no shadow; never green on the character. No text, no speech bubbles, no frame.
-Reply only "OK" and wait.
-```
+แชทใหม่ · แนบ ld5 + npc_ref.jpg · ส่งทีละกล่อง
 **N1 ผู้เฒ่าเต่ากระ** (`sea_elder`) — คนเล่าเรื่องรากโทเท็มที่จมทะเล และเรื่องเออร์ทอค
 ```
-NPC — THE TURTLE ELDER of the harbour town: an old hawksbill sea turtle standing upright on his back flippers, an amber-and-brown patterned shell on his back, sandy wrinkled skin, a long white beard, round wire spectacles, a wide straw hat with a band of small shells, a woven blue-and-cream shawl, a necklace of shells, and a driftwood walking staff topped with a small glowing turquoise totem crystal. Kind, wise smile.
+Draw ONE townsperson for my 2D fantasy MMORPG, twice side by side on one 1536×1024 image. Art style: copy the attached key art and the proportions, outline weight and finish of the attached board of NPCs from my game (not their designs): friendly hand-painted chibi cartoon, thick clean dark-brown outlines, cel shading with 2–3 flat tones, light from the top-left, bright warm colours. Not realistic, not 3D.
+LEFT: standing straight, facing the viewer, friendly idle pose. RIGHT: the SAME character in a three-quarter view turned toward the screen-left, as if talking to someone on the left. Same size, feet on the same baseline, whole body visible with space around it, each figure about 75% of the image height, chibi proportions (head about a third of the height).
+Background: solid flat pure GREEN (#00FF00), no ground, no shadow; no green on the character. No text, speech bubbles or frame.
+Character — THE TURTLE ELDER of the harbour town: an old hawksbill sea turtle standing upright on his back flippers, an amber-and-brown patterned shell on his back, sandy wrinkled skin, a long white beard, round wire spectacles, a wide straw hat with a band of small shells, a woven blue-and-cream shawl, a necklace of shells, and a driftwood walking staff topped with a small glowing turquoise totem crystal. Kind, wise smile.
 ```
 **N2 หนูแมวน้ำ คนเฝ้าคลัง** (`kafra_sea`)
 ```
-NPC — THE STORAGE KEEPER: a cheerful young harbour-seal girl with soft grey fur and darker spots, big black eyes and whiskers, a white sailor collar with a navy ribbon, a short navy sailor jacket with gold buttons, a big leather satchel with a shell clasp, holding a ledger book and a quill in her flippers.
+Draw ONE townsperson for my 2D fantasy MMORPG, twice side by side on one 1536×1024 image. Art style: copy the attached key art and the proportions, outline weight and finish of the attached board of NPCs from my game (not their designs): friendly hand-painted chibi cartoon, thick clean dark-brown outlines, cel shading with 2–3 flat tones, light from the top-left, bright warm colours. Not realistic, not 3D.
+LEFT: standing straight, facing the viewer, friendly idle pose. RIGHT: the SAME character in a three-quarter view turned toward the screen-left, as if talking to someone on the left. Same size, feet on the same baseline, whole body visible with space around it, each figure about 75% of the image height, chibi proportions (head about a third of the height).
+Background: solid flat pure GREEN (#00FF00), no ground, no shadow; no green on the character. No text, speech bubbles or frame.
+Character — THE STORAGE KEEPER: a cheerful young harbour-seal girl with soft grey fur and darker spots, big black eyes and whiskers, a white sailor collar with a navy ribbon, a short navy sailor jacket with gold buttons, a big leather satchel with a shell clasp, holding a ledger book and a quill in her flippers.
 ```
 **N3 ช่างกุ้งมังกร** (`craft_sea`)
 ```
-NPC — THE BLACKSMITH: a burly red lobster smith standing upright, shiny red shell and long antennae, one big claw holding a smith's hammer and the smaller claw holding tongs, a thick leather apron full of tools, brass goggles pushed up on his forehead, a white knitted sailor cap and a big grin.
+Draw ONE townsperson for my 2D fantasy MMORPG, twice side by side on one 1536×1024 image. Art style: copy the attached key art and the proportions, outline weight and finish of the attached board of NPCs from my game (not their designs): friendly hand-painted chibi cartoon, thick clean dark-brown outlines, cel shading with 2–3 flat tones, light from the top-left, bright warm colours. Not realistic, not 3D.
+LEFT: standing straight, facing the viewer, friendly idle pose. RIGHT: the SAME character in a three-quarter view turned toward the screen-left, as if talking to someone on the left. Same size, feet on the same baseline, whole body visible with space around it, each figure about 75% of the image height, chibi proportions (head about a third of the height).
+Background: solid flat pure GREEN (#00FF00), no ground, no shadow; no green on the character. No text, speech bubbles or frame.
+Character — THE BLACKSMITH: a burly red lobster smith standing upright, shiny red shell and long antennae, one big claw holding a smith's hammer and the smaller claw holding tongs, a thick leather apron full of tools, brass goggles pushed up on his forehead, a white knitted sailor cap and a big grin.
 ```
 **N4 กัปตันกระทุง เรือข้ามฟาก** (`sea_ferry`) — ยืนที่ท่าเรือ 5 แดนกับที่เมืองท่า รับเฉพาะ Lv 60 ขึ้นไป
 ```
-NPC — THE FERRY CAPTAIN: a jolly pelican with white feathers and a big orange beak whose pouch holds a bundle of blank paper tickets, a navy captain's coat with gold buttons, a captain's hat with a gold anchor badge, a brass spyglass under one wing, a little round belly.
+Draw ONE townsperson for my 2D fantasy MMORPG, twice side by side on one 1536×1024 image. Art style: copy the attached key art and the proportions, outline weight and finish of the attached board of NPCs from my game (not their designs): friendly hand-painted chibi cartoon, thick clean dark-brown outlines, cel shading with 2–3 flat tones, light from the top-left, bright warm colours. Not realistic, not 3D.
+LEFT: standing straight, facing the viewer, friendly idle pose. RIGHT: the SAME character in a three-quarter view turned toward the screen-left, as if talking to someone on the left. Same size, feet on the same baseline, whole body visible with space around it, each figure about 75% of the image height, chibi proportions (head about a third of the height).
+Background: solid flat pure GREEN (#00FF00), no ground, no shadow; no green on the character. No text, speech bubbles or frame.
+Character — THE FERRY CAPTAIN: a jolly pelican with white feathers and a big orange beak whose pouch holds a bundle of blank paper tickets, a navy captain's coat with gold buttons, a captain's hat with a gold anchor badge, a brass spyglass under one wing, a little round belly.
 ```
 **R1 ห้องช่างเมืองท่า** (`assets/rooms/craft_sea`) — **แชทใหม่ · แนบ ld5 + room_ref.jpg**
 ```
@@ -487,11 +609,13 @@ Background: SOLID FLAT PURE GREEN (#00FF00), no ground, no shadow, never green o
 ---
 
 ## 7. ไอคอนวัตถุดิบทะเล (ทีหลัง · ตอนกำหนดของดรอป)
-แชทใหม่ → ส่งพรอมต์กลาง 0 ใน REFINE_STONE_ICON_PROMPTS_TH.md (แนบ ld5 + ref_items.png แบบเดิม) → ส่งกล่องนี้ · ชื่อไอเทมยังเป็นชื่อร่าง
+แชทใหม่ · แนบ ld5 (+ ref_items.png แบบชีตหินตีบวก ถ้ามี) → ส่งกล่องนี้ · ชื่อไอเทมยังเป็นชื่อร่าง
 ```
-Sheet — SEA MATERIALS. 4 columns × 3 rows, read left to right, top row first:
+Draw ONE sheet of inventory item icons for my 2D fantasy MMORPG. Art style: copy the attached key art — friendly hand-painted chibi cartoon, thick clean dark-brown outlines, cel shading with 2–3 flat tones, light from the top-left, bright warm colours, a little magical shine ON the object. Not realistic, not 3D. Chunky and readable like classic MMORPG inventory icons (if my game's icons are attached too, match their outline weight and finish, not their layout).
+Format: 1536×1024, 4 columns × 3 rows = exactly 12 icons, left to right, top row first; each one single object centred in its cell, filling about 80% of it without touching anything, all about the same size, readable at 32 px.
+Background: solid flat pure GREEN (#00FF00); no green on the objects. No text, numbers, frames, borders, ground shadows or glow halos (magic shows only ON the object).
+Icons — SEA MATERIALS:
 (1) a white pearl resting in a small open clam shell; (2) a glossy black pearl with a violet sheen; (3) a spiral conch shell; (4) three pieces of frosted sea glass (blue, amber, white); (5) a branch of pink coral; (6) a bundle of golden kelp tied with twine; (7) a blue-violet crab claw; (8) a clear-blue crystal shark tooth; (9) a small glass vial of glowing dark-purple ink with a cork; (10) a glowing golden anglerfish lure bulb on a short stalk; (11) an old gold coin crusted with barnacles; (12) a piece of crimson kraken hide with round suckers.
-Solid flat pure green (#00FF00) background, no green on the objects, no text, no frame, no glow halo, nothing touching the cell edges.
 ```
 ชื่อร่าง: `sea_pearl` `sea_bpearl` `sea_conch` `sea_glass` / `sea_coral` `sea_kelp` `sea_claw` `sea_tooth` / `sea_ink` `sea_lure` `sea_coin` `sea_hide`
 
