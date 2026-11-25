@@ -1,4 +1,4 @@
-"""Anubis showcase clip per tree: DSF=1.5 MAP=egyF1 python3 tools/fx/anclip.py basic|a|b|c [extra-query]  → $OUT/anubis_<tree>.mp4 (30 fps, Thai labels)
+"""Anubis showcase clip per tree: DSF=1.5 MAP=egyF1 python3 tools/fx/anclip.py basic|a|b|c|sun|pics [extra-query]  → $OUT/anubis_<tree>.mp4 (30 fps, Thai labels)
 (DSF = device pixel ratio, CW/CH = crop in css px, MAP = map of the test room: egyF1 = desert sand, default vikF2 = snow; extra-query e.g. '&vfx3=0' = the old painted look)
 Each entry: (key | 'js:<code>', label, seconds, pre-js, distance to the dummy (0 = stand in the middle of the room), test-room mode [, (dx, dz) camera offset [, zoom]]). In js / pre code the dummy is __e.
 zoom 1 = a crop of CW × CH css px (660 × 400), zoom 1.7 = a close-up; every frame is scaled to OW × OH (960 × 582).
@@ -37,7 +37,16 @@ SEQ={'basic':[('basic','Chain Flail · ลูกตุ้มหนามเห�
       ('acRebirth','Rite of Rebirth · วงดอกบัวชุบชีวิต',1.7,'',130,'one',(-30,40),1.7),
       ('acAvatar','Avatar of Anubis · ร่างเทพอนูบิสผุดขึ้นหลังตัว',2.7,'',130,'one',(-30,70),1.35),
       ('acWrath',"Ra's Wrath · ดวงอาทิตย์ตกใส่วง",2.7,MOM5,170,'room',(70,90),1.0),
-      ('acVerdict','Anubis Verdict · หัวอนูบิสยักษ์งับผู้ถูกตัดสิน',2.4,SIN3,120,'one',(30,70),1.3)]}[TREE]
+      ('acVerdict','Anubis Verdict · หัวอนูบิสยักษ์งับผู้ถูกตัดสิน',2.4,SIN3,120,'one',(30,70),1.3)],
+ 'pics':[('anStandard','Standard of Ra · ธงสุริยะภาพวาด ปักลงพื้น',2.2,'',130,'one',(-40,60),1.15),
+      ('abJudge','Final Judgment (+Second Verdict) · ตาชั่งภาพวาด + จานตก',1.9,SIN3,120,'one',(30,70),1.3),
+      ('abPounce',"Jackal Pounce + Death's Door · ประตูยมโลกภาพวาด",1.6,SIN3,150,'one',(60,50),1.15),
+      ('abGate','Underworld Gate · ประตูยมโลกผุดจากพื้น',2.8,'',150,'one',(40,50),1.15),
+      ('abHall',"Hall of Two Truths · ตาชั่งยักษ์ภาพวาด",4.9,'',140,'room',(60,120),.95),
+      ('acAvatar','Avatar of Anubis · หัวอนูบิสภาพวาดผุดหลังตัว',2.7,'',130,'one',(0,100),1.0),
+      ('acVerdict','Anubis Verdict · หัวอนูบิสภาพวาดงับเป้า',2.4,SIN3,130,'one',(60,90),1.05)],
+ 'sun':[('aaWheel','Wheel of Ra · ดวงอาทิตย์ภาพวาด ra_sun โคจรรอบตัว',5.7,'',0,'room',(-60,60),.95),
+      ('acWrath',"Ra's Wrath · ดวงอาทิตย์ภาพวาด ra_sun ตกใส่วง",2.7,MOM5,170,'room',(70,90),1.0)]}[TREE]
 OUT=os.environ.get('OUT','/tmp/fx');os.makedirs(OUT,exist_ok=True);FR=f'/tmp/fran_{TREE}';shutil.rmtree(FR,ignore_errors=True);os.makedirs(FR)
 W,H=int(os.environ.get('CW','660')),int(os.environ.get('CH','400'));OW,OH=int(os.environ.get('OW','960')),int(os.environ.get('OH','582'))   # crop of zoom 1 in css px · size of the video
 CAST="""([k,near,pre])=>{try{if(player.action)endAction();}catch(x){}player.casting=null;player.hp=player.maxHp;player.mp=player.maxMp;player.ccT=0;player.cd={};

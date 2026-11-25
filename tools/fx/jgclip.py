@@ -1,4 +1,4 @@
-"""Eclipse Jaguar showcase clip per tree (effects v3, 2026-11-25): DSF=2 python3 tools/fx/jgclip.py basic|a|b|c|ult [extra-query]  (ult: use CW=900 CH=540)  (DSF = device pixel ratio, CW/CH = crop in css px)
+"""Eclipse Jaguar showcase clip per tree (effects v3, 2026-11-25): DSF=2 python3 tools/fx/jgclip.py basic|a|b|c|ult|pic [extra-query]  (pic = the 5 painted pieces; &jgpic=0 = the same with the SVG pieces)  (ult: use CW=900 CH=540)  (DSF = device pixel ratio, CW/CH = crop in css px)
 → $OUT/jaguar_<tree>.mp4 (30 fps, Thai labels). Serve the repo on 8765 first (python3 -m http.server 8765). OUT=/tmp/fx by default.
 Each entry: (key | 'js:<code>', label, seconds, pre-js, distance to the dummy (<0 = stay where the last entry left her), test-room mode[, (dx,dz) crop offset]).
 In js / pre code the dummy is __e and setFxTimer runs on the game clock (the clip steps the game by hand)."""
@@ -35,13 +35,19 @@ SEQ={'basic':[('basic','Twin Fang · มีดคู่ออบซิเดี�
       ('jgNightfall','Nightfall Dance · ร่างเงาโผล่สองข้างฟันไขว้',1.2,'',100,'one'),(then('jgPhantom'),'+ Phantom Riposte · ร่างเงาสวนกลับ',1.0,'',-1,'one'),
       ('jgHorizon','Black Horizon · กำแพงเงาดำกลิ้งออกเป็นพัด ตราคราสระเบิด',1.5,'for(const q of enemies)if(q._dummy)addBrand(q,2);',0,'room'),
       ('jgFifthSun','Eclipse of the Fifth Sun · ULT B ดวงอาทิตย์ดำ ฝนหอกออบซิเดียน',4.4,'',0,'room',(0,60))],
+ 'pic':[('jgCry',"Predator's Cry · หัววิญญาณเสือคำราม",1.6,'',130,'one',(-40,60)),
+      ('jgDrop','Predator Drop · วิญญาณเสือทองกระโจน',1.3,'',160,'one',(0,60)),
+      ('js:godfall(__e)','Godfall · เสือทองดิ่งจากฟ้า',1.0,'',140,'one',(40,90)),
+      ('jcSkyPounce','Sky-Pounce · อุ้งเท้าวิญญาณยักษ์',1.6,'',170,'one',(40,90)),
+      ('jcTotem','Blood Moon Hunt · จันทร์เลือด',2.2,'',130,'one',(-40,110)),
+      ('jgFifthSun','Eclipse of the Fifth Sun · ดวงอาทิตย์ดำ',3.0,'',0,'room',(0,150))],
  'ult':[('jgThrone','Throne of Claws · ULT A หายตัวฟันวาร์ป รอยแผลค้างแล้วระเบิด',4.0,'',120,'one',(0,50)),
       ('jgFifthSun','Eclipse of the Fifth Sun · ULT B ดวงอาทิตย์ดำ ฝนหอกออบซิเดียน',4.6,'',0,'room',(0,110))],
  'c':[('jcSeal','Obsidian Seal · ขว้างแผ่นผนึก ชาร์จแล้วระเบิด',1.9,'',130,'one',(60,30)),
       ('jcTotem','Blood Moon Hunt · จันทร์เลือดขึ้นหลังนักล่า',2.4,'',130,'one'),
       ('jcSkyPounce','Sky-Pounce · กระโจนพร้อมวิญญาณเสือทอง',1.6,'',170,'one'),
       ('jgSlip','',.7,'for(const q of enemies)if(q._dummy)addBrand(q,3);',0,'room'),(then('jgEBackstab'),'Dark Sun Chain · ตราคราสระเบิด โซ่ออบซิเดียนกระโดดไปเป้าอื่น',1.4,'',-1,'room')]}[TREE]
-OUT=os.environ.get('OUT','/tmp/fx');os.makedirs(OUT,exist_ok=True);FR=f'/tmp/frjg_{TREE}';shutil.rmtree(FR,ignore_errors=True);os.makedirs(FR)
+OUT=os.environ.get('OUT','/tmp/fx');os.makedirs(OUT,exist_ok=True);FR=os.path.join(OUT,f'_frjg_{TREE}');shutil.rmtree(FR,ignore_errors=True);os.makedirs(FR)   # frames next to the clip: two runs with different OUT do not mix
 W,H=int(os.environ.get('CW','600')),int(os.environ.get('CH','350'))
 CAST="""([k,near,pre])=>{try{if(near>=0&&player.action)endAction();}catch(x){}player.casting=null;player.hp=player.maxHp;player.mp=player.maxMp;player.ccT=0;player.cd={};
   for(const q of enemies)if(q._dummy&&!q.H0){q.H0=[q.hx,q.hy];for(const kk of ['hx','hy'])Object.defineProperty(q,kk,{get(){return kk==='hx'?this.x:this.y;},set(v){},configurable:true});}

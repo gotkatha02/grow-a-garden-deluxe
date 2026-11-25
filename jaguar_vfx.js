@@ -35,6 +35,20 @@ if(typeof CHAR==='undefined'||CHAR!=='jaguar'||!window.K3||!window.VK||!window.K
 const {TAU,cl,eO,eI,eIO,back,lerp,R_,scr,art,sprite,star,KGlint,KLine,KBurst,ring,KStreak,KArc,petals,embers,dust,stones,ensure}=window.K3;
 const V=window.VK,{sys,tx,G}=V,AR=window.KTA;
 const JV=window.JGV={on:1};
+/* PAINTED PIECES (owner 2026-11-25: his 5 ChatGPT paintings, prompts JAGUAR_FX3_PROMPTS_TH.md): the golden spirit's paw, its leap, its
+   roaring head, the blood moon and the black sun replace those SVG pieces wherever they are drawn (art() and sprite() of cat_vfx.js
+   read window.KPIC): same size, anchor, turn, mirror and timing — only the picture changes. Cut off green by tools/glow_cut.py
+   (sources in assets/fx/jaguar/raw/). box = where the SVG piece's own box lies in the painting, measured so the bodies line up:
+   moon = the disc (SVG r 32, painted ×1.1 because the dashed ring is gone) · sun = the ray tips · paw = the widest toes (SVG pad 82)
+   and the claw tips · leap / head = the whole animal (one scale = the geometric mean of width and height, centres together).
+   Third number = size about the anchor: the painted paw's flaming forearm runs much higher than the SVG's faded one (×.85), the
+   roaring head sits behind her shoulder and needs a little more presence (×1.15).
+   The SVG draws until a picture has loaded; ?jgpic=0 = the SVG pieces. */
+const JPIC={paw:['jg_paw',[-.1919,.2701,1.1468,1.0018],.85],jagLeap:['jg_spirit_leap',[.0314,-.1712,.9424,1.059]],
+  jagHead:['jg_spirit_roar',[-.1171,-.001,1.0332,.9404],1.15],moon:['jg_blood_moon',[-.0669,-.0836,1.0357,1.0733]],
+  eclipse:['jg_black_sun',[-.0181,-.0071,1.0161,1.009]]};
+if(!/[?&]jgpic=0/.test(location.search)){const KP=window.KPIC=window.KPIC||{};for(const n in JPIC){const im=new Image();im.decoding='async';im.src='assets/fx/jaguar/'+JPIC[n][0]+'.webp?v=1';KP[n]={img:im,box:JPIC[n][1],k:JPIC[n][2]||1};}}
+JV.pic=n=>!!(window.KPIC&&KPIC[n]&&KPIC[n].img.complete&&KPIC[n].img.naturalWidth);
 if(window.TV&&TV.toonHeroes)TV.toonHeroes.delete('jaguar');
 /* her painted sprite is fine and small: the coloured rim the engine draws round the hero during an action (player.glow) is softened ×.4, as the dragon / lion / Bastet do */
 if(typeof drawPlayerAura==='function'){const DPA0=drawPlayerAura;drawPlayerAura=function(){const g=player.glow;if(!g||!g.k)return DPA0.apply(this,arguments);const k0=g.k;g.k=k0*.4;try{return DPA0.apply(this,arguments);}finally{g.k=k0;}};}
@@ -188,11 +202,12 @@ if(typeof BackTick==='function'){BackTick.prototype.__gt='-';BackTick.prototype.
 /* the golden spirit jaguar: 'aura' = its roaring head behind her (Predator's Cry) · 'pounce' = it leaps along the game's own arc */
 if(typeof SpectralPounce==='function'){SpectralPounce.prototype.__gt='-';SpectralPounce.prototype.draw=function(){
     if(this.mode==='aura'){const k=this.t/this.life,a=Math.sin(Math.PI*Math.min(1,k*1.1))*.85,sd=typeof dirSide==='function'?dirSide(player.dir):1,[x,y]=P(player.x-sd*20*HZ(),player.y-10,(player.z||0)+66*HZ()),w=(84+18*eO(Math.min(1,k*2)))*HZ();
-      glowAt(x,y,w*1.5,w*1.2,'#ffc23a',.25*a);art('jagHead',x,y,w,{sx:sd,a,rot:-sd*.06});return;}
-    const dz=this.z0>200&&Math.abs(this.tx-this.sx)<5;   /* Godfall: straight down from the sky (smaller, a faint trail, so it reads as a diving jaguar, not a column) */
+      glowAt(x,y,w*1.5,w*1.2,'#ffc23a',(JV.pic('jagHead')?.14:.25)*a);art('jagHead',x,y,w,{sx:sd,a,rot:-sd*.06});return;}
+    const dz=this.z0>200&&Math.abs(this.tx-this.sx)<5;   /* Godfall: straight down from the sky (smaller, a faint trail, so it reads as a diving jaguar, not a column); anchored at its head (ax .92) so it lands head first on the target instead of half under the ground */
     const k=Math.min(1,this.t/this.hitT),fade=this.t<this.hitT?Math.min(1,this.t/.08):Math.max(0,1-(this.t-this.hitT)/Math.max(.05,this.life-this.hitT)),sc=this.sc/.32,w=150*sc*(dz?.72:1),face=this.face||1;
-    for(const p of this.trail){const q=this.pos(p.k),[x,y]=P(...q);art('jagLeap',x,y,w,{sx:face,a:p.a*(dz?.14:.32)*fade,rot:dz?Math.PI/2*face:(lerp(-.3,.25,p.k))*face});}
-    const q=this.pos(k),[x,y]=P(...q),rot=dz?Math.PI/2*face:(lerp(-.32,.26,k))*face;glowAt(x,y,w*1.1,w*.6,'#ffc23a',.32*fade);art('jagLeap',x,y,w,{sx:face,a:this.alpha*fade,rot});};}
+    const pic=JV.pic('jagLeap');let lk=-1;   /* painted: every copy is a full detailed jaguar → only copies .12 of the arc apart, fainter */
+    for(const p of this.trail){if(pic){if(lk>=0&&p.k-lk<.12)continue;lk=p.k;}const q=this.pos(p.k),[x,y]=P(...q);art('jagLeap',x,y,w,{sx:face,a:p.a*(dz?.14:.32)*(pic?.55:1)*fade,rot:dz?Math.PI/2*face:(lerp(-.3,.25,p.k))*face,ax:dz?.92:.5});}
+    const q=this.pos(k),[x,y]=P(...q),rot=dz?Math.PI/2*face:(lerp(-.32,.26,k))*face;glowAt(x,y,w*1.1,w*.6,'#ffc23a',(pic?.18:.32)*fade);art('jagLeap',x,y,w,{sx:face,a:this.alpha*fade,rot,ax:dz?.92:.5});};}
 /* a giant spirit paw falls onto a point and rakes down: claws touch on hitT (gold for Basic / A, a turquoise rake for B) */
 if(typeof GiantClaw==='function'){GiantClaw.prototype.__gt='-';
   GiantClaw.prototype.update=function(dt){this.t+=dt;if(this.t>=this.hitT&&!this.hit){this.hit=true;this.onHit&&this.onHit();const S=this.S,B=this._br==='B';

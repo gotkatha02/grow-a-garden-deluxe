@@ -59,6 +59,35 @@ const SC={};function S1(l){l=l||'top';const k=l+'|'+(window.SKCTX||'');let s=SC[
 const grab=fn=>{const h={parts:[],dead:0};K_.run(h,fn);return h.parts.filter(p=>p.life>=50);};
 /* a picture at a world point */
 function pic(im,x,y,z,w,o){o=o||{};const s=P(x,y,z),h=w*im.height/im.width;ctx.save();if(o.a!=null)ctx.globalAlpha*=cl(o.a,0,1);ctx.translate(s[0],s[1]);if(o.rot)ctx.rotate(o.rot);if(o.flip)ctx.scale(-1,1);ctx.drawImage(im,-w*(o.ax==null?.5:o.ax),-h*(o.ay==null?.5:o.ay),w,h);ctx.restore();}
+/* painted pictures (the owner's art): used once loaded, the code art draws until then · ?anpic=0 = code art only.
+   New pictures for the big summoned pieces: ANUBIS_FX4_PROMPTS_TH.md */
+const PD='assets/fx/anubis/',PSRC={raSun:PD+'ra_sun.webp',headO:PD+'an_head_open.webp',headC:PD+'an_head_closed.webp',gate:PD+'an_gate.webp',std:PD+'an_standard.webp',
+  scPost:PD+'an_sc_post.webp',scBeam:PD+'an_sc_beam.webp',scPanL:PD+'an_sc_panL.webp',scPanR:PD+'an_sc_panR.webp'},PIM={},NOPIC=/[?&]anpic=0/.test(location.search);
+const img=n=>{if(NOPIC||!PSRC[n])return null;let o=PIM[n];if(!o){o=PIM[n]=new Image();o.decoding='async';o.src=PSRC[n];}return o.complete&&o.naturalWidth?o:null;};
+for(const n in PSRC)img(n);
+/* Ra's sun (painted piece of the old look): the flail ball inside a blazing sun, the chain stub going up and to the right.
+   Drawn with the BALL's centre on the point and the stub turned toward the screen angle `to` (the hand, or where it fell from) */
+const RASUN={bx:222/512,by:235/412,stub:-.82};
+function raSun(sx,sy,w,to,a){const im=img('raSun');if(!im)return false;const h=w*im.height/im.width;ctx.save();if(a!=null)ctx.globalAlpha*=cl(a,0,1);ctx.translate(sx,sy);ctx.rotate(to-RASUN.stub);ctx.drawImage(im,-w*RASUN.bx,-h*RASUN.by,w,h);ctx.restore();return true;}
+/* the owner's painted pieces of 2026-11-25 (ANUBIS_FX4_PROMPTS_TH.md), cut by tools/fx/anubis_pics.py — points in picture pixels:
+   head (open / closed, side view facing right): bite = between the jaws, neck = bottom of the collar · gate: foot = doorstep middle on
+   the ground, door = the light in the doorway · standard: tip = spear point, sun = the sun disc · scales: post foot + beam pivot,
+   beam pivot + its end rings hL / hR, each pan's top link (hook) and the middle of its rim (where the heart / the feather sit) */
+const ANPIC={head:{w:550,h:614,bite:[417.5,391.5],neck:[190,610],nose:[545,316.5]},gate:{w:572,h:682,foot:[285.5,678.5],door:[284,632]},
+  std:{w:445,h:764,tip:[221.8,761],sun:[221.5,63]},
+  sc:{post:{w:317,h:620,foot:[158.5,616],piv:[158.8,196]},beam:{w:480,h:66,piv:[240.2,33.5],hL:[31.8,31],hR:[447.8,31]},
+      panL:{w:184,h:280,hook:[93.2,1.5],rim:[91.5,218]},panR:{w:184,h:280,hook:[91.2,1.5],rim:[93,218]}}};
+const pics=(...n)=>n.every(m=>img(m));
+/* a soft light round a painted picture's outline, built once per picture + colour at quarter size (no canvas filter needed) */
+const HALO={};
+function halo(n,col){const im=img(n);if(!im)return null;const key=n+col;if(HALO[key])return HALO[key];
+  const q=.25,R=7,pad=R+2,w=Math.ceil(im.width*q),h=Math.ceil(im.height*q),c=document.createElement('canvas');c.width=w+pad*2;c.height=h+pad*2;const g=c.getContext('2d');
+  for(let r=R;r>=1;r-=1.5)for(let i=0;i<12;i++){const an=i*TAU/12+r;g.globalAlpha=.14;g.drawImage(im,pad+Math.cos(an)*r,pad+Math.sin(an)*r,w,h);}
+  g.globalAlpha=1;g.globalCompositeOperation='source-in';g.fillStyle=col;g.fillRect(0,0,c.width,c.height);return HALO[key]={c,pad:pad/q,W:(w+pad*2)/q,H:(h+pad*2)/q};}
+/* a painted picture on the current origin with its point (px,py) there, f = drawn pixels per picture pixel; o.halo = light colour round it */
+function pdraw(n,px,py,f,o){const im=img(n);if(!im)return false;o=o||{};
+  if(o.halo){const hl=halo(n,o.halo);if(hl){ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha*=o.ha==null?.85:o.ha;ctx.drawImage(hl.c,(-px-hl.pad)*f,(-py-hl.pad)*f,hl.W*f,hl.H*f);ctx.restore();}}
+  ctx.drawImage(im,-px*f,-py*f,im.width*f,im.height*f);return true;}
 /* a chain of gold links between two world points [x,y,z] (every other link is seen edge-on) */
 function chain(a,b,o){o=o||{};const p=P(a[0],a[1],a[2]),q=P(b[0],b[1],b[2]),dx=q[0]-p[0],dy=q[1]-p[1],L=Math.hypot(dx,dy);if(L<5)return;const st=o.step||8.5,n=Math.max(2,Math.round(L/st)),sag=(o.sag||0)*L,im=spr('link',o.pal||'gold'),w=o.w||11,h=w*im.height/im.width,an=Math.atan2(dy,dx);
   ctx.save();if(o.a!=null)ctx.globalAlpha*=cl(o.a,0,1);for(let i=0;i<=n;i++){const u=i/n,sw=Math.sin(u*Math.PI),x=p[0]+dx*u,y=p[1]+dy*u+sw*sag+(o.amp?Math.sin(u*8+(o.wave||0))*o.amp*sw:0);ctx.save();ctx.translate(x,y);ctx.rotate(an);if(i%2)ctx.scale(1,.5);ctx.drawImage(im,-w/2,-h/2,w,h);ctx.restore();}ctx.restore();}
@@ -84,8 +113,20 @@ function jackalRun(sx,sy,ex,ey,T,o){o=o||{};const im=spr('anJackal',o.pal||'duat
   return A(new Fn({layer:'sorted',x:sx,y:sy,life:T,fi:.02,fo:T*.3,d(q){const u=cl(q.t/T,0,1),f=q.fade();q.y=lerp(sy,ey,u);for(const [g,al] of [[.24,.16],[.12,.32],[0,1]]){const v=Math.max(0,u-g),z=(o.z||6)+Math.sin(v*Math.PI)*(o.arc||0),px=lerp(sx,ex,v),py=lerp(sy,ey,v);
         if(!g){const s=P(px,py,z+w*.22);glowAt(s[0],s[1],w*.7,o.glow||pal(o.pal||'duat')[2],.4*f);}
         pic(im,px,py,z,w,{flip:left,rot:(left?-1:1)*(tilt-Math.cos(v*Math.PI)*(o.arc?.5:0)),a:al*f,ay:.8});}}}));}
+/* the painted balance: the post stands on (sx,sy), the beam turns about its pivot, the pans hang straight down from its end rings
+   (drawn under the beam), the heart (left pan) and the feather of Ma'at (right pan) are code sprites on the pan rims.
+   SCF = drawn pixels per picture pixel at k = 1 (post foot to beam pivot 79 px, beam 78 px end to end) */
+const SCF=.1876;
+function scalesPic(sx,sy,k,tilt,a,glow){if(!pics('scPost','scBeam','scPanL','scPanR'))return false;const S=ANPIC.sc,f=SCF*k,ft=S.post.foot,pv=S.post.piv,B=S.beam,
+    px=sx+(pv[0]-ft[0])*f,py=sy+(pv[1]-ft[1])*f,c=Math.cos(tilt),sn=Math.sin(tilt),end=h=>{const x=(h[0]-B.piv[0])*f,y=(h[1]-B.piv[1])*f;return [px+x*c+y*sn,py-x*sn+y*c];};
+  ctx.save();ctx.globalAlpha*=a;if(glow)glowAt(sx,sy-(ft[1]-pv[1])*f*.75,(ft[1]-pv[1])*f*1.15,G[2],.25);
+  ctx.save();ctx.translate(sx,sy);pdraw('scPost',ft[0],ft[1],f);ctx.restore();
+  const it=[];for(const [n,P2,h,im,pl,w,dz,rot] of [['scPanL',S.panL,B.hL,'heart','duat',15,6,0],['scPanR',S.panR,B.hR,'anMaat','holy',9,13,.2]]){const e=end(h);
+    ctx.save();ctx.translate(e[0],e[1]);pdraw(n,P2.hook[0],P2.hook[1],f);ctx.restore();it.push([im,pl,e[0]+(P2.rim[0]-P2.hook[0])*f,e[1]+(P2.rim[1]-P2.hook[1])*f-dz*k,w*k,rot]);}
+  ctx.save();ctx.translate(px,py);ctx.rotate(-tilt);pdraw('scBeam',B.piv[0],B.piv[1],f);ctx.restore();
+  for(const [im,pl,x,y,w,rot] of it)drawSpr(spr(im,pl),x,y,w,rot);ctx.restore();return true;}
 /* the balance: post, beam (tilt in radians, + = the heart side drops), two pans with the heart and the feather */
-function drawScales(sx,sy,k,tilt,a,glow){const g=G,H=100*k,bw=44*k,py=sy-H*.86;ctx.save();ctx.globalAlpha*=a;if(glow)glowAt(sx,sy-H*.6,H*.9,g[2],.25);
+function drawScales(sx,sy,k,tilt,a,glow){if(scalesPic(sx,sy,k,tilt,a,glow))return;const g=G,H=100*k,bw=44*k,py=sy-H*.86;ctx.save();ctx.globalAlpha*=a;if(glow)glowAt(sx,sy-H*.6,H*.9,g[2],.25);
   const gr=ctx.createLinearGradient(sx-4*k,0,sx+4*k,0);gr.addColorStop(0,g[1]);gr.addColorStop(.5,g[3]);gr.addColorStop(1,g[1]);ctx.fillStyle=gr;ctx.fillRect(sx-2.6*k,py,5.2*k,H*.86);
   ctx.fillStyle=g[1];ctx.beginPath();ctx.moveTo(sx-16*k,sy);ctx.lineTo(sx-6*k,sy-9*k);ctx.lineTo(sx+6*k,sy-9*k);ctx.lineTo(sx+16*k,sy);ctx.closePath();ctx.fill();ctx.fillStyle=g[2];ctx.fillRect(sx-12*k,sy-3.4*k,24*k,3.4*k);
   drawSpr(spr('anAnkh','gold'),sx,py-10*k,13*k,0);
@@ -127,18 +168,37 @@ function solarFlare(x,y){sunBurst(x,y,UK.aaFlare.R,1);}
 function wrathLand(x,y){const R=UK.acWrath.R;sunBurst(x,y,R,1.25);A(new Crack({el:'sun',x,y,r:R*.7,n:8,life:1.8,w:3.8}));A(new Sigil({tex:ART.ring('ankh','sun'),el:'sun',x,y,r:R*.34,rot:0,spin:0,life:1.6,fi:.06,fo:.8,a:.9}));bits(S1(),'earth',x,y,8,12,{up:1.4,size:1.2});dust({},x,y,R*.5,12,46,24);}
 function wrathThrow(x,y){const hd=hand(),R=UK.acWrath.R,S=S1();A(new Streak({el:'sun',x:hd[0],y:hd[1],x2:hd[0],y2:hd[1],z:hd[2],z2:hd[2]+280,w:12,life:.22}));flash('sun',hd[0],hd[1],hd[2],1);
   A(new Sigil({tex:ART.ring('sun','sun'),el:'sun',x,y,r:R*.9,life:1.1,spin:.9,fi:.3,fo:.5}));A(new Tele({el:'sun',x,y,r:R,life:.35}));
-  A(new Proj({el:'sun',x:x+80,y:y-10,z:470,x2:x,y2:y,z2:14,T:.35,ease:eI,r:30,trail:.2,tw:1,spin:7,head:spr('sun','sun'),hw:1.45,emit(p){bits(S,'sun',p.cx,p.cy,p.cz,1,{size:1.1,sp:.3,up:.2});}}));}
+  /* the sun falls with its chain stub trailing back toward the sky (the painted sun once loaded, the code sun until then) */
+  const head=img('raSun')?(q,sx,sy,r,sa)=>{raSun(sx,sy,150*(1+.05*Math.sin(q.t*30)),sa+Math.PI,1);}:spr('sun','sun');
+  A(new Proj({el:'sun',x:x+80,y:y-10,z:470,x2:x,y2:y,z2:14,T:.35,ease:eI,r:30,trail:.2,tw:1,spin:7,head,hw:1.45,nostar:typeof head==='function'?1:0,emit(p){bits(S,'sun',p.cx,p.cy,p.cz,1,{size:1.1,sp:.3,up:.2});}}));}
 /* Underworld Gate */
 function gateIn(x,y){const alive=()=>ANU.gateT>gameTime,T=UK.abGate.T+.3,S=S1();A(new Disc({x,y,r0:44,life:T,kind:'pool',add:0,col:'#07030f',a:.8,fi:.1,fo:.25,until:alive}));A(new Ring({el:'duat',x,y,r0:40,r1:40,w0:4,w1:4,life:T,style:'dash',hold:1,spin:-6,until:alive}));
   A(new Sigil({tex:ART.ring('duat','duat'),el:'duat',x,y,r:38,spin:-2.4,life:T,until:alive,fi:.15,fo:.2,a:.85}));ring('duat',x,y,62,{w0:6,life:.3});bits(S,'duat',x,y,10,10,{up:1.2});
   A(new Emit({life:T,until:alive,every:.07,fn(){const a=R_(0,TAU);bits(S1(),'duat',x+Math.cos(a)*30,y+Math.sin(a)*26,2,1,{only:Math.random()<.5?0:1,size:.9,sp:.2});}}));}
-function gateOut(x,y){const S=S1();A(new Spr({im:spr('anGate','duat'),x,y:y-3,w:74*HK(),ay:.985,layer:'sorted',sortOff:-3,life:.95,pop:.2,s0:.15,s1:1,fo:.45}));A(new Disc({x,y,r0:46,life:.8,kind:'pool',add:0,col:'#07030f',a:.7,fi:.05,fo:.5}));
+function gateOut(x,y){const S=S1();if(img('gate'))gatePic(x,y-3,128*HK(),1.05,{sortOff:-3});else A(new Spr({im:spr('anGate','duat'),x,y:y-3,w:74*HK(),ay:.985,layer:'sorted',sortOff:-3,life:.95,pop:.2,s0:.15,s1:1,fo:.45}));A(new Disc({x,y,r0:46,life:.8,kind:'pool',add:0,col:'#07030f',a:.7,fi:.05,fo:.5}));
   ring('duat',x,y,72,{w0:8,life:.36});flash('duat',x,y,30,1.3);lite('duat',x,y,70,.5,.6);bits(S,'duat',x,y,8,12,{up:1.3,size:1.1});}
+/* the painted Underworld Gate: it grows up out of the ground (height overshoots, stone dust at its foot), its doorway breathes violet
+   light, then it sinks back into the ground; w = drawn width, o.up = time to rise, o.sortOff, o.a */
+function gatePic(x,y,w,life,o){o=o||{};const g=ANPIC.gate,f=w/g.w,up=o.up||.22,dn=Math.min(.34,life*.4),hd=(g.foot[1]-420)*f;dust({},x,y+2,20,6,26);bits(S1(),'sand',x,y,4,5,{size:.9,up:1});
+  A(new Fn({layer:'sorted',x,y,sortOff:o.sortOff||-3,life,fi:.01,fo:.01,d(q){const tt=q.t,u=cl(tt/up,0,1),dv=eI(cl((tt-(life-dn))/dn,0,1)),sy=K_.back(u)*(1-dv),sx=lerp(.78,1,eO(u))*(1-.12*dv);if(sy<=.01)return;
+      const al=(o.a||1)*(1-.4*dv),s=P(x,y,0),pu=.5+.5*Math.sin(tt*9);glowAt(s[0],s[1]-hd*sy,hd*1.05,DU[2],(.32+.12*pu)*al);
+      ctx.save();ctx.globalAlpha*=al;ctx.translate(s[0],s[1]);ctx.scale(sx,sy);pdraw('gate',g.foot[0],g.foot[1],f,{halo:DU[2],ha:.75});ctx.restore();
+      if(!q._dn&&tt>life-dn){q._dn=1;dust({},x,y+2,16,5,22);}}}));}
 /* Avatar of Anubis: the god rises behind him once */
 function avatarBurst(x,y,R){const U=spr('anHeadU','gold'),Lw=spr('anHeadL','gold'),hg=ART.HINGE,k=1.55*HK(),dir=Math.cos(player.phi)<0?-1:1,S=S1();ring('gold',x,y,R,{w0:14,life:.5});ring('sand',x,y,R*.7,{w0:6,delay:.08,life:.4});lite('gold',x,y,R,.7,.6);
   A(new Flash({el:'gold',x,y,z:40,s0:30,s1:130,life:.26}));sunRays(x,y,R*1.1,.8,'gold');glints(S,G[3],x,y,30,14,R*.6,1);bits(S,'sand',x,y,8,12,{sp:1.4,up:1});
+  if(pics('headO','headC')){avatarPic(dir);return;}
   A(new Fn({layer:'sorted',follow:player,sortOff:-4,life:1.6,fi:.3,fo:.6,d(q,kk){const a=q.fade()*.85,s=P(player.x-dir*10,player.y,(player.z||0)+50*HK()+26*eO(kk));ctx.save();ctx.globalAlpha*=a;ctx.translate(s[0],s[1]);ctx.scale(dir*k,k);
       ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha*=.5;ctx.drawImage(tex('glow',G[2]),-110,-120,230,220);ctx.restore();ctx.save();ctx.rotate(.06);ctx.drawImage(Lw,-6,-8,ART.JAW[0],ART.JAW[1]);ctx.restore();ctx.drawImage(U,-hg[0],-hg[1],ART.HEAD[0],ART.HEAD[1]);ctx.restore();}}));}
+
+/* the painted head rising behind him: it pops up out of the ground ROARING (open picture), shuts its jaws at .55 s (closed picture
+   with a little squash) and fades while it keeps rising; gold light round it */
+function avatarPic(dir){const H=ANPIC.head,f=190*HK()/H.w,cx=(275-H.neck[0])*f,cy=(300-H.neck[1])*f;
+  A(new Fn({layer:'sorted',follow:player,sortOff:-4,life:1.6,fi:.08,fo:.6,d(q){const tt=q.t,a=q.fade()*.92,pp=K_.back(cl(tt/.3,0,1)),rise=eO(cl(tt/1.2,0,1)),open=tt<.55,sq=open?0:Math.exp(-(tt-.55)*13),
+        s=P(player.x-dir*12*HK(),player.y,(player.z||0)+(4+34*rise)*HK());
+      ctx.save();ctx.globalAlpha*=a;ctx.translate(s[0],s[1]);ctx.scale(dir*lerp(.72,1,pp)*(1+.07*sq),lerp(.45,1,pp)*(1-.09*sq));
+      ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha*=open?.6:.45;const gw=H.w*f*1.35;ctx.drawImage(tex('glow',G[2]),cx-gw/2,cy-gw/2,gw,gw);ctx.restore();
+      pdraw(open?'headO':'headC',H.neck[0],H.neck[1],f,{halo:G[2],ha:.85});ctx.restore();}}));}
 
 /* ---------------------------------------------------------------------
    3. B — Judge of the Dead
@@ -157,7 +217,9 @@ function crushLand(x,y){const e=nearE(x,y,30),z=zOf(e),S=S1();burst('duat',x,y,z
   A(new Spr({im:spr('heart','duat'),x,y,z,w:26,life:.42,pop:.1,s0:.4,s1:1.3,fo:.25,layer:'top',glow:DU[2]}));after(.1,()=>bits(S,'duat',x,y,z,8,{only:0,size:1,sp:1.2}));bits(S,'sand',x,y,4,6,{size:.9});dust({},x,y,16,5,22);
   if(e&&uSinOf(e)>=3&&uL('abFeather'))featherFall(e,uLv(UK.abFeather.stun,'abFeather'));}
 function miniScales(t,L){if(!t||t.dead)return;A(new Fn({layer:'top',follow:t,life:L+.5,fi:.08,fo:.25,d(q){const s=P(t.x,t.y,topZ(t)+16),u=cl(q.t/L,0,1);drawScales(s[0],s[1],.82,.34*eO(u)+(q.t>L?.06*Math.sin((q.t-L)*40)*Math.exp(-(q.t-L)*9):0),q.fade(),1);}}));}
-function panFall(x,y,L,e){const im=spr('anPan','gold');A(new Fn({layer:'top',x,y,life:L+.2,fi:.02,fo:.18,d(q){const ok=e&&!e.dead,u=eI(cl(q.t/L,0,1)),zt=(ok?topZ(e):52)-6,s=P(ok?e.x:x,ok?e.y:y,lerp(zt+180,zt,u)),a=q.fade();ctx.save();ctx.globalAlpha*=a;ctx.strokeStyle=rgba(G[2],.95);ctx.lineWidth=1.6;
+function panFall(x,y,L,e){const im=spr('anPan','gold');A(new Fn({layer:'top',x,y,life:L+.2,fi:.02,fo:.18,d(q){const ok=e&&!e.dead,u=eI(cl(q.t/L,0,1)),zt=(ok?topZ(e):52)-6,s=P(ok?e.x:x,ok?e.y:y,lerp(zt+180,zt,u)),a=q.fade();
+      if(img('scPanR')){const Pn=ANPIC.sc.panR;glowAt(s[0],s[1],46,G[2],.4*a);ctx.save();ctx.globalAlpha*=a;ctx.translate(s[0],s[1]+3);pdraw('scPanR',Pn.rim[0],Pn.rim[1],.36);ctx.restore();return;}
+      ctx.save();ctx.globalAlpha*=a;ctx.strokeStyle=rgba(G[2],.95);ctx.lineWidth=1.6;
       for(const sd of [-1,1]){ctx.beginPath();ctx.moveTo(s[0]+sd*25,s[1]);ctx.lineTo(s[0],s[1]-52);ctx.stroke();}ctx.restore();glowAt(s[0],s[1],46,G[2],.4*a);drawSpr(im,s[0],s[1]+4,60,0,a);}}));}
 function judgeStrike(x,y,n){const e=nearE(x,y,30),S=S1(),w=40+n*10,R0=(e?e.r:16)+34+n*8;A(new Pillar({el:'gold',x,y,w,h:290,life:.55}));A(new Sigil({tex:ART.ring('duat','duat'),el:'duat',x,y,r:R0,life:.9,spin:1.2,fi:.1,fo:.4}));
   ring('gold',x,y,R0*1.5,{w0:10,life:.4});ring('duat',x,y,R0,{w0:6,delay:.06,life:.34});lite('gold',x,y,R0*1.4,.5,.7);A(new Burst({el:'gold',x,y,z:20,r:40+n*6,n:10,life:.3}));
@@ -179,13 +241,24 @@ function sealStamp(x,y){const S=S1();A(new Ring({el:'gold',x,y,r0:190,r1:96,w0:2
   glints(S,G[3],x,y,30,14,70,.9);bits(S,'duat',x,y,16,10,{up:1.3,size:1.1});}
 function pounceFx(sx,sy,ex,ey,t){jackalRun(sx,sy,ex,ey,.16,{pal:'duat',arc:46,w:70});A(new Streak({el:'duat',x:sx,y:sy,x2:ex,y2:ey,z:26,w:14,life:.3,go:.4,head:0}));dust({},sx,sy,18,5,22);after(.14,()=>dust({},ex,ey,18,5,22));
   if(t&&!t.dead){const z=zOf(t);A(new Cut({el:'duat',x:t.x,y:t.y,z,L:64,w:10,ang:.8,life:.24}));A(new Cut({el:'duat',x:t.x,y:t.y,z,L:64,w:10,ang:-.8,life:.24,delay:.04}));
-    if(AV.three&&uL('abDoor')){A(new Spr({im:spr('anGate','duat'),x:t.x,y:t.y-4,w:70,ay:.985,layer:'sorted',sortOff:-4,life:.62,pop:.14,s0:.3,s1:1,fo:.35,a:.88}));ring('duat',t.x,t.y,56,{w0:6,life:.3});}}}
+    if(AV.three&&uL('abDoor')){if(img('gate'))gatePic(t.x,t.y-4,118*(t.boss?1.3:1),.7,{sortOff:-4,a:.92,up:.14});else A(new Spr({im:spr('anGate','duat'),x:t.x,y:t.y-4,w:70,ay:.985,layer:'sorted',sortOff:-4,life:.62,pop:.14,s0:.3,s1:1,fo:.35,a:.88}));ring('duat',t.x,t.y,56,{w0:6,life:.3});}}}
 function packBite(x,y){const sd=(AV.pk=(AV.pk||0)+1)%2?1:-1;jackalRun(x-sd*64,y-12,x+sd*64,y+8,.15,{pal:'duat',w:54,z:8});A(new Cut({el:'duat',x,y,z:26,L:54,w:9,ang:sd*.5,life:.22}));bits(S1(),'duat',x,y,24,4,{size:.9});}
 /* Anubis Verdict: the giant head comes down over the condemned and its jaws shut on the damage frame (T after the cast) */
 function verdictOn(t){if(!t||t.dead)return;const dir=t.x>=player.x?1:-1,k=1.25,U=spr('anHeadU','duat'),Lw=spr('anHeadL','duat'),hg=ART.HINGE,T=.3;dark(t.x,t.y,64,1,.45,{fi:.1,fo:.3});
+  if(pics('headO','headC')){verdictPic(t,-dir,T);return;}
   A(new Fn({layer:'sorted',follow:t,sortOff:5,life:T+.55,fi:.1,fo:.3,d(q){const a=q.fade(),u=cl(q.t/T,0,1),snap=q.t>=T,open=snap?lerp(.55,.03,cl((q.t-T)/.05,0,1)):.25+.3*eO(u),lg=snap?1:eI(u)*.2,s=P(t.x-dir*(64-22*lg),t.y,topZ(t)+58-26*lg);
       ctx.save();ctx.globalAlpha*=a;ctx.translate(s[0],s[1]);ctx.scale(dir*k,k);ctx.rotate(.55);ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha*=.45;ctx.drawImage(tex('glow',DU[2]),-80,-110,230,210);ctx.restore();
       ctx.save();ctx.rotate(open);ctx.drawImage(Lw,-6,-8,ART.JAW[0],ART.JAW[1]);ctx.restore();ctx.drawImage(U,-hg[0],-hg[1],ART.HEAD[0],ART.HEAD[1]);ctx.restore();}}));}
+/* the painted head: it rises open-mouthed BEHIND the condemned (the far side, facing the hero, so the hero stays in sight), rears
+   back, lunges in the last 75 ms and its CLOSED picture lands with the bite point on the target's body exactly at T (squash +
+   shake), then rises and fades · dir = the way the head faces */
+function verdictPic(t,dir,T){const H=ANPIC.head,f=172/H.w*(t.boss?1.3:1),z0=zOf(t)+2,cx=(275-H.bite[0])*f,cy=(300-H.bite[1])*f,LT=.075;
+  A(new Fn({layer:'sorted',follow:t,sortOff:5,life:T+.6,fi:.05,fo:.3,d(q){const a=q.fade(),tt=q.t;let ox,oz,rot,sx,sy,shut=tt>=T;
+      if(!shut){const w=eO(cl(tt/(T-LT),0,1)),lu=eI(cl((tt-(T-LT))/LT,0,1)),pp=K_.back(cl(tt/.16,0,1));ox=lerp(lerp(22,40,w),0,lu);oz=lerp(lerp(56,88,w),0,lu);rot=lerp(lerp(-.08,-.34,w),.3,lu);sx=sy=lerp(.55,1,pp);}
+      else{const v=tt-T,sq=Math.exp(-v*14),up=eI(cl((v-.24)/.32,0,1));ox=-4*sq+Math.sin(v*70)*2.5*sq;oz=28*up;rot=.3+.05*sq*Math.sin(v*48)-.16*up;sx=1+.12*sq;sy=1-.15*sq;}
+      const s=P(t.x-dir*ox,t.y,z0+oz);ctx.save();ctx.globalAlpha*=a;ctx.translate(s[0],s[1]);ctx.scale(dir*sx,sy);ctx.rotate(rot);
+      ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha*=shut?.55:.4;const gw=H.w*f*1.25;ctx.drawImage(tex('glow',DU[2]),cx-gw/2,cy-gw/2,gw,gw);ctx.restore();
+      pdraw(shut?'headC':'headO',H.bite[0],H.bite[1],f,{halo:DU[2],ha:.9});ctx.restore();}}));}
 function verdictSnap(x,y){const e=nearE(x,y,30),z=zOf(e),S=S1();A(new Burst({el:'duat',x,y,z:z+6,r:60,n:12,life:.32}));A(new Flash({el:'gold',x,y,z:z+6,s0:30,s1:120,life:.24}));A(new Cut({el:'gold',x,y,z:z+4,L:70,w:10,ang:1.35,life:.26}));A(new Cut({el:'gold',x,y,z:z+4,L:70,w:10,ang:-1.35,life:.26}));
   ring('duat',x,y,74,{w0:10,life:.36});ring('gold',x,y,46,{w0:5,delay:.05,life:.3});lite('duat',x,y,80,.5,.7);bits(S,'duat',x,y,z,16,{sp:1.4,up:1.4,size:1.2});dust({},x,y,22,6,26);}
 function breakerFx(x,y,phi){const L=UK.acBreaker.len,S=S1(),c=Math.cos(phi),s=Math.sin(phi);A(new Crack({el:'duat',x:x+c*20,y:y+s*20,line:L,phi,life:1.6,w:3.6}));burst('duat',x+c*30,y+s*30,10,1.2,{flat:1});flash('gold',x+c*30,y+s*30,14,1.1);dust({},x+c*30,y+s*30,18,5,24);
@@ -199,16 +272,27 @@ function leapArc(sx,sy,ex,ey){const p=pal('gold'),d=Math.hypot(ex-sx,ey-sy),H=Ma
 /* ---------------------------------------------------------------------
    4. lasting looks (kept alive by the watcher while their state lasts)
    --------------------------------------------------------------------- */
+/* the painted Standard of Ra: thrown down from the sky (only when it is new, not when it comes back after a map change), its spear
+   point stabs into the ground (the buried part is clipped at the ground line), it shudders, then sways a little in the wind;
+   the sun disc keeps a soft gold light and a turning star */
+function stdPic(S0,x,y,alive){const st=ANPIC.std,f=64/st.w,gy=st.tip[1]-40,hs=(gy-st.sun[1])*f,fresh=!S0._fx;S0._fx=1;
+  A(new Fn({layer:'sorted',x,y,life:99,until:alive,fi:.04,fo:.3,d(q){const tt=q.t,a=q.fade(),dp=fresh?cl(tt/.16,0,1):1,land=fresh?tt-.16:9,zz=150*(1-eI(dp)),
+        sw=.035*Math.sin(tt*2.2)+(land>0?.14*Math.exp(-land*6)*Math.sin(land*24):0),s=P(x,y,zz),g0=P(x,y,0);
+      if(fresh&&land>=0&&!q._l){q._l=1;dust({},x,y+2,18,6,24);bits(S1(),'sand',x,y,4,6,{size:1,up:1.1});ring('gold',x,y+14,46,{w0:6,life:.3});flash('gold',x,y,10,1);}
+      ctx.save();ctx.globalAlpha*=a*(fresh?cl(tt/.06,0,1):1);ctx.fillStyle='rgba(0,0,0,.3)';ctx.beginPath();ctx.ellipse(g0[0],g0[1],11*dp,3.6*dp,0,0,TAU);ctx.fill();
+      ctx.beginPath();ctx.rect(g0[0]-90,g0[1]-420,180,420);ctx.clip();ctx.translate(s[0],s[1]);ctx.rotate(sw);pdraw('std',st.tip[0],gy,f);ctx.restore();
+      const ux=s[0]+Math.sin(sw)*hs,uy=s[1]-Math.cos(sw)*hs;glowAt(ux,uy,26+3*Math.sin(tt*3),G[2],.42*a);starAt(ux,uy,20,G[3],.45*a,tt*.6);}}));}
 function stdFx(S0){const x=S0.x,y=S0.y,R=UK.anStandard.R,alive=()=>ANU.standard===S0;A(new Sigil({tex:ART.ring('sun','gold'),el:'gold',x,y,r:R*.96,spin:.2,life:99,until:alive,fi:.35,fo:.4,a:.8}));A(new Disc({x,y,r0:R,life:99,until:alive,col:G[2],a:.18,fi:.3,fo:.4}));
-  A(new Spr({im:spr('anStd','gold'),x,y:y-14,w:46,ay:.985,layer:'sorted',life:99,until:alive,pop:.25,s0:.2,s1:1,fo:.3,wr:.035,wf:2.2}));
-  A(new Fn({layer:'top',x,y:y-14,life:99,until:alive,fi:.3,fo:.3,d(q){const s=P(x,y-14,84);glowAt(s[0],s[1],30+3*Math.sin(q.t*3),G[2],.5*q.fade());starAt(s[0],s[1],20,G[3],.5*q.fade(),q.t*.6);}}));
+  if(img('std'))stdPic(S0,x,y-14,alive);else{A(new Spr({im:spr('anStd','gold'),x,y:y-14,w:46,ay:.985,layer:'sorted',life:99,until:alive,pop:.25,s0:.2,s1:1,fo:.3,wr:.035,wf:2.2}));
+  A(new Fn({layer:'top',x,y:y-14,life:99,until:alive,fi:.3,fo:.3,d(q){const s=P(x,y-14,84);glowAt(s[0],s[1],30+3*Math.sin(q.t*3),G[2],.5*q.fade());starAt(s[0],s[1],20,G[3],.5*q.fade(),q.t*.6);}}));}
   A(new Emit({life:99,until:alive,every:.14,fn(){const a=R_(0,TAU),d=Math.sqrt(Math.random())*R*.9;glints(S1(),G[3],x+Math.cos(a)*d,y+Math.sin(a)*d,R_(6,40),1,4,.7);}}));}
 function spinFx(o){const wheel=!!o.wheel,R=o.R,pl=wheel?'sun':'gold',p=pal(pl),im=wheel?spr('sun','sun'):spr('anFlail','gold'),alive=()=>ANU.spin===o,rr=R*.8,eye=!wheel&&uL('aaEye');
   A(new Ring({el:pl,follow:player,r0:R,r1:R,w0:3.5,w1:3.5,life:99,style:'dash',hold:1,spin:3,until:alive}));A(new Disc({follow:player,r0:R,life:99,until:alive,col:p[2],a:wheel?.16:.12,fi:.2,fo:.3}));
   stormFloor({follow:player,R,until:alive,pal:wheel?'sun':'sand',n:wheel?5:7,spin:wheel?6:8,a:wheel?.6:.85,w:wheel?8:10});
   if(wheel)A(new Sigil({tex:ART.ring('sun','sun'),el:'sun',follow:player,r:R*.86,spin:1.6,life:99,until:alive,fi:.3,fo:.3,a:.7}));
   A(new Fn({layer:'sorted',follow:player,life:99,until:alive,fi:.12,fo:.2,d(q){const a=q.fade(),ang=q.t*(wheel?13:16),cx=player.x,cy=player.y,z=(player.z||0)+30*HK();q.sortOff=Math.sin(ang)<0?-2:2;
-      ribbon(cx,cy,z,rr,ang-(wheel?2.4:2),ang,wheel?30:20,p,a);const bx=cx+Math.cos(ang)*rr,by=cy+Math.sin(ang)*rr,s=P(bx,by,z);chain(hand(),[bx,by,z],{a});glowAt(s[0],s[1],wheel?50:24,p[2],.6*a);drawSpr(im,s[0],s[1],wheel?50:30,q.t*(wheel?9:20),a);AV.ball=[bx,by,z];}}));
+      ribbon(cx,cy,z,rr,ang-(wheel?2.4:2),ang,wheel?30:20,p,a);const bx=cx+Math.cos(ang)*rr,by=cy+Math.sin(ang)*rr,s=P(bx,by,z),hd=hand();chain(hd,[bx,by,z],{a});glowAt(s[0],s[1],wheel?50:24,p[2],.6*a);
+      let painted=false;if(wheel){const hs=P(hd[0],hd[1],hd[2]);painted=raSun(s[0],s[1],104*(1+.04*Math.sin(q.t*23)),Math.atan2(hs[1]-s[1],hs[0]-s[0]),a);}if(!painted)drawSpr(im,s[0],s[1],wheel?50:30,q.t*(wheel?9:20),a);AV.ball=[bx,by,z];}}));
   A(new Emit({life:99,until:alive,every:.04,fn(){const S=S1();S.add({im:spr('gust','sand'),orb:1,cf:player,cx:player.x,cy:player.y,ang:R_(0,TAU),va:R_(7,10),r:R_(.35,1)*R,z:R_(4,36),vz:R_(0,30),s0:R_(18,30),life:R_(.35,.6),face:1,a0:.8,fi:.08,fo:.3});
       if(wheel&&AV.ball)bits(S,'sun',AV.ball[0],AV.ball[1],AV.ball[2],1,{size:1.1,sp:.4,up:.5});
       if(eye){const a=R_(0,TAU),d=R_(.7,1.2)*R;S.add({im:tex('core',p[3]),x:player.x+Math.cos(a)*d,y:player.y+Math.sin(a)*d,z:R_(6,24),to:player,tz:20,s0:7,s1:2,lin:1,life:.3,add:1,str:1.3,fi:.04,fo:.1});}}}));

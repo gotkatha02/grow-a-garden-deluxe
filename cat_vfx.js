@@ -37,9 +37,14 @@ const palOf=k=>{const b=typeof ktBranch==='function'?ktBranch(k):'N';return b===
    1. ART HELPERS
    --------------------------------------------------------------------- */
 const TINT={};function tint(n,col){const k=n+col;if(TINT[k])return TINT[k];const im=A.get(n);if(!im)return null;const c=document.createElement('canvas');c.width=im.width;c.height=im.height;const g=c.getContext('2d');g.drawImage(im,0,0);g.globalCompositeOperation='source-in';g.fillStyle=col;g.fillRect(0,0,c.width,c.height);return TINT[k]=c;}
+/* a hero file may swap an SVG piece for a painting: window.KPIC[n] = {img, box:[x0,y0,x1,y1], k}, box = where the piece's own box lies
+   in the painting (fractions of the painting, may run past 0..1) → the painting keeps the piece's size, anchor, turn and mirror;
+   k (default 1) = a size change about the anchor. The SVG draws until the picture has loaded (jaguar_vfx.js JPIC, owner 2026-11-25). */
+function kpic(n){const p=window.KPIC&&window.KPIC[n];return p&&p.img&&p.img.complete&&p.img.naturalWidth?p:null;}
 /* draw art n centred on screen point (x,y); w = width in world px. o: rot, flat (lies on the ground), ax, ay, a, sx, sy, under (colour of a dark print below it) */
-function art(n,x,y,w,o={}){const im=A.get(n);if(!im)return;const [aw,ah]=A.size(n),h=w*ah/aw;ctx.save();ctx.translate(x,y);if(o.flat)ctx.scale(1,K);if(o.rot)ctx.rotate(o.rot);if(o.sx!=null||o.sy!=null)ctx.scale(o.sx==null?1:o.sx,o.sy==null?1:o.sy);
+function art(n,x,y,w,o={}){const pp=!o.im&&kpic(n),im=A.get(n);if(!im&&!pp)return;const [aw,ah]=A.size(n),h=w*ah/aw;if(!(h>0))return;ctx.save();ctx.translate(x,y);if(o.flat)ctx.scale(1,K);if(o.rot)ctx.rotate(o.rot);if(o.sx!=null||o.sy!=null)ctx.scale(o.sx==null?1:o.sx,o.sy==null?1:o.sy);
   const a0=ctx.globalAlpha*cl(o.a==null?1:o.a,0,1),ax=o.ax==null?.5:o.ax,ay=o.ay==null?.5:o.ay;
+  if(pp){const [x0,y0,x1,y1]=pp.box,bw=x1-x0,bh=y1-y0,kk=pp.k||1,W=w/bw*kk,H=h/bh*kk;ctx.globalAlpha=a0;ctx.drawImage(pp.img,-W*(x0+ax*bw),-H*(y0+ay*bh),W,H);ctx.restore();return;}
   if(o.under){const t=tint(n,o.under);if(t){ctx.globalAlpha=a0*(o.ua||.45);ctx.drawImage(t,-w*ax+(o.ux==null?2:o.ux),-h*ay+(o.uy==null?3:o.uy),w,h);}}
   ctx.globalAlpha=a0;ctx.drawImage(o.im||im,-w*ax,-h*ay,w,h);ctx.restore();}
 /* the colour of the ground under a point (snow / sand / stone); null on grass */

@@ -4,6 +4,7 @@
 
 - ไฟล์: `jaguar_art.js` (ชิ้น SVG → `window.KTA`) · `jaguar_vfx.js` (โค้ด VFX, ใช้ชุดเครื่องมือ K3 จาก cat_vfx.js + VK จาก wolf_vfx3.js)
 - ดูแบบเก่า: `?vfx3=0` (ภาพวาดเดิมของ char_jaguar_fx.js)
+- ภาพวาดเจ้าของ 5 ชิ้น (2026-11-25): อุ้งเท้าวิญญาณ · เสือทองกระโจน · หัวคำราม · จันทร์เลือด · ดวงอาทิตย์ดำ แทนชิ้น SVG `paw` `jagLeap` `jagHead` `moon` `eclipse` (JPIC ใน jaguar_vfx.js, รายละเอียด JAGUAR_FX3_PROMPTS_TH.md) · `?jgpic=0` = ชิ้น SVG
 - คลิปโชว์: `DSF=2 python3 tools/fx/jgclip.py basic|a|b|c` → `/tmp/fx/jaguar_<สาย>.mp4`
 - เวลาโดน / ดาเมจ ไม่เปลี่ยน: `tools/fxlab.py hits jaguar …` แบบใหม่ = แบบเก่า = ก่อนแก้ ทั้ง 24 สกิล (FXSEED=7, secs=4)
 
