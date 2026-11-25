@@ -163,7 +163,7 @@ Design 6 — a mix: the head and wool of design 1 with the outfit and colours of
 ## เลือกแล้ว: แบบ 1 ไททันธารน้ำแข็ง (2026-11-24 20:56)
 - เจ้าของส่งชีต + "เอาอันนี้ภาพซ้ายเอาไปใส่หน้าเลือกตัว" → ชีตเก็บที่ `assets/heroes/rhino/sheet_glacier_titan.webp` (1536×1024 พื้นครีม)
 - ภาพใหญ่ด้านซ้าย: ตัดพื้นครีม + เงาพื้นสีแทนออกด้วย `tools/bigpose_cut.py` (ไล่จากขอบภาพ หยุดที่เส้นขอบตัว · `pockets=0` เพราะไฮไลต์งากับฟันเป็นสีครีมเกือบเท่าพื้น ถ้าเจาะแอ่งครีมงาจะเป็นรู · ประกายของภาพท่าสู้ข้างๆ ไม่ติดมา) → `assets/heroes/rhino/bigpose_glacier_titan.webp` (689×979 พื้นใส) → หน้าเลือกตัว `assets/heroes/rhino/select.webp` (`tools/select_cut.py` สเกลเดียวกับตัวอื่น ตัวกว้างจึงชนกรอบด้านสูง 935 ของ 960 · `char_create.js` SELV rhino 2 = กันแคชภาพเก่า) · ภาพเลือกตัวเดิม (ลุคเก่า) อยู่ในประวัติ git
-- ในเกมตอนนี้: หน้าเลือกตัวเป็นลุคใหม่แล้ว แต่ตัวในเกม หน้า HUD (`RH_PORTRAIT`) ไอคอน ผังสกิล ยังเป็นลุคเดิมจนกว่าคลิป 20 ตัวจะมา
+- ในเกมตอนนี้: หน้าเลือกตัวเป็นลุคใหม่แล้ว แต่ตัวในเกม หน้า HUD (`RH_PORTRAIT`) ไอคอน ผังสกิล ยังเป็นลุคเดิมจนกว่าคลิป 20 ตัวจะมา — **อัปเดต 2026-11-25: ตัวในเกม + หน้า HUD เป็นลุคใหม่แล้ว** (เหลือไอคอน / ผังสกิล / ภาพเอฟเฟกต์ที่มีแรดตัวเดิม / ภาพหน้าโหลด)
 
 **หน้าตาตามที่วาดออกมา** (ใช้ในพรอมต์ต่อๆ ไปทุกตัว):
 - **หัว:** แรดเต็มตัว ผิวเทาอุ่น หัวยาว · งาหน้ายาวโค้งสีงาช้าง รัดห่วงเหล็กเข้มสลักลายซิกแซกสีเงิน 2 ห่วง · งาที่สองสั้นอยู่หลังงาแรก · หูเล็กตั้ง สีเทา ในหูชมพูเทา · ตาฟ้าน้ำแข็งเล็กดุ คิ้วหนาเข้ม · ลายสงครามสีฟ้าเป็นบั้งซ้อน 2 ขีดบนแก้มทั้งสองข้าง
@@ -244,10 +244,10 @@ Picture 4 — BACK THREE-QUARTER view: he is turned away from us, facing up and 
 Picture 5 — BACK view: his back faces us, like the back view on the sheet: the back of his head with both ears and the tips of his horns, his shaggy chestnut mane hanging down his back to the waist, the back of the harness and the belt, and the back of the blue tunic skirt; no face. The dark-iron pauldron with the ice crystal is on the shoulder on the LEFT side of the picture and the blue capelet with its white fur trim on the shoulder on the RIGHT side. Both huge gauntlets hang at his sides, one on each side of the picture. His tail hangs down behind him.
 ```
 
-### ขั้น 2 — ภาพตั้งต้น + คลิปท่า 20 ตัว · ภาพตั้งต้นส่งแล้ว 2026-11-24 → รอคลิป
+### ขั้น 2 — ภาพตั้งต้น + คลิปท่า 20 ตัว ✓ (คลิปมาครบ 2026-11-25 17:43)
 ภาพ 5 มุมมาแล้ว → ตัดภาพตั้งต้น `rhino_1_S.png … rhino_5_N.png` (`tools/dir8cut.py startv`, คำสั่งอยู่ใน `RHINO_CLIP_PROMPTS_TH.md`) ส่งพร้อม `RHINO_CLIP_PROMPTS_TH.md` (คลิป 20 ตัว ยืน · เดิน · ทุบสองหมัด · ชูสองหมัด × 5 ทิศ สร้างจาก `python3 tools/clip_prompts.py rhino`)
 
 ### ขั้น 3 เป็นต้นไป
-3. **สไปร์ทจากคลิป** — `cliphero.py` → เขียนทับ `assets_rhino.js` (prefix RH เดิม ใช้กับแรดตัวเดียว) · เวลาเฟรมเท่าเดิมทุกทิศ (ตารางอยู่ในหัวข้อ 'เลือกแล้วทำอะไรต่อ' ข้างบน + ท้าย `RHINO_CLIP_PROMPTS_TH.md`) · ได้คลิปหันหลัง N ครั้งแรก · ตัวยืนสูงบนจอเท่าเดิม (วัด `CHAR_SCALE.rhino` ใหม่)
-4. **ของที่ผูกกับสไปร์ท** — จุดถุงมือทุกเฟรมของท่าทุบกับท่าชู (sockets) · หน้า HUD (ตัดหัวจาก view_S ผ่าน window.HUD_FACE — `RH_PORTRAIT` เดิมหายไปตอนเขียนทับ atlas) · ท่านั่ง (`hero_sit.js`)
+3. **สไปร์ทจากคลิป ✓ 2026-11-25** (รายละเอียดใน `RHINO_CLIP_PROMPTS_TH.md` ลำดับงานข้อ 4) — `cliphero.py` → เขียนทับ `assets_rhino.js` (prefix RH เดิม ใช้กับแรดตัวเดียว) · เวลาเฟรมเท่าเดิมทุกทิศ (ตารางอยู่ในหัวข้อ 'เลือกแล้วทำอะไรต่อ' ข้างบน + ท้าย `RHINO_CLIP_PROMPTS_TH.md`) · ได้คลิปหันหลัง N ครั้งแรก · ตัวยืนสูงบนจอเท่าเดิม (วัด `CHAR_SCALE.rhino` ใหม่)
+4. **ของที่ผูกกับสไปร์ท** (✓ ซ็อกเก็ตถุงมือ + หน้า HUD `assets/heroes/rhino/face.webp` 2026-11-25 · ยังไม่มีท่านั่ง) — จุดถุงมือทุกเฟรมของท่าทุบกับท่าชู (sockets) · หน้า HUD (ตัดหัวจาก view_S ผ่าน window.HUD_FACE — `RH_PORTRAIT` เดิมหายไปตอนเขียนทับ atlas) · ท่านั่ง (`hero_sit.js`)
 5. **ทีหลัง** — ไอคอน 53 + ex_ 11 + ผังสกิล 4 ภาพ + ภาพเอฟเฟกต์ที่มีถุงมือ / ตัวแรดเดิม (r01 r02, colossus-spirit, worldbreaker) + ภาพหน้าโหลด ld1 ld7 ld8

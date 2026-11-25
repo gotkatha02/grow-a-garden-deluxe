@@ -32,6 +32,9 @@ Optional (2026-11-24, jaguar clips): "blade":{"pick":{"attack/S":["x",6]},"fix":
   on a real dagger (head = blade tip, grip = blade base at the guard), see blade_sockets(); "stateDur":{"walk/E":[…],"hurt/S":[…]}
   = frame times for idle / walk / hurt rows (keep an older atlas's times: two skills play the walk row as a timed dash);
   "deglow":{"attack/NE":[7,8]} = a blade the video lit up white-violet is toned back to dark obsidian.
+Optional (2026-11-25, rhino Glacier Titan): "breath":{"idle/S":0.02} (with explicit "frames": the row is a near-still stretch — the video
+  model closed his eyes for the whole moving part of the idle — so frame j of n is stretched up by amp·(1 − cos 2πj/n)/2 about the feet
+  line: one slow breath per loop, the head rises ~amp × height).
 Optional (2026-11-25, wolf Fenrir's Heir): "frames":{"idle/S":[...]} (explicit 0-based video frames for an idle / walk row instead of a
   sampled loop — skips closed-eye stretches; their times come from "stateDur", default 200 / 100 ms), "trendNorm":["walk/S"] (the
   hero walks TOWARD the camera: size and feet follow a smooth quadratic fit of the bbox height / feet over the whole clip, every
@@ -198,7 +201,11 @@ def frames_for(st, d):
             return place(img, SD[d] * k, (c[0] - (c[0] - anchor0[0]) / k, c[1] - (c[1] - anchor0[1]) / k))
         return place(img, SD[d], anchor0)
     if st in ('idle', 'walk') and f'{st}/{d}' in plan.get('frames', {}):
-        return [cell(i) for i in plan['frames'][f'{st}/{d}']], None
+        cs = [cell(i) for i in plan['frames'][f'{st}/{d}']]; amp = plan.get('breath', {}).get(f'{st}/{d}')
+        if amp:   # breathing on a near-still stretch: frame j is stretched up by amp·(1 − cos 2πj/n)/2 about the feet line
+            n_ = len(cs); cs = [c_.transform((CW, CH), Image.AFFINE, (1, 0, 0, 0, 1 / k_, PY * (1 - 1 / k_)), resample=Image.BICUBIC)
+                               for c_, k_ in ((c_, 1 + amp * (1 - math.cos(2 * math.pi * j / n_)) / 2) for j, c_ in enumerate(cs))]
+        return cs, None
     if st in ('idle', 'walk'):
         if f'{st}/{d}' in plan.get('loop', {}): s0, P = plan['loop'][f'{st}/{d}']
         else: P = period([mask_small(f) for f in F], 20 if st == 'walk' else 16, 40 if st == 'walk' else 70) or len(F) // 2; s0 = 12
