@@ -1,0 +1,9 @@
+Game sounds (2026-11-25) — built by tools/sfx/build_sfx.py.
+
+Most sounds are synthesised by code (tools/sfx/sfxlib.py): whooshes, elements, magic, ambience beds, chimes, bubbles.
+Recorded layers come from two packs by Kenney (www.kenney.nl), released under CC0 1.0 Universal (public domain):
+  - Kenney "Impact Sounds"  (via github.com/Boyquotes/kenney-impact-sounds-for-godot): footsteps (snow, grass, concrete, wood),
+    punches, soft / metal / glass / plate / mining impacts.
+  - Kenney asset pack 1, "RPG sounds" + "UI sounds" (via github.com/ismetcabbar9-oss/kenney-audio-assets): book open / close / flip,
+    cloth, belt, metal click, coins, knife slice, chop, door, leather, UI clicks.
+No credit is required by CC0; it is given here anyway. Thank you, Kenney.
