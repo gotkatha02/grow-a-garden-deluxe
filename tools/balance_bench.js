@@ -38,7 +38,7 @@ function benchClone(v,d){if(v===null||typeof v!=='object')return v;if(d>4)return
 function benchSnap(){const S={};for(const n of BENCH_ST){let o;try{o=(0,eval)(n);}catch(_){continue;}if(o&&typeof o==='object'&&!Array.isArray(o))S[n]={o,v:benchClone(o,0)};}return S;}
 function benchRestore(S){for(const n in S){const {o,v}=S[n];for(const k of Object.keys(o))if(!(k in v))delete o[k];for(const k in v)o[k]=benchClone(v[k],0);}
   for(const k in BENCH_LETS){try{(0,eval)(k+'='+JSON.stringify(BENCH_LETS[k]));}catch(_){}}}
-function benchEnsure(){for(const k of ['axEnsure','bEnsure','crEnsure','dEnsure','kEnsure','lEnsure','rhEnsure','sEnsure','uEnsure','vEnsure','gEnsure','zdEnsure'])if(typeof window[k]==='function')try{window[k]();}catch(_){}}   // each returns at once for another hero
+function benchEnsure(){for(const k of ['axEnsure','bEnsure','crEnsure','dEnsure','kEnsure','lEnsure','rhEnsure','sEnsure','uEnsure','vEnsure','gEnsure','zdEnsure','jgEnsure'])if(typeof window[k]==='function')try{window[k]();}catch(_){}}   // each returns at once for another hero
 async function benchRun(opts={}){
   if(!window.__BENCH_SNAP)window.__BENCH_SNAP=benchSnap();
   const SIM=opts.sim||40, DT=1/60;
