@@ -1330,13 +1330,16 @@ HEROES['kitsune25'] = dict(
 - `kitsune_art.js` 'tails' (พัดหางครีมปลายชมพู) → ย้อมเป็นขาวปลายแดงเข้มให้เข้ากับหางจริง
 - ยังเป็นลุคเก่า: ไอคอน 56, พื้นหลังผังสกิล 032–035, ภาพหน้าโหลด ld1 ld2 ld7 ld8 · ยังไม่มี: ท่านั่ง, ท่าพิเศษ (แบบจากัวร์ / หมาป่า)""")
 
-# Bastet 2.5D = Daughter of Ra (owner 2026-11-26 20:57 picked design 4 of BASTET_LOOK_PROMPTS_TH.md + 'ขอพร้อมเป็น2.5d').
-# A complete entry: the flat 'bastet' entry describes her old look (braids, veil, dark-blue book). Written BEFORE the 2.5D
-# views exist: every view sentence follows the standing-view prompts of BASTET_LOOK_PROMPTS_TH.md 'เลือกแล้ว: แบบ 4' (book over
-# her raised left palm: S / SE picture-right, E in front, NE / N picture-left) — re-check the face / back lines against his
-# 2.5D views before sending. Lessons kept: 2.5D look, eyes open, no walking toward the camera, no attack / claw-slash words,
-# plain green air round the hand, the book flame small and solid, the sun disc never shining, the sheet's curse eye /
-# ankhs / locusts / mummies / soul wisps never drawn.
+# Bastet 2.5D = Daughter of Ra (owner 2026-11-26 20:57 picked design 4 of BASTET_LOOK_PROMPTS_TH.md + 'ขอพร้อมเป็น2.5d';
+# 21:42 his 5 standing views in the 2.5D look + 'ขอพร้อมทำอนิเมชั่นหน่อยรูปที่ส่งให้ยังไม่ต้องเอาไปทำไร' = prompts only, his
+# views are the first frames, not stored in the repo). A complete entry: the flat 'bastet' entry describes her old look
+# (braids, veil, dark-blue book). Re-read against his views: book on her left palm (S / SE picture-right at shoulder height,
+# E in front of her at chin height on the far hand, NE / N picture-left), the other hand relaxed at her side, the cobra
+# peeks out at the right of the disc in NE, only the edge of her right cheek in NE. Lessons kept: 2.5D look, eyes open,
+# no walking toward the camera, no attack / claw-slash words, plain green air round the hand, no rings / halos (the first
+# Bastet clips baked blue streaks, a flash, a cyan ring and a gold halo), the book flame small and solid, the sun disc never
+# shining, the sheet's curse eye / ankhs / locusts / mummies / soul wisps never drawn. Cast: a chibi arm cannot lift the book
+# above the disc, so the book floats up off her palm to the disc's height, beside it.
 HEROES['bastet25'] = dict(
   title='บาสเทต 2.5D (ธิดาแห่งรา แบบโมเดล 3D มองจากด้านบน · Daughter of Ra 2.5D)',
   who='the little white cat priestess in this picture', P='She', p='she', pos='her', weapon='book',
@@ -1344,13 +1347,15 @@ HEROES['bastet25'] = dict(
        "the same colours and the same fur, hair, linen, silk, paper, gemstone and gold textures — not photorealistic and not "
        "a flat drawing. The camera keeps looking down at her from above at the same angle as in the picture.",
   face="Keep her face exactly as in the picture: the same big golden-amber eyes with the bold black winged eyeliner, the "
-       "same two short red stripes on each cheek and the same calm, proud little cat smile, mouth closed.",
+       "same two short red stripes on each cheek, the same small pink nose and the same calm, proud little cat smile, mouth "
+       "closed; her eyes stay open the whole time.",
   back_face={'NE': "We see her mostly from behind: the back of her head with the full curtain of white hair locks and their "
-                   "gold beads, both cat ears from behind and the back of the gold sun disc above her head; of her face only "
-                   "the edge of her cheek on the right shows, as in the picture; her face never turns toward us.",
+                   "gold beads, both cat ears from behind and the back of the gold sun disc above her head, with the small "
+                   "gold cobra peeking out at its right side; of her face only the edge of her right cheek with a red stripe "
+                   "shows, as in the picture; her face never turns toward us.",
              'N': "We only see the back of her head with the full curtain of white hair locks down to her waist and their "
-                  "gold beads, the backs of both cat ears and the gold sun disc above her head, as in the picture; her face "
-                  "never turns toward us."},
+                  "gold beads, the backs of both cat ears and the back of the gold sun disc above her head, as in the "
+                  "picture; her face never turns toward us."},
   keep={d: ("The gold sun disc with the small gold cobra on top of her head, her big white cat ears with golden tips, her "
             "white hair locks with gold beads, the gold winged collar with its red gem and the gold ankh, the white pleated "
             "dress with its gold hem, the scarlet sash with the big gold sistrum charm and the long scarlet sash ends, the "
@@ -1363,64 +1368,85 @@ HEROES['bastet25'] = dict(
   spos={'S': 'just above her open palm beside her shoulder', 'SE': 'just above her open palm beside her shoulder',
         'E': 'in front of her, just above her open palm', 'NE': 'just above her open palm beside her head',
         'N': 'just above her open palm beside her shoulder'},
-  blink=", and her ears twitch once; her eyes stay open for the whole clip",
+  blink=", and her ears twitch once",
   vis=" Her thrusting hand stays visible beside her head during the thrust.",
-  fmt={'look': (', looking up at it', '')},
+  fmt={'look': (', looking up at the book', ''),
+       'hand': {'S': 'held out to the side palm up', 'SE': 'held out to the side palm up',
+                'E': 'held out in front of her palm up', 'NE': 'held out to the side palm up',
+                'N': 'held out to the side palm up'},
+       'thr': {'S': 'forward and a little upward toward the way she is facing',
+               'SE': 'forward and a little upward toward the way she is facing',
+               'E': 'straight forward at chest height, just below the floating book',
+               'NE': 'forward and a little upward toward the way she is facing',
+               'N': 'forward and a little upward toward the way she is facing'},
+       'bup': {'S': 'straight up beside her head', 'SE': 'straight up beside her head',
+               'E': 'up in front of her, above her head', 'NE': 'straight up beside her head',
+               'N': 'straight up beside her head'},
+       'bhov': {'S': 'level with the sun disc on her head, off to the side so it never covers her face or the disc',
+                'SE': 'level with the sun disc on her head, off to the side so it never covers her face or the disc',
+                'E': 'level with the sun disc on her head, a little ahead of her face, never covering her face or the disc',
+                'NE': 'level with the sun disc on her head, off to the side so it is never hidden behind her head',
+                'N': 'level with the sun disc on her head, off to the side so it is never hidden behind her head'},
+       'oth': {'S': 'beside her head on the other side, palm forward', 'SE': 'beside her head on the other side, palm forward',
+               'E': 'beside her shoulder, palm forward', 'NE': 'beside her head on the other side',
+               'N': 'beside her head on the other side'}},
   inframe="her whole body, the sun disc on her head, both ears, her tail and the floating book stay inside the frame.",
   nofx="The little blue flame over the open book is part of her design: it stays small and solid and only flickers gently. "
-       "Nothing else glows: no shadow, no flash, no light around the book or the sun disc, no sparkles, no particles, no "
-       "smoke, no curse symbols, no locusts, no soul wisps, no light trails, no streaks of colour, no motion lines, no magic "
-       "effects, no symbols, no text.",
+       "Nothing else glows: no shadow, no flash, no rings or halos, no light around the book or the sun disc, no sparkles, "
+       "no particles, no smoke, no curse symbols, no locusts, no soul wisps, no light trails, no streaks of colour, no motion "
+       "lines, no magic effects, no symbols, no text.",
   act={
-   'idle': "Idle loop of {who}. {facing} She stands gracefully, one hand held out to the side palm up; the small open gold "
-           "book floats {spos}, the little blue flame curling over its pages, and the book bobs gently up and down. Her other "
-           "hand rests relaxed at her side. She breathes slowly; her white hair locks and their gold beads, the long scarlet "
-           "sash ends and the hem of her dress sway a little, her tail swishes slowly{blink}. The last frame matches the "
-           "first frame so the clip loops.",
+   'idle': "Idle loop of {who}. {facing} She stands gracefully, one hand {hand}; the small open gold book floats {spos}, "
+           "the little blue flame curling over its pages, and the book bobs gently up and down. Her other hand rests relaxed "
+           "at her side. She breathes slowly; her white hair locks and their gold beads, the long scarlet sash ends and the "
+           "hem of her dress sway a little, her tail swishes slowly{blink}. The last frame matches the first frame so the "
+           "clip loops.",
    'walk': "Walk loop of {who}. {facing} She walks in place, like on a treadmill, toward the way she is facing: light, "
            "graceful little steps (about two steps per second), the small open book floating {spos} and moving along with "
            "her, her hair locks and gold beads bouncing, her tail and the long sash ends swaying. She does not move across "
            "the frame, she does not come closer to the camera or move away from it, and the ground does not move. The last "
            "frame matches the first frame so the clip loops.",
    'attack': "Palm thrust of {who}. {facing} The small open book stays floating {spos}. She pulls her free hand back beside "
-             "her shoulder in a short wind-up, then thrusts it forward and a little upward toward the way she is facing, palm "
-             "open and fingers spread like a cat's paw, holds that pose for an instant, then lowers her hand back to her "
-             "starting pose and stands still for the rest of the clip. The whole move takes about one second. She does not "
-             "step forward: her feet stay in place.{vis} The air around her hand stays empty and plain green in every frame. "
+             "her shoulder in a short wind-up, then thrusts it {thr}, palm open and fingers spread like a cat's paw, holds "
+             "that pose for an instant, then lowers her hand back to her starting pose and stands still for the rest of the "
+             "clip. The whole move takes about one second. She does not step forward: her feet stay in place. Her thrusting "
+             "hand never touches the floating book.{vis} The air around her hand stays empty and plain green in every frame. "
              "Clean outlines in every frame, no motion blur.",
-   'buff': "Spell cast of {who}. {facing} She lifts the open book high above her head on her open palm, higher than the sun "
-           "disc, and raises her other hand open beside it{look}, holds that pose still for about one second, then lowers "
-           "the book back {spos}, returns to her starting pose and stands still for the rest of the clip. Her feet stay in "
-           "place. The raised book and the sun disc stay inside the frame. Clean outlines in every frame, no motion blur."},
+   'buff': "Spell cast of {who}. {facing} She raises the hand that holds the book {bup}, and the open book floats up off her "
+           "palm until it hovers {bhov}; at the same time she lifts her other hand open {oth}{look}. She holds that pose "
+           "still for about one second, then lowers both hands while the book floats back down {spos}, returns to her "
+           "starting pose and stands still for the rest of the clip. Her feet stay in place. The raised book, its little "
+           "flame and the sun disc stay inside the frame. Clean outlines in every frame, no motion blur."},
   dirname={'S': 'หน้าตรง', 'SE': 'เฉียงหน้า หันขวา', 'E': 'ข้าง หันขวา', 'NE': 'เฉียงหลัง หันขวา', 'N': 'หลัง'},
   actname={'idle': 'ยืน (idle · วนลูป)', 'walk': 'เดิน (walk · วนลูป)',
            'attack': 'ผลักฝ่ามือ (attack · ตีปกติ = ปาหน้ากระดาษคำสาป + สกิลที่ใช้ท่าตี — เฟรมยื่นสุด = ปล่อย)',
            'buff': 'ชูคัมภีร์ร่าย (buff · คำสาป / เรียกผู้รับใช้ / บัฟ / อัลติ — เกมค้างเฟรมชูสุดตอนร่ายนาน)'},
-  start='bastet25_{n}_{d}.png',
-  header="""เจ้าของเลือกแบบ 4 'ธิดาแห่งรา' 2026-11-26 20:57 (ชีต `assets/heroes/bastet/sheet_daughter_of_ra.webp` + 'ขอพร้อมเป็น2.5d') → ภาพใหญ่ = หน้าเลือกตัวแล้ว (`select.webp`, SELV bastet 2) · พรอมต์ภาพยืน 2.5D 5 มุมส่งแล้ว (`BASTET_LOOK_PROMPTS_TH.md` หัวข้อ 'เลือกแล้ว: แบบ 4') · **ไฟล์นี้เขียนก่อนภาพยืนมา** → ตอนภาพมา เช็กประโยคหน้า / มุมหลัง / ฝั่งคัมภีร์ให้ตรงภาพจริงก่อนส่ง · **ห้ามใช้ `BASTET_CLIP_PROMPTS_TH.md` (ชุดแบน ลุคเก่า) กับภาพ 2.5D**
+  start='ภาพยืน 2.5D มุม {d} ที่ได้จาก ChatGPT',
+  header="""เจ้าของเลือกแบบ 4 'ธิดาแห่งรา' 2026-11-26 20:57 (ชีต `assets/heroes/bastet/sheet_daughter_of_ra.webp` + 'ขอพร้อมเป็น2.5d') → ภาพใหญ่ = หน้าเลือกตัวแล้ว (`select.webp`, SELV bastet 2) → 21:42 ส่งภาพยืน 2.5D ครบ 5 มุม + "ขอพร้อมทำอนิเมชั่นหน่อยรูปที่ส่งให้ยังไม่ค้องเอาไปทำไร" → ไฟล์นี้ = พรอมต์คลิป 20 ตัวอย่างเดียว · ไม่ได้ตัดภาพตั้งต้น ไม่ได้เก็บภาพยืนไว้ใน repo (ตามที่เจ้าของสั่ง แบบแมว / จิ้งจอก 2.5D) · เจ้าของแนบภาพยืนของทิศนั้นเป็นเฟรมแรกเอง · หน้าตา + พรอมต์ภาพยืน: `BASTET_LOOK_PROMPTS_TH.md` หัวข้อ 'เลือกแล้ว: แบบ 4' · **ห้ามใช้ `BASTET_CLIP_PROMPTS_TH.md` (ชุดแบน ลุคเก่า) กับภาพ 2.5D**
 
-## ภาพตั้งต้น
-- `bastet25_<n>_<ทิศ>.png` 1024×1024 · ตัวสูง ~490 px (ปลายจานสุริยะถึงพื้นรองเท้า) เท้าที่ 88 % · **รันทีละมุม** ให้ทุกมุมตัวสูงเท่ากัน (ภาพจาก ChatGPT ขนาดไม่เท่ากัน) · เหนือหัวเหลือ ~.84 เท่าตัวให้ชูคัมภีร์เหนือจาน
-```
-V=assets/heroes/bastet; for d in S SE E NE N; do python3 -I tools/dir8cut.py startv <โฟลเดอร์> $d=$V/view25_$d.webp size=1024 feet=.88 ht=490 clean=0; done
-```
-- ถ้าเจ้าของใช้ภาพยืน 2.5D ของเขาเป็นเฟรมแรกเอง (แบบแมว / จิ้งจอก): ได้ ถ้าตัวสูงไม่เกินครึ่งภาพ
+## ภาพยืน 2.5D ที่เป็นเฟรมแรก (มาแล้ว 21:42)
+- 1254² พื้นเขียว ตัวสูง 58–63 % ของภาพ (ปลายจานสุริยะถึงพื้นรองเท้า ~730–795 px) ทุกมุมหันขวา ไม่มีสีเขียวบนตัว · ที่ว่างเหนือหัว 326–374 px = 0.41–0.51 เท่าตัว · ซ้าย 336–397 · ขวา 341–444 · ใต้เท้า 135–184 px → ท่าร่าย: ให้คัมภีร์ **ลอยขึ้นจากฝ่ามือถึงระดับจานสุริยะ อยู่ข้างจาน** (แขนชิบิสั้น ยกตรงสุดแขนมือยังแค่ระดับหู — เขียนว่า 'สูงกว่าจาน' โมเดลจะยืดแขน) · ท่าตี: ไม่ก้าว มือไม่โดนคัมภีร์ · ถ้าคลิปไหนหลุดขอบภาพ: ย่อภาพก่อนทำคลิป (`python3 -I tools/dir8cut.py startv <โฟลเดอร์> <ทิศ>=<ภาพ> size=1024 feet=.88 ht=460 clean=0` ทีละมุม)
+- ตามที่วาด: **S** คัมภีร์ขวาของภาพบนฝ่ามือซ้ายระดับไหล่ มือขวาพักที่สะโพกข้างหาง (ซ้ายของภาพ) หางม้วนขึ้นซ้ายของภาพ มองกล้อง ยิ้มมั่นใจ มีเงาจางใต้เท้า · **SE** แบบเดียวกัน ตัวหันขวาล่าง ตาเหลือบมองคัมภีร์ · **E** คัมภีร์ลอยหน้าตัวระดับคางบนมือข้างไกล มองคัมภีร์ แขนข้างใกล้ห้อยข้างตัว ซิสตรัมห้อยหน้า ผม หาง ชายผ้าอยู่หลังตัว (ซ้ายของภาพ) · **NE** คัมภีร์ซ้ายของภาพระดับหัว เห็นเต็ม งูเห่าโผล่ขวาของจาน เห็นขอบแก้มขวามีขีดแดงนิดเดียว มือขวาห้อยขวาของภาพข้างหาง · **N** คัมภีร์ซ้ายของภาพ จานจากด้านหลัง ม่านผมยาวถึงเหนือผ้าคาดเอว ปลายลูกปัดทอง หัวเข็มขัดทองกลม + แผ่นแดงปลายแหลมทองด้านหลัง ชายผ้ายาวซ้ายของภาพ หางม้วนขวาของภาพ ไม่เห็นหน้า
+
+## วิธีใช้
+แนบภาพยืน 2.5D ของทิศนั้น + วางพรอมต์ทีละตัว → 4 คลิปต่อทิศ (ยืน · เดิน · ผลักฝ่ามือ · ชูคัมภีร์) · คลิปละ 3–5 วิ · ไม่ต้องทำทิศซ้าย (เกมกลับด้านเอง) · ส่งกลับเรียง S → SE → E → NE → N ทิศละ ยืน → เดิน → ผลัก → ชู (สลับได้)
 
 ## กติกาที่อยู่ในทุกพรอมต์ (บทเรียนจากคลิปหมาป่า / จากัวร์ / แรด / อนูบิส / ฮิปโป / บาสเต็ดชุดแรก / แกะ / ลิง / จิ้งจอก)
-- ประโยคบอกทิศขึ้นต้นทุกพรอมต์ · มุมหลัง (NE, N) 'เห็นแค่หลังหัว หน้าไม่หันมา' + สิ่งที่เห็น (ม่านผมปลายลูกปัดทอง หู จานสุริยะ หัวเข็มขัดทองด้านหลัง)
+- ประโยคบอกทิศขึ้นต้นทุกพรอมต์ · มุมหลัง (NE, N) 'เห็นแค่หลังหัว หน้าไม่หันมา' + สิ่งที่เห็นตามภาพจริง (ม่านผมปลายลูกปัดทอง หู หลังจานสุริยะ งูเห่าโผล่ + ขอบแก้มขวาใน NE หัวเข็มขัดทองด้านหลัง)
 - ประโยคลุค 2.5D (คีย์ `look`) + กล้องมองลงจากด้านบนมุมเดิม
-- ยืน: **ลืมตาตลอดคลิป** (คลิปบาสเต็ดชุดแรกหลับตาหลายช่วง) · เดิน: **ไม่เข้าหา / ถอยห่างกล้อง**
-- ตี = ผลักฝ่ามือว่างไปหน้าเฉียงขึ้น กางนิ้วแบบอุ้งเท้าแมว ค้างนิด แล้วยืนนิ่ง · คัมภีร์ลอยที่เดิม · ไม่ก้าว · ไม่ใช้คำ attack / claw / strike · อากาศรอบมือเป็นเขียวเรียบ (คลิปชุดแรกมีเส้นฟ้า / แฟลช / วงแหวนติดมา)
-- ร่าย = ชูคัมภีร์บนฝ่ามือเหนือหัว **สูงกว่าจานสุริยะ** อีกมือยกข้าง ค้าง ~1 วิ (เกมค้างเฟรมชูสุดตอนร่ายนาน) · คัมภีร์กับจานอยู่ในภาพ
-- เปลวไฟฟ้าบนคัมภีร์เล็ก ทึบ ไหวนิดเดียว · จานสุริยะไม่ส่องแสง · ห้ามตาคำสาป อังค์ม่วง ตั๊กแตน มัมมี่ ดวงวิญญาณ เส้นความเร็ว สัญลักษณ์ (มีในชีตท่าร่าย — เอฟเฟกต์ใส่ในเกม: `bastet_vfx.js`) · ไม่ระบุมือซ้าย / ขวา (ภาพตั้งต้นบอกเอง)""",
+- **ลืมตาตลอด** อยู่ในประโยคหน้า (คลิปบาสเต็ดชุดแรกหลับตาหลายช่วงทั้งท่ายืนและท่าร่าย) · เดิน: **ไม่เข้าหา / ถอยห่างกล้อง**
+- ตี = ผลักฝ่ามือว่างไปหน้าเฉียงขึ้น กางนิ้วแบบอุ้งเท้าแมว ค้างนิด แล้วยืนนิ่ง · **มุมข้าง (E) ผลักตรงระดับอกใต้คัมภีร์** (คัมภีร์ลอยหน้าหน้าเธอ) · มือไม่โดนคัมภีร์ · ไม่ก้าว · ไม่ใช้คำ attack / claw / strike · อากาศรอบมือเป็นเขียวเรียบ
+- ร่าย = ยกมือที่ถือคัมภีร์ขึ้นข้างหัว (E: ขึ้นหน้าตัวเหนือหัว) คัมภีร์ลอยขึ้นจากฝ่ามือถึงระดับจานสุริยะ อยู่ข้างจาน ไม่บังหน้า / ไม่บังจาน (มุมหลัง: ไม่หลบหลังหัว) อีกมือแบขึ้นข้างหัวอีกฝั่ง มองคัมภีร์ ค้าง ~1 วิ (เกมค้างเฟรมชูสุดตอนร่ายนาน) · คัมภีร์ ไฟ และจานอยู่ในภาพ
+- เปลวไฟฟ้าบนคัมภีร์เล็ก ทึบ ไหวนิดเดียว · จานสุริยะไม่ส่องแสง · **ห้ามวงแหวน / รัศมี / แฟลช** (คลิปชุดแรก: ตีมุม E มีเส้นฟ้า, NE แฟลช, N วงแหวนฟ้า · ร่ายมุม E รัศมีทอง) · ห้ามตาคำสาป อังค์ม่วง ตั๊กแตน มัมมี่ ดวงวิญญาณ เส้นความเร็ว สัญลักษณ์ (มีในชีตท่าร่าย — เอฟเฟกต์ใส่ในเกม: `bastet_vfx.js`) · ไม่ระบุมือซ้าย / ขวาในตัวคำสั่งท่า (ภาพตั้งต้นบอกเองว่าคัมภีร์อยู่มือไหน)""",
   footer="""## ตอนคลิปมาถึง (โน้ตสำหรับแชตที่ทำต่อ)
 - `tools/clips/bastet25_plan.json` จาก `bastet_plan.json` (เวลาเฟรม / contact / peak เดิมทุกทิศ = ของร่างหมาป่าที่เธอถูก bench ไว้ · atkRemap {}) → **ไฟล์ใหม่ `assets_bastet25.js`** (prefix BST เดิม — โหลดทีละไฟล์) + สวิตช์ `window.BST25` / `?bst25=0` (แบบ JG25 / WLF25) · ตาราง MB หน้าโหลด · เช็ก `python3 tools/fxlab.py hits bastet` ก่อน / หลัง (FXSEED + o.sure)
   - attack 12 เฟรม 900 ms · S [80,50,90,50,50,50,70,200,50,50,50,110] contact 6 (370 ms) · SE [50,50,190,70,90,50,50,50,50,50,90,110] contact 4 (360) · E และ NE [80,50,50,100,50,120,60,120,50,50,50,120] contact 6 (450) · N [110,120,50,50,70,50,120,70,50,50,50,110] contact 6 (450) · เฟรม contact = มือยื่นสุด
-  - buff 12 เฟรม 1.4 วิ peak 7 · S [170,50,50,230,50,110,390,50,50,50,50,150] (1,050 ms) · E [70,50,50,50,50,70,170,580,50,50,50,160] (510) · NE [80,60,50,50,50,50,120,160,480,60,60,180] (460) · N [130,50,50,50,50,110,260,450,60,50,50,90] (700) · SE 6 เฟรม [220×6] peak 3 (660) · เฟรม peak = ชูคัมภีร์สุด
+  - buff 12 เฟรม 1.4 วิ peak 7 · S [170,50,50,230,50,110,390,50,50,50,50,150] (1,050 ms) · E [70,50,50,50,50,70,170,580,50,50,50,160] (510) · NE [80,60,50,50,50,50,120,160,480,60,60,180] (460) · N [130,50,50,50,50,110,260,450,60,50,50,90] (700) · SE 6 เฟรม [220×6] peak 3 (660) · เฟรม peak = คัมภีร์ลอยสูงสุดระดับจาน
   - walk 8 เฟรมตามจังหวะคลิป (ชุดแรก S 125 · SE 146 · E 151 · NE 156 · N 130 ms) · idle 12 เฟรม · hurt 7 × 70 ms
-- **socket:** ไฟบนคัมภีร์ทุกท่า (orbAll) — ไฟใหม่สีฟ้าอมฟ้าเขียว R ต่ำ (ชุดแรก R 80–140 → orbMask มี 'r':70) → วัด orbMask ใหม่ ไม่งั้นจับไม่เจอ · ท่าตีตั้งแต่ง้างจนค้าง = ฝ่ามือ (orbFix อ่านด้วยตา) · `bastet_vfx.js` OWN = ใช้คลิปตีของเธอเอง (ไม่สลับเป็นคลิปร่าย) อยู่แล้ว
+- **socket:** ไฟบนคัมภีร์ทุกท่า (orbAll) — ไฟใหม่สีฟ้าอมเขียว R ต่ำ (ในภาพยืน: B ≥ 200, R < 140 · ชุดแรก R 80–140 → orbMask มี 'r':70) → วัด orbMask ใหม่ ไม่งั้นจับไม่เจอ · ท่าตีตั้งแต่ง้างจนค้าง = ฝ่ามือ (orbFix อ่านด้วยตา) · `bastet_vfx.js` OWN = ใช้คลิปตีของเธอเอง (ไม่สลับเป็นคลิปร่าย) อยู่แล้ว
 - **ขนาด:** วัด `CHAR_SCALE.bastet` ใหม่ (ตอนนี้ 1.56) จากความสูง**ถึงปลายหู ไม่รวมจานสุริยะ** (จานสูงอีก ~15 %) ไม่งั้นตัวจะเล็กลง · `HERO_SIZE.bastet` .724 คงไว้ · `bastet_vfx.js` headZ() = ขอบบนของภาพยืน S + 6 → ตอนนี้จะเป็นปลายจาน → ปรับให้วงวิญญาณ / ของบนหัวอยู่เหนือจานพอดี
-- หน้า HUD: ตัดหัวจากภาพยืน S 2.5D เป็น `assets/heroes/bastet/face25.webp` + window.HUD_FACE (ร่างเก่าใช้ face.webp)
+- **ขนาดในคลิป:** ภาพยืนตัวสูง ~60 % ของภาพ → คลิป 544² ตัวสูง ~325 px · คลิปร่าย คัมภีร์ + ไฟอาจชิดขอบบน → ดูก่อนตัด (`topFade` ถ้าโดนขอบ) · ภาพ S มีเงาจางใต้เท้า → ถ้าคลิปมีเงาด้วย ตัดออกตอนคีย์
+- **หน้า HUD:** ภาพยืนไม่ได้เก็บใน repo (เจ้าของสั่ง) → ตัดหัวจากเฟรมแรกของคลิปยืน S เป็น `assets/heroes/bastet/face25.webp` + window.HUD_FACE (ร่างเก่าใช้ face.webp)
 - ยังไม่มี: ท่าเสริมมุมเดียว (แบบจากัวร์ / หมาป่า), ท่านั่ง 8 มุม, ไอคอนสกิล (โค้ด SVG), พื้นหลังผังสกิล · ภาพหน้าโหลด ld1 ld8 ยังเป็นลุคเก่า""")
 
 def build(h, d, a):
