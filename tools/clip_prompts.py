@@ -925,23 +925,37 @@ HEROES['wolf25'] = dict(HEROES['wolf'],
             "and the round silver brooch, the dark-steel wolf-head pauldron, the deep-navy tunic with the silver knotwork band, "
             "the round silver belt buckle, the chain wrapped round his forearm, the leather bracers, the fur-cuffed boots, "
             "his huge bushy white tail and the greataxe with its silver blade and dark-iron wolf head stay exactly the same.")
-        for d in ('S', 'SE', 'E')}
-       | {d: ("His crimson cape with the cream fur collar, the dark-steel wolf-head pauldron, the back of the navy tunic and "
-              "the belt, the chain wrapped round his forearm, the fur-cuffed boots, his huge bushy white tail and the "
-              "greataxe with its silver blade stay exactly the same.") for d in ('NE', 'N')},
+        for d in ('S', 'SE')}
+       # E (08:22 view): only his near side shows — no pauldron, brooch or chain (they are on his far side)
+       | {'E': ("His thick mane of white fur, the braid with its silver ring, the crimson fur-lined cape with the cream fur "
+                "collar over his shoulder, the deep-navy tunic with the silver knotwork panel, the belt with its round silver "
+                "buckle, the leather bracer, the fur-cuffed boots, his huge bushy white tail and the greataxe with its silver "
+                "blade and dark-iron wolf head stay exactly the same.")}
+       | {d: ("His thick mane of white fur, the braid with its silver rings, the crimson cape with the cream fur collar, the "
+              "dark-steel wolf-head pauldron, the back of the navy tunic and the belt, the chain wrapped round his forearm, "
+              "the fur-cuffed boots, his huge bushy white tail and the greataxe with its silver blade stay exactly the same.")
+          for d in ('NE', 'N')},
+  # the side view hides his far arm (chain) and shows the axe held out in front of him, not beside him
+  spos=dict(HEROES['wolf']['spos'], E='upright in his hand in front of him, its end resting on the ground'),
+  fmt=dict(HEROES['wolf']['fmt'],
+           oarm={d: ('his other arm out of sight behind his body, as in the picture' if d == 'E' else
+                     'his other fist clenched at his side with the chain wrapped round his forearm') for d in DIRS},
+           sway={d: ('the cape sways a little' if d == 'E' else 'the loose end of the chain and the cape sway a little')
+                 for d in DIRS},
+           carry={d: ('in front of him' if d == 'E' else 'beside him') for d in DIRS},
+           warm={d: ('his other arm swinging a little, mostly hidden behind his body' if d == 'E' else
+                     'his other arm swinging a little with the chain') for d in DIRS}),
   blink=", and his ears twitch once; his eyes stay open for the whole clip",
   nofx="No shadow, no flash, no glow, no sparkles, no particles, no smoke, no snow, no dust, no light trails, no streaks of "
        "colour, no motion lines, no red energy, no ice, no lightning, no runes in the air, no magic effects, no symbols, no "
        "text; the ice-blue pattern on the axe blade never lights up.",
   act=dict(HEROES['wolf']['act'],
-   idle="Idle loop of {who}. {facing} He stands tall in a firm, ready stance, the greataxe {spos}, his other fist clenched "
-        "at his side with the chain wrapped round his forearm, and breathes slowly: his chest rises and falls, the fur of "
-        "his mane and collar stirs, the loose end of the chain and the cape sway a little and his big bushy tail sways "
+   idle="Idle loop of {who}. {facing} He stands tall in a firm, ready stance, the greataxe {spos}, {oarm}, and breathes "
+        "slowly: his chest rises and falls, the fur of his mane and collar stirs, {sway} and his big bushy tail sways "
         "slowly{blink}. The last frame matches the first frame so the clip loops.",
    walk="Walk loop of {who}. {facing} He walks in place, like on a treadmill, toward the way he is facing: firm, springy "
-        "steps (about two steps per second) in his fur-cuffed boots, the greataxe carried upright in his hand beside him "
-        "with its end just above the ground, his other arm swinging a little with the chain, his cape and his bushy tail "
-        "bouncing behind him. He does not move across the frame, he does not come closer to the camera or move away from "
+        "steps (about two steps per second) in his fur-cuffed boots, the greataxe carried upright in his hand {carry} "
+        "with its end just above the ground, {warm}, his cape and his bushy tail bouncing behind him. He does not move across the frame, he does not come closer to the camera or move away from "
         "it, and the ground does not move. The last frame matches the first frame so the clip loops.",
    attack="Overhead axe chop of {who}. {facing} He lifts the greataxe up and back over his shoulder in a short wind-up, "
           "then swings it down and forward toward the way he is facing in one powerful chop until the axe head is low in "
@@ -953,12 +967,12 @@ HEROES['wolf25'] = dict(HEROES['wolf'],
   header="""เจ้าของ 2026-11-26 07:39 "อยากลองปรับสไปร้หมาป่าใหม่ให้เป้นแบบ2.5d แบบเกมแรคนารอค3" → 07:47 "รูปหมาป่าใช้แบบเก่าก่อนไม่ใช่จิบิ" → 08:01 ส่งรูปทดสอบมุมเฉียงหน้ามา + "ขอพร้อมมุมอื่นและอยากให้มีพื้นที่สีเขียวเพิ่มเพื่อเอาไปทำวีดีโอ" · ตัวเดียวกับหมาป่าในเกมตอนนี้ (ทายาทเฟนรีร์ตัวโต) แต่เรนเดอร์เหมือนโมเดล 3D ลงเงาการ์ตูน เส้นขอบแบบวาดมือ มองจากด้านบน · หน้าตา + พรอมต์ภาพยืน: `WOLF_LOOK_PROMPTS_TH.md` หัวข้อ 'ลอง 2.5D แบบ Ragnarok 3' · คลิปลุคเดิมอยู่ที่ `WOLF_CLIP_PROMPTS_TH.md` (ห้ามใช้กับภาพ 2.5D: ประโยคลุคของมันสั่ง 'not 3D')
 
 ## ลำดับงาน
-1. **ภาพยืน 5 มุม (2.5D)** — SE ✓ 2026-11-26 08:01 (1254² พื้นเขียว ตัวเต็มกรอบ 96 % · ไม่มีสีเขียวบนตัว: จุดเขียวในตัวคือช่องในห่วงโซ่ / ใต้แขน = พื้นหลังจริง) → `assets/heroes/wolf/view25_SE.webp` · S E NE N: ส่งพรอมต์ในแชตแล้ว รอภาพ
-2. **ภาพตั้งต้น** — SE ✓ ส่งแล้ว (`wolf25_2_SE.png`) · ทิศอื่นทำเมื่อภาพมา (คำสั่งข้างล่าง)
+1. **ภาพยืน 5 มุม (2.5D)** — ✓ ครบ 2026-11-26 08:22 (เจ้าของส่ง S · E · NE · N + SE ชุดใหม่มาพร้อมกัน: 1254² พื้นเขียว ตัวสูง 58–62 % ของภาพ ทุกมุมหันขวา ไม่มีสีเขียวบนตัว — จุดเขียวในตัวคือช่องในห่วงโซ่ / ใต้แขน / ระหว่างขา = พื้นหลังจริง · ขนปลายพู่ข้างด้ามขวานในมุม S ติดเขียวจางๆ ไม่กี่จุด cliphero ดึงเขียวออกเองตอนตัด) → `assets/heroes/wolf/view25_<ทิศ>.webp` · รูปทดสอบ SE (08:01 ตัวเต็มกรอบ 96 %) เก็บเป็น `view25_SE_test.webp`
+2. **ภาพตั้งต้น** — ✓ ครบ 5 ทิศ ส่งแล้ว 08:30 (SE ทำใหม่จากภาพ SE ชุดใหม่ให้เข้าชุดกับอีก 4 มุม · ภาพ SE แรกที่ส่ง 08:10 ทำจากรูปทดสอบ ตัวสูงเท่ากัน ใช้แทนกันได้)
 3. **คลิป 20 ตัว** — รอ · ในเกมยังไม่เปลี่ยนอะไร (ร่างที่เล่นอยู่ = `assets_wolf.js` ลุคเดิม)
 
 ## ภาพตั้งต้น
-- `wolf25_<n>_<ทิศ>.png` 1024×1024 · ตัวสูง ~48 % ของภาพ (เจ้าของขอที่ว่างเพิ่ม): เหนือหัวว่าง .84 เท่าตัว · ซ้าย .70 · ขวา .65 (มุม SE) — ลุคเดิมใช้ 900² ht 480 = .69 / .59 / .54 · ในคลิป 480p ตัวสูง ~230 px (544p ~260)
+- `wolf25_<n>_<ทิศ>.png` 1024×1024 · ตัวสูง 490 px = ~48 % ของภาพ (เจ้าของขอที่ว่างเพิ่ม): เหนือหัวว่าง .84 เท่าตัวทุกมุม · ซ้าย .64–.68 · ขวา .60–.63 (รูปทดสอบ SE .70 / .65) — ลุคเดิมใช้ 900² ht 480 = .69 / .59 / .54 · ในคลิป 480p ตัวสูง ~230 px (544p ~260)
 - ภาพจาก ChatGPT แต่ละมุมขนาดไม่เท่ากัน (รูปทดสอบตัวเต็มกรอบ · มุมอื่นสั่งให้ตัวสูงแค่ครึ่งภาพ) → **รันทีละมุม** ทุกมุมได้ตัวสูง 490 px เท่ากัน (startv ตั้งสเกลจากภาพแรกของคำสั่ง):
 ```
 V=assets/heroes/wolf; for d in S SE E NE N; do python3 -I tools/dir8cut.py startv <โฟลเดอร์> $d=$V/view25_$d.webp size=1024 feet=.88 ht=490 clean=0; done
@@ -972,6 +986,8 @@ V=assets/heroes/wolf; for d in S SE E NE N; do python3 -I tools/dir8cut.py start
 - **ประโยคลุค 2.5D** (คีย์ `look` ของสคริปต์) แทนประโยค 'chibi … not 3D' ของตัวอื่น: โมเดล 3D ลงเงาการ์ตูน เส้นขอบน้ำตาลเข้ม สีและพื้นผิว (ขน ผ้า หนัง เหล็ก) เดิม ไม่สมจริง ไม่แบน + กล้องมองลงจากด้านบนมุมเดิมตลอดคลิป
 - ยืน: ตาเปิดตลอดคลิป ไม่กะพริบ (คลิปแรดหลับตาตอนขยับ · คลิปหมาป่าเดิมช่วงหลับตาต้องตัดทิ้ง) · เดิน: ไม่เดินเข้าหา / ถอยห่างกล้อง (คลิป S หมาป่าเดิมเดินเข้ากล้อง ×1.4) · ฟัน: หัวขวานหยุดเหนือพื้นไม่แตะ (คลิปเดิมฟันลงพื้นแล้วมีน้ำแข็ง / แสงขาว / ดาวแตกติดมา) · ลายรูนฟ้าบนใบขวานห้ามสว่างขึ้น · ห้ามหิมะ ฝุ่น เส้นความเร็ว สัญลักษณ์
 - โซ่: ภาพ 2.5D วาดเป็นโซ่พันรอบแขนท่อนล่างซ้าย ปลายขาดห้อยลงมา (ไม่ใช่กำไลเหล็ก) → พรอมต์เขียนตามภาพ
+- มุมข้าง E (ภาพ 08:22): เห็นแค่ซีกขวาของตัว — แขนซ้าย โซ่ บ่าเกราะหัวหมาป่า เข็มกลัด อยู่ฝั่งไกล ภาพไม่เห็น → พรอมต์ E ไม่สั่งให้คงของพวกนี้ และบอกว่าแขนอีกข้างอยู่หลังตัว (กันโมเดลวาดเพิ่มผิดข้าง) · ขวานถืออยู่ข้างหน้าตัว ไม่ใช่ข้างตัว (คีย์ fmt oarm / sway / carry / warm + spos E)
+- มุมหลัง NE / N: เปียกับห่วงเงินยังเห็นข้างหัว → อยู่ในรายการของที่ต้องคง
 - เหมือนหมาป่าเดิม: ประโยคบอกทิศขึ้นต้น · ล็อกหน้า / ของติดตัว · ไม่ใช้คำ attack / slash · ฟัน = ยกข้ามไหล่แล้วฟันลงทแยงไปข้างหน้า · ชูขวานสองมือ **ด้ามขนานพื้น** ค้าง ~1 วิ · ไม่ระบุมือซ้าย / ขวา (ภาพตั้งต้นบอกเอง)""",
   footer="""## ตอนคลิปมาถึง (โน้ตสำหรับแชตที่ทำต่อ)
 - แผนใหม่ `tools/clips/wolf25_plan.json` คัดลอกจาก `wolf_plan.json` (เวลาเฟรมทุกแถวคัดมาจาก `assets.js` แล้ว: attack contact S 6 · SE 4 · E 6 · N 6 · buff peak 7 / SE 6 เฟรม peak 3 · walk 100 ms · idle 200 ms · hurt 550 ms) → ดาเมจ / จังหวะเท่าเดิม เช็ก `python3 tools/fxlab.py hits wolf` ก่อน / หลัง · เลือกเฟรมเลี่ยงช่วงหลับตา / เอฟเฟกต์ที่โมเดลแอบใส่แบบรอบก่อน ("frames", "breath", "unstreak")
