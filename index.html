@@ -6048,7 +6048,7 @@ function mapMini(Wm,Hm,X,Y){const h=mapHost();const s=mapMS();
   const h3=document.createElement('h3');h3.textContent='MAP';const seg=document.createElement('div');seg.className='seg';seg.id='mapsel';
   const VK_ORDER=['frostheim','snowpine','vikF2','vikF3','vikF4','vikF5','vikF6','vikD1a','vikD1b','vikH1','vikH2','vikD2a','vikD2b','vikD2c','vikE1','vikE2'];
   seg.innerHTML='<button data-m="village">หมู่บ้านหิมะ (เดิม)</button><button data-m="forest">ป่าสน (เดิม)</button><button id="mapnight">ช่วงค่ำ</button><button id="mapdbg">เส้นชน</button>'+
-    '<select id="vkmap" style="width:100%;margin-top:6px;padding:5px;border-radius:6px"><option value="">— เลือกแมพ —</option>'+[['โซนไวกิ้ง',VK_ORDER],['โซนแอซเท็ก',window.AZ_ORDER||[]],['โซนอียิปต์',window.EG_ORDER||[]],['โซนกรีก',window.GR_ORDER||[]],['โซนญี่ปุ่น',window.JP_ORDER||[]],['เขตเมืองหลวง',window.CP_ORDER||[]]].map(([g,L])=>`<optgroup label="${g}">`+L.filter(k=>MAPDEF[k]).map(k=>`<option value="${k}">${MAPDEF[k].name}${MAPDEF[k].lv&&MAPDEF[k].lv!=='เมือง'?' · Lv '+MAPDEF[k].lv:''}</option>`).join('')+'</optgroup>').join('')+'</select>';
+    '<select id="vkmap" style="width:100%;margin-top:6px;padding:5px;border-radius:6px"><option value="">— เลือกแมพ —</option>'+[['โซนไวกิ้ง',VK_ORDER],['โซนแอซเท็ก',window.AZ_ORDER||[]],['โซนอียิปต์',window.EG_ORDER||[]],['โซนกรีก',window.GR_ORDER||[]],['โซนญี่ปุ่น',window.JP_ORDER||[]],['เขตเมืองหลวง',window.CP_ORDER||[]],['แมพทดลอง (ยังไม่เปิด)',['isoField','isoSnow','seaF1']]].map(([g,L])=>`<optgroup label="${g}">`+L.filter(k=>MAPDEF[k]).map(k=>`<option value="${k}">${MAPDEF[k].name}${MAPDEF[k].lv&&MAPDEF[k].lv!=='เมือง'?' · Lv '+MAPDEF[k].lv:''}</option>`).join('')+'</optgroup>').join('')+'</select>';
   setTimeout(()=>{const sel=document.getElementById('vkmap');if(sel)sel.onchange=()=>{if(sel.value)mapTravel(sel.value,null);sel.value='';};},0);
   panel.after(h3);h3.after(seg);
   seg.querySelectorAll('button[data-m]').forEach(b=>b.onclick=()=>mapTravel(b.dataset.m||null,null));
@@ -6155,9 +6155,9 @@ window.AF={levelUp:()=>{if(PS.lv<LV_CAP){PS.lv++;applyStats();player.hp=player.m
 <script src="mini_boss_data.js?v=1"></script>
 <script src="mini_bosses.js?v=2"></script>
 <script src="boss_fenrir.js?v=8"></script>
-<script src="progress.js?v=2"></script>
+<script src="progress.js?v=3"></script>
 <script src="roles.js?v=6"></script>
-<script src="char_create.js?v=18"></script>
+<script src="char_create.js?v=19"></script>
 <script src="skill_shapes.js?v=5"></script>
 <script src="mobile.js?v=7"></script>
 <script src="target_lock.js?v=7"></script>

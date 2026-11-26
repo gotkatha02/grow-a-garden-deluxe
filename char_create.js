@@ -243,8 +243,10 @@ function spLoop(){cancelAnimationFrame(spRaf);const cv=document.getElementById('
     const S=2.8/(window.META_K||1),old=ctx;ctx=g;g.setTransform(S,0,0,S,0,0);try{const e={st:'idle',d,f},FG=typeof drawGear==='function';if(FG)drawGear(e,120/S,262/S,0,false);drawFrame(e,120/S,262/S,1);if(FG)drawGear(e,120/S,262/S,1,false);}finally{ctx=old;}}catch(err){}
   spRaf=requestAnimationFrame(spLoop);}
 function go(k){location.href=location.pathname+'?char='+k;}
-function create(h,name,st){try{localStorage.setItem('af_prog_v1_'+h.k,JSON.stringify({mode:'play',save:{map:h.home},roll:st,name}));localStorage.removeItem('af_items_v1_'+h.k+'_play');localStorage.setItem('af_char',h.k);}catch(e){}go(h.k);}
-function startTest(k){try{localStorage.setItem('af_prog_v1_'+k,JSON.stringify({mode:'test',save:{map:(HEROES.find(h=>h.k===k)||{}).home||'frostheim'}}));localStorage.setItem('af_char',k);}catch(e){}
+function create(h,name,st){try{if(h.k===CHAR&&window.AFProgress&&AFProgress.lock)AFProgress.lock();localStorage.setItem('af_prog_v1_'+h.k,JSON.stringify({mode:'play',save:{map:h.home},roll:st,name}));localStorage.removeItem('af_items_v1_'+h.k+'_play');localStorage.setItem('af_char',h.k);}catch(e){}go(h.k);}
+/* test mode keeps the hero's play progress in its save (2026-11-26: it used to erase it; ▶ เล่นต่อ brings it back) */
+function startTest(k){try{let o={};try{o=JSON.parse(localStorage.getItem('af_prog_v1_'+k)||'{}')||{};}catch(e){}
+  o.mode='test';if(!o.save)o.save={map:(HEROES.find(h=>h.k===k)||{}).home||'frostheim'};localStorage.setItem('af_prog_v1_'+k,JSON.stringify(o));localStorage.setItem('af_char',k);}catch(e){}
   if(k===CHAR&&window.AFProgress&&AFProgress.setMode)AFProgress.setMode('test',true);else go(k);}
 window.openCreate=(o={})=>{closable=!!o.closable;idx=Math.max(0,HEROES.findIndex(h=>h.k===CHAR));pick();};
 window.CC_HEROES=HEROES;

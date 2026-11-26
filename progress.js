@@ -15,8 +15,13 @@ const townName=id=>(MAPDEF[id]&&MAPDEF[id].name)||id;
 
 function snapshot(){return {v:1,mode:P.mode,name:P.name||null,lv:PS.lv,exp:player.exp,ps:Object.assign(Object.fromEntries(STATK.map(k=>[k,PS[k]])),{_ro:1}),roll:ROLL||null,skills:{...LV},
   map:curMap||null,x:player.x,y:player.y,hp:player.hp/player.maxHp,mp:player.mp/player.maxMp,save:P.save};}
-function save(){if(P.mode!=='play'||P.dead)return;try{localStorage.setItem(KEY,JSON.stringify(snapshot()));}catch(e){}}
-function setMode(m,fresh){const o={mode:m,save:{map:HOME_MAP}};if(!fresh&&m==='play'){try{Object.assign(o,JSON.parse(localStorage.getItem(KEY)||'{}'),{mode:m});}catch(e){}}
+/* LOCK = this page is leaving after a mode switch / a new hero was written: no more saves. Without it the beforeunload save wrote the
+   old play snapshot back over the new record, so 🧪 test mode and 'new game' did nothing from play mode (2026-11-26). */
+let LOCK=false;
+function save(){if(LOCK||P.mode!=='play'||P.dead)return;try{localStorage.setItem(KEY,JSON.stringify(snapshot()));}catch(e){}}
+/* 2026-11-26: switching to TEST keeps this hero's play progress (level, stats, skills, map) in the save — test mode never writes it,
+   so ▶ เล่นต่อ brings the play game back. Before, choosing test mode (picker, create screen, test room) erased it. */
+function setMode(m,fresh){save();LOCK=true;const o={mode:m,save:{map:HOME_MAP}};if((!fresh&&m==='play')||m==='test'){try{Object.assign(o,JSON.parse(localStorage.getItem(KEY)||'{}'),{mode:m});}catch(e){}}
   if(fresh&&m==='play')localStorage.removeItem('af_items_v1_'+CHAR+'_play');
   localStorage.setItem(KEY,JSON.stringify(o));location.reload();}
 
@@ -27,7 +32,9 @@ function startPlay(){testMode=false;if(P.roll)ROLL=typeof rollFrom12==='function
     const ro=P.ps&&P.ps._ro;for(const k of STATK)PS[k]=ro&&P.ps[k]!=null?P.ps[k]:1;if(P.ps&&!ro)setTimeout(()=>chatLog('sys','ระบบสเตตัสเปลี่ยนเป็นแบบ Ragnarok (STR AGI VIT INT DEX LUK) — <b>คืนแต้มทั้งหมดแล้ว</b> เปิด Status (Alt+A) แจกใหม่ได้เลย'),1500);player.exp=P.lv>PS.lv?0:(P.exp||0);for(const k in SKILLS)LV[k]=(P.skills&&P.skills[k])||0;if(!LV[BASIC_KEY])LV[BASIC_KEY]=1;}
   else{PS.lv=1;for(const k of STATK)PS[k]=1;player.exp=0;for(const k in SKILLS)LV[k]=k===BASIC_KEY?1:0;}   // brand-new hero: 48 status points to spend (RO)
   fitStats();if(typeof skValidate==='function')skValidate();applyStats();
-  const map=P.map!==undefined?P.map:HOME_MAP;if(map&&MAPDEF[map]&&curMap!==map)enterMap(map);
+  /* a ?map=… in the link wins over the saved map (2026-11-26: before, play mode always went back to the saved map, so test-map links did nothing) */
+  const qm=(()=>{try{return new URLSearchParams(location.search).get('map');}catch(e){return null;}})();
+  const map=qm&&MAPDEF[qm]?qm:(P.map!==undefined?P.map:HOME_MAP);if(map&&MAPDEF[map]&&curMap!==map)enterMap(map);
   if(P.lv&&P.map===curMap&&P.x!=null){player.x=P.x;player.y=P.y;cam.x=player.x;cam.y=player.y;}
   player.hp=Math.max(1,Math.round(player.maxHp*(P.hp??1)));player.mp=Math.round(player.maxMp*(P.mp??1));
   buildLevels();buildHotbar();if(!P.lv){if(!P.roll)setTimeout(()=>openRollWin(r=>{P.roll=r;save();}),400);chatLog('sys',`เริ่มการผจญภัย! ได้ <b>${pointsAt(1)} Status Point</b> — เปิดหน้าต่าง Status (Alt+A) เพื่ออัปสเตตัส · Skill (K) เมื่อได้ Skill Point`);P.lv=1;}
@@ -81,5 +88,5 @@ function openModes(){const hasPlay=(()=>{try{return !!JSON.parse(localStorage.ge
 if(!P.mode)openModes();
 
 setInterval(save,5000);addEventListener('beforeunload',save);
-window.AFProgress={setMode,get mode(){return P.mode;},get savePoint(){return P.save;},setSave(m){P.save={map:m};save();},townName,save,openModes};
+window.AFProgress={setMode,get mode(){return P.mode;},get savePoint(){return P.save;},setSave(m){P.save={map:m};save();},townName,save,openModes,lock(){LOCK=true;}};
 })();
