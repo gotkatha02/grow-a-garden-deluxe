@@ -1,0 +1,49 @@
+{
+ "_note": "Eclipse Dancer jaguar extra pose (owner's sheet 2026-11-26 07:14, from JAGUAR_POSE_PROMPTS_TH.md): one view = front 3/4 facing right (SE; the engine mirrors SW / W), flat green. Scale = the gold sun disc on her head matched to the idle SE frames (masked template match). clean = ChatGPT's green / yellow glow smudges mended; tone = as soft / pale as the clip frames. Played by jaguar_pose.js. Rebuild: python3 -I tools/sheet_state.py tools/clips/jaguar_roar.json [preview.png]. Frames: 1 gather, crouched · 2 roar, arms spread · 3 full roar · 4 settle. anchors = feet centre.",
+ "js": "assets_jaguar.js",
+ "prefix": "JAG",
+ "state": "roar",
+ "sheet": "assets/heroes/jaguar/poses/roar.webp",
+ "rows": 2,
+ "cols": 2,
+ "scale": 0.429,
+ "anchors": [
+  [
+   215,
+   463
+  ],
+  [
+   272,
+   477
+  ],
+  [
+   284,
+   479
+  ],
+  [
+   254,
+   472
+  ]
+ ],
+ "clean": true,
+ "tone": {
+  "L": 0.9,
+  "C": 0.88,
+  "blur": 0.45
+ },
+ "dirs": [
+  "S",
+  "SE",
+  "E",
+  "NE",
+  "N"
+ ],
+ "flip": false,
+ "dur": [
+  110,
+  120,
+  120,
+  110
+ ],
+ "loop": false
+}

@@ -1,0 +1,69 @@
+{
+ "_note": "Eclipse Dancer jaguar extra pose (owner's sheet 2026-11-26 07:14, from JAGUAR_POSE_PROMPTS_TH.md): one view = front 3/4 facing right (SE; the engine mirrors SW / W), flat green. Scale = the gold sun disc on her head matched to the idle SE frames (masked template match). clean = ChatGPT's green / yellow glow smudges mended; tone = as soft / pale as the clip frames. Played by jaguar_pose.js. Rebuild: python3 -I tools/sheet_state.py tools/clips/jaguar_pounce.json [preview.png]. Frames: 1 crouch · 2 take-off · 3 rise, daggers up · 4 apex dive · 5 dive, daggers down · 6 landing crouch, daggers in the ground · 7 rise · 8 ready. anchors: ground frames = feet centre; in-air 2-5 = hips (belt gem x - 20) over the lowest foot (the game lifts her by player.z; frame 5 lands with the daggers sinking into the ground).",
+ "js": "assets_jaguar.js",
+ "prefix": "JAG",
+ "state": "pounce",
+ "sheet": "assets/heroes/jaguar/poses/pounce.webp",
+ "rows": 2,
+ "cols": 4,
+ "scale": 0.503,
+ "anchors": [
+  [
+   172,
+   329
+  ],
+  [
+   186,
+   375
+  ],
+  [
+   175,
+   411
+  ],
+  [
+   150,
+   374
+  ],
+  [
+   163,
+   334
+  ],
+  [
+   163,
+   366
+  ],
+  [
+   140,
+   372
+  ],
+  [
+   181,
+   407
+  ]
+ ],
+ "clean": true,
+ "tone": {
+  "L": 0.9,
+  "C": 0.88,
+  "blur": 0.45
+ },
+ "dirs": [
+  "S",
+  "SE",
+  "E",
+  "NE",
+  "N"
+ ],
+ "flip": false,
+ "dur": [
+  70,
+  60,
+  70,
+  90,
+  80,
+  120,
+  90,
+  90
+ ],
+ "loop": false
+}

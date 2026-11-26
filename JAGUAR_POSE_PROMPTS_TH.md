@@ -213,3 +213,25 @@ No effects at all: no slash trails, motion lines, speed lines, glow, sparkles, d
    - ท่านั่ง: ใส่ในตาราง SIT ของ hero_sit.js ใช้รูปเดียวกันทุกทิศ
    - ท่าหมุน: ใช้วน 4 เฟรมแทนการหมุนผ่านเฟรม attack ใน mkJgCyclone
 4. ใส่ `?jgpose=0` ไว้ดูท่าเดิมเทียบ แล้วส่งคลิปเทียบให้เจ้าของดู
+
+## สร้างแล้ว (2026-11-26)
+
+เจ้าของส่งรูปมาครบ 8 แผ่น (07:13–07:14 · ท่านั่งขอเป็น 8 มุม) — เก็บรูปดิบไว้ที่ `assets/heroes/jaguar/poses/<ท่า>.webp`
+
+| ท่า (state ในแอตลาส) | เฟรม | ใช้กับสกิล |
+|---|---|---|
+| pounce (8) | หมอบ · ถีบตัว · ลอยขึ้นชูมีด · พุ่งเฉียง · ดิ่งแทง · ลงพื้นมีดปักดิน · ลุก · พร้อม | Predator Drop, Sky-Pounce (หมอบช่วงก่อนกระโดด), Throne of Claws (หมอบก่อนหายตัว + ตอนร่าย) |
+| dash (4) | ย่อตัว · ก้าวพุ่ง · ก้าวพุ่งอีกขา · สไลด์หยุด | Jaguar Step, Blood Chase, Shadow Slip (สไลด์หยุด), Throne (ร่างเงาตอนฟันวาร์ป + สไลด์ตอนโผล่) |
+| guard (4) | ยกมีด · ไขว้มีด · ไขว้มีด (หายใจ) · กางมีดปัด | Countercut, Obsidian Parry (ไขว้สลับ 2-3 · ปัด/สวนสำเร็จ = 4), Obsidian Mirror, Throne (ท้ายท่า) |
+| roar (4) | ย่อตัว · คำรามกางแขน · คำรามสุดเสียง · ผ่อนลง | Predator's Cry, Savage Tempo, Hunter's Focus (ท่าย่อตัวจ้อง) |
+| cast (4) | หลับตาไขว้มีด · ชูมีด · ชูมีดเหนือหัว · ค้าง | Hunter's Focus (หลับตา), Blood Moon Hunt, Shadow Veil, Nightfall Dance, Phantom Riposte, Eclipse of the Fifth Sun (สลับ 3-4 ตลอดช่วงค้าง), ตอนร่าย (แถบร่าย) ของ Fifth Sun / Blood Moon Hunt / Spirit |
+| throw (4) | เงื้อ · ขว้าง · ส่งแขน · กลับท่า | Obsidian Seal, Moon Trap, Mirror Shatter |
+| spin (4) | หน้า · ข้างขวา · หลัง · ข้างซ้าย | Jaguar Cyclone (หมุน 1 รอบต่อการโดน 1 ครั้ง ตามเข็มนาฬิกาบนจอ เริ่มจากทิศที่หันอยู่ ใช้ได้ทุกทิศ) |
+| sit (8 ทิศ) | นั่งคุกเข่า วางมีดไขว้ไว้ข้างหน้า | ปุ่ม Insert / ปุ่ม 🧘 บนมือถือ (hero_sit.js) + สถานะ "นั่งพัก ×2" |
+
+- ตัดด้วย `python3 -I tools/sheet_state.py tools/clips/jaguar_<ท่า>.json [preview.png]` (ไฟล์ spec บอกเฟรม จุดยึด สเกล ไว้ครบ) — ท่านั่ง `tools/clips/jaguar_sit.json` (โหมด pics เขียนรูปแยก `assets/sit/jaguar_<ทิศ>.webp`)
+- สเกล = จับขนาดดวงอาทิตย์ทองบนหัวให้เท่าท่ายืน (idle SE) · `clean` = ลบคราบแสงเขียว/เหลืองที่ ChatGPT ทิ้งไว้บนตัว · `tone` = ทำให้สี/ความคมใกล้เฟรมคลิป
+- ผูกท่ากับสกิลใน `jaguar_pose.js`: เปลี่ยนแค่เฟรมที่โชว์ ความยาวท่า เวลาตี เวลาพุ่ง event ทุกอันเท่าเดิม (ตรวจแล้ว: make() ทุกสกิล × 8 ทิศ ตรงกันหมด · `tools/fxlab.py hits` 21 สกิลเหมือนเดิมทุกตัว · herosweep / lostev / combo ไม่มี error)
+- ท่าที่วาดเป็นมุมเดียว (หันขวาเฉียงหน้า) ใช้เมื่อหันหน้า S / SE / E / SW / W เท่านั้น (ฝั่งซ้ายใช้ภาพกลับด้าน) — หันหลัง N / NE / NW ยังใช้เฟรมเดิม
+- `?jgpose=0` = ท่าเดิม (ไว้เทียบ) · คลิปเทียบ: `DSF=1.5 python3 tools/fx/jgclip.py pose1|pose2|sit ['&jgpose=0']`
+- ยังไม่ได้ทำ: ท่ามุมหลัง (ถ้าอยากให้ครบทุกทิศ ต้องเจนแผ่นมุมหลังเพิ่ม), Spiral Ambush ยังใช้ท่าฟันเดิม (จังหวะฟันผูกกับเฟรม)

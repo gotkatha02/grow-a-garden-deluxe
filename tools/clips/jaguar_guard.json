@@ -1,0 +1,69 @@
+{
+ "_note": "Eclipse Dancer jaguar extra pose (owner's sheet 2026-11-26 07:14, from JAGUAR_POSE_PROMPTS_TH.md): one view = front 3/4 facing right (SE; the engine mirrors SW / W), flat green. Scale = the gold sun disc on her head matched to the idle SE frames (masked template match). clean = ChatGPT's green / yellow glow smudges mended; tone = as soft / pale as the clip frames. Played by jaguar_pose.js. Rebuild: python3 -I tools/sheet_state.py tools/clips/jaguar_guard.json [preview.png]. Frames: 1 draw (daggers up) · 2 crossed-dagger guard · 3 guard, breathing · 4 wide deflect, daggers out. anchors = feet centre. erase = a floating yellow blob beside frame 1 (kept clear of the red sash outline).",
+ "js": "assets_jaguar.js",
+ "prefix": "JAG",
+ "state": "guard",
+ "sheet": "assets/heroes/jaguar/poses/guard.webp",
+ "rows": 2,
+ "cols": 2,
+ "scale": 0.431,
+ "anchors": [
+  [
+   216,
+   478
+  ],
+  [
+   225,
+   478
+  ],
+  [
+   233,
+   479
+  ],
+  [
+   234,
+   474
+  ]
+ ],
+ "clean": true,
+ "erase": [
+  [
+   481,
+   337,
+   521,
+   337,
+   521,
+   357,
+   516,
+   361,
+   505,
+   358,
+   495,
+   354,
+   485,
+   349,
+   481,
+   345
+  ]
+ ],
+ "tone": {
+  "L": 0.9,
+  "C": 0.88,
+  "blur": 0.45
+ },
+ "dirs": [
+  "S",
+  "SE",
+  "E",
+  "NE",
+  "N"
+ ],
+ "flip": false,
+ "dur": [
+  90,
+  110,
+  110,
+  90
+ ],
+ "loop": false
+}

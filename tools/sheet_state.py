@@ -18,6 +18,17 @@ SPEC (JSON):
   "variants": [[sx,sy,deg], ...],             optional, for ONE picture (rows 1, cols 1 — the hippo's jump / gulp poses
                                               2026-11-24): the picture becomes one frame per variant, scaled sx / sy and turned
                                               deg (+ = clockwise) about its anchor — a little life for a single still.
+  "clean": true,                              optional (jaguar poses 2026-11-26): mend ChatGPT's green / yellow-green glow
+                                              smudges on the figure (painted with the colour round them) and drop floating ones
+  "erase": [[x0,y0,x1,y1] | [x1,y1,x2,y2,...]], optional with "clean": sheet boxes / polygons that are wiped (a smudge
+                                              the cleanup cannot tell from the body)
+  "clean_debug": "dbg.png",                   optional: where the cleanup acted (magenta painted, cyan erased, yellow restored)
+  "tone": {"L":.9,"C":.88,"blur":.45},        optional: a crisp hand-drawn pose made as soft / pale as the clip frames round it
+                                              (luma contrast × L about "mid" .42, chroma × C, premultiplied blur in cell px)
+  "pics": {"prefix": "assets/sit/jaguar_", "names": ["S",...], "k": .489, "q": 92}   optional: write every frame as its
+                                              own picture instead of an atlas state (sitting views for hero_sit.js, "scale"
+                                              1 = sheet px); "anchors" = sit point (body centre x, ground line y) -> the
+                                              tool prints the SIT entry (cx / fy fractions)
   "dirs": ["S","SE","E","NE","N"],            source directions that get these frames (the engine mirrors SW / W / NW)
   "flip": false,                              true when the sheet faces left (it is mirrored so the frames face right)
   "dur": [ms, ...], "loop": false             default frame times (skills usually build their own timed sequence)
@@ -52,6 +63,67 @@ if magenta:
     col[..., 0] -= e2; col[..., 2] -= e2
 else:
     col[..., 1] = np.minimum(col[..., 1], np.maximum(col[..., 0], col[..., 2]) + 6)
+if spec.get('clean'):
+    # "clean": true (jaguar poses 2026-11-26) — ChatGPT sometimes leaves a soft green / yellow-green glow on the figure
+    # although the prompt says no effects. The matte turns it into see-through patches (holes in an arm or the tail)
+    # and floating dark / yellow smears. Inside the figure (the solid matte, closed and hole-filled) such pixels are
+    # painted with the colour of the nearest clean pixel and made opaque; a pixel the matte only thinned (a teal stripe
+    # whose green is a bit above its blue) gets its own colour back; pure background inside the figure (real gaps between
+    # arm and body) stays transparent; outside the figure everything farther than 2.5 px from the solid matte goes.
+    # A smudge = strongly key-tinted seeds + the weaker yellow-green wash connected to them. Each smudge that sits
+    # inside the figure is painted, one whose surroundings are mostly background (a glow floating beside the body,
+    # enclosed only by the closing) is erased; "erase": [[x0,y0,x1,y1], ...] sheet boxes force erasing.
+    R_, G_, B_ = im[..., 0], im[..., 1], im[..., 2]
+    if magenta:
+        seed = (np.minimum(R_, B_) - G_ > 45) & (np.abs(R_ - B_) < 70); weak = (np.minimum(R_, B_) - G_ > 30)
+    else:
+        seed = (G_ - B_ > 45) & (G_ - R_ > 8); weak = (G_ - B_ > 30) & (G_ - R_ > -12) & (np.maximum(R_, G_) < 248)
+    keyd = np.sqrt(((im - k) ** 2).sum(-1)) < 45
+    rim = nd.binary_dilation(keyd, iterations=2)          # an outline pixel mixed with the background is not a smudge
+    seed &= ~rim & (a > .02); weak &= ~rim
+    seed = nd.binary_opening(seed, structure=np.ones((3, 3)))   # a smudge is a blob; a 1-2 px line is a colour edge
+    lab0, _ = nd.label(weak | seed, structure=np.ones((3, 3)))
+    ids = np.unique(lab0[seed]); tint = np.isin(lab0, ids[ids > 0])
+    S = (a > .9) & ~tint
+    F = nd.binary_fill_holes(nd.binary_closing(S, structure=nd.generate_binary_structure(2, 1), iterations=3))
+    def hsv(c):
+        mx = c.max(-1); mn = c.min(-1); d = np.maximum(mx - mn, 1e-4); r, g, b = c[..., 0], c[..., 1], c[..., 2]
+        h = np.where(mx == r, ((g - b) / d) % 6, np.where(mx == g, (b - r) / d + 2, (r - g) / d + 4)) / 6
+        return h, (mx - mn) / np.maximum(mx, 1e-4), mx
+    def rgb_of(h, s_, v):
+        i = np.floor(h * 6) % 6; f = h * 6 - np.floor(h * 6); p_ = v * (1 - s_); q_ = v * (1 - f * s_); t_ = v * (1 - (1 - f) * s_)
+        return np.stack([np.choose(i.astype(int), c) for c in ((v, q_, p_, p_, t_, v), (t_, v, v, q_, p_, p_), (p_, p_, t_, v, v, q_))], -1)
+    lab1, n1 = nd.label(tint & F, structure=np.ones((3, 3))); paint = np.zeros_like(tint); gone = np.zeros_like(tint)
+    newc = col.copy()
+    for i, sl in enumerate(nd.find_objects(lab1), 1):
+        sl2 = tuple(slice(max(0, s.start - 4), s.stop + 4) for s in sl)
+        ci = lab1[sl2] == i; ring = nd.binary_dilation(ci, iterations=3) & ~ci & ~tint[sl2]
+        bgf = (a[sl2][ring] < .5).mean() if ring.any() else 0
+        if bgf > .45: gone[sl2] |= ci; continue
+        paint[sl2] |= ci
+        # the smudge keeps its light and shade but takes the hue / saturation of the clean body round it
+        rc = col[sl2][ring & (a[sl2] > .9)] / 255.
+        if len(rc) < 5: continue
+        rh, rs, rv = hsv(rc); ang = np.angle(np.exp(2j * np.pi * rh).mean()) / (2 * np.pi) % 1
+        ph, ps, pv = hsv(col[sl2][ci] / 255.)
+        sub = newc[sl2]; sub[ci] = rgb_of(np.full_like(pv, ang), np.maximum(ps * .6, np.median(rs) * .9), pv) * 255; newc[sl2] = sub
+    for er_ in spec.get('erase', []):                       # hand-picked boxes / polygons: everything in them goes
+        if len(er_) == 4:
+            x0, y0, x1, y1 = er_; gone[y0:y1, x0:x1] = True; paint[y0:y1, x0:x1] = False
+        else:                                               # [x1,y1, x2,y2, ...] = a polygon (keeps a nearby outline)
+            pm_ = Image.new('L', (gone.shape[1], gone.shape[0]), 0)
+            ImageDraw.Draw(pm_).polygon([(er_[i], er_[i + 1]) for i in range(0, len(er_) - 1, 2)], fill=1)
+            pm_ = np.asarray(pm_) > 0; gone |= pm_; paint &= ~pm_
+    thin = F & ~tint & ~gone & (a > 0) & (a < 1) & ~nd.binary_dilation(a < .3, iterations=1)   # not the rim of a real gap
+    soft = np.dstack([nd.gaussian_filter(newc[..., c], .8) for c in range(3)])
+    col = np.where(paint[..., None], soft, col)
+    a = np.where(paint | thin, 1.0, a)
+    a = np.where(gone | (~F & tint) | (~F & (nd.distance_transform_edt(~S) > 2.5)), 0.0, a)
+    if spec.get('clean_debug'):                                       # where the cleanup acted: painted magenta,
+        dbg = np.where(paint[..., None], [255, 0, 255], np.where(gone[..., None], [0, 255, 255],     # erased cyan,
+              np.where(thin[..., None], [255, 255, 0], im * .55)))                                   # restored yellow
+        Image.fromarray(dbg.astype(np.uint8)).save(spec['clean_debug'])
+    print(f'clean: {int(paint.sum())} smudge px painted, {int(gone.sum())} erased, {int(thin.sum())} thinned px restored')
 a[a < .08] = 0
 er = nd.binary_erosion(a > .5, iterations=1); a = np.where((a > 0) & ~er, a * .75, a)   # soften the outer fringe
 rgba = np.dstack([np.clip(col, 0, 255), a * 255]).astype(np.uint8)
@@ -90,9 +162,40 @@ for i, m in enumerate(masks):
     if flip: fr = fr.transpose(Image.FLIP_LEFT_RIGHT); ax_ = fr.width - 1 - ax_
     frames.append((fr, ax_, ay_))
 if VAR: frames = [vary(frames[0][0], frames[0][1], frames[0][2], *v) for v in VAR]
+TONE = spec.get('tone')
+def tone(q, T):
+    """"tone": {"L": .9, "C": .88, "blur": .45, "mid": .42} — bring a crisp, saturated drawing closer to clip-built
+    atlas frames (video frames are softer and paler): luma contrast about `mid` × L, chroma × C, a premultiplied blur in
+    cell px — so a pose drawn by hand does not pop out of the clip frames around it."""
+    arr = np.asarray(q).astype(np.float32) / 255; rgb, al = arr[..., :3], arr[..., 3]
+    Y = rgb @ np.array([.299, .587, .114], np.float32); mid = T.get('mid', .42)
+    rgb = np.clip((mid + (Y - mid) * T.get('L', 1))[..., None] + (rgb - Y[..., None]) * T.get('C', 1), 0, 1)
+    s = T.get('blur', 0)
+    if s:
+        pm = np.dstack([nd.gaussian_filter(rgb[..., c] * al, s) for c in range(3)]); al = nd.gaussian_filter(al, s)
+        rgb = np.where(al[..., None] > 1e-3, pm / np.maximum(al, 1e-3)[..., None], 0)
+    return Image.fromarray(np.dstack([np.clip(rgb, 0, 1) * 255, np.clip(al, 0, 1) * 255]).astype(np.uint8))
+PICS = spec.get('pics')
+if PICS:
+    # loose pictures instead of an atlas state (the jaguar's 8 sitting views 2026-11-26, for hero_sit.js): every frame is
+    # written as <prefix><name>.webp at sheet px × "scale" (keep 1: hero_sit scales them by its own k), toned with the
+    # blur in output px; the anchor = where she sits: x = body centre, y = the body's ground line (things lying in front
+    # of her, like the jaguar's crossed daggers, may reach below it) -> printed as cx / fy fractions for the SIT entry.
+    cxs, fys = {}, {}
+    for i, (fr, ax_, ay_) in enumerate(frames):
+        nm = PICS['names'][i]
+        q = fr if S == 1 else fr.resize((max(1, round(fr.width * S)), max(1, round(fr.height * S))), Image.LANCZOS)
+        if TONE: q = tone(q, TONE)
+        q.save(PICS['prefix'] + nm + '.webp', 'WEBP', quality=PICS.get('q', 92), method=6)
+        cxs[nm] = round(ax_ / fr.width, 3); fys[nm] = round((ay_ + 1) / fr.height, 3)
+        print(f'  {PICS["prefix"]}{nm}.webp {q.width}x{q.height} cx {cxs[nm]} fy {fys[nm]}')
+    js_ = lambda d: ','.join(f'{n}:{d[n]}' for n in PICS['names'])
+    print("SIT entry: {dir:'%s',k:%s,cx:{%s},fy:{%s}}" % (PICS['prefix'], PICS.get('k', '?'), js_(cxs), js_(fys)))
+    sys.exit()
 pieces = []
 for i, (fr, ax_, ay_) in enumerate(frames):
     q = fr.resize((max(1, round(fr.width * S)), max(1, round(fr.height * S))), Image.LANCZOS)
+    if TONE: q = tone(q, TONE)
     cell = Image.new('RGBA', (CW, CH), (0, 0, 0, 0)); cell.paste(q, (round(PX - ax_ * S), round(PY - ay_ * S)), q)
     bb = cell.getchannel('A').point(lambda v: 255 if v > 0 else 0).getbbox()
     if bb[0] <= 0 or bb[1] <= 0 or bb[2] >= CW or bb[3] >= CH: print('  WARNING: frame', i + 1, 'touches the cell edge', bb)

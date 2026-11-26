@@ -5,9 +5,15 @@
    cx = body centre across the picture (bottom quarter). Heroes without a SIT entry cannot sit yet.
    wukong (snow monkey, 2026-11-23): only 4 sitting views on the owner's sheet (S SE E N) → W side mirrored, NE / NW = the back view;
    cut by `tools/dir8cut.py sit`; cx = head centre (the staff lies across the feet); k = 230 / (342 × 1.09): the sitting row of
-   his sheet is drawn 1.09× bigger than its standing rows (pompom + face size). Waits for char_wukong.js (CHAR 'wukong'). */
+   his sheet is drawn 1.09× bigger than its standing rows (pompom + face size). Waits for char_wukong.js (CHAR 'wukong').
+   jaguar (Eclipse Dancer, owner 2026-11-26 'ท่านั่งขอทุกมุม'): 8 real views, kneeling with her crossed daggers laid on the
+   ground in front → fy = the body's ground line as a fraction of the picture height (the daggers lie below it, nearer
+   the camera); cut by `tools/sheet_state.py tools/clips/jaguar_sit.json` (pics mode); k = the gold sun disc vs the idle SE
+   frames. fy defaults to 1 (picture bottom on the feet) for the other heroes. */
 (function(){const SIT={cat:{dir:'assets/sit/cat_',k:228/475,cx:{S:.513,SE:.497,E:.506,NE:.516,N:.516,NW:.509,W:.496,SW:.488}},
-  wukong:{dir:'assets/sit/wukong_',k:230/373,cx:{S:.581,SE:.457,E:.457,NE:.429,N:.429,NW:.429,W:.539,SW:.54}}}[CHAR];
+  wukong:{dir:'assets/sit/wukong_',k:230/373,cx:{S:.581,SE:.457,E:.457,NE:.429,N:.429,NW:.429,W:.539,SW:.54}},
+  jaguar:{dir:'assets/sit/jaguar_',k:.489,cx:{S:.566,SE:.613,E:.636,NE:.556,N:.458,NW:.38,W:.363,SW:.358},
+    fy:{S:.852,SE:.863,E:.867,NE:.868,N:.856,NW:.869,W:.864,SW:.863},rest:1}}[CHAR];   /* rest:1 = this file shows the 'นั่งพัก ×2' status (the cat / monkey do it in their own code) */
 if(!SIT)return;
 const IM={};for(const d of ['S','SE','E','NE','N','NW','W','SW']){const im=new Image();im.src=SIT.dir+d+'.webp?v=1';IM[d]=im;}
 player.sitting=false;let fade=0;
@@ -19,9 +25,12 @@ window.drawPlayer=function(){const im=IM[player.dir];if(!player.sitting||!im||!i
   ctx.save();ctx.fillStyle='rgba(20,15,30,.28)';ctx.beginPath();ctx.ellipse(x,y-1,w*.42,w*.12,0,0,Math.PI*2);ctx.fill();
   const mf=curMap&&mapHost()&&mapHost().charFilter,f=[typeof CHAR_FILTER!=='undefined'?CHAR_FILTER:'',mf,typeof sceneFilter==='function'?sceneFilter():''].filter(Boolean).join(' ');if(f)ctx.filter=f;
   const br=1+.012*Math.sin(performance.now()/650);   /* calm breathing */
-  ctx.translate(x,y);ctx.scale(1,br);ctx.drawImage(im,-w*SIT.cx[player.dir],-h,w,h);ctx.restore();};
+  ctx.translate(x,y);ctx.scale(1,br);ctx.drawImage(im,-w*SIT.cx[player.dir],-h*(SIT.fy?SIT.fy[player.dir]:1),w,h);ctx.restore();};
 /* stand up when the hero does anything */
-(function tick(){if(player.sitting&&(player.moving||player.action||player.casting||player.hp<=0))player.sitting=false;requestAnimationFrame(tick);})();
+const REST={n:'นั่งพัก — ฟื้น HP/SP ×2',c:'#8fd86a',i:'REST'};
+(function tick(){if(player.sitting&&(player.moving||player.action||player.casting||player.hp<=0))player.sitting=false;
+  if(SIT.rest&&player.buffs){if(player.sitting){if(BUFFDEF.rest!==REST)BUFFDEF.rest=REST;player.buffs.rest={t:1e9,total:1e9,lbl:'×2'};}else if(player.buffs.rest&&player.buffs.rest.lbl!=null)delete player.buffs.rest;}
+  requestAnimationFrame(tick);})();
 addEventListener('keydown',e=>{if(e.key==='Insert'&&!/INPUT|TEXTAREA/.test((e.target||{}).tagName||'')){e.preventDefault();heroSit();}});
 /* phone button next to the chat / auto buttons */
 const st=document.createElement('style');st.textContent='#mobSit{display:none;position:fixed;left:calc(150px + env(safe-area-inset-left));bottom:calc(160px + env(safe-area-inset-bottom));width:50px;height:50px;z-index:25;border-radius:50%;border:3px solid #e9b44c;background:#3a2a1ecc;color:#fff;font-size:24px;padding:0;touch-action:none}body.mob #mobSit{display:block}#mobSit.on{background:#e9b44c}';

@@ -1,0 +1,65 @@
+{
+ "_note": "Eclipse Dancer jaguar sitting views (owner 2026-11-26 07:13 'ท่านั่งขอทุกมุม', sheet 07:14): 8 views 2x4 on green, row 1 S SE E NE, row 2 N NW W SW, kneeling with the crossed daggers laid on the ground in front. Written as loose pictures assets/sit/jaguar_<DIR>.webp for hero_sit.js (pics mode, sheet px, toned like the clip frames). Anchors = sit point in each picture: x = body / head centre, y = the body's ground line (the daggers reach below it, they lie in front of her) -> SIT cx / fy. k .489 = the gold sun disc matched to the idle SE frames (sheet px -> cell px). Rebuild: python3 -I tools/sheet_state.py tools/clips/jaguar_sit.json",
+ "js": "assets_jaguar.js",
+ "prefix": "JAG",
+ "state": "sit",
+ "sheet": "assets/heroes/jaguar/poses/sit.webp",
+ "rows": 2,
+ "cols": 4,
+ "scale": 1,
+ "anchors": [
+  [
+   168,
+   380
+  ],
+  [
+   200,
+   382
+  ],
+  [
+   215,
+   382
+  ],
+  [
+   185,
+   382
+  ],
+  [
+   130,
+   384
+  ],
+  [
+   112,
+   385
+  ],
+  [
+   118,
+   386
+  ],
+  [
+   112,
+   388
+  ]
+ ],
+ "clean": true,
+ "tone": {
+  "L": 0.9,
+  "C": 0.88,
+  "blur": 0.9
+ },
+ "pics": {
+  "prefix": "assets/sit/jaguar_",
+  "names": [
+   "S",
+   "SE",
+   "E",
+   "NE",
+   "N",
+   "NW",
+   "W",
+   "SW"
+  ],
+  "k": 0.489,
+  "q": 92
+ }
+}

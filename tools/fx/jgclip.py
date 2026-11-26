@@ -1,4 +1,4 @@
-"""Eclipse Jaguar showcase clip per tree (effects v3, 2026-11-25): DSF=2 python3 tools/fx/jgclip.py basic|a|b|c|ult|pic [extra-query]  (pic = the 5 painted pieces; &jgpic=0 = the same with the SVG pieces)  (ult: use CW=900 CH=540)  (DSF = device pixel ratio, CW/CH = crop in css px)
+"""Eclipse Jaguar showcase clip per tree (effects v3, 2026-11-25): DSF=2 python3 tools/fx/jgclip.py basic|a|b|c|ult|pic|pose1|pose2|sit [extra-query]  (pic = the 5 painted pieces; &jgpic=0 = the same with the SVG pieces; pose1 / pose2 = the skills that use the owner's pose sheets, &jgpose=0 = the old frames)  (ult: use CW=900 CH=540)  (DSF = device pixel ratio, CW/CH = crop in css px)
 → $OUT/jaguar_<tree>.mp4 (30 fps, Thai labels). Serve the repo on 8765 first (python3 -m http.server 8765). OUT=/tmp/fx by default.
 Each entry: (key | 'js:<code>', label, seconds, pre-js, distance to the dummy (<0 = stay where the last entry left her), test-room mode[, (dx,dz) crop offset]).
 In js / pre code the dummy is __e and setFxTimer runs on the game clock (the clip steps the game by hand)."""
@@ -41,6 +41,27 @@ SEQ={'basic':[('basic','Twin Fang · มีดคู่ออบซิเดี�
       ('jcSkyPounce','Sky-Pounce · อุ้งเท้าวิญญาณยักษ์',1.6,'',170,'one',(40,90)),
       ('jcTotem','Blood Moon Hunt · จันทร์เลือด',2.2,'',130,'one',(-40,110)),
       ('jgFifthSun','Eclipse of the Fifth Sun · ดวงอาทิตย์ดำ',3.0,'',0,'room',(0,150))],
+ # 2026-11-26 the owner's pose sheets (jaguar_pose.js): pose1 = Basic + A, pose2 = B + C (compare with &jgpose=0), sit = 8 facings
+ 'pose1':[('jgStep','Jaguar Step · ท่าพุ่งต่ำ',.9,'',170,'one',(-60,34)),
+      ('js:'+CAST1%'jgCountercut'+'setFxTimer(.18,()=>{'+HIT+'});','Countercut · ไขว้มีดรับ → กางปัด',1.2,'',80,'one'),
+      ('jgCry',"Predator's Cry · ท่าคำราม",1.6,'',130,'one'),
+      ('jgFocus',"Hunter's Focus · หลับตารวบรวม → ย่อตัวจ้อง",1.3,'',150,'one'),
+      ('jgTempo','Savage Tempo · ท่าคำราม',1.3,'',130,'one'),
+      ('js:'+CAST1%'jgParry'+'setFxTimer(.25,()=>{'+HIT+'});','Obsidian Parry · ไขว้มีดรับ → กางปัด',1.3,'',80,'one'),
+      ('js:'+CAST1%'jgBloodChase','Blood Chase · ท่าพุ่งต่ำ',.8,'',150,'one'),
+      ('jgCyclone','Jaguar Cyclone · หมุนตัวรอบทิศ',1.2,'',70,'one'),
+      ('jgDrop','Predator Drop · กระโจน ลอย ดิ่ง ลงพื้น',1.4,'',150,'one',(0,40)),
+      ('jcSkyPounce','Sky-Pounce · หมอบ แล้วกระโจน',1.8,'',170,'one',(0,50)),
+      ('jgThrone','Throne of Claws · หมอบ หายตัว เงาวิ่งฟัน โผล่สไลด์',3.8,'',120,'one',(0,50))],
+ 'pose2':[('jgVeil','Shadow Veil · ท่าร่าย',1.3,'',130,'one'),
+      ('jgSlip','Shadow Slip · โผล่หลังเหยื่อ ท่าสไลด์หยุด',.9,'addBrand(__e,3);',110,'one'),
+      ('js:'+CAST1%'jgMirror'+'setFxTimer(.5,()=>{'+HIT+'setFxTimer(.25,()=>{'+CAST1%'jgShatter'+'});});','Obsidian Mirror + Mirror Shatter · ตั้งการ์ด → ท่าขว้าง',1.8,'',110,'one'),
+      ('jgMoonTrap','Moon Trap · ท่าขว้าง',1.4,'',130,'one',(60,30)),
+      ('jgNightfall','Nightfall Dance · ท่าร่าย',1.1,'',100,'one'),(then('jgPhantom'),'+ Phantom Riposte · ท่าร่าย',.9,'',-1,'one'),
+      ('jcSeal','Obsidian Seal · ท่าขว้าง',1.6,'',130,'one',(60,30)),
+      ('jcTotem','Blood Moon Hunt · ท่าร่ายชูมีด',2.2,'',130,'one'),
+      ('jgFifthSun','Eclipse of the Fifth Sun · ท่าร่ายชูมีดค้าง',4.4,'',0,'room',(0,60))],
+ 'sit':[('js:faceTo(Math.PI/2);heroSit(true);for(let i=1;i<8;i++)setFxTimer(i*.5,()=>faceTo(Math.PI/2+i*Math.PI/4));','นั่งพัก (ปุ่ม Insert) · ท่านั่ง 8 ทิศ',4.2,'',130,'one',(0,30))],
  'ult':[('jgThrone','Throne of Claws · ULT A หายตัวฟันวาร์ป รอยแผลค้างแล้วระเบิด',4.0,'',120,'one',(0,50)),
       ('jgFifthSun','Eclipse of the Fifth Sun · ULT B ดวงอาทิตย์ดำ ฝนหอกออบซิเดียน',4.6,'',0,'room',(0,110))],
  'c':[('jcSeal','Obsidian Seal · ขว้างแผ่นผนึก ชาร์จแล้วระเบิด',1.9,'',130,'one',(60,30)),
@@ -83,6 +104,6 @@ async def main():
                 n+=1
         await g.close()
         if g.errs:print('ERRORS',g.errs[:4])
-    subprocess.run(['ffmpeg','-y','-loglevel','error','-framerate','30','-i',f'{FR}/%05d.png','-c:v','libx264','-preset','veryfast','-crf','23','-pix_fmt','yuv420p','-movflags','+faststart',f'{OUT}/jaguar_{TREE}.mp4'],check=True)
+    subprocess.run(['ffmpeg','-y','-loglevel','error','-framerate','30','-i',f'{FR}/%05d.png','-vf','pad=ceil(iw/2)*2:ceil(ih/2)*2','-c:v','libx264','-preset','veryfast','-crf','23','-pix_fmt','yuv420p','-movflags','+faststart',f'{OUT}/jaguar_{TREE}.mp4'],check=True)
     print(f'{OUT}/jaguar_{TREE}.mp4',n,'frames')
 asyncio.run(main())
