@@ -299,7 +299,7 @@ const DESERT=THEME==='desert'||THEME==='necro',GREEK=THEME==='greek',JAPAN=THEME
 const SEA_BANK=[['grD12',1],['grD14',1],['grD15',1],['jgD17',1],['jgD18',1],['egD12',1],['ocShells',.62],['ocStarfish',.66],['ocPebbles',.6],['ocConch',.7]],SEA_ROCK=['ocBoulder','ocBoulder','ocRootFingers','ocRootStump'];
 const AUTO_G=CAVE||cfg.noDetails?[]:SNOWTH?seq('snD',0,11):THEME==='jungle'?[...seq('jgD',0,11),...seq('jgD',21,23)]:THEME==='desert'&&cfg.green?seq('egD',0,11):GREEK&&!cfg.dark?seq('grD',0,11):JAPAN&&!cfg.dark?seq('jpD',0,11).filter(n=>cfg.lily||n!=='jpD07'):CAPT?seq('cpD',0,11):SEAZ?['grD06','grD07','jgD21','jgD23','egD04','egD05','grD06','jgD23','jgD03','jgD00']:[];
 /* lawns (raised garden beds with a stone kerb) get their own grass tufts and flowers */
-if(cfg.stepTex)need.add(cfg.stepTex);if(cfg.pathTex)need.add(cfg.pathTex);
+if(cfg.stepTex)need.add(cfg.stepTex);if(cfg.pathTex)need.add(cfg.pathTex);if(cfg.lakeBank)addAll(cfg.lakeBank.set);if(cfg.meadow)addAll(cfg.meadow);
 const LAWN_G=CAPT?seq('cpD',0,11):[],LAWN_F=CAPT?['cpD12','cpD13','cpD14','cpD15','cpD16','cpD17','cpD20']:[];if(cfg.lawns){addAll(LAWN_G);addAll(LAWN_F);for(const l of cfg.lawns)need.add(l.tex||cfg.ground||'cpGrass');}
 const AUTO_D=CAVE||cfg.noDetails||cfg.clean?[]:SNOWTH?seq('snD',12,23):THEME==='jungle'?seq('jgD',12,20):DESERT?seq('egD',12,23):CAPT&&!cfg.city?seq('cpD',12,23).filter(n=>(cfg.farm||!/cpD(18|19)/.test(n))&&(cfg.ruinBits||!/cpD(21|22|23)/.test(n))):JAPAN&&!cfg.dark?seq('jpD',12,23).filter(n=>(cfg.ruinBits||!/jpD(22|23)/.test(n))&&(cfg.sakura||n!=='jpD13')&&(cfg.maple||n!=='jpD14')):GREEK&&!cfg.dark?seq('grD',12,23).filter(n=>((cfg.sea&&!cfg.noShells)||!/grD1[45]/.test(n))&&(cfg.ruinBits||!/grD(17|18|21|22)/.test(n))):[];
 addAll(AUTO_G);addAll(AUTO_D);
@@ -329,7 +329,7 @@ function note(n,x,y){(USE.get(n)||USE.set(n,[]).get(n)).push([x,y]);}
 /* pick a piece for (x,y) that is still allowed; null if every candidate is used up here */
 function pickCap(a,x,y){if(!a||!a.length)return null;for(let k=0;k<8;k++){const n=a[Math.floor(rnd()*a.length)];if(allowed(n,x,y)){note(n,x,y);return n;}}return null;}
 /* forest fill: any allowed piece, else a common one (trees) */
-function pickFill(a,x,y){const n=pickCap(a,x,y);if(n)return n;const c=a.filter(k=>COMMON.test(k)&&!MID.test(k));return c.length?c[Math.floor(rnd()*c.length)]:null;}
+function pickFill(a,x,y){const n=pickCap(a,x,y);if(n)return n;const c=a.filter(k=>(CAT[k]&&CAT[k].fill)||COMMON.test(k)&&!MID.test(k));return c.length?c[Math.floor(rnd()*c.length)]:null;}
 const pick=a=>{let n=pick0(a);if(pickAt&&a.length>1)for(let k=0;k<4&&pickAt(n);k++)n=pick0(a);return n;};
 const SO=(cfg.seed||1)*7.31;
 function hash(x,y){let h=(x*374761393+y*668265263)|0;h=Math.imul(h^h>>>13,1274126177);return((h^h>>>16)>>>0)/4294967296;}
@@ -461,13 +461,13 @@ const AOC=new Map();function baseAO(im,c){if(!im||cfg.baseAO===0)return im;let r
   const gb=g.createLinearGradient(0,h*.9,0,h);gb.addColorStop(0,'rgba(0,0,0,0)');gb.addColorStop(1,cfg.bounce||(SNOWTH?'rgba(200,210,240,.18)':'rgba(70,95,40,.16)'));g.fillStyle=gb;g.fillRect(0,h*.9,w,h*.1);AOC.set(im,r);return bm(r);}
 function mk(n,x,y,o={}){if(!n)return null;const c=CAT[n],im0=IMG[n];if(!c||!im0||!im0.naturalWidth)return null;const v=o.v||1,str=o.land?1:R(.9,1.1),w=c.w*v*str,h=c.h*v/Math.sqrt(str);
   const vk=o.land||c.t==='water'?0:Math.floor(rnd()*4),im=c.t==='flat'||c.t==='water'||o.cast===0||c.nc?variant(n,vk===3?0:vk):baseAO(variant(n,vk===3?0:vk),c);
-  const ob=Object.assign({n,x,y,w,h,img:im,base:im0,ax:c.ax??.5,ay:c.ay,cast:c.t!=='flat'&&c.t!=='water'&&!c.nc?1:0,flip:(fc=>o.noflip?false:(LR[n]>1.06?false:LR[n]<.94?true:fc))(rnd()<.5),tree:c.t==='tree',big:c.t==='big'},o);
+  const ob=Object.assign({n,x,y,w,h,img:im,base:im0,ax:c.ax??.5,ay:c.ay,cast:c.t!=='flat'&&c.t!=='water'&&!c.nc?1:0,flip:(fc=>o.noflip||c.nf?false:(LR[n]>1.06?false:LR[n]<.94?true:fc))(rnd()<.5),tree:c.t==='tree',big:c.t==='big'},o);
   ob.ph=rnd()*6.28;ob.sway=o.sway??(c.sw??SWAY(n));
   const k=c.c;ob.solid=[];ob.ell=null;
   /* c.cs: collision as circles [dx,dy,r] in units of the width (arches, gates, poles: walk between the posts) */
   if(c.cs)for(const s of c.cs)ob.solid.push([x+s[0]*w*(ob.flip?-1:1),y+s[1]*w,s[2]*w]);
-  if(typeof k==='number')ob.solid.push([x,y-k*w*.5,k*w*.9]);
-  else if(Array.isArray(k))ob.ell=[x,y-k[1]*w,k[0]*w,k[1]*w];
+  if(typeof k==='number')ob.solid.push([x,y-(c.ec?0:k*w*.5),k*w*.9]);
+  else if(Array.isArray(k))ob.ell=[x,y-(c.ec?0:k[1]*w),k[0]*w,k[1]*w];
   else if(k==='log')ob.solid.push([x-w*.22,y-h*.08,w*.13],[x+w*.2,y-h*.12,w*.13]);
   else if(k==='gate'||k==='posts'){const dx=k==='gate'?.36:.4;ob.solid.push([x-w*dx,y-w*.04,w*.1],[x+w*dx,y-w*.04,w*.1]);}
   else if(k==='cave'||k==='arch')ob.ell=[x,y-.17*w,.44*w,.17*w];
@@ -510,7 +510,7 @@ function build(){try{
     trails.push(mkTrail(p,ti?(cfg.trailW||104)*.74:(cfg.trailW||104),ti*17+(cfg.seed||1),AN));});
   /* 2026-11-25: on the levelling fields the trails are real worn paths (the organic-street painter with the land's own soil, worn through
      in places, grass creeping over the edges) instead of a faint trample nobody could see */
-  if(PRETTY&&TRAMP&&!SNOWTH&&!cfg.noPath){const PT=PATHTEX;trails.forEach((P,ti)=>{const pts=[];for(let i=0;i<P.length;i+=5)pts.push([P[i][0],P[i][1]]);const L=P[P.length-1];pts.push([L[0],L[1]]);
+  if(PRETTY&&TRAMP&&(!SNOWTH||cfg.snowPath)&&!cfg.noPath){const PT=PATHTEX;trails.forEach((P,ti)=>{const pts=[];for(let i=0;i<P.length;i+=5)pts.push([P[i][0],P[i][1]]);const L=P[P.length-1];pts.push([L[0],L[1]]);
       if(pts.length>2){const r=roadPoly(pts,(ti?.66:.84)*(cfg.trailW||104),ti*7.3+2.9);r.tex=PT;r.trail=1;
         /* the chunks this path really crosses (its bounding box covers half the map) */
         r.ck=new Set();const mg=r.w*.6+70;for(const q of r.s)for(let cj=Math.floor((q[1]-mg)/512);cj<=Math.floor((q[1]+mg)/512);cj++)for(let ci=Math.floor((q[0]-mg)/512);ci<=Math.floor((q[0]+mg)/512);ci++)r.ck.add(ci+','+cj);
@@ -520,7 +520,7 @@ function build(){try{
   for(const P of trails)for(let i=0;i<P.length;i++){const p=P[i],w=p[4],c=p[5];
     if(KIND==='cobble'){if(i%2===0)dirt.push([p[0]+R(-4,4),p[1]+R(-4,4),w*R(.44,.54)]);continue;}
     if(c<.85){const n=c<.15?2:rnd()<.6?1:0;for(let k=0;k<n;k++){const o=R(-.3,.3)*w*(1-c*.6);dirt.push([p[0]+p[2]*o+R(-5,5),p[1]+p[3]*o+R(-5,5),w*R(.32,.5)*(1-c*.85)]);}}
-    if(TRAMP&&SNOWTH&&i%2===0){const s=(i/2)%2?1:-1,off=(vnoise(i*.02+7,3)-.5)*w*.5;prints.push([p[0]+p[2]*(s*7+off),p[1]+p[3]*(s*7+off),Math.atan2(p[3],p[2])+Math.PI/2]);}
+    if(TRAMP&&SNOWTH&&!cfg.noPrints&&i%2===0){const s=(i/2)%2?1:-1,off=(vnoise(i*.02+7,3)-.5)*w*.5;prints.push([p[0]+p[2]*(s*7+off),p[1]+p[3]*(s*7+off),Math.atan2(p[3],p[2])+Math.PI/2]);}
     if(c>.6&&rnd()<.04){const o=R(-.3,.3)*w;dirt.push([p[0]+p[2]*o,p[1]+p[3]*o,R(5,10)]);}
     if(KIND!=='cobble'&&p[5]<.5&&rnd()<.14)for(const s2 of [-1,1]){if(rnd()<.45)continue;const o=p[4]*R(.4,.52);lips.push([p[0]+p[2]*o*s2,p[1]+p[3]*o*s2,R(5,10),R(3,5.5)]);}}
   for(let i=0;i<stream.length;i++){const p=stream[i];if(B&&Math.hypot(p[0]-B[0],p[1]-B[1])<150)continue;for(const s2 of [-1,1]){if(rnd()<.35)continue;const o=p[4]*R(.42,.56);const big=rnd()<.2;banks.push([p[0]+p[2]*o*s2,p[1]+p[3]*o*s2,big?R(13,22):R(6,12),big?R(8,12):R(4,8)]);}}
@@ -623,6 +623,12 @@ function build(){try{
   /* lake decorations (lilies, reeds, canoes...) */
   if(cfg.lakes&&cfg.lakeSet)for(const l of cfg.lakes)for(let i=0;i<l.rx*l.ry/9000;i++){const a=rnd()*6.283,r=Math.sqrt(rnd())*.85,x=l.x+Math.cos(a)*l.rx*r,y=l.y+Math.sin(a)*l.ry*r;if(!inLake(x,y))continue;
     const n=pickCap(cfg.lakeSet,x,y);const o=mk(n,x,y,{v:R(.85,1.15)});if(o){o.cast=0;o.bob=CAT[n].t==='water'?1:0;o.solid=[];o.ell=null;seaObjs.push(o);}}
+  /* iso maps (2026-11-26): pieces round the lake shores (snow heaps, rocks), cfg.lakeBank={set,sp,skip,off:[a,b],v:[a,b]}: every sp px of shore,
+     found along the ray from the lake centre like the docks, then pushed off the edge by off px — solid and depth-sorted like any piece */
+  if(cfg.lakes&&cfg.lakeBank){const LB=cfg.lakeBank,of=LB.off||[10,34],vv=LB.v||[.8,1.1];for(const l of cfg.lakes){if(!l.rx)continue;const n=Math.round(2*Math.PI*Math.sqrt((l.rx*l.rx+l.ry*l.ry)/2)/(LB.sp||170));
+    for(let k=0;k<n;k++){if(rnd()<(LB.skip??.3))continue;const a=(k+R(-.3,.3))/n*6.2832,ux=Math.cos(a),uy=Math.sin(a);let lo=0,hi=Math.max(l.rx,l.ry)*1.8;for(let t=0;t<16;t++){const m=(lo+hi)/2;inLake(l.x+ux*m,l.y+uy*m)?lo=m:hi=m;}
+      const d=lo+R(of[0],of[1])*(uy<0?.6:1),x=l.x+ux*d,y=l.y+uy*d;if(inLake(x,y)||nearTrail(x,y,26)||inLand(x,y,30)||warps.some(w=>Math.hypot(w.x-x,w.y-y)<220)||!far(x,y,LB.gap||60))continue;
+      PX=x;PY=y;put(mk(pickCap(LB.set,x,y),x,y,{v:R(vv[0],vv[1])}));}}}
   /* sea objects */
   if(SEA&&cfg.seaSet)for(let i=0;i<W*H/90000;i++){const x=R(60,W-60),y=R(60,H-60),dd=seaDepth(x,y);if(dd<70||(SEA.reach&&dd>SEA.reach))continue;   /* sea.reach: only as far out as anyone on the shore can see */if(seaObjs.some(o=>Math.hypot(o.x-x,o.y-y)<150))continue;
     const n=dd<240&&rnd()<.5?pickCap(cfg.seaSet.filter(s=>/floe|wave|plank|Barrel|islet/i.test(s)),x,y):pickCap(cfg.seaSet,x,y);if(!n)continue;const o=mk(n,x,y,{v:R(.85,1.15)});if(o){o.bob=1;o.cast=0;seaObjs.push(o);}}
@@ -636,7 +642,7 @@ function build(){try{
     const dd=mk(t,x,y,{v:R(.75,1.1),cast:0});if(!dd)continue;if(useG||dd.sway>.8){dd.sway=1.6;const k=((x/CH)|0)+','+((y/CH)|0);(grassB.get(k)||grassB.set(k,[]).get(k)).push(dd);}else decals.push(dd);}
   /* 2026-11-25 flower meadows: the land's flowers and grass in clumps on the open ground — flat, baked into the ground, never on a path,
      in water, at a landmark or inside a forest mass; a slow noise field decides which meadows bloom */
-  {const MEAD=PRETTY&&!CAVE?(SNOWTH?['snD02','snD03','snD04','snD04','snD05']:AUTO_G):[];if(MEAD.length)for(let gy=90;gy<H;gy+=190)for(let gx=90;gx<W;gx+=190){const x=gx+R(-75,75),y=gy+R(-75,75),m=vnoise(x/620+71.3,y/620+19.7);if(m<.46||rnd()>.68)continue;
+  {const MEAD=PRETTY&&!CAVE?(cfg.meadow||(SNOWTH?['snD02','snD03','snD04','snD04','snD05']:AUTO_G)):[];if(MEAD.length)for(let gy=90;gy<H;gy+=190)for(let gx=90;gx<W;gx+=190){const x=gx+R(-75,75),y=gy+R(-75,75),m=vnoise(x/620+71.3,y/620+19.7);if(m<.46||rnd()>.68)continue;
     if(edgeDist(x,y)<edgeBand(x,y)+40||gN(x,y)>gthr-.03||water(x,y,40)||nearTrail(x,y,30)||nearStream(x,y,40)||inLand(x,y,70)||inPave(x,y,30))continue;
     const k1=pick(MEAD),k2=rnd()<.45?pick(MEAD):k1,n=6+((rnd()*8)|0),rx=R(50,110);
     for(let i=0;i<n;i++){const a=rnd()*6.283,r=Math.sqrt(rnd()),px=x+Math.cos(a)*rx*r,py=y+Math.sin(a)*rx*.6*r;if(water(px,py,10)||nearTrail(px,py,6)||inLand(px,py,30))continue;
@@ -816,7 +822,7 @@ function patchMask(P,x0,y0){const s=P.scale||700,st=CH/MR,img=maskG.createImageD
     let a=Math.max(0,Math.min(1,(v-P.thr)/(P.soft||.012)));if(P.inland&&SEA&&a>0){const L=-seaDepth(x,y),q=P.inland;a*=Math.max(0,Math.min(1,(L-q[0])/(q[1]-q[0])));}if(a>0)any=true;const k=(j*MR+i)*4;d[k]=d[k+1]=d[k+2]=255;d[k+3]=a*255;}
   if(!any)return null;maskG.putImageData(img,0,0);return maskC;}
 function lump(q,x,y,rx,ry,top,shade){q.fillStyle=shade;q.beginPath();q.ellipse(x,y+2.5,rx,ry,0,0,7);q.fill();q.fillStyle=top;q.beginPath();q.ellipse(x,y,rx,ry,0,0,7);q.fill();}
-const GROUND=cfg.ground||'snow',SNOWY=/snow|Tundra|RockSnow|Glacier|SeaIce/.test(GROUND);
+const GROUND=cfg.ground||'snow',SNOWY=cfg.snowy??/snow|Tundra|RockSnow|Glacier|SeaIce/.test(GROUND);
 const LIP=CAPT?['#b8b0a0','#7a7060']:JAPAN?['#b8b0a0','#7a7060']:GREEK?['#e8e0cc','#a89a80']:DESERT?['#d8b07a','#9a7040']:!SNOWTH&&!CAVE?(THEME==='volcano'?['#4a3430','#241616']:['#a9a57c','#6a6a44']):CAVE?['#6d6788','#3e3a52']:GROUND==='texMud'?['#e6e2ee','#8f86a8']:['#eceaf4','#c2bede'];
 /* wear on paving: soft blotches of grime and of sun-bleached stone, so a large street never reads as one flat repeated tile */
 function grime(q,x0,y0,a){for(const [o,col,k] of [[5.1,'70,52,34',1],[9.7,'255,246,226',.75],[2.3,'90,110,60',.5]]){const m=patchMask({scale:o===2.3?140:260,thr:o===2.3?.62:.55,o},x0,y0);if(!m)continue;
@@ -1011,7 +1017,7 @@ function bakeRaw(ci,cj){if(!bakeOut){bakeOut=document.createElement('canvas');ba
   /* contact shadow: a soft dark pool right where each object meets the ground (ambient occlusion), so nothing looks pasted on */
   /* it sits where the PAINTED bottom of the sprite is (the anchor is ~7% of the height above it), and it reaches a little past that
      edge so a dark seam shows under the object — that seam is what makes a sprite read as standing on the ground */
-  if(cfg.contact!==0){const ca=(cfg.contact??1)*(CAVE?.55:.5);for(const o of sh){if(!o.cast||!inR(o.x,o.y,o.w))continue;const base=o.y+o.h*(1-o.ay),rx=o.w*(o.tree?.24:o.big?.47:.4),ry=Math.max(7,rx*(o.big?.2:.28)),cy=base-ry*.45;
+  if(cfg.contact!==0&&cfg.pool!==0){const ca=(cfg.contact??1)*(CAVE?.55:.5);for(const o of sh){if(!o.cast||!inR(o.x,o.y,o.w))continue;const base=o.y+o.h*(1-o.ay),rx=o.w*(o.tree?.24:o.big?.47:.4),ry=Math.max(7,rx*(o.big?.2:.28)),cy=base-ry*.45;
     q.save();q.translate(o.x,cy);q.scale(1,ry/rx);const g=q.createRadialGradient(0,0,0,0,0,rx);g.addColorStop(0,`rgba(16,12,20,${ca})`);g.addColorStop(.6,`rgba(16,12,20,${ca*.6})`);g.addColorStop(1,'rgba(16,12,20,0)');q.fillStyle=g;q.fillRect(-rx,-rx,2*rx,2*rx);q.restore();
     /* tight occlusion line hugging the foot */
     const lx=o.w*(o.tree?.13:o.big?.42:.3),ly=Math.max(3,lx*.12);q.save();q.translate(o.x,base-1);q.scale(1,ly/lx);const g2=q.createRadialGradient(0,0,0,0,0,lx);g2.addColorStop(0,`rgba(12,8,14,${ca*1.1})`);g2.addColorStop(.7,`rgba(12,8,14,${ca*.7})`);g2.addColorStop(1,'rgba(12,8,14,0)');q.fillStyle=g2;q.fillRect(-lx,-lx,2*lx,2*lx);q.restore();}}if(WALLS)drawWalls(q,ci,cj);return c;}
