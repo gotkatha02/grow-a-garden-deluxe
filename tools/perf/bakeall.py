@@ -1,11 +1,11 @@
-# Time the painting of every ground chunk of a map (software canvas, like tools/perf): max / mean / slowest chunks.  python3 bakeall.py MAP [port]
+# Time the painting of every ground chunk of a map (software canvas, like tools/perf): max / mean / slowest chunks.  python3 bakeall.py MAP [port] [extra query, e.g. '&isoao=0']
 import asyncio, sys, time
 from playwright.async_api import async_playwright
-MAP = sys.argv[1]; PORT = int(sys.argv[2]) if len(sys.argv) > 2 else 8765
+MAP = sys.argv[1]; PORT = int(sys.argv[2]) if len(sys.argv) > 2 else 8765; XQ = sys.argv[3] if len(sys.argv) > 3 else ''
 async def main():
     async with async_playwright() as p:
         b = await p.chromium.launch(args=["--disable-gpu", "--disable-accelerated-2d-canvas"]); pg = await b.new_page(viewport={'width': 1280, 'height': 720})
-        await pg.goto('http://localhost:%d/index.html?char=wolf&map=frostheim&nosw=1&guide=0&cb=%d' % (PORT, time.time())); await pg.wait_for_timeout(6000)
+        await pg.goto('http://localhost:%d/index.html?char=wolf&map=frostheim&nosw=1&guide=0&cb=%d%s' % (PORT, time.time(), XQ)); await pg.wait_for_timeout(6000)
         await pg.evaluate("(()=>{const b=document.querySelector('[data-m=test]');if(b)b.click();})()"); await pg.wait_for_timeout(8000)
         await pg.evaluate("id=>enterMap(id)", MAP)
         for _ in range(80):

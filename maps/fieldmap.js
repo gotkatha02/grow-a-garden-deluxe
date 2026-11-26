@@ -161,7 +161,7 @@ function life(g,t,dt,night){if(!lifeL)lifeLists();const v=viewRect(g),vw=v.x1-v.
     if(f.z>0){g.fillStyle=`rgba(30,40,20,${.18*fade})`;g.beginPath();g.ellipse(f.x+f.z*.25,f.y,2.6,1.2,0,0,7);g.fill();}
     g.save();g.translate(f.x,f.y-f.z);g.rotate(f.rot);g.scale(1,Math.abs(Math.cos(t*.006+f.ph))*.7+.3);g.globalAlpha=fade;g.fillStyle=f.c;g.beginPath();g.ellipse(0,0,5.6,2.8,0,0,7);g.fill();g.strokeStyle='rgba(60,40,20,.55)';g.lineWidth=.8;g.stroke();g.restore();}
   /* butterflies by day, fireflies by night or in the dark wood */
-  const DESF=(THEME==='desert'&&MOOD!=='sandstorm')||(THEME==='greek'&&MOOD==='greek')||(THEME==='japan'&&(MOOD==='japan'||MOOD==='sakura'))||(THEME==='capital'&&(MOOD==='capital'||MOOD==='light'));const want=OUTDOOR&&THEME!=='necro'?(DESF&&!night?4:night||MOOD==='dark'?(JUNGLY||MOOD==='dark'||MOOD==='sun'||MOOD==='town'?16:0):(JUNGLY||MOOD==='sun'||MOOD==='town'?5:0)):0;
+  const DESF=(THEME==='desert'&&MOOD!=='sandstorm')||(THEME==='greek'&&MOOD==='greek')||(THEME==='japan'&&(MOOD==='japan'||MOOD==='sakura'))||(THEME==='capital'&&(MOOD==='capital'||MOOD==='light'));const want=OUTDOOR&&THEME!=='necro'&&cfg.flies!==0?(DESF&&!night?4:night||MOOD==='dark'?(JUNGLY||MOOD==='dark'||MOOD==='sun'||MOOD==='town'?16:0):(JUNGLY||MOOD==='sun'||MOOD==='town'?5:0)):0;
   while(flies.length<want){const x=v.x0+Math.random()*vw,y=v.y0+Math.random()*vh;if(blocked(x,y)&&Math.random()<.7)continue;flies.push({x,y,h:12+Math.random()*30,a:Math.random()*6.28,s:20+Math.random()*25,ph:Math.random()*6.28,c:['#ffd84a','#ff9a3a','#7ac8ff','#ffffff','#ff7ab0'][(Math.random()*5)|0],glow:night||MOOD==='dark'});}
   if(flies.length>want)flies.length=want;
   for(const b of flies){b.a+=(Math.sin(t*.0013+b.ph)*1.6)*dt;b.x+=Math.cos(b.a)*b.s*dt;b.y+=Math.sin(b.a)*b.s*.6*dt;if(!inV(b.x,b.y,80)){b.x=v.x0+Math.random()*vw;b.y=v.y0+Math.random()*vh;}
@@ -356,7 +356,14 @@ function seaDepth(x,y){if(!SEA)return -1e9;const s=SEA.side,a=SEA.amp||220,along
 const isSea=(x,y)=>seaDepth(x,y)>0;
 /* cfg.sea.inland=[near,far,plus] (map px from the waterline): no groves nearer than `near`, they fade in up to `far`, and are `plus` denser beyond.
    Gives a beach its zones: water → open sand → scattered palms → palm forest. Used by every grove / forest-edge test. */
-const GBI=SEA&&SEA.inland;const GSC=cfg.groveScale||(PRETTY?980:760);function gN(x,y){let n=fbm(x/GSC,y/GSC);if(GBI){const L=-seaDepth(x,y),a=GBI;n+=L<a[0]?-.35:L<a[1]?-.35+(.35+a[2])*((L-a[0])/(a[1]-a[0])):a[2];}return n;}
+const GBI=SEA&&SEA.inland;const GSC=cfg.groveScale||(PRETTY?980:760);function gN(x,y){let n=fbm(x/GSC,y/GSC);if(GBI){const L=-seaDepth(x,y),a=GBI;n+=L<a[0]?-.35:L<a[1]?-.35+(.35+a[2])*((L-a[0])/(a[1]-a[0])):a[2];}if(WOODS.length){const w=woodsV(x,y);if(w>n)n=w;}return n;}
+/* 2026-11-26 cfg.woods (iso kit maps): hand-drawn forest masses — shapes {e:[cx,cy,rx,ry]} or {p:[x,y,…]}, m = fringe width (default 170).
+   Inside a shape the grove noise is lifted above the forest threshold and it falls off over m px outside, so a drawn wood gets the same solid
+   mass, thinning ring, edge props and blocked cells as a noise grove (and meadows / decor keep away from it). Maps without cfg.woods: unchanged. */
+const WOODS=(cfg.woods||[]).map(s=>Object.assign({m:170},s)),WTH=cfg.groves?cfg.groves.thr??.52:.52;
+function woodsD(s,x,y){if(s.e){const [cx,cy,rx,ry]=s.e;return (Math.hypot((x-cx)/rx,(y-cy)/ry)-1)*Math.min(rx,ry);}const p=s.p;let c=false,d=1e9;
+  for(let i=0,j=p.length-2;i<p.length;j=i,i+=2){const xi=p[i],yi=p[i+1],xj=p[j],yj=p[j+1];if((yi>y)!==(yj>y)&&x<(xj-xi)*(y-yi)/(yj-yi)+xi)c=!c;const dx=xj-xi,dy=yj-yi,L=dx*dx+dy*dy||1,t=Math.max(0,Math.min(1,((x-xi)*dx+(y-yi)*dy)/L));d=Math.min(d,Math.hypot(x-xi-t*dx,y-yi-t*dy));}return c?-d:d;}
+function woodsV(x,y){let v=-9;for(const s of WOODS){const d=woodsD(s,x,y)+(vnoise(x/110+4.1,y/110+8.3)-.5)*s.m*.55,w=WTH+.05-Math.max(0,d)/s.m*.25;if(w>v)v=w;}return v;}
 const inLake=(x,y,pad=0)=>{if(!cfg.lakes)return false;for(const l of cfg.lakes){const n=(vnoise(x/120,y/120)-.5)*.25+(vnoise(x/330+l.x*.01,y/330)-.5)*.75;if(((x-l.x)/(l.rx+pad))**2+((y-l.y)/(l.ry+pad))**2<1+n)return true;}return false;};
 
 /* ---------- built data ---------- */
@@ -562,17 +569,24 @@ function build(){try{
   /* vignettes (sea zone 2026-11-25): small composed groups — a lone palm, dune grass, driftwood with shells, a rock with a starfish, root tips —
      spread over a band of the map so wide open ground always has something to look at, never a sprinkle of single props.
      cfg.vign={n,sp,inland:[a,b],sets:[{main,set,k:[min,max],r,gap,inland}]}: centres at least sp apart, inland = map px from the waterline;
-     the first piece comes from main (else set), the rest from set around it; the same piece never within gap (default 420) — caps are not used here */
+     the first piece comes from main (else set), the rest from set around it; the same piece never within gap (default 420) — caps are not used here.
+     2026-11-26 rules for kit maps (a set only goes where it makes sense): zone = [[x,y,r]] the group stays inside those rings (ice crystals by the ice),
+     patch = 'tex' only on that ground patch (puddles on thawed ground), forest = [a,b] only where the grove noise is a..b below the forest threshold
+     (logs and stumps along a forest's edge), open = d only where it is at least d below it (copses in the open); V.strict = members never step into a
+     clearing and flat pieces (branches, puddles) lie on the ground as decals */
+  const vOK=(q,x,y)=>{if(q.zone&&zoneF(q.zone,x,y)<.5)return false;if(q.not&&zoneF(q.not,x,y)>.25)return false;if(q.patch){const P=patchOf(q.patch);if(!P||patchV(P,x,y)<.55)return false;}
+    if(q.forest||q.open!=null){const g=gN(x,y);if(q.forest&&(g<WTH-q.forest[1]||g>WTH-q.forest[0]))return false;if(q.open!=null&&g>WTH-q.open)return false;}return true;};
   if(cfg.vign){const V=cfg.vign,cs=[];for(let tries=0;tries<V.n*60&&cs.length<V.n;tries++){const x=R(80,W-80),y=R(80,H-80);let L=1e9;
       if(SEA){L=-seaDepth(x,y);if(V.inland&&(L<V.inland[0]||L>V.inland[1]))continue;}
       if(water(x,y,40)||edgeDist(x,y)<edgeBand(x,y)+40||nearTrail(x,y,40)||inLand(x,y,80)||inClearing(x,y,0)||inPave(x,y,40))continue;
       if(cs.some(c=>Math.hypot(c[0]-x,c[1]-y)<(V.sp||600)))continue;
-      const ok=V.sets.filter(q=>!q.inland||(L>=q.inland[0]&&L<=q.inland[1]));if(!ok.length)continue;cs.push([x,y]);
+      const ok=V.sets.filter(q=>(!q.inland||(L>=q.inland[0]&&L<=q.inland[1]))&&vOK(q,x,y));if(!ok.length)continue;cs.push([x,y]);
       const S0=ok[Math.floor(rnd()*ok.length)],k=S0.k[0]+Math.floor(rnd()*(S0.k[1]-S0.k[0]+1));
       for(let i=0,got=0;i<k*6&&got<k;i++){const a=rnd()*6.283,r=got===0?R(0,12):R(.4,1)*(S0.r||90),px=x+Math.cos(a)*r,py=y+Math.sin(a)*r*.6;
         if(water(px,py,24)||nearTrail(px,py,14)||inLand(px,py,30)||!far(px,py,S0.sp||34))continue;const A=got===0&&S0.main?S0.main:S0.set;
+        if((S0.zone&&zoneF(S0.zone,px,py)<.3)||(S0.patch&&!(patchOf(S0.patch)&&patchV(patchOf(S0.patch),px,py)>=.3))||(V.strict&&(inClearing(px,py,0)||inPave(px,py,10))))continue;
         let n=null;for(let t2=0;t2<8&&!n;t2++){const c=A[Math.floor(rnd()*A.length)],u=USE.get(c);if(IMG[c]&&(!u||!u.some(p=>Math.hypot(p[0]-px,p[1]-py)<(S0.gap||420))))n=c;}
-        if(!n)continue;note(n,px,py);PX=px;PY=py;const o=mk(n,px,py,{v:R(.84,1.06)*(got?R(.74,.94):1)});if(o){put(o);got++;}}}}
+        if(!n)continue;note(n,px,py);PX=px;PY=py;const o=mk(n,px,py,{v:R(.84,1.06)*(got?R(.74,.94):1)});if(o){if(V.strict&&CAT[n].t==='flat'){o.cast=0;decals.push(o);}else put(o);got++;}}}}
   for(const n of cfg.onTrail||[]){const P=trails[Math.floor(rnd()*trails.length)];if(!P||P.length<40)continue;const p=P[Math.floor(R(.2,.8)*P.length)];const o=mk(n,p[0],p[1]+4,{v:R(.9,1.05)});if(o){o.solid=[];o.ell=null;put(o);}}
   /* wayside life: something every 230–340 px on alternating sides of every road, and a little camp beside the main road every ~1600 px */
   if(cfg.wayKit){const WK=cfg.wayKit,ok=n=>CAT[n]&&IMG[n]&&IMG[n].naturalWidth,WAY=WK.way.filter(ok),CEN=WK.center.filter(ok),ARO=WK.around.filter(ok),nearW=(x,y,d)=>warps.some(w=>Math.hypot(w.x-x,w.y-y)<d);
@@ -607,11 +621,11 @@ function build(){try{
     if(FLD&&pn&&set===GS&&n<=gthr-.012&&CAT[pn]&&CAT[pn].t!=='tree'&&(n<=gthr-FRB||rnd()<.5))continue;
     put(mk(pn,x,y,{v:fringe?R(.62,.88):tv}));
     /* understory: a bush, rock or sapling at some trunks so groves are not a wall of identical trees */
-    if(cfg.under&&de>=band&&rnd()<.22){const a=rnd()*6.28,ux=x+Math.cos(a)*R(40,70),uy=y+Math.abs(Math.sin(a))*R(18,40)+8;if(!nearTrail(ux,uy,10)&&!water(ux,uy,10)&&far(ux,uy,34)){PX=ux;PY=uy;put(mk(pickCap(cfg.under,ux,uy),ux,uy,{v:R(.75,1)}));}}}
+    if(cfg.under&&de>=band&&rnd()<.22){const a=rnd()*6.28,ux=x+Math.cos(a)*R(40,70),uy=y+Math.abs(Math.sin(a))*R(18,40)+8;if(!nearTrail(ux,uy,10)&&!water(ux,uy,10)&&far(ux,uy,34)&&!(cfg.clearClean&&inClearing(ux,uy,0))){PX=ux;PY=uy;put(mk(pickCap(cfg.under,ux,uy),ux,uy,{v:R(.75,1)}));}}}
   /* props in the open and at grove edges */
   const OP=cfg.open||[],ED=cfg.edge||OP,pd0=cfg.propDens??1;
   for(let gy=70;gy<H;gy+=104)for(let gx=70;gx<W;gx+=104){const x=gx+R(-42,42),y=gy+R(-42,42),de=edgeDist(x,y);if(de<edgeBand(x,y)-20)continue;
-    if(water(x,y,30)||nearTrail(x,y,22)||nearStream(x,y,28)||inLand(x,y,50))continue;if(WALLS&&wallFoot(x,y,60))continue;if(inPave(x,y,40))continue;const n=gN(x,y),edge=n>gthr-.12&&n<gthr+.04,c=inClearing(x,y,0);
+    if(water(x,y,30)||nearTrail(x,y,22)||nearStream(x,y,28)||inLand(x,y,50))continue;if(WALLS&&wallFoot(x,y,60))continue;if(inPave(x,y,40))continue;const n=gN(x,y),edge=n>gthr-(cfg.edgeN??.12)&&n<gthr+.04,c=inClearing(x,y,0);if(c&&cfg.clearClean)continue;   /* cfg.clearClean (kit maps): a clearing (camp yard, stone circle) stays empty · cfg.edgeN: how far out from a forest mass its edge props go (grove-noise units, default .12) */
     /* clumped, not sprinkled: a slow noise field decides where things gather; each find brings one or two smaller companions */
     const cl=cfg.clump===0?1:Math.max(0,Math.min(1,(vnoise(x/520+41.3,y/520+7.7)-.38)/.3)),pr=(edge?.26:c?.03:.05)*pd0*PDF*(cfg.clump===0?1:.35+1.1*cl);
     if(rnd()>pr||!far(x,y,edge?66:120))continue;const set=edge?ED:OP;PX=x;PY=y;if(set.length){const p0=mk(pickCap(set,x,y),x,y,{v:R(.8,1.2)});put(p0);
@@ -642,10 +656,12 @@ function build(){try{
     const dd=mk(t,x,y,{v:R(.75,1.1),cast:0});if(!dd)continue;if(useG||dd.sway>.8){dd.sway=1.6;const k=((x/CH)|0)+','+((y/CH)|0);(grassB.get(k)||grassB.set(k,[]).get(k)).push(dd);}else decals.push(dd);}
   /* 2026-11-25 flower meadows: the land's flowers and grass in clumps on the open ground — flat, baked into the ground, never on a path,
      in water, at a landmark or inside a forest mass; a slow noise field decides which meadows bloom */
-  {const MEAD=PRETTY&&!CAVE?(cfg.meadow||(SNOWTH?['snD02','snD03','snD04','snD04','snD05']:AUTO_G)):[];if(MEAD.length)for(let gy=90;gy<H;gy+=190)for(let gx=90;gx<W;gx+=190){const x=gx+R(-75,75),y=gy+R(-75,75),m=vnoise(x/620+71.3,y/620+19.7);if(m<.46||rnd()>.68)continue;
+  /* 2026-11-26 cfg.meadowPatch='tex' (kit snow maps): grass and flowers only where that patch is (thawed ground), never in a clearing (camp yard) */
+  {const MEAD=PRETTY&&!CAVE?(cfg.meadow||(SNOWTH?['snD02','snD03','snD04','snD04','snD05']:AUTO_G)):[],MP=cfg.meadowPatch&&patchOf(cfg.meadowPatch);if(MEAD.length)for(let gy=90;gy<H;gy+=190)for(let gx=90;gx<W;gx+=190){const x=gx+R(-75,75),y=gy+R(-75,75),m=vnoise(x/620+71.3,y/620+19.7);
+    if(MP){if(patchV(MP,x,y)<.5||inClearing(x,y,40)||rnd()>.75)continue;}else if(m<.46||rnd()>.68)continue;
     if(edgeDist(x,y)<edgeBand(x,y)+40||gN(x,y)>gthr-.03||water(x,y,40)||nearTrail(x,y,30)||nearStream(x,y,40)||inLand(x,y,70)||inPave(x,y,30))continue;
     const k1=pick(MEAD),k2=rnd()<.45?pick(MEAD):k1,n=6+((rnd()*8)|0),rx=R(50,110);
-    for(let i=0;i<n;i++){const a=rnd()*6.283,r=Math.sqrt(rnd()),px=x+Math.cos(a)*rx*r,py=y+Math.sin(a)*rx*.6*r;if(water(px,py,10)||nearTrail(px,py,6)||inLand(px,py,30))continue;
+    for(let i=0;i<n;i++){const a=rnd()*6.283,r=Math.sqrt(rnd()),px=x+Math.cos(a)*rx*r,py=y+Math.sin(a)*rx*.6*r;if(water(px,py,10)||nearTrail(px,py,6)||inLand(px,py,30)||(MP&&patchV(MP,px,py)<.3))continue;
       const dd=mk(i%3===2?k2:k1,px,py,{v:R(.7,1.05),cast:0});if(dd){dd.sway=0;decals.push(dd);}}}}
   /* buildings that really stand on the ground: a stone doorstep in front of the door, a short walk to the street below it,
      and weeds growing along the foot of the walls (never in front of the door) */
@@ -667,10 +683,10 @@ function build(){try{
   /* 2026-11-25 soft decor: a small plant or two at the feet of the trees on a forest's edge and of the lone trees, and in some meadows —
      drawn standing (depth-sorted) but never solid, so the edges of the forest look lush without anything to get stuck on */
   if(PRETTY&&cfg._decor&&cfg._decor.length&&!CAVE){const DS=cfg._decor.filter(n=>IMG[n]&&IMG[n].naturalWidth),add=[];
-    if(DS.length){const putD=(px,py,v)=>{if(water(px,py,8)||nearTrail(px,py,4)||inLand(px,py,24)||inPave(px,py,4)||inRP(px,py))return;const t=mk(pickCap(DS,px,py),px,py,{v,cast:0});if(!t)return;t.solid=[];t.ell=null;add.push(t);};
+    if(DS.length){const putD=(px,py,v)=>{if(water(px,py,8)||nearTrail(px,py,4)||inLand(px,py,24)||inPave(px,py,4)||inRP(px,py)||(cfg.clearClean&&inClearing(px,py,0)))return;const t=mk(pickCap(DS,px,py),px,py,{v,cast:0});if(!t)return;t.solid=[];t.ell=null;add.push(t);};
       for(const o of objs){if(!o.tree||o.land)continue;const n=gN(o.x,o.y);if(n>gthr-.012&&edgeDist(o.x,o.y)>=edgeBand(o.x,o.y))continue;if(rnd()>.42)continue;
         const base=o.y+o.h*(1-o.ay),k=rnd()<.4?2:1;for(let i=0;i<k;i++){const sd=rnd()<.5?-1:1;putD(o.x+sd*o.w*R(.22,.42),base+R(4,22),R(.62,.86));}}
-      for(let gy=120;gy<H;gy+=300)for(let gx=120;gx<W;gx+=300){const x=gx+R(-110,110),y=gy+R(-110,110);if(vnoise(x/620+71.3,y/620+19.7)<.5||rnd()>.3)continue;
+      if(cfg.decorOpen!==0)for(let gy=120;gy<H;gy+=300)for(let gx=120;gx<W;gx+=300){const x=gx+R(-110,110),y=gy+R(-110,110);if(vnoise(x/620+71.3,y/620+19.7)<.5||rnd()>.3)continue;
         if(edgeDist(x,y)<edgeBand(x,y)+60||gN(x,y)>gthr-.03||nearTrail(x,y,40))continue;const k=1+(rnd()<.5?1:0);for(let i=0;i<k;i++)putD(x+R(-60,60),y+R(-30,30),R(.7,.95));}}
     for(const t of add)objs.push(t);}
   /* ground cover IN FRONT of every object's foot: tufts depth-sorted just below the painted base, so they overlap the bottom edge
@@ -681,6 +697,12 @@ function build(){try{
       for(let k=0;k<n;k++){const u=R(-spread,spread);if(re&&re.test(o.n)&&Math.abs(u)<.13)continue;const px=o.x+u*o.w,py=base+R(-3,5);if(water(px,py,2)||inPave(px,py,-14)||inRP(px,py))continue;
         const t=mk(pick(AUTO_G),px,py,{v:R(.5,.85),cast:0});if(!t)continue;t.sway=1.3;t.solid=[];t.ell=null;add.push(t);}}
     for(const t of add)objs.push(t);}
+  /* 2026-11-26 cfg.treeLitter={set,p,v:[a,b]} (kit maps): fallen branches lie only where trees drop them — flat beside the trunks of the trees on a
+     forest's edge and of the lone trees, never on a path, in a clearing or at a placed piece (instead of decals sprinkled over the open snow) */
+  if(cfg.treeLitter){const TL=cfg.treeLitter,S=TL.set.filter(n=>IMG[n]&&IMG[n].naturalWidth),vv=TL.v||[.6,.85];if(S.length)for(const o of objs.slice()){if(!o.tree||o.land||o.outside)continue;
+      if(gN(o.x,o.y)>gthr-.012&&edgeDist(o.x,o.y)>=edgeBand(o.x,o.y))continue;if(rnd()>(TL.p??.3))continue;
+      const sd=rnd()<.5?-1:1,px=o.x+sd*o.w*R(.28,.55),py=o.y+R(-4,24);if(water(px,py,12)||nearTrail(px,py,12)||inLand(px,py,24)||inPave(px,py,8)||inClearing(px,py,0))continue;
+      const t=mk(S[Math.floor(rnd()*S.length)],px,py,{v:R(vv[0],vv[1]),cast:0});if(t){t.cast=0;decals.push(t);}}}
   /* 2026-11-25 the forest goes on past the map edge: two rows of the border's trees outside the map (never solid), so a warp at the edge
      and the camera's edge margin show forest instead of the empty canvas */
   if(PRETTY&&!CAVE&&BS&&BS.length){const OT=BS.filter(n=>CAT[n]&&CAT[n].t==='tree'),S0=OT.length?OT:BS;
@@ -819,8 +841,15 @@ function tmpC(k){let t=TMP[k];if(!t){const c=document.createElement('canvas');c.
 const MR=128,maskC=document.createElement('canvas');maskC.width=maskC.height=MR;const maskG=maskC.getContext('2d');
 function patchMask(P,x0,y0){const s=P.scale||700,st=CH/MR,img=maskG.createImageData(MR,MR),d=img.data;let any=false;
   for(let j=0;j<MR;j++)for(let i=0;i<MR;i++){const x=x0+i*st,y=y0+j*st;let v=fbm(x/s+(P.o||0),y/s)+(vnoise(x/70+3,y/70+9)-.5)*.05;if(P.soft)v+=(vnoise(x/170+5.3,y/170+1.7)-.5)*P.soft*1.6;
-    let a=Math.max(0,Math.min(1,(v-P.thr)/(P.soft||.012)));if(P.inland&&SEA&&a>0){const L=-seaDepth(x,y),q=P.inland;a*=Math.max(0,Math.min(1,(L-q[0])/(q[1]-q[0])));}if(a>0)any=true;const k=(j*MR+i)*4;d[k]=d[k+1]=d[k+2]=255;d[k+3]=a*255;}
+    let a=Math.max(0,Math.min(1,(v-P.thr)/(P.soft||.012)));if(P.inland&&SEA&&a>0){const L=-seaDepth(x,y),q=P.inland;a*=Math.max(0,Math.min(1,(L-q[0])/(q[1]-q[0])));}
+    if(a>0&&P.near)a*=zoneF(P.near,x,y);if(a>0&&P.not)a*=1-zoneF(P.not,x,y);if(a>0)any=true;const k=(j*MR+i)*4;d[k]=d[k+1]=d[k+2]=255;d[k+3]=a*255;}
   if(!any)return null;maskG.putImageData(img,0,0);return maskC;}
+/* 2026-11-26 patch zones: P.near / P.not = [[x,y,r]] or [[x,y,rx,ry]] — the patch only inside (near) or only outside (not) those soft rings
+   (rock ground at the foot of the cliffs, a trampled camp yard); patchV = the value of one mask pixel, for placement rules (meadows / vignettes on a patch) */
+function zoneF(Z,x,y){let f=0;for(const z of Z){const q=Math.hypot((x-z[0])/z[2],(y-z[1])/(z[3]||z[2]))+(vnoise(x/130+2.3,y/130+6.1)-.5)*.3,v=Math.max(0,Math.min(1,(1-q)/.3));if(v>f)f=v;}return f;}
+function patchV(P,x,y){const s=P.scale||700;let v=fbm(x/s+(P.o||0),y/s)+(vnoise(x/70+3,y/70+9)-.5)*.05;if(P.soft)v+=(vnoise(x/170+5.3,y/170+1.7)-.5)*P.soft*1.6;
+  let a=Math.max(0,Math.min(1,(v-P.thr)/(P.soft||.012)));if(a>0&&P.near)a*=zoneF(P.near,x,y);if(a>0&&P.not)a*=1-zoneF(P.not,x,y);return a;}
+function patchOf(t){return (cfg.patches||[]).find(p=>p.tex===t);}
 function lump(q,x,y,rx,ry,top,shade){q.fillStyle=shade;q.beginPath();q.ellipse(x,y+2.5,rx,ry,0,0,7);q.fill();q.fillStyle=top;q.beginPath();q.ellipse(x,y,rx,ry,0,0,7);q.fill();}
 const GROUND=cfg.ground||'snow',SNOWY=cfg.snowy??/snow|Tundra|RockSnow|Glacier|SeaIce/.test(GROUND);
 const LIP=CAPT?['#b8b0a0','#7a7060']:JAPAN?['#b8b0a0','#7a7060']:GREEK?['#e8e0cc','#a89a80']:DESERT?['#d8b07a','#9a7040']:!SNOWTH&&!CAVE?(THEME==='volcano'?['#4a3430','#241616']:['#a9a57c','#6a6a44']):CAVE?['#6d6788','#3e3a52']:GROUND==='texMud'?['#e6e2ee','#8f86a8']:['#eceaf4','#c2bede'];
@@ -1005,6 +1034,24 @@ function bakeRaw(ci,cj){if(!bakeOut){bakeOut=document.createElement('canvas');ba
   g.setTransform(1,0,0,1,0,0);g.globalAlpha=1;
   if(any){q.save();q.globalAlpha=1;q.filter='blur(3px)';q.drawImage(L.c,x0-60,y0-60);q.restore();}
   q.filter='none';q.globalAlpha=1;}
+  /* 2026-11-26 iso kit pieces (owner 'ต้นไม้ดูลอยๆ ของที่วางในแมพก็ลอย'): a soft cool pool of occlusion on the ground under each piece's real footprint
+     (its anchor IS the middle of the footprint) and a darker band right under its painted front edge, where it presses into the snow. All pools go
+     into one layer laid down in one multiply, so the pools of a dense forest merge instead of stacking into black.
+     cfg.isoAO={a:pool, line:front band, col:'r,g,b', tree:pool half-width per piece width}; maps without it: unchanged */
+  if(cfg.isoAO){const A=cfg.isoAO,L=padC(8),g=L.g,col=A.col||'38,44,92',ap=A.a??.42,al=A.line??.5;g.setTransform(1,0,0,1,0,0);g.globalAlpha=1;g.globalCompositeOperation='source-over';g.filter='none';g.clearRect(0,0,CH+120,CH+120);g.translate(-x0+60,-y0+60);let any=false;
+    /* one soft pool picture, drawn once per colour and stretched for every piece (a new radial gradient per piece cost ~1/3 of a chunk's painting) */
+    if(!AOB||AOB.col!==col){const c=document.createElement('canvas');c.width=c.height=128;const x=c.getContext('2d'),gr=x.createRadialGradient(64,64,0,64,64,64);
+      gr.addColorStop(0,`rgba(${col},1)`);gr.addColorStop(.55,`rgba(${col},.62)`);gr.addColorStop(1,`rgba(${col},0)`);x.fillStyle=gr;x.fillRect(0,0,128,128);AOB={c,col};}
+    const blob=(cx,cy,rx,ry,a)=>{if(rx<1||ry<1)return;g.globalAlpha=Math.min(1,a);g.drawImage(AOB.c,cx-rx,cy-ry,2*rx,2*ry);any=true;};
+    for(const o of sh){if(o.outside)continue;const c=CAT[o.n];if(!c||c.d!=='iso'||c.t==='flat'||!inR(o.x,o.y,o.w))continue;const foot=o.h*(1-o.ay),by=o.y+foot;
+      if(c.cs){for(const s of c.cs){const r=s[2]*o.w;blob(o.x+s[0]*o.w,o.y+s[1]*o.w+r*.7,r*2.5,r*1.5,ap*1.15);}continue;}
+      let fx,fy;if(Array.isArray(c.c)){fx=c.c[0]*o.w;fy=c.c[1]*o.w;}else if(o.tree){fx=o.w*(A.tree??.24);fy=fx*.46;}else{fx=o.w*.36;fy=Math.max(4,fx*.42);}
+      /* the pool sits just above the painted base, so its lower half lies on the snow in front of the piece */
+      blob(o.x+fx*.08,o.y+foot*.55,fx*1.3,Math.max(fy*1.25,foot*.75,8),o.big?ap*.75:ap);
+      /* buildings and cliffs have a slanted base (the contact seam below follows it); trees and the round small pieces get a dark core along the base */
+      if(o.tree)blob(o.x+fx*.04,by-1,fx*.55,6,al);else if(!o.big)blob(o.x+fx*.05,by-1,fx*.95,Math.max(4.5,foot*.32),al);}
+    g.setTransform(1,0,0,1,0,0);g.globalAlpha=1;
+    if(any){q.save();q.globalCompositeOperation='multiply';q.globalAlpha=1;q.filter='blur(2px)';q.drawImage(L.c,x0-60,y0-60);q.restore();q.filter='none';}}
   /* contact shadow that follows the real outline of each object's foot: the lowest slice of its silhouette, pushed a few pixels
      toward the shadow side and blurred. The sprite itself hides most of it; what sticks out is a dark seam exactly where the
      painted base meets the ground — the thing that makes a sprite read as standing there. (Trees keep the round pool below.) */
@@ -1050,7 +1097,7 @@ function drawWalls(q,ci,cj){const x0=ci*CH,y0=cj*CH,i0=Math.max(0,(x0/CELL|0)-2)
 const silCache=new Map();const SHC=cfg.shadowCol||(CAVE?'#1c1828':GROUND==='texMud'?'#2a2030':TH.sh);
 /* light model of maps with cfg.lit (the capital so far; index.html castShadow reads host.sun so characters match):
    sx, sy = how far right / down a point's shadow lands per unit of height; kd = ground depth per unit of width; big = shorter for buildings */
-const LIT=!!cfg.lit,SUN={sx:.5,sy:.2,kd:.42,max:150,big:.85,a:.72};
+const LIT=!!cfg.lit,SUN=Object.assign({sx:.5,sy:.2,kd:.42,max:150,big:.85,a:.72},cfg.sun||{});let AOB=null;   /* cached occlusion pool picture (cfg.isoAO) */
 const SHRGB=(c=>{const m=/^#([0-9a-f]{6})$/i.exec(c);if(m){const n=parseInt(m[1],16);return [n>>16,(n>>8)&255,n&255];}const r=/(\d+)\D+(\d+)\D+(\d+)/.exec(c);return r?[+r[1],+r[2],+r[3]]:[40,40,60];})(SHC),SHD=`rgb(${SHRGB.map(v=>Math.round(v*.5)).join(',')})`;
 const shCache=new Map();function shSil(img){let s=shCache.get(img);if(s)return s;const w=img.naturalWidth||img.width,h=img.naturalHeight||img.height;s=document.createElement('canvas');s.width=w;s.height=h;const q=s.getContext('2d');q.drawImage(img,0,0);q.globalCompositeOperation='source-in';
   const g=q.createLinearGradient(0,0,0,h),c=SHRGB.join(',');g.addColorStop(0,`rgba(${c},.55)`);g.addColorStop(.6,`rgba(${c},.9)`);g.addColorStop(1,`rgba(${c},1)`);q.fillStyle=g;q.fillRect(0,0,w,h);shCache.set(img,s);return s;}

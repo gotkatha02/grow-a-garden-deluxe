@@ -1,11 +1,11 @@
 """In-game screenshot of a map at given spots or along the coast (HUD hidden by default). Serve the repo on 8765.
-python3 spots.py OUT MAP [hero=wolf w=1280 h=720 at=coast|X,Y;X,Y inland=260 along=.5,.3 side=E hud=0 wait=2600 port=8765 touch=0]"""
+python3 spots.py OUT MAP [hero=wolf w=1280 h=720 at=coast|X,Y;X,Y inland=260 along=.5,.3 side=E hud=0 wait=2600 port=8765 touch=0 q=&extra=1]"""
 import asyncio, sys, time, os, json
 from playwright.async_api import async_playwright
 args=[a for a in sys.argv[1:] if '=' not in a]; kv=dict(a.split('=',1) for a in sys.argv[1:] if '=' in a)
 OUT,MAP=args[0],args[1]; HERO=kv.get('hero','wolf'); W,H=int(kv.get('w',1280)),int(kv.get('h',720)); PORT=int(kv.get('port',8765))
 AT=kv.get('at','coast'); INL=float(kv.get('inland',260)); ALONG=[float(a) for a in kv.get('along','.5').split(',')]; HUD=kv.get('hud','0')=='1'
-WAIT=int(kv.get('wait',2600)); TOUCH=kv.get('touch','0')=='1'; TAG=kv.get('tag','')
+WAIT=int(kv.get('wait',2600)); TOUCH=kv.get('touch','0')=='1'; TAG=kv.get('tag',''); Q=kv.get('q','')
 os.makedirs(OUT,exist_ok=True)
 async def main():
     async with async_playwright() as p:
@@ -14,7 +14,7 @@ async def main():
         pg=await ctx.new_page(); errs=[]
         pg.on('pageerror',lambda e:errs.append(str(e)[:300]))
         pg.on('console',lambda m:errs.append('console:'+m.text[:200]) if m.type=='error' else None)
-        await pg.goto('http://localhost:%d/index.html?char=%s&map=%s&nosw=1&guide=0&cb=%d'%(PORT,HERO,MAP,time.time())); await pg.wait_for_timeout(6000)
+        await pg.goto('http://localhost:%d/index.html?char=%s&map=%s&nosw=1&guide=0&cb=%d%s'%(PORT,HERO,MAP,time.time(),Q)); await pg.wait_for_timeout(6000)
         await pg.evaluate("(()=>{const b=document.querySelector('[data-m=test]');if(b)b.click();})()"); await pg.wait_for_timeout(5000)
         await pg.evaluate("id=>{if(curMap!==id)enterMap(id);}",MAP)
         for _ in range(80):

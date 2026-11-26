@@ -687,7 +687,7 @@ document.write('<script src="vfx_layer.js"><\/script>');if(c==='jaguar'){window.
 <script src="maps/snowpine.js?v=3"></script>
 <script src="maps/viking-catalog.js"></script>
 <script src="maps/craft-halls.js?v=8"></script>
-<script src="maps/fieldmap.js?v=20"></script>
+<script src="maps/fieldmap.js?v=21"></script>
 <script src="maps/viking-maps.js"></script>
 <script src="maps/aztec-maps.js"></script>
 <script src="maps/egypt-maps.js"></script>
@@ -699,7 +699,7 @@ document.write('<script src="vfx_layer.js"><\/script>');if(c==='jaguar'){window.
 <script src="maps/sea-cat.js?v=1"></script>
 <script src="maps/sea-maps.js?v=1"></script>
 <script src="maps/iso-cat.js?v=1"></script>
-<script src="maps/iso-maps.js?v=2"></script>
+<script src="maps/iso-maps.js?v=3"></script>
 <script src="level_cap.js?v=1"></script>
 <script src="maps/level-zones.js?v=2"></script>
 <script src="maps/monster-roster.js"></script>
@@ -5891,7 +5891,7 @@ function vkMake(def,x,y){const lv=def.lv[0]+Math.floor(Math.random()*(def.lv[1]-
    the map / mini bosses and the random-warp wing. */
 const MON_DENS={field:17,dungeon:25};
 const fieldWalk=h=>h.isReachable?(x,y)=>h.isReachable(x,y):(x,y)=>!h.blocked(x,y);
-function fieldSafe(h){const L=(h.warps||[]).map(w=>[w.x,w.y]);if(h.spawn&&h.spawn.start)L.push([h.spawn.start.x,h.spawn.start.y]);return L;}
+function fieldSafe(h){const L=(h.warps||[]).map(w=>[w.x,w.y]);if(h.spawn&&h.spawn.start)L.push([h.spawn.start.x,h.spawn.start.y]);for(const s of (h.cfg&&h.cfg.safe)||[])L.push([s[0],s[1]]);return L;}   /* cfg.safe = [[x,y]]: no monster spawns there either (a camp yard) */
 function spawnFieldMons(id){enemies.length=0;const h=mapHosts[id],L=(window.VK_MONS||{})[id];if(!L)return;if(!h||!h.ready){setTimeout(()=>{if(curMap===id&&!enemies.length)spawnFieldMons(id);},300);return;}
   const pool=[];for(const d of L)for(let i=0;i<(d.w??2);i++)pool.push(d);if(!pool.length)return;   // spawn share per monster (critters more, brutes fewer)
   const cfg=h.cfg||{},dg=!!(cfg.walls||cfg.maze),dens=cfg.monDens||(dg?MON_DENS.dungeon:MON_DENS.field),ok=fieldWalk(h),safe=fieldSafe(h),SAFE=dg?300:420;

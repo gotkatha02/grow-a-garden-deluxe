@@ -30,49 +30,91 @@ isoSnow:{name:'ป่าสนหิมะ Frostpine Hollow (ทดลอง iso
    Pieces are never mirrored (nf), their anchor is the middle of the footprint (ec), forest pines may repeat (fill).
    ?map=isoField in test mode; no warp leads here. W × H are map px as written (_scaled:1 = scaleField leaves it alone).
    --------------------------------------------------------------------- */
-const runR=(n,x,y,k,dx,dy)=>{const o=[];for(let i=0;i<k;i++)o.push({n,x:x+i*dx,y:y+i*dy});return o;};
 const ring=(n,cx,cy,rx,ry,k,a0)=>{const o=[];for(let i=0;i<k;i++){const a=(a0||0)+i/k*6.2832;o.push({n,x:Math.round(cx+Math.cos(a)*rx),y:Math.round(cy+Math.sin(a)*ry)});}return o;};
+/* fence lines that really join (owner 2026-11-26 'ของบางอย่างวางไม่สมเหตุสมผล'): corner posts in → isoFenceA pieces on the up-right / down-left
+   legs, isoFenceB on the down-right / up-left legs, each leg cut into whole pieces so their end posts land on the corners
+   (post feet measured on the pictures: A left (-32.2,16.9) right (31.4,-5.3) · B left (-29.7,-5.9) right (36,17.4)) */
+const fence=pts=>{const o=[];for(let i=0;i+1<pts.length;i++){const p=pts[i],q=pts[i+1],L=q[0]<p[0]?q:p,Rt=q[0]<p[0]?p:q,up=Rt[1]<L[1],n=up?'isoFenceA':'isoFenceB',
+  k=Math.max(1,Math.round((Rt[0]-L[0])/(up?63.6:65.7))),off=up?[32.2,-16.9]:[29.7,5.9];
+  for(let j=0;j<k;j++)o.push({n,x:Math.round(L[0]+(Rt[0]-L[0])*j/k+off[0]),y:Math.round(L[1]+(Rt[1]-L[1])*j/k+off[1])});}return o;};
+/* a continuous rock wall: pieces overlap by 16 % of their widths so no gap shows the snow behind */
+const WALLW={isoSpire:136.5,isoCliffW:343.5,isoCliffN:194.7,isoIcefall:212.4,isoCave:253,isoMound:200.4};
+const wall=(x0,names,ys)=>{const o=[];let x=x0;names.forEach((n,i)=>{if(i)x+=(WALLW[names[i-1]]+WALLW[n])/2*.84;o.push({n,x:Math.round(x),y:ys[i%ys.length]});});return o;};
 const PINES=['isoPineL','isoPineM','isoPineClump','isoPineL','isoPineM','isoPineS'];
+/* the hunters' camp: a fenced yard on the door side (south-west) of the longhouse — house corner P0, back fence 6 pieces down-left, side fence 5 pieces
+   down-right, the front stays open toward the path; fire with a log bench and two stumps as seats, the tent in the yard, shield and axe by the door,
+   firewood stacked against the long wall, the sled parked beside it, the watchtower at the camp entrance by the path */
+const NOAO=new URLSearchParams(location.search).get('isoao')==='0';
+const CLIFF=[[3600,905,1700,190]];   /* the scree at the foot of the cliff wall: the forest is up on the plateau, so no fallen trunks or forest shrubs down here */   /* ?isoao=0 = without the grounding below (to compare) */
+const P0=[2178,2330],P1=[P0[0]-6*63.6,P0[1]+6*22.2],P2=[P1[0]+5*65.7,P1[1]+5*23.3];
+const CAMP=[
+  {n:'isoLonghouse',x:2330,y:2300},{n:'isoShieldAxe',x:2214,y:2352},
+  {n:'isoFirewood',x:2405,y:2362},{n:'isoFirewood',x:2457,y:2343},{n:'isoSled',x:2532,y:2354},
+  {n:'isoCampfire',x:2160,y:2445},{n:'isoLog',x:2268,y:2452},{n:'isoStump',x:2078,y:2458},{n:'isoStump',x:2150,y:2522},
+  {n:'isoTent',x:1968,y:2460},
+  /* the watchtower guards the camp entrance beside the path (a tall piece hides whatever stands just north of it: never in front of the fire) */
+  {n:'isoWatchtower',x:2640,y:2545},
+  ...fence([P0,P1,P2]),
+  /* wind-blown snow piled against the outside of the back fence and the corner */
+  {n:'isoDrift',x:1940,y:2378},{n:'isoHeap',x:1752,y:2442}];
 window.VK_MAPS.isoField={name:'ทุ่งสนน้ำแข็ง Frostpine Field (ทดลอง iso)',lv:'4–12',seed:9310,W:7200,H:5400,mood:'sun',theme:'snow',ground:'isoSnow',snowy:1,
   _scaled:1,_pretty:1,colorMatch:0,baseAO:0,pool:0,lit:1,noDetails:1,camZoom:.8,camZoomMob:.75,
+  /* grounding (owner 2026-11-26 'ต้นไม้ดูลอยๆ ของที่วางในแมพก็ลอย'): occlusion pools under every piece + a stronger sun shadow; no butterflies on snow */
+  isoAO:NOAO?null:{a:.55,line:.62,col:'40,46,96',tree:.25},sun:NOAO?null:{a:.86},flies:0,
   texScale:{isoSnow:.34,isoSnowWind:.4,isoPath:.22,isoIce:.38,isoRock:.24,isoThaw:.3},
-  patches:[{tex:'isoSnowWind',scale:900,thr:.56},{tex:'isoThaw',scale:650,thr:.72,a:.85},{tex:'isoRock',scale:480,thr:.74}],
+  patches:[{tex:'isoSnowWind',scale:900,thr:.56},{tex:'isoThaw',scale:650,thr:.72,a:.85},
+    /* bare rock only where rock is: the scree at the foot of the cliff wall and round the lone spires / mounds */
+    {tex:'isoRock',scale:320,thr:.42,near:[[3600,885,1660,125],[6200,4335,270,150],[1150,4785,270,150],[900,1535,300,160],[6300,1185,300,160]]},
+    /* the camp yard is trampled */
+    {tex:'isoPath',scale:240,thr:.3,soft:.06,a:.9,near:[[2165,2450,335,170]]}],
   snowPath:1,pathTex:'isoPath',trailW:84,noPrints:1,
   border:{set:PINES,band:300},groves:{set:['isoPineL','isoPineM','isoPineS','isoPineClump','isoPineM','isoBirch','isoPineL','isoPineDead'],thr:.69,dens:.8},openTrees:.04,
-  open:['isoRocks','isoBoulder','isoStump','isoBush','isoBerryBush','isoGrass','isoHeap','isoDrift'],
-  edge:['isoSapling','isoBush','isoBerryBush','isoBoulder','isoPineS','isoRocks','isoGrass'],
+  /* the forest on the plateau behind the cliff wall (the wall is its edge, nobody walks behind it) */
+  woods:[{p:[1700,0,5650,0,5650,560,5300,630,4800,600,4300,612,3800,596,3300,610,2800,600,2300,614,2000,640,1700,610],m:170}],
+  /* placement rules (owner 'ของนั้นไม่ควรวางอยู่ตรงนั้น'): nothing scattered over the open snow — props grow at forest edges, fallen branches lie
+     only under trees, grass and snowdrops only on thawed ground, everything else comes in composed groups that go only where they make sense */
+  open:[],clearClean:1,decorOpen:0,
+  edge:['isoSapling','isoBush','isoBerryBush','isoPineS','isoGrass','isoSapling'],edgeN:.045,   /* shrubs right at the forest's edge only (rocks come with the cliffs and the boulder groups) */
   under:['isoSapling','isoBush','isoGrass','isoBerryBush'],
-  _decor:['isoSapling','isoBush','isoBerryBush','isoGrass','isoFlowerWhite','isoFlowerIce'],
-  meadow:['isoFlowerWhite','isoFlowerIce','isoGrass','isoFlowerWhite'],
-  decals:['isoBranch','isoBranch','isoStepStones','isoPuddle'],decalDens:.35,grass:[],
+  _decor:['isoSapling','isoBush','isoBerryBush','isoGrass','isoFlowerWhite'],
+  meadow:['isoGrass','isoFlowerWhite','isoGrass','isoFlowerWhite'],meadowPatch:'isoThaw',
+  treeLitter:{set:['isoBranch'],p:.12,v:[.55,.8]},
+  decals:[],grass:[],
   lakes:[{x:5300,y:2900,rx:700,ry:430}],lakeTex:'isoIce',
   lakeBank:{set:['isoHeap','isoBankA','isoBankB','isoDrift','isoHeapIce','isoHeapRock','isoHeap','isoRocks'],sp:170,skip:.35},
-  vign:{n:70,sp:520,sets:[
-    {main:['isoBoulder'],set:['isoRocks','isoGrass','isoBush'],k:[2,4],r:90},
-    {main:['isoLog'],set:['isoBranch','isoStump','isoGrass'],k:[2,3],r:90},
-    {main:['isoPineM','isoPineS'],set:['isoSapling','isoBush','isoBerryBush','isoGrass'],k:[2,4],r:100},
-    {main:['isoIceCrystal'],set:['isoHeapIce','isoFlowerIce'],k:[2,3],r:90},
-    {main:['isoHeap','isoDrift'],set:['isoRocks','isoGrass'],k:[1,3],r:110},
-    {main:['isoBerryBush'],set:['isoBush','isoFlowerWhite','isoGrass'],k:[2,4],r:80},
-    {main:['isoBirch'],set:['isoStump','isoGrass','isoFlowerWhite'],k:[2,3],r:90},
-    {main:['isoRunestone'],set:['isoFlowerIce','isoGrass','isoRocks'],k:[2,3],r:80},
-    {main:['isoPuddle'],set:['isoStepStones','isoGrass'],k:[1,2],r:80}]},
-  trails:[[[3600,5220],[3500,4500],[3150,3700],[2900,3000],[3300,2400],[3900,1900],[3800,1300]],
+  vign:{n:44,sp:540,strict:1,sets:[
+    /* in the open: a little copse, a boulder with snow blown against it, a lone birch, a wind drift */
+    {main:['isoPineM','isoPineS','isoPineL'],set:['isoSapling','isoBush','isoPineS','isoBerryBush'],k:[2,4],r:100,open:.12},
+    {main:['isoBoulder','isoHeapRock'],set:['isoRocks','isoDrift','isoGrass'],k:[2,3],r:95,open:.06},
+    {main:['isoBirch'],set:['isoStump','isoGrass','isoBush'],k:[2,3],r:90,open:.1},
+    {main:['isoDrift'],set:['isoHeap','isoDrift'],k:[1,2],r:120,open:.14},
+    /* along the forest's edge: a fallen trunk with its stump and branches, a dead snag, berry bushes */
+    {main:['isoLog'],set:['isoStump','isoBranch','isoBush'],k:[2,3],r:90,forest:[.025,.16],not:CLIFF},
+    {main:['isoPineDead'],set:['isoLog','isoBranch','isoStump'],k:[2,3],r:90,forest:[.025,.16],not:CLIFF},
+    {main:['isoBerryBush'],set:['isoBush','isoSapling','isoGrass'],k:[2,3],r:80,forest:[.025,.16],not:CLIFF},
+    /* ice grows only by the ice: the frozen pond, the frozen waterfall, the cave */
+    {main:['isoIceCrystal'],set:['isoHeapIce','isoFlowerIce','isoFlowerIce','isoRocks'],k:[2,4],r:90,zone:[[5300,2900,880,570],[3037,910,300,130],[3973,920,240,120]]},
+    /* rock falls from the cliffs and lies round the spires */
+    {main:['isoBoulder','isoRocks','isoHeapRock'],set:['isoRocks','isoDrift','isoHeap'],k:[2,3],r:100,zone:[[3600,905,1640,150],[6200,4335,340,200],[1150,4785,340,200],[900,1535,360,210],[6300,1185,360,210]]},
+    /* melt water stands only on thawed ground, with stepping stones across */
+    {main:['isoPuddle'],set:['isoStepStones','isoGrass','isoFlowerWhite'],k:[1,3],r:90,patch:'isoThaw'}]},
+  trails:[[[3600,5220],[3500,4500],[3150,3700],[2900,3000],[3300,2400],[3900,1900],[3800,1300],[3900,1080],[3952,885]],
           [[2900,3000],[2200,3300],[1500,3550]],
-          [[3400,2380],[4100,2450],[4520,2650]]],
+          [[3400,2380],[4100,2450],[4520,2650]],
+          /* from the camp yard's open front to the main path */
+          [[2316,2513],[2520,2600],[2760,2740],[2967,2900]]],
   land:[
-    /* hunters' camp */
-    {n:'isoLonghouse',x:2300,y:2250},{n:'isoWatchtower',x:2800,y:2080},{n:'isoTent',x:1980,y:2600},{n:'isoCampfire',x:2430,y:2600},
-    {n:'isoSled',x:2760,y:2560},{n:'isoFirewood',x:2560,y:2300},{n:'isoShieldAxe',x:2620,y:2720},
-    ...runR('isoFenceB',1790,2360,3,56,23),...runR('isoFenceA',2930,2740,3,56,-23),
-    /* the cliff wall in the north, a frozen waterfall and a cave in it */
-    {n:'isoCliffW',x:2350,y:800},{n:'isoCliffN',x:2660,y:760},{n:'isoSpire',x:2900,y:820},{n:'isoCliffW',x:3200,y:790},{n:'isoIcefall',x:3530,y:830},
-    {n:'isoCliffW',x:3850,y:800},{n:'isoCave',x:4180,y:840},{n:'isoCliffN',x:4470,y:780},{n:'isoCliffW',x:4760,y:820},{n:'isoSpire',x:5020,y:770},{n:'isoMound',x:5280,y:830},
-    /* runestone circle */
+    ...CAMP,
+    /* the cliff wall closing the valley in the north, with the frozen waterfall and the cave in it */
+    ...wall(2150,['isoSpire','isoCliffW','isoCliffN','isoCliffW','isoIcefall','isoCliffW','isoCliffN','isoCliffW','isoCave','isoCliffW','isoCliffN','isoCliffW','isoMound','isoSpire'],
+      [800,790,770,795,815,795,775,800,820,795,770,800,815,790]),
+    /* runestone circle + runestones that mark the path junctions */
     ...ring('isoRunestone',1350,3650,230,140,6,.3),{n:'isoIceCrystal',x:1350,y:3650},
+    {n:'isoRunestone',x:2820,y:3140},{n:'isoRunestone',x:3560,y:2290},
     /* lone landmarks */
-    {n:'isoSpire',x:6200,y:4300},{n:'isoMound',x:900,y:1500},{n:'isoMound',x:6300,y:1150},{n:'isoSpire',x:1150,y:4750},{n:'isoIceCrystal',x:6150,y:3550}],
-  clearings:[[2400,2420,560],[4560,2700,280],[1350,3650,330],[3700,1150,420],[3600,4820,380],[6150,3600,200]],
+    {n:'isoSpire',x:6200,y:4300},{n:'isoMound',x:900,y:1500},{n:'isoMound',x:6300,y:1150},{n:'isoSpire',x:1150,y:4750}],
+  clearings:[[2200,2440,390],[4560,2700,240],[1350,3650,330],[3037,960,200],[3960,985,220],[3600,4820,380]],
+  safe:[[2200,2440]],
   start:[3600,4950],
   warps:[{id:'home',x:3600,y:5220,to:'capT',at:'toS',label:'กลับเมืองหลวง'}]};
 window.VK_MONS=window.VK_MONS||{};

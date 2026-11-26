@@ -1,13 +1,13 @@
-"""Stitched overview of a whole field map from in-game screenshots (HUD hidden). python3 overview.py OUT.jpg MAP [cols=6 rows=5 scale=.25]"""
+"""Stitched overview of a whole field map from in-game screenshots (HUD hidden). python3 overview.py OUT.jpg MAP [cols=6 rows=5 scale=.25 port=8765 q=&extra=1]"""
 import asyncio, sys, time
 from playwright.async_api import async_playwright
 from PIL import Image
 a=[x for x in sys.argv[1:] if '=' not in x]; kv=dict(x.split('=',1) for x in sys.argv[1:] if '=' in x)
-OUT,MAP=a[0],a[1]; C,R=int(kv.get('cols',6)),int(kv.get('rows',5)); SC=float(kv.get('scale',.25)); W,H=2560,1440
+OUT,MAP=a[0],a[1]; C,R=int(kv.get('cols',6)),int(kv.get('rows',5)); SC=float(kv.get('scale',.25)); W,H=2560,1440; PORT=int(kv.get('port',8765)); Q=kv.get('q','')
 async def main():
     async with async_playwright() as p:
         b=await p.chromium.launch(); ctx=await b.new_context(viewport={'width':W,'height':H},device_scale_factor=1); pg=await ctx.new_page()
-        await pg.goto('http://localhost:8765/index.html?char=wolf&map=%s&nosw=1&guide=0&cb=%d'%(MAP,time.time())); await pg.wait_for_timeout(6000)
+        await pg.goto('http://localhost:%d/index.html?char=wolf&map=%s&nosw=1&guide=0&cb=%d%s'%(PORT,MAP,time.time(),Q)); await pg.wait_for_timeout(6000)
         await pg.evaluate("(()=>{const b=document.querySelector('[data-m=test]');if(b)b.click();})()"); await pg.wait_for_timeout(5000)
         await pg.evaluate("id=>{if(curMap!==id)enterMap(id);}",MAP)
         for _ in range(80):
