@@ -83,9 +83,71 @@
 - เวลาโดนทุกสกิลเทียบลุคเก่า (`FXSEED=7` + โดนแน่นอน, egyF1): เท่ากันทุกสกิล · ต่างเฉพาะติ๊กหล่มทราย ซึ่งลุคเก่ากับลุคเก่าเองก็ต่างกันระหว่างรอบ (เฟสนาฬิกา 0.25 วิของ HCore) — ยิงซ้ำแล้วตรงกัน
 - `tools/qa/herosweep.py hippo` ไม่มี error · `leak.py` คงที่ (13 → 12 → 13) · `lostev.py` 0 · `combo.py` ไม่มี error (ที่ขึ้น "ไม่โดนดัมมี่" = ท่าที่ลงช้ากว่าหน้าต่าง 0.8 วิของเครื่องตรวจ)
 - ร่ายทุกสกิลไม่มีคำเตือนจากชั้นเอฟเฟกต์ · ดูบนทราย (egyF1) ครบทุกสกิล + คลื่น 4 ทิศ
+- เวลาต่อเฟรม (egyF1, ร่าย 6 ท่าที่ค้างนาน: โคลน บ่อ หล่ม โถ Behemoth น้ำท่วม, software canvas ในเครื่องทดสอบ): ใหม่ 95.6 ms · เก่า 95.8–97.2 ms = เท่ากัน (ชิ้นเอฟเฟกต์ในฉาก 46 vs 93)
 - คลิป: `DSF=1.5 MAP=egyF1 python3 tools/fx/hpclip.py basic|a|b|c` · ภาพเฟรม: `HERO=hippo DSF=2 MAP=egyF1 python3 tools/fx/strip.py TAG keys …`
 
 ## ยังไม่ได้ทำ
 - เอฟเฟกต์ของสกิลเสริม ex_ แยกแต่ละอัน (ตอนนี้วงทอง + อังค์)
 - เช็กบนมือถือ · คำตัดสินของเจ้าของ
-- ภาพใหม่ที่เสนอ (ไม่บังคับ): วิญญาณเทพีทาเวเรตผุดหลังตัวตอน Behemoth Drop · เทพฮาปิเทน้ำจากโถตอน Great Inundation — prompt ส่งในแชท 2026-11-25
+- ~~ภาพใหม่ที่เสนอ (ไม่บังคับ)~~ → ✓ ภาพเทพทั้งสองใส่เกมแล้ว 2026-11-26 (หัวข้อท้ายไฟล์)
+
+## ภาพใหม่ (ไม่บังคับ) — ส่งพรอมต์ในแชท 2026-11-26
+ตอนนี้อัลติทั้งสองใช้โค้ด + ภาพเดิมได้ครบแล้ว สองภาพนี้เพิ่ม 'ช่วงเทพมาช่วย' ให้อัลติ
+แนบทุกครั้ง (แชต ChatGPT เดียวกัน): ภาพปกแคมป์ไฟ `assets/loading/ld5.webp` (สไตล์) + ชีตฮิปโป `assets/heroes/hippo/sheet_taweret.webp` (สี / ลาย) · ภาพ 2 แนบโถ `assets/fx/hippo/h18_jar.webp` เพิ่ม
+พื้นหลังโปร่งใส ไม่มีแสงรอบตัว (โค้ดใส่แสงทอง / ฟ้าเอง แบบหัวอนูบิส) · ถ้าออกมาเป็นลายตารางหมากรุก ตัดด้วย `tools/checker_key.py`
+
+| # | ไฟล์ | สกิล | วางในเกม (ตอนต่อโค้ด) |
+|---|---|---|---|
+| 1 | hp_taweret | Behemoth Drop (อัลติ A) | เริ่มร่าย (.05) ผุดจากพื้นหลังตัวฮีโร่ ยกอุ้งตีนค้าง → จังหวะ tP (ตัวยักษ์ลงพื้น) ตบลง + แสงทองวาบ แล้วจางหายเข้าตัว · `hBehemothEnd` (ทับยักษ์ตอนจบ) ผุดอีกครั้งสั้น ๆ · สูง ~2 เท่าฮีโร่ยักษ์ แสงทองรอบขอบ (`halo` แบบ anubis_vfx.js) ขอบล่างจางลงพื้น |
+| 2 | hp_hapi | The Great Inundation (อัลติ B) | ผุดจากน้ำฝั่งไกลของวง (หลังฮีโร่บนจอ) ตอนเริ่มร่าย → tP เอียงโถ น้ำโค้ด 2 สาย (Gush / ริบบิ้น) ไหลจากปากโถลงทะเล ~1.5 วิ แล้วจมกลับ · `hSeaEnd` ผุดอีกครั้งเทแรงตอนคลื่นยักษ์ · ต้องวัดตำแหน่งปากโถในภาพตอนตัด |
+
+### 1 · hp_taweret — วิญญาณเทพีทาเวเรต
+```
+Friendly hand-painted chibi cartoon game effect matching the attached campfire key art: thick clean dark-brown outlines, cel shading with 2–3 flat tones, soft cartoon glow, bright and warm. Not realistic, not painterly smoke, not 3D. ONE single effect only, centered, transparent PNG background, generous empty space on every side, no text, no logo, no watermark.
+Effect object: the giant guardian spirit of Taweret, the Egyptian mother goddess who protects the hippo hero in the attached character sheet. The hero himself is NOT in the picture. Only her upper body from the waist up: a mighty but kind hippo goddess standing upright, blue-grey hippo skin, a cream muzzle and a big round cream belly, small round ears with pink insides, rosy cheeks, two small rounded cream tusks, warm brown eyes and a proud protective smile. On her head a gold crown: a gold sun disc between two curved cream horns, with two tall straight gold plumes behind it. A long black Egyptian wig falls behind her shoulders, with gold bands at the ends. A wide gold collar with turquoise and lapis-blue beads on her chest. Her arms end in big golden lion paws, both raised high above her head with the paws open, as if about to slam the ground. A teal crocodile-scale cape with a row of cream spikes hangs from her shoulders down her back. A wide gold belt at her waist; the bottom edge of the figure is the straight bottom edge of this belt. Solid and opaque with a crisp outline: no legs, no ground, no flames, no smoke, no sparkles, no glow halo around her.
+Palette: blue-grey, cream, gold, teal, turquoise, lapis blue, black.
+VIEW: seen from the front, facing the viewer, upright, the straight belt edge at the bottom. Tall portrait image.
+```
+
+### 2 · hp_hapi — เทพฮาปิเทน้ำไนล์
+```
+Friendly hand-painted chibi cartoon game effect matching the attached campfire key art: thick clean dark-brown outlines, cel shading with 2–3 flat tones, soft cartoon glow, bright and warm. Not realistic, not painterly smoke, not 3D. ONE single effect only, centered, transparent PNG background, generous empty space on every side, no text, no logo, no watermark.
+Effect object: the giant spirit of Hapi, the jolly Egyptian god of the Nile flood, who answers the hippo hero in the attached character sheet. The hero himself is NOT in the picture. Only his upper body from the waist up: a big friendly plump god with a huge round belly and a cheerful laughing face, sky-blue skin, a short curled black beard, a black Egyptian wig with gold bands. On his head a crown of blue lotus flowers and gold papyrus fans. A wide gold collar with turquoise beads. His arms are held out to the left and right, and in each hand he holds a big round Nile water jar like the attached jar picture (lapis-blue body, gold rim and bands, a gold winged ankh and a white lotus on the side), but without its bird handles. Both jars are tipped outward, their mouths pointing down and away from his body, as if pouring, but NO water comes out (the game adds the water). The bottom edge of the figure is the straight top edge of his white linen waist wrap with a gold border. Solid and opaque with a crisp outline: no water, no splashes, no ground, no flames, no sparkles, no glow halo around him.
+Palette: sky blue, gold, lapis blue, turquoise, white linen, black, blue lotus.
+VIEW: seen from the front, facing the viewer, upright, the straight waist edge at the bottom. Square image.
+```
+
+## ภาพเทพ — ใส่เกมแล้ว (2026-11-26)
+
+เจ้าของส่งภาพ 2 ภาพ 06:09 (PNG โปร่งใสจริง) → `python3 -I tools/fx/hippo_pics.py TAWERET.png HAPI.png [preview=PNG]`
+- ตัดขอบ + เผื่อ 6 px ย่อ 0.5 → `assets/fx/hippo/hp_taweret.webp` (570×664, ~96 KB) · `hp_hapi.webp` (624×610, ~90 KB)
+- เครื่องมือพิมพ์ตาราง `GOD` (หน่วยพิกเซลของภาพที่ย่อแล้ว) → คัดลอกไว้ใน hippo_vfx.js หัวข้อ 7b
+  - taweret.foot = กลางเข็มขัดเหนือขอบล่าง = เส้นพื้นที่เธอผุดขึ้นมา
+  - hapi.foot = เส้นน้ำพาดผ้านุ่งช่วงเอว (ต่ำกว่านี้อยู่ใต้น้ำ) · jarL / jarR = ปากโถช่วงล่างกลาง (หาใหม่ทุกครั้งด้วยการเติมสีน้ำตาลเข้มในปากโถ) · jw = ความกว้างปากโถ
+- ภาพเทพไม่โดนสีเจมธาตุ (`__gt '-'`) · สายน้ำ / แสง / ฝุ่นรอบ ๆ ยังเปลี่ยนสีตามเจม
+- `?hppic=0` = ไม่มีภาพเทพ (หน้าตา v3 ก่อนหน้านี้)
+
+**Behemoth Drop — ทาเวเรต** (`taweret()` สูง 170 วาดหลังแถวฮีโร่ ตามตัวฮีโร่)
+- เริ่มร่าย: ผุดขึ้นจากพื้นหลังตัว (ตัดที่เส้นพื้น + แอ่งแสงทองกลบรอยตัด ฝุ่นรอบฐาน) ใช้เวลา min(0.45, ×0.7 ของเวลาร่าย) ยกอุ้งตีนค้าง หายใจ / โยกเบา ๆ
+- จังหวะ tP (ฮิปโปกลายร่างยักษ์ลงพื้น): ตบลง (ยุบ + โน้มลง + วาบทอง + วงทองที่ฐาน) → 0.6 วิ ย่อลงหาตัวฮีโร่ จางหาย แสงทองไหลเข้าตัว
+- เสาแสงทองเดิมของ v3 ไม่วาดเมื่อมีภาพเธอ (เคยบังเธอ)
+- ตอนบัฟจะหมด (เหลือ 0.42 วิ): ผุดกลับมาเร็ว ๆ → ตบลงพร้อมท่าทับยักษ์ตอนจบ (ตอนบัฟหมดจริง) → จมกลับลงพื้น
+
+**The Great Inundation — ฮาปิ** (`hapi()` กว้าง 176 ยืนในน้ำหลังฮีโร่ 40 px)
+- เริ่มร่าย: เสาน้ำพุ่งข้างหลัง (ไม่บังตัว) + แอ่งน้ำใต้ตัว → ผุดขึ้นจากน้ำ (ตัดที่เส้นน้ำ ฟองขาวรอบเอว: ครึ่งหลังวาดก่อนตัว ครึ่งหน้าวาดทับ + วงระลอก)
+- ก่อน tP 0.18 วิ: เทน้ำจากโถทั้งสอง (`pourRibbon`: ขอบน้ำเงินเข้ม เนื้อฟ้าไล่สี แถบขาวไหลลง ฟองตรงจุดตก) + มงกุฎน้ำ / วงระลอก / หยดน้ำตรงจุดตก → น้ำท่วมของเกมเกิดตรงนั้นพอดี
+- เทต่อ 1.5 วิ หัวเราะโยกตัว แล้วจมกลับลงน้ำ
+- ตอนน้ำท่วมจะหมด (เหลือ 0.45 วิ): ผุดกลับมาที่กลางวง เทแรง (สายหนาขึ้น มงกุฎถี่ขึ้น) → **คลื่นยักษ์ตอนจบเปลี่ยนเป็นคลื่นวงกลมวงเดียว** (`ringWave`)
+  - คลื่น 8 ลูกของ `hSeaEnd` เป็นแค่ภาพ (mult 0 + hits มีศัตรูครบแล้ว ไม่ทำดาเมจ) ดาเมจจริงคือทุกตัวในรัศมีโดนพร้อมกัน → วงกลมเต็มวงตรงกับเกมกว่า
+  - คลื่น 8 ลูกยังวิ่งอยู่ (ไม่ได้แตะเกม) แต่ไม่วาด · วงคลื่นขยายเร็วเท่าคลื่น (560 px/วิ ถึงขอบวง)
+  - ครึ่งไกลวาดหลังสิ่งที่อยู่ในวง ครึ่งใกล้วาดหน้า · ผิวคลื่นไล่สีฟ้าอ่อนถึงน้ำเงินเข้มทีละช่อง + แถบสีอ่อนตามแนวคลื่น + เชือกฟองขาวขอบน้ำเงินเข้มบนสัน (ก้อนฟองขนาดต่าง ๆ) + ฟองที่ฐานด้านหน้า + ละอองน้ำ
+  - เสาน้ำเดิมกลางวงไม่วาดเมื่อมีภาพฮาปิ
+
+**ชื่อท่าลอยเหนือมงกุฎเทพ** (BEHEMOTH · GREAT INUNDATION · ทับยักษ์! · คลื่นยักษ์! · ชื่อสกิลตอนกด) — ยก z เป็น 198 ไม่ทับหน้าเทพ
+
+**ตรวจแล้ว**
+- เวลาโดน: `tools/fxlab.py hits` ของ haBehemoth / hbSea / hcJar / haWard เท่ากันทั้งมีภาพและ `?hppic=0` (FXSEED=7 + โดนแน่นอน)
+- herosweep ฮิปโป 0 error · ไม่มีคำเตือนจากชั้นเอฟเฟกต์ (warnchk) · leak คงที่
+- ภาพเฟรม: `HERO=hippo DSF=1.5 MAP=egyF1 python3 tools/fx/strip.py TAG haBehemoth,hbSea dy=-100 h=420 scale=1` · ตอนจบ: ตัดเวลาบัฟ / น้ำท่วมให้เหลือ 0.75 วิ แล้วจับภาพ
+- คลิป: `DSF=1.5 MAP=egyF1 python3 tools/fx/hpclip.py gods` (อัลติทั้งสอง + ตอนจบทั้งสอง)
+

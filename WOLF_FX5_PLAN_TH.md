@@ -1,7 +1,7 @@
 # หมาป่า — เอฟเฟคสกิลชุดใหม่ (v5)
 เจ้าของสั่ง 2026-11-25 21:26 “ทำเอฟเฟคสกิลใหม่ให้หมาป่าหน่อย อันไหนที่ควรเจนรูปก็ไม่ต้องทำแต่ส่งเป็นพร้อมมาแทน”
 - สกิลที่วาดด้วยโค้ดได้สวย (ฟัน ระเบิด พื้นแตก น้ำแข็ง สายฟ้า พุ่ง) **ทำใหม่แล้ว 20 สกิล + ตีปกติ** ในไฟล์ `wolf_vfx5.js` (ใช้ชุดเครื่องมือ FXLIB ตัวเดียวกับอนูบิส)
-- สกิลที่ควรเป็นภาพวาด (วิญญาณ ของที่เรียกออกมา ภาพบัฟ) **ยังเป็นหน้าตาเดิม** รอภาพจากพรอมต์ 5 ภาพด้านล่าง
+- สกิลที่ควรเป็นภาพวาด (วิญญาณ ของที่เรียกออกมา ภาพบัฟ) **ใช้ภาพวาดชุดใหม่ 5 ภาพของคุณแล้ว** (2026-11-26, ข้อ 4b) · `?wpic=0` = ภาพชุดเก่า
 - คลิปวิดีโอที่คุณทำเอง 6 สกิล + พายุ Blizzard ที่คุณเลือกไว้ **ไม่ได้แตะ**
 - เปิดเกมด้วย `?wfx5=0` = หน้าตาก่อนชุดนี้ (เทียบกันได้ทุกเมื่อ)
 
@@ -42,17 +42,17 @@
 
 จังหวะ: เสี้ยวทุกอันคือท่าเหวี่ยงของเกมเอง (วาดตามหัวขวานของสไปรต์ จบที่เฟรมโดน) แค่เปลี่ยนหน้าตา · รอยบนตัวเป้ามาจากดาเมจจริง · ชิ้นบนพื้นใช้ตำแหน่งและเวลาของชิ้นเดิมที่เกมสร้าง ณ ตอนนั้น
 
-## 3. สกิลที่ยังเป็นหน้าตาเดิม
+## 3. สกิลที่ใช้ภาพวาด / คลิป (ไม่ได้วาดด้วยโค้ด)
 
-| สกิล | ตอนนี้ใช้ | ภาพใหม่ที่ขอ |
+| สกิล | ตอนนี้ใช้ | ภาพใหม่ (2026-11-26) |
 |---|---|---|
-| War Howl | ภาพหัวหมาป่าหอน | n03 |
+| War Howl | หัวหมาป่าวิญญาณสีขาวหอนอยู่หลังหัวฮีโร่ + คลื่นบัฟทอง | n03 ✓ |
 | War Fury | ตัวแดง (เคลือบสี) | - |
 | Iron Counter | ภาพโล่ปัด | - |
-| Executioner | ภาพขวานผี + ตรากะโหลก | n01 |
-| Valhalla's Wrath | ภาพประตู ขวานทอง รอยฟันทอง | n02 |
-| Rune Guard | ภาพโล่ลอยวน | n05 |
-| War Banner | ภาพธง | n04 |
+| Executioner | ขวานผีสีแดงลอยเหนือเป้าแล้วฟันลง + รอยฟัน / ตรากะโหลกเดิม | n01 ✓ |
+| Valhalla's Wrath | ประตูเดิม · ขวานทองเหวี่ยงตามทุกครั้งที่ฟัน (ภาพไม่มีแสง) · ขวานทองพร้อมลำแสงตกกลางวง · รอยฟันทองเดิม | n02 ✓ |
+| Rune Guard | โล่รูนน้ำแข็ง 3 ใบลอยวนรอบตัว | n05 ✓ |
+| War Banner | ธงศึกปักบนกองหินที่จุดเป้า | n04 ✓ |
 | Fenrir's Spirit | สไปรต์วิญญาณหมาป่าที่มีอยู่แล้ว | - |
 | Axe Cyclone + Cyclone Leap | คลิปพายุของคุณ + ภาพเกลียว | - |
 | Wolf Finale | คลิปของคุณ | - |
@@ -107,7 +107,24 @@ Game skill-effect picture for a 2D chibi fantasy RPG. Style: friendly hand-paint
 Game skill-effect picture for a 2D chibi fantasy RPG. Style: friendly hand-painted chibi cartoon exactly like the attached effect pictures: thick clean dark-brown outlines, cel shading with 2-3 flat tones, soft cartoon glow, bright and warm. Not realistic, not painterly smoke, not 3D. SUBJECT: a round Norse shield made of ice and rune light. A silver rim with knotwork carving and four round studs; the face of the shield is translucent glacier-blue ice with a snarling wolf head drawn in glowing white lines in the middle; a ring of eight small angular rune marks glows between the wolf head and the rim; small sharp ice crystals grow on the outside of the rim. COLOURS: silver, glacier blue, ice white; no green. VIEW: straight front view, a perfect circle. Square picture, 1:1. FORMAT: ONE effect only, centred, with empty space on every side, nothing cut off by the picture edge. Transparent PNG background (real transparency, not a drawn checkerboard, no background colour, no ground, no shadow on a floor). No character, no text, no letters, no logo, no watermark.
 ```
 
-เมื่อภาพมา: ตัดขอบ → `assets/fx/wolf/<ชื่อ>.webp` (n01_exec_axe · n02_valhalla_axe · n03_howl · n04_banner · n05_rune_shield) → เปลี่ยนชื่อภาพใน `wolf_fx.js` (w46 + w08 → n01 · w55 → n02 · w05 → n03 · w20 → n04 · w24 → n05) ขนาดและจุดยึดเดิม · เช็กด้วยคลิปก่อนส่ง
+## 4b. ภาพที่ใส่แล้ว (2026-11-26)
+
+ภาพ 5 ภาพของคุณมาเป็น PNG โปร่งใสจริง ไม่ต้องตัดพื้นหลัง → `python3 -I tools/fx/wolf_pics.py EXEC VALHALLA HOWL BANNER SHIELD [preview=PNG]` ตัดขอบ ย่อ และพิมพ์จุดยึด → `assets/fx/wolf/`
+
+| ไฟล์ | ใช้ที่ | จุดยึด |
+|---|---|---|
+| `n01_exec_axe` | Executioner: ลอยเหนือเป้าแล้วฟันลง | ปลายคมขวาน (ลอยเหนือหัวเป้า ตอนฟันปลายคมจมเข้าตัว) |
+| `n02_valhalla_axe` | Valhalla's Wrath: ขวานตกกลางวง (มีลำแสง) | ปลายคมขวานแตะจุดตก |
+| `n02_valhalla_core` | Valhalla's Wrath: ขวานเหวี่ยงตามทุกครั้งที่ฟัน | ปลายด้าม (หมุนรอบจุดนี้) · ตัดลำแสง/ขนนกออกจากภาพเดียวกัน (เส้นขอบเข้ม + เส้นที่ลากรอบใบขวานไว้ในเครื่องมือ) · กลับด้านเมื่อเหวี่ยงขวาไปซ้าย ให้คมนำ |
+| `n03_howl` | War Howl | กลางหัวหมาป่า · วาดในชั้นเรียงลำดับ หลังตัวฮีโร่ (ไม่โดนเรืองแสงชั้นบน ไม่โดนตัดรูปฮีโร่) · หันตามทิศฮีโร่ |
+| `n04_banner` | War Banner | เสาธงที่พื้น |
+| `n05_rune_shield` | Rune Guard | กลางโล่ |
+
+- โค้ด: ตาราง `WP` ใน `wolf_fx.js` = [ภาพ, ตัวคูณขนาด, จุดยึด] ต่อชิ้น + ฟังก์ชัน `wP()` · ตัวคูณทำให้สูงบนจอเท่าภาพเดิม (ขวานเหวี่ยงใหญ่ขึ้น 10 %)
+- `?wpic=0` = ภาพชุดเก่า (w46 · w55 · w05 · w20 · w24) ตำแหน่งเดิมทุกอย่าง
+- `wolf_vfx3.js` KEEP รู้จักชื่อ `n0x_` (ภาพวาดไม่ถูกแทนด้วยโค้ด)
+- คลิปโชว์: `DSF=1.5 python3 tools/fx/wfclip.py pic ['&wpic=0']`
+
 
 ## 5. วิธีทำงานของไฟล์ (สำหรับแชตถัดไป)
 
@@ -124,9 +141,9 @@ Game skill-effect picture for a 2D chibi fantasy RPG. Style: friendly hand-paint
 - เจมธาตุ (gemfx_sweep) ไม่มี error ชิ้นใหม่เปลี่ยนสีตามเจม
 - เวลาต่อเฟรมเท่าหน้าตาเดิม (ค่ากลาง 7–9 ms ทั้งสองแบบ)
 - ดูบนหิมะ (vikF2) และป่า (aztF1)
+- 2026-11-26 ภาพ 5 ภาพ: แก้แค่ส่วนวาด (ไม่แตะดาเมจ / เวลาโดน) · herosweep = error เดิม 7 ตัว · combo 0 error · ภาพเฟรมเทียบ `?wpic=0` ทุกสกิล + หอนทั้งหันซ้ายและขวา
 
 ## 7. ยังไม่ได้ทำ
 
-- ภาพ 5 ภาพในข้อ 4 (รอเจ้าของเจน) แล้วค่อยทำส่วนโค้ดของสกิลกลุ่มนั้นให้เข้าชุด
 - สกิลเสริม ex_ / สกิล C ที่เป็น passive บางตัว (Storm Chain, Glacial Path, Valhalla Assault) ยังใช้ชิ้นเดิม
 - ดูบนมือถือจริง · คำตัดสินของเจ้าของ

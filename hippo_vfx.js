@@ -129,8 +129,8 @@ const LANDX={
   hcMeteor(x,y,R,k,S){const last=HV.meteorLast;dark(x,y,R*.55,1.8,.4);ring('fire',x,y,R*.9,{w0:9,life:.36});bits(S,'fire',x,y,10,last?16:9,{sp:1.3,up:1.1});
     for(let i=0;i<(last?9:5);i++){const a=i/(last?9:5)*TAU+R_(-.3,.3),d=R*R_(.3,.7);A(new Flames({el:'fire',x:x+Math.cos(a)*d,y:y+Math.sin(a)*d,h:R_(22,40),w:20,n:2,life:R_(.5,.9),delay:R_(0,.08)}));}
     if(last){A(new Pillar({el:'fire',x,y,w:70,h:220,life:.55}));A(new Flash({el:'fire',x,y,z:20,s0:40,s1:150,life:.24}));}},
-  haBehemoth(x,y,R,k){A(new Sigil({tex:ART.ring('taweret','gold'),el:'gold',x,y,r:R*.9,spin:.4,life:1.6,fi:.05,fo:.7,a:.95}));A(new Pillar({el:'gold',x,y,w:80,h:280,life:.6}));},
-  behEnd(x,y,R,k,S){A(new Sigil({tex:ART.ring('taweret','gold'),el:'gold',x,y,r:R*.7,spin:-.5,life:2,fi:.05,fo:.8,a:.95}));A(new Pillar({el:'gold',x,y,w:110,h:340,life:.7}));
+  haBehemoth(x,y,R,k){A(new Sigil({tex:ART.ring('taweret','gold'),el:'gold',x,y,r:R*.9,spin:.4,life:1.6,fi:.05,fo:.7,a:.95}));if(!godPic('taweret'))A(new Pillar({el:'gold',x,y,w:80,h:280,life:.6}));},
+  behEnd(x,y,R,k,S){A(new Sigil({tex:ART.ring('taweret','gold'),el:'gold',x,y,r:R*.7,spin:-.5,life:2,fi:.05,fo:.8,a:.95}));if(!godPic('taweret'))A(new Pillar({el:'gold',x,y,w:110,h:340,life:.7}));
     for(let i=0;i<12;i++){const a=i/12*TAU+R_(-.15,.15),d=R*R_(.55,.85);A(new Spike({el:'earth',x:x+Math.cos(a)*d,y:y+Math.sin(a)*d,h:R_(40,70),w:R_(20,30),lean:Math.cos(a)*.35,life:1.6,rise:.09,sink:.3,delay:R_(0,.1)}));}
     glints(S,G[3],x,y,30,16,R*.5,1);},
   hcSubmerge(x,y,R,k){A(new Gush({el:'mud',x,y,w:60,h:130,life:.75}));crown(x,y,80,'mud',{life:.6});splat(x,y,R*.8,2.2,'mud',3);},
@@ -213,7 +213,7 @@ function waveFx(f){const big=!!f.big,W=2*f.w*1.05+16,x0=f.x0,y0=f.y0,phi=f.phi,c
 /* side on (the wave runs across the screen) = the owner's painted wave, never turned, mirrored when it runs left; head on / going away =
    the mesh above; in between they cross-fade */
 PSRC.wave='assets/fx/hippo/h05_wave.webp';PSRC.bigwave='assets/fx/hippo/h06_bigwave.webp';img('wave');img('bigwave');
-{HWave.prototype.draw=guardDraw('wave',function(){const rise=eO(cl(this.t/.1,0,1)),fall=cl((this.life-this.t)/.18,0,1),al=Math.min(1,fall*1.6),H=(this.big?66:46)*rise*(.5+.5*fall),W=2*this.w*1.05+16,
+{HWave.prototype.draw=guardDraw('wave',function(){if(this._ring)return;const rise=eO(cl(this.t/.1,0,1)),fall=cl((this.life-this.t)/.18,0,1),al=Math.min(1,fall*1.6),H=(this.big?66:46)*rise*(.5+.5*fall),W=2*this.w*1.05+16,
     sa=scrAng(this.phi),side=cl((Math.abs(Math.cos(sa))-.42)/.2,0,1),im=img(this.big?'bigwave':'wave'),wp=im?side:0;
     if(wp<.99)waveWall(this.x,this.y,this.phi,W,H,al*(1-wp),this.t,this.big);
     if(wp>.01){const s=P(this.x,this.y,10),Ww=this.w*(this.big?1.6:1),fl=Math.cos(this.phi)<0;picAt(im,s[0],s[1]+6,(this.big?Ww*2.8:Ww*3.1)*lerp(.6,1,rise)*(.85+.15*fall),{fx:fl,a:al*wp,ax:.6,ay:.86});}});}
@@ -318,6 +318,115 @@ function subPeek(sx,sy,tx,ty,T){const b=BODY(),hk=HK()/.535;A(new Fn({layer:'sor
       if(vis>.02){ctx.save();ctx.beginPath();ctx.rect(s[0]-w,s[1]-h*2,w*2,h*2+1);ctx.clip();drawSpr(im,s[0],s[1]-h*.5*vis+h*(1-vis)*.5+bob,w,0,1);ctx.restore();}}}));
   const phi=Math.atan2(ty-sy,tx-sx);
   let last=0;A(new Emit({life:T*.86,every:.09,fn(q){const u=K_.eIO(cl(q.t/(T*.86),0,1)),x=lerp(sx,tx,u),y=lerp(sy,ty,u);if(u-last<.02)return;last=u;for(const sd of [-1,1])A(new Streak({el:'mud',x,y,x2:x-Math.cos(phi+sd*.5)*30,y2:y-Math.sin(phi+sd*.5)*30,z:1,w:3,life:.5,go:.5,head:0,layer:'ground'}));if(Math.random()<.5)bits(S1(),'mud',x,y,2,1,{size:.5,sp:.3,up:.4});}}));}
+/* ---------------------------------------------------------------------
+   7b. the gods of the two ultimates (the owner's paintings 2026-11-26; tools/fx/hippo_pics.py cuts them + prints GOD)
+       Taweret rises behind him for Behemoth Drop: out of the ground with her paws raised, she slams down with him at the
+       peak and pours into him as gold light; she comes back for the final belly slam and sinks back.
+       Hapi rises out of the water behind him for The Great Inundation: the flood pours from his two jars, he laughs and
+       sinks back; he comes back to pour the giant wave at the end.
+       The god pictures keep their own colours (__gt '-'); their water / light pieces take the element-gem tint.
+       Nothing is drawn for a god until its picture is in · ?hppic=0 = never (the look of v3 before the gods).
+   --------------------------------------------------------------------- */
+const GODON=!/[?&]hppic=0/.test(location.search),godPic=n=>GODON&&!!img(n),GK=()=>document.body&&document.body.classList.contains('mob')?.85:1,GX=()=>GK()<1?-105:0;   /* phones: a little smaller and to the left, so the faces are not under the menu medallions in the middle of the top */
+if(GODON){PSRC.taweret='assets/fx/hippo/hp_taweret.webp';PSRC.hapi='assets/fx/hippo/hp_hapi.webp';img('taweret');img('hapi');}
+const GOD={taweret:{w:570,h:664,foot:[282.0,653.0]},hapi:{w:624,h:610,foot:[312.0,568.5],jarL:[112.4,378.4],jarR:[509.8,378.6],jw:78.0}};
+/* a soft light round a picture's outline, built once per picture + colour at quarter size (no canvas filter) — as anubis_vfx.js */
+const HALO={};
+function halo(n,col){const im=img(n);if(!im)return null;const key=n+col;if(HALO[key])return HALO[key];
+  const q=.25,R=7,pad=R+2,w=Math.ceil(im.width*q),h=Math.ceil(im.height*q),c=document.createElement('canvas');c.width=w+pad*2;c.height=h+pad*2;const g=c.getContext('2d');
+  for(let r=R;r>=1;r-=1.5)for(let i=0;i<12;i++){const an=i*TAU/12+r;g.globalAlpha=.14;g.drawImage(im,pad+Math.cos(an)*r,pad+Math.sin(an)*r,w,h);}
+  g.globalAlpha=1;g.globalCompositeOperation='source-in';g.fillStyle=col;g.fillRect(0,0,c.width,c.height);return HALO[key]={c,pad:pad/q,W:(w+pad*2)/q,H:(h+pad*2)/q};}
+/* a picture on the current origin with its point (px,py) there; f = drawn px per picture px; o.halo = light colour round it,
+   o.lit = the picture added once more on top (a flash) */
+function pdraw(n,px,py,f,o){const im=img(n);if(!im)return false;o=o||{};
+  if(o.halo){const hl=halo(n,o.halo);if(hl){ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha*=o.ha==null?.85:o.ha;ctx.drawImage(hl.c,(-px-hl.pad)*f,(-py-hl.pad)*f,hl.W*f,hl.H*f);ctx.restore();}}
+  ctx.drawImage(im,-px*f,-py*f,im.width*f,im.height*f);
+  if(o.lit>0){ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha*=cl(o.lit,0,1);ctx.drawImage(im,-px*f,-py*f,im.width*f,im.height*f);ctx.restore();}return true;}
+/* Taweret behind him (sorted just behind his row, she follows him): she rises through her ground line (clipped there, a gold
+   light pool hides the cut), breathes with her paws up, SLAMS (lunge down + squash + flash) at o.T seconds or when o.go(t)
+   says so, then pours into him as gold light (o.end: sinks back into the ground instead) */
+function taweret(o){if(!GODON)return;o=o||{};const g=GOD.taweret,H=(o.h||170)*GK(),OX=GX(),f=H/g.h,up=o.up||.42,SL=.14,OUT=o.out||.6,BY=12;let s0=-1;
+  dust({},player.x+OX,player.y-BY,H*.24,qn(7),26,12);lite('gold',player.x+OX,player.y-BY,H*.5,up+.3,.45);
+  const slamFx=()=>{const x=player.x+OX,y=player.y-BY,S=S1();flash('gold',x,y,H*.55,1.7,{life:.2});A(new Ring({el:'gold',x,y,r0:H*.12,r1:H*.75,w0:12,w1:2,life:.42}));glints(S,G[3],x,y,H*.5,10,H*.4,.6);
+    if(o.end){after(SL,()=>{for(let i=0;i<qn(10);i++){const u=R_(-1,1);S.add({im:tex('core',G[2]),x:player.x+OX+u*H*.35,y:player.y-BY,z:R_(.1,.7)*H,vz:R_(30,70),s0:R_(5,9),s1:1,life:R_(.5,.8),add:1,fi:.05,fo:.3,delay:R_(0,.2)});}});return;}
+    after(SL,()=>{const bz=BODY()*.55;for(let i=0;i<qn(18);i++){const zz=R_(.15,.9)*H,u=R_(-1,1);S.add({im:tex('core',G[2]),x:player.x+OX+u*H*.36*(1-.4*zz/H),y:player.y-BY,z:zz,to:{x:player.x,y:player.y,z:bz},s0:R_(6,10),s1:2,lin:1,life:R_(.3,.5),add:1,str:1.2,fi:.05,fo:.1,delay:R_(0,.14)});}
+      glints(S,G[3],player.x,player.y,bz,10,BODY()*.8,.8);});};
+  A(new Fn({layer:'sorted',follow:player,sortOff:-8,life:o.max||9,__gt:'-',fi:.01,fo:.01,d(q){const tt=q.t;
+      if(s0<0&&(o.go?o.go(tt):tt>=o.T)){s0=tt;q.life=tt+SL+OUT;slamFx();}
+      const im=img('taweret');if(!im)return;
+      const ts=s0<0?0:tt-s0,k=cl(ts/SL,0,1),ko=s0<0?0:cl((ts-SL)/OUT,0,1),sl=s0<0?0:Math.sin(k*Math.PI),br=s0<0?Math.sin(tt*4.2):0,
+        u=cl(tt/up,0,1),pp=K_.back(u),off=(1-eO(u))*H*1.04+(s0<0?0:(ko>0?1:eO(k))*H*.05)+(o.end?eI(ko)*H*1.05:0),
+        a=cl(tt/.08,0,1)*(o.end?1-.6*ko:1-eI(ko)),sx=lerp(.86,1,pp)*(1+.05*sl)*(1+.012*br)*(o.end?1:1-.22*eI(ko)),sy=lerp(.86,1,pp)*(1-.08*sl)*(1-.012*br)*(o.end?1:1-.22*eI(ko));
+      if(a<=.01)return;const s=P(player.x+OX,player.y-BY,0),fl=s0<0?0:.42*(1-k)+.16*(1-ko)*(ko>0?1:0);
+      ctx.save();ctx.globalAlpha*=a;ctx.beginPath();ctx.rect(s[0]-H*2,s[1]-H*3,H*4,H*3+1);ctx.clip();ctx.translate(s[0],s[1]+off);ctx.rotate(.016*Math.sin(tt*2.3)*(1-sl));ctx.scale(sx,sy);
+      pdraw('taweret',g.foot[0],g.foot[1],f,{halo:G[2],ha:.45+.15*(.5+.5*Math.sin(tt*5))+.3*sl,lit:fl});ctx.restore();
+      ctx.save();ctx.translate(s[0],s[1]);ctx.scale(1,.32);glowAt(0,0,H*.6,G[2],(.26+.3*sl)*a);glowAt(0,0,H*.3,'#fff6d8',(.05+.3*sl)*a);ctx.restore();}}));}
+/* Hapi standing in the water behind him: rises out of the water (clipped at his water line, ripples and foam round his waist),
+   tips his jars so the flood POURS from them from o.p0 to o.p1 seconds (two water ribbons into the water, splash crowns,
+   ripples, drops), laughs (a little bob), then sinks back; o.big = the end pour (thicker, more splashes) */
+function hapi(x,y,o){if(!GODON)return;o=o||{};x+=GX();const g=GOD.hapi,W=(o.w||176)*GK(),f=W/g.w,up=o.up||.5,p0=o.p0,p1=o.p1,dn=o.dn||.45,life=p1+dn+.05,big=o.big?1:0,st={on:0};
+  A(new Gush({el:'water',x,y:y-12,w:big?60:72,h:big?120:150,life:.5}));crown(x,y+2,64,'water',{life:.45});A(new Ring({el:'water',x,y,r0:10,r1:W*.6,w0:10,w1:2,life:.5}));bits(S1(),'water',x,y,30,qn(10),{up:1.3,sp:1.1});
+  if(!big)A(new Disc({x,y,r0:W*.5,kind:'pool',add:0,col:'#2f74bd',a:.42,life:p0+.6,fi:.15,fo:.45}));
+  const Hv=g.foot[1]*f;
+  A(new Fn({layer:'sorted',x,y,sortOff:-6,life,__gt:'-',fi:.01,fo:.01,d(q){const tt=q.t,im=img('hapi');if(!im)return;
+      const r=eO(cl(tt/up,0,1)),pp=K_.back(cl(tt/up,0,1)),sink=eI(cl((tt-p1)/dn,0,1)),vis=r*(1-sink),bob=Math.sin(tt*5.5)*2*(1-sink),
+        pour=cl((tt-p0)/.16,0,1)*(1-cl((tt-p1)/.22,0,1)),s=P(x,y,0),off=(1-vis)*Hv*1.04+bob,sc=lerp(.9,1,pp),rw=W*.34;
+      st.on=vis>.02?1:0;st.pour=pour;st.wy=s[1];st.sx=s[0];
+      const mp=jp=>[s[0]+(jp[0]-g.foot[0])*f*sc,s[1]+off+(jp[1]-g.foot[1])*f*sc];st.mL=mp(g.jarL);st.mR=mp(g.jarR);
+      /* the water round his waist: dark water + the back half of the foam rim, then him, then the front half */
+      ctx.save();ctx.translate(s[0],s[1]);ctx.scale(1,.3);ctx.globalAlpha*=cl(tt/.12,0,1)*(1-sink*.6);ctx.fillStyle='rgba(28,86,150,.5)';ctx.beginPath();ctx.arc(0,0,rw*1.15,0,TAU);ctx.fill();
+      ctx.lineWidth=5;ctx.strokeStyle='rgba(235,250,255,.75)';ctx.beginPath();ctx.arc(0,0,rw,Math.PI,TAU);ctx.stroke();ctx.restore();
+      if(vis>.01){ctx.save();ctx.beginPath();ctx.rect(s[0]-W*1.5,s[1]-W*2.5,W*3,W*2.5);ctx.clip();ctx.translate(s[0],s[1]+off);ctx.scale(sc,sc);
+        pdraw('hapi',g.foot[0],g.foot[1],f,{halo:'#5fb6f2',ha:.34+.1*Math.sin(tt*4)+.2*pour});ctx.restore();}
+      ctx.save();ctx.translate(s[0],s[1]);ctx.scale(1,.3);ctx.globalAlpha*=cl(tt/.12,0,1)*(1-sink*.6);ctx.lineWidth=6;ctx.strokeStyle='rgba(245,252,255,.9)';ctx.beginPath();ctx.arc(0,0,rw,0,Math.PI);ctx.stroke();
+      ctx.lineWidth=2;for(let i=0;i<2;i++){const ph=(tt*.9+i*.5)%1;ctx.globalAlpha=(1-ph)*.6*(1-sink);ctx.strokeStyle='rgba(225,245,255,1)';ctx.beginPath();ctx.arc(0,0,rw*(1.05+ph*.7),0,TAU);ctx.stroke();}ctx.restore();}}));
+  /* the two water ribbons (a separate piece so the element-gem tint can colour the water) */
+  A(new Fn({layer:'sorted',x,y,sortOff:-5,life,fi:.01,fo:.01,d(q){if(!st.on||st.pour<=.01)return;const tt=q.t,ww=g.jw*f*(big?.78:.56);
+      for(const [m,sd] of [[st.mL,-1],[st.mR,1]]){const lx=m[0]+sd*ww*.6,ly=st.wy+8;pourRibbon(m[0],m[1],lx,ly,sd,ww,st.pour,tt);
+        if(tt-(q['c'+sd]||-9)>(big?.14:.22)){q['c'+sd]=tt;const wx=lx,wy=ly/KY();crown(wx,wy,big?40:30,'water',{life:.32});A(new Ring({el:'water',x:wx,y:wy,r0:6,r1:big?42:30,w0:4,w1:1,life:.5,a:.7}));if(Math.random()<.6)bits(S1(),'water',wx,wy,4,big?3:2,{up:.9,sp:.7,size:.75});}}}}));}
+/* one stream of water from a jar mouth (x0,y0) down to the water (x1,y1), screen px: dark edge, light body, a white
+   highlight that flows down (moving dashes), foam where it lands */
+function pourRibbon(x0,y0,x1,y1,sd,w,a,t){const cx=x0+sd*w*1.1,cy=y0+(y1-y0)*.18,N=16,C=[];
+  for(let i=0;i<=N;i++){const u=i/N,x=(1-u)*(1-u)*x0+2*(1-u)*u*cx+u*u*x1,y=(1-u)*(1-u)*y0+2*(1-u)*u*cy+u*u*y1;C.push([x,y,u]);}
+  const side=e=>{const L=[],R=[];for(let i=0;i<=N;i++){const [x,y,u]=C[i],nb=C[Math.min(N,i+1)],pv=C[Math.max(0,i-1)],dx=nb[0]-pv[0],dy=nb[1]-pv[1],d=Math.hypot(dx,dy)||1,
+      hw=(w*(1-.35*u)*(.88+.12*Math.sin(t*22+u*11))+e)/2;L.push([x-dy/d*hw,y+dx/d*hw]);R.push([x+dy/d*hw,y-dx/d*hw]);}return L.concat(R.reverse());};
+  const poly=pts=>{ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();};
+  ctx.save();ctx.globalAlpha*=a;poly(side(3));ctx.fillStyle='rgba(18,62,120,.85)';ctx.fill();
+  const gr=ctx.createLinearGradient(x0,y0,x1,y1);gr.addColorStop(0,'#bfeaff');gr.addColorStop(.45,'#6cc4ff');gr.addColorStop(1,'#3f97e6');poly(side(0));ctx.fillStyle=gr;ctx.fill();
+  ctx.lineCap='round';ctx.strokeStyle='rgba(255,255,255,.85)';ctx.lineWidth=Math.max(1.2,w*.2);ctx.setLineDash([w*.9,w*.8]);ctx.lineDashOffset=-t*w*9;ctx.beginPath();
+  C.forEach((p,i)=>{const x=p[0]-sd*w*.16*(1-p[2]),y=p[1];i?ctx.lineTo(x,y):ctx.moveTo(x,y);});ctx.stroke();ctx.setLineDash([]);
+  ctx.globalAlpha=a*.9;ctx.fillStyle='#f2fbff';for(let i=0;i<4;i++){const an=t*7+i*1.7,rx=w*(.55+.25*Math.sin(an)),ry=w*.22;ctx.beginPath();ctx.ellipse(x1+Math.cos(i*1.6)*w*.35,y1-1+Math.sin(an)*.8,rx,ry,0,0,TAU);ctx.fill();}
+  ctx.restore();}
+
+/* the flood's last wave: ONE circle of water that runs out from the centre (the 8 game waves of hSeaEnd only draw, they never
+   hit — the ending hits everyone inside the flood at once, so a full circle tells the truth); far half behind what stands
+   inside the circle, near half in front; each segment has its own light → dark gradient, a white foam crest, spray */
+function ringWave(x0,y0,w){const sp=w.speed||560,len=w.len||300,life=len/sp+.32,ph=R_(0,TAU);
+  const geo=(q,half)=>{const r=Math.min(len,12+q.t*sp),H=80*eO(cl(q.t/.1,0,1))*(1-.55*r/len)*(.55+.45*cl((life-q.t)/.3,0,1)),N=36,C=[],B=[],M1=[],M2=[];
+    for(let i=0;i<=N;i++){const a=(half<0?Math.PI:0)+i/N*Math.PI,sa=Math.sin(a),ca=Math.cos(a),lump=1+.2*Math.sin(a*5+ph+q.t*6)+.1*Math.sin(a*11-q.t*9),hh=H*lump,
+        rb=r-hh*.95*Math.max(0,-sa)+hh*.22*Math.max(0,sa),rc=r+hh*.08*Math.max(0,sa);   /* the near crest leans out a little: the wave runs outward */
+      C.push(P(x0+ca*rc,y0+sa*rc,hh));B.push(P(x0+ca*rb,y0+sa*rb,0));
+      for(const [k,arr] of [[.42,M1],[.7,M2]]){const rr=lerp(rb,rc,k);arr.push(P(x0+ca*rr,y0+sa*rr,hh*k));}}return {r,H,C,B,M1,M2};};
+  const path=pts=>{ctx.beginPath();pts.forEach((c,i)=>i?ctx.lineTo(c[0],c[1]):ctx.moveTo(c[0],c[1]));};
+  const draw=(q,half)=>{const {r,H,C,B,M1,M2}=geo(q,half);q.y=y0+half*r;if(H<3)return;const a=cl((life-q.t)/.26,0,1)*cl(q.t/.05,0,1),k=H/60;
+    ctx.save();ctx.globalAlpha*=a;ctx.lineJoin='round';ctx.lineCap='round';
+    /* the body: per segment light (top) to deep (foot) */
+    for(let i=0;i<C.length-1;i++){const c0=C[i],c1=C[i+1],b0=B[i],b1=B[i+1],yt=Math.min(c0[1],c1[1]),yb=Math.max(b0[1],b1[1]);if(yb-yt<1)continue;
+      const g=ctx.createLinearGradient(0,yt,0,yb);if(half<0){g.addColorStop(0,'#a9e3ff');g.addColorStop(.35,'#4ea6ea');g.addColorStop(1,'#246fbd');}else{g.addColorStop(0,'#b9ebff');g.addColorStop(.2,'#5db4f4');g.addColorStop(.65,'#2c80d2');g.addColorStop(1,'#184c90');}
+      ctx.beginPath();ctx.moveTo(c0[0],c0[1]);ctx.lineTo(c1[0],c1[1]);ctx.lineTo(b1[0],b1[1]);ctx.lineTo(b0[0],b0[1]);ctx.closePath();ctx.fillStyle=g;ctx.strokeStyle=g;ctx.lineWidth=1.2;ctx.fill();ctx.stroke();}
+    /* painted-wave bands running along the face (they flow) */
+    for(const [arr,al,lw] of [[M2,.42,3],[M1,.24,2.2]]){path(arr);ctx.strokeStyle='rgba(200,240,255,'+al+')';ctx.lineWidth=lw*k;ctx.stroke();}
+    if(half>0){path(B);ctx.strokeStyle='rgba(14,50,96,.55)';ctx.lineWidth=3;ctx.stroke();path(B);ctx.strokeStyle='rgba(255,255,255,.78)';ctx.lineWidth=2.2;ctx.stroke();}
+    /* the foam rope on the crest: outlined cartoon puffs of different sizes */
+    const puffs=[];for(let i=0;i<C.length*2-1;i++){const c0=C[i>>1],c1=C[Math.min(C.length-1,(i>>1)+(i&1))],c=[(c0[0]+c1[0])/2,(c0[1]+c1[1])/2],rr=(3.6+4.2*Math.abs(Math.sin(i*1.37+q.t*6+ph))*Math.abs(Math.sin(i*.41+ph)))*k;puffs.push([c[0],c[1]-rr*.4,rr]);}
+    const OL='rgba(16,58,112,.8)';path(C);ctx.strokeStyle=OL;ctx.lineWidth=8*k+3.2;ctx.stroke();ctx.fillStyle=OL;for(const [x,y,rr] of puffs){ctx.beginPath();ctx.arc(x,y,rr+1.6,0,TAU);ctx.fill();}
+    path(C);ctx.strokeStyle='#ffffff';ctx.lineWidth=8*k;ctx.stroke();ctx.fillStyle='#ffffff';for(const [x,y,rr] of puffs){ctx.beginPath();ctx.arc(x,y,rr,0,TAU);ctx.fill();}
+    ctx.fillStyle='rgba(190,234,255,.85)';for(let i=0;i<puffs.length;i+=2){const [x,y,rr]=puffs[i];ctx.beginPath();ctx.arc(x+rr*.3,y+rr*.35,rr*.45,0,TAU);ctx.fill();}
+    ctx.restore();};
+  A(new Fn({layer:'sorted',x:x0,y:y0,life,fi:.01,fo:.01,d(q){draw(q,-1);}}));
+  A(new Fn({layer:'sorted',x:x0,y:y0,life,fi:.01,fo:.01,d(q){draw(q,1);}}));
+  A(new Emit({life:life-.22,every:.03,fn(q){const r=Math.min(len,12+q.t*sp),a=R_(0,TAU);bits(S1(),'water',x0+Math.cos(a)*r,y0+Math.sin(a)*r,46,1,{up:1.4,sp:.9,size:1.15});}}));
+  A(new Disc({x:x0,y:y0,r0:30,r1:len*1.02,kind:'pool',add:0,col:'#1d5aa0',a:.22,life:life,fi:.05,fo:.3}));}
 const HKS={
   basic(a){if(/Finish/.test(a.name||''))return;const phi=player.phi,side=((player.basicIdx||0)%2)?-1:1;pre(a,.11,L=>maceSwing(phi,side,L));},
   hnYawn(a){const phi=player.phi;at(a,a.windup,()=>yawnFx(phi));},
@@ -329,6 +438,7 @@ const HKS={
   haPound(a){},
   haMountain(a){at(a,.2,()=>{const x=player.x,y=player.y,S=S1();for(let i=0;i<7;i++){const an=i/7*TAU;A(new Flames({el:'fire',x:x+Math.cos(an)*22,y:y+Math.sin(an)*16,h:R_(26,40),w:20,n:2,life:.55,delay:R_(0,.05)}));}ring('fire',x,y,60,{w0:8,life:.35});bits(S,'fire',x,y,20,10,{up:1.2});});},
   haBehemoth(a){const T=(a.windup||0)/TEMPO();A(new Sigil({tex:ART.ring('taweret','gold'),el:'gold',follow:player,r:70,spin:1.2,life:T+.1,fi:T*.7,fo:.1,a:.9}));
+    taweret({T,up:Math.min(.45,Math.max(.2,T*.7))});
     A(new Emit({life:T,every:.06,fn(){const a2=R_(0,TAU),d=R_(60,110);S1().add({im:tex('core',G[2]),x:player.x+Math.cos(a2)*d,y:player.y+Math.sin(a2)*d,z:R_(2,20),to:{x:player.x,y:player.y,z:BODY()*.5},s0:R_(5,8),s1:2,lin:1,life:R_(.25,.4),add:1,str:1.2,fi:.05,fo:.1});}}));},
   hbMud(a){},
   hbWallow(a){at(a,a.windup,()=>{const x=player.x,y=player.y,R=HB.hbWallow.R;A(new Ring({el:'mud',x,y,r0:20,r1:R*1.05,w0:10,w1:2,life:.5,a:.85}));bits(S1(),'mud',x,y,BODY()*.4,12,{up:1.5,sp:1.3,size:1});});},
@@ -341,8 +451,9 @@ const HKS={
   hbQuick(a,c){let pt=null;try{pt=hPt(c,HB.hbQuick.range);}catch(_){}at(a,a.windup,()=>{if(!pt)return;const [x,y]=pt,R=HB.hbQuick.R;ring('sand',x,y,R,{w0:9,life:.45});dust({},x,y,R*.5,6,26,10);bits(S1(),'sand',x,y,6,12,{up:1.2,sp:1.4});});},
   hbWrath(a){at(a,a.windup,()=>{const x=player.x,y=player.y;crown(x,y,66,'water',{life:.45});A(new Ring({el:'water',x,y,r0:20,r1:120,w0:10,w1:2,life:.45}));bits(S1(),'water',x,y,30,14,{up:1.4,sp:1.2});});},
   hbSea(a){const T=(a.windup||0)/TEMPO();A(new Sigil({tex:ART.ring('nile','water'),el:'water',follow:player,r:90,spin:1,life:T+.1,fi:T*.7,fo:.1,a:.9}));
+    hapi(player.x,player.y-40,{up:Math.min(.55,Math.max(.25,T*.8)),p0:Math.max(.2,T-.18),p1:T+1.5,dn:.5});
     A(new Emit({life:T,every:.05,fn(){const an=R_(0,TAU),d=R_(40,100);S1().add({im:spr('drop','water'),orb:1,cf:player,cx:player.x,cy:player.y,ang:an,va:5,r:d,vr2:-60,z:R_(0,10),vz:R_(60,120),s0:R_(7,11),life:R_(.4,.6),face:1,fa:Math.PI/2,fo:.2});}}));
-    at(a,a.windup,()=>{const x=player.x,y=player.y,R=HB.hbSea.R;A(new Gush({el:'water',x,y,w:54,h:140,life:.55}));A(new Ring({el:'water',x,y,r0:40,r1:R,w0:14,w1:3,life:.6}));A(new Ring({el:'nile',x,y,r0:20,r1:R*.7,w0:9,w1:2,life:.5,delay:.08}));bits(S1(),'water',x,y,40,26,{up:1.5,sp:1.6,size:1.2});flash('water',x,y,40,1.6);});},
+    at(a,a.windup,()=>{const x=player.x,y=player.y,R=HB.hbSea.R;if(!godPic('hapi'))A(new Gush({el:'water',x,y,w:54,h:140,life:.55}));A(new Ring({el:'water',x,y,r0:40,r1:R,w0:14,w1:3,life:.6}));A(new Ring({el:'nile',x,y,r0:20,r1:R*.7,w0:9,w1:2,life:.5,delay:.08}));bits(S1(),'water',x,y,40,26,{up:1.5,sp:1.6,size:1.2});flash('water',x,y,40,1.6);});},
   hcChomp(a){for(const e of a.events.slice()){if(e._hv)continue;const t=e.t;pre(a,.16,L=>chompBite(L),t);}},
   hcSubmerge(a,c){const sx=player.x,sy=player.y,t=hTgt(c,400);let [tx,ty]=t?[t.x,t.y]:[sx+Math.cos(player.phi)*160,sy+Math.sin(player.phi)*160];try{if(!hFree(tx,ty)){tx=sx;ty=sy;}}catch(_){}
     const H=HB.hcSubmerge.hide;at(a,.02,()=>{bits(S1(),'water',sx,sy,10,6,{only:1,up:.6});subPeek(sx,sy,tx,ty,(H-.02)/TEMPO());});},
@@ -371,11 +482,12 @@ function exFx(f){ring('gold',f.x,f.y,Math.max(40,f.r1||46),{w0:5,life:.4});A(new
 const DROP=new Set(['GRing','Impact','Crack','StarCut']),NOFX=()=>({layer:'none',update:()=>false,draw(){},kill(){},add(){},active:false});
 const A0=window.addFx;window.addFx=addFx=function(f){if(f&&!(f instanceof K_.Part)&&!(f instanceof K_.Sys)){const n=f.constructor&&f.constructor.name;
     if(n==='HitCrescents'||n==='PuffDust')return NOFX();
+    if(n==='DText'&&GODON&&/^(BEHEMOTH|GREAT INUNDATION|ทับยักษ์!|คลื่นยักษ์!|Behemoth Drop|The Great Inundation)$/.test(f.text||''))f.z=Math.max(f.z||0,198);   /* the ult names float over the god's crown, not over its face */
     if(n==='Trail')return {layer:'none',active:true,s:[],add(){},update(){return false;},draw(){}};
     if(f instanceof HImg){let r=null;try{r=himg(f);}catch(e){warn('himg',e);}return r?A0.call(this,r):NOFX();}
     if(f instanceof HBit)return NOFX();
     if(f instanceof HGeyser){try{geyserFx(f.x,f.y,f.R||70);}catch(e){warn('geyser',e);}return A0.apply(this,arguments);}
-    if(f instanceof HWave){try{waveFx(f);}catch(e){warn('wave',e);}return A0.apply(this,arguments);}
+    if(f instanceof HWave){if(HV.seaEnd&&f.big){f._ring=1;HV.ringW.push(f);return A0.apply(this,arguments);}try{waveFx(f);}catch(e){warn('wave',e);}return A0.apply(this,arguments);}
     if(f instanceof HProj){try{projFx(f);}catch(e){warn('proj',e);}return A0.apply(this,arguments);}
     if(n==='Ghost'&&player.action){if(player.jgHide||(HV.gk=(HV.gk||0)+1)%3)return NOFX();f.color='#8fe0d4';f.life=.15;return A0.apply(this,arguments);}
     if((n==='GRing'||n==='Impact')&&f.color==='#ffe9a8'){try{if(n==='GRing')exFx(f);else{const p=f.pos||[f.x,f.y,24];flash('gold',p[0],p[1],p[2]||24,.9);}}catch(e){warn('ex',e);}return NOFX();}
@@ -411,11 +523,16 @@ const LIVE={};
 function keep(key,on,mk,id){const cur=LIVE[key];if(on){if(!cur||cur.id!==id||!cur.parts.every(p=>fx.includes(p))){if(cur)cur.parts.forEach(p=>p.kill&&p.kill());LIVE[key]={id,parts:grab(mk)};}}else if(cur){cur.parts.forEach(p=>p.kill&&p.kill());LIVE[key]=null;}}
 function watch(){const nap=hasBuff('hnNap');if(HV.nap&&!nap)napPop();HV.nap=nap;keep('nap',nap,napFx);keep('shield',HIP.shield>0,shieldFx);
   const g=HIP.gulp&&!HIP.gulp.e.dead?HIP.gulp.e:null;keep('gulp',!!g,()=>gulpHoldFx(g),g);keep('beh',hasBuff('haBehemoth'),behFx);
+  /* the gods come back for the endings: Taweret rises just before Behemoth runs out, Hapi just before the flood's last wave */
+  const bb=player.buffs&&player.buffs.haBehemoth;if(bb&&bb.t>0){if(bb.t<.42&&!HV.behPre){HV.behPre=1;taweret({up:.24,out:.55,end:1,max:3,go:t=>!hasBuff('haBehemoth')||t>1.4});}}else HV.behPre=0;
+  if(HIP.sea){const s2=HIP.sea,left=s2.until-gameTime;if(left<.45&&HV.seaPre!==s2){HV.seaPre=s2;hapi(s2.x,s2.y-40,{up:.3,p0:Math.max(.18,left-.12),p1:left+.55,dn:.42,big:1});}}
   const sea=HIP.sea;keep('sea',!!sea,()=>seaFx(sea),sea);const j=HIP.jar;keep('jar',!!j,()=>jarFx(j),j);const hot=HIP.hot&&HIP.hot.until>gameTime?HIP.hot:null;keep('hot',!!hot,hotFx,hot);poolKeep();
   if(hL('hnSweat')){if(HV.sweatT!=null&&HIP.sweatT<HV.sweatT-.5){const b=BODY();bits(S1(),'melon',player.x,player.y,b*.7,4,{only:1,sp:.3,up:.2,size:.8});}HV.sweatT=HIP.sweatT;
     if(HV.sweatCD!=null&&HIP.sweatCD>HV.sweatCD+.5){const b=BODY();bits(S1(),'melon',player.x,player.y,b*.6,10,{only:1,sp:1,up:.8,size:.9});A(new Ring({el:'red',x:player.x,y:player.y,r0:10,r1:b*1.2,w0:6,w1:1,life:.35}));}HV.sweatCD=HIP.sweatCD;}}
 {const UU=HCore.prototype.update;HCore.prototype.update=function(dt){const jar=HIP.jar;window.__HIPTICK=1;let r;try{r=UU.call(this,dt);}finally{window.__HIPTICK=0;}
   const sk=window.SKCTX;window.SKCTX=null;window.__HIPTICK=1;try{if(jar&&!HIP.jar)jarBreak(jar);watch();}catch(e){warn('watch',e);}finally{window.__HIPTICK=0;window.SKCTX=sk;}return r;};}
-{const SE=window.hSeaEnd;window.hSeaEnd=function(){const s=HIP.sea;const r=SE.apply(this,arguments);try{if(s){A(new Gush({el:'water',x:s.x,y:s.y,w:70,h:170,life:.6}));A(new Ring({el:'water',x:s.x,y:s.y,r0:30,r1:s.R*1.05,w0:20,w1:3,life:.6}));flash('water',s.x,s.y,40,1.8);bits(S1(),'water',s.x,s.y,40,30,{up:1.6,sp:1.8,size:1.2});}}catch(e){warn('seaEnd',e);}return r;};}
+{const SE=window.hSeaEnd;window.hSeaEnd=function(){const s=HIP.sea;HV.seaEnd=1;HV.ringW=[];let r;try{r=SE.apply(this,arguments);}finally{HV.seaEnd=0;}
+  try{if(s&&HV.ringW.length)ringWave(s.x,s.y,HV.ringW[0]);}catch(e){warn('ring',e);}
+  try{if(s){if(!godPic('hapi'))A(new Gush({el:'water',x:s.x,y:s.y,w:70,h:170,life:.6}));A(new Ring({el:'water',x:s.x,y:s.y,r0:30,r1:s.R*1.05,w0:20,w1:3,life:.6}));flash('water',s.x,s.y,40,1.8);bits(S1(),'water',s.x,s.y,40,30,{up:1.6,sp:1.8,size:1.2});}}catch(e){warn('seaEnd',e);}return r;};}
 HV.ready=1;
 })();

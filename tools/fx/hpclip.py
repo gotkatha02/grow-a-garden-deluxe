@@ -1,4 +1,4 @@
-"""Hippo showcase clip per tree: DSF=1.5 MAP=egyF1 python3 tools/fx/hpclip.py basic|a|b|c [extra-query]  → $OUT/hippo_<tree>.mp4 (30 fps, Thai labels)
+"""Hippo showcase clip per tree: DSF=1.5 MAP=egyF1 python3 tools/fx/hpclip.py basic|a|b|c|gods [extra-query]  → $OUT/hippo_<tree>.mp4 (30 fps, Thai labels)
 (DSF = device pixel ratio, CW/CH = crop in css px, MAP = map of the test room: egyF1 = desert sand, default vikF2 = snow; extra-query e.g. '&vfx3=0' = the old look)
 Each entry: (key | 'js:<code>', label, seconds, pre-js, distance to the dummy (0 = stand in the middle of the room), test-room mode [, (dx, dz) camera offset [, zoom]]). In js / pre code the dummy is __e.
 zoom 1 = a crop of CW × CH css px (660 × 400), zoom 1.7 = a close-up; every frame is scaled to OW × OH (960 × 582). Same machinery as anclip.py.
@@ -43,7 +43,11 @@ SEQ={'basic':[('basic','Hippo Combo · คทาสำริดทุบลง�
       ('hcGobble','Gobble Up · ดูดฮุบหลายตัว',1.5,'',0,'room',(-40,30),1.1),
       ('hcSubmerge','Submerge · ดำโคลน โผล่ทับ',2.4,'',200,'one',(90,30),1.05),
       ('hcMeteor','Meteor Belly · ทับลุกเป็นไฟ 3 ครั้ง',2.8,'',160,'room',(60,40),1.0),
-      ('hcJar',"Hapi's Jar · โถศักดิ์สิทธิ์ ฟื้นในวง",3.2,'',0,'room',(-30,40),1.0)]}[TREE]
+      ('hcJar',"Hapi's Jar · โถศักดิ์สิทธิ์ ฟื้นในวง",3.2,'',0,'room',(-30,40),1.0)],
+ 'gods':[('haBehemoth','Behemoth Drop · เทพีทาเวเรตผุดหลังตัว ตบลงพร้อมฮิปโป',2.3,'',0,'room',(-60,80),.8),
+      ('js:const b=player.buffs.haBehemoth;if(b)b.t=.75;','ตอนบัฟหมด · ทาเวเรตกลับมาทับยักษ์อีกครั้ง',2.1,'',0,'room',(-60,80),.8),
+      ('hbSea','The Great Inundation · เทพฮาปิผุดจากน้ำ น้ำท่วมไหลจากโถ',3.0,'',0,'room',(-60,80),.8),
+      ('js:if(HIP.sea)HIP.sea.until=gameTime+.75;','ตอนน้ำท่วมหมด · ฮาปิเทแรง คลื่นยักษ์วงกลม',2.2,'',0,'room',(-60,80),.8)]}[TREE]
 OUT=os.environ.get('OUT','/tmp/fx');os.makedirs(OUT,exist_ok=True);FR=f'/tmp/fran_{TREE}';shutil.rmtree(FR,ignore_errors=True);os.makedirs(FR)
 W,H=int(os.environ.get('CW','660')),int(os.environ.get('CH','400'));OW,OH=int(os.environ.get('OW','960')),int(os.environ.get('OH','582'))   # crop of zoom 1 in css px · size of the video
 CAST="""([k,near,pre])=>{try{if(player.action)endAction();}catch(x){}player.casting=null;player.hp=player.maxHp;player.mp=player.maxMp;player.ccT=0;player.cd={};

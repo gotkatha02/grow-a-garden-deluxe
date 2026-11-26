@@ -1,4 +1,4 @@
-"""Wolf showcase clip of the v5 code effects (wolf_vfx5.js): DSF=1.5 python3 tools/fx/wfclip.py a|b [extra-query]  → $OUT/wolf_<tree>.mp4 (30 fps, Thai labels)
+"""Wolf showcase clip of the v5 code effects (wolf_vfx5.js): DSF=1.5 python3 tools/fx/wfclip.py a|b|pic [extra-query] (pic = the 5 painted pictures of 2026-11-26; '&wpic=0' = the old ones)  → $OUT/wolf_<tree>.mp4 (30 fps, Thai labels)
 A key 'fu:<skill>' = a combo follow-up: cast on top of the entry before it (hero not moved, the parent's action is passed on); 'block:' in a pre-js = the dummy hits the wolf once (Iron Counter / Rune Guard).
 (DSF = device pixel ratio, CW/CH = crop in css px, MAP = map of the test room: egyF1 = desert sand, default vikF2 = snow; extra-query e.g. '&vfx3=0' = the old painted look)
 Each entry: (key | 'js:<code>', label, seconds, pre-js, distance to the dummy (0 = stand in the middle of the room), test-room mode [, (dx, dz) camera offset [, zoom]]). In js / pre code the dummy is __e.
@@ -20,6 +20,11 @@ SEQ={'a':[('basic','Wolf Combo · คมขวานวาดตามหัว�
       ('ironCounter','Iron Counter (ภาพเดิม) → Revenge Breaker · ตั้งรับ แล้วสวนสีทอง โซ่ขาดกระเด็น',.42,HIT,62,'one',(0,34),1.6),('fu:revengeBreaker','',1.3,'',0,'one',(0,34),1.6),
       ('vampiricAxe','Vampiric Axe → Blood Rush · ดูดเลือดกลับเข้าตัว แล้วพุ่งผ่าน',1.25,'',120,'one',(30,34),1.4),('fu:bloodRush','',1.0,'',0,'one',(30,34),1.4),
       ('predatorsLeap',"Predator's Leap · กระโจนตะครุบ รอยเล็บบนพื้น",1.7,'',170,'one',(60,40),1.25)],
+ 'pic':[('warHowl','War Howl · วิญญาณหมาป่าขาวหอนอยู่หลังตัว',1.4,'',100,'one',(-50,70),1.45),
+      ('executioner','Executioner · ขวานผีสีแดงลอยเหนือเป้า แล้วฟันลง',1.7,'if(!window.__sure){window.__sure=1;const _h=hurt;hurt=function(e,m,o){return _h.call(this,e,m,Object.assign({},o||{},{sure:1}));};}',62,'one',(10,70),1.3),
+      ('valhallasWrath',"Valhalla's Wrath · ขวานทองยักษ์เหวี่ยงตามทุกครั้งที่ฟัน แล้วตกลงกลางวง",6.0,'if(!window.__sure){window.__sure=1;const _h=hurt;hurt=function(e,m,o){return _h.call(this,e,m,Object.assign({},o||{},{sure:1}));};}',70,'one',(30,70),.95),
+      ('runeGuard','Rune Guard · โล่รูนน้ำแข็ง 3 ใบลอยวนรอบตัว',1.8,'',100,'one',(-50,40),1.6),
+      ('warBanner','War Banner · ธงศึกปักลงที่เป้า',2.2,'',120,'one',(0,50),1.3)],
  'b':[('frostFang','Frost Fang → Ice Break · เขี้ยวน้ำแข็งผุดเป็นแถว แล้วทุบแตก',1.0,'',120,'one',(30,34),1.4),('fu:iceBreak','',1.5,'',0,'one',(30,34),1.4),
       ('runeGuard','Rune Guard → Rune Burst · วงรูนระเบิดรอบตัว',.8,HIT,62,'one',(-20,40),1.3),('fu:runeBurst','',1.2,'',0,'one',(-20,40),1.3),
       ('thunderFang','Thunder Fang → Lightning Pursuit · ฟันสายฟ้า ฟ้าผ่าลง แล้วพุ่งตาม',.85,'',62,'one',(10,50),1.3),('fu:lightningPursuit','',1.2,'',0,'one',(10,50),1.3),

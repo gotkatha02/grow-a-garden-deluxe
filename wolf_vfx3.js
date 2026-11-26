@@ -559,7 +559,7 @@ const PIC=[ [/^wr\d/,A('rock','stone',.9)],[/^w(46|08)/,A('axe','red',1.5)],[/^w
  [/^w(37|52)|^y0[57]|^x05/,A('crack','#4a2416',.5)],[/^w29/,A('pool','red',.45)],[/^w30/,A('drop','red',1.4)],[/^w02/,A('drop','red',1.2)],[/^w12/,A('shard','ice',1)] ];
 const picOf=n=>{for(const [re,a] of PIC)if(re.test(n))return a;return null;};
 /* owner 2026-11-20: buffs, the A ultimate (Valhalla's Wrath), the spin (Axe Cyclone / Cyclone Leap) and the shield skill keep their painted pictures */
-const KEEP=/^w(04|05|07|08|09|10|14|20|24|33|35|37|44|45|46|47|48|53|54|55|56|57|58|59)_|^wr\d/;
+const KEEP=/^w(04|05|07|08|09|10|14|20|24|33|35|37|44|45|46|47|48|53|54|55|56|57|58|59)_|^wr\d|^n0\d_/;   /* n0x = the owner's 2026-11-26 paintings */
 /* owner 2026-11-20 after the review clips: 'many skills are not pretty — use the generated pictures'. The plain vector fallbacks are OFF:
    every picture wolf_fx.js asks for is the painted one again. Only skills with their own hand-made VFX above (hooks in wV3) stay code-drawn. */
 const VFALLBACK=false;

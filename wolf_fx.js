@@ -10,7 +10,7 @@
 /* ---------- image loading / drawing ---------- */
 const WI={};
 function wImg(n){let o=WI[n];if(!o){o=WI[n]={im:new Image(),ok:false};o.im.onload=()=>{o.ok=o.im.naturalWidth>0;};
-  o.im.src=((n.startsWith('w')||/^[xy]\d/.test(n))?'assets/fx/wolf/':'assets/fx/cat/')+n+'.webp';}return o.ok?o.im:null;}
+  o.im.src=((n.startsWith('w')||/^[xyn]\d/.test(n))?'assets/fx/wolf/':'assets/fx/cat/')+n+'.webp';}return o.ok?o.im:null;}
 function wDraw(n,sx,sy,w,o={}){if(window.wV3&&window.wV3.draw){const r=window.wV3.draw(n,sx,sy,w,o);if(r!==undefined)return r;}   /* owner 2026-11-20: no painted pictures at all — every name is drawn by code */
   const im=wImg(n);if(!im)return false;const cells=o.cell!=null?(o.cells||8):1,iw=im.naturalWidth/cells,ih=im.naturalHeight;let h=w*ih/iw*(o.sq||1);
   ctx.save();ctx.globalAlpha=Math.max(0,Math.min(1,o.a==null?1:o.a));if(o.add)ctx.globalCompositeOperation='lighter';ctx.translate(sx,sy);
@@ -18,6 +18,15 @@ function wDraw(n,sx,sy,w,o={}){if(window.wV3&&window.wV3.draw){const r=window.wV
   if(o.rot)ctx.rotate(o.rot);if(o.fy)ctx.scale(1,-1);if(o.fx)ctx.scale(-1,1);
   const ax=o.ax==null?.5:o.ax,ay=o.ay==null?.5:o.ay,c=o.clip==null?1:Math.max(0,Math.min(1,o.clip));
   ctx.drawImage(im,(o.cell||0)*iw,0,iw*c,ih,-w*ax,-h*ay,w*c,h);ctx.restore();return true;}
+/* 2026-11-26 the owner's 5 paintings for the Fenrir's Heir look (prompts WOLF_FX5_PLAN_TH.md §4, cut by tools/fx/wolf_pics.py):
+   [picture, size factor, anchor]. The factor keeps each piece as tall on screen as the old picture it replaces; the anchors are
+   measured points of the painting: blade tip (ghost axe: hangs over the head, the tip cuts into the body on the drop), blade tip (falling god axe), haft top (the swinging axe turns
+   round it), head centre (howl), ground line (banner). ?wpic=0 = the old pictures. */
+const WPIC=!/[?&]wpic=0/.test(location.search);
+const WP=WPIC?{exec:['n01_exec_axe',.82,{ax:.413,ay:.93}],god:['n02_valhalla_axe',.83,{ax:.455,ay:.884}],swing:['n02_valhalla_core',.7,{ax:.593,ay:.04}],
+    howl:['n03_howl',.87,{ax:.374,ay:.53}],banner:['n04_banner',.82,{ax:.483,ay:.97}],shield:['n05_rune_shield',1.05,{ax:.5,ay:.496}]}
+  :{exec:['w46_exec_axe',1,{ay:.85}],god:['w55_valhalla_axe',1,{ay:.97}],swing:['w55_valhalla_axe',1,{ay:.06}],howl:['w05_howl',1,{}],banner:['w20_banner',1,{ay:.96}],shield:['w24_rune_shield',1,{ay:.5}]};
+function wP(k,sx,sy,w,o){const p=WP[k];return wDraw(p[0],sx,sy,w*p[1],Object.assign({},p[2],o||{}));}
 /* Mjolnir (owner 2026-11-20): the B ultimate's hammer drops out of the sky and lands with an ice rift */
 class WHammer{constructor(o){Object.assign(this,{t:0,life:1.4,fall:.34,layer:'top',w:120,z0:420},o);this.landed=false;}get sy(){return this.y+10;}
   update(dt){this.t+=dt;if(!this.landed&&this.t>=this.fall){this.landed=true;this.land&&this.land();}return this.t<this.life;}
@@ -97,7 +106,7 @@ const AT={   // key: (a,c) => visuals ; a = the action, c = cast context
   cycloneLeap:(a,c)=>{const x=player.x,y=player.y;if(!(window.wV3&&window.wV3.slam&&window.wV3.slam(x,y,.85)))fxI({_tvc:1,n:'w44_cyclone_ground',x,y,w:270,layer:'ground',life:1.1,s0:.45,s1:1,fadeIn:.001,fadeOut:.35});
     for(let i=0;i<5;i++){const an=rnd(0,TAU),v=rnd(90,180);addFx(new WRock({n:'wr'+(1+i%4)+'_rock',x,y,vx:Math.cos(an)*v,vy:Math.sin(an)*v*.6,vz:rnd(240,380),w:rnd(14,22)}));}if(typeof shake==='function')shake(5);},
   ironCounter:(a,c)=>{fxI({fx:Math.cos(player.phi)>0,n:'w09_parry',x:player.x+Math.cos(player.phi)*24,y:player.y+Math.sin(player.phi)*24,z:36,w:80,life:.5,s0:.6,s1:1.05,fadeIn:.001,fadeOut:.5,glow:.8});},
-  warHowl:(a,c)=>{fxI({_tvc:1,n:'w05_howl',x:player.x,y:player.y,z:70,w:120,life:.6,s0:.5,s1:1.1,fadeOut:.4,glow:.6});addFx(new WHowlWave(player.x,player.y,W_HOWL_R));},
+  warHowl:(a,c)=>{const H=WP.howl;fxI(Object.assign({_tvc:1,n:H[0],x:player.x,y:player.y,z:70,w:120*H[1],life:.6,s0:.5,s1:1.1,fadeOut:.4,glow:.6},WPIC?{z:92,glow:.2,layer:'sorted',sy:player.y-2,fx:Math.cos(player.phi)<0}:{},H[2]));   /* the white spirit wolf howls from behind the hero's head (sorted layer: no bloom, not cut out by the hero mask) */addFx(new WHowlWave(player.x,player.y,W_HOWL_R));},
   warFury:(a,c)=>{flashS(.15,'#ff3a2a');},
   bloodRush:(a,c)=>{},
   predatorsLeap:(a,c)=>{const ph=player.phi,x=player.x+Math.cos(ph)*20,y=player.y+Math.sin(ph)*20;if(!(window.wV3&&window.wV3.clawGround&&window.wV3.clawGround(x,y,ph)))fxI({_tvc:1,n:'w52_claw_ground',x,y,w:190,layer:'ground',rot:0,fx:Math.cos(ph)<0,life:1.3,s0:.6,s1:1,fadeIn:.001,fadeOut:.35});if(typeof shake==='function')shake(4);},
@@ -188,7 +197,7 @@ class WExecAxe{constructor(e,w){Object.assign(this,{e,x:e.x,y:e.y,w,t:0,life:9,l
   drop(){if(this.dt0<0)this.dt0=this.t;}
   update(dt){this.t+=dt;if(this.e&&!this.e.dead){this.x=this.e.x;this.y=this.e.y;}if(this.dt0<0&&this.t>1.2)this.drop();return this.dt0<0||this.t-this.dt0<.3;}
   draw(){const k=this.t,f=this.dt0<0?0:Math.min(1,(k-this.dt0)/.09),z=62-40*f*f+(this.dt0<0?4*Math.sin(k*9):0),a=Math.min(1,k/.15)*(this.dt0>=0&&k-this.dt0>.12?Math.max(0,1-(k-this.dt0-.12)/.18):1),[x,y]=P(this.x,this.y,z);
-    wDraw('w46_exec_axe',x,y,this.w*(this.dt0<0?.9+.05*Math.sin(k*6):1),{a:a*.92,ay:.85});}}
+    wP('exec',x,y,this.w*(this.dt0<0?.9+.05*Math.sin(k*6):1),{a:a*.92});}}
 function wExecHit(e,marked){const big=marked;if(!(window.wV3&&window.wV3.execCut&&window.wV3.execCut(e,big)))fxI({_tvc:1,n:'w47_exec_cut',x:e.x,y:e.y+2,z:0,ay:.97,w:big?(e.boss?110:90):70,life:.42,s0:.7,s1:1.05,fadeIn:.001,fadeOut:.5,glow:.5,a0:big?1:.8});
   if(big)wBleedFx(e,1);if(typeof shake==='function')shake(big?6:3);
   if(e.dead)setFxT(.08,()=>fxI({_tvc:1,n:'w48_exec_mark',x:e.x,y:e.y,z:e.boss?90:70,w:70,life:.8,s0:.4,s1:1,fadeIn:.001,fadeOut:.35,glow:.4}));}
@@ -229,14 +238,15 @@ class WClone{constructor(o){Object.assign(this,o,{t:0,layer:'sorted'});}get sy()
       if(this.fl){ctx.translate(px,0);ctx.scale(-1,1);ctx.translate(-px,0);}
       ctx.globalCompositeOperation=g?'lighter':'source-over';drawFrame(fr,px,py,a*(g?.25:.7),null,tinted(fr,g?'#ff8a2a':'#ffd36a'));ctx.restore();}}}
 class WGodAxe{constructor(x,y,fall){Object.assign(this,{x,y,fall,t:0,layer:'top',life:fall+.55});}update(dt){this.t+=dt;return this.t<this.life;}
-  draw(){const k=Math.min(1,this.t/this.fall),z=420*(1-k*k),h=this.t-this.fall,a=h>0?Math.max(0,1-Math.max(0,h-.25)/.3):Math.min(1,this.t/.08),[x,y]=P(this.x,this.y,z);wDraw('w55_valhalla_axe',x,y+8,190*(h>0&&h<.08?1.08:1),{a,ay:.97});}}
+  draw(){const k=Math.min(1,this.t/this.fall),z=420*(1-k*k),h=this.t-this.fall,a=h>0?Math.max(0,1-Math.max(0,h-.25)/.3):Math.min(1,this.t/.08),[x,y]=P(this.x,this.y,z);wP('god',x,y+(WPIC?3:8),190*(h>0&&h<.08?1.08:1),{a});}}
 /* Valhalla dash hits: the giant golden axe (w55) swings through the target, alternating sides, like a huge chasing chop */
 let wVhN=0;
 class WBigSwing{constructor(e,side){Object.assign(this,{x:e.x,y:e.y,side,t:0,life:.26,layer:'top'});}update(dt){this.t+=dt;return this.t<this.life;}
   draw(){const k=Math.min(1,this.t/.14),e=1-(1-k)*(1-k),a=this.t<.03?this.t/.03:(this.t>.16?Math.max(0,1-(this.t-.16)/.1):1),[x,y]=P(this.x,this.y,30),sd=this.side,
       ang=sd*(-1.25+2.3*e),R=34;ctx.save();ctx.translate(x-sd*R*.3,y-R*.6);ctx.rotate(ang+Math.PI);
-    for(let g=2;g>=1;g--){ctx.save();ctx.rotate(-sd*.22*g);ctx.globalAlpha=a*.22/g;wDraw('w55_valhalla_axe',0,0,95,{ay:.06,a:a*.25/g});ctx.restore();}
-    wDraw('w55_valhalla_axe',0,0,95,{ay:.06,a});ctx.restore();}}
+    const fl=WPIC&&sd<0;   /* the single blade's edge leads the swing: mirrored when it sweeps right → left */
+    for(let g=2;g>=1;g--){ctx.save();ctx.rotate(-sd*.22*g);ctx.globalAlpha=a*.22/g;wP('swing',0,0,95,{a:a*.25/g,fx:fl});ctx.restore();}
+    wP('swing',0,0,95,{a,fx:fl});ctx.restore();}}
 const W_VH=[['w57_vh_down',150,.5],['w56_vh_up',150,.5],['w58_vh_side',190,.5],['w59_vh_chop',110,.95]];
 function wVhSlash(e){const k=(wVhN-1)%4,[n,w,ay]=W_VH[k],L=((wVhN-1)>>2)%2?Math.cos(player.phi)>=0:Math.cos(player.phi)<0;
   fxI({_tvc:1,n,x:e.x,y:e.y+(ay>.9?3:0),z:ay>.9?0:30,ay,w:e.boss?w*1.2:w,fx:L,life:.3,s0:.75,s1:1.06,fadeIn:.001,fadeOut:.5,wipe:.2,glow:.5});wBleedFx(e);}
@@ -270,14 +280,14 @@ function wMjolnir(f){f.z0=440;f.linger=.75;const x=f.x,y=f.y;
 /* Rune Guard: 3 small ice shields orbit the wolf (back half under the hero, front half over) */
 function wShields(t,a,front){for(let i=0;i<3;i++){const ang=t*2.6+i*2.094,sn=Math.sin(ang);if((sn>=0)!==front)continue;
   const [x,y]=P(player.x+Math.cos(ang)*40,player.y+sn*16,26+3*Math.sin(t*4+i));const k=.85+.15*sn;
-  wDraw('w24_rune_shield',x,y,37*k,{a:a*(.75+.25*sn),ay:.5});}}
+  wP('shield',x,y,37*k,{a:a*(.75+.25*sn)});}}
 
 /* ---------- auras that follow buffs ---------- */
 class WAura{constructor(){this.t=0;this.layer='ground';this.r=0;this.g=0;this.b=0;}
   update(dt){this.t+=dt;const f=(v,on)=>Math.max(0,Math.min(1,v+(on?dt*4:-dt*3)));this.r=f(this.r,hasBuff('warFury'));this.g=f(this.g,hasBuff('runeGuard'));this.bd=(this.bd||0)-dt;if(this.bd<=0&&typeof enemies!=='undefined'){this.bd=.25;for(const e of enemies)if(!e.dead&&e.st&&e.st.bleed>0&&gameTime-(e._wdr||0)>1.3){e._wdr=gameTime;fxI({_tvc:1,n:'w30_bleed_drip',x:e.x+rnd(-5,5),y:e.y+2,z:0,ay:.97,w:24,life:.4,s0:.5,s1:1,fadeIn:.001,fadeOut:.5});}}const WB=(typeof warBanner!=='undefined'&&warBanner&&fx.includes(warBanner)&&warBanner.t>=(warBanner.land||0))?warBanner:null;this.B=WB;this.b=f(this.b,!!WB);return CHAR==='wolf';}
   draw(){const [x,y]=P(player.x,player.y,0);
     if(this.g>0)wShields(this.t,this.g,false);
-    if(this.b>0&&this.B){const [bx,by]=P(this.B.x,this.B.y,0);wDraw('w20_banner',bx,by,54,{a:this.b,ay:.96,rot:.04*Math.sin(this.t*3)});}}}
+    if(this.b>0&&this.B){const [bx,by]=P(this.B.x,this.B.y,0);wP('banner',bx,by,54,{a:this.b,rot:.04*Math.sin(this.t*3)});}}}
 class WTop{constructor(){this.t=0;this.layer='top';this.s=0;}update(dt){this.t+=dt;this.s=Math.max(0,Math.min(1,this.s+(hasBuff('fenrir')?dt*3:-dt*3)));this.g=Math.max(0,Math.min(1,(this.g||0)+(hasBuff('runeGuard')?dt*4:-dt*3)));return CHAR==='wolf';}
   draw(){if(this.g>0)wShields(this.t,this.g,true);const rf=Math.max(0,Math.min(1,hasBuff('warFury')?1:0));this.rr=(this.rr||0)+((rf?1:0)-(this.rr||0))*.15;if(this.rr>.02)wRedCoat(this.rr*(.55+.15*Math.sin(this.t*6)));return;if(this.s<=0)return;const [x,y]=P(player.x-Math.cos(player.phi)*44,player.y-Math.sin(player.phi)*44-6,34+4*Math.sin(this.t*4));wDraw('w19_spirit',x,y,90,{a:.4*this.s,fx:Math.cos(player.phi)<0});}}
 class WCore{constructor(){this.layer='none';}draw(){}update(){if(!this.a||!fx.includes(this.a))this.a=addFx(new WAura());if(!this.b||!fx.includes(this.b))this.b=addFx(new WTop());if(!this.c||!fx.includes(this.c))this.c=addFx(new WArmorIcons());if(!this.d||!fx.includes(this.d))this.d=addFx(new WIceFeet());return CHAR==='wolf';}}
@@ -304,7 +314,7 @@ function install(){
       if(CHAR==='wolf'&&f&&typeof FallObj!=='undefined'&&f instanceof FallObj&&f.kind==='axe'&&player.action&&player.action.key==='ragnaroksJudgment')wMjolnir(f);return A0.apply(this,arguments);};
     if(typeof BannerObj!=='undefined'){const d0=BannerObj.prototype.draw;BannerObj.prototype.draw=function(){if(CHAR==='wolf')return;return d0.apply(this,arguments);};}}
   /* 2026-11-20 load time: pictures are warmed up after the game is up, a few at a time (wImg still loads any picture on first use) */
-  ['w67_storm_trail','w68_storm_afterimage','w65_shatter_wave','w66_lightning_dash','w60_fang_row','w61_ice_feet','w62_ice_burst','w63_thunder_slash','w64_shock','w56_vh_up','w57_vh_down','w58_vh_side','w59_vh_chop','w53_valhalla_gate','w54_valhalla_burst','w55_valhalla_axe','w51_leap_arc','w52_claw_ground','w49_armor_shatter','w50_armor_icon','w46_exec_axe','w47_exec_cut','w48_exec_mark','w45_leap_spiral','w44_cyclone_ground','w42_rush_streak','w43_rush_cut','w39_vamp_slash','w40_blood_drain','w41_vamp_heal','w36_finale_chop','w37_finale_crater','w38_finale_quake','wr1_rock','wr2_rock','wr3_rock','wr4_rock','w26_cleave_wide','w27_rend_claw','w29_blood_pool','w30_bleed_drip','w31_rupture','w28_dance_up','w32_dance_down','w33_dance_back','w34_dance_spin','w35_dance_thrust','w25_thunder_burst','w24_rune_shield','w01_axe','w02_blood','w03_hitred','w04_cyclone','w05_howl','w06_vamp','w07_rage','w08_exec','w09_parry','w10_armor','w11_frost','w12_ice','w13_prison','w14_rune','w15_bolt','w16_spear','w17_blizzard','w18_shatter','w19_spirit','w20_banner','w23_mjolnir','w21_glacial','w22_worldstorm','09_crater','22_pow','23_dust','25_shock'].forEach((n,i)=>setTimeout(()=>wImg(n),2500+i*70));
+  ['w67_storm_trail','w68_storm_afterimage','w65_shatter_wave','w66_lightning_dash','w60_fang_row','w61_ice_feet','w62_ice_burst','w63_thunder_slash','w64_shock','w56_vh_up','w57_vh_down','w58_vh_side','w59_vh_chop','w53_valhalla_gate','w54_valhalla_burst','w55_valhalla_axe','w51_leap_arc','w52_claw_ground','w49_armor_shatter','w50_armor_icon','w46_exec_axe','w47_exec_cut','w48_exec_mark','w45_leap_spiral','w44_cyclone_ground','w42_rush_streak','w43_rush_cut','w39_vamp_slash','w40_blood_drain','w41_vamp_heal','w36_finale_chop','w37_finale_crater','w38_finale_quake','wr1_rock','wr2_rock','wr3_rock','wr4_rock','w26_cleave_wide','w27_rend_claw','w29_blood_pool','w30_bleed_drip','w31_rupture','w28_dance_up','w32_dance_down','w33_dance_back','w34_dance_spin','w35_dance_thrust','w25_thunder_burst','w24_rune_shield','n01_exec_axe','n02_valhalla_axe','n02_valhalla_core','n03_howl','n04_banner','n05_rune_shield','w01_axe','w02_blood','w03_hitred','w04_cyclone','w05_howl','w06_vamp','w07_rage','w08_exec','w09_parry','w10_armor','w11_frost','w12_ice','w13_prison','w14_rune','w15_bolt','w16_spear','w17_blizzard','w18_shatter','w19_spirit','w20_banner','w23_mjolnir','w21_glacial','w22_worldstorm','09_crater','22_pow','23_dust','25_shock'].forEach((n,i)=>setTimeout(()=>wImg(n),2500+i*70));
   for(const k in AT){const sk=SKILLS[k]||(typeof CSK!=='undefined'&&CSK[k]);if(!sk||!sk.make||sk._wfx)continue;const mk=sk.make;sk._wfx=1;
     sk.make=function(c){const a=mk.apply(this,arguments);if(a&&a.events){const t=Math.max(.02,Math.min(a.windup||.02,(a.dur||1)-.02));a.events.push({t,f:()=>{try{AT[k](a,c||{});}catch(e){console.error('wolf_fx '+k+': '+e);}}});}return a;};}
   /* normal attack: painted axe swing */
