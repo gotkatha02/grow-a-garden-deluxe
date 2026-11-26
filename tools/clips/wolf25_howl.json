@@ -1,0 +1,63 @@
+{
+ "_note": "2.5D wolf extra pose (owner's sheet 2026-11-26 11:45, from WOLF25_POSE_PROMPTS_TH.md): one view = front 3/4 facing right (SE; the engine mirrors SW / W), flat green, 2.5D toon look like the clips. Scale = head / upper body matched to the idle frames of assets_wolf25.js by eye (cmpscale), store = the atlas's cellScale (frames stored at 1 / 1.5478 of their cell-px boxes). Anchors = hips x \u2212 the idle hips offset (SE +16 / E \u221219 cell px) / scale, y = the lowest boot (in-air frames: the game lifts the hero by player.z). Written into assets_wolf25_pose.js (merged into the WLF atlas by index.html), played by wolf_pose.js. Rebuild: python3 -I tools/sheet_state.py tools/clips/wolf25_howl.json [preview.png]. Frames: 1 stand, chest out \u00b7 2 howl, head up \u00b7 3 full howl \u00b7 4 snarl (War Fury)",
+ "js": "assets_wolf25_pose.js",
+ "prefix": "WLFP",
+ "state": "howl",
+ "sheet": "assets/heroes/wolf/poses25/howl.webp",
+ "rows": 2,
+ "cols": 2,
+ "scale": 0.76,
+ "store": 1.5478,
+ "anchors": [
+  [
+   201,
+   454
+  ],
+  [
+   234,
+   445
+  ],
+  [
+   252,
+   459
+  ],
+  [
+   223,
+   449
+  ]
+ ],
+ "clean": true,
+ "dirs": [
+  "S",
+  "SE",
+  "E",
+  "NE",
+  "N"
+ ],
+ "flip": false,
+ "dur": [
+  110,
+  110,
+  160,
+  120
+ ],
+ "loop": false,
+ "head": [
+  [
+   537,
+   394
+  ],
+  [
+   524,
+   418
+  ],
+  [
+   522,
+   418
+  ],
+  [
+   589,
+   441
+  ]
+ ]
+}

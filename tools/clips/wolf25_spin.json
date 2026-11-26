@@ -1,0 +1,45 @@
+{
+ "_note": "2.5D wolf extra pose (owner's sheet 2026-11-26 11:45, from WOLF25_POSE_PROMPTS_TH.md), flat green, 2.5D toon look like the clips. Scale = head / upper body matched to the idle frames of assets_wolf25.js by eye, store = the atlas's cellScale. Frames = one full turn, axe held out level: 1 front (S) \u00b7 2 side facing right (E) \u00b7 3 back (N) \u00b7 4 side facing left (W). Anchors = the midpoint of the two boots (tools: /home/claude/work/w25pose/py2/boots.py), bottom = lowest boot. Played by wolf_pose.js (Axe Cyclone). Rebuild: python3 -I tools/sheet_state.py tools/clips/wolf25_spin.json [preview.png]",
+ "js": "assets_wolf25_pose.js",
+ "prefix": "WLFP",
+ "state": "spin",
+ "sheet": "assets/heroes/wolf/poses25/spin.webp",
+ "rows": 2,
+ "cols": 2,
+ "scale": 0.76,
+ "store": 1.5478,
+ "anchors": [
+  [
+   425,
+   400
+  ],
+  [
+   228,
+   410
+  ],
+  [
+   190,
+   406
+  ],
+  [
+   429,
+   423
+  ]
+ ],
+ "clean": true,
+ "dirs": [
+  "S",
+  "SE",
+  "E",
+  "NE",
+  "N"
+ ],
+ "flip": false,
+ "dur": [
+  60,
+  60,
+  60,
+  60
+ ],
+ "loop": false
+}

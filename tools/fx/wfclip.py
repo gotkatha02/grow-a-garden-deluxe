@@ -1,4 +1,4 @@
-"""Wolf showcase clip of the v5 code effects (wolf_vfx5.js): DSF=1.5 python3 tools/fx/wfclip.py a|b|pic [extra-query] (pic = the 5 painted pictures of 2026-11-26; '&wpic=0' = the old ones)  → $OUT/wolf_<tree>.mp4 (30 fps, Thai labels)
+"""Wolf showcase clip of the v5 code effects (wolf_vfx5.js): DSF=1.5 python3 tools/fx/wfclip.py a|b|pic|pose [extra-query] (pose = the 2.5D wolf's extra poses of 2026-11-26, '&wpose=0' = the frames before; pic = the 5 painted pictures of 2026-11-26; '&wpic=0' = the old ones)  → $OUT/wolf_<tree>.mp4 (30 fps, Thai labels)
 A key 'fu:<skill>' = a combo follow-up: cast on top of the entry before it (hero not moved, the parent's action is passed on); 'block:' in a pre-js = the dummy hits the wolf once (Iron Counter / Rune Guard).
 (DSF = device pixel ratio, CW/CH = crop in css px, MAP = map of the test room: egyF1 = desert sand, default vikF2 = snow; extra-query e.g. '&vfx3=0' = the old painted look)
 Each entry: (key | 'js:<code>', label, seconds, pre-js, distance to the dummy (0 = stand in the middle of the room), test-room mode [, (dx, dz) camera offset [, zoom]]). In js / pre code the dummy is __e.
@@ -25,6 +25,19 @@ SEQ={'a':[('basic','Wolf Combo · คมขวานวาดตามหัว�
       ('axeCyclone','Axe Cyclone → Cyclone Leap · เกลียวลมหมุนขึ้นรอบตัว แล้วลงหมุนทุบพื้น',.55,'',62,'one',(0,40),1.25),('fu:cycloneLeap','',1.6,'',0,'one',(0,40),1.25),
       ('ravenousLeap','Ravenous Leap · วงรูนเฟนเรียร์ที่จุดกระโดดและจุดลง น้ำแข็งแตกทะลุพื้น',2.4,'',200,'one',(0,70),1.0),
       ('fenrirsSpirit',"Fenrir's Spirit · วงรูนเรียก เสาแสงเย็น เขี้ยวน้ำแข็งล้อมตัว แล้วเฟนเรียร์ออกล่า",5.2,'',90,'one',(-30,60),1.15)],
+ 'pose':[('warHowl','War Howl · ท่าใหม่ เงยหน้าหอน',1.5,'',100,'one',(-50,55),1.6),
+      ('ironCounter','Iron Counter · ท่าใหม่ ตั้งการ์ดขวานขวางหน้า โดนตีแล้วรับไว้',.9,HIT,62,'one',(0,40),1.6),
+      ('runeGuard','Rune Guard → Rune Burst · ยกขวานตั้งรับ แล้วแทงขวานสวน',.8,HIT,62,'one',(-20,40),1.4),('fu:runeBurst','',1.2,'',0,'one',(-20,40),1.4),
+      ('battleStep','Battle Step · ท่าใหม่ พุ่งตัวต่ำ',.9,'',40,'one',(20,40),1.3),
+      ('stormStep','Storm Step · ท่าพุ่ง',1.2,'',110,'one',(60,40),1.25),
+      ('predatorsLeap',"Predator's Leap · ท่าใหม่ กระโดดเงื้อขวานฟันลง",1.7,'',170,'one',(60,45),1.25),
+      ('axeCyclone','Axe Cyclone → Cyclone Leap · หมุนตัวเห็นครบทุกด้าน แล้วกระโดดทุบ',.55,'',62,'one',(0,45),1.25),('fu:cycloneLeap','',1.6,'',0,'one',(0,45),1.25),
+      ('executioner','Executioner · ท่าใหม่ ย่อตัวชาร์จก่อนสับ',1.7,'if(!window.__sure){window.__sure=1;const _h=hurt;hurt=function(e,m,o){return _h.call(this,e,m,Object.assign({},o||{},{sure:1}));};}',62,'one',(10,60),1.3),
+      ('axeDance','Axe Dance → Wolf Finale · ปิดท่าด้วยท่าชาร์จแทนการยกขวาน',2.5,'',62,'one',(0,45),1.4),('fu:wolfFinale','',1.7,'',0,'one',(0,45),1.4),
+      ('ravenousLeap','Ravenous Leap · ย่อตัว ถีบตัวขึ้นสูง',2.4,'',200,'one',(0,70),1.0),
+      ('fenrirsSpirit',"Fenrir's Spirit · หอนเรียกเฟนเรียร์",2.0,'',90,'one',(-30,55),1.3),
+      ('warBanner','War Banner · หอนแล้วปักธง',2.0,'',120,'one',(0,50),1.3),
+      ('warFury','War Fury · ท่าใหม่ แยกเขี้ยวคำราม (บัฟนี้ย้อมตัวแดง จึงไว้ท้ายคลิป)',1.8,'',100,'one',(-50,45),1.6)],
  'pic':[('warHowl','War Howl · วิญญาณหมาป่าขาวหอนอยู่หลังตัว',1.4,'',100,'one',(-50,70),1.45),
       ('executioner','Executioner · ขวานผีสีแดงลอยเหนือเป้า แล้วฟันลง',1.7,'if(!window.__sure){window.__sure=1;const _h=hurt;hurt=function(e,m,o){return _h.call(this,e,m,Object.assign({},o||{},{sure:1}));};}',62,'one',(10,70),1.3),
       ('valhallasWrath',"Valhalla's Wrath · ขวานทองยักษ์เหวี่ยงตามทุกครั้งที่ฟัน แล้วตกลงกลางวง",6.0,'if(!window.__sure){window.__sure=1;const _h=hurt;hurt=function(e,m,o){return _h.call(this,e,m,Object.assign({},o||{},{sure:1}));};}',70,'one',(30,70),.95),
@@ -37,7 +50,7 @@ SEQ={'a':[('basic','Wolf Combo · คมขวานวาดตามหัว�
       ('thunderSpear','Thunder Spear · หอกสายฟ้าจากหัวขวาน วงรูนชี้เป้า',1.6,'',170,'one',(10,40),1.3),
       ('runeStorm','Rune Storm · วงรูนใหญ่ รูนลอยวน ฟ้าผ่าในวง ระเบิดปิด',3.5,'',130,'one',(60,50),1.0),
       ('blizzard','Blizzard (ของเดิม) → Frozen Descent · ผลึกยักษ์ตกกลางพายุ',.75,'',150,'one',(60,60),.95),('fu:frozenDescent','',1.9,'',0,'one',(60,60),.95)]}[TREE]
-OUT=os.environ.get('OUT','/tmp/fx');os.makedirs(OUT,exist_ok=True);FR=f'/tmp/frwf_{TREE}';shutil.rmtree(FR,ignore_errors=True);os.makedirs(FR)
+OUT=os.environ.get('OUT','/tmp/fx');os.makedirs(OUT,exist_ok=True);FR=f'/tmp/frwf_{TREE}'+('_'+''.join(ch for ch in EXTRA if ch.isalnum()) if EXTRA else '');shutil.rmtree(FR,ignore_errors=True);os.makedirs(FR)
 W,H=int(os.environ.get('CW','660')),int(os.environ.get('CH','400'));OW,OH=int(os.environ.get('OW','960')),int(os.environ.get('OH','582'))   # crop of zoom 1 in css px · size of the video
 CAST="""([k,near,pre])=>{const fu=k.startsWith('fu:');if(fu)k=k.slice(3);const pa=player.action||window.__pa;
   if(!fu){try{if(player.action)endAction();}catch(x){}}player.casting=null;player.hp=player.maxHp;player.mp=player.maxMp;player.ccT=0;player.cd={};

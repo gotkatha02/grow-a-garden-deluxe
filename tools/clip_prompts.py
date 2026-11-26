@@ -994,7 +994,11 @@ V=assets/heroes/wolf; for d in S SE E NE N; do python3 -I tools/dir8cut.py start
 - มุมข้าง E (ภาพ 08:22): เห็นแค่ซีกขวาของตัว — แขนซ้าย โซ่ บ่าเกราะหัวหมาป่า เข็มกลัด อยู่ฝั่งไกล ภาพไม่เห็น → พรอมต์ E ไม่สั่งให้คงของพวกนี้ และบอกว่าแขนอีกข้างอยู่หลังตัว (กันโมเดลวาดเพิ่มผิดข้าง) · ขวานถืออยู่ข้างหน้าตัว ไม่ใช่ข้างตัว (คีย์ fmt oarm / sway / carry / warm + spos E)
 - มุมหลัง NE / N: เปียกับห่วงเงินยังเห็นข้างหัว → อยู่ในรายการของที่ต้องคง
 - เหมือนหมาป่าเดิม: ประโยคบอกทิศขึ้นต้น · ล็อกหน้า / ของติดตัว · ไม่ใช้คำ attack / slash · ฟัน = ยกข้ามไหล่แล้วฟันลงทแยงไปข้างหน้า · ชูขวานสองมือ **ด้ามขนานพื้น** ค้าง ~1 วิ · ไม่ระบุมือซ้าย / ขวา (ภาพตั้งต้นบอกเอง)""",
-  footer="""## ตอนคลิปมาถึง (โน้ตสำหรับแชตที่ทำต่อ)
+  footer="""## ✓ คลิปเข้าเกมแล้ว (2026-11-26 11:44)
+- `assets_wolf25.js` = `python3 -I tools/cliphero.py tools/clips/wolf25_plan.json assets_wolf25.js WLF` แล้ว `python3 -I tools/headtrack.py assets_wolf25.js WLF_ tools/clips/wolf25_head.json` — หมาป่าค่าเริ่มต้นในเกม · `?wlf25=0` = ร่างแบนเดิม · เวลาเฟรมทุกแถวเท่าร่างแบน (เวลาโดนตีเท่าเดิม) · คลิปฟัน NE ของจริงมาแล้ว → ไม่ยืมแถว E
+- ท่าเสริม (กระโดด หอน ชาร์จ พุ่ง การ์ด หมุน นั่ง): `WOLF25_POSE_PROMPTS_TH.md` หัวข้อ 'สร้างแล้ว'
+
+## ตอนคลิปมาถึง (โน้ตสำหรับแชตที่ทำต่อ)
 - แผนใหม่ `tools/clips/wolf25_plan.json` คัดลอกจาก `wolf_plan.json` (เวลาเฟรมทุกแถวคัดมาจาก `assets.js` แล้ว: attack contact S 6 · SE 4 · E 6 · N 6 · buff peak 7 / SE 6 เฟรม peak 3 · walk 100 ms · idle 200 ms · hurt 550 ms) → ดาเมจ / จังหวะเท่าเดิม เช็ก `python3 tools/fxlab.py hits wolf` ก่อน / หลัง · เลือกเฟรมเลี่ยงช่วงหลับตา / เอฟเฟกต์ที่โมเดลแอบใส่แบบรอบก่อน ("frames", "breath", "unstreak")
 - ภาพมองจากด้านบน: เท้าหดนิดหน่อย ตัวดูเตี้ยกว่ามุมสายตา → ตั้ง cellScale ใหม่ให้ตัวยืน idle S บนจอสูงเท่าร่างปัจจุบัน (HERO_SIZE.wolf ไม่ต้องแก้)
 - เขียนเป็นไฟล์แยก (เช่น `assets_wolf25.js` prefix W25) + สวิตช์ URL ให้เจ้าของเทียบกับร่างปัจจุบันในเกมก่อนตัดสินใจสลับ · แล้วรัน `tools/headtrack.py` (จุดหัวให้ปีกแฟชั่น) · ตำแหน่งหัวขวาน: cliphero "axe" หาก้อนฟ้าบนใบขวาน (ใบ 2.5D มีลายปมฟ้าใหญ่กว่าเดิม เช็กให้จับกลางใบทุกเฟรม · "axeFix" ช่วยเฟรมเบลอ)
@@ -1058,6 +1062,42 @@ V=assets/heroes/jaguar; for d in S SE E NE N; do python3 -I tools/dir8cut.py sta
 - เขียนเป็นไฟล์แยก (เช่น `assets_jaguar25.js` prefix J25) + สวิตช์ URL เทียบกับร่างปัจจุบันก่อนเจ้าของตัดสินใจสลับ · ภาพมองจากด้านบน เท้าหดนิดหน่อย → ตั้ง cellScale / CHAR_SCALE ให้ตัวยืน idle S บนจอสูงเท่าร่างปัจจุบัน · char_jaguar_fx.js ขยายจุดมีดตาม CHAR_SCALE (s2r) อยู่แล้ว
 - **ท่าพิเศษ** (`jaguar_pose.js`: pounce dash guard roar cast throw spin) อยู่ใน atlas ปัจจุบัน → atlas ใหม่ที่ยังไม่มีท่าเหล่านี้ jaguar_pose.js ปิดตัวเอง (เช็ก SPR_META.states.pounce / spin) = กลับไปใช้เฟรมคลิป · จะได้ท่าคืนต้องวาด 8 แผ่นใหม่ในลุค 2.5D (แนบแผ่นเดิม `assets/heroes/jaguar/poses/<ท่า>.webp` + รูป 2.5D, ตำแหน่งท่าเดิม) แล้วรัน spec `tools/clips/jaguar_<ท่า>.json` กับ atlas ใหม่ (แก้ js / prefix / scale / anchors) · ท่านั่ง (`assets/sit/jaguar_*`, hero_sit.js) ยังเป็นลุคแบน ต้องทำใหม่ด้วย
 - หน้า HUD / ภาพหน้าเลือกตัว: ตัดจากภาพ 2.5D ได้ถ้าเจ้าของเลือกใช้ลุคนี้""")
+
+# Rhino 2.5D (owner 2026-11-26 'ขอพร้อมดีไซน์แรดเป็นแบบ2.5d' → SE picture → 'พร้อมเคลื่อนไหวใช้อันเดิมได้เลยไหม'): the same Glacier
+# Titan as 'rhino', drawn as a toon-shaded 3D game model seen from above like 'wolf25' / 'jaguar25'. Built from the 'rhino'
+# entry by text replacement (mane = rust-orange as drawn in view25_SE) + `look`; eyes open, no walking toward the camera,
+# fists stop just above the ground (the flat clips baked ice bursts / flashes into the blow), no symbols.
+def _r25(v):
+    if isinstance(v, str): return v.replace('shaggy chestnut mane', 'shaggy rust-orange mane')
+    if isinstance(v, dict): return {k: _r25(x) for k, x in v.items()}
+    return v
+HEROES['rhino25'] = dict(_r25(HEROES['rhino']),
+  title='แรดขนยาว 2.5D (ไททันธารน้ำแข็ง แบบโมเดล 3D มองจากด้านบน · Glacier Titan 2.5D)',
+  look="Keep the exact look of the picture: a stylized 3D game model with soft toon shading and clean dark-brown outlines, "
+       "the same colours and the same hide, wool, iron, copper, cloth and ice textures — not photorealistic and not a flat "
+       "drawing. The camera keeps looking down at him from above at the same angle as in the picture.",
+  blink=", and his ears twitch once; his eyes stay open for the whole clip",
+  nofx=HEROES['rhino']['nofx'].replace('no speed lines,', 'no speed lines, no motion lines, no symbols,'),
+  act=dict(HEROES['rhino']['act'],
+   walk=HEROES['rhino']['act']['walk'].replace("He does not move across the frame and the ground",
+        "He does not move across the frame, he does not come closer to the camera or move away from it, and the ground"),
+   attack=HEROES['rhino']['act']['attack'].replace("until both fists touch the ground just in front of his feet",
+        "until both fists stop just above the ground in front of his feet, without touching it")),
+  start='rhino25_{n}_{d}.png',
+  header="""เจ้าของ 2026-11-26 ขอแรดแบบ 2.5D (ทางเดียวกับหมาป่า / จากัวร์: ภาพ → คลิป) · ภาพ SE มาแล้ว `assets/heroes/rhino/view25_SE.webp` (แผงขนออกส้มสนิม) · พรอมต์ภาพอีก 4 มุมส่งแล้ว · เจ้าของถาม 'พร้อมเคลื่อนไหวใช้อันเดิมได้เลยไหม' → ไม่ได้ (ชุดเดิมสั่ง 'chibi … not 3D') ใช้ไฟล์นี้ · หน้าตา + พรอมต์ภาพ: `RHINO_LOOK_PROMPTS_TH.md` หัวข้อ '2.5D แบบ Ragnarok 3'
+
+## ภาพตั้งต้น
+- `rhino25_<n>_<ทิศ>.png` 1024×1024 · ตัวสูง ~490 px เท้าที่ 88 % · **รันทีละมุม** ให้ทุกมุมตัวสูงเท่ากัน (ภาพจาก ChatGPT ขนาดไม่เท่ากัน)
+```
+V=assets/heroes/rhino; for d in S SE E NE N; do python3 -I tools/dir8cut.py startv <โฟลเดอร์> $d=$V/view25_$d.webp size=1024 feet=.88 ht=490 clean=0; done
+```
+
+## ต่างจากชุดเดิม
+- ประโยคลุค 2.5D (คีย์ `look`) + กล้องมองลงจากด้านบนมุมเดิม · แผงขน 'rust-orange' ตามภาพ 2.5D
+- ยืน: ตาเปิดตลอดคลิป (คลิปเดิมหลับตาตอนขยับ) · เดิน: ไม่เข้าหา / ถอยห่างกล้อง · ทุบ: หมัดหยุดเหนือพื้นนิดเดียว ไม่แตะพื้น (คลิปเดิมมีน้ำแข็งแตก / แสงขาวติดมา) · ห้ามเส้นความเร็ว / สัญลักษณ์""",
+  footer="""## ตอนคลิปมาถึง
+- `tools/clips/rhino25_plan.json` คัดลอกจาก `rhino_plan.json` (เวลาเฟรม / contact / buff peak เดิมทุกทิศ) → ไฟล์แยก (เช่น `assets_rhino25.js`) + สวิตช์ URL เทียบกับร่างปัจจุบัน · เช็ก `tools/fxlab.py hits rhino` ก่อน / หลัง · ซ็อกเก็ต = คริสตัลข้อนิ้ว · cellScale ให้ idle S สูงเท่าเดิม
+- รูปหมัด rx_* ของเอฟเฟกต์ v3 เป็นลุคแบน""")
 
 def build(h, d, a):
     H = HEROES[h]; back = d in BACK

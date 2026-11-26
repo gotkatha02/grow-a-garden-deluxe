@@ -1,0 +1,60 @@
+{
+ "_note": "2.5D wolf extra pose (owner's sheet 2026-11-26 11:45, from WOLF25_POSE_PROMPTS_TH.md), flat green, 2.5D toon look like the clips. Scale = head / upper body matched to the idle frames of assets_wolf25.js by eye, store = the atlas's cellScale. Sitting views for hero_sit.js (pics mode): 8 views 2x4, row 1 S SE E NE, row 2 N NW W SW, cross-legged with the axe upright beside his right shoulder. Written as assets/sit/wolf25_<DIR>.webp (sheet px, k .75 = cell px per sheet px; hero_sit multiplies by META_K for the wolf). Anchors = body centre x (by eye) and the lowest boot (the body's ground line). Rebuild: python3 -I tools/sheet_state.py tools/clips/wolf25_sit.json",
+ "js": "assets_wolf25.js",
+ "prefix": "WLF",
+ "state": "sit",
+ "sheet": "assets/heroes/wolf/poses25/sit.webp",
+ "rows": 2,
+ "cols": 4,
+ "scale": 1,
+ "anchors": [
+  [
+   185,
+   398
+  ],
+  [
+   170,
+   402
+  ],
+  [
+   160,
+   399
+  ],
+  [
+   139,
+   406
+  ],
+  [
+   148,
+   414
+  ],
+  [
+   133,
+   417
+  ],
+  [
+   136,
+   412
+  ],
+  [
+   152,
+   410
+  ]
+ ],
+ "clean": true,
+ "pics": {
+  "prefix": "assets/sit/wolf25_",
+  "names": [
+   "S",
+   "SE",
+   "E",
+   "NE",
+   "N",
+   "NW",
+   "W",
+   "SW"
+  ],
+  "k": 0.75,
+  "q": 92
+ }
+}

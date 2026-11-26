@@ -32,6 +32,13 @@ SPEC (JSON):
   "dirs": ["S","SE","E","NE","N"],            source directions that get these frames (the engine mirrors SW / W / NW)
   "flip": false,                              true when the sheet faces left (it is mirrored so the frames face right)
   "dur": [ms, ...], "loop": false             default frame times (skills usually build their own timed sequence)
+  "store": 1.5478                             optional (the 2.5D wolf 2026-11-26): the atlas stores its frames smaller than
+                                              their boxes (cliphero "cellScale") — every frame is stored at 1 / store of its
+                                              cell-px size, its box stays in cell px (the engine scales the picture to the box)
+  "head": [[x, y], ...]                       optional (the 2.5D wolf poses 2026-11-26): the head point of every frame in
+                                              cell px (read by eye: the far ear's tip side, like tools/headtrack.py's points)
+                                              -> meta.head[state][dir] for every listed dir, so fashion wings follow the pose;
+                                              a state without it has no head points (fashion.js draws no wings on it)
 The state is replaced when it already exists; nothing else in the file changes. A preview (every frame on the pivot, with
 the idle pose of the first listed direction beside it for size) is written when a second argument is given."""
 import sys, io, json, base64, math
@@ -202,10 +209,12 @@ for i, (fr, ax_, ay_) in enumerate(frames):
     pieces.append((cell.crop(bb), bb))
 
 # ---- pack one atlas row --------------------------------------------------------------------------------------------
-G = 2; AW = sum(p.width for p, _ in pieces) + G * (len(pieces) + 1); AH = max(p.height for p, _ in pieces) + 2 * G
+G = 2; ST = float(spec.get('store', 1))
+stored = [p if ST == 1 else p.resize((max(1, round(p.width / ST)), max(1, round(p.height / ST))), Image.LANCZOS) for p, _ in pieces]
+AW = sum(q.width for q in stored) + G * (len(stored) + 1); AH = max(q.height for q in stored) + 2 * G
 atlas = Image.new('RGBA', (AW, AH), (0, 0, 0, 0)); x = G; rects = []
-for p, bb in pieces:
-    atlas.paste(p, (x, G)); rects.append([x, G, p.width, p.height, bb[0], bb[1], p.width, p.height]); x += p.width + G
+for q, (p, bb) in zip(stored, pieces):
+    atlas.paste(q, (x, G)); rects.append([x, G, q.width, q.height, bb[0], bb[1], p.width, p.height]); x += q.width + G
 bio = io.BytesIO(); atlas.save(bio, 'WEBP', quality=90, method=6)
 uri = 'data:image/webp;base64,' + base64.b64encode(bio.getvalue()).decode()
 print(f'atlas {AW}x{AH}, {len(bio.getvalue()) // 1024} KB')
@@ -217,6 +226,9 @@ def grab(name):
 mi, me, meta = grab('SPR_META')
 st = spec['state']; nf = len(rects); dur = spec.get('dur') or [80] * nf
 meta['states'][st] = {'loop': bool(spec.get('loop', False)), 'dirs': {d: {'dur': dur, 'f': rects} for d in spec.get('dirs', ['S', 'SE', 'E', 'NE', 'N'])}}
+if spec.get('head'):
+    assert len(spec['head']) == nf, f"head: {len(spec['head'])} points for {nf} frames"
+    meta.setdefault('head', {})[st] = {d: [list(map(round, q)) for q in spec['head']] for d in spec.get('dirs', ['S', 'SE', 'E', 'NE', 'N'])}
 src = src[:mi] + json.dumps(meta, separators=(',', ':')) + src[me:]
 ai, ae, atl = grab('SPR_ATLAS'); atl[st] = uri
 src = src[:ai] + json.dumps(atl) + src[ae:]
@@ -227,7 +239,7 @@ if PREV:
     d0 = spec.get('dirs', ['SE'])[0]
     try:
         ii = atl['idle']; idl = Image.open(io.BytesIO(base64.b64decode(ii.split(',', 1)[1]))); r = meta['states']['idle']['dirs'][d0]['f'][0]
-        ref = (idl.crop((r[0], r[1], r[0] + r[2], r[1] + r[3])), r)
+        rc = idl.crop((r[0], r[1], r[0] + r[2], r[1] + r[3])); ref = (rc if (r[2], r[3]) == (r[6], r[7]) else rc.resize((r[6], r[7]), Image.LANCZOS), r)
     except Exception:
         ref = None
     tiles = ([ref] if ref else []) + [(p, [0, 0, 0, 0, bb[0], bb[1]]) for p, bb in pieces]

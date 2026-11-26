@@ -9,12 +9,16 @@ For every state / direction / frame the head template of that direction is searc
 frame composed over mid grey, window ±search px round the reference point) and point + shift is written into
 <PREFIX>SPR_META.head[state][dir] (rounded ints). Frames whose best match scores under .45 are listed (check them): where the head turns away or hides behind the arms
 the template finds the tail — fix those by eye in "_fix" (null = between its row's neighbours).
-Made 2026-11-25 for the wolf's Fenrir's Heir atlas (assets_wolf.js)."""
+Made 2026-11-25 for the wolf's Fenrir's Heir atlas (assets_wolf.js).
+Optional "_seq": {"win": 130, "pen": .0015} (2026-11-26, the 2.5D wolf): every row is tracked frame by frame — frame 0 is
+searched round the reference as before, every next frame only within ±win px of the previous frame's point, and the best
+match is the one with the highest score − pen × distance from that point (the fluffy tail no longer wins when the head
+crouches or hides behind the arms). Without "_seq" the output is unchanged."""
 import sys, json, base64, io, re
 import numpy as np, cv2
 from PIL import Image, ImageDraw
 js, pre, refp = sys.argv[1], sys.argv[2], sys.argv[3]; prev_out = sys.argv[4] if len(sys.argv) > 4 else None
-REFS = json.load(open(refp)); SEARCH = REFS.pop('_search', 200); FIX = REFS.pop('_fix', {}); COPY = REFS.pop('_copy', {})
+REFS = json.load(open(refp)); SEARCH = REFS.pop('_search', 200); FIX = REFS.pop('_fix', {}); COPY = REFS.pop('_copy', {}); SEQ = REFS.pop('_seq', None)
 REFS = {k: v for k, v in REFS.items() if not k.startswith('_')}   # '_note' etc.
 s = open(js).read()
 def span(name):
@@ -36,10 +40,19 @@ for d, R in REFS.items():
     st0, f0 = R['frame'].split(':'); g = cell(st0, d, int(f0)); x0, y0, x1, y1 = R['box']; T = g[y0:y1, x0:x1].copy(); px, py = R['point']
     for st, sv in M['states'].items():
         L = []
+        pdx = pdy = 0
         for i in range(len(sv['dirs'][d]['f'])):
-            G = cell(st, d, i); sx0, sy0 = max(0, x0 - SEARCH), max(0, y0 - SEARCH); W = G[sy0:min(ch, y1 + SEARCH), sx0:min(cw, x1 + SEARCH)]
-            r = cv2.matchTemplate(W, T, cv2.TM_CCOEFF_NORMED); _, sc, _, loc = cv2.minMaxLoc(r)
-            dx, dy = sx0 + loc[0] - x0, sy0 + loc[1] - y0; L.append([round(px + dx), round(py + dy)])
+            G = cell(st, d, i)
+            if SEQ and i:   # window round the previous frame's match, distance-penalised best
+                wn = SEQ.get('win', 130); pen = SEQ.get('pen', .0015)
+                sx0, sy0 = max(0, x0 + pdx - wn), max(0, y0 + pdy - wn); W = G[sy0:min(ch, y1 + pdy + wn), sx0:min(cw, x1 + pdx + wn)]
+                r = cv2.matchTemplate(W, T, cv2.TM_CCOEFF_NORMED); yy, xx = np.mgrid[0:r.shape[0], 0:r.shape[1]]
+                dist = np.hypot(sx0 + xx - x0 - pdx, sy0 + yy - y0 - pdy); q = r - pen * dist; iy, ix = np.unravel_index(np.argmax(q), q.shape)
+                sc = float(r[iy, ix]); loc = (ix, iy)
+            else:
+                sx0, sy0 = max(0, x0 - SEARCH), max(0, y0 - SEARCH); W = G[sy0:min(ch, y1 + SEARCH), sx0:min(cw, x1 + SEARCH)]
+                r = cv2.matchTemplate(W, T, cv2.TM_CCOEFF_NORMED); _, sc, _, loc = cv2.minMaxLoc(r)
+            dx, dy = sx0 + loc[0] - x0, sy0 + loc[1] - y0; L.append([round(px + dx), round(py + dy)]); pdx, pdy = dx, dy
             if sc < .45: low.append(f'{st}/{d}/{i} {sc:.2f}')
         head.setdefault(st, {})[d] = L
 for k, v in FIX.items():   # read by eye ("st/dir/i": [x, y]); null = sits between the nearest good frames of its row

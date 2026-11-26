@@ -1,0 +1,135 @@
+{
+ "_search": 220,
+ "S": {
+  "frame": "idle:0",
+  "point": [
+   562,
+   386
+  ],
+  "box": [
+   510,
+   372,
+   612,
+   470
+  ]
+ },
+ "SE": {
+  "frame": "idle:0",
+  "point": [
+   557,
+   386
+  ],
+  "box": [
+   517,
+   375,
+   615,
+   472
+  ]
+ },
+ "E": {
+  "frame": "idle:0",
+  "point": [
+   548,
+   390
+  ],
+  "box": [
+   472,
+   375,
+   592,
+   472
+  ]
+ },
+ "NE": {
+  "frame": "idle:0",
+  "point": [
+   548,
+   390
+  ],
+  "box": [
+   487,
+   371,
+   607,
+   472
+  ]
+ },
+ "N": {
+  "frame": "idle:0",
+  "point": [
+   551,
+   390
+  ],
+  "box": [
+   495,
+   371,
+   607,
+   472
+  ]
+ },
+ "_note": "2.5D wolf (assets_wolf25.js, 2026-11-26): points = forehead centre between the ears, ~26 cell px above the eyes like the flat atlas (tools/clips/wolf_head.json). Only the wings use them.",
+ "_seq": {
+  "win": 120,
+  "pen": 0.0015
+ },
+ "_fix": {
+  "attack/N/1": [
+   567,
+   440
+  ],
+  "attack/N/2": [
+   528,
+   415
+  ],
+  "attack/N/3": [
+   515,
+   415
+  ],
+  "attack/N/4": [
+   518,
+   415
+  ],
+  "attack/N/5": [
+   495,
+   382
+  ],
+  "attack/N/6": [
+   523,
+   466
+  ],
+  "attack/N/7": [
+   518,
+   466
+  ],
+  "attack/N/8": [
+   519,
+   425
+  ],
+  "attack/N/9": [
+   523,
+   417
+  ],
+  "attack/N/10": [
+   523,
+   400
+  ],
+  "attack/N/11": [
+   519,
+   400
+  ],
+  "attack/SE/4": [
+   613,
+   437
+  ],
+  "attack/NE/3": [
+   484,
+   380
+  ],
+  "attack/NE/4": [
+   482,
+   383
+  ],
+  "attack/NE/5": [
+   486,
+   400
+  ]
+ }
+}
