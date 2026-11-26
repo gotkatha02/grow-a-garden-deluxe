@@ -961,8 +961,13 @@ HEROES['wolf25'] = dict(HEROES['wolf'],
           "then swings it down and forward toward the way he is facing in one powerful chop until the axe head is low in "
           "front of him, just above the ground without touching it; he holds that pose for a moment, then lifts the axe "
           "back up, returns to his starting pose and stands still for the rest of the clip. The whole move takes about one "
-          "second. His feet stay in place.{vis} The axe stays exactly as drawn, and the air around it stays empty and plain "
-          "green in every frame. Clean outlines in every frame, no motion blur."),
+          "second. His feet stay in place.{vis} The axe stays exactly as drawn — the same long greataxe in every frame, it "
+          "never gets shorter, bends or changes shape — and the air around it stays empty and plain green in every frame. "
+          "Clean outlines in every frame, no motion blur.",
+   buff=HEROES['wolf']['act']['buff'].replace(
+          "The raised axe stays inside the frame.",
+          "The raised axe stays inside the frame and keeps its full length and shape in every frame — it never gets "
+          "shorter, bends or changes.")),
   start='wolf25_{n}_{d}.png',
   header="""เจ้าของ 2026-11-26 07:39 "อยากลองปรับสไปร้หมาป่าใหม่ให้เป้นแบบ2.5d แบบเกมแรคนารอค3" → 07:47 "รูปหมาป่าใช้แบบเก่าก่อนไม่ใช่จิบิ" → 08:01 ส่งรูปทดสอบมุมเฉียงหน้ามา + "ขอพร้อมมุมอื่นและอยากให้มีพื้นที่สีเขียวเพิ่มเพื่อเอาไปทำวีดีโอ" · ตัวเดียวกับหมาป่าในเกมตอนนี้ (ทายาทเฟนรีร์ตัวโต) แต่เรนเดอร์เหมือนโมเดล 3D ลงเงาการ์ตูน เส้นขอบแบบวาดมือ มองจากด้านบน · หน้าตา + พรอมต์ภาพยืน: `WOLF_LOOK_PROMPTS_TH.md` หัวข้อ 'ลอง 2.5D แบบ Ragnarok 3' · คลิปลุคเดิมอยู่ที่ `WOLF_CLIP_PROMPTS_TH.md` (ห้ามใช้กับภาพ 2.5D: ประโยคลุคของมันสั่ง 'not 3D')
 
@@ -1018,14 +1023,19 @@ HEROES['jaguar25'] = dict(HEROES['jaguar'],
         "graceful dancer's steps on the balls of her feet (about two steps per second) with a small sway of her hips, the "
         "daggers held {spos} swinging a little with her arms, her ponytail and skirt bouncing and her tail swaying behind "
         "her. She does not move across the frame, she does not come closer to the camera or move away from it, and the "
-        "ground does not move. The last frame matches the first frame so the clip loops."),
+        "ground does not move. The last frame matches the first frame so the clip loops.",
+   buff="Proud dagger pose of {who}. {facing} She raises one dagger high above her head, the blade pointing to the sky, "
+        "and holds the other dagger low behind her{chin}; she holds that pose still for about one second, then lowers the "
+        "raised dagger back down to her side, returns to her starting pose and stands still for the rest of the clip. Her "
+        "feet stay in place. The raised dagger stays inside the frame. The daggers are plain black stone, and the air "
+        "around them stays empty and plain green in every frame. Clean outlines in every frame, no motion blur."),
   start='jaguar25_{n}_{d}.png',
   header="""เจ้าของ 2026-11-26 09:49 ส่งภาพตั้งต้นหมาป่า 2.5D 5 ทิศ + "อยากอัพเกรดดีไซน์เป็น2.5d แบบ ragnarok3 อันนี้ตัวอย่างของหมาป่าที่ทำมาแล้ว" → ทำจากัวร์ทางเดียวกับหมาป่า (ภาพ → คลิป) · ตัวเดียวกับจากัวร์ในเกมตอนนี้ (นางระบำสุริยคราส) แต่เรนเดอร์เหมือนโมเดล 3D ลงเงาการ์ตูน เส้นขอบแบบวาดมือ มองจากด้านบน มุมกล้อง / แสงเดียวกับหมาป่า 2.5D · หน้าตา + พรอมต์ภาพยืน: `JAGUAR_LOOK_PROMPTS_TH.md` หัวข้อ '2.5D แบบ Ragnarok 3' · คลิปลุคเดิมอยู่ที่ `JAGUAR_CLIP_PROMPTS_TH.md` (ห้ามใช้กับภาพ 2.5D: ประโยคลุคของมันสั่ง 'not 3D')
 
 ## ลำดับงาน
 1. **ภาพยืน 5 มุม (2.5D)** — ส่งพรอมต์แล้ว 2026-11-26 (กล่อง 1 มุม SE เป็นรูปทดสอบ แนบรูปหมาป่า 2.5D เป็นตัวอย่างลุค · กล่อง 2–5 แนบรูป SE ที่ได้) → รอภาพ → เก็บเป็น `assets/heroes/jaguar/view25_<ทิศ>.webp`
 2. **ภาพตั้งต้น** — ตัดจากภาพ 5 มุม (คำสั่งข้างล่าง) เป็น `jaguar25_1_S.png … jaguar25_5_N.png` (ไม่เก็บในรีโป)
-3. **คลิป 20 ตัว** — พรอมต์ในไฟล์นี้ แนบภาพตั้งต้นของทิศนั้นทุกคลิป · **เช็กประโยคหน้า / ด้านหลังกับภาพ 2.5D จริงก่อนส่ง** (ไฟล์นี้เขียนก่อนได้ภาพ)
+3. **คลิป 20 ตัว** — พรอมต์ในไฟล์นี้ แนบภาพตั้งต้นของทิศนั้นทุกคลิป · ส่งในแชตแล้ว 2026-11-26 11:14 (เจ้าของถาม 'ขอพร้อมทำวีดีโอต่อหรือใข้พร้อมเดิมได้' → พรอมต์เดิมใช้ไม่ได้ เพราะสั่ง 'not 3D') ก่อนภาพ 2.5D มาถึงผม: ประโยคหน้า / ด้านหลังมาจากคลิปลุคเดิมที่ใช้ได้แล้ว (พรอมต์ภาพ 2.5D สั่งให้หันตัว วางมีด เครื่องประดับ ผม หาง ตามภาพยืนลุคเดิม) → ภาพมุมไหนต่างไป (เช่นมุมเฉียงหลังเห็นตา) แก้ประโยคมุมนั้นแล้วส่งใหม่ · ถ้าเจ้าของไม่ส่งภาพมาตัด ใช้ภาพ 2.5D ตรงๆ ได้เมื่อตัวสูงไม่เกินครึ่งภาพ (ขนาดตัวที่ต่างกันแต่ละมุมแก้ทีหลังด้วย cliphero `perDir`)
 
 ## ภาพตั้งต้น (แผน — วัดจริงตอนภาพมา)
 - `jaguar25_<n>_<ทิศ>.png` 1024×1024 แบบหมาป่า 2.5D · ตัวสูง ~490 px (~48 % ของภาพ วัดจากยอดหางม้าถึงเท้า) เท้าที่ 88 % · ภาพจาก ChatGPT แต่ละมุมขนาดไม่เท่ากัน → **รันทีละมุม** ทุกมุมได้ตัวสูงเท่ากัน · ผมเธอฟูยาว ถ้ามุมข้างผมล้นกรอบให้ลด ht
@@ -1041,6 +1051,7 @@ V=assets/heroes/jaguar; for d in S SE E NE N; do python3 -I tools/dir8cut.py sta
 - **ประโยคลุค 2.5D** (คีย์ `look`) แทนประโยค 'chibi … not 3D': โมเดล 3D ลงเงาการ์ตูน เส้นขอบน้ำตาลเข้ม สีและพื้นผิว (ขน ผม ผ้า ทอง ออบซิเดียน) เดิม ไม่สมจริง ไม่แบน + กล้องมองลงจากด้านบนมุมเดิมตลอดคลิป
 - ยืน: ตาเปิดตลอดคลิป ไม่กะพริบ (คลิปแรดหลับตาตอนขยับ) · เดิน: ไม่เดินเข้าหา / ถอยห่างกล้อง (คลิป S หมาป่าเดินเข้ากล้อง ×1.4) · ห้ามเส้นความเร็ว ฝุ่น สัญลักษณ์ (คลิปฮิปโปมีเส้น '!' เหลือง)
 - มุมหลัง NE / N: โบว์ผ้าคาดแดงใหญ่ด้านหลังเอว (เห็นในภาพยืนลุคเดิม) อยู่ในรายการของที่ต้องคง
+- ชูมีด: ชื่อท่า 'Proud dagger pose' (ไม่ใช้ 'Spell cast' ของลุคเดิม) + 'มีดเป็นหินดำ อากาศรอบมีดว่าง พื้นเขียว' เหมือนท่าฟัน เพราะคลิปชูมีดลุคเดิมมุม S / N มีโค้งแสงแดง / ขาวเหลืองติดมาตอนยกมีด (ต้องใช้เฟรมลดมีดเล่นกลับ)
 - เหมือนจากัวร์ลุคเดิม: ประโยคบอกทิศขึ้นต้น · ล็อกหน้า / ของติดตัว · ฟันมีดคู่ = ยกมีดสองเล่มเหนือหัวแล้วเหวี่ยงลงไปข้างหน้า ไม่ใช้คำ attack / slash / X (ดึงเอฟเฟกต์มา) · ชูมีดเล่มเดียวเหนือหัว อีกเล่มลดต่ำไว้ข้างหลัง ค้าง ~1 วิ · ไม่ระบุมือซ้าย / ขวา""",
   footer="""## ตอนคลิปมาถึง (โน้ตสำหรับแชตที่ทำต่อ)
 - แผนใหม่ `tools/clips/jaguar25_plan.json` คัดลอกจาก `jaguar_plan.json` (เวลาเฟรมทุกแถว = atlas ตอนนี้: attack contact 6 / SE 4 · buff peak 7 / SE 6 เฟรม × 220 peak 3 · walk 8 × 100 E 110/90 · idle 12 เฟรม 2.4 วิ · hurt 7 เฟรม 550 ms (`stateDur`)) → ดาเมจ / จังหวะเท่าเดิม เช็ก `python3 tools/fxlab.py hits jaguar` ก่อน / หลัง (FXSEED + o.sure) · socket ใบมีด = ตัวเลือก `blade` (สีม่วงดำ ยาวบาง: เช็กว่าเงาโมเดล 3D ไม่ทำให้จับผิด) · `deglow` / `unstreak` / `frames` / `breath` ตามคลิป
