@@ -35,6 +35,12 @@ SPEC (JSON):
   "store": 1.5478                             optional (the 2.5D wolf 2026-11-26): the atlas stores its frames smaller than
                                               their boxes (cliphero "cellScale") — every frame is stored at 1 / store of its
                                               cell-px size, its box stays in cell px (the engine scales the picture to the box)
+  "sheet_coords": true                        optional (the 2.5D wolf's Axe Dance sheets 2026-11-26): "anchors" and "sockets" are
+                                              given in SHEET px (not in each frame's cut box) — stays right when the cut box moves
+  "sockets": [[x, y] | null, ...]             optional (same): the weapon head of every frame (the axe blade's rune band, like
+                                              cliphero.py's "axe" sockets), in cut-box px or sheet px with "sheet_coords" ->
+                                              meta.sockets[state][dir] = {head, grip} (grip = up to 28 × store cell px toward the
+                                              chest of the idle pose), so slashAt / headR / liveSocket can read the pose
   "head": [[x, y], ...]                       optional (the 2.5D wolf poses 2026-11-26): the head point of every frame in
                                               cell px (read by eye: the far ear's tip side, like tools/headtrack.py's points)
                                               -> meta.head[state][dir] for every listed dir, so fashion wings follow the pose;
@@ -158,16 +164,22 @@ def vary(fr, ax_, ay_, sx, sy, deg):   # scale sx / sy about the anchor, then tu
         big = big.rotate(-deg, resample=Image.BICUBIC, center=(R, R))
         bb = big.getchannel('A').getbbox(); q = big.crop(bb); ax2, ay2 = R - bb[0], R - bb[1]
     return q, ax2, ay2
-frames = []
+frames = []; SHEETC = bool(spec.get('sheet_coords')); SOCK = spec.get('sockets'); socks = []
 for i, m in enumerate(masks):
     m = m & (a > 0); ys, xs = np.nonzero(m)
     x0, x1, y0, y1 = xs.min(), xs.max(), ys.min(), ys.max()
     cut = rgba[y0:y1 + 1, x0:x1 + 1].copy(); cut[..., 3] = np.where(m[y0:y1 + 1, x0:x1 + 1], cut[..., 3], 0)
     fr = Image.fromarray(cut)
-    ax_, ay_ = anchors[i] if isinstance(anchors, list) and i < len(anchors) else autoanchor(fr)
-    print(f'frame {i + 1}: cut box {x0},{y0} - {x1},{y1} ({x1 - x0 + 1}x{y1 - y0 + 1}), anchor {ax_},{ay_}')
-    if flip: fr = fr.transpose(Image.FLIP_LEFT_RIGHT); ax_ = fr.width - 1 - ax_
-    frames.append((fr, ax_, ay_))
+    hasA = isinstance(anchors, list) and i < len(anchors)
+    ax_, ay_ = anchors[i] if hasA else autoanchor(fr)
+    if SHEETC and hasA: ax_, ay_ = ax_ - x0, ay_ - y0
+    sk_ = list(SOCK[i]) if SOCK and i < len(SOCK) and SOCK[i] else None
+    if sk_ and SHEETC: sk_ = [sk_[0] - x0, sk_[1] - y0]
+    print(f'frame {i + 1}: cut box {x0},{y0} - {x1},{y1} ({x1 - x0 + 1}x{y1 - y0 + 1}), anchor {ax_},{ay_}' + (f', socket {sk_[0]},{sk_[1]}' if sk_ else ''))
+    if flip:
+        fr = fr.transpose(Image.FLIP_LEFT_RIGHT); ax_ = fr.width - 1 - ax_
+        if sk_: sk_[0] = fr.width - 1 - sk_[0]
+    frames.append((fr, ax_, ay_)); socks.append(sk_)
 if VAR: frames = [vary(frames[0][0], frames[0][1], frames[0][2], *v) for v in VAR]
 TONE = spec.get('tone')
 def tone(q, T):
@@ -199,11 +211,13 @@ if PICS:
     js_ = lambda d: ','.join(f'{n}:{d[n]}' for n in PICS['names'])
     print("SIT entry: {dir:'%s',k:%s,cx:{%s},fy:{%s}}" % (PICS['prefix'], PICS.get('k', '?'), js_(cxs), js_(fys)))
     sys.exit()
-pieces = []
+pieces = []; cellSock = []
 for i, (fr, ax_, ay_) in enumerate(frames):
     q = fr.resize((max(1, round(fr.width * S)), max(1, round(fr.height * S))), Image.LANCZOS)
     if TONE: q = tone(q, TONE)
     cell = Image.new('RGBA', (CW, CH), (0, 0, 0, 0)); cell.paste(q, (round(PX - ax_ * S), round(PY - ay_ * S)), q)
+    sk_ = socks[i] if i < len(socks) else None
+    cellSock.append((round(PX - ax_ * S) + sk_[0] * S, round(PY - ay_ * S) + sk_[1] * S) if sk_ else None)
     bb = cell.getchannel('A').point(lambda v: 255 if v > 0 else 0).getbbox()
     if bb[0] <= 0 or bb[1] <= 0 or bb[2] >= CW or bb[3] >= CH: print('  WARNING: frame', i + 1, 'touches the cell edge', bb)
     pieces.append((cell.crop(bb), bb))
@@ -226,6 +240,17 @@ def grab(name):
 mi, me, meta = grab('SPR_META')
 st = spec['state']; nf = len(rects); dur = spec.get('dur') or [80] * nf
 meta['states'][st] = {'loop': bool(spec.get('loop', False)), 'dirs': {d: {'dur': dur, 'f': rects} for d in spec.get('dirs', ['S', 'SE', 'E', 'NE', 'N'])}}
+if SOCK:
+    # weapon sockets like cliphero.py's "axe" ones: head = the blade point, grip = up to 28 (× store) cell px toward the chest
+    try: HT = meta['states']['idle']['dirs'][spec.get('dirs', ['SE'])[0]]['f'][0][7]
+    except Exception: HT = 230 * float(spec.get('store', 1))
+    chest = (PX, PY - HT * .55); so = []
+    for p in cellSock:
+        if not p: so.append(None); continue
+        vx, vy = chest[0] - p[0], chest[1] - p[1]; L = math.hypot(vx, vy) or 1; g = min(28 * float(spec.get('store', 1)), L * .45)
+        so.append({'head': [round(p[0]), round(p[1])], 'grip': [round(p[0] + vx / L * g), round(p[1] + vy / L * g)]})
+    meta.setdefault('sockets', {})[st] = {d: so for d in spec.get('dirs', ['S', 'SE', 'E', 'NE', 'N'])}
+    print('sockets', [q['head'] if q else None for q in so])
 if spec.get('head'):
     assert len(spec['head']) == nf, f"head: {len(spec['head'])} points for {nf} frames"
     meta.setdefault('head', {})[st] = {d: [list(map(round, q)) for q in spec['head']] for d in spec.get('dirs', ['S', 'SE', 'E', 'NE', 'N'])}

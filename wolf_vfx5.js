@@ -99,9 +99,34 @@ function onSlash(s,key){if(s.alpha!=null&&s.alpha<1)return;                     
   if(st.deb)after(sw*.85,()=>{const h=arc.head();if(el==='wA'||el==='wV')spray(el,h[0],h[1],h[2],st.deb,{size:.8,sp:.6,up:.5});else bits(sys('top'),el,h[0],h[1],h[2],st.deb,{size:.75,sp:.7,up:.6});});
   if(key==='bloodCleave'&&n===1)after(sw*.7,()=>A(new Wave({el:'wA',x:player.x,y:player.y,phi:player.phi,dist:80,r:58,w:17,life:.32,z:16,span:.95})));
   if(key==='revengeBreaker'&&n===1)after(sw*.7,()=>A(new Wave({el:'wG',x:player.x,y:player.y,phi:player.phi,dist:70,r:54,w:15,life:.3,z:16,span:.9})));}
-/* Axe Dance: the sprite repeats one chop, so each beat gets its own plane round the hero */
+/* Axe Dance with the owner's dance poses (wolf_pose.js 2026-11-26: a._wDance = the kind of every swing, a._wKs = their contact
+   entries, a._wSide = SE | SW): the chops follow the drawn axe — the engine's own swing from the wind-up pose's blade to the
+   contact pose's blade (spriteSlash reads the poses' sockets), drawn as a VSlash by onSlash; the spin is a flat crescent round
+   his waist that ends at the level sweep's blade; the finisher is a huge flat sweep just above the ground ending at the landing
+   blade, then a ground wave along the real facing. The spin and the finisher lie in the plane of the drawn view (SE = π/4,
+   mirrored for SW: phi π − φ, tilt and angles negated), not the real facing, so they sit on the body the sprite shows. */
+function dancePosed(a,kC,o){const i=a._wKs.indexOf(kC),kind=a._wDance[i];if(!kind)return false;
+  const s=a.seq,mir=a._wSide==='SW',ph=mir?Math.PI*.75:Math.PI*.25,M=v=>mir?-v:v;
+  if(kind==='down'||kind==='up'||kind==='back'){const gw=Math.max(.06,seqTimeAt(s,kC+1)-seqTimeAt(s,Math.max(0,kC-1))),P0=headR(s,kC-1),P1=headR(s,kC);
+    /* the blade's own path: a circle through the wind-up blade and the contact blade, bulging upward (over his head), its centre
+       pushed a little below the chord so the swing is a bit more than a half circle — not the engine's shoulder circle (that one
+       reached 1.4 hero heights up for the low diving chop) */
+    if(P0&&P1){const mx=(P0[0]+P1[0])/2,my=(P0[1]+P1[1])/2,dx=P1[0]-P0[0],dy=P1[1]-P0[1],L=Math.hypot(dx,dy);
+      if(L>12){let nx=-dy/L,ny=dx/L;if(ny>0){nx=-nx;ny=-ny;}const cx=mx-nx*DP.ck*L,cy=my-ny*DP.ck*L,r=Math.hypot(P0[0]-cx,P0[1]-cy);
+        const ta=Math.atan2(P0[1]-cy,P0[0]-cx),tb=Math.atan2(P1[1]-cy,P1[0]-cx),d1=((tb-ta)%TAU+TAU)%TAU,d2=d1-TAU,up=d=>Math.cos(ta+d/2)*nx+Math.sin(ta+d/2)*ny,sw=up(d1)>=up(d2)?d1:d2,sg=Math.sign(sw)||1;
+        onSlash({C:[cx,player.y,player.y*K-cy],u:[1,0,0],v:[0,0,-1],free:true,a0:ta-sg*.08,a1:ta+sw+sg*DP.over,R:r*DP.rk,W:o&&o.W||20,grow:gw,fade:o&&o.fade},'axeDance');return true;}}
+    spriteSlash(s,kC-1,kC,null,Object.assign({},o,{rot:0,rs:DP.rs,over:DP.over,maxPre:DP.maxPre,grow:gw}));return true;}
+  if(kind==='spin'){const q=DP.spin,arc=A(new VArc({follow:player,phi:ph,z:q.z,el:'wA',R:q.R,w:q.w,a0:M(q.a0),a1:M(q.a1),tilt:M(q.tilt),swing:q.swing,life:q.life}));arc.t=q.pre;return true;}
+  if(kind==='fin'){const q=DP.fin,gap=Math.max(.05,rt(seqTimeAt(s,kC)-seqTimeAt(s,Math.max(0,kC-1))));
+    A(new VArc({follow:player,phi:ph,z:q.z,el:'wA',R:q.R,w:q.w,a0:M(q.a0),a1:M(q.a1),tilt:M(q.tilt),swing:gap+q.over,life:gap+q.life}));
+    after(gap,()=>{const c=Math.cos(player.phi),sn=Math.sin(player.phi);A(new Wave({el:'wA',x:player.x,y:player.y,phi:player.phi,dist:q.dist,r:q.wr,w:q.ww,life:.34,z:6,span:1}));
+      ring('wA',player.x+c*36,player.y+sn*36,q.ring,{life:.3});dust({},player.x+c*44,player.y+sn*44,22,6,26);});return true;}
+  return false;}
+const DP={rs:1.06,over:.22,maxPre:2.8,ck:.18,rk:1,spin:{z:26,R:48,w:15,a0:2.66,a1:-.9,tilt:.12,swing:.15,life:.32,pre:.05},
+  fin:{z:10,R:52,w:22,a0:2.8,a1:-.45,tilt:.08,over:.02,life:.3,dist:104,wr:40,ww:13,ring:44}};
+/* Axe Dance without the poses (facing up, or ?wpose=0): the sprite repeats one chop, so each beat gets its own plane round the hero */
 const DANCE=[{a0:-1.9,a1:1.5,tilt:-.55},{a0:1.9,a1:-1.5,tilt:-.5},{a0:-3.4,a1:3.2,tilt:0,R:66,swing:.15,life:.36},{a0:1.9,a1:-1.9,tilt:.22},{a0:1.8,a1:-1.4,tilt:.55},{a0:-1.9,a1:1.9,tilt:-.2}];
-function danceSwing(a,o){const n=a._w5d=(a._w5d||0)+1,ph=player.phi;
+function danceSwing(a,o,kC){if(a._wDance&&a._wKs&&dancePosed(a,kC,o))return;const n=a._w5d=(a._w5d||0)+1,ph=player.phi;
   if(o&&o.W>=28){const c=Math.cos(ph),s=Math.sin(ph);A(new VArc({follow:player,phi:ph,z:34,el:'wA',R:76,w:26,a0:-1.5,a1:1.2,tilt:1.25,swing:.1,life:.34}));
     A(new Streak({el:'wA',x:player.x+c*16,y:player.y+s*16,z:30,x2:player.x+c*128,y2:player.y+s*128,z2:22,w:17,life:.26,delay:.04}));return;}
   A(new VArc(Object.assign({follow:player,phi:ph,z:36,el:'wA',R:54+(n%3)*4,w:14+n,swing:.1,life:.28},DANCE[(n-1)%DANCE.length])));}
@@ -273,7 +298,7 @@ window.hurt=hurt=function(e,mult,o){const dead0=e&&e.dead,r=H0.apply(this,argume
 if(window.hurt)window.hurt._wfx=1;
 const SA0=window.slashAt;
 window.slashAt=slashAt=function(a,kC,o){const key=a&&(a.skill||a.key);if(!key||!ST[key]||!a.seq)return SA0.apply(this,arguments);
-  try{if(key==='axeDance'){danceSwing(a,o);return null;}const s=a.seq;return spriteSlash(s,null,kC,null,Object.assign({grow:Math.max(.06,seqTimeAt(s,kC+1)-seqTimeAt(s,Math.max(0,kC-1)))},o));}catch(e){warn('slashAt',e);return SA0.apply(this,arguments);}};
+  try{if(key==='axeDance'){danceSwing(a,o,kC);return null;}const s=a.seq;return spriteSlash(s,null,kC,null,Object.assign({grow:Math.max(.06,seqTimeAt(s,kC+1)-seqTimeAt(s,Math.max(0,kC-1)))},o));}catch(e){warn('slashAt',e);return SA0.apply(this,arguments);}};
 const MB0=window.mkBasic;
 if(typeof MB0==='function')window.mkBasic=mkBasic=function(){const a=MB0.apply(this,arguments);
   try{if(a&&a.update&&!a._w5u){a._w5u=1;const u0=a.update;a.update=function(){const p=window.__W5;window.__W5='basic';try{return u0.apply(this,arguments);}finally{window.__W5=p;}};}}catch(e){warn('basic',e);}return a;};
@@ -283,5 +308,5 @@ for(const key in MK){const s=typeof SKILLS==='object'&&SKILLS[key];if(!s||typeof
 /* pieces that are made outside the action's own events: the block (hitPlayer) and the spirit wolf's bite (its own update) */
 if(typeof blockFx==='function'){const b0=blockFx;window.blockFx=blockFx=function(e){const a=player.action;if(!a||a.key!=='ironCounter')return b0.apply(this,arguments);const p=window.__W5;window.__W5='ironCounter';a.attacker=a.attacker||e;try{return b0.apply(this,arguments);}finally{window.__W5=p;}};}
 try{if(typeof FenrirSpirit==='function'){const b0=FenrirSpirit.prototype.bite;FenrirSpirit.prototype.bite=function(){const p=window.__W5;window.__W5='fenrirsSpirit';try{return b0.apply(this,arguments);}finally{window.__W5=p;}};}}catch(e){warn('fenrir',e);}
-window.WV5={on:1,ST,keys:()=>Object.keys(ST),CONV,DROP};
+window.WV5={on:1,ST,keys:()=>Object.keys(ST),CONV,DROP,DP};
 })();

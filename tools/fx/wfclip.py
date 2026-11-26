@@ -1,7 +1,7 @@
-"""Wolf showcase clip of the v5 code effects (wolf_vfx5.js): DSF=1.5 python3 tools/fx/wfclip.py a|b|pic|pose [extra-query] (pose = the 2.5D wolf's extra poses of 2026-11-26, '&wpose=0' = the frames before; pic = the 5 painted pictures of 2026-11-26; '&wpic=0' = the old ones)  → $OUT/wolf_<tree>.mp4 (30 fps, Thai labels)
+"""Wolf showcase clip of the v5 code effects (wolf_vfx5.js): DSF=1.5 python3 tools/fx/wfclip.py a|b|pic|pose|dance [extra-query] (pose = the 2.5D wolf's extra poses of 2026-11-26, '&wpose=0' = the frames before; pic = the 5 painted pictures of 2026-11-26; '&wpic=0' = the old ones; dance = Axe Dance with its own poses, also slowed down and facing left)  → $OUT/wolf_<tree>.mp4 (30 fps, Thai labels)
 A key 'fu:<skill>' = a combo follow-up: cast on top of the entry before it (hero not moved, the parent's action is passed on); 'block:' in a pre-js = the dummy hits the wolf once (Iron Counter / Rune Guard).
 (DSF = device pixel ratio, CW/CH = crop in css px, MAP = map of the test room: egyF1 = desert sand, default vikF2 = snow; extra-query e.g. '&vfx3=0' = the old painted look)
-Each entry: (key | 'js:<code>', label, seconds, pre-js, distance to the dummy (0 = stand in the middle of the room), test-room mode [, (dx, dz) camera offset [, zoom]]). In js / pre code the dummy is __e.
+Each entry: (key | 'js:<code>', label, seconds, pre-js, distance to the dummy (0 = stand in the middle of the room, < 0 = on the dummy's right, facing left), test-room mode [, (dx, dz) camera offset [, zoom [, game frames per video frame: 2 = real time, 1 = half speed]]]). In js / pre code the dummy is __e.
 zoom 1 = a crop of CW × CH css px (660 × 400), zoom 1.7 = a close-up; every frame is scaled to OW × OH (960 × 582).
 Serve the repo on 8765 first (python3 -m http.server 8765). OUT=/tmp/fx by default."""
 import asyncio,sys,os,subprocess,shutil
@@ -38,6 +38,9 @@ SEQ={'a':[('basic','Wolf Combo · คมขวานวาดตามหัว�
       ('fenrirsSpirit',"Fenrir's Spirit · หอนเรียกเฟนเรียร์",2.0,'',90,'one',(-30,55),1.3),
       ('warBanner','War Banner · หอนแล้วปักธง',2.0,'',120,'one',(0,50),1.3),
       ('warFury','War Fury · ท่าใหม่ แยกเขี้ยวคำราม (บัฟนี้ย้อมตัวแดง จึงไว้ท้ายคลิป)',1.8,'',100,'one',(-50,45),1.6)],
+ 'dance':[('axeDance','Axe Dance · ความเร็วจริง',2.7,'',95,'one',(0,42),1.45),
+      ('axeDance','Axe Dance · ช้าลงครึ่งหนึ่ง',5.3,'',95,'one',(0,42),1.45,1),
+      ('axeDance','Axe Dance · หันซ้าย (เกมกลับภาพให้เอง)',2.7,'',-95,'one',(0,42),1.45)],
  'pic':[('warHowl','War Howl · วิญญาณหมาป่าขาวหอนอยู่หลังตัว',1.4,'',100,'one',(-50,70),1.45),
       ('executioner','Executioner · ขวานผีสีแดงลอยเหนือเป้า แล้วฟันลง',1.7,'if(!window.__sure){window.__sure=1;const _h=hurt;hurt=function(e,m,o){return _h.call(this,e,m,Object.assign({},o||{},{sure:1}));};}',62,'one',(10,70),1.3),
       ('valhallasWrath',"Valhalla's Wrath · ขวานทองยักษ์เหวี่ยงตามทุกครั้งที่ฟัน แล้วตกลงกลางวง",6.0,'if(!window.__sure){window.__sure=1;const _h=hurt;hurt=function(e,m,o){return _h.call(this,e,m,Object.assign({},o||{},{sure:1}));};}',70,'one',(30,70),.95),
@@ -57,7 +60,7 @@ CAST="""([k,near,pre])=>{const fu=k.startsWith('fu:');if(fu)k=k.slice(3);const p
   const es=enemies.filter(e=>!e.dead).sort((a,b)=>Math.hypot(a.x-player.x,a.y-player.y)-Math.hypot(b.x-player.x,b.y-player.y)),e=es[0];window.__e=e;
   for(const q of enemies)if(q._dummy&&!q.H0){q.H0=[q.hx,q.hy];for(const k of ['hx','hy'])Object.defineProperty(q,k,{get(){return k==='hx'?this.x:this.y;},set(v){},configurable:true});}
   if(!fu){for(const q of enemies)if(q._dummy&&q.H0){q.x=q.H0[0];q.y=q.H0[1];q.z=0;q.vx=q.vy=0;if(q.st)for(const k in q.st)q.st[k]=0;}
-    if(e&&near>0){player.x=e.x-near;player.y=e.y;}
+    if(e&&near){player.x=e.x-near;player.y=e.y;}
     const phi0=e?Math.atan2(e.y-player.y,e.x-player.x):0;faceTo(phi0);window.__cx=e?(player.x+e.x)/2:player.x+70;window.__cy=player.y;}
   const phi=e?Math.atan2(e.y-player.y,e.x-player.x):player.phi;mouse.wx=e?e.x:player.x+150;mouse.wy=e?e.y:player.y;window.__blk=0;if(pre)(0,eval)(pre);
   if(k==='basic'){startAction(mkBasic(e));return 'ok';}
@@ -68,14 +71,14 @@ async def main():
         fnt=ImageFont.truetype(os.path.join(os.path.dirname(os.path.abspath(__file__)),'..','..','assets','fonts','Mitr-Medium.ttf'),22)
         n=0;mode='one'
         for ent in SEQ:
-            k,label,secs,pre,near,md=ent[:6];ofs=ent[6] if len(ent)>6 else (0,34);zm=ent[7] if len(ent)>7 else 1;w,h=W/zm,H/zm
+            k,label,secs,pre,near,md=ent[:6];ofs=ent[6] if len(ent)>6 else (0,34);zm=ent[7] if len(ent)>7 else 1;spf=ent[8] if len(ent)>8 else 2;w,h=W/zm,H/zm
             if md!=mode:
                 mode=md;await g.ev("(m)=>{try{if(player.action)endAction();}catch(x){}player.x=__p0[0];player.y=__p0[1];const b=document.querySelector('[data-tr='+m+']');if(b)b.click();}",md);await g.step(30)   # the test room puts its dummies round the hero: always from the same spot
             if not k.startswith('fu:') and k!='basic':await g.step(40)
             r=await g.ev(CAST,[k,near,pre])
             if r not in ('ok','true','undefined','[object Object]'):print(k,r)
             for i in range(int(secs*30)):
-                await g.step(2);await g.ev("()=>{if(player.action)window.__pa=player.action;if(window.__blk>0&&--window.__blk===0&&window.__e){try{hitPlayer(window.__e,10,{});}catch(x){}}}")
+                await g.step(spf);await g.ev("()=>{if(player.action)window.__pa=player.action;if(window.__blk>0&&--window.__blk===0&&window.__e){try{hitPlayer(window.__e,10,{});}catch(x){}}}")
                 cx,cy=await g.ev("([w,h,dx,dz])=>{const q=P(window.__cx+dx,window.__cy,dz);return [q[0]*Z+ox-w/2,q[1]*Z+oy-h/2];}",[w,h,ofs[0],ofs[1]])
                 p=f'{FR}/{n:05d}.png';await g.shot(p,clip={'x':max(0,min(1280-w,cx)),'y':max(0,min(720-h,cy)),'width':w,'height':h})
                 im=Image.open(p).convert('RGB').resize((OW,OH),Image.LANCZOS)

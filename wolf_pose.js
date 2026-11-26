@@ -1,7 +1,8 @@
 /* 2.5D wolf extra poses (owner 2026-11-26 11:45: his pose sheets made from WOLF25_POSE_PROMPTS_TH.md).
    Atlas states in assets_wolf25_pose.js (merged into the WLF atlas by index.html; cut by
    `python3 -I tools/sheet_state.py tools/clips/wolf25_<pose>.json`): jump 6 · howl 4 · charge 4 · dash 4 · guard 4 · spin 4
-   (S E N W views); the sitting views are hero_sit.js's (assets/sit/wolf25_*.webp).
+   (S E N W views) · dance 4 + dfin 4 (Axe Dance, owner's sheets 2026-11-26 23:49; these two carry axe sockets); the sitting
+   views are hero_sit.js's (assets/sit/wolf25_*.webp).
    Each skill keeps its action EXACTLY: the same seq total, windup, dur, events, dash and hit times — only the frames shown
    change. A new seq array is built (the old entries stay untouched, so closures that kept the original array — Wolf Finale's
    and the strike skills' slash paths — read the frames they always did). Strike skills keep their last wind-up frame and the
@@ -29,8 +30,8 @@ const ON={};
 /* wrap SKILLS[k].make: fn(a, d, T, c) returns the new seq (or null = keep); o.dash = side view dir; o.any = every facing */
 function swap(k,fn,o={}){const S=SKILLS[k];if(!S||!S.make)return;const mk=S.make;ON[k]=1;
   S.make=function(c){const a=mk.apply(this,arguments);if(!a||!a.seq||!a.seq.length)return a;
-    try{const d=o.any?'S':(o.dash?dside():side());if(d){const T=seqTotal(a.seq),s=fn(a,d,T,c);
-        if(s&&s.length){const T2=seqTotal(s);if(Math.abs(T2-T)>1e-6)console.warn('wolf pose: seq total changed',k,T,T2);a.seq=s;a._wPose=1;}}}catch(e){console.warn('wolf pose',k,e);}
+    try{const d=o.any?'S':(o.dash?dside():side());if(d){const T=seqTotal(a.seq),m0=a.seq.every(x=>x.st==='attack'||x.st==='charge'),s=fn(a,d,T,c);
+        if(s&&s.length){const T2=seqTotal(s);if(Math.abs(T2-T)>1e-6)console.warn('wolf pose: seq total changed',k,T,T2);a.seq=s;a._wPose=1;if(a._melee0==null)a._melee0=m0;}}}catch(e){console.warn('wolf pose',k,e);}
     return a;};}
 
 /* ---- howls (buffAct: tP = a.windup = the moment the buff lands) -------------------------------------------------------
@@ -74,6 +75,34 @@ swap('wolfFinale',(a,d,T)=>{const s=a.seq,i=s.findIndex(e=>e.st==='attack');if(i
 const VIEW={E:1,SE:1,S:0,SW:0,W:3,NW:3,N:2,NE:2};
 swap('axeCyclone',a=>{const s=a.seq,n=s.findIndex((e,i)=>i>0&&e.f!==CT(e.d));const m=n<0?s.length:n;
   return s.map((e,i)=>i<m?{st:'spin',d:'S',f:VIEW[e.d]??0,ms:e.ms}:Object.assign({},e));},{any:1});
+
+/* ---- Axe Dance (owner's sheets 2026-11-26 23:49, states 'dance' + 'dfin'): the engine plays one chop 3 / 5 / 7 times.
+   Every swing keeps its 4 entries and their times (slashAt reads a.seq by index; the hits and the lunge do not move), and the
+   pose a swing ends in is the next swing's wind-up:  R rising cut (axe high) · D diving chop (blade low on the right) ·
+   L level sweep (axe out on the right) · S axe swung back onto the shoulder.
+   Swings R→D · D→R · spin (back view, side view) → L · L→S · S→D · D→R; the finisher (the whole chop) = coil for the first
+   quarter of its wind-up · spinning leap (in the air) · landing cleave from the contact frame · axe on the shoulder for its
+   last 2 entries. a._wDance = the kind of every swing for wolf_vfx5.js (its arcs follow these poses); the weapon trail is off
+   (between two far-apart poses it would draw a straight bar across the body). */
+const DPOSE={R:0,D:1,L:2,S:3},DTO=['D','R','L','S','D','R'],DKIND={D:'down',R:'up',L:'spin',S:'back'};
+swap('axeDance',(a,d)=>{const s=a.seq,ct=CT(atkDir(player.dir)),ks=[];s.forEach((e,i)=>{if(e.st==='attack'&&e.f===ct)ks.push(i);});
+  const n=ks.length;if(!n||ks[n-1]!==4*(n-1)+ct||s.length!==4*(n-1)+durs('attack',atkDir(player.dir)).length)return null;
+  for(let i=0;i<n-1;i++)if(ks[i]!==4*i+2)return null;                       // n−1 swings of 4 entries (ct−2 … ct+1), then the whole chop
+  const o=copy(s),set=(j,st,f,dd)=>{o[j].st=st;o[j].f=f;o[j].d=dd||d;},kinds=[];let from='R';
+  for(let i=0;i<n-1;i++){const to=DTO[i%DTO.length],j=4*i;kinds.push(DKIND[to]);
+    if(to==='L'){set(j,'spin',2,'S');set(j+1,'spin',d==='SE'?3:1,'S');}     // back view, then the side the axe comes round from
+    else{set(j,'dance',DPOSE[from]);set(j+1,'dance',DPOSE[from]);}
+    set(j+2,'dance',DPOSE[to]);set(j+3,'dance',DPOSE[to]);from=to;}
+  const j0=4*(n-1),kC=ks[n-1],t0=seqTimeAt(s,j0),tC=seqTimeAt(s,kC)-t0;let jL=-1;
+  for(let j=j0;j<s.length;j++){const t=seqTimeAt(s,j)-t0,f=j<kC?(t<.25*tC?0:1):(j>=s.length-2?3:2);if(f===1&&jL<0)jL=j;set(j,'dfin',f);}
+  /* the spinning leap rises and falls (player.z, an arc DH high) and lands on the contact frame; a hit or another action that
+     cuts the leap short puts him back on the ground (lift() below) */
+  if(jL>0){const tA=seqTimeAt(s,jL),tB=seqTimeAt(s,kC);wrapUpd(a,a2=>{if(player.action!==a2)return;
+      if(a2.t>=tA&&a2.t<tB){player.z=DH*Math.sin(Math.PI*(a2.t-tA)/(tB-tA));LIFT.a=a2;}else if(LIFT.a===a2){player.z=0;LIFT.a=null;}});}
+  kinds.push('fin');a._wDance=kinds;a._wKs=ks;a._wSide=d;a.trailWin=null;return o;});
+const DH=24,LIFT={a:null};
+function lift(f){return function(){if(LIFT.a&&player.action===LIFT.a){player.z=0;LIFT.a=null;}return f.apply(this,arguments);};}
+try{startAction=lift(startAction);endAction=lift(endAction);}catch(e){console.warn('wolf pose lift',e);}
 
 window.WPOSE={side,dside,build,head,swap,ON};
 })();

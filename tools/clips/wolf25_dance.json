@@ -1,0 +1,82 @@
+{
+ "_note": "2.5D wolf Axe Dance pose (owner's sheet 2026-11-26 23:49, from the 'Axe Dance ชุดใหม่' section of WOLF25_POSE_PROMPTS_TH.md): one view = front 3/4 facing right (SE; the engine mirrors SW / W), flat green, 2.5D toon look. Scale .78 = his standing frame as tall as the idle frame of assets_wolf25.js (cmpscale), store = the atlas's cellScale. sheet_coords: anchors + sockets in SHEET px — anchor x = the front of the belt (buckle) − 35 (the idle SE buckle sits 27 cell px right of the pivot), y = the mean of both boot soles; sockets = the axe blade's rune band (largest light-blue blob, like cliphero 'axe'), so slashAt / headR follow the pose. Played by wolf_pose.js (axeDance). Rebuild: python3 -I tools/sheet_state.py tools/clips/wolf25_dance.json [preview.png]. Frames: 1 rising cut, axe high over the right shoulder · 2 diving chop, blade low on the right · 3 level sweep, axe out right at the waist · 4 axe swung back onto the shoulder (asked as a backhand sweep; drawn as the shoulder rest)",
+ "js": "assets_wolf25_pose.js",
+ "prefix": "WLFP",
+ "rows": 2,
+ "cols": 2,
+ "scale": 0.78,
+ "store": 1.5478,
+ "clean": true,
+ "sheet_coords": true,
+ "dirs": [
+  "S",
+  "SE",
+  "E",
+  "NE",
+  "N"
+ ],
+ "flip": false,
+ "loop": false,
+ "state": "dance",
+ "sheet": "assets/heroes/wolf/poses25/dance.webp",
+ "anchors": [
+  [
+   419,
+   486
+  ],
+  [
+   1055,
+   472
+  ],
+  [
+   305,
+   965
+  ],
+  [
+   1146,
+   973
+  ]
+ ],
+ "sockets": [
+  [
+   175,
+   126
+  ],
+  [
+   1381,
+   403
+  ],
+  [
+   637,
+   760
+  ],
+  [
+   965,
+   547
+  ]
+ ],
+ "dur": [
+  90,
+  90,
+  90,
+  90
+ ],
+ "head": [
+  [
+   532,
+   462
+  ],
+  [
+   657,
+   512
+  ],
+  [
+   581,
+   440
+  ],
+  [
+   540,
+   400
+  ]
+ ]
+}

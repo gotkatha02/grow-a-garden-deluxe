@@ -2,7 +2,7 @@
 
 เจ้าของ: "อยากเปลี่ยนสไตล์แผนที่เป็น 2.5d isometric แบบ RAGnarok3 ลองทำแมพโซนหิมะเป็นตัวอย่างก่อนได้ไหม ต้องทำยังไงถึงจะสวยๆ" → "น่าจะต้องเจนภาพชุดใหม่เลยนะ"
 
-สถานะ: **ส่งพรอมต์แล้ว รอรูป** — ในเกมยังไม่เปลี่ยนอะไร
+สถานะ: รูป ② (พื้นล้วน) เข้าแล้ว → แมพทดลอง `isoSnow` · ทางแมพใหญ่ = **ชุดชิ้นส่วนให้โค้ดประกอบ** (ลายพื้น T1–T6 + แผ่นชิ้น ③–⑨) ส่งพรอมต์แล้ว รอรูป (หัวข้อ 7–9)
 
 ## 1. ทำไมแมพตอนนี้ยังไม่เหมือน RO3
 - RO3 = ฉาก 3D ที่เรนเดอร์ให้ดูเหมือนวาดมือ มองจากกล้องสูงตายตัว (หาข่าวแล้ว ดูหัวข้อ 'ลอง 2.5D แบบ Ragnarok 3' ใน WOLF_LOOK_PROMPTS_TH.md)
@@ -115,3 +115,159 @@ SHEET: 1536×1024, a 3×2 grid, one object per cell, centred, as big as the cell
 - รูปเดียวได้แมพ ~2–3 จอ · ทุ่งจริงใหญ่ ~9,600 × 7,200 (~20 จอ) → วาดรูปเดียวไม่ไหว
 - ทางที่คิดไว้: **ชุดชิ้นส่วน iso** ให้โค้ดประกอบ = พื้นหิมะต่อกันไม่เห็นรอย (หลายแบบผสมด้วยนอยส์แบบ fieldmap.js) + "แผ่นภูมิประเทศ" วาดสำเร็จขอบจางเป็นหิมะ (ที่ราบสูงมีบันได บ่อน้ำแข็ง ลานหิน ซากปรักหักพัง) วางกระจาย + ของตั้งชุดนี้ + ผาขอบแมพหลายทิศ
 - ฮีโร่ 2.5D (คลิปใหม่) จะเข้ากับแมพนี้ · ฮีโร่แบบเดิมเดินบนแมพนี้ได้เลย แต่ลุคจะแบนกว่า
+
+## 7. รูป ② เข้าแล้ว → แมพทดลอง isoSnow (2026-11-26 14:37)
+เจ้าของส่งรูป ② (พื้นล้วน 1536×1024: ที่ราบสูง + บันไดหินซ้ายบน · แนวเสาหินผาขอบบน · ทางหิมะอัดมีหินเหยียบทแยงซ้ายล่าง → ขวาบน · บ่อน้ำแข็งร้าวขวา · ผาลงหุบหมอกขวาล่าง; โลกหมุน 45° จริง ทางลาดชัน ~2:1) + "แบบนี้ก็ได้แค่แมพเล็กๆสิ ไม่ใช้แมพ open world"
+- `maps/iso/iso_floor_v1.webp` (รูปเต็ม q92) · `maps/iso-maps.js` (โหลดหลัง sea-maps.js) = `VK_MAPS.isoSnow` ทดสอบอย่างเดียว ไม่มีวาร์ปเข้า → `?map=isoSnow` ในโหมดทดสอบ
+- รูปทั้งรูปเป็นพื้น (groundImg ×S, S = 1.5 · `?isok=1.2` ลองขนาดอื่น) · fieldScale 1 (ไม่งั้น scaleField ขยายแมพ ×2 แต่รูปไม่ขยายตาม) · noPretty · keepWarps · noAutoTrails · mirror · lit · noCritters
+- ทางเดินได้ = ทุ่งล่าง (รวมบ่อน้ำแข็ง) + บนที่ราบ + บันได (LOW / TOP / STAIRS ในพิกัดรูป) · หน้าผา ขอบหลังที่ราบ แนวเสาบน ผาขวาล่าง = เดินไม่ได้ (ตรวจด้วย arenashot grid=1)
+- กล้อง camZoom .8 / มือถือ .75 (แบบลานบอสโลก): รูป 1 px = 1.5 px บนจอ PC ยังพอคม · ฮีโร่ดูเล็กในโลกใหญ่แบบ RO · ซูมเท่าแมพเดิม (1.25) รูปขยาย ~1.9 เท่าจะเบลอ
+- ภาพทดสอบ: `python3 tools/fx/arenashot.py isoSnow w=1280 h=720 views=all,mid,1900:1000 crowd=1 [hud=1 grid=1]` (หมาป่า 2.5D 10 ตัวรอบกลางแมพ)
+
+## 8. แมพใหญ่ (open world) = เจนลายพื้นใหม่ (2026-11-26 14:47)
+เจ้าของ: "แล้วทำไมไม่เจนลายพื้นล่ะ แบบนี้โคตรไม่สวยเลย" → ใช่: ไม่หั่นรูป ② มาใช้ เจนลายพื้นต่อกันไม่เห็นรอยในลุคนี้แทน แล้วให้โค้ดปูทั้งแมพ (แบบแมพเก็บเลเวลตอนนี้ 9,600 × 7,200) — รูป ② เป็นแบบลุค
+- ลายพื้น 6 แบบ (แชต ChatGPT เดิมที่มี ① ②; T6 เพิ่มในหัวข้อ 9): T1 หิมะใหม่ (พื้นหลัก) · T2 หิมะลมพัด (หย่อมสลับ) · T3 ทางเดินเหยียบ (โค้ดตัดเป็นรูปทาง + วาดขอบหิมะเอง) · T4 น้ำแข็งบ่อ (โค้ดตัดเป็นรูปบ่อ) · T5 พื้นหินมีหิมะ
+- เจนแบบมองตรงลงจากบน → ผมบีบแนวตั้ง ×0.62 (K ของเกม) ให้เข้ามุมกล้อง · `tools/seamless_tex.py` แก้รอยต่อที่เหลือ · ลงทะเบียน VK_CAT {t:'tex', d:'iso'}
+- รอบถัดไป: ชิ้นที่มีความสูง (ขอบหน้าผา 2 ทิศทแยง + มุม + บันได / ทางลาด, ที่ราบสูงสำเร็จรูปขอบเป็นหิมะ, ผาลงหุบหมอกขอบแมพ) + ของตั้ง ③ ④ ⑤ → แมพทดลองใหญ่ `isoField`
+
+### กล่องลายพื้น T1–T6 (แชต ChatGPT เดิมที่มีรูป ① ② ทีละกล่อง · แชตใหม่ให้แนบรูป ② ไปด้วย · T6 เพิ่มรอบ 23:50)
+**T1 หิมะใหม่ (พื้นหลัก)**
+```
+Draw ONE seamless, tileable ground texture for my 2.5D fantasy MMORPG: FRESH SNOW — painted like the open snowfield in the attached map picture (or the map picture earlier in this chat): same painting style, same colours, same light.
+
+Seen straight from above: soft rounded lumps and gentle low drifts of white powdery snow spread evenly over the whole square; every lump is lit from the upper left (warm pinkish-white sunlit side) with a soft cool lavender-blue shadow on its lower right; a few tiny dark pebbles and very small brown twigs scattered sparsely; two or three faint trails of small animal footprints. The lumps are the same size everywhere and nothing is big or eye-catching (it repeats many times across a big map): no rocks, no path, no hole, no plants, no ice.
+
+SEAMLESS: it must tile perfectly — what leaves the right edge comes back on the left edge and what leaves the bottom comes back at the top, with no visible seam or border, and the same brightness and colour all over (no vignette, no darker corner, no sunlight gradient across the picture).
+
+LOOK: a hand-painted stylized game texture exactly like the attached map picture — soft painted shading in 2–3 tones, clean and readable, matte; not photorealistic, not blurry, not pixel art, no outlines.
+
+FORMAT: 1024×1024 square, the texture fills it edge to edge. No text, no letters, no logo, no frame.
+```
+
+**T2 หิมะลมพัด (หย่อมสลับ)**
+```
+Draw ONE seamless, tileable ground texture for my 2.5D fantasy MMORPG: WIND-SWEPT SNOW — painted like the snowfield in the attached map picture (or the map picture earlier in this chat): same painting style, same colours, same light.
+
+The same snow smoothed by the wind, seen straight from above: long soft ripples and shallow curved scoops all running the same way across the square, a little smoother and very slightly bluer than fresh snow, lit from the upper left with soft cool lavender-blue shadows, a few tiny ice glints. No footprints, no pebbles, no rocks, nothing big or eye-catching (it repeats many times).
+
+SEAMLESS: it must tile perfectly — what leaves the right edge comes back on the left edge and what leaves the bottom comes back at the top, with no visible seam or border, and the same brightness and colour all over (no vignette, no darker corner, no sunlight gradient across the picture).
+
+LOOK: a hand-painted stylized game texture exactly like the attached map picture — soft painted shading in 2–3 tones, clean and readable, matte; not photorealistic, not blurry, not pixel art, no outlines.
+
+FORMAT: 1024×1024 square, the texture fills it edge to edge. No text, no letters, no logo, no frame.
+```
+
+**T3 ทางเดินเหยียบ**
+```
+Draw ONE seamless, tileable ground texture for my 2.5D fantasy MMORPG: TRAMPLED PATH — painted like the walked-on path with stepping stones in the attached map picture (or the map picture earlier in this chat): same painting style, same colours, same light.
+
+Seen straight from above: packed light-brown earth and sandy soil showing through trodden grey-white slush, many overlapping boot and paw prints, a few small flat grey stepping stones half sunk into it, scattered gravel, each stone lit from the upper left with a cool shadow on its lower right. Even all over, because the game cuts it into the shape of each path and blends its edges softly into the snow: no snow bank, no edge, no straight line across it.
+
+SEAMLESS: it must tile perfectly — what leaves the right edge comes back on the left edge and what leaves the bottom comes back at the top, with no visible seam or border, and the same brightness and colour all over (no vignette, no darker corner, no sunlight gradient across the picture).
+
+LOOK: a hand-painted stylized game texture exactly like the attached map picture — soft painted shading in 2–3 tones, clean and readable, matte; not photorealistic, not blurry, not pixel art, no outlines.
+
+FORMAT: 1024×1024 square, the texture fills it edge to edge. No text, no letters, no logo, no frame.
+```
+
+**T4 น้ำแข็งบ่อ**
+```
+Draw ONE seamless, tileable ground texture for my 2.5D fantasy MMORPG: FROZEN POND ICE — painted like the frozen pond in the attached map picture (or the map picture earlier in this chat): same painting style, same colours, same light.
+
+Seen straight from above: smooth thick ice in clear turquoise and pale sky blue, a network of thin white cracks that splits it into big irregular plates, soft white frost dusting in a few patches, a few tiny trapped bubbles. Even all over, because the game cuts it into the shape of each pond and puts the snowy banks around it itself: no bank, no snow edge, no rocks, no reflections of anything.
+
+SEAMLESS: it must tile perfectly — what leaves the right edge comes back on the left edge and what leaves the bottom comes back at the top, with no visible seam or border, and the same brightness and colour all over (no vignette, no darker corner, no sunlight gradient across the picture).
+
+LOOK: a hand-painted stylized game texture exactly like the attached map picture — soft painted shading in 2–3 tones, clean and readable, matte; not photorealistic, not blurry, not pixel art, no outlines.
+
+FORMAT: 1024×1024 square, the texture fills it edge to edge. No text, no letters, no logo, no frame.
+```
+
+**T5 พื้นหินมีหิมะ**
+```
+Draw ONE seamless, tileable ground texture for my 2.5D fantasy MMORPG: ROCKY GROUND WITH SNOW — painted like the grey-brown rock of the cliffs in the attached map picture (or the map picture earlier in this chat): same painting style, same colours, same light.
+
+Seen straight from above, as a flat rocky floor: cracked flat stone slabs and small broken rocks with gravel between them, snow filling the cracks and lying in small soft patches on top, each stone lit from the upper left with a cool shadow on its lower right. Even all over: no cliff edge, no big boulder, no plants.
+
+SEAMLESS: it must tile perfectly — what leaves the right edge comes back on the left edge and what leaves the bottom comes back at the top, with no visible seam or border, and the same brightness and colour all over (no vignette, no darker corner, no sunlight gradient across the picture).
+
+LOOK: a hand-painted stylized game texture exactly like the attached map picture — soft painted shading in 2–3 tones, clean and readable, matte; not photorealistic, not blurry, not pixel art, no outlines.
+
+FORMAT: 1024×1024 square, the texture fills it edge to edge. No text, no letters, no logo, no frame.
+```
+
+**T6 หิมะละลายเห็นหญ้า**
+```
+Draw ONE seamless, tileable ground texture for my 2.5D fantasy MMORPG: THAWING SNOW WITH WINTER GRASS — painted like the snow in the attached map picture (or the map picture earlier in this chat): same painting style, same colours, same light.
+
+Seen straight from above: a thin, melting layer of snow with many small patches of short frosty winter grass showing through — muted olive-green and straw-gold blades — and a little damp brown earth here and there, a few tiny pebbles; every snow patch has soft rounded edges lit from the upper left. Even all over, nothing big or eye-catching (it repeats many times and the game blends it softly into the snow): no path, no rocks, no flowers, no puddles.
+
+SEAMLESS: it must tile perfectly — what leaves the right edge comes back on the left edge and what leaves the bottom comes back at the top, with no visible seam or border, and the same brightness and colour all over (no vignette, no darker corner, no sunlight gradient across the picture).
+
+LOOK: a hand-painted stylized game texture exactly like the attached map picture — soft painted shading in 2–3 tones, clean and readable, matte; not photorealistic, not blurry, not pixel art, no outlines.
+
+FORMAT: 1024×1024 square, the texture fills it edge to edge. No text, no letters, no logo, no frame.
+```
+
+## 9. ชุดชิ้นส่วน ประกอบแมพได้ไม่จำกัด (2026-11-26 14:50)
+เจ้าของ: "ทำเหมือนตอนแรกไม่ได้หรอที่เจนชิ้นส่วนมาเยอะๆแล้วเอามาประกอบเป็นแมพ แบบนี้จะทำกี่แมพก็ได้ไม่มีตายตัว" + ภาพแมพ Ragnarok 3 จากเกมจริง 3 ภาพ (**ไม่เก็บเข้า repo** — งานของคนอื่น repo มิเรอร์สาธารณะ) → ใช่ = วิธีเดียวกับทุกแมพในเกมตอนนี้ (ชิ้นใน VK_CAT + ลายพื้น + fieldmap.js วาง) แค่เปลี่ยนชุดภาพเป็นลุค 2.5D · รูป ② = แบบลุค + แมพทดลองเล็ก isoSnow
+
+**สิ่งที่เห็นในภาพ RO3 (ทุ่งหญ้ามีหย่อมดิน + ทางดิน · ทะเลทรายมีปาล์ม กระบองเพชร · ป่าปาล์มข้างกำแพงหิน):**
+1. พื้นเป็นลายเนียนต่อกันทั้งผืน หย่อมดิน / ทางเดินขอบนุ่มกลืนเข้าหากัน ไม่มีเส้นคม ไม่เห็นตาราง
+2. ของใหญ่ไม่กี่ชิ้น เว้นที่โล่งเยอะ + ของเล็กกระจายเป็นกลุ่ม (ดอกไม้ พุ่มไม้ ก้อนหิน กระดูก ของตกพื้น)
+3. ทุกชิ้นมีเงานุ่มยาวจากแดดทิศเดียว → ของติดพื้น ดูเป็น 3D
+4. กล้องสูง ซูมออก ฮีโร่เล็ก (~1/8 ของความสูงจอ)
+5. ของแรเงานุ่มแบบ 3D ไม่มีเส้นขอบหนา
+
+**ในเกมมีระบบตรงกับข้อ 1–4 อยู่แล้ว:** ลายพื้นหลัก + หย่อมขอบนุ่ม (patches soft) + ทางเดินขอบนุ่ม (PRETTY path painter) · cfg.vign = กลุ่มของเล็ก · cfg.lit = เงาแดดทั้งแมพ (ใช้ที่เมืองหลวง) · camZoom .8 แบบลานบอส → งานคือเจนชุดภาพใหม่ + ตั้งชุดโซนหิมะ iso ใน fieldmap.js
+
+**ชุดภาพ (เจนในแชต ChatGPT เดิมที่มีรูป ① ② ทีละกล่อง · แชตใหม่: แนบรูป ② (+ ① ถ้ามี)):**
+- ลายพื้น T1–T6 (หัวข้อ 8) · แผ่นชิ้น ③ ต้นไม้ ④ หิน / น้ำแข็ง / ของเล็ก ⑤ ค่ายไวกิ้ง (หัวข้อ 4) · ⑥ หินผา ขอบแมพ ถ้ำ ⑦ ต้นไม้เล็ก พุ่ม ดอกไม้ ⑧ ของเล็กบนพื้น ⑨ กองหิมะ ขอบบ่อ (ด้านล่าง)
+- รอบแรก (พอทำแมพทดลองใหญ่): T1 T3 T4 ③ ④ ⑨ · รอบสอง: T2 T5 T6 ⑥ ⑦ ⑧ ⑤
+- ชิ้นไม่มีเงา ไม่มีพื้น (เกมวาดเงาเอง) · ขนาดจริงในเกมโค้ดตั้งต่อชิ้น (ฮีโร่ 2.5D ~57 map px; สนใหญ่ ~330)
+
+**ตอนรูปมา:** `tools/iso_art.py` แบบ `tools/sea_art.py` (ตาราง SHEETS / P, `sheet` ตัดแผ่น 3×2 ด้วยคีย์บอส, `cat` → `maps/iso-cat.js`) · ลายพื้น: `seamless_tex.py` + บีบแนวตั้ง ×0.62 · theme ใหม่ใน fieldmap.js (ชุดต้นไม้ / หิน / ของเล็ก / ลายพื้นของโซนนี้, กองหิมะ ⑨ เรียงตามขอบบ่อและทาง) · แมพทดลองใหญ่ `isoField` 9,600 × 7,200 (ทดสอบอย่างเดียว) + ภาพจากในเกมส่งให้เจ้าของ
+
+**⑥ หินผา ขอบแมพ ถ้ำ 6 ชิ้น (พื้นเขียว)**
+```
+Draw SIX separate rock pieces for the same snowy map, rendered exactly like the cliffs and rocks in the map picture from earlier in this chat (or the attached one): a stylized 3D game look painted by hand — solid rounded volume, soft toon shading in 2–3 tones, one warm golden light from the upper left with soft cool-blue shadow sides, thin clean dark-brown hand-drawn outlines, matte painted textures, warm slightly retro storybook colours. Not photorealistic, not flat 2D, not pixel art.
+
+Seen from the same high isometric game camera (about 38 degrees down, the world turned 45 degrees, no perspective): we see the snowy top of each piece and its two front faces.
+
+The six pieces, all of the same layered warm grey-brown rock as the cliffs in the map picture: (1) a wide section of cliff wall — five tall rock columns standing side by side, about four times a person's height, thick soft snow on their flat tops, a few icicles hanging from the snow; (2) a narrow section of the same cliff wall, two columns; (3) one tall rock spire standing alone, with a snow cap; (4) a low wide rocky mound — rounded snowy boulders heaped into a small hill, much wider than tall; (5) a frozen waterfall — a short rock cliff with a fall of pale sky-blue ice frozen down its front into a small frozen pool at its foot; (6) a cave entrance — a mound of snowy rock with a dark arched cave opening in its lower-left face, wide enough for two people side by side, icicles hanging over the opening.
+
+SHEET: 1536×1024, a 3×2 grid, one piece per cell, centred, as big as the cell allows with empty space all round; the bottom of each piece is where it sits on the ground, with a little soft snow piled against its foot; no ground patch around it, no cast shadow. Background: solid flat pure green (#00FF00), no gradient — never use green on the pieces (no moss, no grass; the ice is sky blue, not turquoise). No text, letters or logo.
+```
+
+**⑦ ต้นไม้เล็ก พุ่มไม้ ดอกไม้ 6 ชิ้น (พื้นบานเย็น)**
+```
+Draw SIX separate small plants for the same snowy map, rendered exactly like the map picture from earlier in this chat (or the attached one): a stylized 3D game look painted by hand — solid rounded volume, soft toon shading in 2–3 tones, one warm golden light from the upper left with soft cool-blue shadow sides, thin clean dark-brown hand-drawn outlines, matte painted textures, warm slightly retro storybook colours. Not photorealistic, not flat 2D, not pixel art.
+
+Seen from the same high isometric game camera (about 38 degrees down, no perspective): we look a little down onto them.
+
+The six plants: (1) a young snowy pine sapling about as tall as a person, deep teal-green needles under soft snow; (2) a round low evergreen bush, deep teal-green leaves, half covered in soft snow; (3) a low bush of bare brown twigs with clusters of bright red winter berries and snow on top; (4) a tuft of tall dry straw-gold grass poking up through a little snow; (5) a small cluster of white snowdrop flowers with drooping heads and slim leaves; (6) a small cluster of pale ice-blue frost flowers with crystal-like petals and slim leaves.
+
+SHEET: 1536×1024, a 3×2 grid, one plant per cell, centred, as big as the cell allows with empty space all round; the bottom of each plant is where it sits on the ground, with a little soft snow piled against its foot; no ground patch around it, no cast shadow. Background: solid flat pure magenta (#FF00FF), no gradient — never use magenta, pink or purple on the plants (the berries are bright red, the flowers white or pale ice blue). No text, letters or logo.
+```
+
+**⑧ ของเล็กบนพื้น 6 ชิ้น (พื้นเขียว)**
+```
+Draw SIX separate small objects for the same snowy map, rendered exactly like the map picture from earlier in this chat (or the attached one): a stylized 3D game look painted by hand — solid rounded volume, soft toon shading in 2–3 tones, one warm golden light from the upper left with soft cool-blue shadow sides, thin clean dark-brown hand-drawn outlines, matte painted textures, warm slightly retro storybook colours. Not photorealistic, not flat 2D, not pixel art.
+
+Seen from the same high isometric game camera (about 38 degrees down, the world turned 45 degrees, no perspective). Things that lie flat on the ground look squashed, like the flat stepping stones in the map picture.
+
+The six objects: (1) a fallen snowy log lying on the ground, running from lower left to upper right, with the stub of a broken branch; (2) an old tree stump with a snow cap and a few roots; (3) a fallen bare brown branch lying flat on the snow; (4) three flat grey stepping stones lying flat in a short row, a little snow on their edges; (5) a small frozen puddle lying flat — smooth sky-blue ice with one thin white crack and a soft snowy rim; (6) an old round Viking wooden shield and a rusty axe lying half buried in the snow, battle remains.
+
+SHEET: 1536×1024, a 3×2 grid, one object per cell, centred, as big as the cell allows with empty space all round; the bottom of each object is where it sits on the ground, with a little soft snow piled against its foot; no ground patch around it, no cast shadow. Background: solid flat pure green (#00FF00), no gradient — never use green on the objects (the ice is sky blue, not turquoise). No text, letters or logo.
+```
+
+**⑨ กองหิมะ ขอบบ่อ 6 ชิ้น (พื้นเขียว)**
+```
+Draw SIX separate heaps of snow for the same snowy map, rendered exactly like the snowy pond banks and drifts in the map picture from earlier in this chat (or the attached one): a stylized 3D game look painted by hand — solid rounded volume, soft toon shading in 2–3 tones, one warm golden light from the upper left with soft cool-blue shadow sides, thin clean dark-brown hand-drawn outlines, matte painted textures, warm slightly retro storybook colours. Not photorealistic, not flat 2D, not pixel art.
+
+Seen from the same high isometric game camera (about 38 degrees down, no perspective). The game lines them up along pond shores and paths and scatters them as drifts, so they are soft rounded lumps of clean white snow with cool lavender-blue shadow sides, lit from the upper left, with real 3D volume.
+
+The six heaps: (1) one big round soft snow lump; (2) a long bank of four snow lumps of different sizes in a row, running from lower left to upper right; (3) the same kind of bank running from upper left to lower right; (4) a long low wind-shaped snow drift with a smooth curved crest; (5) a snow heap with a grey rock showing through its side; (6) a snow heap at a pond's edge with a few slabs of pale sky-blue ice pushed up against it.
+
+SHEET: 1536×1024, a 3×2 grid, one heap per cell, centred, as big as the cell allows with empty space all round; the bottom of each heap is where it sits on the ground, with a little soft snow piled against its foot; no ground patch around it, no cast shadow. Background: solid flat pure green (#00FF00), no gradient — never use green on the snow or ice (the ice is sky blue, not turquoise). No text, letters or logo.
+```
