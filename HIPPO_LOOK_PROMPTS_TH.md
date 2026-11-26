@@ -181,3 +181,151 @@ Pose 2 — Sumo Stomp: he balances on one leg with the other knee lifted high, a
 ```
 Pose 3 — Mace Twirl: he stands on the tip of one foot with the other leg bent up, twirling the mace high above his head like a baton, the shield arm held out for balance, the cape swirling around him, grinning playfully with his tongue sticking out a little.
 ```
+
+## ท่าเพิ่ม ภาพนิ่งทิศเดียว (2026-11-26 07:22)
+เจ้าของ: "สำหรับฮิปโปต้องเจนรูปท่าทางอะไรเพิ่มไหม สำหรับใช้บางสกิลให้มันดูเข้ากัน อันนี้จะทำแค่ทิศหันมาด้านหน้าทิศเดียว ทำเป็นรูป" → แบบเดียวกับ `pose_jump` / `pose_gulp`: ภาพนิ่ง 1 ภาพต่อท่า หันเฉียงขวา (SE) เกมกลับด้านให้ตอนหันซ้าย (SW) · พื้นเขียว (ภาพกินแตงโมพื้นชมพูม่วง เพราะเปลือกแตงโมเขียว)
+
+วิธีใช้: แชต ChatGPT ที่วาดฮิปโปอยู่แล้ว (หรือแชตใหม่) แนบภาพยืนเฉียงขวา `view_SE` (+ ภาพปกแคมป์ไฟถ้าแชตใหม่) แล้วส่งทีละกล่อง กล่องละ 1 ภาพ · ภาพ 4b = เปิดภาพ 4 ในตัวแก้ของ ChatGPT ระบายเฉพาะปาก แล้วส่งประโยคแก้ (ท่าเดิมเป๊ะ สลับ 2 ภาพ = งับรัว)
+
+| # | ท่า | state | ใช้กับ | ตอนนี้เกมใช้ | สำคัญ |
+|---|---|---|---|---|---|
+| 1 | ทิ้งพุงแปะพื้น | `splat` | ตอนลงพื้นของท่าทับทุกท่า: ปิดคอมโบ · Belly Flop · Bounce Slam · Sky Belly · Double Drop · Mountain Drop · Meteor Belly (+ จบ Rolling Hippo / โผล่จาก Submerge) | ลงพื้นด้วยท่าทุบกระบองจากคลิปตี | ★★★ |
+| 2 | ม้วนเป็นลูกบอล | `ball` | Rolling Hippo (เกมหมุนภาพให้กลิ้ง) | กลิ้งด้วยท่าโดนตีค้างไว้ | ★★★ |
+| 3 | นอนหงายหลับ | `nap` | Nap (ตลอดช่วงงีบ) · Mud Wallow (นอนคลุกโคลน) · ใช้เป็นท่านั่งพักปุ่ม 🧘 ได้ด้วย | ยืนเฉยๆ ทั้งที่คำอธิบายบอกนอนหงายงีบ | ★★★ |
+| 4 | งับ (อ้าปาก) | `chomp` | Chomp Chomp (สลับกับภาพ 4b ปากหุบ = งับรัว) | เหวี่ยงกระบองรัวๆ ทั้งที่เป็นท่างับ | ★★ |
+| 5 | หาว | `yawn` | Yawn Threat | ชูกระบอง + โล่ (ท่าเดียวกับสกิลอื่นเกือบหมด) | ★★ |
+| 6 | กินแตงโม | `eat` | Feast (+ Second Helping) — แตงโมอยู่ในมือแทนแตงโมลอยบนหัว | ชูกระบอง + โล่ มีแตงโมลอยอยู่เหนือหัว | ★★ |
+| 7 | เรอ | `burp` | Burp Cannon | ชูกระบอง + โล่ | ★★ |
+| 8 | ยกขากระทืบ | `stomp` | Ground Pound | ชูกระบอง + โล่ | ★★ |
+| 9 | ปาโคลน | `throw` | Mud Ball (สกิลหลักสาย B) | ชูกระบอง + โล่ | ★ |
+| 10 | สะบัดตัว | `shake` | Mud Splash | ชูกระบอง + โล่ | ★ |
+| 4b | งับ (หุบปาก) | `chomp` เฟรม 2 | Chomp Chomp | — | ★★ |
+
+ไม่ต้องทำ: Taweret's Ward / Hapi's Bounty / Lotus / Geyser / Quicksand / Nile Wave / Wrath (ชูกระบองสั่งน้ำ เข้ากันแล้ว) · Waddle Rush (คลิปเดิน) · คอมโบ (คลิปตี) · Gulp / Gobble (ท่าดูดมีแล้ว) · Behemoth / Great Inundation (เทพสององค์) · Submerge (หายใต้โคลน โผล่ใช้ภาพ 1)
+
+พอภาพมา (แผน): เก็บ `assets/heroes/hippo/pose_<state>.webp` → spec `tools/clips/hippo_<state>.json` แบบ hippo_jump.json (scale .2 ตรวจหัวให้เท่าภาพยืน, variants, anchor: ท่านอน / ลูกบอล ใส่ anchor เองที่กลางตัวติดพื้น) → `python3 -I tools/sheet_state.py tools/clips/hippo_<state>.json` → char_hippo.js ใช้แทนเฟรมเดิม เวลารวมเท่าเดิม (จังหวะโดนไม่เปลี่ยน): splat = แทนเฟรมตีจากจุดโดนในท่า hSlam (บี้ → คืนรูป → ลุกด้วยเฟรมท้ายคลิปตี) · ball = แทน hurt ค้างใน haRoll หมุน 0/90/180/270 ความเร็วตามระยะกลิ้ง จบด้วย splat · nap = วาดแทนท่ายืนตอนมีบัฟ hnNap และยืนนิ่ง + Mud Wallow (โยก ±3°) + SIT ของฮิปโป · chomp = 2 เฟรม อ้า / หุบ แทนเฟรมตีใน hcChomp (หุบตรงเวลางับ) · yawn / eat / burp / stomp / throw / shake = แทนคลิปชูกระบองของสกิลนั้น (ก่อน tP = ท่าเตรียม, ที่ tP = ท่าเต็ม) · eat: เอาแตงโมลอย h11 ออก · ทั้งหมดมี `?hpose=0` = แบบเดิม
+
+#### ภาพ 1 — ทิ้งพุงแปะพื้น (ตอนลงพื้นของท่าทับทุกท่า: ปิดคอมโบ · Belly Flop · Bounce Slam · Sky Belly · Double Drop · Mountain Drop · Meteor Belly)
+```
+Draw ONE new pose picture of the hero in the attached picture — the chubby blue-grey hippo guardian of my cute cartoon fantasy MMORPG — for one of his special moves in the game.
+
+Picture: a square picture with ONE hippo alone on a plain flat pure green background (#00FF00): no gradient, no floor, no ground line, no shadow under him, no scenery, no text, no logo, no watermark. He is turned three-quarter toward the RIGHT side of the picture (facing down and to the right), the same view angle as the attached picture, and drawn at the same scale as in the attached picture (the same head size). The whole hippo, the whole mace, the whole shield and the whole cape are inside the picture with empty background all round.
+
+Style and character exactly as in the attached picture, nothing added and nothing left out: friendly hand-painted chibi cartoon, thick clean dark-brown outlines, flat cel shading with 2–3 tones, bright and warm — not realistic, not 3D. Soft blue-grey skin, cream belly and muzzle, rosy cheeks, small round ears with pink insides, big brown eyes, two small rounded cream tusks. The gold headband with the round gold sun disc on his forehead and two small curved cream horns. The short teal cape over his shoulders, fastened on his chest by the little gold hippo-face clasp with two gold tassels, hanging down his back as a crocodile tail with rounded teal scales and a row of cream spikes. Gold armbands with a turquoise stone, wide gold wrist cuffs, a white linen kilt with a gold belt and a teal front flap with a gold wave line, gold paw-shaped anklets. The studded bronze mace (round head with gold studs and turquoise knobs, gold rings on the short handle) in his RIGHT hand, and the round shield (bronze rim with turquoise studs, teal face with a gold sun and a gold ankh) strapped to his LEFT forearm. The teal and turquoise parts stay blue-teal, never green.
+
+No effects of any kind: no motion lines, no dust, no splashes, no sparkles, no glow, no stars, no "Zzz", no sound words — the game adds its own effects.
+
+POSE — Belly Splat: the instant he lands a huge belly flop. He lies flat on his big round belly on the ground, chin on the ground, his head toward the lower right of the picture and his feet toward the upper left, arms and legs splayed out flat to the sides like a starfish, his round body squashed wide and flat like a pancake by the impact, cheeks squished, eyes squeezed shut with a proud grin. The mace is still in his right hand, lying flat on the ground beside him; the shield is still on his left forearm, lying flat. We see the top of his head, his face, and his back with the crocodile-tail cape spread over it.
+```
+#### ภาพ 2 — ม้วนเป็นลูกบอล (Rolling Hippo)
+```
+Draw ONE new pose picture of the hero in the attached picture — the chubby blue-grey hippo guardian of my cute cartoon fantasy MMORPG — for one of his special moves in the game.
+
+Picture: a square picture with ONE hippo alone on a plain flat pure green background (#00FF00): no gradient, no floor, no ground line, no shadow under him, no scenery, no text, no logo, no watermark. He is turned three-quarter toward the RIGHT side of the picture (facing down and to the right), the same view angle as the attached picture, and drawn at the same scale as in the attached picture (the same head size). The whole hippo, the whole mace, the whole shield and the whole cape are inside the picture with empty background all round.
+
+Style and character exactly as in the attached picture, nothing added and nothing left out: friendly hand-painted chibi cartoon, thick clean dark-brown outlines, flat cel shading with 2–3 tones, bright and warm — not realistic, not 3D. Soft blue-grey skin, cream belly and muzzle, rosy cheeks, small round ears with pink insides, big brown eyes, two small rounded cream tusks. The gold headband with the round gold sun disc on his forehead and two small curved cream horns. The short teal cape over his shoulders, fastened on his chest by the little gold hippo-face clasp with two gold tassels, hanging down his back as a crocodile tail with rounded teal scales and a row of cream spikes. Gold armbands with a turquoise stone, wide gold wrist cuffs, a white linen kilt with a gold belt and a teal front flap with a gold wave line, gold paw-shaped anklets. The studded bronze mace (round head with gold studs and turquoise knobs, gold rings on the short handle) in his RIGHT hand, and the round shield (bronze rim with turquoise studs, teal face with a gold sun and a gold ankh) strapped to his LEFT forearm. The teal and turquoise parts stay blue-teal, never green.
+
+No effects of any kind: no motion lines, no dust, no splashes, no sparkles, no glow, no stars, no "Zzz", no sound words — the game adds its own effects.
+
+POSE — Rolling Ball: he has curled up into a tight round ball to roll forward like a bowling ball. Knees pulled up against his belly, arms hugging his knees, head tucked down so only his eyes (squeezed shut, determined), his ears, the gold headband and his horns show on top, the crocodile-tail cape wrapped around his back like a round scaly shell, the mace hugged tight against his side, and the round shield on his left forearm pressed flat against the side of the ball like a wheel hub. The whole hippo makes ONE almost perfectly round shape with nothing sticking out (the game spins this picture to make him roll).
+```
+#### ภาพ 3 — นอนหงายหลับ (Nap)
+```
+Draw ONE new pose picture of the hero in the attached picture — the chubby blue-grey hippo guardian of my cute cartoon fantasy MMORPG — for one of his special moves in the game.
+
+Picture: a square picture with ONE hippo alone on a plain flat pure green background (#00FF00): no gradient, no floor, no ground line, no shadow under him, no scenery, no text, no logo, no watermark. He is turned three-quarter toward the RIGHT side of the picture (facing down and to the right), the same view angle as the attached picture, and drawn at the same scale as in the attached picture (the same head size). The whole hippo, the whole mace, the whole shield and the whole cape are inside the picture with empty background all round.
+
+Style and character exactly as in the attached picture, nothing added and nothing left out: friendly hand-painted chibi cartoon, thick clean dark-brown outlines, flat cel shading with 2–3 tones, bright and warm — not realistic, not 3D. Soft blue-grey skin, cream belly and muzzle, rosy cheeks, small round ears with pink insides, big brown eyes, two small rounded cream tusks. The gold headband with the round gold sun disc on his forehead and two small curved cream horns. The short teal cape over his shoulders, fastened on his chest by the little gold hippo-face clasp with two gold tassels, hanging down his back as a crocodile tail with rounded teal scales and a row of cream spikes. Gold armbands with a turquoise stone, wide gold wrist cuffs, a white linen kilt with a gold belt and a teal front flap with a gold wave line, gold paw-shaped anklets. The studded bronze mace (round head with gold studs and turquoise knobs, gold rings on the short handle) in his RIGHT hand, and the round shield (bronze rim with turquoise studs, teal face with a gold sun and a gold ankh) strapped to his LEFT forearm. The teal and turquoise parts stay blue-teal, never green.
+
+No effects of any kind: no motion lines, no dust, no splashes, no sparkles, no glow, no stars, no "Zzz", no sound words — the game adds its own effects.
+
+POSE — Nap: he lies on his back on the ground, fast asleep and happy: eyes closed, a peaceful little smile, mouth slightly open, his round belly up like a little hill, his head toward the right side of the picture and his feet toward the left, legs relaxed and a little bent with the soles of his feet showing, the crocodile-tail cape spread under him like a blanket. His left arm with the shield rests on his belly; his right arm lies relaxed on the ground with the mace loosely in his hand.
+```
+#### ภาพ 4 — งับ (อ้าปาก) (Chomp Chomp)
+```
+Draw ONE new pose picture of the hero in the attached picture — the chubby blue-grey hippo guardian of my cute cartoon fantasy MMORPG — for one of his special moves in the game.
+
+Picture: a square picture with ONE hippo alone on a plain flat pure green background (#00FF00): no gradient, no floor, no ground line, no shadow under him, no scenery, no text, no logo, no watermark. He is turned three-quarter toward the RIGHT side of the picture (facing down and to the right), the same view angle as the attached picture, and drawn at the same scale as in the attached picture (the same head size). The whole hippo, the whole mace, the whole shield and the whole cape are inside the picture with empty background all round.
+
+Style and character exactly as in the attached picture, nothing added and nothing left out: friendly hand-painted chibi cartoon, thick clean dark-brown outlines, flat cel shading with 2–3 tones, bright and warm — not realistic, not 3D. Soft blue-grey skin, cream belly and muzzle, rosy cheeks, small round ears with pink insides, big brown eyes, two small rounded cream tusks. The gold headband with the round gold sun disc on his forehead and two small curved cream horns. The short teal cape over his shoulders, fastened on his chest by the little gold hippo-face clasp with two gold tassels, hanging down his back as a crocodile tail with rounded teal scales and a row of cream spikes. Gold armbands with a turquoise stone, wide gold wrist cuffs, a white linen kilt with a gold belt and a teal front flap with a gold wave line, gold paw-shaped anklets. The studded bronze mace (round head with gold studs and turquoise knobs, gold rings on the short handle) in his RIGHT hand, and the round shield (bronze rim with turquoise studs, teal face with a gold sun and a gold ankh) strapped to his LEFT forearm. The teal and turquoise parts stay blue-teal, never green.
+
+No effects of any kind: no motion lines, no dust, no splashes, no sparkles, no glow, no stars, no "Zzz", no sound words — the game adds its own effects.
+
+POSE — Chomp: he lunges forward toward the lower right to bite: body leaning far forward, jaws open as wide as they can go (big pink mouth, both tusks showing), fierce eyebrows, the mace in his right hand and the shield on his left forearm swung back behind him, one foot stepping forward.
+```
+#### ภาพ 4b — งับ หุบปาก (แก้ภาพ 4: ระบายเฉพาะปากในตัวแก้ของ ChatGPT แล้วส่งประโยคนี้)
+```
+Close his mouth in a strong CHOMP: jaws snapped shut, cheeks puffed out, the two tusks showing at the edge of the closed mouth, fierce eyes. Change nothing else.
+```
+#### ภาพ 5 — หาว (Yawn Threat)
+```
+Draw ONE new pose picture of the hero in the attached picture — the chubby blue-grey hippo guardian of my cute cartoon fantasy MMORPG — for one of his special moves in the game.
+
+Picture: a square picture with ONE hippo alone on a plain flat pure green background (#00FF00): no gradient, no floor, no ground line, no shadow under him, no scenery, no text, no logo, no watermark. He is turned three-quarter toward the RIGHT side of the picture (facing down and to the right), the same view angle as the attached picture, and drawn at the same scale as in the attached picture (the same head size). The whole hippo, the whole mace, the whole shield and the whole cape are inside the picture with empty background all round.
+
+Style and character exactly as in the attached picture, nothing added and nothing left out: friendly hand-painted chibi cartoon, thick clean dark-brown outlines, flat cel shading with 2–3 tones, bright and warm — not realistic, not 3D. Soft blue-grey skin, cream belly and muzzle, rosy cheeks, small round ears with pink insides, big brown eyes, two small rounded cream tusks. The gold headband with the round gold sun disc on his forehead and two small curved cream horns. The short teal cape over his shoulders, fastened on his chest by the little gold hippo-face clasp with two gold tassels, hanging down his back as a crocodile tail with rounded teal scales and a row of cream spikes. Gold armbands with a turquoise stone, wide gold wrist cuffs, a white linen kilt with a gold belt and a teal front flap with a gold wave line, gold paw-shaped anklets. The studded bronze mace (round head with gold studs and turquoise knobs, gold rings on the short handle) in his RIGHT hand, and the round shield (bronze rim with turquoise studs, teal face with a gold sun and a gold ankh) strapped to his LEFT forearm. The teal and turquoise parts stay blue-teal, never green.
+
+No effects of any kind: no motion lines, no dust, no splashes, no sparkles, no glow, no stars, no "Zzz", no sound words — the game adds its own effects.
+
+POSE — Big Yawn: he stands and gives a giant lazy yawn. Head tilted back, mouth stretched open as wide as it can go (big pink mouth, both tusks showing), eyes squeezed shut with a tiny tear in each corner, his right arm with the mace stretched straight up above his head, his left arm with the shield stretched out to the side, belly pushed out, feet planted a little apart.
+```
+#### ภาพ 6 — กินแตงโม (Feast)
+```
+Draw ONE new pose picture of the hero in the attached picture — the chubby blue-grey hippo guardian of my cute cartoon fantasy MMORPG — for one of his special moves in the game.
+
+Picture: a square picture with ONE hippo alone on a plain flat pure MAGENTA background (#FF00FF) — magenta, not green, because the watermelon has a green rind: no gradient, no floor, no ground line, no shadow under him, no scenery, no text, no logo, no watermark. He is turned three-quarter toward the RIGHT side of the picture (facing down and to the right), the same view angle as the attached picture, and drawn at the same scale as in the attached picture (the same head size). The whole hippo, the whole mace, the whole shield and the whole cape are inside the picture with empty background all round.
+
+Style and character exactly as in the attached picture, nothing added and nothing left out: friendly hand-painted chibi cartoon, thick clean dark-brown outlines, flat cel shading with 2–3 tones, bright and warm — not realistic, not 3D. Soft blue-grey skin, cream belly and muzzle, rosy cheeks, small round ears with pink insides, big brown eyes, two small rounded cream tusks. The gold headband with the round gold sun disc on his forehead and two small curved cream horns. The short teal cape over his shoulders, fastened on his chest by the little gold hippo-face clasp with two gold tassels, hanging down his back as a crocodile tail with rounded teal scales and a row of cream spikes. Gold armbands with a turquoise stone, wide gold wrist cuffs, a white linen kilt with a gold belt and a teal front flap with a gold wave line, gold paw-shaped anklets. The studded bronze mace (round head with gold studs and turquoise knobs, gold rings on the short handle) in his RIGHT hand, and the round shield (bronze rim with turquoise studs, teal face with a gold sun and a gold ankh) strapped to his LEFT forearm. The teal and turquoise parts stay blue-teal, never green.
+
+No effects of any kind: no motion lines, no dust, no splashes, no sparkles, no glow, no stars, no "Zzz", no sound words — the game adds its own effects.
+
+POSE — Feast: he stands happily eating a whole watermelon: with his left hand (the shield stays on that forearm) he holds a big round watermelon, cut open with juicy red flesh and black seeds, up to his wide-open mouth and takes a huge bite, cheeks bulging, eyes closed with delight; his right hand rests the mace on his shoulder; his belly is round and full.
+```
+#### ภาพ 7 — เรอ (Burp Cannon)
+```
+Draw ONE new pose picture of the hero in the attached picture — the chubby blue-grey hippo guardian of my cute cartoon fantasy MMORPG — for one of his special moves in the game.
+
+Picture: a square picture with ONE hippo alone on a plain flat pure green background (#00FF00): no gradient, no floor, no ground line, no shadow under him, no scenery, no text, no logo, no watermark. He is turned three-quarter toward the RIGHT side of the picture (facing down and to the right), the same view angle as the attached picture, and drawn at the same scale as in the attached picture (the same head size). The whole hippo, the whole mace, the whole shield and the whole cape are inside the picture with empty background all round.
+
+Style and character exactly as in the attached picture, nothing added and nothing left out: friendly hand-painted chibi cartoon, thick clean dark-brown outlines, flat cel shading with 2–3 tones, bright and warm — not realistic, not 3D. Soft blue-grey skin, cream belly and muzzle, rosy cheeks, small round ears with pink insides, big brown eyes, two small rounded cream tusks. The gold headband with the round gold sun disc on his forehead and two small curved cream horns. The short teal cape over his shoulders, fastened on his chest by the little gold hippo-face clasp with two gold tassels, hanging down his back as a crocodile tail with rounded teal scales and a row of cream spikes. Gold armbands with a turquoise stone, wide gold wrist cuffs, a white linen kilt with a gold belt and a teal front flap with a gold wave line, gold paw-shaped anklets. The studded bronze mace (round head with gold studs and turquoise knobs, gold rings on the short handle) in his RIGHT hand, and the round shield (bronze rim with turquoise studs, teal face with a gold sun and a gold ankh) strapped to his LEFT forearm. The teal and turquoise parts stay blue-teal, never green.
+
+No effects of any kind: no motion lines, no dust, no splashes, no sparkles, no glow, no stars, no "Zzz", no sound words — the game adds its own effects.
+
+POSE — Burp Blast: he lets out a huge burp: leaning forward from the hips toward the lower right, mouth wide open and pushed forward, cheeks and belly puffed out round, eyes squeezed shut, ears blown back, both arms swung back behind him (the mace in his right hand, the shield on his left forearm), knees bent, feet planted firmly.
+```
+#### ภาพ 8 — ยกขากระทืบ (Ground Pound)
+```
+Draw ONE new pose picture of the hero in the attached picture — the chubby blue-grey hippo guardian of my cute cartoon fantasy MMORPG — for one of his special moves in the game.
+
+Picture: a square picture with ONE hippo alone on a plain flat pure green background (#00FF00): no gradient, no floor, no ground line, no shadow under him, no scenery, no text, no logo, no watermark. He is turned three-quarter toward the RIGHT side of the picture (facing down and to the right), the same view angle as the attached picture, and drawn at the same scale as in the attached picture (the same head size). The whole hippo, the whole mace, the whole shield and the whole cape are inside the picture with empty background all round.
+
+Style and character exactly as in the attached picture, nothing added and nothing left out: friendly hand-painted chibi cartoon, thick clean dark-brown outlines, flat cel shading with 2–3 tones, bright and warm — not realistic, not 3D. Soft blue-grey skin, cream belly and muzzle, rosy cheeks, small round ears with pink insides, big brown eyes, two small rounded cream tusks. The gold headband with the round gold sun disc on his forehead and two small curved cream horns. The short teal cape over his shoulders, fastened on his chest by the little gold hippo-face clasp with two gold tassels, hanging down his back as a crocodile tail with rounded teal scales and a row of cream spikes. Gold armbands with a turquoise stone, wide gold wrist cuffs, a white linen kilt with a gold belt and a teal front flap with a gold wave line, gold paw-shaped anklets. The studded bronze mace (round head with gold studs and turquoise knobs, gold rings on the short handle) in his RIGHT hand, and the round shield (bronze rim with turquoise studs, teal face with a gold sun and a gold ankh) strapped to his LEFT forearm. The teal and turquoise parts stay blue-teal, never green.
+
+No effects of any kind: no motion lines, no dust, no splashes, no sparkles, no glow, no stars, no "Zzz", no sound words — the game adds its own effects.
+
+POSE — Sumo Stomp: he stands on one leg like a sumo wrestler about to stomp the ground: the leg nearer to us lifted high out to the side, knee bent, the foot up at belly height; his body leans over the standing leg for balance; both arms spread wide (the mace in his right hand, the shield on his left forearm); belly puffed out; a fierce but cute grin.
+```
+#### ภาพ 9 — ปาโคลน (Mud Ball)
+```
+Draw ONE new pose picture of the hero in the attached picture — the chubby blue-grey hippo guardian of my cute cartoon fantasy MMORPG — for one of his special moves in the game.
+
+Picture: a square picture with ONE hippo alone on a plain flat pure green background (#00FF00): no gradient, no floor, no ground line, no shadow under him, no scenery, no text, no logo, no watermark. He is turned three-quarter toward the RIGHT side of the picture (facing down and to the right), the same view angle as the attached picture, and drawn at the same scale as in the attached picture (the same head size). The whole hippo, the whole mace, the whole shield and the whole cape are inside the picture with empty background all round.
+
+Style and character exactly as in the attached picture, nothing added and nothing left out: friendly hand-painted chibi cartoon, thick clean dark-brown outlines, flat cel shading with 2–3 tones, bright and warm — not realistic, not 3D. Soft blue-grey skin, cream belly and muzzle, rosy cheeks, small round ears with pink insides, big brown eyes, two small rounded cream tusks. The gold headband with the round gold sun disc on his forehead and two small curved cream horns. The short teal cape over his shoulders, fastened on his chest by the little gold hippo-face clasp with two gold tassels, hanging down his back as a crocodile tail with rounded teal scales and a row of cream spikes. Gold armbands with a turquoise stone, wide gold wrist cuffs, a white linen kilt with a gold belt and a teal front flap with a gold wave line, gold paw-shaped anklets. The studded bronze mace (round head with gold studs and turquoise knobs, gold rings on the short handle) in his RIGHT hand, and the round shield (bronze rim with turquoise studs, teal face with a gold sun and a gold ankh) strapped to his LEFT forearm. The teal and turquoise parts stay blue-teal, never green.
+
+No effects of any kind: no motion lines, no dust, no splashes, no sparkles, no glow, no stars, no "Zzz", no sound words — the game adds its own effects.
+
+POSE — Mud Throw: he has just flung a ball of mud overhand toward the lower right: leaning forward, his left arm (shield on the forearm) swung forward and down after the throw with the hand open, his right arm with the mace pulled back for balance, one foot stepping forward, a cheeky grin. No mud ball in the picture — only the throwing pose.
+```
+#### ภาพ 10 — สะบัดตัว (Mud Splash)
+```
+Draw ONE new pose picture of the hero in the attached picture — the chubby blue-grey hippo guardian of my cute cartoon fantasy MMORPG — for one of his special moves in the game.
+
+Picture: a square picture with ONE hippo alone on a plain flat pure green background (#00FF00): no gradient, no floor, no ground line, no shadow under him, no scenery, no text, no logo, no watermark. He is turned three-quarter toward the RIGHT side of the picture (facing down and to the right), the same view angle as the attached picture, and drawn at the same scale as in the attached picture (the same head size). The whole hippo, the whole mace, the whole shield and the whole cape are inside the picture with empty background all round.
+
+Style and character exactly as in the attached picture, nothing added and nothing left out: friendly hand-painted chibi cartoon, thick clean dark-brown outlines, flat cel shading with 2–3 tones, bright and warm — not realistic, not 3D. Soft blue-grey skin, cream belly and muzzle, rosy cheeks, small round ears with pink insides, big brown eyes, two small rounded cream tusks. The gold headband with the round gold sun disc on his forehead and two small curved cream horns. The short teal cape over his shoulders, fastened on his chest by the little gold hippo-face clasp with two gold tassels, hanging down his back as a crocodile tail with rounded teal scales and a row of cream spikes. Gold armbands with a turquoise stone, wide gold wrist cuffs, a white linen kilt with a gold belt and a teal front flap with a gold wave line, gold paw-shaped anklets. The studded bronze mace (round head with gold studs and turquoise knobs, gold rings on the short handle) in his RIGHT hand, and the round shield (bronze rim with turquoise studs, teal face with a gold sun and a gold ankh) strapped to his LEFT forearm. The teal and turquoise parts stay blue-teal, never green.
+
+No effects of any kind: no motion lines, no dust, no splashes, no sparkles, no glow, no stars, no "Zzz", no sound words — the game adds its own effects.
+
+POSE — Wet Shake: he shakes his whole body like a wet dog: feet apart, his body twisted in the middle of the shake, head and ears flung to one side, cheeks and belly wobbling, eyes squeezed shut, the crocodile-tail cape flung out to the other side, arms loose and flopping (the mace in his right hand, the shield on his left forearm).
+```

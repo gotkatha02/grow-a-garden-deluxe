@@ -11,6 +11,8 @@
 
 **เลือกแล้ว 2026-11-24 20:28: แบบ 1 ทายาทเฟนรีร์** ("เอาอันนี้ เก็บภาพซ้ายไว้ด้วย จะเอาไปทำภาพในหน้าเลือกตัวละคร") → ชีต `assets/heroes/wolf/sheet_fenrir_heir.webp` · ภาพใหญ่ด้านซ้ายตัดพื้นออกแล้ว `assets/heroes/wolf/bigpose_fenrir_heir.webp` และเป็นภาพหน้าเลือกตัวแล้ว (`select.webp`) · หน้าตา + พรอมต์ภาพยืน 5 มุม: หัวข้อ 'เลือกแล้ว' ท้ายไฟล์ · คลิปท่า 20 ตัว: `WOLF_CLIP_PROMPTS_TH.md` · ภาพยืน 5 มุมครบแล้ว (20:50 สี่มุม + 20:57 มุมเฉียงหลัง → `assets/heroes/wolf/view_S|SE|E|NE|N.webp`) · ภาพตั้งต้นส่งครบ 5 ทิศแล้ว → รอคลิป 20 อัน · **ร่างชิบิ 2026-11-25 11:10:** เจ้าของวาดชุดเดิมใหม่เป็นสัดส่วนชิบิ (`assets/heroes/wolf/sheet_fenrir_chibi.webp`) → พรอมต์ภาพยืน 5 มุมเว้นที่ว่างไว้ทำอนิเมชัน: หัวข้อ 'ร่างชิบิ' ท้ายไฟล์
 
+**ลอง 2.5D แบบ Ragnarok 3 (2026-11-26 07:39):** เจ้าของอยากลองให้หมาป่าดูเป็นโมเดล 3D มองจากด้านบนแบบ RO3 โดยใช้ร่างทายาทเฟนรีร์ตัวโต (ไม่ใช่ชิบิ) → ส่งกล่องรูปทดสอบ 1 รูปในแชตแล้ว รอรูป + รอเลือกทาง (ภาพ → คลิป หรือโมเดล 3D จริง): หัวข้อ 'ลอง 2.5D แบบ Ragnarok 3' ท้ายไฟล์
+
 **ชุดขั้น 2 แยกสาย A / B (2026-11-25 12:03):** เจ้าของขอชุดเลื่อนขั้นตามสาย → 4 แบบ (A1 ผู้คลั่งศึกแห่งวัลฮัลลา · A2 นักล่าจันทร์เลือด · B1 ปราชญ์รูนพายุ · B2 กวีอัสนี) ส่งกล่องพรอมต์ในแชตแล้ว รอภาพ: หัวข้อ 'ชุดขั้น 2' ท้ายไฟล์
 
 ## หมาป่าผูกกับลุคเดิมมากกว่าทุกตัว
@@ -516,3 +518,39 @@ Rules: no green anywhere on him. Head, ears and face always visible — no helme
 - ตำแหน่งหัวขวานที่เอฟเฟกต์ตาม (cliphero 'axe') ตอนนี้หาจากรูนสีฟ้าบนใบขวาน → ชุด A รูนแดง / ทอง ต้องตั้งสีให้ตัวหา (หรือใช้ axeFix) · ชุด B ใช้ได้เลย
 - หน้าในช่อง HUD / ภาพหน้าเลือกตัวตามสาย (ถ้าต้องการ) · ไอคอนสกิล / ภาพพื้นหลังต้นไม้สกิล ยังเป็นร่างเก่า
 - ข้อความพรอมต์มาจาก `/home/claude/work/wolft2/prompts.py` (ไม่อยู่ใน repo) — แก้ในไฟล์นี้ตรง ๆ ได้
+
+## ลอง 2.5D แบบ Ragnarok 3 (2026-11-26 07:39)
+เจ้าของ: "อยากลองปรับสไปร้หมาป่าใหม่ให้เป้นแบบ2.5d แบบเกมแรคนารอค3" → 07:47 "รูปหมาป่าใช้แบบเก่าก่อนไม่ใช่จิบิ" = ใช้ร่างทายาทเฟนรีร์ตัวโต (ตัวที่อยู่ในเกมตอนนี้ `view_*.webp` + `sheet_fenrir_heir.webp`) ไม่ใช่ร่างชิบิ
+
+**Ragnarok 3 ทำ 2.5D ยังไง** (ค้นข่าว 2026-11-26): เดโมปี 2024 ยังเป็นฉาก 3D + ตัวละคร 2D ลายพิกเซล แต่ตัวอย่างเกมเพลย์ 2025 และเทสต์ปี 2026 เปลี่ยนตัวละครเป็นโมเดล 3D ความละเอียดสูงแทนพิกเซล เรนเดอร์ให้ดูเหมือนวาดมือ (เส้นขอบลายมือ + แสงเงาการ์ตูนย้อนยุค) กล้องมองจากด้านบนตายตัวแบบ RO1 = **ตัวละครเป็นโมเดล 3D แต่หน้าตาเหมือนภาพวาดการ์ตูน มองจากด้านบน** (ข่าว: Game Watch, 4Gamers TW, ifeng, 17173, Tribune)
+- เกมเราตอนนี้ = ภาพ 2D ที่ตัดจากคลิปวีดีโอ ตัวแบน ๆ มองระดับสายตา → จะให้เหมือน RO3 ภาพต้องดูเป็นโมเดล 3D (มีมิติ แสงมาทางเดียว) + เส้นขอบแบบวาดมือ + มุมกล้องสูงขึ้น
+
+### ขั้น 1 — รูปทดสอบ 1 รูป (ส่งในแชตแล้ว 2026-11-26)
+แนบ 2 รูปไปกับกล่องนี้: ภาพยืนมุมเฉียงหน้าเดิม (`view_SE.webp`, ส่งให้เป็น `wolf_ref_view_SE.jpg`) + ชีตทายาทเฟนรีร์ (`wolf_ref_sheet.jpg`) · ไม่แนบภาพหน้าโหลด (มันจะดึงกลับไปเป็นภาพวาด 2D)
+```
+Redraw the white wolf warrior from the attached pictures as a 2.5D game character: the same character, outfit, colours and standing pose as the attached standing picture, but rendered like a stylized 3D game model seen from the fixed camera of a top-down MMORPG.
+
+The look: a real 3D model with solid volume and depth — rounded forms that clearly turn in space (muzzle, cheeks, fluffy chest fur, arms, fists, boots, the big tail) — rendered with a toon shader that imitates hand-drawn art: clean dark-brown hand-drawn-looking outlines around the silhouette and the main shapes, soft cel shading in 2–3 tones that follows the 3D forms, one warm key light from the upper left with a soft cool shadow side, and a thin bright rim light along the edges. Matte painted textures that read clearly: soft fluffy fur strands, cloth weave on the tunic and cape, worn brown leather, brushed steel on the axe, the cuff and the chain. Warm, slightly retro storybook colours. It must look like a 3D model, not a flat 2D drawing — but not photorealistic, not glossy plastic and not a painting. Keep his body proportions exactly as in the pictures.
+
+Camera: looking down at him from about 30 degrees above, with no perspective distortion (no fisheye): we see a little of the top of his head, his ears and his shoulders, and his boots are slightly foreshortened.
+
+View: FRONT THREE-QUARTER view, exactly like the attached standing picture — turned toward the RIGHT side of the picture, facing down and to the right. Standing tall in a firm, ready stance, feet about shoulder-width apart; the greataxe upright in his right hand on the left side of the picture, in front of him, the pointed silver end of the haft on the ground and the axe head at the height of his head; his left fist with the broken chain on the right side, partly behind his body, with the wolf-head pauldron on that far shoulder; his bushy tail curving out behind him on the left side; mouth closed, calm and confident.
+
+His look, nothing added and nothing left out: a white wolf with a full wolf head — a strong muzzle, a black nose, bright ice-blue eyes under strong brows, a red scar slash through the brow above his RIGHT eye, upright pointed ears with grey-lavender insides; snow-white fur with soft lavender-grey shading, spiky fur on his head and cheeks, and a thin white braid with two small silver rings hanging behind his RIGHT ear. A thick cream-white fur collar on a crimson fur-lined cape that covers both shoulders and reaches the middle of his back, edged with white fur, fastened with a round silver knotwork brooch on his chest. On his LEFT shoulder a dark-steel pauldron shaped like a snarling wolf head with ice-blue eyes. A sleeveless deep-navy tunic with a silver Norse knotwork band down the front, split into two front panels ending at mid-thigh with silver knotwork borders over a crimson underlayer. A brown leather belt with a big round silver knotwork buckle. Bare white-furred arms with dark brown leather bracers; on his LEFT wrist a steel cuff with a broken chain of four heavy steel links. Big white fists. Baggy charcoal-black trousers; dark brown leather boots with thick white fur cuffs below the knee and crisscross brown straps. A huge bushy white tail. His Viking greataxe, almost as tall as he is: a dark crimson haft wrapped with dark straps and silver bands, a pointed silver end at the bottom, a steel cap on top, and a broad silver-steel crescent blade carved with a snarling dark-iron wolf head with ice-blue eyes and a thin ice-blue rune line along its edge. The whole axe is visible and never covers his face.
+
+ONE square picture with only this one wolf on a plain flat pure green background (#00FF00): no gradient, no floor, no shadow under him, no other views, no text, no logo, no frame. From the tips of his ears to the soles of his boots he fills about three quarters of the picture's height; the whole axe, both ears and his whole tail inside the picture with green space all round. No green anywhere on him (his blues are navy and ice blue). No glow around him, no runes in the air, no ice, no lightning, no sparkles, no motion lines, no effects.
+```
+
+แก้รูป (ส่งต่อท้ายในแชตเดิม):
+- ยังแบนเหมือนภาพวาด → `Redo: make him look more like a 3D game model — stronger rounded volume and soft 3D shading on every part, keep the clean hand-drawn outlines.`
+- มันวาว เหมือนจริงไป เหมือนตุ๊กตาพลาสติก → `Redo: less realistic and less glossy — matte painted textures, simple soft toon shading, clean hand-drawn outlines.`
+- อยากได้มุมกล้องระดับสายตาแบบเดิม → `Redo: the same picture, but with the camera at his eye level, not from above.`
+- อยากให้มองจากบนสูงกว่านี้ → `Redo: the camera higher, looking down at him from about 45 degrees.`
+- แผลเป็น / โซ่ผิดข้าง → `Redo: the scar is over his RIGHT eye and the broken chain hangs from his LEFT wrist, as in the attached pictures.` (หรือใช้แปรงเลือกเฉพาะจุด)
+
+### ถ้าชอบลุค ทำต่อได้ 2 ทาง (รอเจ้าของเลือก)
+1. **ภาพ → คลิป (ทางเดิม):** เจนอีก 4 มุม (S E NE N) แนวเดียวกัน มุมกล้องเดียวกัน → ภาพตั้งต้น `tools/dir8cut.py startv` → คลิป 20 ตัว (`tools/clip_prompts.py` รายการ 'wolf' เติมประโยคสไตล์ 2.5D + มุมกล้อง) → `cliphero.py` + `wolf_plan.json` เวลาเฟรมเท่าเดิม → `headtrack.py` · ปัญหาเดิมของคลิปยังอยู่ (หลับตาตอนยืน เอฟเฟกต์ติดมาตอนฟัน กล้องซูม คลิปขาด)
+2. **โมเดล 3D จริง (แบบที่ RO3 ทำ):** เจ้าของเอาภาพยืน 5 มุมเดิม (`view_*.webp`) ไปทำโมเดลในเว็บสร้างโมเดล 3D จากรูปหลายมุม (Meshy / Tripo) → ใส่โครงกระดูกอัตโนมัติ + เลือกท่าจากคลังท่า (ยืน เดิน ฟันขวานสองมือ ชูขวาน) → ส่งออก GLB → ผมเรนเดอร์เป็นสไปร์เองจากมุมกล้องเกม
+   - เช็คแล้ว 2026-11-26: Chromium ของ Playwright ในเครื่องทำงานมี WebGL2 (llvmpipe) · three.js 0.187.0 ลงจาก npm ได้ → เรนเดอร์ 3D แบบไม่มีจอได้
+   - ตัวเรนเดอร์ที่ต้องเขียน: กล้อง orthographic เงย 30° (ค่าเดียวกับรูปทดสอบที่ผ่าน) · 8 ทิศจริง (ไม่กลับด้าน → แผลเป็น / โซ่ / ขวานอยู่ถูกข้างทุกทิศ; ต้องแก้ index.html ให้ใช้ภาพทิศ SW / W / NW ของตัวเองเมื่อมีใน atlas) · toon 3 โทน + เส้นขอบ (ทำบนภาพที่เรนเดอร์จาก depth / normal จะทนรอยต่อ UV กว่า inverted hull) · แสงซ้ายบนให้ตรงกับเงาในแผนที่ · เวลาเฟรมทุกท่า / ทิศคัดลอกจาก `assets_wolf.js` (ดาเมจ / จังหวะไม่เปลี่ยน) · เขียน atlas รูปแบบเดียวกับ cliphero (cell, pivot, META) แล้วสลับด้วย flag
+   - ขวาน: ทำโมเดลตัวแบบไม่ถือขวาน (ท่า A-pose ให้ใส่กระดูกง่าย) + ขวานเป็นโมเดลแยก แล้วผมติดกับกระดูกมือเอง → ขวานไม่บิดตามแขน และเปลี่ยนอาวุธ / ติดแฟชั่น (หมวก ปีก) กับกระดูกได้ทีหลัง
