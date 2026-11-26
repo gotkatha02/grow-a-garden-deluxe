@@ -215,3 +215,72 @@ A mix of the sheets you drew in this chat: the fur, face and eyes of "Odd-Eyed R
    - socket ท่าตี = ปลายดาบ (head) + ด้าม (grip) · มิเรอร์ SW / W / NW จาก SE / E / NE เหมือนเดิม
 4. งานที่ตามมา: จับจุดหัว (`tools/headtrack.py`) แทนตาราง `HAT` ของ `cat_mask.js` → หน้ากากตอนสวม + ปีกแฟชั่นตามหัวใหม่ · ภาพหน้ากากบนหน้า 5 มุม · ท่านั่ง 8 มุม · หน้า HUD (`window.HUD_FACE`)
 5. ทีหลัง: ไอคอน 64 + บัฟ 12 · ผังสกิล 4 ภาพ · ภาพหน้าโหลด ld1 ld3 ld5 ld6 ld8
+
+## เลือกแล้ว: แบบ 3 "พายุนกนางแอ่น" → ทำเป็นเนโกะมาตะ (2026-11-26 19:38)
+
+เจ้าของส่งชีตแบบ 3 กลับมา + "อยากได้ตัวนี้แต่เป็นเนโกะมาตะ" → คงทุกอย่างตามภาพ เปลี่ยนแค่**หางเป็นสองหาง** (เนโกะมาตะ = แมวที่อายุยืนจนหางแยกเป็นสอง กลายเป็นปีศาจแมวหลายชีวิต) · ชีตเก็บไว้ที่ `assets/heroes/cat/sheet_swallow_gale.webp`
+
+**เข้ากับเกมอยู่แล้ว:** สาย C ของแมวชื่อ **Two-Tailed Ronin** · สกิล C **Nekomata Roll** · สกิลพื้นฐาน **Nine Lives** → ไม่ต้องเปลี่ยนชื่อสกิล · ชื่อหน้าเลือกตัว "Ronin Cat · Samurai" ใช้ต่อได้ (หัวไฟล์ char_cat.js ยังเขียน "WHITE RONIN · Shiro" เป็นแค่คอมเมนต์)
+
+**ข้อความกล่องสร้างจาก** `/home/claude/work/catneko/py/neko.py` (ไม่อยู่ใน repo)
+
+### หน้าตาตามที่วาด (ใช้ในพรอมต์ต่อๆ ไป)
+- แมวส้มลายเสือ ลายส้มเข้มบนหัว แก้ม แขน หลัง · แก้ม ปาก คาง อุ้งเท้าขาว · ตาอำพันทองโต · ผมส้มฟูชี้บนหัว · ยิ้มมั่นใจ (เห็นเขี้ยวเล็กตอนยิ้มกว้าง)
+- หน้ากากจิ้งจอกขาวลายแดงอยู่บนหัว เอียงไปทางหูขวา ทับคาดหัวเชือกแดงบิด · พู่แดงลูกปัดทอง 2 พู่ห้อยข้างแก้มขวา (ท่ายืนหน้า = ซ้ายของภาพ)
+- ผ้าพันคอครีม ปลายยาวปลิว ปลายสีม่วงพลัมลายวงครีม
+- ฮาโอริม่วงพลัมแขนกว้าง ซับแดง ลายนกนางแอ่นทองบิน แถบลายคลื่นครีมที่ชายเสื้อและปลายแขน · คอกิโมโนครีมข้างใน
+- เข็มขัดเชือกทองบิด โบว์เชือกแดง พู่ทองห้อยหน้า
+- ฮากามะน้ำตาลเข้มพองยาวครึ่งน่อง · ผ้าพันแข้งม่วงพลัม · เท้าขาวในรองเท้าฟาง สายม่วง
+- คาตานะเล่มเดียวที่**สะโพกซ้าย** ด้ามชี้ไปหน้าเฉียงขึ้น: ฝักดำเงา ข้อต่อทอง นกนางแอ่นทองเล็ก · เชือกแดงผูกโบว์ พู่แดงที่ปากฝัก · กระบังทองรูปนกนางแอ่นกางปีก · ด้ามพันครีมลายข้าวหลามตัดม่วง
+- งอบฟางกลมที่หลัง เชือกแดงเข้ม ปมแดงตรงกลาง พู่แดง 2 พู่ (มองจากหลังเห็นงอบเต็มแผ่นหลัง)
+- หางเดิม 1 หาง ยาวฟู ลายวงส้มสลับครีม ปลายครีม
+- ชีตนี้ออกมาแนวภาพประกอบ 2D ลงเงานุ่ม ยังไม่เป็นโมเดล 3 มิติเท่าหมาป่า 2.5D → ตอนทำภาพยืน 5 มุมจะดันเป็น 2.5D (แนบ `style_ref_wolf25.jpg` แบบจากัวร์)
+
+### สิ่งที่เปลี่ยน: หางสองหาง
+- งอกจากโคนเดียวกันที่ก้นกบ แยกเป็นรูปตัว V ตรงโคน · ยาวเท่าหางเดิมแต่เรียวกว่านิด ขนนุ่ม ลายวงส้มสลับครีม ปลายครีม · เป็นหางแมวที่ขยับแยกกัน ไม่ฟูใหญ่แบบหางจิ้งจอก (กันซ้ำจิ้งจอกเก้าหาง) · สองหางพอดี ไม่เกิน
+- เห็นครบทั้งสองหางทุกท่า ไม่โดนงอบ ผ้าพันคอ หรือขาบัง: ภาพใหญ่ = สะบัดขึ้นเป็นตัว V หางบนหางล่าง · ท่ายืนหน้า = ม้วนออกข้างขาข้างละหาง · ท่ายืนข้าง = หางหนึ่งม้วนสูงข้างหลัง อีกหางม้วนต่ำหลังขา · ท่ายืนหลัง = เห็นโคนแยกเป็นตัว V ใต้งอบ ม้วนออกซ้ายขวา · ท่าสู้ = สะบัดแยกกัน
+
+### วิธีทำ
+**วิธี ก (แนะนำ) — แปรงเลือกทีละตัว** คงภาพที่เลือกไว้ทุกอย่าง: ในแชต ChatGPT ที่วาดชีตนี้ กดแก้ภาพแบบเลือกพื้นที่ ทาเฉพาะ**หางเดิมรวมพื้นที่ว่างที่หางที่สองจะงอกไป** แล้ววางกล่องนี้ · ทำทีละตัว 4 ตัว:
+1. ภาพใหญ่ซ้าย — หางเดิม + พื้นที่ว่างรอบหาง (ด้านหลังซ้ายของตัว)
+2. ท่ายืนหน้า — หางล่างซ้าย + พื้นที่ว่างข้างขาฝั่งขวาของภาพ (ใต้ปลายผ้าพันคอ)
+3. ท่ายืนข้าง — หางหลังขา + พื้นที่ว่างข้างหลังขึ้นไปถึงขอบงอบ
+4. ท่ายืนหลัง — หางล่างขวา + พื้นที่ว่างฝั่งซ้ายของขา
+- ท่าสู้ 2 ตัวไม่จำเป็น (ใช้แค่ดูไอเดีย) · ทำแล้วก็ทาหางเดิม + พื้นที่ข้างหลังแบบเดียวกัน
+
+```
+Edit only the area I selected, in exactly the same art style, colours, line weight and soft cream background as the rest of the picture. This cat is a NEKOMATA, a Japanese cat spirit, so give him TWO tails instead of one: both grow from the same base at the bottom of his back and split apart in a clear V, each as long as his current tail and a little slimmer, with the same soft fur, the same warm orange and cream rings and a cream tip. Lively cat tails that move separately - exactly two, not big bushy fox tails. Both tails fully visible, not hidden behind the straw hat or his legs. Keep everything else exactly as it is: his face, the fox mask, the scarf, the jacket, the katana and the straw hat do not change. No text, no letters.
+```
+
+**วิธี ข — ให้วาดใหม่ทั้งแผ่น** ครั้งเดียวจบ แต่หน้า / ชุดอาจเพี้ยนไปนิด: แนบชีตนี้แล้วส่งกล่องนี้ (แชตเดิมหรือแชตใหม่ก็ได้)
+
+```
+Redraw the attached character sheet of my game hero, the Ronin Cat, with ONE change - everything else stays exactly the same.
+
+STYLE: exactly the same art style, rendering, line weight, colours and chibi proportions (about three heads tall) as the attached sheet. No text, no labels, no names, no logo, no watermark.
+
+SHEET: ONE wide image 1536x1024 on the same plain soft cream background, in the same layout and the same poses: LEFT HALF - the big draw-dash pose (leaning forward low, mid-stride, right hand on the hilt starting to draw, the scarf and the jacket streaming back). TOP RIGHT - the turnaround standing neutral, katana sheathed and straw hat on his back: front, side facing right, back, all the same height. BOTTOM RIGHT - the two action poses: a fast, low, rising iaido cut with a pale wind crescent and pink cherry petals; a heavy two-handed overhead cleave into the ground with cracks and a crimson fire oni spirit behind him.
+
+THE HERO (keep exactly as drawn): A ginger tabby cat: warm orange fur with darker orange stripes on his head, cheeks, arms and back; white cheeks, muzzle and chin and white paws; big amber-gold eyes; a spiky ginger mane on top of his head; a confident grin. The white fox mask with red markings sits on top of his head, tilted toward his right ear, over a twisted red rope headband; two red tassels on gold beads hang beside his right cheek. A cream scarf wrapped round his neck, its long ends trailing behind (cream with plum-purple ends and cream swirls). A deep plum-purple haori jacket with wide sleeves, a crimson lining, small flying gold swallows and a band of cream wave swirls at the hem and the sleeve ends; a cream kimono collar under it. A twisted gold rope belt with a red cord bow and a gold tassel at the front. Puffy dark-brown hakama trousers to mid-calf, plum shin wraps, white feet in straw sandals with plum straps. ONE katana on his LEFT hip, hilt forward and up: a glossy black lacquered sheath with gold fittings and a small gold swallow, a red cord tied in a bow with red tassels near its mouth, a gold guard shaped like a swallow with spread wings, a cream hilt wrap with plum diamonds. On his back a round straw kasa hat on a dark red cord, a dark red knot in its middle and two red tassels hanging (from behind it covers his back).
+
+THE CHANGE: He is a NEKOMATA: in Japanese legend, a cat that lives long enough grows a second tail and becomes a cat spirit with many lives. So he has TWO tails instead of one. Both grow from the same base at the bottom of his back and split apart right there in a clear V. Each tail is as long as his old tail and a little slimmer, with the same soft fur and the same pattern: warm orange and cream rings and a cream tip. They are lively cat tails that move separately - not big bushy fox tails (he must not look like a nine-tailed fox) - and there are exactly two, never three or more. In every figure both tails are fully visible, not hidden behind the straw hat, the scarf or his legs: in the big pose they flick up and out behind him in a V, one high and one low; in the front view one tail curls out beside each leg; in the side view one tail curls up high behind his back and the other curls low behind his legs; in the back view the V split shows clearly below the straw hat, one tail curling out to each side; in the two action poses the tails whip apart.
+
+Keep the rules: only ONE katana, on his LEFT hip; his head, face and both ears always visible (no hat on his head, the mask never over his face in the standing views); no green, teal or jade anywhere; no letters, kanji or words anywhere.
+```
+
+**เพิ่มได้ (ต่อท้ายกล่องไหนก็ได้):**
+- กระดิ่งทองที่โคนหาง → `Add a small gold bell on a red cord tied where his two tails split.`
+- ไฟผีแดงที่ปลายหาง เฉพาะท่าสู้ → `In the two action poses only, a small crimson ghost flame flickers at the tip of each tail.` (ห้ามใส่ในท่ายืน เพราะท่ายืนจะเอาไปทำคลิปตัดพื้นเขียว)
+
+**ประโยคแก้ภาพ (ต่อท้ายแล้วส่ง):**
+- ยังมีหางเดียว / หางหายไปหลังงอบหรือขา → `He must have TWO tails, both fully visible, splitting from one base in a clear V.`
+- หางเกินสอง → `Exactly two tails, no more.`
+- หางฟูเหมือนจิ้งจอก → `Slimmer cat tails with warm orange and cream rings and a cream tip, not big bushy fox tails.`
+- หางงอกคนละที่ → `Both tails grow from the same base at the bottom of his back.`
+- หน้า / ชุด / ดาบเปลี่ยนไป (วิธี ข) → `Keep his face, outfit, colours and katana exactly like the attached sheet; only the tails change.`
+
+### ต่อจากนี้
+1. ได้ชีตเนโกะมาตะ → ภาพใหญ่ไปหน้าเลือกตัว (`tools/bigpose_cut.py` → `tools/select_cut.py`, `SELV.cat` 2)
+2. พรอมต์ภาพยืน 2.5D 5 มุมบนพื้นเขียว (แนบชีตเนโกะมาตะ + `style_ref_wolf25.jpg`) บอกทุกมุมว่าหางสองหาง หน้ากาก ฝักดาบ งอบ อยู่ตรงไหน
+3. คลิป `cat25` ตามหัวข้อ "เลือกแล้วทำอะไรต่อ" ข้างบน · ทุกคลิปต้องบอกให้คง "both tails" ไว้
+4. ไอเดียเก็บไว้: สาย C ชื่อ Two-Tailed Ronin → ทำแบบหางเดียวตอนต้น แล้วงอกหางที่สองเมื่อปลดสาย C ได้ (ต้องมีสไปร์ทสองชุด)
