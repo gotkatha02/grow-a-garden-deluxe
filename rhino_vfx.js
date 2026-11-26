@@ -66,7 +66,8 @@ function coneTarget(phi,range,half){let b=null,bd=1e9;for(const e of enemies){if
    --------------------------------------------------------------------- */
 const PD='assets/fx/rhino/',PICS=['r07_hit','r08_heavyhit','r09_break','r10_armorcrack','r11_pow','r13_crack','r14_shockring','r15_erupt','r16_dust','r17_crater','r18_spiritfist',
   'r20_wall','r21_bubble','r22_pulse','r23_anchor','r24_ironskin','r25_glacierwall','r26_glacier','r27_bastion','r28_iceburst','r29_trail','r31_roar','r32_fury','r33_emblem','r34_sigil','r35_spirit'];
-const RXP=[];
+/* the owner's 10 new pictures (2026-11-26), cut by tools/fx/rhino_pics.py — it prints the RXA / RXX numbers below */
+const RXP=['rx_jab','rx_heavy','rx_meteor','rx_revenge','rx_upper','rx_hammer','rx_giant','rx_wall','rx_roar','rx_titan','rx_arm'];
 const PIM={},NOPIC=/[?&]rhpic=0/.test(location.search);
 const img=n=>{if(NOPIC||!(PICS.includes(n)||RXP.includes(n)))return null;let o=PIM[n];if(!o){o=PIM[n]=new Image();o.decoding='async';o.src=PD+n+'.webp';}return o.complete&&o.naturalWidth?o:null;};
 for(const n of PICS.concat(RXP))img(n);
@@ -93,8 +94,13 @@ const iceBurst=(x,y,w,o)=>spic('r28_iceburst',x,y+6,w,Object.assign({life:.6,s0:
    3. the gauntlet blows
    --------------------------------------------------------------------- */
 const TIP=[ART.RXFIST.tip[0]/ART.RXFIST.w,ART.RXFIST.tip[1]/ART.RXFIST.h];
-/* the owner's painted blows (when in RXP): tip = the knuckles as a picture fraction, k = picture width ÷ fist width — measure when they come */
-const RXA={rx_jab:{tip:[.86,.5],k:2.8},rx_heavy:{tip:[.86,.5],k:2.4},rx_meteor:{tip:[.86,.5],k:2.6},rx_revenge:{tip:[.86,.5],k:2.6},rx_hammer:{tip:[.5,.9],k:1.7},rx_upper:{tip:[.5,.1],k:1.6},rx_giant:{tip:[.5,.94],k:1.15}};
+/* the owner's painted blows: tip = the front of the ice knuckles as a picture fraction, k = picture width ÷ fist width
+   (k draws the painted gauntlet 1.1× the code rxFist of the same fw; the giant 1.2×) — numbers from tools/fx/rhino_pics.py */
+const RXA={rx_jab:{tip:[.9713,.4954],k:1.679},rx_heavy:{tip:[.9341,.5136],k:1.723},rx_meteor:{tip:[.9303,.5849],k:1.869},rx_revenge:{tip:[.8966,.5356],k:1.96},
+  rx_upper:{tip:[.4618,.1455],k:1.154},rx_hammer:{tip:[.4845,.9688],k:1.687},rx_giant:{tip:[.5,.9674],k:1.034},
+  rx_arm:{band:[.4629,.5038],k:1.144}};   /* rx_arm = the jab gauntlet without its streaks (held on the arm while charging), anchored at its copper band */
+/* the other three: where they stand / the middle of the spirit head */
+const RXX={rx_wall:{foot:[.4971,.9395]},rx_roar:{head:[.5729,.5666]},rx_titan:{foot:[.5,.9427]}};
 /* a tapered smear of motion behind a blow (screen space), with speed lines */
 function smear(ax,ay,bx,by,w,p,a){const dx=bx-ax,dy=by-ay,L=Math.hypot(dx,dy);if(L<4||a<=.01)return;ctx.save();ctx.globalAlpha*=a;ctx.translate(ax,ay);ctx.rotate(Math.atan2(dy,dx));
   const bl=(ws,col)=>{ctx.fillStyle=col;ctx.beginPath();ctx.moveTo(0,0);ctx.quadraticCurveTo(L*.55,-w*.5*ws,L,-w*.42*ws);ctx.lineTo(L,w*.42*ws);ctx.quadraticCurveTo(L*.55,w*.5*ws,0,0);ctx.fill();};
@@ -234,9 +240,9 @@ function slamOf(key,x,y){if(key==='rhShaker'){slamB(x,y,145);if(LV.rcAvalancheCh
 
 /* the buffs and the skills with their own action */
 function roarFx(){const x=player.x,y=player.y,hk=HK(),sd=sideOf(),S=S1();
-  if(img('rx_roar'))spic('rx_roar',x,y,150*hk,{z:24*hk,follow:player,ox:sd*14*hk,oy:-2,flip:sd<0,life:.9,pop:.14,fo:.4,sortOff:-4});
+  if(img('rx_roar')){const H=RXX.rx_roar.head;spic('rx_roar',x,y,150*hk,{z:80*hk,follow:player,ox:sd*10*hk,oy:-2,ax:H[0],ay:H[1],flip:sd<0,life:1,s0:.6,pop:.16,fo:.45,sortOff:-4,glow:.45});}
   else spic('r35_spirit',x,y,94*hk,{z:44*hk,follow:player,oy:-4,life:.8,pop:.14,fo:.4,sortOff:-6,a:.85});
-  spic('r31_roar',x,y,138*hk,{follow:player,life:.5,pop:.1,fo:.3,sortOff:-5,a:.8});shock(x,y,240*hk);ring('copper',x,y,150,{w0:10,life:.5});ring('glacier',x,y,110,{w0:6,delay:.08,life:.45});
+  spic('r31_roar',x,y,(img('rx_roar')?112:138)*hk,{follow:player,life:.5,pop:.1,fo:.3,sortOff:-5,a:img('rx_roar')?.5:.8});shock(x,y,240*hk);ring('copper',x,y,150,{w0:10,life:.5});ring('glacier',x,y,110,{w0:6,delay:.08,life:.45});
   const D=F.dust();for(let i=0;i<qn(14);i++){const an=i/14*TAU+R_(-.2,.2),v=R_(160,260);S.add({im:spr('puff',D,i),x:x+Math.cos(an)*18,y:y+Math.sin(an)*12,z:6,vx:Math.cos(an)*v,vy:Math.sin(an)*v*.6,vz:16,dr:3,s0:12,s1:30,life:R_(.45,.7),fi:.04,fo:.55,a0:.8});}
   glints(S,CU[3],x,y,40*hk,6,30,.6);}
 function skinFx(){const x=player.x,y=player.y,hk=HK(),S=S1();spic('r24_ironskin',x,y,104*hk,{follow:player,oy:-2,sortOff:-8,life:.9,pop:.14,fo:.45,a:.8,glow:.5});ring('iron',x,y,56,{w0:6,life:.4});
@@ -244,7 +250,8 @@ function skinFx(){const x=player.x,y=player.y,hk=HK(),S=S1();spic('r24_ironskin'
   glints(S,IR[4],x,y,30*hk,7,22,.6);}
 function stanceCast(){const x=player.x,y=player.y,hk=HK();ring('iron',x,y,60,{w0:7,life:.4});dust({},x,y,16,5,22);
   if(LV.rcFrozenBastion){spic('r27_bastion',x,y,124*hk,{follow:player,oy:4,life:.9,pop:.14,fo:.45,a:.55,glow:.4});iceSpikes(x,y,36*hk,6,22,1.2);ring('glacier',x,y,70,{w0:6,delay:.06,life:.45});}}
-function wallCast(){const hk=HK(),x=player.x+Math.cos(player.phi)*40*hk,y=player.y+Math.sin(player.phi)*40*hk;dust({},x,y,20,6,26);ring('iron',x,y,50,{w0:6,life:.35});bits(S1(),'glacier',x,y,10,5,{up:.8});}
+const WD=54;   /* the Steel Wall picture stands WD*HK px in front of him (the game object has no position; it only blocks) */
+function wallCast(){const hk=HK(),x=player.x+Math.cos(player.phi)*WD*hk,y=player.y+Math.sin(player.phi)*WD*hk;dust({},x,y,20,6,26);ring('iron',x,y,50,{w0:6,life:.35});bits(S1(),'glacier',x,y,10,5,{up:.8});}
 function pulseFx(){const x=player.x,y=player.y,hk=HK(),S=S1();pulse(x,y,280);spic('r21_bubble',x,y,110*hk,{follow:player,oy:6,life:.8,pop:.12,fo:.4,a:.6,glow:.5});ring('glacier',x,y,130,{w0:10,life:.5});ring('glacier',x,y,100,{w0:6,delay:.1,life:.45});
   for(let i=0;i<qn(12);i++){const an=i/12*TAU;S.add({im:spr('puff','cloud',i),x:x+Math.cos(an)*20,y:y+Math.sin(an)*14,z:6,vx:Math.cos(an)*200,vy:Math.sin(an)*120,vz:12,dr:3.2,s0:10,s1:26,life:.5,fo:.5,a0:.75});}}
 function revengeCharge(a){const T=(a.events&&a.events[0]?a.events[0].t:a.windup||.2)/TEMPO();if(T<.06)return;const S=S1();
@@ -259,7 +266,7 @@ function fortressCast(){const x=player.x,y=player.y,hk=HK();pic({n:'r33_emblem',
   for(const e of enemies){if(e.dead||dist(e,player)>320)continue;tauntMark(e);}}
 function anchorCast(){const x=player.x,y=player.y;A(new Crack({el:'iron',x,y,r:46,n:7,life:1.6,w:3,hot:0}));dust({},x,y,18,6,24);bits(S1(),'stone',x,y,4,6,{up:.9});}
 function colossusCast(){const x=player.x,y=player.y,hk=HK(),S=S1(),sd=sideOf();
-  if(img('rx_titan'))spic('rx_titan',x,y,150*hk,{follow:player,ox:-sd*18*hk,oy:-6,flip:sd<0,life:1.5,pop:.18,fo:.6,a:.85,sortOff:-8});
+  if(img('rx_titan'))spic('rx_titan',x,y,150*hk,{follow:player,ox:-sd*18*hk,oy:-6,ay:RXX.rx_titan.foot[1],flip:sd<0,life:1.5,pop:.18,fo:.6,a:.76,glow:.35,sortOff:-8});
   else spic('r24_ironskin',x,y,132*hk,{follow:player,oy:-3,sortOff:-10,life:1.1,pop:.16,fo:.5,a:.7,glow:.6});
   A(new Sigil({tex:ART.seal('frost','glacier'),el:'glacier',follow:player,r:70*hk,spin:.5,life:1.4,fi:.15,fo:.6}));ring('glacier',x,y,96,{w0:10,life:.5});ring('iron',x,y,70,{w0:6,delay:.08,life:.45});
   A(new Crack({el:'glacier',x,y,r:56,n:7,life:1.6,w:3,hot:1}));bits(S,'glacier',x,y,30*hk,8,{up:1});}
@@ -324,7 +331,7 @@ function castSeal(f){const k=player.casting&&player.casting.key,pl=k==='rcTotem'
     if(n==='HitCrescents'||n==='PuffDust')return NOFX();
     if(f.color==='#ffe9a8'&&/Ring|Impact|PunchBurst/.test(n||'')){try{exFx(f);}catch(e){warn('ex',e);}return NOFX();}
     if(n==='IronSeal'&&f.color==='#6fc8ff'&&player.casting){try{return castSeal(f);}catch(e){warn('seal',e);}}
-    if(n==='SteelWallObj'&&!Object.getOwnPropertyDescriptor(f,'sy')){f.layer='sorted';Object.defineProperty(f,'sy',{get:()=>player.y+Math.sin(player.phi)*40*HK()+1,configurable:true});}
+    if(n==='SteelWallObj'&&!Object.getOwnPropertyDescriptor(f,'sy')){f.layer='sorted';Object.defineProperty(f,'sy',{get:()=>player.y+Math.sin(player.phi)*WD*HK()+1,configurable:true});}
     if(mine()&&DROP.has(n))return NOFX();}
   return A0.apply(this,arguments);};window.addFx=addFx;}
 {const EM0=emit;emit=function(o){if(o&&mine()&&/^(round|spark|ember|dust|shard|frag|glint|mist|rock|rune|snow)$/.test(o.type))return;return EM0.apply(this,arguments);};window.emit=emit;}
@@ -341,8 +348,13 @@ GiantFist.prototype.draw=guardDraw('giant',function(){const t=this.t,v=this._v||
     const gp=img('rx_giant');if(gp){const C=RXA.rx_giant,pw=w*C.k,ph=pw*gp.naturalHeight/gp.naturalWidth,s=P(this.x,this.y,z);ctx.save();ctx.globalAlpha*=a;ctx.drawImage(gp,s[0]-pw*C.tip[0],s[1]-ph*C.tip[1],pw,ph);ctx.restore();return;}
     const s=P(this.x,this.y,z);if(t<this.hitT){const p=pal(v===2?'copper':'glacier');smear(s[0],s[1]-w*1.9,s[0],s[1]-w*.5,w*.55,p,a*.9);}bigFist(this.x,this.y,z,w,Math.PI/2,v,a,0);}
   else if(this.mode==='thrust'){const k=cl(t/this.hitT,0,1),x=lerp(this.sx,this.x,eO(k)),y=lerp(this.sy,this.y,eO(k)),z=this.z||26,a=t<this.hitT?Math.min(1,t/.06):Math.max(0,1-(t-this.hitT)/(this.life-this.hitT)),w=420*(this.sc||.2)*HK(),
-      s0=P(this.sx,this.sy,z),s1=P(x,y,z),ang=Math.atan2(s1[1]-s0[1],s1[0]-s0[0]);smear(lerp(s0[0],s1[0],.3),lerp(s0[1],s1[1],.3),s1[0],s1[1],w*.5,pal('glacier'),a*.85);bigFist(x,y,z,w,ang,1,a*(this.alpha||.9),Math.cos(ang)<-.01);}
-  else{const h=hand(),a=Math.min(1,t/.2)*(t>this.life-.15?Math.max(0,(this.life-t)/.15):1),w=380*(this.sc||.2)*HK()*Math.min(1,.4+t/Math.max(.05,this.hitT)*.6),ang=scrAng(player.phi);bigFist(h[0],h[1],h[2]+4*HK(),w,ang,v,a*.9,Math.cos(ang)<-.01,BAND);}});
+      s0=P(this.sx,this.sy,z),s1=P(x,y,z),ang=Math.atan2(s1[1]-s0[1],s1[0]-s0[0]);smear(lerp(s0[0],s1[0],.3),lerp(s0[1],s1[1],.3),s1[0],s1[1],w*.5,pal('glacier'),a*.85);
+    const hp=img('rx_heavy');if(hp){const C=RXA.rx_heavy,pw=w*C.k,ph=pw*hp.naturalHeight/hp.naturalWidth;ctx.save();ctx.globalAlpha*=a*(this.alpha||.9);ctx.translate(s1[0],s1[1]);glowAt(0,0,w*.7,G[2],.45);ctx.rotate(ang);if(Math.cos(ang)<-.01)ctx.scale(1,-1);ctx.drawImage(hp,-pw*C.tip[0],-ph*C.tip[1],pw,ph);ctx.restore();}
+    else bigFist(x,y,z,w,ang,1,a*(this.alpha||.9),Math.cos(ang)<-.01);}
+  else{const h=hand(),a=Math.min(1,t/.2)*(t>this.life-.15?Math.max(0,(this.life-t)/.15):1),w=380*(this.sc||.2)*HK()*Math.min(1,.4+t/Math.max(.05,this.hitT)*.6),ang=scrAng(player.phi),am=img('rx_arm');
+    if(am){const C=RXA.rx_arm,pw=w*C.k,ph=pw*am.naturalHeight/am.naturalWidth,s=P(h[0],h[1],h[2]+4*HK());ctx.globalAlpha*=a*.95;ctx.translate(s[0],s[1]);glowAt(0,0,w*.8,v===2?CU[2]:G[2],.55);ctx.rotate(ang);if(Math.cos(ang)<-.01)ctx.scale(1,-1);
+      ctx.drawImage(am,-pw*C.band[0],-ph*C.band[1],pw,ph);ctx.globalCompositeOperation='lighter';ctx.globalAlpha*=.18+.12*Math.sin(t*14);ctx.drawImage(am,-pw*C.band[0],-ph*C.band[1],pw,ph);}
+    else bigFist(h[0],h[1],h[2]+4*HK(),w,ang,v,a*.9,Math.cos(ang)<-.01,BAND);}});
 {const GU=GiantFist.prototype.update;GiantFist.prototype.update=function(dt){
     if(!this._rv){this._rv=1;const sk=this._sk||(player.action&&player.action.skill)||window.SKCTX||window.__RHCTX||'';this._v=(this.art==='worldbreaker'||sk==='rhSkybreaker'||(sk==='rhWorldbreaker'&&!this.onHit))?2:1;
       if(this.mode==='drop'&&!this.onHit&&sk==='rhFinale'&&RV.finHit>gameTime){this.hitT=Math.max(.05,RV.finHit-gameTime);this.life=this.hitT+.4;}
@@ -352,10 +364,23 @@ GiantFist.prototype.draw=guardDraw('giant',function(){const t=this.t,v=this._v||
         if(this.onHit){const x=this.x,y=this.y;crater(x,y,360);slamA(x,y,170,{spikes:10});lite('glacier',x,y,200,.6,.8);}}
       else if(this.mode==='thrust')ring('glacier',this.x,this.y,48,{w0:6,life:.3});}}catch(e){warn('gu',e);}return r;};}
 /* Steel Wall: the iron wall (rx_wall, r20 until it comes) planted in front of him, flashing when it blocks */
-SteelWallObj.prototype.draw=guardDraw('wall',function(){const im=img('rx_wall')||img('r20_wall');if(!im)return;const a=Math.min(1,this.t/.18)*(this.t>this.life-.2?Math.max(0,(this.life-this.t)/.2):1),hk=HK(),ph=player.phi,
-    s=P(player.x+Math.cos(ph)*40*hk,player.y+Math.sin(ph)*40*hk,0),w=98*hk,h=w*im.naturalHeight/im.naturalWidth*(.35+.65*back(cl(this.t/.22,0,1)));
-  ctx.globalAlpha*=a;ctx.fillStyle='rgba(8,14,26,.32)';ctx.beginPath();ctx.ellipse(s[0],s[1]+2,w*.5,w*.14,0,0,TAU);ctx.fill();ctx.drawImage(im,s[0]-w/2,s[1]-h*.94,w,h);
-  if(this.flash>0){ctx.globalCompositeOperation='lighter';ctx.globalAlpha=a*this.flash*.6;ctx.drawImage(im,s[0]-w/2,s[1]-h*.94,w,h);}});
+SteelWallObj.prototype.draw=guardDraw('wall',function(){const im=img('rx_wall')||img('r20_wall');if(!im)return;const F=im===img('rx_wall')?RXX.rx_wall.foot:[.5,.94];const a=Math.min(1,this.t/.18)*(this.t>this.life-.2?Math.max(0,(this.life-this.t)/.2):1),hk=HK(),ph=player.phi,
+    s=P(player.x+Math.cos(ph)*WD*hk,player.y+Math.sin(ph)*WD*hk,0),w=90*hk,h=w*im.naturalHeight/im.naturalWidth*(.35+.65*back(cl(this.t/.22,0,1)));
+  ctx.globalAlpha*=a;ctx.fillStyle='rgba(8,14,26,.32)';ctx.beginPath();ctx.ellipse(s[0],s[1]+2,w*.5,w*.14,0,0,TAU);ctx.fill();ctx.drawImage(im,s[0]-w*F[0],s[1]-h*F[1],w,h);
+  if(this.flash>0){ctx.globalCompositeOperation='lighter';ctx.globalAlpha=a*this.flash*.6;ctx.drawImage(im,s[0]-w*F[0],s[1]-h*F[1],w,h);}});
+/* Colossus Spirit (C, rcSpirit): the 15 s companion behind him = the painted Glacier Titan (rx_titan), see-through and breathing;
+   it forms out of frost, leans back to charge, lunges on its punch (the punch itself = GiantFist thrust → rx_heavy) and fades away.
+   Without the picture the old drawing stays (the engine's colossus-spirit art = the OLD rhino, never shown while rx_titan loads).
+   2026-11-26: rcSpirit is not in the current 12 C nodes (nothing summons RhinoSpirit) — kept so the old rhino can never come back. */
+if(typeof RhinoSpirit==='function'){const SD=RhinoSpirit.prototype.draw,SU=RhinoSpirit.prototype.update;
+  RhinoSpirit.prototype.update=function(dt){if(!this._rv){this._rv=1;this.layer='sorted';}return SU.call(this,dt);};
+  RhinoSpirit.prototype.draw=guardDraw('spirit',function(){const im=img('rx_titan');if(!im)return SD.call(this);
+    const t=this.t,lt=this.lt,face=dirSide(player.dir),hk=HK(),F=RXX.rx_titan.foot;let a=.72,sc=1;
+    if(this.mode==='summon'){const k=cl(t/.7,0,1);a*=k;sc=.55+.45*back(k);}else if(this.mode==='end'){const k=cl(lt/.6,0,1);a*=1-k;sc=1+.12*k;}
+    const lean=(this.mode==='charge'?-.09:this.mode==='punch'?.13*Math.max(0,1-lt/.3):0)*face,s=P(this.x,this.y,Math.sin(t*1.6)*3),W=100*hk*sc,H=W*im.naturalHeight/im.naturalWidth;
+    ctx.fillStyle='rgba(20,60,110,'+(.18*a).toFixed(3)+')';ctx.beginPath();ctx.ellipse(s[0],s[1],W*.36,W*.1,0,0,TAU);ctx.fill();glowAt(s[0],s[1]-H*.45,W*.7,G[2],.25*a);
+    ctx.translate(s[0],s[1]);ctx.rotate(lean);if(face<0)ctx.scale(-1,1);ctx.globalAlpha*=a;ctx.drawImage(im,-W*F[0],-H*F[1],W,H);
+    ctx.globalCompositeOperation='lighter';ctx.globalAlpha*=.16+.08*Math.sin(t*3);ctx.drawImage(im,-W*F[0],-H*F[1],W,H);});}
 /* Eternal Fortress: the frost seal on the ground while its zone lasts */
 FortressZone.prototype.draw=guardDraw('zone',function(){const a=Math.min(1,this.t/.2)*(this.t>this.life-.6?Math.max(0,(this.life-this.t)/.6):1),s=P(this.x,this.y,0),R=this.R,im=ART.seal('frost','glacier');
   ctx.translate(s[0],s[1]);ctx.scale(1,KY());ctx.globalAlpha*=a*.8;ctx.rotate(this.t*.25);ctx.drawImage(im,-R*1.08,-R*1.08,R*2.16,R*2.16);ctx.globalCompositeOperation='lighter';ctx.globalAlpha*=.3+.2*Math.sin(this.t*3);ctx.drawImage(im,-R*1.08,-R*1.08,R*2.16,R*2.16);});

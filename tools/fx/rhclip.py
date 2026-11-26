@@ -1,4 +1,4 @@
-"""Woolly Rhino (Glacier Titan) showcase clip per tree: DSF=1.5 python3 tools/fx/rhclip.py basic|a|b|c [extra-query]  → $OUT/rhino_<tree>.mp4 (30 fps, Thai labels)
+"""Woolly Rhino (Glacier Titan) showcase clip per tree: DSF=1.5 python3 tools/fx/rhclip.py basic|a|b|c|pics [extra-query]  → $OUT/rhino_<tree>.mp4 (30 fps, Thai labels)
 Made from tools/fx/anclip.py (same entries: key | 'js:<code>', label, seconds, pre-js, distance to the dummy (0 = middle of the room), test-room mode, (dx, dz) camera offset, zoom).
 '&vfx3=0' = the old look. Serve the repo on 8765 first. OUT=/tmp/fx by default."""
 import asyncio,sys,os,subprocess,shutil
@@ -40,6 +40,18 @@ SEQ={'basic':[('basic','Iron Fist Combo · หมัดวิญญาณน้�
       ('rhFury','Fury · ไฟโทสะ',1.6,'',130,'one',(-30,50),1.4),
       ('rhSkybreaker','Skybreaker Fist · กระโดดทุบพื้น',1.8,'',150,'room',(60,60),1.0),
       ('rhWorldbreaker','Worldbreaker Impact (+Cataclysm) · ULT B ทุบโลกแตก',4.6,'',160,'room',(60,80),.85)],
+ 'pics':[('basic','ตีปกติ · หมัดเบา',.62,'',100,'one',(0,34),1.6),('basic','',.62,'',100,'one',(0,34),1.6),
+      ('rhKnuckle','Heavy Knuckle · หมัดหนัก',1.6,'',100,'one',(0,40),1.4),
+      ('rhHammer','Double Hammer Fist · หมัดคู่ทุบลง',1.8,'',100,'one',(0,50),1.4),
+      ('rhUppercut','Rising Uppercut · หมัดเสย',1.5,'',100,'one',(0,60),1.3),
+      ('rhMeteor','Meteor Knuckle · หมัดอุกกาบาต',1.7,'',170,'one',(40,40),1.25),
+      ('rhRevenge','Revenge Fist · หมัดแก้แค้น',1.7,'',100,'one',(0,40),1.4),
+      ('rhTitan','Titan Combo · หมัด หมัด ทุบ + หมัดวิญญาณ',2.2,'',100,'one',(0,50),1.3),
+      ('rhFinale','Crushing Finale · หมัดยักษ์ตกจากฟ้า',2.0,'',120,'one',(20,60),1.15),
+      ('rhWorldbreaker','Worldbreaker · ถุงมือยักษ์บนแขน แล้วทุบโลก',4.6,'',160,'room',(60,80),.85),
+      ('rhRoar','Battle Roar · หัววิญญาณคำราม',1.5,'',130,'one',(-30,50),1.3),
+      ('rhWall','Steel Wall · กำแพงเหล็ก',1.3,'',130,'one',(0,40),1.5),
+      ('rhColossus','Immovable Colossus · วิญญาณยักษ์น้ำแข็ง',1.9,'',130,'one',(-30,70),1.1)],
  'c':[('rcGlacier','Glacier Charge · ลิ่มธารน้ำแข็งพุ่งชน',1.3,'',220,'one',(70,34),1.05),
       ('rcGrip','Colossus Grip · จับยกแล้วทุ่มลงพื้น',2.5,'',100,'one',(10,80),1.2),
       ('rcPact','Ironblood Pact · พันธสัญญาเลือดเหล็ก',1.4,'',130,'one',(-30,50),1.4),
