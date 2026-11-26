@@ -220,3 +220,21 @@ No effects at all: no slash trails, motion lines, speed lines, glow, sparkles, d
    - ตัดด้วย `python3 -I tools/sheet_state.py tools/clips/jaguar25_<ท่า>.json [preview.png]` · ท่านั่ง = โหมด `pics` เขียนทับ `assets/sit/jaguar_<ทิศ>.webp` (หรือแยกชื่อถ้ายังเก็บลุคเดิมไว้เทียบ)
 4. `jaguar_pose.js` ใช้ต่อได้เลยถ้าชื่อ state เหมือนเดิม (pounce dash guard roar cast throw spin) — ไฟล์นี้ปิดตัวเองถ้าแอตลาสไม่มี state ท่าเสริม · ตรวจเหมือนรอบแรก: make() ทุกสกิล × 8 ทิศเวลาเท่าเดิม + `tools/fxlab.py hits` (FXSEED + sure hits) + herosweep / lostev / combo
 5. ส่งคลิปเทียบให้เจ้าของดู (`tools/fx/jgclip.py pose1|pose2|sit`)
+
+## สร้างแล้ว 2026-11-26 (เจ้าของส่ง 7 แผ่น ไม่มีข้อความ: ①②③⑤⑥⑦⑧ — ยังไม่มี ④ ท่าคำราม)
+- แผ่นดิบเก็บที่ `assets/heroes/jaguar/poses25/<ท่า>.webp` (pounce dash guard cast throw spin sit)
+- ตัดเข้า atlas 2.5D (`assets_jaguar25.js`) ด้วย `python3 -I tools/sheet_state.py tools/clips/jaguar25_<ท่า>.json` — **ต้องรันใหม่ทุกครั้งหลัง cliphero สร้าง atlas** (cliphero เขียนไฟล์ทั้งไฟล์ ท่าเสริมจะหาย)
+- ขนาด = หน้า + เครื่องประดับดวงอาทิตย์ทองบนหัว เทียบเฟรม idle 2.5D (template match) · สีโทน `{L 1, C .91, blur .25}` (แผ่น 2.5D คม / คอนทราสต์ใกล้คลิปอยู่แล้ว แค่สีสดกว่า — แผ่นแบนต้องใช้ L .9 C .88 blur .45)
+
+| ท่า | scale | จุดยึด |
+|---|---|---|
+| pounce (8) | .51 | เฟรมบนพื้น 1 6 7 8 = กลางเท้า (6 = ตัวคุกเข่าตรงจุด มีดแทงเลยเส้นพื้น) · ลอย 2–5 = สะโพก (เม็ดเข็มขัด − 20) เหนือเท้าที่ต่ำสุด (เกมยกตัวด้วย player.z) |
+| dash (4) | .42 | สะโพก (เม็ดเข็มขัด − 25 / กลางกระโปรงตอนแขนบัง) เหนือเท้าที่ต่ำสุด |
+| guard (4) | .435 | auto (กลางเท้า) |
+| cast (4) | .485 | auto |
+| throw (4) | .455 | กลางเท้า (เฟรม 3 วัดเอง: auto จับแค่เท้าหลัง) |
+| spin (4 มุม S E N W) | .49 | auto |
+| sit (8 มุม) | k .465 | ภาพแยก `assets/sit/jaguar25_<ทิศ>.webp` · x = ตำแหน่งหัวตอนยืนทิศเดียวกัน · y = เส้นเข่าแตะพื้น (มีดวางเลยลงไปข้างหน้า) → hero_sit.js ใช้เมื่อ `window.JG25` |
+
+- `jaguar_pose.js` (v2): ท่าไหนที่ atlas ไม่มี state = ใช้เฟรมเดิม (`swap(…,{need})`) → Predator's Cry / Savage Tempo ยังเป็นท่าชูมีดเดิม · Hunter's Focus = หลับตาร่าย (cast 1) แล้วจบด้วยท่าตั้งการ์ด (guard 1) แทนท่าคำราม · พอมีแผ่น ④ แล้ว: ตัดเป็น state `roar` (spec ใหม่ `jaguar25_roar.json` จาก `jaguar_roar.json`) โค้ดจะใช้เองไม่ต้องแก้
+- ตรวจแล้ว: make() ทุกสกิล 8 ทิศ เวลาเท่าเดิม (ยกเว้น Shadow Slip ที่เวลาแกว่งเองทุกครั้งอยู่แล้ว) · fxlab hits 26 ปุ่มตรงกับร่างแบน · ท่านั่ง 8 ทิศในเกม · herosweep / lostev / combo / leak ไม่มี error

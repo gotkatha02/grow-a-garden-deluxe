@@ -1,0 +1,32 @@
+{
+ "_note": "Eclipse Dancer jaguar 2.5D extra pose (owner 2026-11-26: his 7 2.5D pose sheets, no words, the flat sheets redrawn in the 2.5D look with the same layout / frame order — JAGUAR25_POSE_PROMPTS_TH.md). One view = front 3/4 facing right (SE; the engine mirrors SW / W), flat green. Scale = her head (face + gold sun ornament) matched to the 2.5D idle frames (masked template match, /home/claude/work/jg25pose t/hm.py). clean = ChatGPT's green / yellow glow smudges mended. tone {L 1, C .91, blur .25} = the clip frames' colour (chroma .435 vs the sheet's .48, same contrast and sharpness — the flat sheets needed L .9 C .88 blur .45). Frames: eyes closed gathering · daggers crossed up · eclipse cast arms up · held. Anchor = auto (between the feet).",
+ "js": "assets_jaguar25.js",
+ "prefix": "JAG",
+ "state": "cast",
+ "sheet": "assets/heroes/jaguar/poses25/cast.webp",
+ "rows": 2,
+ "cols": 2,
+ "scale": 0.485,
+ "anchors": "auto",
+ "clean": true,
+ "tone": {
+  "L": 1.0,
+  "C": 0.91,
+  "blur": 0.25
+ },
+ "dirs": [
+  "S",
+  "SE",
+  "E",
+  "NE",
+  "N"
+ ],
+ "flip": false,
+ "dur": [
+  120,
+  120,
+  140,
+  140
+ ],
+ "loop": false
+}

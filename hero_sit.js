@@ -10,10 +10,13 @@
    ground in front → fy = the body's ground line as a fraction of the picture height (the daggers lie below it, nearer
    the camera); cut by `tools/sheet_state.py tools/clips/jaguar_sit.json` (pics mode); k = the gold sun disc vs the idle SE
    frames. fy defaults to 1 (picture bottom on the feet) for the other heroes.
+   jaguar 2.5D (window.JG25, 2026-11-26): the owner's 2.5D sit sheet, tools/clips/jaguar25_sit.json → assets/sit/jaguar25_*; k = her
+   head vs the 2.5D idle frames, cx = where the standing idle head is, fy = the knees' ground line.
    wolf (2.5D wolf, 2026-11-26): 8 views cross-legged, the axe upright beside his right shoulder; only with the 2.5D atlas (window.WLF25). */
 (function(){const SIT={cat:{dir:'assets/sit/cat_',k:228/475,cx:{S:.513,SE:.497,E:.506,NE:.516,N:.516,NW:.509,W:.496,SW:.488}},
   wukong:{dir:'assets/sit/wukong_',k:230/373,cx:{S:.581,SE:.457,E:.457,NE:.429,N:.429,NW:.429,W:.539,SW:.54}},
-  jaguar:{dir:'assets/sit/jaguar_',k:.489,cx:{S:.566,SE:.613,E:.636,NE:.556,N:.458,NW:.38,W:.363,SW:.358},
+  jaguar:window.JG25?{dir:'assets/sit/jaguar25_',k:.465,cx:{S:.604,SE:.583,E:.582,NE:.607,N:.523,NW:.473,W:.407,SW:.422},
+    fy:{S:.888,SE:.888,E:.913,NE:.973,N:.962,NW:.969,W:.943,SW:.941},rest:1}:{dir:'assets/sit/jaguar_',k:.489,cx:{S:.566,SE:.613,E:.636,NE:.556,N:.458,NW:.38,W:.363,SW:.358},
     fy:{S:.852,SE:.863,E:.867,NE:.868,N:.856,NW:.869,W:.864,SW:.863},rest:1},
   wolf:window.WLF25?{dir:'assets/sit/wolf25_',k:.75,cx:{S:.589,SE:.57,E:.569,NE:.46,N:.49,NW:.451,W:.449,SW:.49},fy:{S:.985,SE:.99,E:.99,NE:.995,N:.998,NW:.998,W:.995,SW:.981},rest:1}:null}[CHAR];   /* wolf: the 2.5D wolf only (owner's sit sheet 2026-11-26, tools/clips/wolf25_sit.json); his atlas boxes carry HERO_K (META_K), so the picture is scaled by it too */   /* rest:1 = this file shows the 'นั่งพัก ×2' status (the cat / monkey do it in their own code) */
 if(!SIT)return;

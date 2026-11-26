@@ -89,10 +89,11 @@ function installJaguarFx(){if(CHAR!=='jaguar')return;JXF.forEach(jxImg);
   /* Eclipse Dancer sprite (assets_jaguar.js = the owner's 20 clips 2026-11-24, cell 720 × 540): its sockets sit on a real dagger
      (head = blade tip, grip = blade base). The sprite is drawn CHAR_SCALE× about her feet but the engine's socket → screen mapping
      (s2r) is not scaled, so it is scaled here — liveSocket (weapon trail, glints, embers at the blade) and headR (the slash arcs of
-     slashAt / spriteSlash) both go through s2r. HUD portrait = her head from the front view (index.html drawPortrait). */
+     slashAt / spriteSlash) both go through s2r. HUD portrait = her head from the front view (index.html drawPortrait); the 2.5D atlas (assets_jaguar25.js, window.JG25,
+     2026-11-26) has the same cell / scale, so the same s2r wrap serves it; its HUD face = the head of the 2.5D sitting front view. */
   if(typeof JAG_ART!=='undefined'&&JAG_ART&&typeof JAG_SPR_META!=='undefined'&&JAG_SPR_META.cell.w===720&&!window.__JG_S2R){window.__JG_S2R=1;
     {const KB=CHAR_SCALE/(window.SOCK_K||1);if(typeof s2r==='function'&&Math.abs(KB-1)>1e-6){const S0=s2r;s2r=function(p,d,x,y){const r=S0(p,d,x,y),k=KB;return [x+(r[0]-x)*k,y+(r[1]-y)*k];};}}   /* s2r already carries the hero-size part (SOCK_K, 2026-11-25) → only the atlas part here */
-    try{const hf=new Image();hf.src='assets/heroes/jaguar/face.webp?v=1';window.HUD_FACE=hf;hf.onload=()=>{try{drawPortrait();}catch(_){}};}catch(_){}}
+    try{const hf=new Image();hf.src=window.JG25?'assets/heroes/jaguar/face25.webp?v=1':'assets/heroes/jaguar/face.webp?v=1';window.HUD_FACE=hf;hf.onload=()=>{try{drawPortrait();}catch(_){}};}catch(_){}}
   /* 2026-11-25: jaguar_vfx.js (SVG + code VFX, effects v3) is the default; the painted pictures below run only with ?vfx3=0 */
   if(!/[?&]vfx3=0/.test(location.search))return;
   /* strikes: painted slash per strike */

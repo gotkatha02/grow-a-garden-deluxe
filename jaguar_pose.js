@@ -7,11 +7,14 @@
    while she faces S / SE / E / SW / W (SE or SW by the horizontal side); facing N / NE / NW keeps the old frames.
    The spin has 4 views and turns with her from any facing (clockwise on screen, like the game's Cyclone).
    The cast bar of Fifth Sun / Throne / Spirit / Blood Moon Hunt shows the cast / crouch pose instead of buff frames 0-2.
-   ?jgpose=0 = the old frames. */
+   ?jgpose=0 = the old frames.
+   2.5D atlas (assets_jaguar25.js, window.JG25, 2026-11-26): the same states from the owner's 2.5D sheets
+   (tools/clips/jaguar25_<pose>.json) except roar (no 2.5D roar sheet yet) — a skill whose state is missing keeps its old
+   frames (swap need), Hunter's Focus ends in the guard stance instead of the roar crouch. */
 (function(){
 if(typeof CHAR==='undefined'||CHAR!=='jaguar'||/[?&]jgpose=0/.test(location.search))return;
 if(typeof SPR_META==='undefined'||!SPR_META.states||!SPR_META.states.pounce||!SPR_META.states.spin)return;   // atlas without the poses
-const PI=Math.PI;
+const PI=Math.PI,HAS=s=>!!SPR_META.states[s];
 /* the pose side for the current facing: SE / SW, or null (facing away: keep the old frames) */
 function side(){const d=player.dir;if(d==='N'||d==='NE'||d==='NW')return null;return Math.cos(player.phi)>=0?'SE':'SW';}
 /* parts [[state, frame, seconds | null, dir?], ...] -> entries summing to exactly T s (null parts share what is left) */
@@ -27,7 +30,7 @@ function tail(a,parts,d){const T=seqTotal(a.seq),now=Math.min(a.t,T),h=head(a.se
 function wrapUpd(a,f){const u=a.update;a.update=function(a2,dt){const r=u?u.apply(this,arguments):undefined;try{f(a2||a,dt);}catch(e){console.warn('jaguar pose',a.key,e);}return r;};}
 const ON={};
 /* wrap SKILLS[k].make: fn(a, d, T) returns the new seq (or null = keep); any:1 = also when she faces away (d = null) */
-function swap(k,fn,o={}){const S=SKILLS[k];if(!S||!S.make)return;const mk=S.make;ON[k]=1;
+function swap(k,fn,o={}){const S=SKILLS[k];if(!S||!S.make||(o.need||[]).some(s=>!HAS(s)))return;const mk=S.make;ON[k]=1;
   S.make=function(c){const a=mk.apply(this,arguments);if(!a||!a.seq||!a.seq.length)return a;
     try{const d=side();if(d||o.any){const T=seqTotal(a.seq),s=fn(a,d,T,c);if(s&&s.length){a.seq=s;a._jgPose=1;}}}catch(e){console.warn('jaguar pose',k,e);}
     return a;};}
@@ -57,9 +60,9 @@ swap('jgMirror',(a,d,T)=>{const tP=a.windup;return build([['guard',0,.5*tP],['gu
 
 /* ---- roars: Predator's Cry / Savage Tempo (buffAct: tP = a.windup = the moment the buff lands) -------------------- */
 const roar=(a,d,T)=>{const tP=a.windup,r=Math.max(0,T-tP);return build([['roar',0,.45*tP],['roar',1,.55*tP],['roar',2,Math.min(.3,.6*r)],['roar',3,null]],d,T);};
-swap('jgCry',roar);swap('jgTempo',roar);
+swap('jgCry',roar,{need:['roar']});swap('jgTempo',roar,{need:['roar']});
 /* Hunter's Focus: eyes closed, gathering — then the fierce crouch when the eyes light up */
-swap('jgFocus',(a,d,T)=>{const tP=a.windup;return build([['cast',0,tP],['roar',0,null]],d,T);});
+swap('jgFocus',(a,d,T)=>{const tP=a.windup;return build([['cast',0,tP],HAS('roar')?['roar',0,null]:['guard',0,null]],d,T);});
 
 /* ---- casts --------------------------------------------------------------------------------------------------------- */
 const castBig=(a,d,T)=>{const tP=a.windup,r=Math.max(0,T-tP);return build([['cast',0,.45*tP],['cast',1,.55*tP],['cast',2,Math.min(.25,.6*r)],['cast',3,null]],d,T);};

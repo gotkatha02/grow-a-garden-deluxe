@@ -1,0 +1,65 @@
+{
+ "_note": "Eclipse Dancer jaguar 2.5D sitting views (owner 2026-11-26, his 2.5D sit sheet, no words): 8 views 2x4 on green, row 1 S SE E NE, row 2 N NW W SW, kneeling with the crossed daggers laid on the ground in front. Written as loose pictures (pics mode) assets/sit/jaguar25_<dir>.webp at sheet px; k .465 = her head matched to the 2.5D idle S / SE frames; anchor x = where the standing idle head is (head template of the same direction's idle frame, W side from the mirrored E / SE / NE frames: /home/claude/work/jg25pose t/sitx.py), y = the knees' ground line (the daggers lie below it); tone blur .54 sheet px = .25 cell px like the pose states. hero_sit.js uses them while window.JG25.",
+ "js": "assets_jaguar25.js",
+ "prefix": "JAG",
+ "state": "sit",
+ "sheet": "assets/heroes/jaguar/poses25/sit.webp",
+ "rows": 2,
+ "cols": 4,
+ "scale": 1,
+ "anchors": [
+  [
+   168,
+   380
+  ],
+  [
+   190,
+   380
+  ],
+  [
+   198,
+   389
+  ],
+  [
+   195,
+   395
+  ],
+  [
+   146,
+   400
+  ],
+  [
+   157,
+   400
+  ],
+  [
+   148,
+   397
+  ],
+  [
+   129,
+   400
+  ]
+ ],
+ "clean": true,
+ "tone": {
+  "L": 1.0,
+  "C": 0.91,
+  "blur": 0.54
+ },
+ "pics": {
+  "prefix": "assets/sit/jaguar25_",
+  "names": [
+   "S",
+   "SE",
+   "E",
+   "NE",
+   "N",
+   "NW",
+   "W",
+   "SW"
+  ],
+  "k": 0.465,
+  "q": 92
+ }
+}

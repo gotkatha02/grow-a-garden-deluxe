@@ -45,6 +45,9 @@ Optional (2026-11-25, wolf Fenrir's Heir): "frames":{"idle/S":[...]} (explicit 0
   are multiplied by k while the sheet keeps its pixels: the engine draws the sheet bigger, so a hero cut at height 230 can stand in
   for an atlas drawn at 230·k cell px — the wolf replaces the old wolf atlas without CHAR_SCALE, so every wolf effect, socket user
   and fashion point keeps its numbers).
+Optional (2026-11-26, jaguar 2.5D): "scaleFix":{"attack/N":{"22":1.09,…}} (0-based video frame -> factor: the frame is scaled by it
+  about its own feet point, placed like "feetFit" — for clips where the video model shrank the hero mid-move (her back-view lunge
+  came out ~9 % smaller, measured on the hair silhouette and the boots) while the stance changes, so feetFit cannot measure it).
 Keying: soft green matte + despill + speck removal (keeps the body and anything touching it, e.g. the sword).
 Idle / walk loops are found automatically (period of best self-match); hurt is made from the idle pose."""
 import sys, io, json, base64, math, subprocess, numpy as np
@@ -157,7 +160,7 @@ def deglow(img):
     dk = np.array([46, 26, 48], np.float32); col[m] = dk + (col[m] - dk) * .45
     print(f'  deglow: {int(m.sum())} px')
     return Image.fromarray(np.dstack([col, a]).astype(np.uint8))
-FIT = plan.get('feetFit', {})
+FIT = plan.get('feetFit', {}); SFIX = plan.get('scaleFix', {})
 def fspan(img):
     """width of the feet: alpha extent of the bottom 15 rows (camera-zoom gauge where the stance stays the same)"""
     A = np.asarray(img)[..., 3] > 60; ys = np.nonzero(A.any(1))[0]; fy = ys.max(); xs = np.nonzero(A[fy - 14:fy + 1].any(0))[0]
@@ -196,6 +199,9 @@ def frames_for(st, d):
             h, fx, fy = tn; return place(img, SD[d] * h[0] / h[i], (fx[i], fy[i]))
         if norm:
             bb = bbox(img); s = HT / (bb[3] - bb[1]); return place(img, s, feet(img))
+        if str(i) in SFIX.get(f'{st}/{d}', {}):   # "scaleFix": a set factor about the frame's own feet (same placement rule as feetFit)
+            k = SFIX[f'{st}/{d}'][str(i)]; c = feet(img)
+            return place(img, SD[d] * k, (c[0] - (c[0] - anchor0[0]) / k, c[1] - (c[1] - anchor0[1]) / k))
         if i in fit:   # undo the camera zoom about the feet: video point p -> c + (p - c)·k, then placed like every other frame
             k = span0 / fspan(img); c = feet(img); print(f'  feetFit {st}/{d} frame {i}: ×{k:.3f}')
             return place(img, SD[d] * k, (c[0] - (c[0] - anchor0[0]) / k, c[1] - (c[1] - anchor0[1]) / k))

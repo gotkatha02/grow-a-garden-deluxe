@@ -325,3 +325,11 @@ ONE square picture with only this one jaguar woman on a plain flat pure green ba
 - ขยิบตา / อ้าปาก → `Redo: both eyes open and her mouth closed, a sweet smile.`
 - มีดไม่ครบ / ถือผิด → `Redo: one obsidian dagger in EACH hand, held low at her sides, both blades pointing down.`
 - อยากให้สัดส่วนโตขึ้นแบบหมาป่า 2.5D (ไม่บังคับ) → `Redo: the same character, but a little taller and slimmer with longer legs, about four heads tall; keep her face cute.`
+
+### สร้างแล้ว 2026-11-26 — จากัวร์ 2.5D ในเกม (เป็นร่างหลัก · `?jg25=0` = ร่างแบนเดิม)
+- เจ้าของส่งคลิป 2.5D 20 ตัว (ไม่มีข้อความ · 544×544 24 fps พื้นเขียว · ส่งมาเรียง buff / attack / walk / idle ต่อทิศ SE S E NE N) → `assets_jaguar25.js` = `python3 -I tools/cliphero.py tools/clips/jaguar25_plan.json assets_jaguar25.js JAG` แล้วตัดท่าเสริม 6 ท่าตาม JAGUAR25_POSE_PROMPTS_TH.md 'สร้างแล้ว' (ต้องรันต่อทุกครั้งหลัง cliphero)
+- prefix `JAG` เหมือนไฟล์แบน (โหลดทีละไฟล์ โค้ดสลับ atlas เดิมใช้ได้เลย) · index.html ตั้ง `window.JG25` · CHAR_SCALE 1.57 เดิม (สูง 230 perDir เท่ากัน)
+- เวลาเฟรมทุกแถว attack / buff / walk / hurt = ร่างแบนทุกทิศ → จังหวะตี / ร่าย / ดาเมจไม่เปลี่ยน (fxlab hits 26 ปุ่มตรงกัน)
+- เลือกเฟรมเลี่ยงเอฟเฟกต์ที่ติดมากับคลิป (เส้นฟัน / แสงตอนฟัน, buff S 22–34 แสง, NE 15–19 ประกาย) กับตาหลับ (idle S 12–21, SE ~31–43) · buff S ท่ายกใช้ท่าลดเล่นถอยหลัง · idle NE ขยับเท้าที่ 28 / 56 → ลูป 93+30 · attack N วิดีโอย่อตัวเล็กลง ~9 % ตอนพุ่ง → ตัวเลือกใหม่ของ cliphero `scaleFix` ขยายเฟรมพวกนั้นกลับรอบเท้า
+- ซ็อกเก็ต = ปลายมีดจริง (แบบร่างแบน) · หน้า HUD = `assets/heroes/jaguar/face25.webp` (หัวจากภาพนั่งมุมหน้า 2.5D) · ท่านั่ง 8 ทิศ `assets/sit/jaguar25_*`
+- ยังเป็นลุคแบน: ภาพหน้าเลือกตัว (select.webp) · ไอคอนสกิล · พื้นหลังผังสกิล · ภาพเอฟเฟกต์วาด · ยังไม่มีท่าคำราม 2.5D (แผ่น ④)
