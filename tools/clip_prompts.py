@@ -1099,6 +1099,135 @@ V=assets/heroes/rhino; for d in S SE E NE N; do python3 -I tools/dir8cut.py star
 - `tools/clips/rhino25_plan.json` คัดลอกจาก `rhino_plan.json` (เวลาเฟรม / contact / buff peak เดิมทุกทิศ) → ไฟล์แยก (เช่น `assets_rhino25.js`) + สวิตช์ URL เทียบกับร่างปัจจุบัน · เช็ก `tools/fxlab.py hits rhino` ก่อน / หลัง · ซ็อกเก็ต = คริสตัลข้อนิ้ว · cellScale ให้ idle S สูงเท่าเดิม
 - รูปหมัด rx_* ของเอฟเฟกต์ v3 เป็นลุคแบน""")
 
+# Ronin Cat 2.5D = Nekomata Wanderer (owner 2026-11-26 19:58 picked design 4 'ออกแบบเป็น 2.5d' → 20:22 his 5 standing views
+# + 'ขอพร้อมทำวีดีโอหน่อย เอาแค่พร้อมนะ รูปที่ส่งให้ยังไม่ต้องเอาไปทำอะไร'). There is no flat 'cat' entry, so this one is
+# complete. He attaches his own 2.5D views as the first frames (no start frames cut); every view sentence below follows those
+# pictures (where the mask, the hilt, the hat and BOTH tails are). Lessons kept: 2.5D look, eyes open, no walking toward the
+# camera, no attack / slash words, plain green air round the blade, the sheet's wind lines / petals / fire never drawn.
+HEROES['cat25'] = dict(
+  title='แมวโรนิน 2.5D (เนโกะมาตะพเนจร แบบโมเดล 3D มองจากด้านบน · Nekomata Wanderer 2.5D)',
+  who='the two-tailed cat swordsman in this picture', P='He', p='he', pos='his', weapon='katana',
+  look="Keep the exact look of the picture: a stylized 3D game model with soft toon shading and clean dark-brown outlines, "
+       "the same colours and the same fur, straw, cloth, rope and lacquer textures — not photorealistic and not a flat "
+       "drawing. The camera keeps looking down at him from above at the same angle as in the picture.",
+  face="Keep his face exactly as in the picture: the same half-closed golden-yellow eyes with the small red marks at their "
+       "outer corners, the same white blaze down his grey tabby face, the same small pink nose and whiskers and the same "
+       "calm, sly little smile, mouth closed.",
+  back_face={'NE': "We see him mostly from behind: the back of his head with both pointed ears and his shaggy grey mane, and "
+                   "only the edge of one cheek with its whiskers, as in the picture; his face never turns toward us.",
+             'N': "We only see the back of his head with both pointed ears and his shaggy grey mane above the big straw hat, "
+                  "as in the picture; his face never turns toward us."},
+  keep={d: (f"He has two tails in every frame, and they never merge into one; in the picture they are {w}. His two fluffy grey "
+            "tails with dark rings and pale lavender tips, the golden straw cloak with the thick red rope bow and red tassels "
+            "at his chest, the red collar with its gold bell, the plum-purple kimono with lavender cloud swirls, the dark "
+            "hakama, the white leg wraps and straw sandals, the white fox mask hanging at his hip, the big round straw hat on "
+            "his back and the black-sheathed katana with its gold paw-print guard and two little gold bells stay exactly the "
+            "same.") for d, w in (('S', 'one beside each leg'), ('SE', 'both behind him'))}
+       | {'E': ("He has two tails in every frame, and they never merge into one; in the picture they are both behind him. His two "
+                "fluffy grey tails with dark rings and pale lavender tips, the golden straw cloak over his shoulder, the red "
+                "rope and gold bell at his neck, the plum-purple kimono sleeve with lavender cloud swirls, the dark hakama, the "
+                "white leg wraps and straw sandals, the white fox mask at his hip, the big straw hat seen edge-on on his back "
+                "and the katana with its black sheath, gold paw-print guard and two little gold bells stay exactly the same."),
+          'NE': ("He has two tails in every frame, and they never merge into one; in the picture they both hang below the "
+                 "straw hat. The big round straw hat on his back with its red knot, two red tassels and two white paper "
+                 "strips, the golden straw cloak, his two fluffy grey tails with pale lavender tips, the plum kimono sleeve, "
+                 "the dark hakama, the white leg wraps, the straw sandals and the hilt of the katana sticking out in front of "
+                 "him stay exactly the same."),
+          'N': ("He has two tails in every frame, and they never merge into one; in the picture they both hang between his "
+                "legs. The big round straw hat covering his upper back with its red knot, two red tassels and two white paper "
+                "strips, the golden straw cloak, his two fluffy grey tails with pale lavender tips, the dark hakama, the "
+                "white leg wraps and the straw sandals stay exactly the same.")},
+  spos={'S': 'one paw resting on the sheathed katana at his hip, right at its gold guard, and his other paw relaxed at his side',
+        'SE': 'one paw resting on the sheathed katana at his hip, right at its gold guard, and his other paw relaxed at his side',
+        'E': 'the hilt of the sheathed katana pointing forward at his hip, his near paw relaxed in front of him and his other '
+             'paw out of sight behind his body',
+        'NE': 'the hilt of the sheathed katana sticking out in front of him and his near paw relaxed at his side',
+        'N': 'his paws and the sheathed katana out of sight in front of him'},
+  blink=", and his ears twitch once; his eyes stay open for the whole clip",
+  vis=" His sword arm and the whole blade stay visible beside his body and above his shoulder during the whole move.",
+  fmt={'wpaw': {'S': 'one paw keeping the sheathed katana steady at his hip and his other arm swinging a little',
+                'SE': 'one paw keeping the sheathed katana steady at his hip and his other arm swinging a little',
+                'E': 'the sheathed katana steady at his hip and his near arm swinging a little',
+                'NE': 'his arms swinging a little at his sides', 'N': 'his arms swinging a little at his sides'},
+       'dpaw': {'S': 'His free paw reaches across his body and grips the hilt while the other paw holds the sheath just '
+                     'under the guard.',
+                'SE': 'His free paw reaches across his body and grips the hilt while the other paw holds the sheath just '
+                      'under the guard.',
+                'E': 'His near paw reaches forward and grips the hilt of the sword at his hip.',
+                'NE': 'He reaches across his body to the hilt in front of him.',
+                'N': 'He reaches across his body to the hilt in front of him.'},
+       'bpaw': {'S': 'One paw grips the hilt of his sheathed katana and the other holds the sheath just under the guard',
+                'SE': 'One paw grips the hilt of his sheathed katana and the other holds the sheath just under the guard',
+                'E': 'His near paw grips the hilt of the sheathed katana at his hip',
+                'NE': 'His paws grip the sheathed katana in front of him',
+                'N': 'His paws grip the sheathed katana in front of him'},
+       'aend': {'S': 'until his arm is raised high and the blade points straight up above his head',
+                'SE': 'until his arm is stretched up and forward and the blade points high and forward',
+                'E': 'until his arm is stretched up and forward and the blade points high and forward',
+                'NE': 'until his arm is raised high and the blade points up above his shoulder',
+                'N': 'until his arm is raised high and the blade points up above his shoulder'},
+       'focus': {'S': ', narrows his eyes in focus', 'SE': ', narrows his eyes in focus', 'E': ', narrows his eyes in focus',
+                 'NE': '', 'N': ''},
+       'tvis': {'S': ' Both raised tails show behind his shoulders, one on each side, while he holds the pose.',
+                'SE': ' Both raised tails stay visible behind him while he holds the pose.',
+                'E': ' Both raised tails stay visible behind him while he holds the pose.',
+                'NE': ' Both raised tails stay visible beside the straw hat while he holds the pose.',
+                'N': ' Both raised tails stay visible beside the straw hat while he holds the pose.'}},
+  inframe="his whole body, both ears, both tails, the whole straw hat and the whole katana stay inside the frame.",
+  nofx="No shadow, no flash, no glow, no sparkles, no particles, no smoke, no dust, no light trails, no streaks of colour, no "
+       "motion lines, no wind lines, no cherry petals, no fire, no ghost flames, no magic effects, no symbols, no text; the "
+       "gold bells and the gold guard never glow.",
+  act={
+   'idle': "Idle loop of {who}. {facing} He stands in a calm, ready stance, {spos}, and breathes slowly: his chest rises "
+           "and falls, his shaggy mane and the straw cloak stir a little, the little bells sway and his two tails sway "
+           "slowly and gently{blink}. The last frame matches the first frame so the clip loops.",
+   'walk': "Walk loop of {who}. {facing} He walks in place, like on a treadmill, toward the way he is facing: light, quick, "
+           "cat-like steps (about two steps per second) in his straw sandals, {wpaw}, the straw cloak bouncing, the little "
+           "bells swinging and his two tails swaying; the big straw hat stays on his back. He does not move across the "
+           "frame, he does not come closer to the camera or move away from it, and the ground does not move. The last frame "
+           "matches the first frame so the clip loops.",
+   'attack': "Quick sword draw of {who}. {facing} {dpaw} He bends his knees a little and leans forward in a short wind-up, "
+             "then in one fast move pulls the katana out of its sheath and sweeps the blade forward and up in a rising "
+             "diagonal arc toward the way he is facing, {aend}; he holds that pose for a moment, flicks the blade down once at his side, slides it back into the "
+             "sheath at his hip, returns to his starting pose and stands still for the rest of the clip. The draw and the "
+             "sweep are very fast; the whole move, putting the sword away included, takes less than two seconds. His feet "
+             "stay in place.{vis} The katana keeps its full length and shape in every frame, the sheath stays at his hip, "
+             "the blade is plain bright steel that never glows, and the air around it stays empty and plain green in every "
+             "frame. Clean outlines in every frame, no motion blur.",
+   'buff': "Focus pose of {who}. {facing} {bpaw}, he bends his knees a little and settles into a steady stance{focus}, and "
+           "his two tails rise up behind him and spread apart into a V; he holds that pose still for about one second, then "
+           "his tails sink back down, he lets go of the hilt, straightens up into his starting pose and stays still for the "
+           "rest of the clip. The katana stays in its sheath at his hip for the whole clip. His feet stay in place.{tvis} "
+           "Clean outlines in every frame, no motion blur."},
+  dirname={'S': 'หน้าตรง', 'SE': 'เฉียงหน้า หันขวา', 'E': 'ข้าง หันขวา', 'NE': 'เฉียงหลัง หันขวา', 'N': 'หลัง'},
+  actname={'idle': 'ยืน (idle · วนลูป)', 'walk': 'เดิน (walk · วนลูป)',
+           'attack': 'ชักดาบฟัน (attack · ตีปกติ + สกิลฟันทุกท่า — เกมวาดเส้นฟันตามคลิปนี้)',
+           'buff': 'ท่ารวมสมาธิ (buff · Ki Gather, Feline Focus, Sakura Dance, Gale Counter, Oni Roar, Ashura Mask, Kasa Throw, '
+                   'Shadow Dance, Mountain Stance … — เกมปล่อยสกิลที่เฟรมค้าง)'},
+  start='ภาพยืน 2.5D มุม {d} ที่ได้จาก ChatGPT',
+  header="""เจ้าของ 2026-11-26 19:58 เลือกแบบ 4 'เนโกะมาตะพเนจร' + "ออกแบบเป็น 2.5d" → 20:22 ส่งภาพยืน 2.5D ครบ 5 มุม + "ขอพร้อมทำวีดีโอหน่อย เอาแค่พร้อมนะ รูปที่ส่งให้ยังไม่ต้องเอาไปทำอะไร" → ไฟล์นี้ = พรอมต์คลิป 20 ตัวอย่างเดียว · ไม่ได้ตัดภาพตั้งต้น ไม่ได้เก็บภาพยืนไว้ใน repo (ตามที่เจ้าของสั่ง) · เจ้าของแนบภาพยืนของทิศนั้นเป็นเฟรมแรกเอง · หน้าตา + พรอมต์ภาพยืน: `CAT_LOOK_PROMPTS_TH.md` หัวข้อสุดท้าย · ไม่มีชุดคลิปลุคแบนของตัวนี้ (คลิปเดิมเป็นแมวขาวสวมงอบ)
+
+## ภาพยืน 2.5D ที่เป็นเฟรมแรก (มาแล้ว 20:22)
+- 1254² พื้นเขียว ตัวสูง ~60 % ของภาพ (ปลายหูถึงรองเท้า) ทุกมุมหันขวา ไม่มีสีเขียวบนตัว · ที่ว่างเหนือหัว ~0.5 เท่าตัว (หมาป่า 2.5D .84) → ถ้าดาบตอนชักฟัน หรือหางตอนชูขึ้น หลุดขอบภาพ: ย่อภาพก่อนทำคลิป (`tools/dir8cut.py startv <โฟลเดอร์> <ทิศ>=<ภาพ> size=1024 feet=.88 ht=490 clean=0` ทีละมุม แบบหมาป่า 2.5D)
+- ตามที่วาด: **S** หน้ากากซ้ายของภาพ ด้ามดาบขวา อุ้งเท้าแตะกระบัง หางโผล่ข้างขาข้างละหาง ขอบงอบโผล่หลังไหล่ · **SE** หางสองหางหลังตัวทางซ้ายของภาพ (บน + ล่าง) งอบโผล่ซ้าย · **E** งอบเห็นเป็นวงรีด้านข้าง หน้ากากอยู่หน้าตัว ด้ามชี้หน้าเฉียงขึ้น เห็นแขนข้างใกล้ · **NE** งอบเต็มวง หางห้อยใต้งอบไปทางซ้าย เห็นขอบแก้มกับหนวด ด้ามดาบโผล่ขวา · **N** งอบคลุมหลังบน หางห้อยระหว่างขาปลายม้วนไปขวา ไม่เห็นหน้า หน้ากาก ดาบ
+
+## วิธีใช้
+แนบภาพยืน 2.5D ของทิศนั้น + วางพรอมต์ทีละตัว → 4 คลิปต่อทิศ (ยืน · เดิน · ชักดาบฟัน · ท่ารวมสมาธิ) · คลิปละ 3–5 วิ · ไม่ต้องทำทิศซ้าย (เกมกลับด้านเอง) · ส่งกลับเรียง S → SE → E → NE → N ทิศละ ยืน → เดิน → ฟัน → บัฟ (สลับได้)
+
+## กติกาที่อยู่ในทุกพรอมต์
+- **ลุค 2.5D** (คีย์ `look`): โมเดล 3D ลงเงาการ์ตูน เส้นขอบน้ำตาลเข้ม สีและพื้นผิว (ขน ฟาง ผ้า เชือก ฝักเคลือบ) เดิม ไม่สมจริง ไม่แบน + กล้องมองลงจากด้านบนมุมเดิมตลอดคลิป
+- **หางสองหางทุกเฟรม ห้ามรวมเป็นหางเดียว** + บอกตำแหน่งหางตามภาพของแต่ละมุม · หน้ากากอยู่ที่สะโพก งอบอยู่ที่หลังตลอด
+- ยืน: ตาเปิดตลอดคลิป (คลิปแรดหลับตาตอนขยับ) · เดิน: ไม่เข้าหา / ถอยห่างกล้อง (คลิป S หมาป่าเดินเข้ากล้อง) · ห้ามเส้นลม กลีบซากุระ ไฟ เปลวผี (ท่าสู้ในชีตมีเส้นลมฟ้า กลีบ อสูรไฟ — โมเดลอาจวาดเพิ่มเอง) · กระดิ่ง / กระบังทองไม่เรือง
+- **ชักดาบฟัน** = อุ้งที่ว่างเอื้อมไปจับด้าม อีกอุ้งจับฝัก ย่อเข่านิด → ชักดาบออกจากฝักแล้วกวาดขึ้นเฉียงไปข้างหน้าเร็วๆ จนแขนเหยียด ปลายดาบชี้สูง (= เฟรมโดน) ค้างนิดนึง → สะบัดดาบลงหนึ่งที เสียบกลับเข้าฝัก กลับท่าเดิม · ไม่ใช้คำ attack / slash / strike (คลิปแมวเดิมมีโค้งฟันขาวติดมาในมุม SE / E และแสงดาวแตกในมุม N) · ดาบยาวเท่าเดิมทุกเฟรม ใบเหล็กไม่เรือง อากาศรอบดาบเป็นพื้นเขียวเปล่า · มุมหลังสั่งให้แขนกับใบดาบโผล่ข้างตัว / เหนือไหล่
+- **ท่ารวมสมาธิ** (บัฟ) = อุ้งหนึ่งจับด้าม อีกอุ้งจับฝัก ดาบอยู่ในฝักตลอด ย่อเข่านิด หรี่ตา **หางสองหางชูขึ้นแยกเป็นรูปตัว V** ค้าง ~1 วิ (เกมค้างเฟรมนี้ตอนร่าย) แล้วกลับท่าเดิม · คลิปบัฟของแมวเดิมเป็นท่าย่อตัวจับดาบ · แผนในไฟล์ลุค ("ถือดาบทั้งฝักแนวนอนหน้าเอว") เปลี่ยนเป็นท่านี้ เพราะต้องดึงดาบทั้งฝักออกจากผ้าคาดแล้วเสียบคืน โมเดลวิดีโอมักทำเพี้ยน และหางตัว V คือจุดเด่นเนโกะมาตะ
+- ไม่ระบุมือซ้าย / ขวา (ใช้ 'อุ้งที่ว่าง' / 'อุ้งที่จับฝัก' / 'อุ้งข้างใกล้')""",
+  footer="""## ตอนคลิปมาถึง (โน้ตสำหรับแชตที่ทำต่อ)
+- แผน `tools/clips/cat25_plan.json` → ไฟล์แยก `assets_cat25.js` (prefix CAT แบบ jaguar25 / wolf25 — โหลดไฟล์เดียว) + สวิตช์ URL เช่น `?cat25=0` ในบรรทัดโหลดของ index.html (`CAT_ART` เช็กแค่ `CAT_SPR_META`) · **เวลาเฟรมเท่า `assets_cat.js` ทุกแถว** (`stateDur` + dur ของแถวตี / บัฟ): ตี 14 เฟรม S 55×6 · 40×3 · 75×5 (โดนเฟรม 7) · ทิศอื่น 55×4 · 40×3 · 75×7 (โดนเฟรม 5) · บัฟ 12 × 70 ms จุดค้างเฟรม 6 · โดนตี 7 × 70 · เดิน 8 เฟรม S 120 SE 135 E 161 NE 125 N 156 ms · ยืน 12 เฟรม S 139 SE 56 E 212 NE 205 N 167 ms → เช็ก `python3 tools/fxlab.py hits cat` ก่อน / หลัง (FXSEED + o.sure)
+- เฟรมตี: เฟรม 3 (`KT_DRAWF` ใน char_cat.js) = ดาบเพิ่งออกจากฝัก — ท่าชาร์จแทนเฟรมก่อนหน้านี้ · เฟรมโดน = แขนเหยียด ปลายดาบชี้สูง · เลี่ยงเฟรมที่โมเดลแอบใส่เส้น / แสง (`frames`, `unstreak`, `deglow`) · ซ็อกเก็ตท่าตี = ปลายดาบ (head) + ด้าม (grip) แบบตัวเลือก `blade` ของจากัวร์ (ใบเหล็กสว่าง ต้องตั้งสีใหม่) หรือ `orbFix` อ่านด้วยตา
+- **ท่าชาร์จ** (state `charge`) มาจากแผ่นแมวขาวลุคเดิม → atlas ใหม่ยังไม่มี = `ktChgDir` ปิดตัวเอง (เช็ก `SPR_META.states.charge`) กลับไปค้างเฟรมคลิป · แผ่นท่าชาร์จ 2.5D ทำทีหลังแบบแผ่นท่าเสริมหมาป่า / จากัวร์
+- **จุดหัว:** `cat_mask.js` ตาราง `HAT` (กลางงอบบนหัวทุกเฟรม) ใช้วางหน้ากากตอนสวม (Ashura Mask) + ปีกแฟชั่น (`cat_wings.js`) → หัวใหม่ไม่มีงอบ ต้องจับจุดหัวใหม่ด้วย `tools/headtrack.py` (+ `cat25_head.json`) · ภาพหน้ากากบนหน้า `mask8_*` ตัดจากแมวเดิม → ทำใหม่ หรือให้โค้ดวาง `mask_white` ที่จุดหน้า
+- `CHAR_SCALE.cat` 1.59 → ตั้ง cellScale ให้ idle S สูงเท่าเดิม · หน้า HUD ตัดจากคลิปยืน S (`window.HUD_FACE`) · ท่านั่ง `assets/sit/cat_*` ยังเป็นแมวเดิม · `cat_vfx.js` `hand()` / `CHG_HILT` ตั้งตามท่าชาร์จเดิม""")
+
 def build(h, d, a):
     H = HEROES[h]; back = d in BACK
     ex = {k: (v[d] if isinstance(v, dict) else v[1 if back else 0]) for k, v in H.get('fmt', {}).items()}
