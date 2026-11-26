@@ -1227,6 +1227,107 @@ HEROES['cat25'] = dict(
 - **ท่าชาร์จ** (state `charge`) มาจากแผ่นแมวขาวลุคเดิม → atlas ใหม่ยังไม่มี = `ktChgDir` ปิดตัวเอง (เช็ก `SPR_META.states.charge`) กลับไปค้างเฟรมคลิป · แผ่นท่าชาร์จ 2.5D ทำทีหลังแบบแผ่นท่าเสริมหมาป่า / จากัวร์
 - **จุดหัว:** `cat_mask.js` ตาราง `HAT` (กลางงอบบนหัวทุกเฟรม) ใช้วางหน้ากากตอนสวม (Ashura Mask) + ปีกแฟชั่น (`cat_wings.js`) → หัวใหม่ไม่มีงอบ ต้องจับจุดหัวใหม่ด้วย `tools/headtrack.py` (+ `cat25_head.json`) · ภาพหน้ากากบนหน้า `mask8_*` ตัดจากแมวเดิม → ทำใหม่ หรือให้โค้ดวาง `mask_white` ที่จุดหน้า
 - `CHAR_SCALE.cat` 1.59 → ตั้ง cellScale ให้ idle S สูงเท่าเดิม · หน้า HUD ตัดจากคลิปยืน S (`window.HUD_FACE`) · ท่านั่ง `assets/sit/cat_*` ยังเป็นแมวเดิม · `cat_vfx.js` `hand()` / `CHG_HILT` ตั้งตามท่าชาร์จเดิม""")
+# Nine-Tail Miko 2.5D (owner 2026-11-26 20:24 'ขอพร้อมทำสไปร้2.5d' + his look-5 sheet 'Nine-Tail Miko Reborn'): her FIRST own
+# sprite (until now she wears the wolf placeholder assets.js) → no flat 'kitsune' entry; written straight for the 2.5D look
+# with every lesson of the wolf / jaguar / rhino / anubis rounds: eyes open in idles, no walking toward the camera, the staff
+# cast says no attack / slash words and keeps the air round the orb empty, no glow round the pink orb, no symbols; the nine
+# tails keep their number (video models merge / add tails); hands not named (the start frame shows which hand holds the staff).
+HEROES['kitsune25'] = dict(
+  title='จิ้งจอกเก้าหาง 2.5D (มิโกะเก้าหางโฉมใหม่ แบบโมเดล 3D มองจากด้านบน · Nine-Tail Miko Reborn 2.5D)',
+  who='the nine-tailed fox shrine maiden in this picture', P='She', p='she', pos='her', weapon='staff',
+  face="Keep her face exactly as in the picture: the same big amber-red eyes with the sharp red eyeliner, the same three red "
+       "stripe marks on each cheek and the same calm, confident look, small mouth closed.",
+  back_face={'NE': "We see her mostly from behind: the back of her head with her long white hair, both fox ears from behind, "
+                   "the red flower with its bell and tassels on the side of her head and her nine tails fanned out over her "
+                   "back; of her face only the edge of her cheek on the right, as in the picture; her face never turns "
+                   "toward us.",
+             'N': "We only see the back of her head with her long white hair, the backs of both fox ears, the red flower "
+                  "with its bell and tassels, and her nine tails fanned out over her back, as in the picture; her face never "
+                  "turns toward us."},
+  keep={d: ("Her big white fox ears with crimson tips, the red flower with its gold bell and red tassels, the twisted red "
+            "rope in her hair, the white kimono top and the wide white sleeves with red cherry blossoms, the dark-red sash "
+            "with its gold cord knot, big gold bell and gold tassel, the two white paper charms, the short white-and-red "
+            "skirt with its pointed front panel, the white socks, the red-strapped black geta, her nine white tails with "
+            "crimson tips and the gold staff with its little torii top, pink orb, small red flowers and white paper "
+            "streamers stay exactly the same.") for d in ('S', 'SE', 'E')}
+       | {d: ("Her big white fox ears with crimson tips, the red flower with its gold bell and red tassels, the twisted red "
+              "rope in her hair, her long white hair, her nine white tails with crimson tips, the red-strapped black geta and "
+              "the gold staff with its little torii top and pink orb stay exactly the same.") for d in ('NE', 'N')},
+  spos={'S': 'beside her', 'SE': 'beside her', 'E': 'a little in front of her', 'NE': 'beside her', 'N': 'beside her'},
+  blink=", and her big fox ears twitch once; her eyes stay open for the whole clip",
+  vis=" The staff stays visible beside her body and above her tails during the whole move.",
+  fmt={'pvis': ('', " The raised staff stays visible above her head while she holds the pose.")},
+  inframe="her whole body, both fox ears, all nine tails and the whole staff stay inside the frame.",
+  nofx="No shadow, no flash, no glow, no light around the orb, no sparkles, no particles, no smoke, no flames, no foxfire, "
+       "no moonlight, no petals, no light trails, no streaks of colour, no motion lines, no magic effects, no symbols, "
+       "no text.",
+  look="Keep the exact look of the picture: a stylized 3D game model with soft toon shading and clean dark-brown outlines, "
+       "the same colours and the same fur, hair, silk, paper, lacquer, glass and gold textures — not photorealistic and not "
+       "a flat drawing. The camera keeps looking down at her from above at the same angle as in the picture.",
+  act={
+   'idle': "Idle loop of {who}. {facing} She stands gracefully holding her staff upright {spos}, the pink orb at the top, "
+           "her other hand relaxed at her side, and breathes slowly: her nine fluffy tails sway slowly in a soft wave one "
+           "after another, and her long white hair, the red tassels and the little bells stir a little{blink}. All nine "
+           "tails stay attached behind her and keep their number. The last frame matches the first frame so the clip loops.",
+   'walk': "Walk loop of {who}. {facing} She walks in place, like on a treadmill, toward the way she is facing: light, "
+           "graceful little steps (about two steps per second) in her tall geta, her staff held upright {spos} bobbing a "
+           "little with each step, her nine tails bouncing and swaying behind her, her hair and wide sleeves swaying. All "
+           "nine tails stay attached behind her and keep their number. She does not move across the frame, she does not "
+           "come closer to the camera or move away from it, and the ground does not move. The last frame matches the first "
+           "frame so the clip loops.",
+   'attack': "Staff cast of {who}. {facing} She takes her staff in both hands, pulls it back beside her shoulder in a short "
+             "wind-up, then thrusts it forward toward the way she is facing until her arms are stretched and the staff "
+             "points forward and a little up, the orb farthest forward, like aiming a wand; she holds that pose for a "
+             "moment, then brings the staff back upright beside her, returns to her starting pose and stands still for the "
+             "rest of the clip. The whole move takes about one second. Her feet stay in place and her tails follow the "
+             "move.{vis} The staff keeps its full length and shape, and the air around the orb stays empty and plain green "
+             "in every frame. Clean outlines in every frame, no motion blur.",
+   'buff': "Prayer cast of {who}. {facing} She raises her staff high above her head with the hand that holds it, so the "
+           "pink orb is at the very top, and lifts her other hand open in front of her chest like a prayer, her nine tails "
+           "spreading a little wider behind her; she holds that pose still for about one second, then lowers the staff "
+           "back upright beside her, returns to her starting pose and stands still for the rest of the clip. Her feet stay "
+           "in place.{pvis} The raised staff stays inside the frame. Clean outlines in every frame, no motion blur."},
+  dirname={'S': 'หน้าตรง', 'SE': 'เฉียงหน้า หันขวา', 'E': 'ข้าง หันขวา', 'NE': 'เฉียงหลัง หันขวา', 'N': 'หลัง'},
+  actname={'idle': 'ยืน (idle · วนลูป)', 'walk': 'เดิน (walk · วนลูป)',
+           'attack': 'ยื่นไม้เท้าร่าย (attack · ตีปกติ — เกมเล่นแค่ช่วงง้าง 3 เฟรม → ยื่นสุด → 2 เฟรมหลัง)',
+           'buff': 'ชูไม้เท้าอธิษฐาน (buff · สกิลร่ายทุกท่า — เกมปล่อยสกิลที่เฟรมชูสุด)'},
+  start='kitsune25_{n}_{d}.png',
+  header="""เจ้าของเลือกแบบ 5 'มิโกะเก้าหางโฉมใหม่' 2026-11-26 20:24 ('ขอพร้อมทำสไปร้2.5d' + ชีต) · ชีต `assets/heroes/kitsune/sheet_reborn.webp` · ภาพใหญ่ = หน้าเลือกตัวแล้ว (`select.webp`, SELV kitsune 2) · หน้าตา + พรอมต์ภาพยืน 5 มุม 2.5D: `KITSUNE_LOOK_PROMPTS_TH.md` หัวข้อ 'เลือกแล้ว: แบบ 5' · เป็นสไปรต์ตัวแรกของเธอเอง (ตอนนี้ในเกมยังใส่ร่างหมาป่า `assets.js`)
+
+## ลำดับงาน
+1. **ภาพยืน 5 มุม 2.5D** — รอ · SE ก่อน (แนบชีต + `style_ref_wolf25.jpg`) แล้ว S / E / NE / N (แนบภาพ 2.5D มุม SE + ชีต) → เก็บเป็น `assets/heroes/kitsune/view25_<ทิศ>.webp`
+2. **ภาพตั้งต้น** (ผมทำจากภาพยืน) → `kitsune25_1_S.png … kitsune25_5_N.png`
+3. **คลิป 20 ตัว** — พรอมต์ในไฟล์นี้ · **เช็กประโยคหน้า / หลังกับภาพ 2.5D จริงก่อนส่ง** (เขียนก่อนเห็นภาพ)
+
+## ภาพตั้งต้น
+- `kitsune25_<n>_<ทิศ>.png` 1024×1024 · ตัวสูง ~490 px (ปลายหูถึงพื้นรองเท้า) เท้าที่ 88 % แบบหมาป่า / จากัวร์ / แรด 2.5D · **รันทีละมุม** ให้ทุกมุมตัวสูงเท่ากัน (ภาพจาก ChatGPT ขนาดไม่เท่ากัน) · ต้องมีที่ให้ชูไม้เท้าเหนือหัว (ไม้เท้าสูงกว่าตัว) + ยื่นไม้เท้าไปข้างหน้าสุดแขนในมุมข้าง + หาง 9 หางแผ่ข้าง → ถ้าที่บนหัวไม่พอ ลด ht เป็น ~460
+```
+V=assets/heroes/kitsune; for d in S SE E NE N; do python3 -I tools/dir8cut.py startv <โฟลเดอร์> $d=$V/view25_$d.webp size=1024 feet=.88 ht=490 clean=0; done
+```
+
+## วิธีใช้
+แนบภาพตั้งต้นของทิศนั้น + วางพรอมต์ทีละตัว → 4 คลิปต่อทิศ (ยืน · เดิน · ยื่นไม้เท้า · ชูไม้เท้า) · คลิปละ 3–5 วิ · ไม่ต้องทำทิศซ้าย (เกมกลับด้านเอง) · ส่งกลับเรียง S → SE → E → NE → N
+
+## กติกาที่อยู่ในทุกพรอมต์ (บทเรียนจากคลิปหมาป่า / จากัวร์ / แรด / อนูบิส / ฮิปโป / บาสเต็ด / แกะ / ลิง)
+- ประโยคบอกทิศขึ้นต้นทุกพรอมต์ กันโมเดลหมุนตัวหันหากล้อง · มุมหลัง (NE, N) 'เห็นแค่หลังหัว หน้าไม่หันมา'
+- ประโยคลุค 2.5D (คีย์ `look`) + กล้องมองลงจากด้านบนมุมเดิม · **ห้ามใช้ชุดพรอมต์แบนกับภาพ 2.5D**
+- ยืน: **ลืมตาตลอดคลิป** · เดิน: **ไม่เข้าหา / ถอยห่างกล้อง** · **หาง 9 หางติดอยู่ข้างหลังและจำนวนเท่าเดิม** (โมเดลวิดีโอชอบรวม / เพิ่มหาง)
+- ยื่นไม้เท้า: ไม่ใช้คำ attack / slash / strike · อากาศรอบลูกแก้วเป็นพื้นเขียวเปล่าทุกเฟรม · ไม้เท้ายาวเท่าเดิม · มุมหลังสั่งให้ไม้เท้ายังเห็นข้างตัวเหนือหาง
+- ชูไม้เท้า = ชูเหนือหัวด้วยมือที่ถือ ลูกแก้วอยู่บนสุด อีกมือแบหน้าอกแบบอธิษฐาน ค้าง ~1 วิ (เกมค้างเฟรมชูสุดตอนร่ายนาน)
+- ห้ามแสงรอบลูกแก้ว ห้ามไฟจิ้งจอก แสงจันทร์ กลีบดอกไม้ เส้นความเร็ว สัญลักษณ์ (เอฟเฟกต์ใส่ในเกม: `kitsune_vfx.js`) · ไม่ระบุมือซ้าย / ขวา (ภาพตั้งต้นบอกเองว่าไม้เท้าอยู่มือไหน)""",
+  footer="""## ตอนคลิปมาถึง (โน้ตสำหรับแชตที่ทำต่อ)
+- ตัดด้วย `tools/cliphero.py` + แผนใหม่ `tools/clips/kitsune25_plan.json` (ดู `wolf25_plan.json` / `jaguar25_plan.json`: frames ช่วงลืมตา, เลี่ยงเฟรมที่โมเดลแอบใส่แสง / รอยวง, perDir, scaleFix, breath)
+- **ไฟล์ใหม่ `assets_kitsune.js`** (prefix ใหม่ เช่น KIT) สลับใน index.html แบบ BST_ART เฉพาะ `?char=kitsune` + รายการ document.write + ตาราง MB หน้าโหลด · **ห้ามเขียนทับ `assets.js`** (หมาป่าเก่า + ร่างชั่วคราวของสิงโต จระเข้ อีกา อนูบิส)
+- **เวลาเฟรมต้องเท่า `assets.js` ทุกทิศ** (เธอถูก bench กับเวลานี้) → เช็ก `python3 tools/fxlab.py hits kitsune` ก่อน / หลัง (FXSEED + o.sure):
+  - attack 12 เฟรม 900 ms · S [80,50,90,50,50,50,70,200,50,50,50,110] contact 6 (370 ms) · SE [50,50,190,70,90,50,50,50,50,50,90,110] contact 4 (360) · E [80,50,50,100,50,120,60,120,50,50,50,120] contact 6 (450) · N [110,120,50,50,70,50,120,70,50,50,50,110] contact 6 (450) · NE: atlas เดิมเล่นแถว E (atkRemap NE→E) → คลิป NE ใช้เวลา + contact ของ E แล้วตั้ง atkRemap {} · เฟรม contact = ไม้เท้ายื่นสุด ลูกแก้วอยู่หน้าสุด
+  - buff 12 เฟรม 1.4 วิ peak 7 · S [170,50,50,230,50,110,390,50,50,50,50,150] (1,050 ms) · E [70,50,50,50,50,70,170,580,50,50,50,160] (510) · NE [80,60,50,50,50,50,120,160,480,60,60,180] (460) · N [130,50,50,50,50,110,260,450,60,50,50,90] (700) · SE 6 เฟรม [220×6] peak 3 (660) → เฟรม peak = ชูไม้เท้าสุด
+  - walk 8 × 100 ms (E สลับ 110 / 90) · idle 12 เฟรม 2.4 วิ · hurt 7 เฟรม 550 ms
+- ใครใช้เฟรมไหน (`char_kitsune.js`): `kStaff` = ตีปกติเท่านั้น → attack ตั้งแต่ contact−3 ถึง contact+2 · **ตอนนี้ KIV (`kitsune_vfx.js` v3) สลับตีปกติไปเล่นคลิป buff** (เพราะท่าตีของร่างหมาป่าคือฟันขวาน) → atlas ใหม่มีท่ายื่นไม้เท้าแล้ว ให้ปิดการสลับเฉพาะ atlas ของเธอ (แบบ OWN ใน `bastet_vfx.js`) · `kCast` → buffAct = สกิลทุกท่า → buff ถึง peak = ปล่อยสกิล
+- **socket:** `kitsune_vfx.js` tip() / KIV.staffStart / KIV.from อ่าน `player.socket.w` → ไฟจิ้งจอกออกจากหัวไม้เท้า → ทุกเฟรมต้องมี socket = ลูกแก้วชมพู (cliphero orbAll: ตัวจับลูกแก้วหาสีฟ้าเป็นค่าเริ่ม ต้องตั้ง orbMask ให้จับสีชมพู หรือ orbFix อ่านด้วยตา) + liveSocket ขยายตาม CHAR_SCALE (แบบ bastet_vfx.js)
+- **ขนาด:** CHAR_SCALE.kitsune ตอนนี้ 1 (ร่างหมาป่า) → วัดใหม่ให้ยืนสูงเท่ามาตรฐาน · HERO_SIZE.kitsune .869 ตั้งตอนเป็นร่างหมาป่า → ถามเจ้าของ (เครื่องปรับขนาด) ว่าเด็กชิบิหาง 9 หางควรสูงเท่าไร
+- **หน้า HUD:** ตัดหัวจากภาพ 2.5D มุม S เป็น `assets/heroes/kitsune/face25.webp` + window.HUD_FACE ใน installKitsune
+- `kitsune_art.js` 'tails' (พัดหางครีมปลายชมพู) → ย้อมเป็นขาวปลายแดงเข้มให้เข้ากับหางจริง
+- ยังเป็นลุคเก่า: ไอคอน 56, พื้นหลังผังสกิล 032–035, ภาพหน้าโหลด ld1 ld2 ld7 ld8 · ยังไม่มี: ท่านั่ง, ท่าพิเศษ (แบบจากัวร์ / หมาป่า)""")
 
 def build(h, d, a):
     H = HEROES[h]; back = d in BACK
