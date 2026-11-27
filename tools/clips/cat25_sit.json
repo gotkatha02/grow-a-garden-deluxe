@@ -1,0 +1,34 @@
+{
+ "_note": "Nekomata Wanderer cat 2.5D sitting views (owner 2026-11-27 10:56 'ท่านั่ง', his ChatGPT sheet from the ⑩ sit box of CAT25_POSE_PROMPTS_TH.md): 8 pictures 2x4 on green, cross-legged, katana on the left hip, mask on the right hip, straw hat on his back. ChatGPT did not keep the asked order: the sheet holds SE, S, SE again, E / NE, N, NW, W and no lower-left view, so names follow the sheet order and SW = picture 3 flipped (the standing SW frames are the flipped SE ones too). Written as loose pictures (pics mode) assets/sit/cat25_<dir>.webp at sheet px; k .41 = his head matched to the 2.5D idle frames (masked template match: S .415, SE .40 / .405, E .405); anchor x = where the standing idle head is (head template of the same direction, W side from the flipped E / NE frames: /home/claude/work/catsit/py/headx.py), y = the body's ground line (the bottom of the crossed legs; the tails lying beside / behind him reach below it); tone like the pose states (C .91, blur .61 sheet px = .25 cell px). hero_sit.js uses them while window.CAT25. Rebuild: python3 -I tools/sheet_state.py tools/clips/cat25_sit.json",
+ "js": "assets_cat25.js",
+ "prefix": "CAT",
+ "state": "sit",
+ "sheet": "assets/heroes/cat/poses25/sit.webp",
+ "rows": 2,
+ "cols": 4,
+ "scale": 1,
+ "sheet_coords": true,
+ "anchors": [
+  [155.9, 476],
+  [597.1, 470],
+  [954.9, 478],
+  [1365.2, 471],
+  [241.2, 955],
+  [589.7, 940],
+  [944.3, 940],
+  [1337.4, 956]
+ ],
+ "clean": true,
+ "tone": {
+  "L": 1.0,
+  "C": 0.91,
+  "blur": 0.61
+ },
+ "pics": {
+  "prefix": "assets/sit/cat25_",
+  "names": ["SE", "S", "SW", "E", "NE", "N", "NW", "W"],
+  "mirror": ["SW"],
+  "k": 0.41,
+  "q": 92
+ }
+}

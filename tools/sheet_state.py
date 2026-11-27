@@ -28,7 +28,11 @@ SPEC (JSON):
   "pics": {"prefix": "assets/sit/jaguar_", "names": ["S",...], "k": .489, "q": 92}   optional: write every frame as its
                                               own picture instead of an atlas state (sitting views for hero_sit.js, "scale"
                                               1 = sheet px); "anchors" = sit point (body centre x, ground line y) -> the
-                                              tool prints the SIT entry (cx / fy fractions)
+                                              tool prints the SIT entry (cx / fy fractions); "names" follow the SHEET order
+                                              (any order); "mirror": ["SW"] = these names are written flipped left-right
+                                              (a view the sheet lacks, made from its opposite: the 2.5D cat's sheet drew the
+                                              lower-right view twice and no lower-left one, 2026-11-27); their anchor is
+                                              given unflipped and flipped with the picture
   "dirs": ["S","SE","E","NE","N"],            source directions that get these frames (the engine mirrors SW / W / NW)
   "views": {"S":[0,0,0], "E":[1,1,1], ...}    optional (the 2.5D cat's hurt / KO sheets 2026-11-27: one picture per VIEW): each
                                               direction's row = these sheet frames (0-based, in sheet order) instead of all of them;
@@ -207,11 +211,15 @@ if PICS:
     for i, (fr, ax_, ay_) in enumerate(frames):
         nm = PICS['names'][i]
         q = fr if S == 1 else fr.resize((max(1, round(fr.width * S)), max(1, round(fr.height * S))), Image.LANCZOS)
+        if nm in PICS.get('mirror', []):                 # a missing view made from its opposite (flipped with its anchor)
+            fr = fr.transpose(Image.FLIP_LEFT_RIGHT); q = q.transpose(Image.FLIP_LEFT_RIGHT); ax_ = fr.width - 1 - ax_
         if TONE: q = tone(q, TONE)
         q.save(PICS['prefix'] + nm + '.webp', 'WEBP', quality=PICS.get('q', 92), method=6)
         cxs[nm] = round(ax_ / fr.width, 3); fys[nm] = round((ay_ + 1) / fr.height, 3)
         print(f'  {PICS["prefix"]}{nm}.webp {q.width}x{q.height} cx {cxs[nm]} fy {fys[nm]}')
-    js_ = lambda d: ','.join(f'{n}:{d[n]}' for n in PICS['names'])
+    D8_ = ['S', 'SE', 'E', 'NE', 'N', 'NW', 'W', 'SW']
+    ord_ = [n for n in D8_ if n in cxs] + [n for n in PICS['names'] if n not in D8_]   # the entry in the usual direction order
+    js_ = lambda d: ','.join(f'{n}:{d[n]}' for n in ord_)
     print("SIT entry: {dir:'%s',k:%s,cx:{%s},fy:{%s}}" % (PICS['prefix'], PICS.get('k', '?'), js_(cxs), js_(fys)))
     sys.exit()
 pieces = []; cellSock = []
