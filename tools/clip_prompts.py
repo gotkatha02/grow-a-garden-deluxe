@@ -1944,7 +1944,282 @@ HEROES['bastet25'] = dict(
 - **ขนาด:** วัด `CHAR_SCALE.bastet` ใหม่ (ตอนนี้ 1.56) จากความสูง**ถึงปลายหู ไม่รวมจานสุริยะ** (จานสูงอีก ~15 %) ไม่งั้นตัวจะเล็กลง · `HERO_SIZE.bastet` .724 คงไว้ · `bastet_vfx.js` headZ() = ขอบบนของภาพยืน S + 6 → ตอนนี้จะเป็นปลายจาน → ปรับให้วงวิญญาณ / ของบนหัวอยู่เหนือจานพอดี
 - **ขนาดในคลิป:** ภาพยืนตัวสูง ~60 % ของภาพ → คลิป 544² ตัวสูง ~325 px · คลิปร่าย คัมภีร์ + ไฟอาจชิดขอบบน → ดูก่อนตัด (`topFade` ถ้าโดนขอบ) · ภาพ S มีเงาจางใต้เท้า → ถ้าคลิปมีเงาด้วย ตัดออกตอนคีย์
 - **หน้า HUD:** ภาพยืนไม่ได้เก็บใน repo (เจ้าของสั่ง) → ตัดหัวจากเฟรมแรกของคลิปยืน S เป็น `assets/heroes/bastet/face25.webp` + window.HUD_FACE (ร่างเก่าใช้ face.webp)
-- ยังไม่มี: ท่าเสริมมุมเดียว (แบบจากัวร์ / หมาป่า), ท่านั่ง 8 มุม, ไอคอนสกิล (โค้ด SVG), พื้นหลังผังสกิล · ภาพหน้าโหลด ld1 ld8 ยังเป็นลุคเก่า""")
+- ท่าเสริม 7 แผ่น + โดนตี / KO 4 มุม + ท่านั่ง 8 มุม: พรอมต์ภาพแผ่นอยู่ใน `BASTET25_POSE_PROMPTS_TH.md` (รอรูป · วิธีผูกท่าอยู่ท้ายไฟล์นั้น)
+- ยังไม่มี: ไอคอนสกิล (โค้ด SVG), พื้นหลังผังสกิล · ภาพหน้าโหลด ld1 ld8 ยังเป็นลุคเก่า""")
+
+# ---- Bastet 2.5D extra pose sheets (owner 2026-11-27 15:54 'ขอพร้อมเจนท่าพิเศษเป็นรูป', after the v2 clip prompts): ChatGPT
+# picture sheets like the cat's (SHEETS['cat25']): one view (front three-quarter facing the lower right, the game mirrors the
+# left side and keeps clip frames for the back directions) + hurt and KO in 4 views + sit in 8. Every Bastet skill but the
+# basic attack calls bCast → buffAct = the ONE 'book raised' clip (24 skills, incl. Cat's Grace, which teleports during it),
+# so the poses are grouped by gesture: leap · curse point · summon from the ground · release burst · sky call · prayer · drain.
+# Her look line = the words of her 2.5D standing-view prompts (BASTET_LOOK_PROMPTS_TH.md 'เลือกแล้ว: แบบ 4'), the sash ends
+# 'as in the attached picture' (the 2.5D views drew them over both sides of the skirt). The book = one object that floats by
+# itself (two-handed poses let it float beside her head). Things the game draws itself (mummies, locusts, souls, the eye, the
+# red sun, sand) are never named: the ground / the space above her is 'plain green' instead.
+_BSTY = ("Style: the same 2.5D look as the attached picture — a stylized 3D game model with solid volume and depth, rendered "
+         "with a toon shader that imitates hand-drawn art: clean dark-brown hand-drawn-looking outlines, soft cel shading in "
+         "2–3 tones that follows the 3D forms, one warm key light from the upper left with a soft cool shadow side, a thin "
+         "bright rim light along the edges, matte painted textures (soft white fur, thick smooth hair locks, pleated linen, "
+         "silk, paper pages, red gemstones, gold with soft painted highlights). Not photorealistic, not glossy plastic, not a "
+         "flat 2D drawing. Keep her chibi proportions exactly as in the picture: a small cat girl about three heads tall, with "
+         "a big head.")
+_BCAM = "Camera: the same as in the attached picture — looking down at her from about 30 degrees above, with no perspective distortion."
+_BLOOK = ("Her look (nothing added and nothing left out): a young snow-white cat girl with a real cat face covered in soft white "
+          "fur — a short muzzle, a small pink nose, a small cat smile and a few fine whiskers — big golden-amber eyes with bold "
+          "black winged eyeliner, and two short red stripes on each cheek. Two big pointed cat ears, white with golden-orange "
+          "tips, pink inside with white fluff. Long straight snow-white hair made of thick smooth locks like an Egyptian wig: "
+          "side-swept bangs, locks framing her face down to her chest and a curtain of locks down her back, every lock ending "
+          "in a gold tube bead. On top of her head, between her ears, a round gold-and-orange sun disc with short spiky gold "
+          "rays and a small rearing gold cobra in front of it. A broad gold collar shaped like two spread wings over her "
+          "shoulders, with an oval red gem in the middle, and a small gold ankh hanging on her chest below it. A short white "
+          "sleeveless linen dress with a pleated skirt that ends above the knee and a wide gold border at the hem. A wide "
+          "scarlet sash round her waist with a big gold sistrum charm hanging at the front (a gold loop with three bars across "
+          "it, a gold bead and a gold tassel), a round gold clasp at the back, and long scarlet sash ends with gold-banded tips "
+          "hanging down over her skirt exactly as in the attached picture. Gold bands round her upper arms, wide gold cuffs "
+          "with red gems on her wrists, double gold anklets with red gems, and gold sandals with thick straps on white furry "
+          "paws. A long fluffy white cat tail with a golden-orange tip.")
+_BBOOKD = ("a small book, a little smaller than her head, with a gold cover framing a dark brown panel that shows a gold winged "
+           "sun disc with an orange sun in the middle")
+_BBG = "Background: flat solid pure green #00FF00 everywhere, no gradient, no floor, no shadow under her."
+_BUSE = ("Use the attached picture: the 2.5D picture of her in a front three-quarter view (turned toward the lower right) shows "
+         "exactly how she looks and how she is rendered; if more pictures of her are attached, they show her from other sides. "
+         "Copy her look and the rendering exactly, but not the standing pose.")
+_BUSEALL = ("Use the attached pictures: they show her standing, seen from five sides, exactly as she looks and how she is "
+            "rendered from each side — copy her look and the rendering exactly, but not the standing pose.")
+def _bbook(side=True):
+    return ("Her spellbook, in every frame: " + _BBOOKD + ", open, with cream pages and a small solid blue flame over "
+            "the open pages — always the same size and shape; never a second book. It floats by itself in the air and she "
+            "never grips it: "
+            "unless a frame says otherwise it floats just above her raised LEFT palm, beside her left shoulder" +
+            (", on the right side of the picture" if side else "") + ", never in front of her face. She holds no staff, no "
+            "wand and no blade.")
+_BRULE = ("She has ONE long fluffy white tail with a golden-orange tip in every frame. The gold sun disc with the small gold "
+          "cobra stays on top of her head between her ears in every frame. Her eyes are open unless a frame says otherwise.")
+_BVIEW = ("View: every frame shows her from the same front three-quarter view as the attached 2.5D picture — body and face "
+          "turned toward the lower right of the picture. Her free RIGHT hand is the one nearest to us, on the left side of the "
+          "picture; her LEFT hand with the floating book is on the right side of the picture.")
+_BVIEW4 = ("View: the four frames are the SAME pose seen from four directions, all from the same camera, in this order: 1. front "
+           "three-quarter view, turned toward the lower right; 2. side view, facing right; 3. back three-quarter view, turned "
+           "away from us toward the upper right; 4. back view.")
+_BNOFX = ("No effects at all: no glow, no sparkles, no magic circles, no light beams, no motion lines, no speed lines, no dust, "
+          "no symbols, no text, no numbers and no frame borders — only the cat girl and her small book; show the movement with "
+          "the pose alone. The small blue flame over the pages is a solid flame shape with no light around it, the sun disc is "
+          "plain shiny gold and does not shine, and the gold never glows. No green anywhere on her.")
+def _bbox(what, n, grid, pct, frames, after='', view=_BVIEW, use=_BUSE, book=None):
+    lay = ("Layout: landscape 1536×1024, " + _GRID25[grid] % n + ", the cat girl the same size in every frame — when she "
+           "crouches, kneels or lies down she gets lower, never bigger — her whole body (the sun disc, both ears, her tail, the "
+           "book and her feet) inside her own frame with clear empty green space around it; frames never touch or overlap. "
+           "Draw her small: standing up straight, from the tip of the sun disc to her feet, she would be only about %d%% of a "
+           "frame's height." % pct)
+    L = ["2.5D game sprite sheet of the little white cat priestess — %s." % what, use, _BSTY, _BCAM, _BLOOK,
+         book or _bbook(view is _BVIEW), _BRULE, view, lay, 'Frames:'] + ['%d. %s' % (i + 1, f) for i, f in enumerate(frames)]
+    if after:
+        L.append(after)
+    return '\n'.join(L + [_BBG, _BNOFX])
+_SHB = {}
+_SHB['leap'] = dict(n='①', th="ท่ากระโดดแบบแมว (6 เฟรม)", prio='สำคัญ',
+  use="Cat's Grace (+ Shadow Cat) — ตอนนี้ชูคัมภีร์แล้ววาร์ปไปเฉยๆ",
+  frames='1 ย่อ → 2 ถีบตัว → 3–4 ลอย (เกมยกตัวเอง) → 5 ลงพื้นมือแตะพื้นแบบแมว → 6 ลุก · กระโดดถอยหลังหนีศัตรู หน้ายังหันไปหาศัตรู',
+  box=_bbox("a light, cat-like backward leap away from danger, 6 frames", 6, '2x3', 45, [
+    "Crouch to spring: knees bent deep, body low and leaning forward a little, ears forward, eyes on the lower right; her "
+    "right hand held out low for balance, the book floating close above her left palm.",
+    "Take-off: legs pushing off the ground, her body springing up and back, leaning backward, both arms lifting, her tail "
+    "swinging up.",
+    "Rising: in the air with her knees tucked up under her like a leaping cat, her body curled, her hair locks, the sash ends "
+    "and her tail flowing forward; she still looks toward the lower right.",
+    "Top of the hop: still in the air, body arched lightly backward, legs tucked, both arms out to the sides for balance, the "
+    "book floating close beside her left hand.",
+    "Landing: landed lightly on both feet in a low crouch, her free right hand touching the ground in front of her like a "
+    "cat's paw, her tail curving up behind her, eyes on the lower right.",
+    "Rising from the landing: straightening up into her calm standing pose, the book back above her left palm."],
+    "Frames 2 to 4 are in the air (feet off the ground): draw them the same size as the other frames and in the middle of "
+    "their own frames — the game moves her across the ground itself. She hops backward, away from the way she faces; she "
+    "does not turn around and does not do a full flip."))
+_SHB['sign'] = dict(n='②', th='ท่าชี้คำสาป (4 เฟรม)', prio='สำคัญ',
+  use='สาย A: Curse Glyph · Curse Link · Mark of Apep · Mummy\'s Wrap · Plague of Locusts · Locust Storm',
+  frames='1 รวมคำสาป (ช่วงก่อนปล่อย) → 2 ชี้ (= จังหวะปล่อย) → 3 ค้าง → 4 ลดมือ',
+  box=_bbox("pointing a curse at an enemy, 4 frames", 4, '2x2', 50, [
+    "Gathering the curse: her free right hand raised beside her face with the fingers curled like a little claw, eyes "
+    "narrowed, a sly little smile, ears tilted forward; the book tilting toward her face above her left palm.",
+    "Pointing: her right arm thrust straight forward toward the lower right, her index finger pointing at the enemy and the "
+    "other fingers curled, body leaning a little forward, weight on her front foot, her tail flicking up.",
+    "The same pointing pose a moment later, almost identical — only her hair locks, the sash ends and her tail moved "
+    "slightly — so frames 2 and 3 can be held.",
+    "Lowering: her right hand coming back down to her side, standing calm again, the book settled above her left palm."]))
+_SHB['summon'] = dict(n='③', th='ท่าเรียกจากพื้นดิน (4 เฟรม)', prio='สำคัญ',
+  use='สาย B: Raise Mummy · Army of the Duat · Mummy Lord · Anubis Shade · Duat Gate + Temple Obelisk',
+  frames='1–2 คุกเข่ามือแตะพื้น (วนตอนร่าย) → 3 ยกมือขึ้นจากพื้น (= จังหวะผู้รับใช้โผล่) → 4 ยืนยกมือค้าง',
+  box=_bbox("summoning from the ground: kneeling with her palm on the ground, then lifting it, 4 frames", 4, '2x2', 50, [
+    "Kneeling: down on one knee, her free right palm pressed flat on the ground in front of her, head bowed, eyes on her "
+    "hand, her tail curled on the ground behind her; the book floating above her left palm beside her shoulder.",
+    "The same kneeling pose a moment later, almost identical — only her hair locks and the tip of her tail moved slightly — "
+    "so frames 1 and 2 can loop.",
+    "Lifting: rising from her knee and sweeping her right hand up from the ground, the palm turning upward, as if lifting "
+    "something up out of the earth; her chin rising.",
+    "Raised: standing tall, her right arm held out forward at shoulder height with the palm up, chin up, proud; her tail up."],
+    "The ground under her hand stays plain green: nothing comes out of it."))
+_SHB['burst'] = dict(n='④', th='ท่ากางแขนปล่อยพลัง (4 เฟรม)', prio='ดี',
+  use="Word of Doom · Soul Harvest · Scarab Swarm · Judgment of Osiris",
+  frames='1 รวมพลัง (ก่อนปล่อย) → 2 กางแขน (= จังหวะระเบิด / ปล่อย) → 3 ค้าง → 4 ลดแขน',
+  box=_bbox("a power release: gathering, then flinging both arms wide, 4 frames", 4, '2x2', 50, [
+    "Gathering: both arms crossed over her chest, shoulders hunched, knees slightly bent, eyes closed, ears laid back, her "
+    "tail wrapped close round her legs; the book floating on its own beside her head on the right side of the picture.",
+    "Release: both arms flung wide open to the sides, palms open, chest out, chin up, eyes wide open; her hair locks, the "
+    "sash ends and her tail flaring outward; the book floating on its own beside her head.",
+    "The same release pose a moment later, almost identical — her hair locks, the sash ends and her tail swayed back a "
+    "little — so frames 2 and 3 can be held.",
+    "Settling: arms lowering to her sides, standing calm, the book floating back above her left palm."]))
+_SHB['sky'] = dict(n='⑤', th='ท่าชูแขนเรียกฟ้า (4 เฟรม)', prio='ดี',
+  use="อัลติ + ท่าใหญ่: Curse of the Pharaoh · Sekhmet's Plague Sun · Avatar of Bastet",
+  frames='1 เงยหน้า → 2–3 ชูแขนเรียกฟ้า (ค้างจนปล่อย) → 4 ฟาดแขนลง (= ดวงอาทิตย์ตก / ร่างเทพ) แล้วกลับท่ายืน',
+  box=_bbox("a sky call: raising her arms to the heavens, 4 frames", 4, '2x2', 45, [
+    "Looking up: chin raised toward the sky, both hands starting to rise in front of her with the palms up, the book floating "
+    "up beside her head.",
+    "Calling: both arms raised high above her head with the palms open toward the sky, standing tall on her toes, her tail "
+    "standing straight up and the sash ends lifting; the book floating high above her head between her raised hands.",
+    "The same calling pose a moment later, almost identical — so frames 2 and 3 can be held.",
+    "Bringing it down: both arms swinging down and forward toward the lower right, palms pointing at the ground in front of "
+    "her, body leaning forward; the book floating back beside her left shoulder."],
+    "The space above her stays plain green except for the book."))
+_SHB['pray'] = dict(n='⑥', th='ท่าประนมมือภาวนา (4 เฟรม)', prio='ดี',
+  use="ฮีล / โล่: Ankh of Life · Bastet's Blessing · Sand Veil",
+  frames='1 ประนมมือ → 2–3 ภาวนา (= จังหวะฮีล / โล่ติด) → 4 แบมืออวยพร',
+  box=_bbox("a prayer: a blessing with joined hands, 4 frames", 4, '2x2', 50, [
+    "Joining her hands: both hands coming together in front of her chest, eyes on her hands, the book floating up on its "
+    "own beside her head on the right side of the picture.",
+    "Praying: both palms pressed together in front of her chest just above the small gold ankh, eyes closed, "
+    "head bowed a little, a calm, gentle smile, her tail curled softly round her feet; the book floating beside her head.",
+    "The same praying pose a moment later, almost identical — so frames 2 and 3 can be held.",
+    "Blessing: eyes open, both hands opening outward at chest height with the palms up, a warm smile; the book floating "
+    "back down above her left palm."]))
+_SHB['drain'] = dict(n='⑦', th='ท่ายื่นมือดูดวิญญาณ (4 เฟรม)', prio='ดี',
+  use='Soul Siphon (+ Soul Tether)',
+  frames='1 ยื่นมือ → 2–3 ดึงสลับกัน (ทุกครั้งที่ดูด) → 4 ปล่อย',
+  box=_bbox("a soul drain: reaching out and pulling, 4 frames", 4, '2x2', 50, [
+    "Reaching: her free right arm stretched straight forward toward the lower right, the palm open and facing forward, "
+    "fingers spread.",
+    "Pulling: her fingers curled into a claw as if gripping something, her hand drawn back halfway, body leaning back, "
+    "weight on her back foot.",
+    "Pulling harder: her clawed hand pulled back close to her chest, leaning back further, eyes narrowed, her tail fluffed "
+    "up.",
+    "Releasing: her hand opening in front of her chest, standing calm again."],
+    "Frames 2 and 3 alternate while she drains. Nothing is drawn in front of her hand: the air there stays plain green."))
+_SHB['hurt'] = dict(n='⑧', th='ท่าโดนตี (4 มุม)', prio='เสริม',
+  use='ทุกครั้งที่โดนตี (คลิป 20 ตัวไม่มีท่านี้ — เกมทำจากภาพยืน)',
+  attach='ภาพยืน 2.5D ครบ 5 มุม',
+  frames='ภาพละ 1 ทิศ: 1 เฉียงหน้า = S + SE · 2 ข้าง = E · 3 เฉียงหลัง = NE · 4 หลัง = N (แบบแผ่นโดนตีของแมว)',
+  box=_bbox("a hit reaction: the same flinch seen from four sides, 4 frames", 4, '2x2', 50, [
+    "Front three-quarter view: she flinches back from a hit coming from the lower right — leaning back, eyes squeezed shut, "
+    "mouth open in a small cry, ears flattened, her right hand raised in front of her face, her tail puffed up; the book "
+    "knocked a little back beside her left shoulder.",
+    "Side view facing right: the same flinch — leaning back to the left, eyes squeezed shut, ears flattened, her hand raised "
+    "in front of her face, the book knocked back beside her.",
+    "Back three-quarter view: the same flinch seen from behind — her hair locks, the back of the sun disc and her flattened "
+    "ears, shoulders hunched, her tail puffed up, the book beside her head.",
+    "Back view: the same flinch from behind — shoulders hunched, ears flattened, her tail puffed up, the book beside her "
+    "head."], view=_BVIEW4, use=_BUSEALL))
+_SHB['ko'] = dict(n='⑨', th='ท่าล้ม KO (4 มุม)', prio='เสริม',
+  use='ตอนตายในโหมดเล่น',
+  attach='ภาพยืน 2.5D ครบ 5 มุม',
+  frames='ภาพละ 1 ทิศ (แบบแผ่น KO ของแมว) · คัมภีร์ปิดตกพื้นข้างตัว',
+  box=_bbox("knocked out: lying on the ground, the same pose seen from four sides, 4 frames", 4, '2x2', 50, [
+    "Front three-quarter view: she lies flat on her front on the ground, knocked out, her head toward the lower right "
+    "resting on her folded arms, eyes closed, ears drooping, her tail lying flat behind her; the book lies closed on the "
+    "ground beside her.",
+    "Side view facing right: the same pose — lying flat on her front with her head on the right resting on her arms, eyes "
+    "closed, the book closed on the ground beside her.",
+    "Back three-quarter view: the same pose — lying flat with her head toward the upper right; we see her back, her hair "
+    "locks spread over her shoulders, the back of the sun disc and her tail.",
+    "Back view: the same pose — lying flat with her head away from us; we see the back of the sun disc, her hair locks, her "
+    "tail and the soles of her sandals."],
+    "The sun disc with the cobra stays on her head. Draw her at the same scale as standing: if she stood up she would be "
+    "about half of a frame's height.", view=_BVIEW4, use=_BUSEALL,
+    book=("Her spellbook: " + _BBOOKD + " — in this sheet it lies CLOSED on the ground beside her, with no flame, "
+          "always the same size. She holds no staff, no wand and no blade.")))
+SHEETS['bastet25'] = dict(
+  title='บาสเทต 2.5D (ธิดาแห่งรา) — ภาพแผ่นท่าเสริม 9 แผ่น + ภาพท่านั่ง 8 มุม',
+  boxHead='## กล่องพรอมต์ (ภาษาอังกฤษ วางทีละกล่อง · ①–⑦ แนบภาพยืน 2.5D มุมเฉียงหน้า · ⑧ ⑨ ⑩ แนบครบ 5 มุม)',
+  header="""เจ้าของ 2026-11-27 15:54 "ขอพร้อมเจนท่าพิเศษเป็นรูป" (หลังพรอมต์คลิป 20 ตัวชุด v2 ใน `BASTET25_CLIP_PROMPTS_TH.md`) → ไฟล์นี้ = ภาพแผ่นท่าเสริมจาก ChatGPT แบบเดียวกับแมว / จากัวร์ / หมาป่า 2.5D (`tools/sheet_state.py` ตัดแผ่นเข้าแอตลาสได้ตรงๆ) · ภาพยืน 2.5D ของเจ้าของยังไม่อยู่ใน repo (ตามที่สั่ง) — เจ้าของแนบเอง
+
+## ทำไมต้องมีท่าเสริม
+คลิป 20 ตัวให้แค่ 4 ท่า: ยืน · เดิน · ผลักฝ่ามือ (ตีปกติ) · ชูคัมภีร์ (buff) — ใน `char_bastet.js` ทุกสกิลยกเว้นตีปกติเรียก `bCast` → `buffAct` = **ท่าชูคัมภีร์ท่าเดียวทั้ง 24 สกิล**: Cat's Grace ชูคัมภีร์แล้ววาร์ปไปเฉยๆ (ไม่มีท่ากระโดด) · คำสาปเล็งเป้าสาย A · การเรียกมัมมี่ / ผู้รับใช้สาย B · ระเบิดคำสาป / ปล่อยวิญญาณ · อัลติ · ฮีล / โล่ หน้าตาเหมือนกันหมด · คลิปไม่มีท่าโดนตี (เกมทำจากภาพยืน) · ไม่มีท่าล้ม KO และท่านั่ง → แผ่นท่าแบ่งตามท่วงท่า 7 แผ่น (ครบทั้ง 24 สกิล) + โดนตี + KO + นั่ง
+
+## วิธีใช้
+- เปิดแชต ChatGPT ใหม่ 1 แชต · กล่อง ①–⑦ แนบ**ภาพยืน 2.5D มุมเฉียงหน้า** (หันขวาล่าง · คัมภีร์อยู่ขวาของภาพ — ภาพที่ส่งมาเมื่อ 2026-11-26 21:42) · แนบครบ 5 มุมด้วยก็ได้ · **กล่อง ⑧ ⑨ ⑩ แนบครบ 5 มุม**
+- วางกล่องทีละกล่อง ได้รูปแล้วค่อยวางกล่องต่อไป · ทำ ①–③ ก่อน (ยืมท่าผิดชัดที่สุด)
+- ไม่แนบชีตออกแบบ 2D หรือภาพหน้าโหลด (มันจะดึงกลับเป็นภาพวาดแบน) · ห้ามแนบไฟล์ .md นี้ให้ ChatGPT
+- มุมเดียวพอ (เฉียงหน้า หันขวาล่าง): เกมกลับด้านเองตอนหันซ้าย · ตอนหันขึ้นใช้เฟรมจากคลิป 20 ตัว · โดนตี / KO มี 4 มุม · ท่านั่ง 8 มุม
+- ไม่ต้องรอคลิป · ได้แผ่นไหนส่งมาแผ่นนั้น ไม่ต้องรอครบ
+
+## กติกาในทุกกล่อง
+- ลุค / กล้อง / หน้าตาทั้งตัว / พื้นเขียว = บรรทัดเดียวกันทุกกล่อง (คำเดียวกับพรอมต์ภาพยืน 2.5D ที่ได้ผลแล้ว) · ชายผ้าแดงสั่ง 'ตามภาพที่แนบ' (ภาพ 2.5D วาดคลุมกระโปรงทั้งสองข้าง ต่างจากชีตนิดหน่อย)
+- คัมภีร์ = ชิ้นเดียว ขนาดเท่าเดิม เปิดอยู่ ไฟสีฟ้าเล็กทึบ ลอยเอง ไม่จับ · ปกติลอยเหนือฝ่ามือซ้าย ข้างไหล่ ขวาของภาพ ไม่บังหน้า · ท่าใช้สองมือ (④ ⑤ ⑥) คัมภีร์ลอยเองข้างหัว · KO คัมภีร์ปิดตกพื้น · ไม่มีไม้เท้า / คทา
+- มือขวา = มือว่าง อยู่ใกล้กล้อง ซ้ายของภาพ (ชี้ / แตะพื้น / ดึง / ยกกัน) · บอกทิศเป็นฝั่งของภาพด้วย กันมือสลับ
+- หางเดียว · จานสุริยะ + งูเห่าอยู่บนหัวทุกเฟรม · ตาเปิด ยกเว้นเฟรมที่บอก (หลับตาภาวนา / รวมพลัง / โดนตี / KO)
+- ขนาดตัว: ยืนตรงสูง ~50 % ของช่อง (วัดจากปลายจานสุริยะ) · ~45 % ในแผ่นกระโดด ① และชูแขนเรียกฟ้า ⑤ (ลอย / ชูแขน + คัมภีร์สูง) — ตัวเท่ากันทุกเฟรม ย่อ / คุกเข่า / นอนแล้วเตี้ยลงแต่ไม่ใหญ่ขึ้น
+- ไม่มีเอฟเฟกต์ เงา ตัวหนังสือ กรอบ ตัวเลข · **ไม่เอ่ยชื่อของที่เกมวาดเอง** (มัมมี่ ตั๊กแตน ดวงวิญญาณ ตาฟาโรห์ ดวงอาทิตย์แดง ทราย) — บทเรียนรอบคลิปบาสเทต: เอ่ยแล้วโมเดลมักวาดออกมา → เขียนว่า 'พื้น / อากาศตรงนั้นเป็นเขียวเปล่า' แทน""",
+  boxes=_SHB,
+  fixes="""แก้รูป (ส่งต่อท้ายในแชตเดิม):
+- ตัวแบนเหมือนภาพวาด → `Redo: make her look like the attached 2.5D picture — a 3D game model with rounded volume and soft 3D shading, clean hand-drawn outlines.`
+- เฟรมชนกัน / หลุดกรอบ → `Redo: draw her smaller so each frame, including the sun disc, the floating book and her tail, fits inside its own area with green space around it.`
+- ตัวโตไม่เท่ากัน → `Redo: draw her the same size in every frame; when she crouches or kneels she gets lower, not bigger.`
+- คัมภีร์หาย / มีสองเล่ม / ถือไม้เท้า → `Redo: one small open book in every frame, floating by itself as described, always the same size; she holds no staff or wand.`
+- จานสุริยะ / งูเห่าหาย → `Redo: the gold sun disc with the small gold cobra stays on top of her head between her ears in every frame.`
+- มีหางสองหาง → `Redo: she has only ONE tail.`
+- หันผิดทาง (①–⑦) → `Redo: every frame faces the lower right, the same view as the attached 2.5D picture.`
+- มือสลับข้าง → `Redo: her free right hand is the one nearest to us, on the left side of the picture; the book stays on the right side of the picture.`
+- จำนวน / ลำดับเฟรมผิด → `Redo: exactly the frames listed, in that order, in the grid described.`
+- มีเอฟเฟกต์ / ของโผล่จากพื้น / ของลอยบนฟ้า → `Redo: remove every effect and everything else — only the cat girl and her book on flat green.`
+- ไฟ / จานสุริยะเรืองแสง → `Redo: no glow anywhere — the flame over the book is a small solid blue flame shape and the sun disc is plain shiny gold.`
+- แก้แค่บางเฟรม → ใช้แปรงเลือกเฉพาะเฟรมนั้นใน ChatGPT (สั่งแก้ทั้งภาพ มันจะวาดใหม่หมด)""",
+  sit=dict(n='⑩', th='ท่านั่งพัก (ภาพ 8 มุม)', prio='เสริม', use='นั่งพัก (ปุ่ม Insert / 🧘) + ฟื้น ×2',
+    head='## ภาพท่านั่ง (8 มุม)',
+    attach='แนบภาพยืน 2.5D ครบ 5 มุม แล้ววางกล่องนี้ · ไม่แนบชีตออกแบบ 2D หรือภาพหน้าโหลด · ห้ามแนบไฟล์ .md นี้ให้ ChatGPT',
+    box='\n'.join([
+      "2.5D game sprite sheet of the little white cat priestess — kneeling down to rest and read her book, the same pose "
+      "seen from 8 directions.",
+      _BUSEALL, _BSTY, _BCAM, _BLOOK,
+      "Pose (the same in all 8 pictures): she kneels on the ground sitting back on her heels, her back straight and both "
+      "hands resting on her knees; her spellbook (" + _BBOOKD + ", open, with cream pages and a small solid blue "
+      "flame over them) floats by itself in front of her chest, below her chin, and she reads it with calm half-closed "
+      "eyes and a small smile, mouth closed; her tail curls "
+      "round her side and lies on the ground beside her knees; the gold sun disc with the small gold cobra stays on top of "
+      "her head between her ears. She has ONE tail. She holds no staff, no wand and no blade.",
+      "Layout: landscape 1536×1024, 8 pictures in 2 rows of 4, read left to right, top row first. Each picture sits in its "
+      "own eighth of the picture, the cat girl the same size in every picture, her whole body (the sun disc, both ears, her "
+      "tail and the book) inside her own area with clear empty space around it — pictures never touch or overlap.",
+      "Pictures:",
+      "1. Front view, facing us.",
+      "2. Front three-quarter view, turned toward the lower right.",
+      "3. Side view, facing right.",
+      "4. Back three-quarter view, turned toward the upper right.",
+      "5. Back view: we see the curtain of her hair locks, the back of the sun disc and her tail.",
+      "6. Back three-quarter view, turned toward the upper left.",
+      "7. Side view, facing left.",
+      "8. Front three-quarter view, turned toward the lower left.",
+      _BBG, _BNOFX]),
+    fixes="""แก้รูป (ส่งต่อท้ายในแชตเดิม):
+- ตัวแบนเหมือนภาพวาด → `Redo: make her look like the attached 2.5D pictures — a 3D game model with rounded volume and soft 3D shading, clean hand-drawn outlines.`
+- ภาพชนกัน / หลุดกรอบ → `Redo: draw her smaller so each picture, including the sun disc, the book and her tail, fits inside its own area with green space around it.`
+- มุมซ้ำ / ไม่ครบ 8 → `Redo: 8 different directions in this order: front, front three-quarter right, side right, back three-quarter right, back, back three-quarter left, side left, front three-quarter left.`
+- ท่านั่งไม่เหมือนกันทุกภาพ → `Redo: the same kneeling pose in all 8 pictures — only the direction changes.`
+- คัมภีร์บังหน้า → `Redo: the book floats below her chin, in front of her chest; her face stays fully visible.`
+- แก้บางภาพ → ใช้แปรงเลือกเฉพาะภาพนั้นใน ChatGPT (สั่งแก้ทั้งภาพ มันจะวาดใหม่หมด)"""),
+  footer="""## พอได้รูปแล้วทำต่อยังไง (โน้ตสำหรับแชตที่ทำต่อ)
+1. รอแอตลาส 2.5D จากคลิป 20 ตัว (`assets_bastet25.js`, ท้าย `BASTET25_CLIP_PROMPTS_TH.md`) — ท่าเสริมต้องใช้ cell / pivot / สเกลเดียวกับแอตลาสนั้น · เก็บแผ่นดิบไว้ที่ `assets/heroes/bastet/poses25/<ท่า>.webp` ได้ตั้งแต่ได้รูป
+2. ตัดแต่ละแผ่นเป็น state: `python3 -I tools/sheet_state.py tools/clips/bastet25_<ท่า>.json [preview.png]` (แบบ `cat25_<ท่า>.json`) · rows / cols ตามแผ่น · scale = เทมเพลตหัว (หน้า + หู **ไม่รวมจานสุริยะ**) เทียบ idle SE ของแอตลาส · anchor กลางเท้า · เฟรมลอยของ ① (2–4) ใช้สะโพกเหนือเท้าต่ำสุด (เกมยกตัวด้วย player.z) · `store` = cellScale ของแอตลาส · `clean` / `erase` / `tone` ตามต้องการ · `sockets` + `sheet_coords` = ไฟบนคัมภีร์ทุกเฟรม (อ่านด้วยตา) → `bastet_vfx.js` tip() ปล่อยเวทจากคัมภีร์ต่อได้ · ② ⑦ เพิ่มจุดปลายนิ้ว / ฝ่ามือถ้าอยากให้เวทออกจากมือ
+   - state: `leap` 6 · `sign` 4 · `summon` 4 · `burst` 4 · `sky` 4 · `pray` 4 · `drain` 4 · `hurt` (views: S + SE = ภาพ 1 · E = 2 · NE = 3 · N = 4, 7 × 70 ms + nudge แบบ `cat25_hurt.json`) · `ko` (views แบบ `cat25_ko.json`)
+3. ผูกท่าในไฟล์ใหม่ `bastet_pose.js` (แบบ `cat_pose.js`: เปลี่ยนแค่เฟรมที่โชว์ ความยาว / windup / event ทุกตัวเท่าเดิม · ท่ามุมเดียวใช้ตอนหัน S SE E SW W · `?bstpose=0` = ท่าเดิม) · ทุกสกิลเป็น `buffAct` → tP = a.windup = จังหวะปล่อย
+   - leap: `bnGrace` (buffAct speed 3, วาร์ปที่ tP) → [0, 1, 2, 3 ก่อน tP] [4, 5 หลัง tP] · ถ้าอยากให้ลอยจริงต้องเปลี่ยนวาร์ปเป็น dashUpd + player.z ช่วง 0 → tP (เปลี่ยนเกมเพลย์นิดหน่อย: โดนตีกลางอากาศได้ — ถามเจ้าของก่อน)
+   - sign: `baGlyph` `baLink` `baApep` `baWrap` `baLocust` `bcStorm` → [0 ถึง tP] [1 ที่ tP] [2 ค้าง] [3 ที่เหลือ]
+   - summon: `bbMummy` `bbArmy` `bcLord` `bbAnubis` `bbGate` `bnObelisk` → [0, 1 สลับก่อน tP] [2 ที่ tP] [3 ที่เหลือ]
+   - burst: `baDoom` `bbHarvest` `bbScarab` `bcOsiris` → [0 ถึง tP] [1 ที่ tP] [2 ค้าง] [3]
+   - sky: `baPharaoh` `bcSekhmet` `bcAvatar` → [0 ช่วงแรก] [1, 2 จนถึง tP] [3 หลัง tP]
+   - pray: `bnAnkh` `bcBless` `bnVeil` → [0 ช่วงแรก] [1, 2 รอบ tP] [3 ท้าย]
+   - drain: `bbSiphon` → [0 ถึง tP] [1, 2 สลับ] [3] (ดูด 4 ครั้งทุก .3 วิต่อหลังจบท่า — ท่าครอบแค่ช่วง action)
+   - hurt: แถว hurt ใหม่ทุกครั้งที่โดนตี · ko: playerFrame คืน 'ko' ตอน #deathov เปิดและไม่มี action (แบบ cat_pose.js)
+4. ท่านั่ง: โหมด `pics` ของ sheet_state (แบบ `cat25_sit.json`) → `assets/sit/bastet25_<8 ทิศ>.webp` + รายการ bastet ใน `hero_sit.js` เมื่อ `window.BST25` และโหลด `hero_sit.js` ให้บาสเทตด้วย · cx = หัวตอนยืนของทิศเดียวกัน (ไม่ใช่จานสุริยะ)
+5. เช็ก: make() ทุกสกิลที่เปลี่ยน × 8 ทิศ (ความยาว / windup / event เท่ากับ `?bstpose=0`) · `tools/fxlab.py hits bastet` (FXSEED + sure hits) · herosweep / lostev / combo / leak""")
 
 # Golden Sheep 2.5D = Golden Sheep Reborn (owner 2026-11-26 22:13 picked design 5 of SHEEP_LOOK_PROMPTS_TH.md and asked for the
 # standing views per direction; 22:30 his 5 views in the 2.5D look + 'ขอพร้อมทำอนิเมชั่น รูปยังไม่ต้องทำไร' = prompts only, his
@@ -2131,9 +2406,10 @@ def sdoc(h):
            '_ไฟล์นี้สร้างจาก `python3 tools/clip_prompts.py %s sheets` — แก้ข้อความที่สคริปต์แล้วรันใหม่ อย่าแก้ไฟล์นี้ตรงๆ_' % h, '',
            P['header'], '', '## ลำดับ', '', '| # | แผ่น | ใช้กับ | ความสำคัญ |', '|---|---|---|---|']
     out += ['| %s | %s | %s | %s |' % r for r in rows]
-    out += ['', '## กล่องพรอมต์ (ภาษาอังกฤษ วางทีละกล่อง · แนบรูปที่ 1 ทุกกล่อง)', '']
+    out += ['', P.get('boxHead', '## กล่องพรอมต์ (ภาษาอังกฤษ วางทีละกล่อง · แนบรูปที่ 1 ทุกกล่อง)'), '']
     for k, b in B.items():
-        out += ['### %s %s' % (b['n'], b['th']), 'ใช้กับ %s · เกมใช้เฟรม: %s' % (b['use'], b['frames']), '', '```', b['box'], '```', '']
+        out += ['### %s %s' % (b['n'], b['th']), 'ใช้กับ %s · เกมใช้เฟรม: %s' % (b['use'], b['frames'])]
+        out += (['แนบ: ' + b['attach']] if b.get('attach') else []) + ['', '```', b['box'], '```', '']
     out += [P['fixes'], '']
     if S:
         out += [S['head'], '', '### %s %s' % (S['n'], S['th']), 'ใช้กับ %s · %s' % (S['use'], S['attach']), '', '```', S['box'], '```', '',
@@ -2147,6 +2423,8 @@ if __name__ == '__main__':
         if len(sys.argv) > 3 and sys.argv[3] == 'print':
             for k, b in SHEETS[h]['boxes'].items():
                 print('==', k, len(b['box'])); print(b['box'])
+            if SHEETS[h].get('sit'):
+                print('== sit', len(SHEETS[h]['sit']['box'])); print(SHEETS[h]['sit']['box'])
         else:
             root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
             p = os.path.join(root, '%s_POSE_PROMPTS_TH.md' % h.upper())
