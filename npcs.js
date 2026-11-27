@@ -287,7 +287,23 @@ function rr(g,x,y,w,h,r){g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);
 /* ---------------- town side: the craft hall's door ---------------- */
 const DOOR={};   // room id → {x,y,o,w,h,C}  (map pixels)
 const HALLS=()=>Object.values(ROOMS);
-function townDoors(id){return HALLS().filter(c=>c.map===id).map(c=>doorOf(c)).filter(Boolean);}
+function townDoors(id){return HALLS().filter(c=>c.map===id).map(c=>doorOf(c)).filter(Boolean).concat(linkDoors(id));}
+/* linked doors (owner 2026-11-27 'บ้านช่างตีเหล้กให้ลิ้งเข้าไปที่ห้องเดิมที่ทำไว้'): a map piece with room:'<room id>' opens that room —
+   the same room and NPC as the hall of the room's own town (the iso town's smithy opens craft_vik). door / out = offsets from the
+   piece's anchor in map px: the door step, and where you stand when you come back out (default: 70 px below the door). signH = how
+   high the sign hangs over the door step (default: like the halls). The way out of the room goes back to the door you came in by
+   (ROOM_FROM, kept in localStorage so a reload inside the room still returns there). */
+const LDOOR={};
+function linkDoors(id){const h=mapHosts[id];if(!h||!h.ready||!h.cfg||!h.cfg.land)return [];const out=[];
+  h.cfg.land.forEach((o,i)=>{if(!o.room||!ROOMS[o.room])return;const k=id+'|'+i;if(LDOOR[k]){out.push(LDOOR[k]);return;}
+    const C=ROOMS[o.room],cat=(window.VK_CAT||{})[o.n]||{w:260,h:240},v=o.v||1,dd=o.door||[0,0],oo=o.out||[dd[0],dd[1]+70];
+    let p={x:o.x+dd[0],y:o.y+dd[1]};if(h.blocked(p.x,p.y))p=h.nav.nearest(p)||p;
+    let q={x:o.x+oo[0],y:o.y+oo[1]};if(h.blocked(q.x,q.y))q=h.nav.nearest(q)||q;
+    out.push(LDOOR[k]={x:p.x,y:p.y,o,w:cat.w*v,h:cat.h*v,C,link:1,out:q,sh:o.signH});});
+  return out;}
+const linksIn=id=>(((window.VK_MAPS||{})[id]||{}).land||[]).some(o=>o.room&&ROOMS[o.room]);
+const FROM_K='af_roomfrom_'+(typeof CHAR!=='undefined'?CHAR:'');
+const roomFrom=v=>{try{if(v===undefined)return JSON.parse(localStorage.getItem(FROM_K)||'null');if(v)localStorage.setItem(FROM_K,JSON.stringify(v));else localStorage.removeItem(FROM_K);}catch(e){}return null;};
 function townDoor(id){return townDoors(id)[0]||null;}
 function doorOf(C){const id=C.map,rid=C.rid||RID(C.key);if(DOOR[rid])return DOOR[rid];const h=mapHosts[id];if(!h||!h.ready||!h.cfg||!h.cfg.land)return null;
   const o=h.cfg.land.find(l=>l.n===C.bld);if(!o)return null;const cat=(window.VK_CAT||{})[C.bld]||{w:260,h:240},v=o.v||1;
@@ -295,7 +311,7 @@ function doorOf(C){const id=C.map,rid=C.rid||RID(C.key);if(DOOR[rid])return DOOR
   return DOOR[rid]={x:p.x,y:p.y,o,w:cat.w*v,h:cat.h*v,C};}
 function patchTown(id){const h=mapHosts[id];if(!h||h._craft)return;h._craft=1;const fg=h.foreground;
   h.foreground=function(g,t,night){if(fg)fg.call(h,g,t,night);for(const d of townDoors(id))doorSign(g,d,t);};}
-function doorSign(g,d,t){{const b=Math.sin(t*.004)*4,x=d.x,y=d.y-d.h*.62-26+b;
+function doorSign(g,d,t){{const b=Math.sin(t*.004)*4,x=d.x,y=d.y-(d.sh!=null?d.sh:d.h*.62+26)+b;
     g.save();g.textAlign='center';g.font='700 17px Mali,sans-serif';const s=d.C.sign||'⚒ โรงคราฟ',w=g.measureText(s).width+24;g.fillStyle='#6a4526';rr(g,x-w/2,y-20,w,30,7);g.fill();g.strokeStyle='#e8c87a';g.lineWidth=2.5;g.stroke();
     g.fillStyle='#fff1c8';g.fillText(s,x,y+1);g.font='700 13px Mali,sans-serif';g.strokeStyle='rgba(30,20,10,.8)';g.lineWidth=3.5;g.strokeText('▼ เดินเข้าประตู',x,d.y-8+b*.5);g.fillStyle='#ffe08a';g.fillText('▼ เดินเข้าประตู',x,d.y-8+b*.5);g.restore();};}
 
@@ -308,7 +324,8 @@ enterMap=function(id,sp){const prevRoom=ROOMS[curMap];_enter(id,sp);lock=true;pe
   else if(prevRoom&&typeof SHC!=='undefined')SHC.clear();
   if(prevRoom&&!ROOMS[id]){const w=document.getElementById('smw');if(w){w.classList.remove('open');w.style.left=w.style.right=w.style.transform='';}}
   if(ROOMS[id]){const C=ROOMS[id];chatLog('sys',C.enterMsg||`โรงคราฟ${C.townName}: คลิกที่ <b>${C.npc}</b> เพื่อคราฟ / ตีบวก / เจาะรู · เดินลงพรมด้านล่างเพื่อออก`);}
-  else if(id&&HALLS().some(c=>c.map===id)){patchTown(id);if(Object.values(CRAFT).some(c=>c.map===id))chatLog('sys','⚒ <b>โรงคราฟ</b> อยู่ในเมืองนี้ — ดูป้ายแล้วเดินเข้าประตูเพื่อคุยกับช่าง');}};
+  else{if(id)roomFrom(null);   /* outside every room: a remembered way back is spent */
+    if(id&&(HALLS().some(c=>c.map===id)||linksIn(id))){patchTown(id);if(Object.values(CRAFT).some(c=>c.map===id)||(((window.VK_MAPS||{})[id]||{}).land||[]).some(o=>o.room&&/^craft_/.test(o.room)))chatLog('sys','⚒ <b>โรงคราฟ</b> อยู่ในเมืองนี้ — ดูป้ายแล้วเดินเข้าประตูเพื่อคุยกับช่าง');}}};
 function talk(C){pend=null;const [nx,ny]=M2W(C.pos||C.L.npc);faceTo&&faceTo(Math.atan2(ny-player.y,nx-player.x));turnTo(C,'side',player.x>nx);
   if(C.onTalk){chatLog('sys',`<b style="color:#ffd36a">${C.npc}</b> : ${C.hello}`);C.onTalk(C);return;}
   chatLog('sys',`<b style="color:#ffd36a">${C.npc}</b> : ${C.hello}`);AFItems.openSmith();
@@ -316,7 +333,7 @@ function talk(C){pend=null;const [nx,ny]=M2W(C.pos||C.L.npc);faceTo&&faceTo(Math
   const w=document.getElementById('smw');if(w&&innerWidth>1200){w.style.left='auto';w.style.right='16px';w.style.transform='translateY(-50%)';}}
 function screenOf(mx,my,z=0){const [wx,wy]=M2W({x:mx,y:my}),q=P(wx,wy,z);return [q[0]*Z+ox,q[1]*Z+oy];}
 function npcHit(sx,sy){const R=ROOMS[curMap];if(!R)return null;for(const C of (R.npcs||[R])){const P=C.pos||R.L.npc,[x,y]=screenOf(P.x,P.y);if(Math.abs(sx-x)<Math.max(36,npcH(C)*.36)*Z&&sy<y+12*Z&&sy>y-(npcH(C)+34)*Z)return C;}return null;}
-function doorHit(sx,sy){if(!curMap)return null;for(const d of townDoors(curMap)){const [x,y]=screenOf(d.o.x,d.y),[,top]=screenOf(d.o.x,d.y-d.h*.62-46);if(Math.abs(sx-x)<d.w*.42*Z&&sy<y+20*Z&&sy>top)return d;}return null;}
+function doorHit(sx,sy){if(!curMap)return null;for(const d of townDoors(curMap)){const [x,y]=screenOf(d.o.x,d.y),[,top]=screenOf(d.o.x,d.y-(d.sh!=null?Math.max(d.sh+20,d.h*.62+46):d.h*.62+46));if(Math.abs(sx-x)<d.w*.42*Z&&sy<y+20*Z&&sy>top)return d;}return null;}
 addEventListener('pointerdown',e=>{if(e.target!==cvs||e.button!==0||targeting||!curMap)return;
   const C=npcHit(e.clientX,e.clientY);if(C){e.stopImmediatePropagation();const p=W2M(player.x,player.y),NPp=C.pos||C.L.npc;
     const k=roomK0(ROOMS[curMap]);if(Math.hypot(p.x-NPp.x,p.y-NPp.y)<120*Math.sqrt(k)){talk(C);return;}
@@ -328,10 +345,13 @@ function tick(){requestAnimationFrame(tick);if(!curMap||mapFadeDir)return;const 
     /* keeps facing the hero while its window is open (and turns with them), back to standing straight a moment after it closes */
     for(const n of (R.npcs||[R])){const F=n.face,open=n.isOpen?n.isOpen():smOpen;if(F.pose==='side'){const nx=M2W(n.pos||R.L.npc)[0];if(open){F.until=performance.now()+1600;if((player.x>nx+6)!==F.flip&&Math.abs(player.x-nx)>14)turnTo(n,'side',player.x>nx);}else if(performance.now()>(F.until||0))turnTo(n,'front',false);}}
     if(pend){const Pp=pend.C.pos||R.L.npc;if(Math.hypot(p.x-Pp.x,p.y-Pp.y)<125*Math.sqrt(roomK0(R)))talk(pend.C);else if(!player.moveT&&performance.now()-pend.t>400)pend=null;}
-    if(d>E.r+50)lock=false;else if(d<E.r&&!lock){lock=true;const dr=DOOR[R.rid||RID(R.key)];const o=dr?{x:dr.x,y:dr.y+70}:outsideGuess(R);mapTravel(R.map,o);}
+    if(d>E.r+50)lock=false;else if(d<E.r&&!lock){lock=true;const rid=R.rid||RID(R.key),fr=roomFrom();
+      if(fr&&fr.rid===rid&&fr.map&&MAPDEF[fr.map]){mapTravel(fr.map,{x:fr.x,y:fr.y});return;}   /* came in by a linked door → back out of that door */
+      const dr=DOOR[rid];const o=dr?{x:dr.x,y:dr.y+70}:outsideGuess(R);mapTravel(R.map,o);}
     return;}
   const DS=townDoors(curMap);if(!DS.length)return;patchTown(curMap);const dd=DS.map(D=>[D,Math.hypot(p.x-D.x,p.y-D.y)]).sort((a,b)=>a[1]-b[1])[0],D=dd[0],d=dd[1];
-  if(d>80)lock=false;else if(d<34&&!lock){lock=true;mapTravel(D.C.rid||RID(D.C.key),{x:R2(D.C).start.x,y:R2(D.C).start.y});}
+  if(d>80)lock=false;else if(d<34&&!lock){lock=true;const rid=D.C.rid||RID(D.C.key);roomFrom(D.link?{rid,map:curMap,x:D.out.x,y:D.out.y}:null);
+    mapTravel(rid,{x:R2(D.C).start.x,y:R2(D.C).start.y});}
   /* arrived outside before the town finished loading → step off the building if we landed on it */
   if(mapBlockedW(player.x,player.y)&&!player.moveT){const n=mapHost().nav.nearest(p);if(n){[player.x,player.y]=M2W(n);mapLastValid={x:player.x,y:player.y};}}}
 const R2=C=>C.L;
@@ -339,7 +359,7 @@ function outsideGuess(C){const c=((window.VK_MAPS||{})[C.map]||{}).land||[],o=c.
 requestAnimationFrame(tick);
 /* the game restores the last map before this file loads: re-enter a craft room saved on the last visit */
 try{const s=localStorage.getItem('af_map_'+CHAR),u=new URLSearchParams(location.search).get('map'),q=u!=null?u:s;if(q&&ROOMS[q]&&curMap!==q)enterMap(q,null);}catch(e){}
-if(curMap&&!ROOMS[curMap])patchTown(curMap);
+if(curMap&&!ROOMS[curMap]){patchTown(curMap);roomFrom(null);}   /* the page did not come back inside a room: no way back to remember */
 window.AFCraftHalls={CRAFT,LAYOUT,ROOM_W,ROOM_H,enter:k=>mapTravel(RID(k),null)};
 /* =====================================================================
    WARP NPCs (Kafra style) — staff of the Royal Gold Mine warp service, one per start town + the headquarters in the capital.

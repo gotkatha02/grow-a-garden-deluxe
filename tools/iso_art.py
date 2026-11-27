@@ -1,11 +1,12 @@
 """Isometric 2.5D snow kit (ISO_MAP_TH.md §9–10, owner 2026-11-26): the owner's 13 kit pictures → the game's folders.
 
-  python3 -I tools/iso_art.py sheet <code> <sheet.png>    S3…S9 piece sheet (3×2 on green, S3 / S7 on magenta): keyed with the boss
+  python3 -I tools/iso_art.py sheet <code> <sheet.png>    S3…S9 / P1…P3 piece sheet (3×2 on green, S3 / S7 on magenta), B1…B3 town buildings
+                                                          (2×2, ISO_MAP_TH.md §14–15): keyed with the boss
                                                           keyer (tools/wboss_arenas.py key_sheet), split by the grid (a loose bit belongs
                                                           to the cell its centre is in) → maps/iso/<name>.webp; the sheet is kept as
                                                           assets/iso/sheets/<code>.webp (for re-cuts)
   python3 -I tools/iso_art.py recut [<code> …]            cut again from the kept sheets
-  python3 -I tools/iso_art.py tex <code> <picture.png>    T1…T6 ground texture → tools/seamless_tex.py → maps/iso/<name>.webp (1024²);
+  python3 -I tools/iso_art.py tex <code> <picture.png>    T1…T8 ground texture → tools/seamless_tex.py → maps/iso/<name>.webp (1024²);
                                                           the picture is kept as assets/iso/sheets/<code>.webp
   python3 -I tools/iso_art.py cat                          write maps/iso-cat.js = VK_CAT entries of every cut piece + the textures
   python3 -I tools/iso_art.py preview <out.jpg> [code …]  every piece at its in-game size ×1.5: red dot = anchor, yellow = collision
@@ -37,11 +38,18 @@ SHEETS = {   # code: (cols, rows, names in reading order) — the boxes of ISO_M
  'S7': (3, 2, ['isoSapling', 'isoBush', 'isoBerryBush', 'isoGrass', 'isoFlowerWhite', 'isoFlowerIce']),
  'S8': (3, 2, ['isoLog', 'isoStump', 'isoBranch', 'isoStepStones', 'isoPuddle', 'isoShieldAxe']),
  'S9': (3, 2, ['isoHeap', 'isoBankA', 'isoBankB', 'isoDrift', 'isoHeapRock', 'isoHeapIce']),
+ # Viking town kit (ISO_MAP_TH.md §14–15, 2026-11-27): buildings 2×2, things 3×2
+ 'B1': (2, 2, ['isoGreatHall', 'isoChiefHouse', 'isoSmithy', 'isoTavern']),
+ 'B2': (2, 2, ['isoTradePost', 'isoHealer', 'isoStable', 'isoStorehouse']),
+ 'B3': (2, 2, ['isoHomeA', 'isoHomeB', 'isoHomeC', 'isoHomeD']),
+ 'P1': (3, 2, ['isoWell', 'isoWolfStatue', 'isoShrine', 'isoStallFur', 'isoStallFish', 'isoNotice']),
+ 'P2': (3, 2, ['isoLampPost', 'isoBrazier', 'isoBannerWolf', 'isoBannerAxe', 'isoSignpost', 'isoBench']),
+ 'P3': (3, 2, ['isoBarrels', 'isoCrates', 'isoCart', 'isoFishRack', 'isoHay', 'isoDummy']),
 }
-TEXS = {'T1': 'isoSnow', 'T2': 'isoSnowWind', 'T3': 'isoPath', 'T4': 'isoIce', 'T5': 'isoRock', 'T6': 'isoThaw'}
+TEXS = {'T1': 'isoSnow', 'T2': 'isoSnowWind', 'T3': 'isoPath', 'T4': 'isoIce', 'T5': 'isoRock', 'T6': 'isoThaw', 'T7': 'isoCobble', 'T8': 'isoFlag'}
 
 
-def p(t, h=None, w=None, fd=12, cr=None, cw=None, diag=None, cap='semi', sw=0, fill=0): return dict(t=t, h=h, w=w, fd=fd, cr=cr, cw=cw, diag=diag, cap=cap, sw=sw, fill=fill)
+def p(t, h=None, w=None, fd=12, cr=None, cw=None, diag=None, cap='semi', sw=0, fill=0, dsp=0, foot=0): return dict(t=t, h=h, w=w, fd=fd, cr=cr, cw=cw, diag=diag, cap=cap, sw=sw, fill=fill, dsp=dsp, foot=foot)
 P = {
  # S3 trees (forest masses, lone trees, the border): anchor = trunk base
  'isoPineL': p('tree', h=270, fd=14, cr=.075, cap='common', sw=.25, fill=1), 'isoPineM': p('tree', h=205, fd=12, cr=.08, cap='common', sw=.3, fill=1),
@@ -71,6 +79,25 @@ P = {
  'isoHeap': p('prop', w=118, fd=54, cw=.4, cap='common'), 'isoBankA': p('prop', w=178, diag=.09, cap='common'),
  'isoBankB': p('prop', w=178, diag=.09, cap='common'), 'isoDrift': p('prop', w=160, fd=40, cw=.42, cap='common'),
  'isoHeapRock': p('prop', w=118, fd=50, cw=.4, cap='mid'), 'isoHeapIce': p('prop', w=128, fd=46, cw=.4, cap='mid'),
+ # B1–B3 town buildings: h from the door — every door leaf ≈ 62–70 map px (the biggest hero is 64, the 2.5D wolf 57; the longhouse's
+ # is 69), the great hall's double doors ≈ 92, the stable's barn doors ≈ 87. ChatGPT drew the doors at different scales, so the
+ # houses come out 245–350 tall. fd ≈ .36 × width. dsp = take the green out of the chimney smoke.
+ 'isoGreatHall': p('big', h=375, fd=200, cw=.44, cap='unique'), 'isoChiefHouse': p('big', h=330, fd=146, cw=.42, cap='unique'),
+ 'isoSmithy': p('big', h=280, fd=126, cw=.42, cap='unique', dsp=1), 'isoTavern': p('big', h=270, fd=120, cw=.42, cap='unique', dsp=1),
+ 'isoTradePost': p('big', h=270, fd=134, cw=.42, cap='unique'), 'isoHealer': p('big', h=250, fd=98, cw=.4, cap='unique'),
+ 'isoStable': p('big', h=270, fd=136, cw=.44, cap='unique'), 'isoStorehouse': p('big', h=240, fd=104, cw=.4, cap='unique'),
+ 'isoHomeA': p('big', h=245, fd=100, cw=.4, cap='semi'), 'isoHomeB': p('big', h=245, fd=104, cw=.4, cap='semi', dsp=1),
+ 'isoHomeC': p('big', h=270, fd=134, cw=.42, cap='semi'), 'isoHomeD': p('big', h=350, fd=104, cw=.38, cap='semi', dsp=1),
+ # P1–P3 town things
+ 'isoWell': p('prop', h=110, fd=60, cw=.38, cap='unique'), 'isoWolfStatue': p('big', h=170, fd=70, cw=.36, cap='unique'),
+ 'isoShrine': p('prop', h=130, fd=60, cw=.4, cap='unique'), 'isoStallFur': p('prop', h=120, fd=70, cw=.42, cap='mid'),
+ 'isoStallFish': p('prop', h=120, fd=70, cw=.42, cap='mid'), 'isoNotice': p('prop', h=100, fd=34, cw=.4, cap='unique'),
+ 'isoLampPost': p('prop', h=110, fd=24, cr=.12, cap='common', foot=1), 'isoBrazier': p('prop', h=80, fd=36, cw=.3, cap='mid'),
+ 'isoBannerWolf': p('prop', h=120, fd=22, cr=.12, cap='mid'), 'isoBannerAxe': p('prop', h=120, fd=22, cr=.12, cap='mid'),
+ 'isoSignpost': p('prop', h=96, fd=26, cr=.1, cap='mid'), 'isoBench': p('prop', w=74, fd=30, cw=.4, cap='mid'),
+ 'isoBarrels': p('prop', h=62, fd=40, cw=.4, cap='common'), 'isoCrates': p('prop', h=62, fd=40, cw=.42, cap='common'),
+ 'isoCart': p('prop', w=110, fd=50, cw=.4, cap='mid'), 'isoFishRack': p('prop', h=80, fd=36, cw=.42, cap='mid'),
+ 'isoHay': p('prop', h=56, fd=44, cw=.42, cap='common'), 'isoDummy': p('prop', h=70, fd=26, cr=.12, cap='mid'),
 }
 
 
@@ -110,7 +137,10 @@ def anchor(nm, im):
         return round(mx / Wp, 3), round(my / H, 3), {'cs': cs, 'c': None}
     ay = (bottom(a) + 1 - d['fd'] / 2 / k) / H
     c = d['cr'] if d['cr'] else [d['cw'], round(d['fd'] * .42 / gw, 3)] if d['cw'] else None
-    return .5, round(float(ay), 3), {'c': c}
+    ax = .5
+    if d['t'] == 'prop' and d.get('foot'):   # the footing is off the picture's middle (a lamp post with its lantern out to one side)
+        b = bottom(a); m = a[max(0, b - int(H * .12)):b + 1] > 40; xs = np.nonzero(m.any(0))[0]; ax = round(float((xs[0] + xs[-1]) / 2 / Wp), 3)
+    return ax, round(float(ay), 3), {'c': c}
 
 
 def size(nm, im):
@@ -139,6 +169,10 @@ def cut_sheet(code, src):
         if not len(ys): print(nm, 'EMPTY CELL'); continue
         y0, y1, x0, x1 = max(0, ys.min() - 3), min(h, ys.max() + 4), max(0, xs.min() - 3), min(w, xs.max() + 4)
         c = rgba[y0:y1, x0:x1].copy(); c[..., 3] = np.where(m[y0:y1, x0:x1], c[..., 3], 0)
+        if P[nm].get('dsp'):   # no green on the piece: the drawn chimney smoke keeps a green cast after keying → grey-white
+            f = c[..., :3].astype(np.float32); mx = np.maximum(f[..., 0], f[..., 2]); g = f[..., 1] > mx
+            f[..., 1] = np.where(g, mx, f[..., 1]); lum = f.mean(-1, keepdims=True); soft = (c[..., 3] < 235)[..., None] & g[..., None]
+            f = np.where(soft, f * .45 + lum * .55, f); c[..., :3] = f.clip(0, 255).astype(np.uint8)
         o = Image.fromarray(c, 'RGBA'); gw, gh = size(nm, o); cap = round(RES * gw)
         if o.width > cap: o = o.convert('RGBa').resize((cap, max(1, round(o.height * cap / o.width))), Image.LANCZOS).convert('RGBA')
         o.save(OUT + nm + '.webp', quality=90, method=6)

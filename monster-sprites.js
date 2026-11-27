@@ -163,6 +163,9 @@ const MS={
   "Net Wraith":S('netWraith',332,211,156,198,184,54,{fly:1}),
   "Barrel Mimic":S('barrelMimic',292,206,137,199,178,38),
   "Drowned Oarsman":S('drownedOarsman',309,222,145,207,188,54)};
+/* 2026-11-27 2.5D monster sheets (monster25.js, made by tools/monster25_prompts.py cut) replace the flat sheet of the same name;
+   same h / fly / sw as the flat one, so sizes and hit boxes do not change. ?mon25=0 = the flat sheets. */
+if(window.MS25&&!/[?&]mon25=0(&|$)/.test(location.search))for(const k in MS25){const o=MS25[k];MS[k]=Object.assign({sw:o.h*.55},o);}
 const ROW={idle:0,walk:1,attack:2,hurt:3,death:4};
 /* walk:N = a separate smooth walk strip assets/monsters/<file>_walk.webp (N frames, same cell size), made from a walk video by tools/vidwalk.py */
 /* 2026-11-20 load time: a sheet is downloaded the first time its monster is looked at (was: all 30 sheets, 11 MB, at every start) */

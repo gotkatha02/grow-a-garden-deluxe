@@ -13,11 +13,19 @@ src,out=sys.argv[1],sys.argv[2];LAY=sys.argv[3] if len(sys.argv)>3 else 'auto'
 im=np.asarray(Image.open(src).convert('RGB')).astype(np.float32);H,W,_=im.shape
 bd=np.concatenate([im[:6].reshape(-1,3),im[-6:].reshape(-1,3),im[:,:6].reshape(-1,3),im[:,-6:].reshape(-1,3)]);key=np.median(bd,0)
 r,g,b=im[...,0],im[...,1],im[...,2]
-ex=g-np.maximum(r,b);kx=key[1]-max(key[0],key[2])
+MAG=key[1]<min(key[0],key[2])-100   # magenta sheet (monsters with green on them): key on r,b over g; despill only the rims
+if not MAG:
+    ex=g-np.maximum(r,b);kx=key[1]-max(key[0],key[2])
+else:
+    ex=np.minimum(r,b)-g;kx=min(key[0],key[2])-key[1]
 a=np.clip(1-(ex-25)/(kx-25),0,1)
 col=np.clip((im-(1-a[...,None])*key)/np.maximum(a,1e-3)[...,None],0,255)
-mx=np.maximum(col[...,0],col[...,2]);gr=col[...,1]>mx+4
-lum=col.mean(-1);col[...,1]=np.where(gr,np.minimum(col[...,1],mx+4),col[...,1]);col[gr]=col[gr]*.55+lum[gr][:,None]*.45
+if not MAG:
+    mx=np.maximum(col[...,0],col[...,2]);gr=col[...,1]>mx+4
+    lum=col.mean(-1);col[...,1]=np.where(gr,np.minimum(col[...,1],mx+4),col[...,1]);col[gr]=col[gr]*.55+lum[gr][:,None]*.45
+else:
+    mn=np.minimum(col[...,0],col[...,2]);sp=(mn>col[...,1]+30)&(a<.98)&(a>0)
+    for ch_ in (0,2):col[...,ch_]=np.where(sp,np.minimum(col[...,ch_],col[...,1]+30),col[...,ch_])
 a[a<.06]=0
 A=a>.12
 # drop specks

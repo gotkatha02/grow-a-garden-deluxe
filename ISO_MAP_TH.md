@@ -370,3 +370,214 @@ tools/maps/spots.py และ tools/maps/overview.py รับ `q=` (ต่อ�
 - กลับ: วาร์ป "กลับเมืองหลวง" ตรงจุดเกิด (ล่างกลางแมพ)
 - แก้บั๊กไปด้วย (progress.js / char_create.js): กด 🧪 โหมดทดสอบตอนเล่นจริงอยู่ = เดิมไม่เปลี่ยนโหมด (เซฟตอนออกจากหน้าเขียนทับกลับ) หรือบนมือถือบางเครื่องลบเลเวลเล่นจริงทิ้ง
   → ตอนนี้สลับได้ และเลเวลเล่นจริงยังอยู่ กด ⚙ ในหน้าต่าง Status → ▶ เล่นต่อ (Lv …) เพื่อกลับ · "เริ่มเกมใหม่" ของฮีโร่ตัวเดิมก็รีเซ็ตได้จริงแล้ว
+
+## 13. แมพแบบไหนเข้ากับฮีโร่ 2.5D (2026-11-27 05:52)
+เจ้าของ: "คุณน่าจะเห็นแล้วว่าผมเริ่มปรับหน้าตาฮีโร่เป็น 2.5d คำถามคือทำแมพแบบไหนดีให้มันเข้ากับฮีโร่"
+
+**คำตอบ: ทุกแมพแบบ isoField (ชุดชิ้นส่วน iso ให้โค้ดประกอบ)** — เทียบในเกมแล้ว: หมาป่า 2.5D บน vikF2 · แรด 2.5D ในเมืองหลวง · ทั้งสองตัวในค่ายนายพรานของ isoField (ภาพเทียบ 2×2 ส่งในแชต ไม่เก็บเข้า repo; สคริปต์ /home/claude/work/mapq/py: zoomshot.py = ถ่ายแมพที่ซูมกล้องต่างๆ (ตั้ง MAPDEF[id].cz) · board.py)
+- แมพเดิม = วาดชิบิ 2D เส้นขอบหนา สีแบน ไม่มีแสงเงา (หย่อมหิมะ vikF2 ยังเห็นขอบเป็นขั้นพิกเซล) → ฮีโร่ 2.5D ดูแปะ
+- isoField = มิติ 2–3 โทน เส้นขอบบาง แสงอุ่นซ้ายบน เงาเย็นขวาล่าง พื้นนุ่มกลืนกัน → ฮีโร่อยู่ในโลกเดียวกัน
+
+**ต้องเหมือนกันทุกแมพ:** มุมกล้องเดียว (โลกหมุน 45° มองลง ~38°) · แสงทิศเดียว + เงานุ่มที่โคนทุกชิ้น · ลายเส้นเดียวกับฮีโร่ 2.5D (แนบรูปฮีโร่ 2.5D เป็นตัวอย่างลุค ไม่แนบภาพแคมป์ไฟ) · พื้นเรียบ / อ่อนกว่าตัวละคร · ของใหญ่น้อยชิ้น ของเล็กจับกลุ่ม ขนาดสมจริง มีที่สูงต่ำ
+
+**ยังไม่เข้ากัน:** มอนสเตอร์ (เยติ / กระต่ายในแมพ iso ยังเป็นชิบิเส้นหนา → วาดใหม่แบบ 2.5D ทีละโซน) · NPC · ชุดบ้าน / เมือง iso · ชิ้นความสูง (บันได ทางลาด ที่ราบ) · ซูมกล้อง: isoField ตั้ง .8 ฮีโร่เล็ก ลองแล้ว 1.0–1.2 ภาพยังคม (ภาพเทียบใช้ 1.15 / 1.2)
+
+**ลำดับที่เสนอ:** ทำโซนไวกิ้งให้ครบก่อน (มีชุดชิ้นส่วนแล้ว: เมือง + ทุ่ง + ดันเจียน + มอนของโซน) → ลองเล่นทั้งโซน → ค่อยทำชุดของแดนอื่นทีละแดน (แดนละ ~15 ภาพสำหรับแมพ + มอนของแดน) · แมพเก่ายังเล่นได้ระหว่างนั้น เปลี่ยนทีละแดน · รอเจ้าของตอบ
+
+## 14. ชุดเมืองไวกิ้ง iso — ฟรอสต์เฮล์ม (2026-11-27 06:14)
+เจ้าของ: 'ได้' (ต่อจาก §13: ทำโซนไวกิ้งแบบ iso ให้ครบก่อน) → พรอมต์ชุดเมือง + มอนโซนหิมะ 2.5D (มอนอยู่ใน MONSTER25_PROMPTS_TH.md)
+
+**รูปอ้างอิง (ของเราเอง):** `tools/ref/iso_town_ref.jpg` = ชิ้น iso ที่ใช้อยู่ในเกม (บ้านยาว หอสังเกตการณ์ เต็นท์ รั้ว กองไฟ เลื่อน กองฟืน หินรูน สน) ขนาดจริงเทียบกัน + หมาป่า 2.5D ยืนหน้าประตูบ้านยาว (ประตู ≈ 1.5 เท่าตัวฮีโร่) → ลุค + มุมกล้อง + ขนาดในรูปเดียว · สร้างด้วย /home/claude/work/vik25/py/townref.py (ไม่อยู่ใน repo)
+
+**เมืองในเกมตอนนี้ (frostheim):** โถงใหญ่ (greatHall) · บ้านหัวหน้า (chiefHall) · โรงตีเหล็ก (vkCraftHall = ประตูเข้าห้องคราฟของบียอร์น) · โรงเหล้า · ร้านค้า · หมอ · คอกม้า · โกดังหิน · บ้าน 4 หลัง · หอสังเกตการณ์ · เรือมังกร · ศาลรูน · บ่อน้ำ · รูปปั้นหมาป่า · แผง 2 · เกวียน · กองไฟ · ธง 2 · หุ่นซ้อม · เป้า · ราวตากปลา · ฟาง · กองฟืน · ถัง · ป้ายประกาศ · ป้ายทาง · โคมไฟ · ม้านั่ง · กระบะดอกไม้ → ชุดด้านล่างครบทุกอย่าง
+
+**กติกาที่ใส่ในทุกกล่อง:**
+- กล้องมองจากทางใต้ เห็นผนังแค่ 2 ด้าน (หันลงซ้าย / หันลงขวา) → ประตูต้องอยู่ด้านที่เห็น · ชิ้น iso ห้ามกลับซ้ายขวา (แสงซ้ายบนจะผิดด้าน) จึงสั่งบ้านให้ประตูหันลงซ้ายครึ่งหนึ่ง หันลงขวาครึ่งหนึ่ง: ถนนแนวลงซ้าย→ขึ้นขวา ใช้บ้านประตูหันลงขวา (ตั้งฝั่งบนของถนน) · ถนนแนวขึ้นซ้าย→ลงขวา ใช้บ้านประตูหันลงซ้าย
+- ประตู ≈ 1.5 เท่าคน กว้างอย่างน้อยเท่าคน (ฮีโร่ตัวใหญ่สุดเดินเข้าได้) · บอกขนาดอาคารเทียบบ้านยาวในรูปอ้างอิง
+- พื้นเขียว ห้ามสีเขียวบนชิ้น (หลังคาไม้มุงใต้หิมะ ไม่มีหลังคาหญ้า) · ไม่มีตัวหนังสือบนป้าย / ธง / กระดาษ
+
+**ลำดับ (แชต ChatGPT ใหม่ 1 แชต · ส่งทีละกล่อง):** ⓐ ภาพลองลุค → ส่งให้ผมดู (ผมแปะฮีโร่จริงลงไปเทียบขนาด) → ⓑ ⓒ ⓓ อาคาร → ⓔ ⓕ ⓖ ของ → T7 T8 ลายพื้น · รอบสอง: ⓗ ของเสริม (เรือมังกร ฯลฯ) ⓘ รั้วไม้แหลม
+
+**ตอนรูปมา:** เพิ่มชื่อชิ้นใน `tools/iso_art.py` (SHEETS รับ 2×2 ได้ · P ของอาคาร = `big`, fd ตามฐาน, ec, จุดประตู) → `sheet` → `cat` · ลายพื้น `tex` · เมืองใหม่ `isoTown` ใน maps/iso-maps.js แบบทดลองก่อน (ถนนหินกรวด + ลานหินแผ่น + ป่าล้อม + มอนไม่เกิด) แล้วค่อยย้ายบริการจาก frostheim (ประตูโรงตีเหล็ก → ห้องคราฟเดิม, คาฟร่า, ร้าน, วาร์ป 2 ทาง) · NPC ยังเป็นภาพแบน (รอบหน้า)
+
+**ประโยคแก้ (ต่อท้ายส่งในแชตเดิม):**
+- ประตูหันผิดด้าน → `Redo: the door of (n) must be on the wall facing lower right (lower left).`
+- อาคารเล็ก / ใหญ่เทียบกันผิด → `Redo: keep the sizes compared with the attached longhouse — doors one and a half times a person's height.`
+- ไม่ทแยง / เห็นผนังด้านเดียว → `Redo with the isometric camera of the attached pieces: every building shows two walls and its roof.`
+- แบน 2D → `Redo: more 3D volume and soft 3D shading, keep the thin hand-drawn outlines.`
+- มีตัวหนังสือ → `Redo with no letters anywhere — signs, banners and papers are blank or show simple pictures only.`
+
+**ⓐ ภาพลองลุคเมือง (ฉากเต็ม)** · แนบ `iso_town_ref.jpg`
+```
+Draw ONE finished game-scene picture of a Viking town from my 2.5D fantasy MMORPG, as the player would see it — no characters, no animals, no UI, no text.
+
+LOOK: exactly the rendering of my attached picture of game pieces (a Viking longhouse with a little hero standing at its door, a watchtower, a tent, fences, a campfire, a sled, firewood, a runestone and pines): a stylized 3D game look painted by hand — solid rounded volume, soft toon shading in 2–3 tones, one warm golden light from the upper left with soft cool-blue shadow sides, thin clean dark-brown hand-drawn outlines, matte painted textures (weathered wood, grey stone, iron, canvas, soft powdery snow), warm slightly retro storybook colours. Not photorealistic, not glossy, not flat 2D, not pixel art.
+
+CAMERA: copy the camera of those pieces — a fixed high isometric game camera looking down at about 38 degrees with the whole world turned 45 degrees: streets, walls and fences run diagonally across the picture, every building shows two walls and its roof, a round thing on the ground is an ellipse 1.6 times wider than tall; no perspective (far things are not smaller), no fisheye. Size: the little hero at the longhouse door in the attached picture is the size of a person; every door is about one and a half times a person's height and at least as wide as a person, like that longhouse door.
+
+SCENE — Frostheim, a Viking town in deep snow on a sunny winter afternoon:
+• Top middle: the Great Hall of the jarl — a long, tall mead hall, much bigger than the attached longhouse, with a high roof whose ridge curves like an upturned ship, thick snow on it, carved dragon heads on both gable ends; its tall gable end with big double doors at the top of three wide stone steps faces lower left; round painted shields hang along its long wall that faces lower right; two iron fire baskets burn beside the steps.
+• Centre: a round town square paved with big flat flagstones with snow in the joints; in the middle a stone well with a small wooden roof; a big stone statue of a sitting, howling wolf on a square plinth; two market stalls with striped canvas roofs (one with furs, one with fish and goods); a wooden notice board with blank pinned papers.
+• Two cobblestone streets cross the town diagonally (one from the bottom-left corner up to the Great Hall, one from the left edge to the bottom-right corner), lined with timber houses with snowy roofs whose doors face the street, and wooden lamp posts with iron lanterns.
+• Left of the square: the blacksmith — a stone-and-timber workshop with a big stone chimney glowing orange at the top; on its lower-right side an open-sided shelter with an anvil, a water barrel and tools on a rack.
+• Right of the square: the tavern — a wide longhouse with warm glowing windows, barrels by its door and a hanging wooden sign shaped like a drinking horn.
+• Lower right: a stable with big double doors and golden hay in a loft opening; a two-wheeled cart with sacks.
+• Around the town: snow drifts and snowy pine forest; a wooden palisade of sharpened logs with a gate tower at the bottom left where the street leaves town.
+
+FORMAT: 1536×1024 landscape; the scene fills the whole picture to every edge (no frame, no border, no vignette, no sky). Never any text, letters, numbers, logo or UI — not on the signs, banners or notice board either.
+```
+
+**ⓑ อาคารใหญ่ 4 หลัง (พื้นเขียว 2×2)** · แชตเดิมต่อจาก ⓐ (แชตใหม่: แนบ `iso_town_ref.jpg` + รูป ⓐ)
+```
+Draw FOUR separate buildings for the same snowy Viking town, rendered exactly like my attached picture of game pieces (a Viking longhouse with a little hero standing at its door, a watchtower, a tent, fences, a campfire, a sled, firewood, a runestone and pines) and the town picture from earlier in this chat if there is one: a stylized 3D game look painted by hand — solid rounded volume, soft toon shading in 2–3 tones, one warm golden light from the upper left with soft cool-blue shadow sides, thin clean dark-brown hand-drawn outlines, matte painted textures (weathered wood, grey stone, iron, canvas, soft powdery snow), warm slightly retro storybook colours. Not photorealistic, not glossy, not flat 2D, not pixel art.
+
+Seen from the same high isometric game camera as those pieces (about 38 degrees down, the world turned 45 degrees, no perspective): every building shows two walls — one facing lower left, one facing lower right — and its roof.
+
+Size: the little hero at the longhouse door in the attached picture is the size of a person; every door is about one and a half times a person's height and at least as wide as a person, like that longhouse door.
+
+The 4 pieces: (1) the Great Hall of the jarl, the biggest building of the town, about three times as long and twice as tall as the attached longhouse: a long mead hall of logs and planks on a stone footing, a high roof whose ridge curves like an upturned ship, thick snow on the roof, carved dragon heads on both gable ends; its tall gable end faces lower left with three wide stone steps up to big double doors under a carved arch; round painted shields (red-and-white, blue-and-white) hang along its long wall that faces lower right; small shuttered windows glowing warm; a smoke hole with a little roof on the ridge; (2) the chieftain's house, a big two-storey longhouse about twice the size of the attached longhouse: its gable end with the door faces LOWER RIGHT under a small porch roof held by two carved posts, a balcony with a railing under the gable above the porch, a long wall facing lower left with warm glowing windows, a long dark-blue banner with a white wolf head hanging beside the door; (3) the blacksmith's forge, about the size of the attached longhouse: a sturdy workshop of grey stone and timber with a big square stone chimney glowing orange at the top with a little smoke; its door is on the wall facing lower left; against its lower-right side an open-sided shelter with a snowy roof on log posts, under it a glowing forge hearth, an iron anvil on a tree stump, a water barrel and hammers and tongs hanging on a rack; (4) the tavern, a wide longhouse about one and a half times the attached longhouse: warm glowing windows, its door on the long wall that faces LOWER RIGHT, beside the door a wooden sign shaped like a drinking horn hanging from an iron bracket, two barrels and a bench by the door, a stone chimney with a little smoke, thick snow on the roof.
+
+SHEET: 1536×1024, a 2×2 grid, one piece per cell, centred, as big as the cell allows with empty space all round; each piece stands with its base at the bottom, with a little soft snow piled against its foot; no ground patch around it, no cast shadow. Background: solid flat pure green (#00FF00), no gradient — never use green on the buildings (no moss, no grass roofs, no leaves: roofs are wooden shingles under snow). No text, letters, numbers or logo anywhere — not on signs, banners, boards or shields either.
+```
+
+**ⓒ ร้าน / บริการ 4 หลัง (พื้นเขียว 2×2)** · แชตเดิม
+```
+Draw FOUR separate buildings for the same snowy Viking town, rendered exactly like my attached picture of game pieces (a Viking longhouse with a little hero standing at its door, a watchtower, a tent, fences, a campfire, a sled, firewood, a runestone and pines) and the town picture from earlier in this chat if there is one: a stylized 3D game look painted by hand — solid rounded volume, soft toon shading in 2–3 tones, one warm golden light from the upper left with soft cool-blue shadow sides, thin clean dark-brown hand-drawn outlines, matte painted textures (weathered wood, grey stone, iron, canvas, soft powdery snow), warm slightly retro storybook colours. Not photorealistic, not glossy, not flat 2D, not pixel art.
+
+Seen from the same high isometric game camera as those pieces (about 38 degrees down, the world turned 45 degrees, no perspective): every building shows two walls — one facing lower left, one facing lower right — and its roof.
+
+Size: the little hero at the longhouse door in the attached picture is the size of a person; every door is about one and a half times a person's height and at least as wide as a person, like that longhouse door.
+
+The 4 pieces: (1) the trading post, a timber shop about the size of the attached longhouse: its gable end facing lower left has a wide open counter window under a red-and-cream striped canvas awning, with furs, bundles and small crates on the counter; its door is on the long wall facing lower right; crates and a sack stacked outside; (2) the healer's hut, small and cosy: round-ended walls of logs and stone, a steep snowy roof, bundles of dried herbs (brown, gold and lavender) hanging under the eaves, a small iron cauldron on a tripod beside the door, its door faces LOWER RIGHT, a round window glowing warm; (3) the stable, a long low barn of planks on a stone footing: big double plank doors on its gable end facing lower left with a hay-loft opening above them full of golden hay, small shuttered windows along its long wall facing lower right, a hay bale and a wooden water trough outside; (4) the stone storehouse, squat and strong: walls of grey stone blocks, a steep snowy plank roof, a heavy iron-bound door on the wall facing LOWER RIGHT reached by two stone steps, an iron lantern above the door, barrels and sacks against the wall.
+
+SHEET: 1536×1024, a 2×2 grid, one piece per cell, centred, as big as the cell allows with empty space all round; each piece stands with its base at the bottom, with a little soft snow piled against its foot; no ground patch around it, no cast shadow. Background: solid flat pure green (#00FF00), no gradient — never use green on the buildings (no moss, no grass roofs, no leaves: roofs are wooden shingles under snow). No text, letters, numbers or logo anywhere — not on signs, banners, boards or shields either.
+```
+
+**ⓓ บ้านคน 4 หลัง (พื้นเขียว 2×2)** · แชตเดิม
+```
+Draw FOUR separate houses for the same snowy Viking town (homes of the townsfolk, simpler than the attached longhouse, no dragon heads), rendered exactly like my attached picture of game pieces (a Viking longhouse with a little hero standing at its door, a watchtower, a tent, fences, a campfire, a sled, firewood, a runestone and pines) and the town picture from earlier in this chat if there is one: a stylized 3D game look painted by hand — solid rounded volume, soft toon shading in 2–3 tones, one warm golden light from the upper left with soft cool-blue shadow sides, thin clean dark-brown hand-drawn outlines, matte painted textures (weathered wood, grey stone, iron, canvas, soft powdery snow), warm slightly retro storybook colours. Not photorealistic, not glossy, not flat 2D, not pixel art.
+
+Seen from the same high isometric game camera as those pieces (about 38 degrees down, the world turned 45 degrees, no perspective): every building shows two walls — one facing lower left, one facing lower right — and its roof.
+
+Size: the little hero at the longhouse door in the attached picture is the size of a person; every door is about one and a half times a person's height and at least as wide as a person, like that longhouse door.
+
+The 4 pieces: (1) a small family cottage of logs on a stone footing, a steep snowy roof, its gable end with the door faces lower left, one small glowing window on the long wall facing lower right; (2) the same kind of cottage turned the other way: its gable end with the door faces LOWER RIGHT, the long wall with a window faces lower left; darker wood, a woodpile stacked against the long wall; (3) a long family house of logs: its door is on the long wall facing lower right; a lean-to woodshed full of chopped logs under a sloping roof against its gable end facing lower left; a carved horse head on the roof ridge; (4) a tall narrow two-storey house of planks on a stone base: a small balcony with a railing on the upper floor facing lower right, the door on the wall facing lower left, a stone chimney with a little smoke.
+
+SHEET: 1536×1024, a 2×2 grid, one piece per cell, centred, as big as the cell allows with empty space all round; each piece stands with its base at the bottom, with a little soft snow piled against its foot; no ground patch around it, no cast shadow. Background: solid flat pure green (#00FF00), no gradient — never use green on the houses (no moss, no grass roofs, no leaves: roofs are wooden shingles under snow). No text, letters, numbers or logo anywhere — not on signs, banners, boards or shields either.
+```
+
+**ⓔ ของลานเมือง 6 ชิ้น (พื้นเขียว 3×2)** · แชตเดิม
+```
+Draw SIX separate objects for the town square of the same snowy Viking town, rendered exactly like my attached picture of game pieces (a Viking longhouse with a little hero standing at its door, a watchtower, a tent, fences, a campfire, a sled, firewood, a runestone and pines) and the town picture from earlier in this chat if there is one: a stylized 3D game look painted by hand — solid rounded volume, soft toon shading in 2–3 tones, one warm golden light from the upper left with soft cool-blue shadow sides, thin clean dark-brown hand-drawn outlines, matte painted textures (weathered wood, grey stone, iron, canvas, soft powdery snow), warm slightly retro storybook colours. Not photorealistic, not glossy, not flat 2D, not pixel art.
+
+Seen from the same high isometric game camera as those pieces (about 38 degrees down, the world turned 45 degrees, no perspective): every object shows its top and its two front sides — one facing lower left, one facing lower right.
+
+Size: the little hero at the longhouse door in the attached picture is the size of a person; size every object like the real thing next to that person (a barrel reaches a person's waist, a market-stall roof is a little higher than a person, a lamp post or a banner pole is about twice a person's height).
+
+The 6 pieces: (1) a round stone well with a small wooden roof on two posts and a wooden bucket on a rope; (2) a big stone statue of a wolf sitting and howling at the sky, on a square stone plinth with a carved knotwork band, snow on its head and back; (3) a small rune shrine: a flat stone altar with a carved standing stone behind it (knotwork and plain angular marks, no letters), two small offering bowls and a little fire burning in an iron bowl; (4) a market stall selling furs: a wooden counter under a red-and-cream striped canvas roof on four posts, pelts hanging from the roof and folded furs on the counter; (5) a market stall selling fish and goods: a wooden counter under a blue-and-cream striped canvas roof on four posts, baskets of fish, clay pots, sacks and a small lantern; (6) a wooden notice board on two posts under a small snowy roof, with several blank pinned papers (nothing written on them).
+
+SHEET: 1536×1024, a 3×2 grid, one piece per cell, centred, as big as the cell allows with empty space all round; each piece stands with its base at the bottom, with a little soft snow piled against its foot; no ground patch around it, no cast shadow. Background: solid flat pure green (#00FF00), no gradient — never use green on the objects (no moss, no grass roofs, no leaves: roofs are wooden shingles under snow). No text, letters, numbers or logo anywhere — not on signs, banners, boards or shields either.
+```
+
+**ⓕ ของริมถนน 6 ชิ้น (พื้นเขียว 3×2)** · แชตเดิม
+```
+Draw SIX separate street objects for the same snowy Viking town, rendered exactly like my attached picture of game pieces (a Viking longhouse with a little hero standing at its door, a watchtower, a tent, fences, a campfire, a sled, firewood, a runestone and pines) and the town picture from earlier in this chat if there is one: a stylized 3D game look painted by hand — solid rounded volume, soft toon shading in 2–3 tones, one warm golden light from the upper left with soft cool-blue shadow sides, thin clean dark-brown hand-drawn outlines, matte painted textures (weathered wood, grey stone, iron, canvas, soft powdery snow), warm slightly retro storybook colours. Not photorealistic, not glossy, not flat 2D, not pixel art.
+
+Seen from the same high isometric game camera as those pieces (about 38 degrees down, the world turned 45 degrees, no perspective): every object shows its top and its two front sides — one facing lower left, one facing lower right.
+
+Size: the little hero at the longhouse door in the attached picture is the size of a person; size every object like the real thing next to that person (a barrel reaches a person's waist, a market-stall roof is a little higher than a person, a lamp post or a banner pole is about twice a person's height).
+
+The 6 pieces: (1) a wooden lamp post with an iron lantern glowing warm hanging from a bracket; (2) an iron fire basket on three tall legs with a calm fire burning in it; (3) a tall wooden banner pole with a long dark-blue cloth banner showing a white howling wolf head; (4) a tall wooden banner pole with a long red cloth banner showing two crossed white axes (simple shapes, no letters); (5) a wooden signpost with three blank arrow-shaped boards pointing different ways (no writing); (6) a long wooden bench with snow on its seat.
+
+SHEET: 1536×1024, a 3×2 grid, one piece per cell, centred, as big as the cell allows with empty space all round; each piece stands with its base at the bottom, with a little soft snow piled against its foot; no ground patch around it, no cast shadow. Background: solid flat pure green (#00FF00), no gradient — never use green on the objects (no moss, no grass roofs, no leaves: roofs are wooden shingles under snow). No text, letters, numbers or logo anywhere — not on signs, banners, boards or shields either.
+```
+
+**ⓖ ของในลาน / ร้าน 6 ชิ้น (พื้นเขียว 3×2)** · แชตเดิม
+```
+Draw SIX separate yard objects for the same snowy Viking town, rendered exactly like my attached picture of game pieces (a Viking longhouse with a little hero standing at its door, a watchtower, a tent, fences, a campfire, a sled, firewood, a runestone and pines) and the town picture from earlier in this chat if there is one: a stylized 3D game look painted by hand — solid rounded volume, soft toon shading in 2–3 tones, one warm golden light from the upper left with soft cool-blue shadow sides, thin clean dark-brown hand-drawn outlines, matte painted textures (weathered wood, grey stone, iron, canvas, soft powdery snow), warm slightly retro storybook colours. Not photorealistic, not glossy, not flat 2D, not pixel art.
+
+Seen from the same high isometric game camera as those pieces (about 38 degrees down, the world turned 45 degrees, no perspective): every object shows its top and its two front sides — one facing lower left, one facing lower right.
+
+Size: the little hero at the longhouse door in the attached picture is the size of a person; size every object like the real thing next to that person (a barrel reaches a person's waist, a market-stall roof is a little higher than a person, a lamp post or a banner pole is about twice a person's height).
+
+The 6 pieces: (1) three wooden barrels with iron hoops, two side by side and one on top; (2) a stack of wooden crates and grain sacks; (3) a two-wheeled wooden hand cart loaded with sacks and a rolled fur, its handles resting on the snow, running from lower left to upper right; (4) a wooden rack for drying fish, with rows of dried fish hanging from its poles; (5) a stack of golden hay bales tied with rope, snow on top; (6) a straw training dummy on a wooden post with a round wooden shield tied to its arm.
+
+SHEET: 1536×1024, a 3×2 grid, one piece per cell, centred, as big as the cell allows with empty space all round; each piece stands with its base at the bottom, with a little soft snow piled against its foot; no ground patch around it, no cast shadow. Background: solid flat pure green (#00FF00), no gradient — never use green on the objects (no moss, no grass roofs, no leaves: roofs are wooden shingles under snow). No text, letters, numbers or logo anywhere — not on signs, banners, boards or shields either.
+```
+
+**T7 ถนนหินกรวด (ลายพื้นต่อกันไม่เห็นรอย)** · แชตเดิม
+```
+Draw ONE seamless, tileable ground texture for my 2.5D fantasy MMORPG: COBBLESTONE STREET of the Viking town — painted like the cobbled streets in the town picture from earlier in this chat (or the attached one): same painting style, same colours, same light.
+
+Seen straight from above: rounded grey cobblestones of slightly different sizes and tones laid tightly together, thin lines of snow filling the gaps, a few soft thin patches of snow and some boot prints, each cobble lit from the upper left with a cool shadow on its lower right. Even all over, because the game cuts it into the shape of each street and blends its edges softly into the snow: no kerb, no edge, no straight line across it, no puddles, nothing big or eye-catching.
+
+SEAMLESS: it must tile perfectly — what leaves the right edge comes back on the left edge and what leaves the bottom comes back at the top, with no visible seam or border, and the same brightness and colour all over (no vignette, no darker corner, no sunlight gradient across the picture).
+
+LOOK: a hand-painted stylized game texture exactly like the ground in the town picture from earlier in this chat (or the attached one) — soft painted shading in 2–3 tones, clean and readable, matte; not photorealistic, not blurry, not pixel art, no outlines.
+
+FORMAT: 1024×1024 square, the texture fills it edge to edge. No text, no letters, no logo, no frame.
+```
+
+**T8 ลานหินแผ่น (ลายพื้นต่อกันไม่เห็นรอย)** · แชตเดิม
+```
+Draw ONE seamless, tileable ground texture for my 2.5D fantasy MMORPG: FLAGSTONE TOWN SQUARE of the Viking town — painted like the paved square in the town picture from earlier in this chat (or the attached one): same painting style, same colours, same light.
+
+Seen straight from above: big flat irregular grey-brown flagstones fitted together, thin lines of snow in the joints, a light dusting of snow and a few footprints, each slab lit from the upper left with a soft cool shadow along its lower-right edge. Even all over (it repeats across the whole square and the game blends its edge into the streets): no pattern in the middle, no edge, no well, no drain, nothing big or eye-catching.
+
+SEAMLESS: it must tile perfectly — what leaves the right edge comes back on the left edge and what leaves the bottom comes back at the top, with no visible seam or border, and the same brightness and colour all over (no vignette, no darker corner, no sunlight gradient across the picture).
+
+LOOK: a hand-painted stylized game texture exactly like the ground in the town picture from earlier in this chat (or the attached one) — soft painted shading in 2–3 tones, clean and readable, matte; not photorealistic, not blurry, not pixel art, no outlines.
+
+FORMAT: 1024×1024 square, the texture fills it edge to edge. No text, no letters, no logo, no frame.
+```
+
+**ⓗ ของเสริม 6 ชิ้น (พื้นเขียว 3×2) — รอบสอง** · แชตเดิม
+```
+Draw SIX separate extra objects for the same snowy Viking town, rendered exactly like my attached picture of game pieces (a Viking longhouse with a little hero standing at its door, a watchtower, a tent, fences, a campfire, a sled, firewood, a runestone and pines) and the town picture from earlier in this chat if there is one: a stylized 3D game look painted by hand — solid rounded volume, soft toon shading in 2–3 tones, one warm golden light from the upper left with soft cool-blue shadow sides, thin clean dark-brown hand-drawn outlines, matte painted textures (weathered wood, grey stone, iron, canvas, soft powdery snow), warm slightly retro storybook colours. Not photorealistic, not glossy, not flat 2D, not pixel art.
+
+Seen from the same high isometric game camera as those pieces (about 38 degrees down, the world turned 45 degrees, no perspective): every object shows its top and its two front sides — one facing lower left, one facing lower right.
+
+Size: the little hero at the longhouse door in the attached picture is the size of a person; size every object like the real thing next to that person (a barrel reaches a person's waist, a market-stall roof is a little higher than a person, a lamp post or a banner pole is about twice a person's height).
+
+The 6 pieces: (1) a Viking longship pulled up on log rollers on the snow, its carved dragon prow pointing upper right, round shields along its side, a furled striped sail on the mast, snow in the hull; (2) a wooden weapon rack with spears, two axes and three round painted shields; (3) a blacksmith's yard set: an iron anvil on a stump, a grindstone wheel on a wooden frame and a quench barrel of water; (4) a round straw archery target on a wooden stand with two arrows in it; (5) a big iron cauldron on a stone fire ring with a little steam; (6) a wooden cart with a canvas cover, loaded with barrels.
+
+SHEET: 1536×1024, a 3×2 grid, one piece per cell, centred, as big as the cell allows with empty space all round; each piece stands with its base at the bottom, with a little soft snow piled against its foot; no ground patch around it, no cast shadow. Background: solid flat pure green (#00FF00), no gradient — never use green on the objects (no moss, no grass roofs, no leaves: roofs are wooden shingles under snow). No text, letters, numbers or logo anywhere — not on signs, banners, boards or shields either.
+```
+
+**ⓘ รั้วไม้แหลมรอบเมือง 6 ชิ้น (พื้นเขียว 3×2) — รอบสอง** · แชตเดิม
+```
+Draw SIX separate pieces of a wooden town palisade for the same snowy Viking town, rendered exactly like my attached picture of game pieces (a Viking longhouse with a little hero standing at its door, a watchtower, a tent, fences, a campfire, a sled, firewood, a runestone and pines) and the town picture from earlier in this chat if there is one: a stylized 3D game look painted by hand — solid rounded volume, soft toon shading in 2–3 tones, one warm golden light from the upper left with soft cool-blue shadow sides, thin clean dark-brown hand-drawn outlines, matte painted textures (weathered wood, grey stone, iron, canvas, soft powdery snow), warm slightly retro storybook colours. Not photorealistic, not glossy, not flat 2D, not pixel art.
+
+Seen from the same high isometric game camera as those pieces (about 38 degrees down, the world turned 45 degrees, no perspective): every object shows its top and its two front sides — one facing lower left, one facing lower right. The two directions must line up so the game can join them into one long wall.
+
+Size: the little hero at the longhouse door in the attached picture is the size of a person; size every object like the real thing next to that person (a barrel reaches a person's waist, a market-stall roof is a little higher than a person, a lamp post or a banner pole is about twice a person's height).
+
+The 6 pieces: (1) a straight section of palisade — a row of eight tall sharpened logs bound with rope, on a low bank of snow-covered earth, about two people high — running from lower left to upper right; (2) the same palisade section running from upper left to lower right; (3) a gate in the palisade running from lower left to upper right: two square log towers with snowy roofs and a big double plank gate between them, wide enough for three people; (4) the same gate in a palisade running from upper left to lower right; (5) a round corner tower of logs with a platform and a pointed snowy roof, where two palisade lines meet; (6) a short end piece of the palisade: three sharpened logs and a fallen one, as if the wall is broken off.
+
+SHEET: 1536×1024, a 3×2 grid, one piece per cell, centred, as big as the cell allows with empty space all round; each piece stands with its base at the bottom, with a little soft snow piled against its foot; no ground patch around it, no cast shadow. Background: solid flat pure green (#00FF00), no gradient — never use green on the pieces (no moss, no grass roofs, no leaves: roofs are wooden shingles under snow). No text, letters, numbers or logo anywhere — not on signs, banners, boards or shields either.
+```
+
+## 15. เมืองไวกิ้ง iso เข้าเกมแล้ว → เมืองทดลอง isoTown (2026-11-27 07:24)
+เจ้าของส่งรูป 13 รูปไม่มีข้อความ = อาคาร ⓑ ⓒ ⓓ · ของ ⓔ ⓕ ⓖ · ลายพื้น T7 T8 + มอน 2.5D กลุ่ม 1 ครบ 5 ตัว (ข้ามภาพลองลุค ⓐ — ลุคผ่านแล้วจากชุดหิมะ)
+
+**ตัดเข้าเกม** (`tools/iso_art.py`, ชีตเก็บใน assets/iso/sheets/):
+- `sheet B1 / B2 / B3` (2×2) → isoGreatHall isoChiefHouse isoSmithy isoTavern · isoTradePost isoHealer isoStable isoStorehouse · isoHomeA isoHomeB isoHomeC isoHomeD
+- `sheet P1 / P2 / P3` (3×2) → isoWell isoWolfStatue isoShrine isoStallFur isoStallFish isoNotice · isoLampPost isoBrazier isoBannerWolf isoBannerAxe isoSignpost isoBench · isoBarrels isoCrates isoCart isoFishRack isoHay isoDummy
+- `tex T7 / T8` → isoCobble (หินกรวด) · isoFlag (หินแผ่น) · `cat` → maps/iso-cat.js (80 รายการ)
+- **ขนาดอาคารวัดจากประตู:** ChatGPT วาดประตูแต่ละหลังคนละสเกล → ตั้งความสูงให้บานประตู ≈ 62–70 พิกเซลแมพ (ฮีโร่ตัวใหญ่สุด 64, หมาป่า 2.5D 57, ประตูบ้านยาวชุดหิมะ 69) · ประตูคู่โถงใหญ่ ≈ 92 · ประตูคอกม้า ≈ 87 → บ้าน 245–350 สูง, โถงใหญ่ 375 (กว้าง 557)
+- ควันปล่องไฟที่วาดมาออกเขียวหลังตัดพื้น → ตัวเลือก `dsp=1` ใน P (โรงตีเหล็ก โรงเหล้า บ้าน B บ้าน D) ทำให้เป็นควันเทาขาว · เสาตะเกียงตั้งจุดยึดที่ฐานเสา (`foot=1`) ไม่ใช่กลางรูป
+
+**ผังเมือง isoTown** (maps/iso-maps.js · 4,000 × 3,000):
+- โลกหมุน 45°: **ถนน A** จากประตูเมืองล่างซ้ายขึ้นไปจบที่บันไดโถงใหญ่ (ขวาบน) · **ถนน B** จากประตูบ้านหัวหน้า (ซ้ายบน) ลงไปประตูเมืองขวาล่าง · สองถนนตัดกันที่ลานหินแผ่น (รูปปั้นหมาป่าหอน บ่อน้ำ ศาลรูน แผงตลาด 2 แผง กระดานประกาศ ม้านั่ง กระถางไฟ)
+- **กติกาประตู:** เห็นแค่ผนังหันลงซ้าย (SW) กับหันลงขวา (SE) และชิ้น iso ห้ามกลับด้าน → บ้านประตู SE อยู่ฝั่งตะวันตกเฉียงเหนือของถนน A (มองลงถนนทางขวาล่าง) · บ้านประตู SW อยู่ฝั่งตะวันออกเฉียงเหนือของถนน B · โถงใหญ่ปิดปลายถนน A บ้านหัวหน้าปิดปลายถนน B · ทุกบ้านมีทางหินกรวดสั้นๆ จากประตูลงถนน (helper `house(n, จุดถนน, ด้าน)` + ตาราง DOOR = จุดประตูวัดจากรูป)
+- แถวหลังมีตรอกขนานถนน (ตรอกตะวันตก ตะวันออก เหนือ 2 ตรอก) · ทางแยกลงใต้ไปคอกม้า + ลานฝึก (หุ่นฟาง ราวตากปลา รั้ว) · หอสังเกตการณ์เฝ้าประตูเมือง 2 ข้าง · เสาตะเกียงสลับฝั่ง · ป่าสนล้อม + กลุ่มสน 8 กลุ่ม
+- วาร์ป 'กลับเมืองหลวง' (ปลายถนน A) · 'ทุ่งสนน้ำแข็ง (iso)' (ปลายถนน B → isoField) · ไม่มีมอน · บ้านหลังอื่นยังเดินเข้าไม่ได้ (บริการ / NPC อื่นยังอยู่ frostheim เดิม)
+- **โรงตีเหล็กเข้าห้องเดิม** (เจ้าของ 2026-11-27 'บ้านช่างตีเหล้กให้ลิ้งเข้าไปที่ห้องเดิมที่ทำไว้'): เดินเข้าประตูโรงตีเหล็ก (ประตูที่หน้าจั่วซ้าย) หรือคลิกตัวบ้าน → ห้องคราฟเดิมของฟรอสต์เฮล์ม (craft_vik, บียอร์น — ห้องเดียวกับที่เข้าจาก frostheim) · เดินออกพรมทางออก → กลับมายืนหน้าประตูโรงตีเหล็กใน isoTown (เข้าจาก frostheim ก็ยังออกไป frostheim เหมือนเดิม) · ป้าย '⚒ โรงคราฟ' ลอยเหนือประตู
+  - วิธีทำ = **ประตูลิงก์** ใน npcs.js: ชิ้นในแมพที่มี `room:'<id ห้อง>'` เปิดห้องนั้น · `door` / `out` = จุดบันไดประตู / จุดยืนตอนออก (ระยะจากจุดยึดชิ้น, house() ใส่ให้ทุกหลังแล้ว: out = บันไดประตูขยับเข้าหาถนน 50 px) · `signH` = ความสูงป้าย · ทางกลับจำใน localStorage af_roomfrom_<ฮีโร่> (รีโหลดในห้องด้วยลิงก์ ?map=craft_vik ก็ยังออกมาที่ประตูนี้) · บ้านหลังอื่นจะลิงก์ห้องไหนก็ใส่ room ได้เลย
+- ตรวจแล้ว: ตัวบ้านทุกหลังเดินทะลุไม่ได้ · เดินถึงหน้าประตูทุกหลัง (ห่างบันไดประตู 0–40 px) · จุดเกิด ลาน วาร์ปไปถึงได้ · isoField / vikF2 / frostheim ผังเหมือนเดิมทุกชิ้น (tools/perf/cmp.py)
+
+**เข้าแมพ:** ⚙ → เลือกแมพ → กลุ่ม 'แมพทดลอง' → ฟรอสต์เฮล์ม (ทดลอง iso) · หรือลิงก์ `index.html?map=isoTown` (โหมดทดสอบ)
+
+**มอน 2.5D กลุ่ม 1** (MONSTER25_PROMPTS_TH.md): ลูกหมาป่าหิมะ ภูตลูกสน กระต่ายเขี้ยวน้ำแข็ง ฟรอสต์ลิงใหญ่ ค้างคาวหินย้อยน้ำแข็ง → `tools/monster25_prompts.py cut` → assets/monsters/<ไฟล์>25.webp + monster25.js · เกมใช้แทนแผ่นเดิมทันที (`?mon25=0` = แผ่นเดิม) · เห็นได้ใน isoField / หุบเขี้ยวน้ำแข็ง (vikF2) / ป่าสนหิมะ
+
+**ยังไม่ได้ทำ:** ของเสริมรอบสอง ⓗ (เรือมังกร) · รั้วไม้แหลม ⓘ (กำแพงเมือง) · ห้องในบ้านหลังอื่น / ย้ายบริการอื่นจาก frostheim (คาฟร่า คลัง ร้านค้า) · NPC 2.5D · ชิ้นความสูง · มอนกลุ่ม 2–6

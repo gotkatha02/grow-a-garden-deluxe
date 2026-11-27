@@ -117,6 +117,108 @@ window.VK_MAPS.isoField={name:'ทุ่งสนน้ำแข็ง Frostpine
   safe:[[2200,2440]],
   start:[3600,4950],
   warps:[{id:'home',x:3600,y:5220,to:'capT',at:'toS',label:'กลับเมืองหลวง'}]};
+/* ---------------------------------------------------------------------
+   isoTown = the iso Viking town (owner 2026-11-27 07:24: the town kit B1–B3 · P1–P3 · T7 cobbles · T8 flagstones, ISO_MAP_TH.md §14–15).
+   TEST ONLY (?map=isoTown in test mode, or the ⚙ map picker); the real Frostheim and its services are untouched.
+   The world is turned 45°: street A runs from the south-west gate up to the Great Hall (north-east), street B from the chief's
+   house (north-west) down to the south-east gate; they cross on the flagstone square. Only the two walls facing lower left (SW) and
+   lower right (SE) of a building are ever seen and iso pieces are never mirrored, so every house stands where its door faces a street:
+   a door on the SE wall looks at a SW–NE street on its lower right (the north-west side of street A), a door on the SW wall looks at a
+   NW–SE street on its lower left (the north-east side of street B); the hall and the chief's house close the two streets' ends.
+   DOOR = where each picture's door step is, in map px from the piece's anchor (read on the pictures); a short cobble lane runs from
+   every door to its street. No monsters. Every house record carries door (the door step) and out (where you stand when you come back
+   out: the door step moved 50 px toward the street), both as offsets from the anchor; a house with room:'<room id>' opens that room
+   (npcs.js linked doors). Owner 2026-11-27 'บ้านช่างตีเหล้กให้ลิ้งเข้าไปที่ห้องเดิมที่ทำไว้': the smithy opens Frostheim's own craft
+   room (craft_vik, บียอร์น) and its exit brings you back to this door; the town's other services stay in frostheim.
+   --------------------------------------------------------------------- */
+{
+const TC=[2000,1650],HW=60;   /* the crossing (square centre) · street half width */
+const A=a=>[TC[0]+a,TC[1]-a*.62],B=b=>[TC[0]+b,TC[1]+b*.62];
+const NA=[-.527,-.85],NB=[.527,-.85],UA=[.85,-.527],UB=[.85,.527];   /* NW side of street A · NE side of street B · along A · along B */
+const add=(p,v,k)=>[p[0]+v[0]*k,p[1]+v[1]*k];
+const DOOR={isoGreatHall:[-125,88],isoChiefHouse:[90,50],isoSmithy:[-111,36],isoTavern:[-32,37],isoTradePost:[58,24],isoHealer:[57,6],
+  isoStable:[-82,37],isoStorehouse:[63,9],isoHomeA:[-53,19],isoHomeB:[66,28],isoHomeC:[74,28],isoHomeD:[-64,19],isoLonghouse:[-55,43]};
+const HOUSES=[],LANES=[],R2=v=>[Math.round(v[0]),Math.round(v[1])];
+const ST={kc:'#7d7486',shade:'rgba(255,255,255,0)'};
+/* a house whose door step lands on the edge of a street (half width hw) at street point p, on the side n; a short cobble lane joins them */
+const house=(n,p,side,gap,hw,more)=>{const D=add(p,side,(hw??HW)+(gap??10)),o=DOOR[n];
+  HOUSES.push(Object.assign({n,x:Math.round(D[0]-o[0]),y:Math.round(D[1]-o[1]),_dr:R2(D),door:o.slice(),out:R2([o[0]-side[0]*50,o[1]-side[1]*50])},more||{}));
+  LANES.push({pts:[R2(D),R2(p)],w:56,tex:'isoCobble',...ST});return D;};
+/* the Great Hall closes street A (its stairs at A's end), the chief's house closes street B (its door at B's end) */
+const HALL=A(850),CHIEF=B(-1000);
+HOUSES.push({n:'isoGreatHall',x:HALL[0]+125,y:HALL[1]-88},{n:'isoChiefHouse',x:CHIEF[0]-90,y:CHIEF[1]-50});
+/* west quarter, front row: the north-west side of street A's south-west arm, doors on the SE walls */
+house('isoHomeC',A(-1250),NA);house('isoHomeB',A(-860),NA);house('isoHealer',A(-540),NA);house('isoTradePost',A(-230),NA,40);
+/* west quarter, back row on an alley 360 px further north-west (alleys are narrower: half width 40) */
+const A2=a=>add(A(a),NA,360);
+house('isoHomeB',A2(-1080),NA,8,40);house('isoStorehouse',A2(-700),NA,8,40);house('isoHomeC',A2(-330),NA,8,40);
+/* north quarter: corner lots — one on street A's north-east arm (SE door), two on street B's north-west arm (SW doors) */
+house('isoHomeB',A(420),NA);house('isoHomeA',B(-430),NB,20);house('isoHomeD',B(-730),NB);
+/* north quarter, back rows: alleys 360 px behind street A's north-east arm (SE door) and street B's north-west arm (SW door) */
+const A3=a=>add(A(a),NA,360),B3=b=>add(B(b),NB,360);
+house('isoHomeC',A3(300),NA,8,40);house('isoLonghouse',B3(-700),NB,8,40);
+/* east quarter, front row: the north-east side of street B's south-east arm, doors on the SW walls */
+house('isoTavern',B(420),NB,24);house('isoSmithy',B(800),NB,null,null,{room:'craft_vik',signH:150});house('isoHomeA',B(1170),NB);
+/* east quarter, back row on an alley 360 px further north-east */
+const B2=b=>add(B(b),NB,360);
+house('isoHomeD',B2(560),NB,8,40);house('isoLonghouse',B2(900),NB,8,40);
+/* south quarter: the stable on a lane that leaves street A south-eastward (its barn doors face the lane), the training yard beyond */
+const L0=A(-760),L=t=>add(L0,UB,t);
+house('isoStable',L(330),NB,8,44);
+const ALLEYS=[{pts:[R2(A2(-1300)),R2(A2(-700)),R2(A2(-150)),R2(add(A(-60),NA,170))],w:84,tex:'isoCobble',...ST},
+  {pts:[R2(add(B(300),NB,190)),R2(B2(450)),R2(B2(800)),R2(B2(1080))],w:84,tex:'isoCobble',...ST},
+  {pts:[R2(L0),R2(L(330)),R2(L(470))],w:92,tex:'isoCobble',...ST},
+  {pts:[R2(add(A(150),NA,170)),R2(A3(180)),R2(A3(420))],w:84,tex:'isoCobble',...ST},
+  {pts:[R2(add(B(-560),NB,190)),R2(B3(-620)),R2(B3(-820))],w:84,tex:'isoCobble',...ST}];
+window.VK_MAPS.isoTown={name:'ฟรอสต์เฮล์ม Frostheim (ทดลอง iso)',lv:'เมือง',seed:9320,W:4000,H:3000,mood:'town',theme:'snow',ground:'isoSnow',snowy:1,mons:false,
+  _scaled:1,_pretty:1,colorMatch:0,baseAO:0,pool:0,lit:1,noDetails:1,camZoom:.8,camZoomMob:.75,keepWarps:1,noAutoTrails:1,
+  isoAO:NOAO?null:{a:.55,line:.62,col:'40,46,96',tree:.25},sun:NOAO?null:{a:.86},flies:0,noPrints:1,
+  texScale:{isoSnow:.34,isoSnowWind:.4,isoPath:.22,isoCobble:.17,isoFlag:.23},roadWear:.74,
+  patches:[{tex:'isoSnowWind',scale:900,thr:.6},
+    /* trampled snow round the square, in front of the hall and in the yards */
+    {tex:'isoPath',scale:260,thr:.36,soft:.06,a:.85,near:[[TC[0],TC[1],620,380],[HALL[0]-40,HALL[1]+40,260,150],[L(500)[0],L(500)[1]+40,330,170]]}],
+  border:{set:PINES,band:260,calm:1},openTrees:0,open:[],clearClean:1,decorOpen:0,edge:['isoPineS','isoSapling','isoBush'],edgeN:.03,
+  _decor:['isoSapling','isoBush','isoGrass'],decals:[],grass:[],trails:[],
+  roads:[{pts:[A(-1600),A(-1100),A(-600),A(-100),A(400),HALL],w:124,tex:'isoCobble',...ST},
+    {pts:[CHIEF,B(-600),B(-100),B(400),B(900),B(1420)],w:112,tex:'isoCobble',...ST},...ALLEYS,...LANES],
+  squares:[{x:TC[0],y:TC[1],rx:440,ry:280,tex:'isoFlag',...ST}],
+  clusters:[{x:1950,y:560,r:300,set:PINES,n:8,sp:100},{x:3600,y:1500,r:220,set:PINES,n:5,sp:100},{x:500,y:1500,r:230,set:PINES,n:5,sp:100},
+    {x:1550,y:2620,r:230,set:PINES,n:5,sp:100},{x:3050,y:2650,r:230,set:PINES,n:5,sp:100},
+    {x:3700,y:850,r:220,set:PINES,n:5,sp:100},{x:1050,y:600,r:200,set:PINES,n:4,sp:100},{x:450,y:2250,r:200,set:PINES,n:4,sp:100}],
+  land:[...HOUSES,
+    /* the square: the howling wolf in the middle, the well and the rune shrine, two market stalls on the south side, the notice board by
+       the trade post, benches, iron fire baskets where the streets come in */
+    {n:'isoWolfStatue',x:TC[0],y:TC[1]+10},{n:'isoWell',x:TC[0]-260,y:TC[1]+30},{n:'isoShrine',x:TC[0]+30,y:TC[1]-205},
+    {n:'isoStallFur',x:TC[0]-150,y:TC[1]+215},{n:'isoStallFish',x:TC[0]+120,y:TC[1]+225},{n:'isoNotice',x:TC[0]-330,y:TC[1]-120},
+    {n:'isoBench',x:TC[0]+255,y:TC[1]+60},{n:'isoBench',x:TC[0]-215,y:TC[1]+165},
+    {n:'isoBrazier',x:TC[0]-430,y:TC[1]+120},{n:'isoBrazier',x:TC[0]+435,y:TC[1]-115},{n:'isoBrazier',x:TC[0]-300,y:TC[1]-250},{n:'isoBrazier',x:TC[0]+320,y:TC[1]+245},
+    /* the hall: banners at the foot of its stairs · the chief's house: a banner by the door */
+    {n:'isoBannerWolf',x:HALL[0]-95,y:HALL[1]+30},{n:'isoBannerAxe',x:HALL[0]+75,y:HALL[1]-35},{n:'isoBannerWolf',x:CHIEF[0]-70,y:CHIEF[1]+70},
+    /* goods by the trade post, barrels at the tavern, firewood at the smithy and the homes, hay and a cart at the stable */
+    {n:'isoCrates',x:A(-230)[0]-260,y:A(-230)[1]-25},{n:'isoCart',x:A(-230)[0]-70,y:A(-230)[1]+110},
+    {n:'isoBarrels',x:B(420)[0]-160,y:B(420)[1]-15},{n:'isoBench',x:B(420)[0]+150,y:B(420)[1]-50},
+    {n:'isoFirewood',x:B(800)[0]+215,y:B(800)[1]-125},{n:'isoBarrels',x:B(1170)[0]+170,y:B(1170)[1]-110},
+    {n:'isoHay',x:L(330)[0]+260,y:L(330)[1]-40},{n:'isoHay',x:L(330)[0]+330,y:L(330)[1]},{n:'isoCart',x:L(520)[0]+40,y:L(520)[1]-70},
+    {n:'isoFirewood',x:A(-1250)[0]+130,y:A(-1250)[1]-175},{n:'isoBarrels',x:A(-860)[0]-150,y:A(-860)[1]-40},{n:'isoCrates',x:B(-430)[0]+175,y:B(-430)[1]-50},
+    /* the training yard south of the stable: dummies, fish racks, hay, a fence along its far side */
+    {n:'isoDummy',x:1880,y:2240},{n:'isoDummy',x:1990,y:2300},{n:'isoDummy',x:1765,y:2300},
+    {n:'isoFishRack',x:2450,y:2270},{n:'isoFishRack',x:2570,y:2330},{n:'isoBarrels',x:2690,y:2260},
+    ...fence([[1560,2470],[1920,2600],[2280,2470]]),
+    /* lamp posts along both streets, alternating sides; signposts at the gates */
+    ...[-1350,-950,-650].map(a=>{const p=add(A(a),NA,-95);return {n:'isoLampPost',x:Math.round(p[0]),y:Math.round(p[1])};}),
+    ...[620,250].map(a=>{const p=add(A(a),NA,-95);return {n:'isoLampPost',x:Math.round(p[0]),y:Math.round(p[1])};}),
+    ...[-800,-550,650,1000].map(b=>{const p=add(B(b),NB,-95);return {n:'isoLampPost',x:Math.round(p[0]),y:Math.round(p[1])};}),
+    {n:'isoSignpost',x:A(-1450)[0]+95,y:A(-1450)[1]+70},{n:'isoSignpost',x:B(1300)[0]-85,y:B(1300)[1]+80},
+    /* watchtowers guard the two gates */
+    {n:'isoWatchtower',x:A(-1560)[0]+200,y:A(-1560)[1]+120},{n:'isoWatchtower',x:B(1380)[0]+130,y:B(1380)[1]-160},
+    /* snow blown against the town's edge */
+    {n:'isoDrift',x:850,y:2700},{n:'isoHeap',x:3250,y:2750},{n:'isoDrift',x:3650,y:1150},{n:'isoHeap',x:420,y:1150}],
+  clearings:[[TC[0],TC[1],520]],
+  safe:[[TC[0],TC[1]]],
+  start:A(-1350),
+  warps:[{id:'home',x:A(-1600)[0],y:A(-1600)[1],to:'capT',at:'toS',label:'กลับเมืองหลวง'},
+    {id:'field',x:B(1420)[0],y:B(1420)[1],to:'isoField',at:'home',label:'ทุ่งสนน้ำแข็ง (iso)'}]};
+}
 window.VK_MONS=window.VK_MONS||{};
 if(!window.VK_MONS.isoSnow&&window.VK_MONS.vikF2)window.VK_MONS.isoSnow=window.VK_MONS.vikF2.slice();
 if(!window.VK_MONS.isoField&&window.VK_MONS.vikF2)window.VK_MONS.isoField=window.VK_MONS.vikF2.slice();

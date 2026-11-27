@@ -1,6 +1,8 @@
 """Motion-clip prompts (image-to-video) for one hero: 5 directions x 4 actions = 20 complete copy-paste prompts,
 written to <HERO>_CLIP_PROMPTS_TH.md (never edit that file by hand: change this script and run it again).
 usage: python3 tools/clip_prompts.py sheep [print]      (print = only the 20 prompts, for pasting into the chat)
+       python3 tools/clip_prompts.py cat25 poses [print] (extra-pose VIDEO prompts + a still sit prompt -> <HERO>_POSE_PROMPTS_TH.md,
+                                                         for heroes with a POSES entry, see POSES below)
 
 The template carries the lessons of the earlier clip rounds (snow monkey, axolotl, dragon — NEW_HERO_CONCEPTS_TH.md
 'คลิปท่า 20 ตัว'): a facing sentence first (models turn back views toward the camera), a face lock on the views that
@@ -25,10 +27,17 @@ NOFX = "No shadow, no flash, no glow, no sparkles, no particles, no smoke, no ma
 LOOK = ("Keep the exact look of the picture: hand-painted chibi cartoon, thick dark-brown outlines, flat cel shading — "
         "not realistic, not 3D.")
 
-def tail(P, pos, weapon, nofx=None, inframe=None, look=None):
+def tail(P, pos, weapon, nofx=None, inframe=None, look=None, stay=None):
     return ((look or LOOK) + " The background stays plain flat green for the whole clip. The camera never moves or zooms. "
-            f"{P} stays in the middle of the frame at the same size and never turns to another direction; "
+            + (stay or f"{P} stays in the middle of the frame at the same size and never turns to another direction; ")
             + (inframe or f"{pos} whole body and the whole {weapon} stay inside the frame.") + " " + (nofx or NOFX))
+
+# Extra-pose VIDEOS (owner 2026-11-27, cat 2.5D: 'ขอพร้อมทำพวกท่าพิเศษด้วย จะทำเป็นวีดีโอ ยกเว้นท่านั่ง จะทำเป็นรูป'):
+# POSES[hero] = {'title', 'header', 'clips': {key: {n, th, use, prio, frames, text, [d face keep stay nofx inframe fmt]}},
+# 'still': {n, th, use, prio, attach, box, fixes}, 'footer'} → `python3 tools/clip_prompts.py <hero> poses [print]` writes
+# <HERO>_POSE_PROMPTS_TH.md. A clip uses ONE view (default SE: the hero's own standing picture is the first frame) and the
+# hero's look / face / keep / no-effect lines; a clip may replace any of them (a roar opens the mouth, a thrown hat leaves).
+POSES = {}
 
 HEROES = {
  'sheep': dict(
@@ -1227,6 +1236,206 @@ HEROES['cat25'] = dict(
 - **ท่าชาร์จ** (state `charge`) มาจากแผ่นแมวขาวลุคเดิม → atlas ใหม่ยังไม่มี = `ktChgDir` ปิดตัวเอง (เช็ก `SPR_META.states.charge`) กลับไปค้างเฟรมคลิป · แผ่นท่าชาร์จ 2.5D ทำทีหลังแบบแผ่นท่าเสริมหมาป่า / จากัวร์
 - **จุดหัว:** `cat_mask.js` ตาราง `HAT` (กลางงอบบนหัวทุกเฟรม) ใช้วางหน้ากากตอนสวม (Ashura Mask) + ปีกแฟชั่น (`cat_wings.js`) → หัวใหม่ไม่มีงอบ ต้องจับจุดหัวใหม่ด้วย `tools/headtrack.py` (+ `cat25_head.json`) · ภาพหน้ากากบนหน้า `mask8_*` ตัดจากแมวเดิม → ทำใหม่ หรือให้โค้ดวาง `mask_white` ที่จุดหน้า
 - `CHAR_SCALE.cat` 1.59 → ตั้ง cellScale ให้ idle S สูงเท่าเดิม · หน้า HUD ตัดจากคลิปยืน S (`window.HUD_FACE`) · ท่านั่ง `assets/sit/cat_*` ยังเป็นแมวเดิม · `cat_vfx.js` `hand()` / `CHG_HILT` ตั้งตามท่าชาร์จเดิม""")
+# Ronin Cat 2.5D extra poses (owner 2026-11-27 08:09 'ขอพร้อมทำพวกท่าพิเศษด้วย จะทำเป็นวีดีโอ ยกเว้นท่านั่ง จะทำเป็นรูป'):
+# 9 one-view clips from his own SE standing picture (the first frame, like the 20 clips) + one ChatGPT sit sheet of 8 views.
+# Which skill borrows which frame today was read from char_cat.js (see the header). Words that made earlier video models paint
+# effects (attack / slash / strike / slam / smash) are not used; every clip holds its key pose still so the game can loop it.
+_C25 = HEROES['cat25']
+_K25 = _C25['keep']['SE']
+_SWORD25 = ("The katana keeps its full length and shape in every frame, the sheath stays at his hip, the blade is plain bright "
+            "steel that never glows, and the air around it stays empty and plain green in every frame.")
+_CLEAN25 = "Clean outlines in every frame, no motion blur."
+def _rep25(s, a, b):
+    assert a in s, a
+    return s.replace(a, b)
+POSES['cat25'] = dict(
+  title='แมวโรนิน 2.5D (เนโกะมาตะพเนจร) — ท่าพิเศษ: คลิปวิดีโอ 9 ท่า + ภาพท่านั่ง 8 มุม',
+  header="""เจ้าของ 2026-11-27 08:09 "ขอพร้อมทำพวกท่าพิเศษด้วย จะทำเป็นวีดีโอ ยกเว้นท่านั่ง จะทำเป็นรูป" (หลังได้พรอมต์คลิป 20 ตัวใน `CAT25_CLIP_PROMPTS_TH.md`) → ไฟล์นี้ = พรอมต์คลิปท่าพิเศษ 9 ท่า (วิดีโอ ทำแบบเดียวกับคลิป 20 ตัว) + พรอมต์ภาพท่านั่ง 8 มุม (ChatGPT) · ภาพยืน 2.5D ของเจ้าของยังไม่อยู่ใน repo (ตามที่สั่ง) — เจ้าของแนบเอง
+
+## ทำไมต้องมีท่าพิเศษ
+คลิป 20 ตัวให้แค่ 5 ชุดท่า: ยืน · เดิน · ชักดาบตวัดขึ้น (attack) · ท่ารวมสมาธิ (buff) · โดนตี (ทำจากท่ายืน) — สกิลแมวที่ไม่ใช่การชักดาบตวัดขึ้นจึงต้องยืมท่าพวกนี้ (อ่านจาก `char_cat.js`):
+- ท่าชาร์จก่อนฟัน (state `charge`) มาจากแผ่นแมวขาวลุคเดิม → แอตลาส 2.5D ไม่มี = Mountain Cleave · Sky Drop · Final Cleave · Oni Executioner · Avalanche Rush กลับไปค้างเฟรมคลิปแทน
+- Sky Drop · Earthfall: กระโดดข้ามไปฟันเป้า (ตัวลอยสูง 90 / 60) แต่ภาพยังเป็นท่าชักดาบตวัดขึ้นกลางอากาศ
+- Cat Step · Mirage Step · ช่วงวิ่งของ Avalanche Rush: เล่นแถวเดินเร็ว ×3
+- Nekomata Roll: เล่นแถว "โดนตี" ×1.6 ตลอดช่วงกลิ้ง
+- Grinding Wheel: วนเฟรมโดนของท่าชักดาบ 8 ทิศ 3 รอบ
+- Kasa Throw · Oni Roar · Ashura Mask ใช้ท่ารวมสมาธิท่าเดียวกับ Ki Gather · Feline Focus · Sakura Dance · Gale Counter · Petal Fall · Shadow Dance · Mountain Stance
+- ทุกท่าฟันทั้งสายลม (A) และสายอสูร (B) = ท่าชักดาบตวัดขึ้นท่าเดียว — Mountain Cleave · Quake Slash · Final Cleave · Oni Executioner ของสายอสูรก็ตวัดขึ้น
+- ยังไม่มีท่านั่งของร่างใหม่ (`assets/sit/cat_*` เป็นแมวขาวเดิม)
+
+## วิธีใช้
+- **คลิป 9 ท่า:** แนบ**ภาพยืน 2.5D มุมเฉียงหน้า (SE) = รูปที่ 1** ที่ส่งมาเมื่อ 2026-11-26 20:22 เป็นเฟรมแรก แล้ววางพรอมต์ทีละตัว · คลิปละ 3–5 วิ · ทำมุมเดียวพอ: เกมกลับด้านเองตอนหันซ้าย (SW / W) · ตอนหันขึ้น (N / NE / NW) ใช้เฟรมจากคลิป 20 ตัวต่อ แบบท่าเสริมของหมาป่ากับจากัวร์ · ท่าหมุน ⑤ หมุนครบรอบในคลิปเดียว ได้ภาพทุกด้าน
+- **ท่านั่ง ⑩:** เป็นภาพ ไม่ใช่คลิป → แชต ChatGPT ใหม่ แนบภาพยืน 2.5D ทั้ง 5 มุม แล้ววางกล่อง ⑩
+- ได้ท่าไหนส่งมาท่านั้น ไม่ต้องรอครบ (ใส่เกมทีละท่าได้)
+
+## ที่ว่างในเฟรม
+ภาพเฉียงหน้า: ตัวสูง ~60 % ของภาพ ที่ว่างเหนือหัว ~0.5 เท่าตัว → ② กระโดดฟัน · ⑤ หมุนดาบ · ⑧ ฟันลงจากเหนือหัว ดาบขึ้นสูง / ยื่นออกข้าง อาจหลุดขอบ · พรอมต์สั่งกระโดดต่ำ (เท้าลอยแค่ ¼ ความสูงตัว — ในเกมความสูงตอนลอยมาจากโค้ด ไม่ได้มาจากคลิป) และสั่งให้ทุกอย่างอยู่ในเฟรม · ถ้ายังหลุด: ส่งภาพเฉียงหน้ามา ผมทำภาพตั้งต้นที่ย่อตัวลงให้ (`python3 -I tools/dir8cut.py startv <โฟลเดอร์> SE=<ภาพ> size=1024 feet=.86 ht=430 clean=0`)
+
+## กติกาที่อยู่ในทุกพรอมต์คลิป
+- ลุค 2.5D · หน้า · หางสองหาง · ของที่ต้องคงไว้ · ห้ามเอฟเฟกต์ = ชุดเดียวกับคลิป 20 ตัว (คีย์ `look` / `face` / `keep` / `nofx` ของ `cat25`) · กล้องนิ่ง พื้นเขียวเรียบ ไม่หันไปทิศอื่น (ยกเว้นท่าหมุน)
+- ไม่ใช้คำ attack / slash / strike / slam / smash (คลิปแมวเดิมติดรอยฟันขาว / แสงดาวแตกมา) · ดาบยาวเท่าเดิม ใบเหล็กไม่เรือง อากาศรอบดาบเป็นพื้นเขียวเปล่า · พื้นไม่แตก ไม่มีฝุ่น หิน ไฟ (ชีตออกแบบมีอสูรไฟกับเส้นลม — โมเดลอาจวาดเพิ่มเอง)
+- ท่าที่ต้องค้าง (ชาร์จ · ลงพื้น · คำราม · ฟันลง · สวมหน้ากาก) สั่งค้างนิ่งให้ชัด เพราะเกมดึงเฟรมช่วงค้างไปเล่นวน / ค้างไว้
+- ต่างจากคลิป 20 ตัว: คำราม = อ้าปาก (แทนประโยคปิดปาก) · สวมหน้ากาก = หน้ากากย้ายจากสะโพกขึ้นหน้า · ขว้างงอบ = งอบหลุดออกนอกเฟรม · หมุน = หันครบรอบแล้วกลับมาทางเดิม · กลิ้ง / กระโดด = เคลื่อนนิดเดียวแล้วอยู่ในเฟรม
+- ไม่ระบุมือซ้าย / ขวา (ใช้ 'อุ้งที่ว่าง' / 'อุ้งที่จับฝัก' / 'อุ้งที่ห้อยข้างตัว')""",
+  clipsHead='## คลิปวิดีโอ 9 ท่า · แนบภาพยืน 2.5D มุมเฉียงหน้า (SE = รูปที่ 1) เป็นเฟรมแรกทุกคลิป · วางพรอมต์ทีละตัว',
+  clips={
+   'charge': dict(n='①', th='ท่าชาร์จ (ย่อตัวเตรียมชักดาบ)', prio='สำคัญ',
+     use='Mountain Cleave · Sky Drop · Final Cleave · Oni Executioner · Avalanche Rush (ช่วงชาร์จทั้งหมด)',
+     frames='ยืน → ย่อลง 4 เฟรม → ท่าค้าง 3 เฟรม (ขยับนิดเดียว เล่นวนระหว่างชาร์จ) — ลำดับเดียวกับท่าชาร์จเดิม',
+     text="Iai stance of {who}. {facing} {dpaw} He spreads his feet wide and sinks into a deep, low ready stance: knees "
+          "bent, body leaning forward, head low, his narrowed eyes fixed straight ahead, the katana still in its sheath at "
+          "his hip and ready to be drawn, his two tails stretched out low behind him. He holds this stance very still for "
+          "about two seconds — only his breathing, his mane, the straw cloak and the tips of his tails move a little — then "
+          "he rises back into his starting pose and stands still for the rest of the clip. The katana stays in its sheath "
+          "for the whole clip, and his feet stay planted after he spreads them. " + _CLEAN25),
+   'jump': dict(n='②', th='ท่ากระโดดฟันลง', prio='สำคัญ', use='Sky Drop · Earthfall',
+     frames='ย่อ → ถีบตัว → ลอยชูดาบเหนือหัว → ฟันลงขณะตก → ลงพื้นดาบชี้พื้น (= จังหวะโดน) → ค้าง',
+     text="Jumping sword cut of {who}. {facing} {dpaw} He crouches low, then springs straight up a short way — his feet "
+          "leave the ground by only about a quarter of his height — drawing the katana as he rises and lifting it high above "
+          "his head with both paws at the top of the jump, the straw cloak and both tails flaring out behind him. He comes "
+          "down on the same spot and lands in a deep crouch, swinging the blade straight down in front of him as he lands, "
+          "so it ends pointing down at the ground just in front of his feet, its tip just above the ground without touching "
+          "it. He holds that landing pose for a moment, then stands up, slides the katana back into the sheath at his hip, "
+          "returns to his starting pose and stands still for the rest of the clip. The jump and the cut are quick; the whole "
+          "move, putting the sword away included, takes about two seconds. Nothing appears on the ground when he lands: no "
+          "cracks, no rocks, no dust. " + _SWORD25 + " " + _CLEAN25,
+     stay="He jumps straight up and comes down on the same spot, stays in the middle of the frame at the same size and "
+          "never turns to another direction; "),
+   'dash': dict(n='③', th='ท่าพุ่งต่ำ', prio='สำคัญ', use='Cat Step · Mirage Step · ช่วงวิ่งของ Avalanche Rush',
+     frames='ก้าววิ่งก้มต่ำ 4 เฟรม (เล่นวนระหว่างพุ่ง) → เบรกไถล',
+     text="Low dash of {who}. {facing} He breaks into a low, fast sprint on the spot, like on a treadmill, toward the way "
+          "he is facing: body leaning far forward and head low, one paw keeping the sheathed katana steady at his hip and the "
+          "other arm swept back, quick long strides in his straw sandals, the straw cloak, his mane and both tails streaming "
+          "straight out behind him. After about one second he skids to a stop with one foot braced forward and his body still "
+          "low, then straightens up into his starting pose and stands still for the rest of the clip. He does not move "
+          "across the frame, he does not come closer to the camera or move away from it, and the ground does not move. The "
+          "katana stays in its sheath at his hip and the straw hat stays on his back for the whole clip. " + _CLEAN25),
+   'roll': dict(n='④', th='ท่าม้วนกลิ้ง', prio='สำคัญ', use='Nekomata Roll (ตอนนี้เล่นท่าโดนตีแทน)',
+     frames='ย่อ → ม้วนเป็นลูกบอล 3–4 เฟรม → ลุกขึ้นหมอบ',
+     text="Forward roll of {who}. {facing} He crouches, tucks into a tight round ball — head, paws and knees tucked in, "
+          "both tails wrapped around him — and does one quick forward somersault toward the way he is facing, rolling only "
+          "a short way, then uncurls and springs up into a low crouch with one paw touching the ground. He holds that crouch "
+          "for a moment, then stands up into his starting pose and stands still for the rest of the clip. The roll is quick "
+          "and smooth. The katana stays in its sheath at his hip and the straw hat stays on his back for the whole clip. "
+          + _CLEAN25,
+     stay="He rolls only a short way, stays near the middle of the frame at the same size and never turns to another "
+          "direction; "),
+   'spin': dict(n='⑤', th='ท่าหมุนดาบรอบตัว', prio='ดี', use='Grinding Wheel',
+     frames='มุมต่างๆ ระหว่างหมุน (หน้า · เฉียง · ข้าง · หลัง) ดาบยื่นออกข้างตัวทุกมุม — แทนการวนเฟรมฟัน 8 ทิศ',
+     text="Spinning sword turn of {who}. {facing} He draws the katana and holds it straight out to one side at waist "
+          "height with the blade level, then spins around on the spot one full turn, steadily, keeping the blade level and "
+          "stretched out, so that during the turn we see him from every side, including his back with the big straw hat and "
+          "both tails; he stops facing exactly the same way as at the start. He holds the sword out for a moment, then slides "
+          "it back into the sheath at his hip, returns to his starting pose and stands still for the rest of the clip. The "
+          "turn takes about one and a half seconds and his feet stay on the same spot. " + _SWORD25 + " " + _CLEAN25,
+     stay="He stays on the same spot in the middle of the frame at the same size; apart from the one full turn he never "
+          "turns to another direction; "),
+   'throw': dict(n='⑥', th='ท่าขว้างงอบ', prio='ดี', use='Kasa Throw',
+     frames='เอื้อมจับงอบ → ดึงออก → ง้างข้ามตัว → สะบัดขว้าง (= จังหวะงอบออกจากมือ) → ค้างท่าขว้าง',
+     text="Straw hat throw of {who}. {facing} He reaches up over his shoulder with one paw, takes the big round straw hat "
+          "off his back, swings it across his body and flings it forward flat, like a spinning disc, toward the way he is "
+          "facing with a quick flick of his arm; the hat spins away and quickly flies out of the frame. He holds his throwing "
+          "pose for a moment, arm stretched forward, then lowers his arm, returns to his starting pose and stands still for "
+          "the rest of the clip, now without the hat. His feet stay in place and the katana stays in its sheath at his hip "
+          "for the whole clip. " + _CLEAN25,
+     keep=_rep25(_K25, ", the big round straw hat on his back and the black-sheathed katana with its gold paw-print guard and "
+                       "two little gold bells stay exactly the same.",
+                 " and the black-sheathed katana with its gold paw-print guard and two little gold bells stay exactly the "
+                 "same; the big round straw hat keeps its shape, its red knot, red tassels and white paper strips until it "
+                 "leaves the frame."),
+     inframe="his whole body, both ears, both tails and the whole katana stay inside the frame, and the straw hat stays "
+             "inside the frame until he throws it."),
+   'roar': dict(n='⑦', th='ท่าคำราม', prio='ดี', use='Oni Roar',
+     frames='เริ่ม → อ้าปาก → คำรามเต็ม (ค้าง = จังหวะบัฟติด) → หุบปาก',
+     text="Roar of {who}. {facing} He plants his feet wide, leans forward a little, pulls both arms down and back with "
+          "his paws clenched, opens his mouth wide and roars toward the way he is facing; his ears flatten back, his mane and "
+          "the straw cloak blow back, and his two tails stand straight up behind him with their fur puffed out. He holds the "
+          "roar for about one second, then closes his mouth, relaxes, returns to his starting pose and stands still for the "
+          "rest of the clip. His feet stay planted and the katana stays in its sheath at his hip for the whole clip. No sound "
+          "waves, no rings and no lines around his mouth. " + _CLEAN25,
+     face="Keep his face as in the picture: the same golden-yellow eyes with the small red marks at their outer corners, "
+          "the same white blaze down his grey tabby face and the same small pink nose and whiskers; while he roars his eyes "
+          "open wide and his mouth opens wide, showing small sharp fangs, and afterwards his calm, sly little smile comes "
+          "back with his mouth closed."),
+   'chop': dict(n='⑧', th='ท่าฟันลงจากเหนือหัว', prio='ดี',
+     use='Mountain Cleave · Quake Slash · Final Cleave · Oni Executioner — สายอสูรได้ท่าฟันหนักของตัวเอง แยกจากท่าชักดาบตวัดขึ้นของสายลม',
+     frames='ชักดาบ → ยกเหนือหัว (ท่าง้าง) → ฟันลง → ดาบชี้พื้น (= จังหวะโดน) → ค้าง',
+     text="Overhead sword cut of {who}. {facing} {dpaw} He draws the katana and in one smooth move lifts it high above "
+          "his head with both paws on the hilt, the blade pointing back over his head as he leans back a little; then he "
+          "bends his knees into a low, wide stance and swings the blade straight down in front of him in one heavy cut, so it "
+          "ends pointing down in front of his feet, its tip just above the ground without touching it. He holds that low pose "
+          "for a moment, then straightens up, slides the katana back into the sheath at his hip, returns to his starting pose "
+          "and stands still for the rest of the clip. The whole move, putting the sword away included, takes about two "
+          "seconds, and his feet stay in place. Nothing appears on the ground: no cracks, no rocks, no dust, no fire. "
+          + _SWORD25 + " " + _CLEAN25),
+   'mask': dict(n='⑨', th='ท่าสวมหน้ากาก', prio='เสริม', use='Ashura Mask',
+     frames='จับหน้ากาก → ยกขึ้น → แนบหน้า (= จังหวะบัฟติด) → ยืนสวมหน้ากาก · หลังจากนั้นหน้ากากบนหน้าตลอดบัฟยังวาดด้วยโค้ด (`cat_mask.js`)',
+     text="Fox-mask pose of {who}. {facing} With the paw that hangs at his side he unhooks the white fox mask from his "
+          "hip, lifts it up in front of him and presses it onto his face so it covers his face; as it goes on, he straightens "
+          "up proudly and his two tails rise behind him. He holds still wearing the mask for about one second, then lowers "
+          "his paw and stands still, still wearing the mask, for the rest of the clip. His feet stay in place and the katana "
+          "stays in its sheath at his hip for the whole clip. The mask is plain white with red markings and never glows. "
+          + _CLEAN25,
+     face="At the start his face is exactly as in the picture: the same half-closed golden-yellow eyes with the small red "
+          "marks at their outer corners, the same white blaze down his grey tabby face, the same small pink nose and whiskers "
+          "and the same calm, sly little smile, mouth closed; once the mask is on, only the white fox mask shows where his "
+          "face was, with his ears and grey mane around it.",
+     keep=_rep25(_rep25(_K25, "the white fox mask hanging at his hip, ", ""), "stay exactly the same.",
+                 "stay exactly the same, and the white fox mask with its red markings, red cord and red tassel keeps exactly "
+                 "its shape and colours as it moves from his hip to his face.")),
+  },
+  clipFix="""ถ้าคลิปออกมาไม่ดี (เติมประโยคท้ายพรอมต์แล้วทำใหม่):
+- มีเส้นฟัน / แสง / ฝุ่น / ไฟโผล่ → `Absolutely no effects of any kind: only the cat on plain flat green.`
+- ตัวใหญ่ขึ้น / เดินเข้าหากล้อง → `He never gets bigger in the frame and never comes closer to the camera.`
+- หางรวมเป็นหางเดียว → `He has two separate tails in every single frame.`
+- ดาบสั้นลง / งอ / หาย → `The katana keeps its full length and stays straight in every frame.`
+- ดาบ / หาง / งอบหลุดขอบ → ส่งภาพเฉียงหน้ามา ผมทำภาพตั้งต้นที่ย่อตัวลงให้""",
+  still=dict(n='⑩', th='ท่านั่งพัก (ภาพ 8 มุม · ChatGPT ไม่ใช่คลิป)', prio='เสริม',
+    use='นั่งพัก (ปุ่ม Insert / 🧘) + สถานะนั่งพัก ×2',
+    head='## ภาพท่านั่ง (ChatGPT · ไม่ใช่คลิป)',
+    attach='แชต ChatGPT ใหม่ · แนบภาพยืน 2.5D ทั้ง 5 มุม (รูปที่ 1–5 ที่ส่งมาเมื่อ 2026-11-26 20:22) แล้ววางกล่องนี้ · '
+           'ไม่แนบภาพหน้าโหลดหรือชีตออกแบบ 2D (มันจะดึงกลับเป็นภาพวาดแบน) · ห้ามแนบไฟล์ .md นี้ให้ ChatGPT',
+    box="""2.5D game sprite sheet — the two-tailed cat swordsman sitting down to rest, the same pose seen from 8 directions.
+Use the attached pictures: they show him standing, seen from five sides, exactly as he looks and how he is rendered — copy his look and the rendering exactly, but not the standing pose.
+Style: the same 2.5D look as the attached pictures — a stylized 3D game model with solid volume and depth, rendered with a toon shader that imitates hand-drawn art: clean dark-brown hand-drawn-looking outlines, soft cel shading in 2–3 tones that follows the 3D forms, one warm key light from the upper left with a soft cool shadow side, a thin bright rim light along the edges, matte painted textures (soft fur in clumps, dry layered straw, woven cloth, glossy black lacquer, gold with soft painted highlights). Not photorealistic, not glossy plastic, not a flat 2D drawing. Keep his chibi proportions exactly as in the pictures: a big head and a compact body about three heads tall.
+Camera: the same as in the attached pictures — looking down at him from about 30 degrees above, with no perspective distortion.
+His look (nothing added and nothing left out): a nekomata, a cat swordsman with two tails. A grey tabby cat: soft silver-grey fur with a slight lilac tint and darker grey stripes on his forehead, cheeks, arms and tails; a white blaze between his eyes, a white muzzle and chin and white paws; a small coral-pink nose and whiskers; half-closed golden-yellow cat eyes with slit pupils and a short red stroke at the outer corner of each eye; two big pointed cat ears, dark grey outside, pink inside with white fur tufts; a shaggy, spiky grey mane with a side-swept fringe. TWO long fluffy tails that grow from one base: grey with darker grey rings and soft pale lavender tips (not glowing). A red collar with a round gold bell. A golden straw mino rain cloak of shaggy layered straw (warm golden yellow, never greenish) over his shoulders and down his back, tied across his chest with a thick twisted red rope in a bow with red tassels. Under it a deep plum-purple kimono with wide sleeves and pale lavender cloud swirls, a white collar, a dark sash with a twisted red cord, wide black hakama trousers to mid-calf, white bandage wraps on his shins, and white cat feet in straw sandals with black straps. ONE katana: a black lacquered sheath, a black hilt wrap with red diamonds and a gold end cap, a round black guard with a gold rim and a gold paw print, and two small gold bells on red cords hanging under the guard. A white fox mask with red markings on a red cord, a red tassel under it. On his back a big round woven straw kasa hat on a red cord, with a red ornamental knot and two red tassels in its middle and two blank white paper strips hanging from its rim (nothing written on them); it never sits on his head.
+Pose (the same in all 8 pictures): he sits cross-legged on the ground with his back straight and both paws resting on his knees; the sheathed katana stays tucked in his sash on his LEFT hip with its hilt pointing forward, the white fox mask hangs at his RIGHT hip, the big straw hat stays on his back, and his two tails curl around his sides and lie on the ground in front of his crossed legs — two separate tails, both always visible; a calm, content face with his usual half-closed golden eyes and a small smile, mouth closed.
+Layout: landscape 1536×1024, 8 pictures in 2 rows of 4, read left to right, top row first. Each picture sits in its own eighth of the picture, the cat the same size in every picture, his whole body (ears, both tails, the whole straw hat and the sword hilt) inside his own area with clear empty space around it — pictures never touch or overlap.
+Pictures:
+1. Front view, facing us.
+2. Front three-quarter view, turned toward the lower right.
+3. Side view, facing right.
+4. Back three-quarter view, turned toward the upper right.
+5. Back view: we see the big straw hat on his back and both tails.
+6. Back three-quarter view, turned toward the upper left.
+7. Side view, facing left.
+8. Front three-quarter view, turned toward the lower left.
+Background: flat solid pure green #00FF00 everywhere, no gradient, no floor, no shadow under him.
+No effects at all: no glow, no cherry petals, no wind lines, no fire, no sparkles, no dust, no symbols, no text, no numbers, no frame borders — only the cat. No green anywhere on him: the straw is warm golden yellow, the kimono plum purple, the tail tips pale lavender. The bells and the gold do not glow.""",
+    fixes="""แก้รูป (ส่งต่อท้ายในแชตเดิม):
+- เหลือหางเดียว → `Redo: he must have TWO separate tails in every picture, both visible.`
+- ตัวแบนเหมือนภาพวาด → `Redo: make him look like the attached 2.5D pictures — a 3D game model with rounded volume and soft 3D shading, clean hand-drawn outlines.`
+- ภาพชนกัน / หลุดกรอบ → `Redo: draw him smaller so each picture, including the straw hat and both tails, fits inside its own area with green space around it.`
+- งอบขึ้นไปอยู่บนหัว → `Redo: the straw hat stays on his back, never on his head.`
+- ดาบ / หน้ากากสลับข้าง → `Redo: the katana is on his LEFT hip and the fox mask on his RIGHT hip, in every picture.`
+- มุมซ้ำ / ไม่ครบ 8 → `Redo: 8 different directions in this order: front, front three-quarter right, side right, back three-quarter right, back, back three-quarter left, side left, front three-quarter left.`
+- ฟางออกเขียว → `Redo: the straw is warm golden yellow, not greenish.`
+- แก้บางภาพ → ใช้แปรงเลือกเฉพาะภาพนั้นใน ChatGPT (สั่งแก้ทั้งภาพ มันจะวาดใหม่หมด)"""),
+  footer="""## ตอนคลิปมาถึง (โน้ตสำหรับแชตที่ทำต่อ)
+1. รอแอตลาส 2.5D จากคลิป 20 ตัวก่อน (ท้าย `CAT25_CLIP_PROMPTS_TH.md`) — ท่าพิเศษต้องใช้ cell / pivot / สเกลเดียวกับแอตลาสนั้น
+2. ตัดคลิปเป็น state: ตอนนี้ `tools/sheet_state.py` รับแค่แผ่นภาพ → เพิ่มทางรับวิดีโอ (เช่น `"video":"<คลิป>.mp4","pick":[เฟรม 0-based]` คีย์พื้นเขียวแบบ cliphero) หรือเรียงเฟรมที่เลือกเป็นแผ่นแล้วใช้ทางเดิม · สเกล: ทุกคลิปเริ่มจากภาพยืน SE เดียวกับคลิปยืน SE → วัดความสูงตัวในเฟรมแรกเทียบ idle SE ของแอตลาส = สเกลเดียวทุกท่า · เฟรมลอยกลางอากาศ anchor ที่เท้าข้างต่ำสุด (เกมยกตัวด้วย player.z) · `store` = cellScale ของแอตลาส · `tone` ถ้าวิดีโอคมกว่าคลิป
+   - state + เฟรมที่เลือก: `charge` 8 (0 ยืน · 1–4 ย่อลง · 5–7 ค้าง = ลำดับเดียวกับ state เดิม → `ktChargeSeq` ใช้ได้เลย) · `jump` 6–7 · `dash` 5 · `roll` 5 · `spin` 8 มุม (d ตามทิศที่เห็นในเฟรม) · `throw` 5 · `roar` 4 · `chop` 6 · `mask` 4 · socket ปลายดาบ / ด้ามทุกเฟรมของ `jump` `spin` `chop` (ให้เส้นฟันตาม — ตัวเลือก `sockets` ของ sheet_state)
+3. ผูกท่าในไฟล์ใหม่ `cat_pose.js` (แบบ `jaguar_pose.js` / `wolf_pose.js`): เปลี่ยนแค่เฟรมที่โชว์ — ความยาว เวลาโดน event ทุกตัวเท่าเดิม · ท่ามุมเดียวใช้เฉพาะตอนหันลง / ข้าง (S SE E SW W) · `?catpose=0` = ท่าเดิม
+   - ชาร์จ: state `charge` ใหม่แทนตัวเดิม (`ktChgDir` เช็ก `SPR_META.states.charge` อยู่แล้ว)
+   - กระโดด: Sky Drop (ช่วงลอย .28 วิก่อน windup = เฟรมลอย · contact = เฟรมลงพื้น) · Earthfall (ลอยตลอดช่วง wind-up)
+   - พุ่ง: Cat Step · Mirage Step (`ktDash` ตัวเลือก `st` จาก 'walk' → 'dash') · ช่วงวิ่งของ Avalanche Rush
+   - กลิ้ง: Nekomata Roll (`ktDash` `st` จาก 'hurt' → 'roll')
+   - หมุน: Grinding Wheel (แทนเฟรมโดน 8 ทิศที่วนอยู่ — 3 รอบหมุนตาม DIR8 อยู่แล้ว)
+   - ขว้าง / คำราม / หน้ากาก: Kasa Throw · Oni Roar · Ashura Mask (`buffAct`: เฟรมปล่อย / ค้าง = จุด peak เดิม) · หน้ากากที่ค้างบนหน้าตลอดบัฟต้องจับจุดหัวใหม่ก่อน (ท้าย `CAT25_CLIP_PROMPTS_TH.md`)
+   - ฟันลง: Mountain Cleave · Quake Slash · Final Cleave · Oni Executioner (แทนเฟรมท่าตีทีละช่อง เวลาเท่าเดิม · ท่าชาร์จยังแทนเฟรมก่อน `KT_DRAWF`) + เส้นฟันใน `cat_vfx.js` (KArc) เปลี่ยนเป็นรูป 'down' สำหรับ 4 สกิลนี้
+4. ท่านั่ง: โหมด `pics` ของ sheet_state (แบบ `jaguar25_sit.json` / `wolf25_sit.json`) → `assets/sit/cat25_<8 ทิศ>.webp` + รายการ cat ใน `hero_sit.js` (เลือกตามแอตลาสที่โหลด)
+5. เช็ก: make() ทุกสกิลที่เปลี่ยน × 8 ทิศ (ความยาว / windup / event เท่ากับ `?catpose=0`) · `tools/fxlab.py hits cat` (FXSEED + sure hits) · herosweep / lostev / combo / leak""")
 # Nine-Tail Miko 2.5D (owner 2026-11-26 20:24 'ขอพร้อมทำสไปร้2.5d' + his look-5 sheet 'Nine-Tail Miko Reborn'): her FIRST own
 # sprite (until now she wears the wolf placeholder assets.js) → no flat 'kitsune' entry; written straight for the 2.5D look
 # with every lesson of the wolf / jaguar / rhino / anubis rounds: eyes open in idles, no walking toward the camera, the staff
@@ -1449,6 +1658,123 @@ HEROES['bastet25'] = dict(
 - **หน้า HUD:** ภาพยืนไม่ได้เก็บใน repo (เจ้าของสั่ง) → ตัดหัวจากเฟรมแรกของคลิปยืน S เป็น `assets/heroes/bastet/face25.webp` + window.HUD_FACE (ร่างเก่าใช้ face.webp)
 - ยังไม่มี: ท่าเสริมมุมเดียว (แบบจากัวร์ / หมาป่า), ท่านั่ง 8 มุม, ไอคอนสกิล (โค้ด SVG), พื้นหลังผังสกิล · ภาพหน้าโหลด ld1 ld8 ยังเป็นลุคเก่า""")
 
+# Golden Sheep 2.5D = Golden Sheep Reborn (owner 2026-11-26 22:13 picked design 5 of SHEEP_LOOK_PROMPTS_TH.md and asked for the
+# standing views per direction; 22:30 his 5 views in the 2.5D look + 'ขอพร้อมทำอนิเมชั่น รูปยังไม่ต้องทำไร' = prompts only, his
+# views are the first frames, not stored in the repo, like cat25 / kitsune25 / bastet25). A complete entry: the flat 'sheep'
+# entry describes her old look (long hair, long cape) and its start frames. Re-read against his views: the staff in her right
+# hand (S / SE picture-left, E upright in front of her with the orb just in front of her face, NE / N picture-right), the other
+# hand relaxed at her side (out of sight in E and NE), NO face at all in NE (only the hair, both horns, the back of the tiara
+# and one drooping ear). Lessons kept: 2.5D look, eyes open (her old idle clips kept her eyes shut for long stretches), no
+# walking toward the camera, 'Staff swing' without attack words with the orb stopping at knee height and the air round the
+# staff empty (the old swings baked swooshes, impact bursts and sparks in every direction), 'Staff raise' instead of 'Spell
+# cast' (the old raise clips flashed; the second half of the E one was one long flash), the orb never lighting up or turning
+# white (the old clips needed orbPale), a chibi arm lifting the staff only as far as it reaches ('above her head' makes video
+# models stretch the arms).
+HEROES['sheep25'] = dict(
+  title='แกะขนทอง 2.5D (แกะทองโฉมใหม่ แบบโมเดล 3D มองจากด้านบน · Golden Sheep Reborn 2.5D)',
+  who='the little sheep priestess in this picture', P='She', p='she', pos='her', weapon='staff',
+  look="Keep the exact look of the picture: a stylized 3D game model with soft toon shading and clean dark-brown outlines, "
+       "the same colours and the same curly wool, skin, linen, cloth, leather, glass and gold textures — not photorealistic "
+       "and not a flat drawing. The camera keeps looking down at her from above at the same angle as in the picture.",
+  face="Keep her face exactly as in the picture: the same big blue eyes, the same rosy cheeks and the same gentle little "
+       "smile, mouth closed; her eyes stay open the whole time.",
+  back_face={'NE': "We see her from behind: the back of her curly pale-pink hair, both golden ram horns from behind, the back "
+                   "of her gold laurel tiara and one soft sheep ear hanging down at the right, as in the picture; no part of "
+                   "her face shows and her face never turns toward us.",
+             'N': "We only see the back of her curly pale-pink hair, both golden ram horns from behind, the back of her gold "
+                  "laurel tiara with its small gold point on top and her two soft sheep ears sticking out at the sides, as in "
+                  "the picture; her face never turns toward us."},
+  keep={d: ("Her big curled golden ram horns, the gold laurel tiara with its blue diamond, her soft pale-pink sheep ears with "
+            "the blue diamond earrings, her curly pale-pink hair down to her shoulders, the white drape over her dark purple "
+            "top, the gold arm bands and stacked bracelets, the brown belt with its round gold sun buckle, the short white "
+            "skirt with the pointed purple-and-gold front panel, the purple cape with its gold key-pattern border, the gold "
+            "ankle cuffs with blue diamonds, the brown sandals and the staff with its brown shaft, gold bands, gold point at "
+            "the bottom and gold laurel wreath round the deep-blue orb stay exactly the same.") for d in ('S', 'SE')}
+       | {'E': ("Her big curled golden ram horn, the gold laurel tiara with its blue diamond, her soft pale-pink sheep ear with "
+                "its blue diamond earring, her curly pale-pink hair down to her shoulders, the white drape over her dark purple "
+                "top, the gold arm band and stacked bracelets, the brown belt with its gold sun buckle, the short white skirt, "
+                "the purple cape with the gold column on its back and its gold key-pattern border, the gold ankle cuff with its "
+                "blue diamond, the brown sandals and the staff with its brown shaft, gold bands, gold point at the bottom and "
+                "gold laurel wreath round the deep-blue orb stay exactly the same.")}
+       | {d: ("Her big curled golden ram horns, the back of her gold laurel tiara, her soft pale-pink sheep ears, her curly "
+              "pale-pink hair down to her shoulders, the purple cape with the gold Ionic column between two gold laurel "
+              "branches and its gold key-pattern border, the gold arm bands and bracelets, the gold ankle cuffs, the brown "
+              "sandals and the staff with its brown shaft, gold bands, gold point at the bottom and gold laurel wreath round "
+              "the deep-blue orb stay exactly the same.") for d in ('NE', 'N')},
+  spos={'S': 'beside her', 'SE': 'beside her', 'E': 'in front of her, the orb just in front of her face', 'NE': 'beside her',
+        'N': 'beside her'},
+  blink=", her earrings swing gently and her soft sheep ears flick once",
+  vis=" The staff stays visible beside her body during the whole swing, never hidden behind her.",
+  fmt={'oarm': {'S': 'her other hand relaxed at her side', 'SE': 'her other hand relaxed at her side',
+                'E': 'her other arm out of sight behind her body, as in the picture',
+                'NE': 'her other arm out of sight under her cape, as in the picture',
+                'N': 'her other arm hanging relaxed at her side'},
+       'warm': {'S': 'her other arm swinging a little', 'SE': 'her other arm swinging a little',
+                'E': 'her other arm out of sight behind her body', 'NE': 'her other arm out of sight under her cape',
+                'N': 'her other arm swinging a little at her side'},
+       'bup': {'S': 'beside her head', 'SE': 'beside her head', 'E': 'in front of her', 'NE': 'beside her head',
+               'N': 'beside her head'},
+       'wsep': {'S': '', 'SE': '', 'E': ',', 'NE': '', 'N': ''},
+       'look': (', looking up at the orb', ''),
+       'pvis': ('', " The raised staff stays visible beside her head while she holds the pose.")},
+  inframe="her whole body, both horns and the whole staff stay inside the frame.",
+  nofx="No shadow, no flash, no glow, no light around the orb, no sparkles, no particles, no smoke, no wool tufts, no "
+       "feathers, no music notes, no rings or halos, no light trails, no streaks of colour, no motion lines, no magic effects, "
+       "no symbols, no text; the blue orb stays a plain deep-blue glass ball and never lights up or turns white.",
+  act={
+   'idle': "Idle loop of {who}. {facing} She stands in a relaxed pose holding her staff upright {spos}, {oarm}, and breathes "
+           "slowly: her curly pale-pink hair, her cape and the hem of her skirt sway a little{blink}. The last frame matches "
+           "the first frame so the clip loops.",
+   'walk': "Walk loop of {who}. {facing} She walks in place, like on a treadmill, toward the way she is facing: light, bouncy "
+           "little steps (about two steps per second) in her sandals, her staff held upright {spos}{wsep} bobbing a little "
+           "with each step, {warm}, her curly hair bouncing and her cape swaying. She does not move across the frame, she does "
+           "not come closer to the camera or move away from it, and the ground does not move. The last frame matches the "
+           "first frame so the clip loops.",
+   'attack': "Staff swing of {who}. {facing} She grips her staff with both hands, lifts it back over her shoulder in a short "
+             "wind-up, then swings it down and forward in a fast diagonal arc toward the way she is facing, the orb end "
+             "leading, until the orb is low in front of her at about knee height, never touching the ground; she holds that "
+             "pose for an instant, then brings the staff back upright {spos}, returns to her starting pose and stands still "
+             "for the rest of the clip. The whole swing takes about one second. She does not step forward: her feet stay in "
+             "place.{vis} The staff keeps its full length and shape in every frame, and the air around it stays empty and "
+             "plain green in every frame. Clean outlines in every frame, no motion blur.",
+   'buff': "Staff raise of {who}. {facing} She takes her staff in both hands and lifts it straight up {bup} as far as her "
+           "arms reach, no higher, the staff still upright, so the blue orb rises above her horns and points to the "
+           "sky{look}; she holds that pose still for about one second, then lowers the staff back {spos}, returns to her "
+           "starting pose and stands still for the rest of the clip. Her feet stay in place.{pvis} The whole staff stays "
+           "inside the frame and keeps its full length and shape. Clean outlines in every frame, no motion blur."},
+  dirname={'S': 'หน้าตรง', 'SE': 'เฉียงหน้า หันขวา', 'E': 'ข้าง หันขวา', 'NE': 'เฉียงหลัง หันขวา', 'N': 'หลัง'},
+  actname={'idle': 'ยืน (idle · วนลูป)', 'walk': 'เดิน (walk · วนลูป — Woolly Hop เล่นเฟรมเดินเร็ว 3 เท่า)',
+           'attack': 'เหวี่ยงไม้เท้า (attack · ตีปกติ Crook Combo + Light Ball + Chariot — เฟรมลูกแก้วต่ำหน้าตัว = โดน)',
+           'buff': 'ชูไม้เท้า (buff · ฮีล / บัฟ / เพลง / อัลติ — เกมค้างเฟรมชูสุดตอนชาร์จ Light Ball)'},
+  start='ภาพยืน 2.5D มุม {d} ที่ได้จาก ChatGPT',
+  header="""เจ้าของเลือกแบบ 5 'แกะทองโฉมใหม่' 2026-11-26 22:13 (ขอพรอมต์ภาพยืนทีละทิศ) → 22:30 ส่งภาพยืน 2.5D ครบ 5 มุม + "ขอพร้อมทำอนิเมชั่น รูปยังไม่ต้องทำไร" → ไฟล์นี้ = พรอมต์คลิป 20 ตัวอย่างเดียว · ไม่ได้ตัดภาพตั้งต้น ไม่ได้เก็บภาพยืนไว้ใน repo (ตามที่เจ้าของสั่ง แบบแมว / จิ้งจอก / บาสเทต 2.5D) · เจ้าของแนบภาพยืนของทิศนั้นเป็นเฟรมแรกเอง · หน้าตา + พรอมต์ภาพยืน: `SHEEP_LOOK_PROMPTS_TH.md` หัวข้อ 'เลือกแล้ว: แบบ 5' · **ห้ามใช้ `SHEEP_CLIP_PROMPTS_TH.md` (ชุดแบน ลุคเก่า สั่ง 'not 3D') กับภาพ 2.5D**
+
+## ภาพยืน 2.5D ที่เป็นเฟรมแรก (มาแล้ว 22:30)
+- 1254² พื้นเขียว ตัวสูง 55–57 % ของภาพ (ปลายเขาถึงพื้นรองเท้า 685–710 px) ทุกมุมหันขวา ไม่มีสีเขียวบนตัว (จุดเขียวในตัว = ช่องระหว่างไม้เท้ากับตัว / ใต้แขน = พื้นหลังจริง) · ที่ว่างเหนือหัว 353–365 px = 0.50–0.53 เท่าตัว · ซ้าย 345–435 · ขวา 355–435 · ใต้เท้า 188–216 px · ยอดไม้เท้าต่ำกว่าปลายเขา ~0.1 เท่าตัว → ท่าชูไม้เท้าเขียนให้ยก **สุดแขนเท่าที่ถึง ไม่สูงกว่านั้น** (แขนชิบิยกตรงสุดได้แค่ระดับหน้าผาก ลูกแก้วจะเลยเขาขึ้นไป ~0.2 เท่าตัว ยังเหลือที่ว่าง) · ถ้าคลิปไหนหลุดขอบภาพ: ย่อภาพก่อนทำคลิป (`python3 -I tools/dir8cut.py startv <โฟลเดอร์> <ทิศ>=<ภาพ> size=1024 feet=.88 ht=460 clean=0` ทีละมุม)
+- ตามที่วาด: **S** ไม้เท้าซ้ายของภาพ (มือขวาของเธอ) มือจับระดับอก ลูกแก้วระดับหน้าข้างหัว มืออีกข้างห้อยข้างตัว (ขวาของภาพ) ผ้าคลุมโผล่สองข้างขอบลายกุญแจทอง ยิ้มอ่อน · **SE** แบบเดียวกัน ตัวหันขวาล่าง · **E** ไม้เท้าตั้งหน้าตัว มือข้างใกล้จับระดับอก ลูกแก้ว + ช่อลอเรลอยู่หน้าใบหน้าพอดี (ใบลอเรลแทบแตะจมูก) แขนอีกข้างมองไม่เห็น ผ้าคลุมหลังตัว (ซ้ายของภาพ) เห็นเสาไอโอนิกทอง · **NE** ไม้เท้าขวาของภาพ มือจับระดับไหล่ ลูกแก้วระดับเขา เห็นหลังผมหยิก เขาสองข้างจากด้านหลัง หลังมงกุฎลอเรล หูแกะห้อยทางขวาข้างเดียว **ไม่เห็นหน้าเลย** แขนอีกข้างถูกผ้าคลุมบัง กระโปรงขาวโผล่ขวาของภาพ · **N** ไม้เท้าขวาของภาพ มือจับเหนือไหล่นิด เขาสองข้าง หลังมงกุฎมียอดทองเล็ก หูแกะยื่นสองข้าง แขนอีกข้างห้อยข้างตัว (ซ้ายของภาพ) ผ้าคลุมเสาไอโอนิก + ช่อลอเรล + ขอบลายกุญแจทอง ยาวเหนือเข่า
+
+## วิธีใช้
+แนบภาพยืน 2.5D ของทิศนั้น + วางพรอมต์ทีละตัว → 4 คลิปต่อทิศ (ยืน · เดิน · เหวี่ยงไม้เท้า · ชูไม้เท้า) · คลิปละ 3–5 วิ · ไม่ต้องทำทิศซ้าย (เกมกลับด้านเอง) · ส่งกลับเรียง S → SE → E → NE → N ทิศละ ยืน → เดิน → เหวี่ยง → ชู (สลับได้)
+
+## กติกาที่อยู่ในทุกพรอมต์ (บทเรียนจากคลิปแกะชุดแรก + หมาป่า / จากัวร์ / แรด / แมว / จิ้งจอก / บาสเทต 2.5D)
+- ประโยคบอกทิศขึ้นต้นทุกพรอมต์ · มุมหลัง (NE, N) 'หน้าไม่หันมา' + สิ่งที่เห็นตามภาพจริง (หลังผมหยิก เขาสองข้าง หลังมงกุฎ หูแกะ) · NE เขียนว่า **ไม่เห็นหน้าเลย** ตามภาพ (บาสเทต / จิ้งจอกยังเห็นขอบแก้ม แกะไม่เห็น)
+- ประโยคลุค 2.5D (คีย์ `look`) + กล้องมองลงจากด้านบนมุมเดิม
+- **ลืมตาตลอด** อยู่ในประโยคหน้า (คลิปยืนชุดแรกหลับตาเป็นช่วงยาว ต้องเลือกช่วงวนลูปหลบ) · เดิน: **ไม่เข้าหา / ถอยห่างกล้อง**
+- เหวี่ยงไม้เท้า: ชื่อท่า 'Staff swing' ไม่ใช้คำ attack / strike · ยกข้ามไหล่แล้วฟาดเฉียงลงไปข้างหน้า หัวลูกแก้วนำ ลูกแก้วหยุดต่ำหน้าตัว **ระดับเข่า ไม่แตะพื้น** ค้างนิด แล้วกลับท่ายืน · อากาศรอบไม้เท้าเป็นเขียวเปล่า (คลิปตีชุดแรกมีโค้งลม ระเบิดกระแทก ประกายติดมาทุกทิศ) · ไม่ก้าว · ไม้เท้ายาวเท่าเดิม · มุมหลังสั่งให้ไม้เท้าเห็นข้างตัวตลอด
+- ชูไม้เท้า: ชื่อท่า 'Staff raise' (ไม่ใช้ 'Spell cast' — คลิปร่ายชุดแรกมีแฟลช มุม E ครึ่งหลังเป็นแฟลชทั้งช่วง) · สองมือยกไม้เท้าตั้งตรง **สุดแขนเท่าที่ถึง ไม่สูงกว่านั้น** ลูกแก้วเลยเขาชี้ฟ้า (เขียนว่า 'เหนือหัว' โมเดลจะยืดแขน) · มุมหน้ามองลูกแก้ว · ค้าง ~1 วิ (เกมค้างเฟรมชูสุดตอนชาร์จ Light Ball / ร่าย) · มุมหลังสั่งให้ไม้เท้าเห็นข้างหัว
+- ลูกแก้วเป็นแก้วน้ำเงินเข้มเรียบๆ **ไม่สว่าง ไม่กลายเป็นสีขาว** (คลิปชุดแรกลูกแก้วเรืองขาวหลังเหวี่ยงและตอนชูสุด → ตอนตัดต้องใช้ orbPale) · ห้ามปุยขน ขนนก ตัวโน้ต วงแหวน รัศมี เส้นความเร็ว สัญลักษณ์ (เอฟเฟกต์ใส่ในเกม: `sheep_vfx.js`) · ไม่ระบุมือซ้าย / ขวาในตัวคำสั่งท่า (ภาพตั้งต้นบอกเองว่าไม้เท้าอยู่มือไหน)""",
+  footer="""## ตอนคลิปมาถึง (โน้ตสำหรับแชตที่ทำต่อ)
+- `tools/clips/sheep25_plan.json` จาก `sheep_plan.json` (เวลาเฟรม / contact / peak เดิมทุกทิศ) → **ไฟล์ใหม่ `assets_sheep25.js`** (prefix SHE เดิม — โหลดทีละไฟล์) + สวิตช์ `window.SHE25` / `?she25=0` (แบบ JG25 / RH25) + ตาราง MB หน้าโหลด · เช็ก `python3 tools/fxlab.py hits sheep` ก่อน / หลัง (FXSEED + o.sure)
+  - attack 12 เฟรม [60×8, 70, 80, 90, 100] contact 8 (480 ms) ทุกทิศ · เฟรม contact = ลูกแก้วต่ำหน้าตัว
+  - buff 12 × 80 ms peak 7 ทุกทิศ · เฟรม peak = ชูไม้เท้าสุด
+  - walk 8 เฟรม S 146 · SE / E / NE 125 · N 151 ms · idle 12 เฟรม S 118 · SE 125 · E 170 · NE 83 · N 62 ms · hurt 7 × 70 ms (`stateDur`)
+- ใครใช้เฟรมไหน (`char_sheep.js`): ตีปกติ Crook Combo (`sSwing`) = attack ตั้งแต่ contact−3 ถึงจบ เร็ว 1.6 × ASPD · Light Ball = ค้างเฟรม peak ของ buff ตลอดชาร์จ แล้วต่อ attack จาก contact (ฟาดปล่อย) · Chariot = contact−1 … contact+1 ซ้ำเร็ว 2 เท่า · Woolly Hop = walk เร็ว 3 เท่า · ฮีล / บัฟ / เพลง / อัลติที่เหลือ (`sBurst` → buffAct) = buff ถึง peak = ปล่อยสกิล
+- **socket:** ลูกแก้วน้ำเงินทุกเฟรม (cliphero orbAll) → `sheep_vfx.js` crook() / tip() / headZ · ลูกแก้วสีเดิม orbMask เดิมน่าจะใช้ได้ (`{b 140, br 70, bg 40, g 0, min 90}`) แต่ลูกแก้ว 2.5D มีไฮไลต์ขาว + เงาแบบโมเดล → เช็กทุกแถว · orbFix ตรงที่เหวี่ยงแล้วเบลอ / โดนตัวบัง · orbLerp
+- **ขนาด:** `CHAR_SCALE.sheep` 1.57 → ตั้ง cellScale ให้ idle S สูงเท่าเดิม (วัดถึงปลายเขา ไม่รวมยอดไม้เท้า) · `HERO_SIZE.sheep` .598 คงไว้
+- **ขนาดในคลิป:** ภาพยืนตัวสูง ~56 % ของภาพ → คลิป 544² ตัวสูง ~305 px · ท่าเหวี่ยงมุมข้าง ไม้เท้าอาจยื่นใกล้ขอบขวา → ดูก่อนตัด
+- **หน้า HUD:** ภาพยืนไม่ได้เก็บใน repo (เจ้าของสั่ง) → ตัดหัวจากเฟรมแรกของคลิปยืน S เป็น `assets/heroes/sheep/face25.webp` + window.HUD_FACE ใน installSheep (ร่างเก่าใช้ face.webp) · ภาพหน้าเลือกตัว `select.webp` + `portrait.webp` ยังเป็นลุคเก่า (แบบ 5 ไม่มีชีต) → ตัดจากเฟรมแรกของคลิปยืน SE หรือขอภาพใหญ่จากเจ้าของ
+- ยังไม่มี: ท่าเสริมมุมเดียว (แบบจากัวร์ / หมาป่า), ท่านั่ง 8 มุม, ไอคอนสกิล, พื้นหลังผังสกิล · ภาพหน้าโหลด ld1 ld4 ld8 ยังเป็นลุคเก่า""")
+
 def build(h, d, a):
     H = HEROES[h]; back = d in BACK
     ex = {k: (v[d] if isinstance(v, dict) else v[1 if back else 0]) for k, v in H.get('fmt', {}).items()}
@@ -1471,9 +1797,48 @@ def doc(h):
     out += [H['footer'], '']
     return '\n'.join(out)
 
+def pbuild(h, k):
+    """One extra-pose clip prompt: the hero's face / keep / look / no-effect lines unless the clip replaces them."""
+    H, X = HEROES[h], POSES[h]['clips'][k]; d = X.get('d', 'SE'); back = d in BACK
+    ex = {kk: (v[d] if isinstance(v, dict) else v[1 if back else 0]) for kk, v in H.get('fmt', {}).items()}
+    ex.update(X.get('fmt', {}))
+    txt = X['text'].format(who=H['who'], facing=facing(d, H['P'], H['p'], H['pos']), spos=H['spos'][d], **ex)
+    face = X.get('face') or (H['back_face'][d] if back else H['face'])
+    return ' '.join([txt, face, X.get('keep') or H['keep'][d],
+                     tail(H['P'], H['pos'], H['weapon'], X.get('nofx') or H.get('nofx'), X.get('inframe') or H.get('inframe'),
+                          H.get('look'), X.get('stay'))])
+
+def pdoc(h):
+    P = POSES[h]; C = P['clips']; S = P.get('still')
+    rows = [(c['n'], c['th'], c['use'], c['prio']) for c in C.values()] + ([(S['n'], S['th'], S['use'], S['prio'])] if S else [])
+    out = ['# %s' % P['title'], '',
+           '_ไฟล์นี้สร้างจาก `python3 tools/clip_prompts.py %s poses` — แก้ข้อความที่สคริปต์แล้วรันใหม่ อย่าแก้ไฟล์นี้ตรงๆ_' % h, '',
+           P['header'], '', '## ลำดับ', '', '| # | ท่า | ใช้กับ | ความสำคัญ |', '|---|---|---|---|']
+    out += ['| %s | %s | %s | %s |' % r for r in rows]
+    out += ['', P['clipsHead'], '']
+    for k, c in C.items():
+        out += ['### %s %s' % (c['n'], c['th']), 'ใช้กับ %s · เกมใช้เฟรม: %s' % (c['use'], c['frames']), '', '```', pbuild(h, k), '```', '']
+    if P.get('clipFix'):
+        out += [P['clipFix'], '']
+    if S:
+        out += [S['head'], '', '### %s %s' % (S['n'], S['th']), 'ใช้กับ %s · %s' % (S['use'], S['attach']), '', '```', S['box'], '```', '',
+                S['fixes'], '']
+    out += [P['footer'], '']
+    return '\n'.join(out)
+
 if __name__ == '__main__':
     h = sys.argv[1]
-    if len(sys.argv) > 2 and sys.argv[2] == 'print':
+    if len(sys.argv) > 2 and sys.argv[2] == 'poses':
+        if len(sys.argv) > 3 and sys.argv[3] == 'print':
+            for k in POSES[h]['clips']:
+                print('==', k, len(pbuild(h, k))); print(pbuild(h, k))
+            if POSES[h].get('still'):
+                print('== still', len(POSES[h]['still']['box'])); print(POSES[h]['still']['box'])
+        else:
+            root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            p = os.path.join(root, '%s_POSE_PROMPTS_TH.md' % h.upper())
+            open(p, 'w', encoding='utf-8').write(pdoc(h)); print('wrote', p)
+    elif len(sys.argv) > 2 and sys.argv[2] == 'print':
         for d in DIRS:
             for a in ('idle', 'walk', 'attack', 'buff'):
                 print('==', d, a, len(build(h, d, a))); print(build(h, d, a))
