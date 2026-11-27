@@ -1,8 +1,10 @@
 """Motion-clip prompts (image-to-video) for one hero: 5 directions x 4 actions = 20 complete copy-paste prompts,
 written to <HERO>_CLIP_PROMPTS_TH.md (never edit that file by hand: change this script and run it again).
 usage: python3 tools/clip_prompts.py sheep [print]      (print = only the 20 prompts, for pasting into the chat)
-       python3 tools/clip_prompts.py cat25 poses [print] (extra-pose VIDEO prompts + a still sit prompt -> <HERO>_POSE_PROMPTS_TH.md,
+       python3 tools/clip_prompts.py cat25 poses [print] (extra-pose VIDEO prompts + a still sit prompt -> <HERO>_POSE_CLIP_PROMPTS_TH.md,
                                                          for heroes with a POSES entry, see POSES below)
+       python3 tools/clip_prompts.py cat25 sheets [print] (the same extra poses as ChatGPT PICTURE sheets + the sit prompt
+                                                          -> <HERO>_POSE_PROMPTS_TH.md, for heroes with a SHEETS entry)
 
 The template carries the lessons of the earlier clip rounds (snow monkey, axolotl, dragon — NEW_HERO_CONCEPTS_TH.md
 'คลิปท่า 20 ตัว'): a facing sentence first (models turn back views toward the camera), a face lock on the views that
@@ -1250,7 +1252,9 @@ def _rep25(s, a, b):
     return s.replace(a, b)
 POSES['cat25'] = dict(
   title='แมวโรนิน 2.5D (เนโกะมาตะพเนจร) — ท่าพิเศษ: คลิปวิดีโอ 9 ท่า + ภาพท่านั่ง 8 มุม',
-  header="""เจ้าของ 2026-11-27 08:09 "ขอพร้อมทำพวกท่าพิเศษด้วย จะทำเป็นวีดีโอ ยกเว้นท่านั่ง จะทำเป็นรูป" (หลังได้พรอมต์คลิป 20 ตัวใน `CAT25_CLIP_PROMPTS_TH.md`) → ไฟล์นี้ = พรอมต์คลิปท่าพิเศษ 9 ท่า (วิดีโอ ทำแบบเดียวกับคลิป 20 ตัว) + พรอมต์ภาพท่านั่ง 8 มุม (ChatGPT) · ภาพยืน 2.5D ของเจ้าของยังไม่อยู่ใน repo (ตามที่สั่ง) — เจ้าของแนบเอง
+  header="""**เวอร์ชันวิดีโอ (เก็บไว้):** 09:06 เจ้าของเปลี่ยนเป็น "ขอพร้อมทำรูปดีกว่า" → ใช้ภาพแผ่นท่าใน `CAT25_POSE_PROMPTS_TH.md` (`python3 tools/clip_prompts.py cat25 sheets`) แทน · ไฟล์นี้เก็บไว้เผื่อกลับไปทำเป็นวิดีโอ
+
+เจ้าของ 2026-11-27 08:09 "ขอพร้อมทำพวกท่าพิเศษด้วย จะทำเป็นวีดีโอ ยกเว้นท่านั่ง จะทำเป็นรูป" (หลังได้พรอมต์คลิป 20 ตัวใน `CAT25_CLIP_PROMPTS_TH.md`) → ไฟล์นี้ = พรอมต์คลิปท่าพิเศษ 9 ท่า (วิดีโอ ทำแบบเดียวกับคลิป 20 ตัว) + พรอมต์ภาพท่านั่ง 8 มุม (ChatGPT) · ภาพยืน 2.5D ของเจ้าของยังไม่อยู่ใน repo (ตามที่สั่ง) — เจ้าของแนบเอง
 
 ## ทำไมต้องมีท่าพิเศษ
 คลิป 20 ตัวให้แค่ 5 ชุดท่า: ยืน · เดิน · ชักดาบตวัดขึ้น (attack) · ท่ารวมสมาธิ (buff) · โดนตี (ทำจากท่ายืน) — สกิลแมวที่ไม่ใช่การชักดาบตวัดขึ้นจึงต้องยืมท่าพวกนี้ (อ่านจาก `char_cat.js`):
@@ -1434,6 +1438,235 @@ No effects at all: no glow, no cherry petals, no wind lines, no fire, no sparkle
    - หมุน: Grinding Wheel (แทนเฟรมโดน 8 ทิศที่วนอยู่ — 3 รอบหมุนตาม DIR8 อยู่แล้ว)
    - ขว้าง / คำราม / หน้ากาก: Kasa Throw · Oni Roar · Ashura Mask (`buffAct`: เฟรมปล่อย / ค้าง = จุด peak เดิม) · หน้ากากที่ค้างบนหน้าตลอดบัฟต้องจับจุดหัวใหม่ก่อน (ท้าย `CAT25_CLIP_PROMPTS_TH.md`)
    - ฟันลง: Mountain Cleave · Quake Slash · Final Cleave · Oni Executioner (แทนเฟรมท่าตีทีละช่อง เวลาเท่าเดิม · ท่าชาร์จยังแทนเฟรมก่อน `KT_DRAWF`) + เส้นฟันใน `cat_vfx.js` (KArc) เปลี่ยนเป็นรูป 'down' สำหรับ 4 สกิลนี้
+4. ท่านั่ง: โหมด `pics` ของ sheet_state (แบบ `jaguar25_sit.json` / `wolf25_sit.json`) → `assets/sit/cat25_<8 ทิศ>.webp` + รายการ cat ใน `hero_sit.js` (เลือกตามแอตลาสที่โหลด)
+5. เช็ก: make() ทุกสกิลที่เปลี่ยน × 8 ทิศ (ความยาว / windup / event เท่ากับ `?catpose=0`) · `tools/fxlab.py hits cat` (FXSEED + sure hits) · herosweep / lostev / combo / leak""")
+# ---- Picture pose sheets (owner 2026-11-27 09:06 'ขอพร้อมทำรูปดีกว่า': the cat's extra poses as ChatGPT pictures instead of
+# videos, like the wolf / jaguar 2.5D pose sheets that tools/sheet_state.py cuts straight into atlas states). One box per sheet,
+# every box self-contained; the style / camera / look / background lines are the sit box's own lines (the sit box went out
+# first, so every sheet describes him the same way). Lessons of the wolf's axe round: the weapon described part by part as one
+# rigid object, the figure drawn small enough that the weapon fits ('never shorten it'), where the weapon is in every frame.
+# `python3 tools/clip_prompts.py cat25 sheets [print]` writes <HERO>_POSE_PROMPTS_TH.md (print = only the boxes).
+SHEETS = {}
+_SIT25 = POSES['cat25']['still']['box'].split('\n')
+def _line25(p):
+    return next(l for l in _SIT25 if l.startswith(p))
+_STY25, _CAM25, _LOOK25, _BG25 = _line25('Style:'), _line25('Camera:'), _line25('His look'), _line25('Background:')
+_USE25 = ("Use the attached pictures: the 2.5D picture of him in a front three-quarter view (turned toward the lower right) "
+          "shows exactly how he looks and how he is rendered; if more pictures of him are attached, they show him from other "
+          "sides. Copy his look and the rendering exactly, but not the standing pose.")
+_USE25ALL = ("Use the attached pictures: they show him from several sides, exactly as he looks and how he is rendered from "
+             "each side — copy his look and the rendering exactly, but not the standing pose.")
+_KAT25 = ("His katana: the one katana described above, with a long, slightly curved single-edged blade of plain grey steel — "
+          "the whole sword is about as long as he is tall. It is one rigid object that never changes from frame to frame: "
+          "always the same length and shape, never shorter, never bent, never a second sword. Its black lacquered sheath "
+          "always stays tucked through his sash on his LEFT hip; when the sword is drawn, the empty sheath stays there. When "
+          "he holds the drawn sword in both paws, his right paw grips the hilt just below the guard and his left paw grips it "
+          "next to the gold end cap.")
+_KAT25S = ("His katana: the one katana described above — the whole sword is about as long as he is tall — stays in its black "
+           "lacquered sheath, tucked through his sash on his LEFT hip with the hilt pointing forward, in every frame; he "
+           "never draws it in this sheet. It is one rigid object: never shorter, never bent, never a second sword.")
+_VIEW25 = ("View: every frame shows him from the same front three-quarter view as the 2.5D picture — body and face turned "
+           "toward the lower right of the picture.")
+_NOFX25 = ("No effects at all: no slash trails, motion lines, speed lines, glow, sparkles, dust, cracks, impact bursts, "
+           "cherry petals, wind lines, fire, ghost flames, oni spirits, symbols, text, numbers or frame borders — only the "
+           "cat, his katana and what he carries; show the movement with the pose alone. The blade is plain steel and the "
+           "bells and the gold never glow. No green anywhere on him: the straw is warm golden yellow, the kimono plum "
+           "purple, the tail tips pale lavender.")
+_GRID25 = {'2x4': ("%d frames in 2 rows of 4, read left to right, top row first. Each frame sits in its own eighth of "
+                   "the picture"),
+           '2x3': ("%d frames in 2 rows of 3, read left to right, top row first. Each frame sits in its own sixth of the "
+                   "picture"),
+           '2x2': ("%d frames in a 2×2 grid read like a book (top-left, top-right, bottom-left, bottom-right). Each frame "
+                   "sits in its own quarter of the picture")}
+def _rules25(hat=True, mask=True):
+    r = ["He has TWO separate tails in every frame, both always visible; they never merge into one tail."]
+    if hat:
+        r.append("The big straw hat stays on his back in every frame, never on his head.")
+    if mask:
+        r.append("The white fox mask hangs at his RIGHT hip in every frame.")
+    return ' '.join(r)
+def _box25(what, n, grid, pct, frames, rules, after='', view=_VIEW25, use=_USE25, sword=False):
+    """sword=True: he draws the katana in this sheet (drawn-sword paragraph + 'never shorten it to fit'); else it stays sheathed."""
+    fit = ", so the whole katana fits in every pose — never shorten the katana to make it fit" if sword else ""
+    lay = ("Layout: landscape 1536×1024, " + _GRID25[grid] % n + ", the cat the same size in every frame — when he "
+           "crouches he gets lower, never bigger — his whole body (both ears, both tails, the whole straw hat, the whole "
+           "katana and his feet) inside his own frame with clear empty green space around it; frames never touch or "
+           "overlap. Draw him small: standing up straight he would be only about %d%% of a frame's height%s." % (pct, fit))
+    L = ["2.5D game sprite sheet — the two-tailed cat swordsman's %s." % what, use, _STY25, _CAM25, _LOOK25,
+         _KAT25 if sword else _KAT25S, rules,
+         view, lay, 'Frames:'] + ['%d. %s' % (i + 1, f) for i, f in enumerate(frames)]
+    if after:
+        L.append(after)
+    return '\n'.join(L + [_BG25, _NOFX25])
+_SH25 = {}
+_SH25['charge'] = dict(n='①', th='ท่าชาร์จ (8 เฟรม)', prio='สำคัญ',
+  use='Mountain Cleave · Sky Drop · Final Cleave · Oni Executioner · Avalanche Rush (ช่วงชาร์จ)',
+  frames='1 ยืน → 2–5 ย่อลง → 6–8 ท่าค้าง (เล่นวนระหว่างชาร์จ) — ลำดับเดียวกับแผ่นชาร์จแมวขาวเดิม `charge_sheet.webp` → โค้ดเดิมใช้ได้เลย',
+  box=_box25("iai charge stance (the low ready crouch he holds before drawing his sword), 8 frames", 8, '2x4', 55, [
+    "Standing calm as in the 2.5D picture: his left paw resting on the sheath just under the guard, his right paw relaxed "
+    "at his side, both tails behind him.",
+    "His right paw reaches across his body to the hilt, his body starts turning toward the lower right, his feet still "
+    "close together.",
+    "He steps his front foot forward toward the lower right, knees starting to bend, his right paw gripping the hilt, his "
+    "left paw holding the sheath with the thumb against the guard.",
+    "Sinking lower: knees bent, body leaning forward, head lowering, eyes narrowing.",
+    "Deep iai stance: a very low, wide stance — front knee bent deep over the front foot, back leg stretched out behind — "
+    "upper body leaning forward, head low, his half-closed golden eyes sharp and fixed on the lower right; his right paw "
+    "on the hilt ready to draw, his left paw holding the sheath; both tails stretched out low behind him.",
+    "The same deep stance, almost identical — only his tails, his mane and the straw cloak moved very slightly, as if he "
+    "is breathing and gathering power.",
+    "The same deep stance again with another very small change.",
+    "The same deep stance again, almost identical to frame 6, so frames 6 to 8 can loop."],
+    _rules25()))
+_SH25['jump'] = dict(n='②', th='ท่ากระโดดฟันลง (6 เฟรม)', prio='สำคัญ', use='Sky Drop · Earthfall',
+  frames='1 ย่อ → 2 ถีบตัว → 3–4 ลอย (ไล่ตามช่วงลอยจริง เกมยกตัวเอง) → 5 ลงพื้นดาบชี้พื้น (= จังหวะโดน) → 6 ลุก',
+  box=_box25("leaping downward cut, 6 frames", 6, '2x3', 40, [
+    "Crouch to spring: knees bent deep, body low and leaning forward, the katana already drawn and held low behind his "
+    "right side in both paws with the blade pointing back, eyes on the target to the lower right.",
+    "Take-off: legs pushing off the ground, body rising and leaning forward, the katana swinging up past his right "
+    "shoulder in both paws.",
+    "Rising: in the air with his knees tucked up, both paws above his head, the katana raised high above him pointing up "
+    "and back.",
+    "Top of the leap: body arched back, both paws above his head, the katana swung back over his head with the blade "
+    "pointing down behind his back, ready to cut; both tails, the straw cloak and his mane streaming upward.",
+    "Landing cut: landed in a deep crouch, one knee down and one foot planted, both paws low in front of him, the katana "
+    "brought all the way down in front of him toward the lower right with its tip just above the ground (not touching "
+    "it), head low, both tails thrown forward.",
+    "Rising from the cut: still crouched, starting to stand up, the katana held low in front of him in both paws."],
+    _rules25(), "Frames 2 to 4 are in the air (feet off the ground); draw them the same size as the other frames. The "
+    "empty sheath stays at his left hip.", sword=True))
+_SH25['dash'] = dict(n='③', th='ท่าพุ่งต่ำ (4 เฟรม)', prio='สำคัญ', use='Cat Step · Mirage Step · ช่วงวิ่งของ Avalanche Rush',
+  frames='1–3 วนเป็นจังหวะวิ่งระหว่างพุ่ง → 4 เบรกไถลตอนถึง',
+  box=_box25("low sprinting dash, 4 frames", 4, '2x2', 50, [
+    "Pushing off: body leaning far forward and low, his front leg reaching forward toward the lower right and his back "
+    "leg pushing off behind, his right paw on the hilt and his left paw holding the sheath steady, head forward, eyes "
+    "fixed ahead, both tails streaming straight out behind him, the straw cloak flying back.",
+    "Mid-stride: both feet off the ground in a long, low stride, body flat and low, tails and cloak streaming back.",
+    "The other leg forward, the same low lean, tails streaming back.",
+    "Sliding stop: feet planted wide and skidding, knees bent, body coming upright and turned a little, his right paw on "
+    "the hilt, ready to draw."],
+    _rules25(), "Frames 1 to 3 are one running stride; frame 4 is where he stops."))
+_SH25['roll'] = dict(n='④', th='ท่าม้วนกลิ้ง (4 เฟรม)', prio='สำคัญ', use='Nekomata Roll (ตอนนี้เล่นท่าโดนตีแทน)',
+  frames='1 พุ่งตัว → 2–3 ม้วนเป็นลูกบอล → 4 ลุกขึ้นหมอบ (ไล่ตามช่วงกลิ้ง)',
+  box=_box25("quick forward roll, 4 frames", 4, '2x2', 50, [
+    "Diving into the roll: crouched low, head tucking in, both paws holding the sheathed sword close to his body, body "
+    "tipping forward toward the lower right.",
+    "Rolling: curled into a tight round ball on his shoulder — head tucked under, knees pulled up to his chest, both tails "
+    "and the straw cloak wrapped round the ball, the straw hat pressed flat against his back.",
+    "Halfway over: the same tight ball turned upside down, his sandals on top and his back underneath.",
+    "Out of the roll: up in a low crouch on both feet, facing the lower right again, his right paw on the hilt, ready."],
+    _rules25()))
+_SH25['spin'] = dict(n='⑤', th='ท่าหมุนดาบรอบตัว (4 ด้าน = หมุน 1 รอบ)', prio='ดี', use='Grinding Wheel',
+  frames='4 ด้านวนตามทิศที่หมุน (แทนการวนเฟรมฟัน 8 ทิศ) · แผ่นนี้แนบภาพยืนครบ 5 มุม',
+  box=_box25("spinning sword wheel, 4 frames = one full turn in place", 4, '2x2', 45, [
+    "Front view, facing us: the blade points out to the left of the picture.",
+    "Side view, facing the right of the picture: his sword arm reaches toward us and the blade points toward the lower "
+    "left of the picture.",
+    "Back view: we see the big straw hat on his back and both tails; the blade points out to the right of the picture.",
+    "Side view, facing the left of the picture: his sword arm reaches away from us and the blade points toward the upper "
+    "right of the picture, partly behind his body."],
+    _rules25(),
+    view=("View: the four frames are one full turn in place, all from the same camera; in every frame his feet stay on the "
+          "same spot, his right arm is stretched straight out to his right side at waist height holding the drawn katana "
+          "level and pointing outward like the spoke of a wheel, his left paw holds the empty sheath at his hip, and he "
+          "leans a little into the spin with his straw cloak, both tails and his mane flaring out."),
+    use=_USE25ALL, sword=True))
+_SH25['throw'] = dict(n='⑥', th='ท่าขว้างงอบ (4 เฟรม)', prio='ดี', use='Kasa Throw',
+  frames='1–2 ก่อนปล่อย → 3 = จังหวะงอบออกจากมือ → 4 ค้าง · งอบที่บินออกไปเกมวาดเอง (ตัดภาพงอบจากเฟรม 3 ได้)',
+  box=_box25("straw hat throw, 4 frames", 4, '2x2', 50, [
+    "Reaching back: his right paw reaches up over his right shoulder and grips the rim of the big straw hat on his back, "
+    "his left paw on the sheath, body starting to twist.",
+    "Wind-up: the hat pulled off his back and swung across his body to his left side at chest height, held flat by its "
+    "rim like a flying disc, body twisted away, weight on his back foot.",
+    "Throw: his right arm whipped forward toward the lower right, the hat just leaving his paw and flying flat, body "
+    "leaning forward, weight on his front foot.",
+    "Follow-through: his right arm stretched out forward toward the lower right with the paw open, eyes following the "
+    "throw; the hat is gone — it is not in this frame at all and not on his back."],
+    _rules25(hat=False),
+    "The hat is on his back only in frame 1; in frames 2 and 3 it is in his paw; in frame 4 there is no hat anywhere."))
+_SH25['roar'] = dict(n='⑦', th='ท่าคำราม (4 เฟรม)', prio='ดี', use='Oni Roar',
+  frames='1 → วน 2–3 (= ช่วงคำราม) → 4',
+  box=_box25("oni war roar, 4 frames", 4, '2x2', 50, [
+    "Drawing breath: chest swelling, shoulders up, head tilted back a little, mouth closed, paws clenched at his sides "
+    "(his left paw on the sheath).",
+    "Roar: leaning forward with his head thrust toward the lower right, mouth wide open showing his fangs, eyes wide and "
+    "fierce, ears laid back, his mane, fur and both tails bristling up, paws spread wide with claws out.",
+    "The same roar a moment later, almost identical — his mane, the straw cloak and both tails swayed the other way — so "
+    "frames 2 and 3 can loop.",
+    "Ending: mouth closing, standing tall again and breathing out, his face calming back to his usual sly look, paws back "
+    "at his sides."],
+    _rules25()))
+_SH25['chop'] = dict(n='⑧', th='ท่าฟันลงจากเหนือหัว (6 เฟรม)', prio='ดี',
+  use='Mountain Cleave · Quake Slash · Final Cleave · Oni Executioner — สายอสูรได้ท่าฟันหนักของตัวเอง แยกจากท่าชักดาบตวัดขึ้นของสายลม',
+  frames='1–4 ก่อนโดน → 5 ดาบชี้พื้น (= จังหวะโดน) → 6 เก็บดาบ · สกิลที่ชาร์จ: ท่าชาร์จ ① มาก่อนแล้วต่อเฟรม 2',
+  box=_box25("overhead downward cut, 6 frames", 6, '2x3', 40, [
+    "Drawing: his right paw pulls the katana out of the sheath on his left hip, the blade sweeping up across his body.",
+    "Raised: both paws on the hilt, the katana held high above his head with the blade pointing up and back, body "
+    "stretched tall, weight on his back foot, eyes on the target to the lower right.",
+    "Cut begins: the blade starting to come down above his head, his front foot stepping forward toward the lower right.",
+    "Cutting down: the katana swinging down in front of him at chest height, both arms reaching forward, body lunging.",
+    "End of the cut: a deep lunge toward the lower right, front knee bent, both paws low in front of him at knee height, "
+    "the katana brought all the way down with its tip just above the ground in front of him (not touching it), head "
+    "low, both tails thrown forward.",
+    "Recovering: rising from the lunge and sliding the blade back into the sheath on his left hip."],
+    _rules25(), "The empty sheath stays at his left hip while the sword is out.", sword=True))
+_SH25['mask'] = dict(n='⑨', th='ท่าสวมหน้ากาก (4 เฟรม)', prio='เสริม', use='Ashura Mask',
+  frames='1 → 2 → 3 แนบหน้า (= จังหวะบัฟติด) → 4 ค้าง · เฟรม 4 = ต้นแบบหน้ากากที่ค้างบนหน้าตลอดบัฟ',
+  box=_box25("mask move: putting the white fox mask on his face, 4 frames", 4, '2x2', 50, [
+    "His right paw lifts the white fox mask off his right hip by its red cord, eyes on the mask.",
+    "Raising the mask up in front of his face, its fox face turned away from him toward the lower right.",
+    "Pressing the mask onto his face with his right paw: the white fox mask now covers his whole face, his ears and mane "
+    "showing around it.",
+    "Wearing the mask: the white fox mask over his face with its red markings, its red cord tied behind his head, his "
+    "right paw lowered to his side, standing tall and still, his left paw on the sheath."],
+    _rules25(mask=False), "From frame 3 on the mask is on his face and no longer at his hip."))
+SHEETS['cat25'] = dict(
+  title='แมวโรนิน 2.5D (เนโกะมาตะพเนจร) — ภาพแผ่นท่าเสริม 9 แผ่น + ภาพท่านั่ง 8 มุม',
+  header="""เจ้าของ 2026-11-27 08:09 ขอพรอมต์ท่าพิเศษเป็นวิดีโอ (เก็บไว้ที่ `CAT25_POSE_CLIP_PROMPTS_TH.md`) → 09:06 "ขอพร้อมทำรูปดีกว่า" → ไฟล์นี้ = ท่าเดิมทั้ง 9 ท่า แต่เป็นภาพแผ่นท่าจาก ChatGPT แบบท่าเสริม 2.5D ของหมาป่ากับจากัวร์ (`tools/sheet_state.py` ตัดแผ่นเข้าแอตลาสได้ตรงๆ ไม่ต้องมีทางรับวิดีโอ) + ท่านั่ง ⑩ กล่องเดิมที่ส่งไปแล้ว · ภาพยืน 2.5D ของเจ้าของยังไม่อยู่ใน repo (ตามที่สั่ง) — เจ้าของแนบเอง
+
+## ทำไมต้องมีท่าเสริม
+คลิป 20 ตัวให้แค่ 5 ชุดท่า: ยืน · เดิน · ชักดาบตวัดขึ้น (attack) · ท่ารวมสมาธิ (buff) · โดนตี — สกิลที่ไม่ใช่การชักดาบตวัดขึ้นต้องยืมท่าพวกนี้ (อ่านจาก `char_cat.js`): ท่าชาร์จก่อนฟันมาจากแผ่นแมวขาวลุคเดิม (แอตลาส 2.5D ไม่มี) · Sky Drop / Earthfall กระโดดลอยแต่ภาพเป็นท่าชักดาบ · Cat Step / Mirage Step / ช่วงวิ่งของ Avalanche Rush เล่นแถวเดินเร็ว ×3 · Nekomata Roll เล่นท่าโดนตี · Grinding Wheel วนเฟรมฟัน 8 ทิศ · Kasa Throw / Oni Roar / Ashura Mask ใช้ท่ารวมสมาธิท่าเดียวกับบัฟทั้งหมด · ท่าฟันของสายอสูร = ท่าชักดาบตวัดขึ้นเหมือนสายลม
+
+## วิธีใช้
+- เปิดแชต ChatGPT ใหม่ 1 แชต · ทุกกล่องแนบ**รูปที่ 1** (ภาพยืน 2.5D เฉียงหน้า หันไปทางขวาล่าง ที่ส่งมาเมื่อ 2026-11-26 20:22) · แนบครบ 5 มุมด้วยก็ได้ (ช่วยให้เห็นด้านหลัง) — **กล่อง ⑤ ต้องแนบครบ 5 มุม**
+- วางกล่องทีละกล่อง ได้รูปแล้วค่อยวางกล่องต่อไป · ทำ ①–④ ก่อน (สกิลพวกนี้ยืมท่าผิดชัดที่สุด)
+- ไม่แนบชีตออกแบบ 2D หรือภาพหน้าโหลด (มันจะดึงกลับเป็นภาพวาดแบน) · ห้ามแนบไฟล์ .md นี้ให้ ChatGPT
+- มุมเดียวพอ (เฉียงหน้า หันขวาล่าง): เกมกลับด้านเองตอนหันซ้าย · ตอนหันขึ้นใช้เฟรมจากคลิป 20 ตัวต่อ · ท่าหมุน ⑤ มี 4 ด้านในแผ่นเดียว · ท่านั่ง ⑩ 8 มุม
+- ได้แผ่นไหนส่งมาแผ่นนั้น ไม่ต้องรอครบ
+
+## กติกาในทุกกล่อง
+- ลุค / กล้อง / หน้าตาทั้งตัว / พื้นเขียว = บรรทัดเดียวกับกล่องท่านั่งที่ส่งไปก่อน (สคริปต์ดึงจากกล่องนั้น) → ทุกแผ่นบอกหน้าตาเหมือนกันทุกคำ
+- ดาบบอกเป็นชิ้นเดียวแข็ง ยาวเท่าตัว ห้ามหด ห้ามงอ ห้ามมีสองเล่ม · ฝักอยู่สะโพกซ้ายตลอดแม้ชักดาบออก (บทเรียนรอบขวานหมาป่า)
+- ขนาดตัวในแผ่น: ยืนตรงสูง ~55 % ของช่อง (แผ่น 8 เฟรม ดาบอยู่ในฝัก) · ~40 % (แผ่น 6 เฟรมที่ชักดาบชูสูง) · ~45–50 % (แผ่น 4 เฟรม) — ตัวเท่ากันทุกเฟรม ย่อตัวแล้วเตี้ยลงแต่ไม่ใหญ่ขึ้น
+- หางสองหางทุกเฟรม · งอบอยู่หลัง (ยกเว้นแผ่นขว้าง) · หน้ากากที่สะโพกขวา (ยกเว้นแผ่นสวมหน้ากาก) · ไม่มีเอฟเฟกต์ ไม่มีเงา ไม่มีตัวหนังสือ กรอบ หรือตัวเลข""",
+  boxes=_SH25,
+  fixes="""แก้รูป (ส่งต่อท้ายในแชตเดิม):
+- เหลือหางเดียว → `Redo: he must have TWO separate tails in every frame, both visible.`
+- ตัวแบนเหมือนภาพวาด → `Redo: make him look like the attached 2.5D picture — a 3D game model with rounded volume and soft 3D shading, clean hand-drawn outlines.`
+- เฟรมชนกัน / หลุดกรอบ → `Redo: draw him smaller so each frame, including the whole katana, the straw hat and both tails, fits inside its own area with green space around it.`
+- ตัวโตไม่เท่ากัน → `Redo: draw him the same size in every frame; when he crouches he gets lower, not bigger.`
+- ดาบสั้น / งอ / มีสองเล่ม → `Redo: one katana in every frame, always the same full length and shape as in the picture — draw him smaller if it does not fit.`
+- งอบขึ้นไปอยู่บนหัว → `Redo: the straw hat stays on his back, never on his head.`
+- ฝักดาบ / หน้ากากสลับข้าง → `Redo: the sheath is on his LEFT hip and the fox mask on his RIGHT hip, in every frame.`
+- หันผิดทาง (ไม่ใช่แผ่น ⑤) → `Redo: every frame faces the lower right, the same view as the attached 2.5D picture.`
+- จำนวน / ลำดับเฟรมผิด → `Redo: exactly the frames listed, in that order, in the grid described.`
+- มีเอฟเฟกต์ (แสง เส้นฟัน ฝุ่น ไฟ) → `Redo: remove every effect — only the cat on flat green.`
+- ฟางออกเขียว → `Redo: the straw is warm golden yellow, not greenish.`
+- แก้แค่บางเฟรม → ใช้แปรงเลือกเฉพาะเฟรมนั้นใน ChatGPT (สั่งแก้ทั้งภาพ มันจะวาดใหม่หมด)""",
+  sit=dict(POSES['cat25']['still'], th='ท่านั่งพัก (ภาพ 8 มุม)', head='## ภาพท่านั่ง (กล่องเดิมที่ส่งไปแล้ว ถ้าทำแล้วข้ามได้)'),
+  footer="""## พอได้รูปแล้วทำต่อยังไง (โน้ตสำหรับแชตที่ทำต่อ)
+1. รอแอตลาส 2.5D จากคลิป 20 ตัวก่อน (ท้าย `CAT25_CLIP_PROMPTS_TH.md`) — ท่าเสริมต้องใช้ cell / pivot / สเกลเดียวกับแอตลาสนั้น · เก็บแผ่นดิบไว้ที่ `assets/heroes/cat/poses25/<ท่า>.webp` ได้ตั้งแต่ได้รูป
+2. ตัดแต่ละแผ่นเป็น state: `python3 -I tools/sheet_state.py tools/clips/cat25_<ท่า>.json [preview.png]` (แบบ `jaguar25_<ท่า>.json` / `wolf25_<ท่า>.json`) · rows / cols ตามแผ่น · scale = เทมเพลตหัว (หน้า + หู) เทียบ idle SE ของแอตลาส · anchor กลางเท้า เฟรมลอย (② 2–4 · ③ 2 · ④ 2–3) ใช้สะโพกเหนือเท้าต่ำสุด (เกมยกตัวด้วย player.z) · `store` = cellScale ของแอตลาส · `clean` / `erase` / `tone` ตามต้องการ · `sockets` + `sheet_coords` = ปลายดาบ / ด้ามทุกเฟรมของ jump / spin / chop (อ่านด้วยตา แบบ `wolf25_dance.json`) ให้เส้นฟันตาม
+   - state: `charge` 8 (0 ยืน · 1–4 ย่อลง · 5–7 ค้าง = ลำดับเดียวกับแผ่นเดิม → `ktChargeSeq` ใช้ได้เลย) · `jump` 6 · `dash` 4 · `roll` 4 · `spin` 4 (มุม S E N W) · `throw` 4 · `roar` 4 · `chop` 6 · `mask` 4
+   - งอบที่บินออกไป: ตัดงอบจากเฟรม 3 ของ ⑥ แทนรูป `18_kasa` เดิม (งอบแมวขาวลุคเก่า) · หน้ากากที่ค้างบนหน้าตลอดบัฟ: เฟรม 4 ของ ⑨ เป็นต้นแบบ (ต้องจับจุดหัวต่อเฟรมแบบ `tools/headtrack.py` ก่อน — `cat_mask.js` จับจากงอบบนหัวของแมวขาวเดิม)
+3. ผูกท่าในไฟล์ใหม่ `cat_pose.js` (แบบ `jaguar_pose.js` / `wolf_pose.js`): เปลี่ยนแค่เฟรมที่โชว์ — ความยาว เวลาโดน event ทุกตัวเท่าเดิม · ท่ามุมเดียวใช้ตอนหัน S SE E SW W · `?catpose=0` = ท่าเดิม
+   - ชาร์จ: state `charge` ใหม่แทนตัวเดิม (`ktChgDir` เช็ก `SPR_META.states.charge` อยู่แล้ว)
+   - กระโดด: Sky Drop (ช่วงลอย .28 วิก่อน windup = เฟรม 2–4 · contact = เฟรม 5) · Earthfall (ลอยตลอดช่วง wind-up)
+   - พุ่ง: Cat Step · Mirage Step (`ktDash` `st` 'walk' → 'dash' วน 1-2-3-2 แล้วเฟรม 4 ตอนถึง) · ช่วงวิ่งของ Avalanche Rush
+   - กลิ้ง: Nekomata Roll (`ktDash` `st` 'hurt' → 'roll')
+   - หมุน: Grinding Wheel (4 ด้านตามทิศที่หมุน แทนเฟรมฟัน 8 ทิศ — 3 รอบหมุนตาม DIR8 อยู่แล้ว)
+   - ขว้าง / คำราม / หน้ากาก: Kasa Throw (เฟรม 3 = ตอนปล่อยงอบ tP×.6) · Oni Roar · Ashura Mask (`buffAct`: เฟรมค้าง = จุด peak เดิม)
+   - ฟันลง: Mountain Cleave · Quake Slash · Final Cleave · Oni Executioner (แทนเฟรมท่าตีทีละช่อง เวลาเท่าเดิม · contact = เฟรม 5 · ท่าชาร์จยังแทนเฟรมก่อน `KT_DRAWF`) + เส้นฟันใน `cat_vfx.js` (KArc) เป็นรูป 'down' สำหรับ 4 สกิลนี้
 4. ท่านั่ง: โหมด `pics` ของ sheet_state (แบบ `jaguar25_sit.json` / `wolf25_sit.json`) → `assets/sit/cat25_<8 ทิศ>.webp` + รายการ cat ใน `hero_sit.js` (เลือกตามแอตลาสที่โหลด)
 5. เช็ก: make() ทุกสกิลที่เปลี่ยน × 8 ทิศ (ความยาว / windup / event เท่ากับ `?catpose=0`) · `tools/fxlab.py hits cat` (FXSEED + sure hits) · herosweep / lostev / combo / leak""")
 # Nine-Tail Miko 2.5D (owner 2026-11-26 20:24 'ขอพร้อมทำสไปร้2.5d' + his look-5 sheet 'Nine-Tail Miko Reborn'): her FIRST own
@@ -1826,9 +2059,34 @@ def pdoc(h):
     out += [P['footer'], '']
     return '\n'.join(out)
 
+def sdoc(h):
+    P = SHEETS[h]; B = P['boxes']; S = P.get('sit')
+    rows = [(b['n'], b['th'], b['use'], b['prio']) for b in B.values()] + ([(S['n'], S['th'], S['use'], S['prio'])] if S else [])
+    out = ['# %s' % P['title'], '',
+           '_ไฟล์นี้สร้างจาก `python3 tools/clip_prompts.py %s sheets` — แก้ข้อความที่สคริปต์แล้วรันใหม่ อย่าแก้ไฟล์นี้ตรงๆ_' % h, '',
+           P['header'], '', '## ลำดับ', '', '| # | แผ่น | ใช้กับ | ความสำคัญ |', '|---|---|---|---|']
+    out += ['| %s | %s | %s | %s |' % r for r in rows]
+    out += ['', '## กล่องพรอมต์ (ภาษาอังกฤษ วางทีละกล่อง · แนบรูปที่ 1 ทุกกล่อง)', '']
+    for k, b in B.items():
+        out += ['### %s %s' % (b['n'], b['th']), 'ใช้กับ %s · เกมใช้เฟรม: %s' % (b['use'], b['frames']), '', '```', b['box'], '```', '']
+    out += [P['fixes'], '']
+    if S:
+        out += [S['head'], '', '### %s %s' % (S['n'], S['th']), 'ใช้กับ %s · %s' % (S['use'], S['attach']), '', '```', S['box'], '```', '',
+                S['fixes'], '']
+    out += [P['footer'], '']
+    return '\n'.join(out)
+
 if __name__ == '__main__':
     h = sys.argv[1]
-    if len(sys.argv) > 2 and sys.argv[2] == 'poses':
+    if len(sys.argv) > 2 and sys.argv[2] == 'sheets':
+        if len(sys.argv) > 3 and sys.argv[3] == 'print':
+            for k, b in SHEETS[h]['boxes'].items():
+                print('==', k, len(b['box'])); print(b['box'])
+        else:
+            root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            p = os.path.join(root, '%s_POSE_PROMPTS_TH.md' % h.upper())
+            open(p, 'w', encoding='utf-8').write(sdoc(h)); print('wrote', p)
+    elif len(sys.argv) > 2 and sys.argv[2] == 'poses':
         if len(sys.argv) > 3 and sys.argv[3] == 'print':
             for k in POSES[h]['clips']:
                 print('==', k, len(pbuild(h, k))); print(pbuild(h, k))
@@ -1836,7 +2094,7 @@ if __name__ == '__main__':
                 print('== still', len(POSES[h]['still']['box'])); print(POSES[h]['still']['box'])
         else:
             root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-            p = os.path.join(root, '%s_POSE_PROMPTS_TH.md' % h.upper())
+            p = os.path.join(root, '%s_POSE_CLIP_PROMPTS_TH.md' % h.upper())
             open(p, 'w', encoding='utf-8').write(pdoc(h)); print('wrote', p)
     elif len(sys.argv) > 2 and sys.argv[2] == 'print':
         for d in DIRS:
