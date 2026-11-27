@@ -2005,17 +2005,20 @@ _BNOFX = ("No effects at all: no glow, no sparkles, no magic circles, no light b
           "no symbols, no text, no numbers and no frame borders — only the cat girl and her small book; show the movement with "
           "the pose alone. The small blue flame over the pages is a solid flame shape with no light around it, the sun disc is "
           "plain shiny gold and does not shine, and the gold never glows. No green anywhere on her.")
-def _bbox(what, n, grid, pct, frames, after='', view=_BVIEW, use=_BUSE, book=None):
+def _bpl(t):  # boxes that attach all 5 views say 'pictures'
+    return t.replace('the attached picture', 'the attached pictures')
+def _bbox(what, n, grid, pct, frames, after='', view=_BVIEW, use=_BUSE, book=None, nofx=_BNOFX):
     lay = ("Layout: landscape 1536×1024, " + _GRID25[grid] % n + ", the cat girl the same size in every frame — when she "
            "crouches, kneels or lies down she gets lower, never bigger — her whole body (the sun disc, both ears, her tail, the "
            "book and her feet) inside her own frame with clear empty green space around it; frames never touch or overlap. "
            "Draw her small: standing up straight, from the tip of the sun disc to her feet, she would be only about %d%% of a "
            "frame's height." % pct)
-    L = ["2.5D game sprite sheet of the little white cat priestess — %s." % what, use, _BSTY, _BCAM, _BLOOK,
+    sty, cam = (_bpl(_BSTY), _bpl(_BCAM)) if use is _BUSEALL else (_BSTY, _BCAM)
+    L = ["2.5D game sprite sheet of the little white cat priestess — %s." % what, use, sty, cam, _BLOOK,
          book or _bbook(view is _BVIEW), _BRULE, view, lay, 'Frames:'] + ['%d. %s' % (i + 1, f) for i, f in enumerate(frames)]
     if after:
         L.append(after)
-    return '\n'.join(L + [_BBG, _BNOFX])
+    return '\n'.join(L + [_BBG, nofx])
 _SHB = {}
 _SHB['leap'] = dict(n='①', th="ท่ากระโดดแบบแมว (6 เฟรม)", prio='สำคัญ',
   use="Cat's Grace (+ Shadow Cat) — ตอนนี้ชูคัมภีร์แล้ววาร์ปไปเฉยๆ",
@@ -2135,7 +2138,10 @@ _SHB['ko'] = dict(n='⑨', th='ท่าล้ม KO (4 มุม)', prio='เ�
     "The sun disc with the cobra stays on her head. Draw her at the same scale as standing: if she stood up she would be "
     "about half of a frame's height.", view=_BVIEW4, use=_BUSEALL,
     book=("Her spellbook: " + _BBOOKD + " — in this sheet it lies CLOSED on the ground beside her, with no flame, "
-          "always the same size. She holds no staff, no wand and no blade.")))
+          "always the same size. She holds no staff, no wand and no blade."),
+    nofx=("No effects at all: no glow, no sparkles, no marks or symbols around her head, no motion lines, no dust, no text, "
+          "no numbers and no frame borders — only the cat girl and her closed book. The sun disc is plain shiny gold and "
+          "does not shine, and the gold never glows. No green anywhere on her.")))
 SHEETS['bastet25'] = dict(
   title='บาสเทต 2.5D (ธิดาแห่งรา) — ภาพแผ่นท่าเสริม 9 แผ่น + ภาพท่านั่ง 8 มุม',
   boxHead='## กล่องพรอมต์ (ภาษาอังกฤษ วางทีละกล่อง · ①–⑦ แนบภาพยืน 2.5D มุมเฉียงหน้า · ⑧ ⑨ ⑩ แนบครบ 5 มุม)',
@@ -2178,7 +2184,7 @@ SHEETS['bastet25'] = dict(
     box='\n'.join([
       "2.5D game sprite sheet of the little white cat priestess — kneeling down to rest and read her book, the same pose "
       "seen from 8 directions.",
-      _BUSEALL, _BSTY, _BCAM, _BLOOK,
+      _BUSEALL, _bpl(_BSTY), _bpl(_BCAM), _BLOOK,
       "Pose (the same in all 8 pictures): she kneels on the ground sitting back on her heels, her back straight and both "
       "hands resting on her knees; her spellbook (" + _BBOOKD + ", open, with cream pages and a small solid blue "
       "flame over them) floats by itself in front of her chest, below her chin, and she reads it with calm half-closed "
