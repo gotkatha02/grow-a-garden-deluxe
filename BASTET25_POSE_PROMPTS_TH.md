@@ -68,7 +68,7 @@ No effects at all: no glow, no sparkles, no magic circles, no light beams, no mo
 ใช้กับ สาย A: Curse Glyph · Curse Link · Mark of Apep · Mummy's Wrap · Plague of Locusts · Locust Storm · เกมใช้เฟรม: 1 รวมคำสาป (ช่วงก่อนปล่อย) → 2 ชี้ (= จังหวะปล่อย) → 3 ค้าง → 4 ลดมือ
 
 ```
-2.5D game sprite sheet of the little white cat priestess — pointing a curse at an enemy, 4 frames.
+2.5D game sprite sheet of the little white cat priestess — pointing a curse forward, 4 frames.
 Use the attached picture: the 2.5D picture of her in a front three-quarter view (turned toward the lower right) shows exactly how she looks and how she is rendered; if more pictures of her are attached, they show her from other sides. Copy her look and the rendering exactly, but not the standing pose.
 Style: the same 2.5D look as the attached picture — a stylized 3D game model with solid volume and depth, rendered with a toon shader that imitates hand-drawn art: clean dark-brown hand-drawn-looking outlines, soft cel shading in 2–3 tones that follows the 3D forms, one warm key light from the upper left with a soft cool shadow side, a thin bright rim light along the edges, matte painted textures (soft white fur, thick smooth hair locks, pleated linen, silk, paper pages, red gemstones, gold with soft painted highlights). Not photorealistic, not glossy plastic, not a flat 2D drawing. Keep her chibi proportions exactly as in the picture: a small cat girl about three heads tall, with a big head.
 Camera: the same as in the attached picture — looking down at her from about 30 degrees above, with no perspective distortion.
@@ -79,7 +79,7 @@ View: every frame shows her from the same front three-quarter view as the attach
 Layout: landscape 1536×1024, 4 frames in a 2×2 grid read like a book (top-left, top-right, bottom-left, bottom-right). Each frame sits in its own quarter of the picture, the cat girl the same size in every frame — when she crouches, kneels or lies down she gets lower, never bigger — her whole body (the sun disc, both ears, her tail, the book and her feet) inside her own frame with clear empty green space around it; frames never touch or overlap. Draw her small: standing up straight, from the tip of the sun disc to her feet, she would be only about 50% of a frame's height.
 Frames:
 1. Gathering the curse: her free right hand raised beside her face with the fingers curled like a little claw, eyes narrowed, a sly little smile, ears tilted forward; the book tilting toward her face above her left palm.
-2. Pointing: her right arm thrust straight forward toward the lower right, her index finger pointing at the enemy and the other fingers curled, body leaning a little forward, weight on her front foot, her tail flicking up.
+2. Pointing: her right arm thrust straight forward toward the lower right, her index finger pointing straight ahead and the other fingers curled, body leaning a little forward, weight on her front foot, her tail flicking up.
 3. The same pointing pose a moment later, almost identical — only her hair locks, the sash ends and her tail moved slightly — so frames 2 and 3 can be held.
 4. Lowering: her right hand coming back down to her side, standing calm again, the book settled above her left palm.
 Background: flat solid pure green #00FF00 everywhere, no gradient, no floor, no shadow under her.

@@ -2038,10 +2038,10 @@ _SHB['leap'] = dict(n='①', th="ท่ากระโดดแบบแมว (
 _SHB['sign'] = dict(n='②', th='ท่าชี้คำสาป (4 เฟรม)', prio='สำคัญ',
   use='สาย A: Curse Glyph · Curse Link · Mark of Apep · Mummy\'s Wrap · Plague of Locusts · Locust Storm',
   frames='1 รวมคำสาป (ช่วงก่อนปล่อย) → 2 ชี้ (= จังหวะปล่อย) → 3 ค้าง → 4 ลดมือ',
-  box=_bbox("pointing a curse at an enemy, 4 frames", 4, '2x2', 50, [
+  box=_bbox("pointing a curse forward, 4 frames", 4, '2x2', 50, [
     "Gathering the curse: her free right hand raised beside her face with the fingers curled like a little claw, eyes "
     "narrowed, a sly little smile, ears tilted forward; the book tilting toward her face above her left palm.",
-    "Pointing: her right arm thrust straight forward toward the lower right, her index finger pointing at the enemy and the "
+    "Pointing: her right arm thrust straight forward toward the lower right, her index finger pointing straight ahead and the "
     "other fingers curled, body leaning a little forward, weight on her front foot, her tail flicking up.",
     "The same pointing pose a moment later, almost identical — only her hair locks, the sash ends and her tail moved "
     "slightly — so frames 2 and 3 can be held.",
