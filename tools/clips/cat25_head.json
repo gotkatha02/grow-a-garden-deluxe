@@ -1,0 +1,313 @@
+{
+ "_note": "2.5D Nekomata cat (assets_cat25.js, 2026-11-27): head points = forehead centre between the ears on the idle frame of each direction (cell px; the cat atlas has no cellScale). Used by cat_mask.js (the worn Ashura mask + the Ashura oni clip anchor) and cat_wings.js (wing root) instead of the old hat tracking. Rebuild AFTER tools/cliphero.py and the pose specs (cliphero rewrites the whole file): python3 -I tools/headtrack.py assets_cat25.js CAT_ tools/clips/cat25_head.json [sheet.png] _fix: hurt (one picture per view, its nudged box + the head offset measured on frame 0), buff N / NE crouch (ear tips + 27 / 24), poses the template missed; _copy: one-view poses (shown with d SE / SW only) copy their SE row. spin / roll / ko are skipped by cat_mask.js / cat_wings.js.",
+ "_search": 200,
+ "_seq": {
+  "win": 110,
+  "pen": 0.0015
+ },
+ "S": {
+  "frame": "idle:0",
+  "point": [
+   361,
+   265
+  ],
+  "box": [
+   310,
+   235,
+   410,
+   318
+  ]
+ },
+ "SE": {
+  "frame": "idle:0",
+  "point": [
+   385,
+   267
+  ],
+  "box": [
+   325,
+   245,
+   430,
+   318
+  ]
+ },
+ "E": {
+  "frame": "idle:0",
+  "point": [
+   357,
+   267
+  ],
+  "box": [
+   310,
+   240,
+   420,
+   318
+  ]
+ },
+ "NE": {
+  "frame": "idle:0",
+  "point": [
+   344,
+   265
+  ],
+  "box": [
+   300,
+   240,
+   385,
+   320
+  ]
+ },
+ "N": {
+  "frame": "idle:0",
+  "point": [
+   360,
+   267
+  ],
+  "box": [
+   310,
+   240,
+   410,
+   318
+  ]
+ },
+ "_fix": {
+  "buff/N/5": [
+   361,
+   296
+  ],
+  "buff/N/6": [
+   361,
+   308
+  ],
+  "buff/N/7": [
+   361,
+   308
+  ],
+  "buff/N/8": [
+   361,
+   308
+  ],
+  "buff/N/9": [
+   361,
+   308
+  ],
+  "buff/N/10": [
+   361,
+   301
+  ],
+  "buff/NE/3": [
+   354,
+   273
+  ],
+  "buff/NE/4": [
+   363,
+   280
+  ],
+  "buff/NE/5": [
+   369,
+   285
+  ],
+  "buff/NE/6": [
+   371,
+   292
+  ],
+  "buff/NE/7": [
+   371,
+   292
+  ],
+  "buff/NE/8": [
+   371,
+   292
+  ],
+  "hurt/S/0": [
+   392,
+   274
+  ],
+  "hurt/S/1": [
+   392,
+   273
+  ],
+  "hurt/S/2": [
+   392,
+   274
+  ],
+  "hurt/S/3": [
+   392,
+   274
+  ],
+  "hurt/S/4": [
+   392,
+   275
+  ],
+  "hurt/S/5": [
+   392,
+   276
+  ],
+  "hurt/S/6": [
+   392,
+   276
+  ],
+  "hurt/SE/0": [
+   388,
+   275
+  ],
+  "hurt/SE/1": [
+   386,
+   275
+  ],
+  "hurt/SE/2": [
+   387,
+   275
+  ],
+  "hurt/SE/3": [
+   389,
+   275
+  ],
+  "hurt/SE/4": [
+   390,
+   276
+  ],
+  "hurt/SE/5": [
+   391,
+   276
+  ],
+  "hurt/SE/6": [
+   392,
+   276
+  ],
+  "hurt/E/0": [
+   395,
+   275
+  ],
+  "hurt/E/1": [
+   392,
+   275
+  ],
+  "hurt/E/2": [
+   394,
+   275
+  ],
+  "hurt/E/3": [
+   396,
+   275
+  ],
+  "hurt/E/4": [
+   398,
+   275
+  ],
+  "hurt/E/5": [
+   399,
+   275
+  ],
+  "hurt/E/6": [
+   400,
+   275
+  ],
+  "hurt/NE/0": [
+   370,
+   275
+  ],
+  "hurt/NE/1": [
+   368,
+   275
+  ],
+  "hurt/NE/2": [
+   369,
+   275
+  ],
+  "hurt/NE/3": [
+   371,
+   275
+  ],
+  "hurt/NE/4": [
+   372,
+   274
+  ],
+  "hurt/NE/5": [
+   373,
+   274
+  ],
+  "hurt/NE/6": [
+   374,
+   274
+  ],
+  "hurt/N/0": [
+   374,
+   271
+  ],
+  "hurt/N/1": [
+   374,
+   272
+  ],
+  "hurt/N/2": [
+   374,
+   271
+  ],
+  "hurt/N/3": [
+   374,
+   271
+  ],
+  "hurt/N/4": [
+   374,
+   270
+  ],
+  "hurt/N/5": [
+   374,
+   269
+  ],
+  "hurt/N/6": [
+   374,
+   269
+  ],
+  "jump/SE/0": [
+   404,
+   316
+  ],
+  "jump/SE/1": [
+   400,
+   290
+  ],
+  "jump/SE/2": [
+   394,
+   294
+  ],
+  "roar/SE/1": [
+   421,
+   303
+  ],
+  "roar/SE/2": [
+   426,
+   305
+  ],
+  "chop/SE/4": [
+   404,
+   312
+  ]
+ },
+ "_copy": {
+  "charge/S": "charge/SE",
+  "charge/E": "charge/SE",
+  "charge/NE": "charge/SE",
+  "charge/N": "charge/SE",
+  "jump/S": "jump/SE",
+  "jump/E": "jump/SE",
+  "jump/NE": "jump/SE",
+  "jump/N": "jump/SE",
+  "dash/S": "dash/SE",
+  "dash/E": "dash/SE",
+  "dash/NE": "dash/SE",
+  "dash/N": "dash/SE",
+  "throw/S": "throw/SE",
+  "throw/E": "throw/SE",
+  "throw/NE": "throw/SE",
+  "throw/N": "throw/SE",
+  "roar/S": "roar/SE",
+  "roar/E": "roar/SE",
+  "roar/NE": "roar/SE",
+  "roar/N": "roar/SE",
+  "chop/S": "chop/SE",
+  "chop/E": "chop/SE",
+  "chop/NE": "chop/SE",
+  "chop/N": "chop/SE"
+ }
+}

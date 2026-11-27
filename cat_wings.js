@@ -8,8 +8,11 @@
 (function(){if(typeof CHAR==='undefined'||CHAR!=='cat'||!window.PWING)return;
 const PW=window.PWING,KEY='af_wings_'+CHAR;let cur=null;try{cur=localStorage.getItem(KEY)||null;if(cur&&!PW[cur])cur=null;}catch(_){}
 const BK={S:[0,.80],SE:[-.10,.78],E:[-.30,.76],NE:[-.10,.66],N:[0,.62]};   /* back point = hat centre + [dx,dy]·hat width (cell px) */
+/* 2.5D Nekomata cat (window.CAT25, 2026-11-27): CAT_HAT = the tracked head points (forehead between the ears, HW 100) → the back point
+   sits below them at the shoulders, behind the straw hat on his back; no wings on the spin / roll / KO frames */
+const C25=!!(window.CAT25&&SPR_META.head),SKIP25={spin:1,roll:1,ko:1};if(C25)Object.assign(BK,{S:[0,.72],SE:[-.06,.70],E:[-.18,.68],NE:[-.06,.78],N:[0,.76]});   /* back views lower: the wings are drawn over the body there, so his head stays clear */
 const IMG={};function img(k,v){const key=k+v;let im=IMG[key];if(!im){im=new Image();im.src=PW[k].dir+v+'.webp';IMG[key]=im;}return im.complete&&im.naturalWidth?im:null;}
-function geom(k,e,x,y,t,moving){const C=PW[k],H=window.CAT_HAT;if(!C||!H)return null;const sd=(SPR_META.mirror&&SPR_META.mirror[e.d])||e.d,mir=isMir(e.d),L=H.HAT[e.st]&&H.HAT[e.st][sd];if(!L)return null;
+function geom(k,e,x,y,t,moving){const C=PW[k],H=window.CAT_HAT;if(!C||!H||C25&&SKIP25[e.st])return null;const sd=(SPR_META.mirror&&SPR_META.mirror[e.d])||e.d,mir=isMir(e.d),L=H.HAT[e.st]&&H.HAT[e.st][sd];if(!L)return null;
   const im=img(k,sd);if(!im)return null;const h=L[Math.min(e.f,L.length-1)],hw=H.HW[sd],b=BK[sd]||[0,.75];let ax=h[0]+b[0]*hw;if(mir)ax=SPR_META.cell.w-ax;const ay=h[1]+b[1]*hw;
   const pv=SPR_META.pivot,sx=x+(ax-pv.x)*SPR,sy=y+(ay-pv.y)*SPR,r=C.root[sd],side=sd==='E',K=SPR*(window.HERO_K||1)/CHAR_SCALE,
     w=(side?C.span*.42:sd==='S'?C.span:sd==='N'?C.span*.88:sd==='NE'?C.span*.78:C.span*.85)*K,hh=w*im.naturalHeight/im.naturalWidth,

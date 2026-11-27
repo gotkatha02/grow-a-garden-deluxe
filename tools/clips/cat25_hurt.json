@@ -1,0 +1,302 @@
+{
+ "_note": "Nekomata Wanderer cat 2.5D extra pose (owner 2026-11-27 09:32, his sheets from CAT25_POSE_PROMPTS_TH.md; hurt / KO came on his own). hurt flinch, one picture per view (1 front 3/4 = S and SE \u00b7 2 side E \u00b7 3 back 3/4 NE \u00b7 4 back N), 7 frames of 70 ms like the old hurt row (Nekomata Roll no longer uses it), nudged back like cliphero hurt_from; the lightning marks are erased. Scale = his head matched to the 2.5D idle SE frame (masked template match), anchors in sheet px (feet centre of the lowest band; hips for leaps / dash / roll). Rebuild: python3 -I tools/sheet_state.py tools/clips/cat25_hurt.json [preview.png]",
+ "js": "assets_cat25.js",
+ "prefix": "CAT",
+ "state": "hurt",
+ "sheet": "assets/heroes/cat/poses25/hurt.webp",
+ "rows": 2,
+ "cols": 2,
+ "scale": 0.47,
+ "sheet_coords": true,
+ "anchors": [
+  [
+   406,
+   494
+  ],
+  [
+   1067,
+   494
+  ],
+  [
+   406,
+   967
+  ],
+  [
+   1060,
+   975
+  ]
+ ],
+ "clean": true,
+ "tone": {
+  "L": 1.0,
+  "C": 0.91,
+  "blur": 0.25
+ },
+ "dirs": [
+  "S",
+  "SE",
+  "E",
+  "NE",
+  "N"
+ ],
+ "flip": false,
+ "dur": [
+  70,
+  70,
+  70,
+  70,
+  70,
+  70,
+  70
+ ],
+ "loop": false,
+ "erase": [
+  [
+   574,
+   154,
+   642,
+   201
+  ],
+  [
+   578,
+   115,
+   625,
+   169
+  ],
+  [
+   1240,
+   155,
+   1309,
+   201
+  ],
+  [
+   1245,
+   115,
+   1292,
+   169
+  ],
+  [
+   577,
+   593,
+   643,
+   640
+  ],
+  [
+   581,
+   554,
+   626,
+   608
+  ],
+  [
+   1218,
+   593,
+   1284,
+   640
+  ],
+  [
+   1222,
+   553,
+   1267,
+   608
+  ]
+ ],
+ "views": {
+  "S": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "SE": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "E": [
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "NE": [
+   2,
+   2,
+   2,
+   2,
+   2,
+   2,
+   2
+  ],
+  "N": [
+   3,
+   3,
+   3,
+   3,
+   3,
+   3,
+   3
+  ]
+ },
+ "nudge": {
+  "S": [
+   [
+    0,
+    -2
+   ],
+   [
+    0,
+    -3
+   ],
+   [
+    0,
+    -2
+   ],
+   [
+    0,
+    -2
+   ],
+   [
+    0,
+    -1
+   ],
+   [
+    0,
+    0
+   ],
+   [
+    0,
+    0
+   ]
+  ],
+  "SE": [
+   [
+    -4,
+    -1
+   ],
+   [
+    -6,
+    -1
+   ],
+   [
+    -5,
+    -1
+   ],
+   [
+    -3,
+    -1
+   ],
+   [
+    -2,
+    0
+   ],
+   [
+    -1,
+    0
+   ],
+   [
+    0,
+    0
+   ]
+  ],
+  "E": [
+   [
+    -5,
+    0
+   ],
+   [
+    -8,
+    0
+   ],
+   [
+    -6,
+    0
+   ],
+   [
+    -4,
+    0
+   ],
+   [
+    -2,
+    0
+   ],
+   [
+    -1,
+    0
+   ],
+   [
+    0,
+    0
+   ]
+  ],
+  "NE": [
+   [
+    -4,
+    1
+   ],
+   [
+    -6,
+    1
+   ],
+   [
+    -5,
+    1
+   ],
+   [
+    -3,
+    1
+   ],
+   [
+    -2,
+    0
+   ],
+   [
+    -1,
+    0
+   ],
+   [
+    0,
+    0
+   ]
+  ],
+  "N": [
+   [
+    0,
+    2
+   ],
+   [
+    0,
+    3
+   ],
+   [
+    0,
+    2
+   ],
+   [
+    0,
+    2
+   ],
+   [
+    0,
+    1
+   ],
+   [
+    0,
+    0
+   ],
+   [
+    0,
+    0
+   ]
+  ]
+ }
+}

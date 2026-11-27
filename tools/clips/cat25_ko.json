@@ -1,0 +1,144 @@
+{
+ "_note": "Nekomata Wanderer cat 2.5D extra pose (owner 2026-11-27 09:32, his sheets from CAT25_POSE_PROMPTS_TH.md; hurt / KO came on his own). knocked out (play-mode death, cat_pose.js): one picture per view, dizzy stars / swirl erased. Scale (KO: the hat paper strips of the back view vs the idle N frame) = his head matched to the 2.5D idle SE frame (masked template match), anchors in sheet px (feet centre of the lowest band; hips for leaps / dash / roll). Rebuild: python3 -I tools/sheet_state.py tools/clips/cat25_ko.json [preview.png]",
+ "js": "assets_cat25.js",
+ "prefix": "CAT",
+ "state": "ko",
+ "sheet": "assets/heroes/cat/poses25/ko.webp",
+ "rows": 2,
+ "cols": 2,
+ "scale": 0.48,
+ "sheet_coords": true,
+ "anchors": [
+  [
+   403,
+   454
+  ],
+  [
+   1124,
+   462
+  ],
+  [
+   406,
+   933
+  ],
+  [
+   1118,
+   960
+  ]
+ ],
+ "clean": true,
+ "tone": {
+  "L": 1.0,
+  "C": 0.91,
+  "blur": 0.25
+ },
+ "dirs": [
+  "S",
+  "SE",
+  "E",
+  "NE",
+  "N"
+ ],
+ "flip": false,
+ "dur": [
+  400
+ ],
+ "loop": false,
+ "erase": [
+  [
+   533,
+   97,
+   631,
+   151
+  ],
+  [
+   622,
+   147,
+   669,
+   198
+  ],
+  [
+   478,
+   106,
+   525,
+   155
+  ],
+  [
+   1319,
+   130,
+   1408,
+   165
+  ],
+  [
+   1385,
+   194,
+   1430,
+   243
+  ],
+  [
+   1342,
+   158,
+   1415,
+   189
+  ],
+  [
+   1359,
+   181,
+   1376,
+   194
+  ],
+  [
+   550,
+   536,
+   644,
+   585
+  ],
+  [
+   634,
+   579,
+   679,
+   628
+  ],
+  [
+   501,
+   549,
+   545,
+   595
+  ],
+  [
+   1141,
+   529,
+   1240,
+   575
+  ],
+  [
+   1088,
+   550,
+   1134,
+   597
+  ],
+  [
+   1224,
+   564,
+   1269,
+   612
+  ]
+ ],
+ "views": {
+  "S": [
+   0
+  ],
+  "SE": [
+   0
+  ],
+  "E": [
+   1
+  ],
+  "NE": [
+   2
+  ],
+  "N": [
+   3
+  ]
+ }
+}

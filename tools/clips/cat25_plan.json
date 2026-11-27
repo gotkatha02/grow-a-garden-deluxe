@@ -1,0 +1,531 @@
+{
+ "_note": "Nekomata Wanderer cat 2.5D (owner's 20 clips 2026-11-27 09:32, no words, 544x544 24 fps green, made from his own 2.5D standing views; uploads 1000001485-1509 = buff, attack, walk, idle per direction SE 1485-88 \u00b7 S 1489/90/92/93 \u00b7 E 1496-99 \u00b7 NE 1500-03 \u00b7 N 1504/05/06/09). Every attack / buff / walk / hurt row keeps the old assets_cat.js frame counts and times (attack 14 f, S contact 7 = 370 ms, other dirs contact 5 = 260 ms; buff 12 x 70 peak 6; walk 8 at the old per-direction ms \u2014 Cat Step / Mirage / Avalanche play it as a timed dash; hurt 7 x 70 \u2014 Nekomata Roll's length), so every hit time stays. KT_DRAWF 3: attack frames 0-2 = before the draw (the charge stance replaces them). The clips bake white / green arcs over the draw (S 22-27, E 20-22, NE 20-27 and 54, N 22-33 and 75-82) -> each attack row jumps from the wind-up crouch to the first clean blade-up frame at contact. The S attack and the S cast turn him sideways (the video model's choice) \u2014 kept. Idle S skips a baked starburst / smoke ring (4-48), idle N baked flames (20-88). Height 230 per direction (his views were not one size) = the old atlas's idle height (228) -> CHAR_SCALE.cat stays 1.59. Sockets = cliphero's synthetic ones (the cat's effects do not read them).",
+ "height": 230,
+ "flip": false,
+ "perDir": true,
+ "clips": {
+  "buff": {
+   "SE": "/home/claude/work/cat25/clips/c1485.mp4",
+   "S": "/home/claude/work/cat25/clips/c1489.mp4",
+   "E": "/home/claude/work/cat25/clips/c1496.mp4",
+   "NE": "/home/claude/work/cat25/clips/c1500.mp4",
+   "N": "/home/claude/work/cat25/clips/c1504.mp4"
+  },
+  "attack": {
+   "SE": "/home/claude/work/cat25/clips/c1486.mp4",
+   "S": "/home/claude/work/cat25/clips/c1490.mp4",
+   "E": "/home/claude/work/cat25/clips/c1497.mp4",
+   "NE": "/home/claude/work/cat25/clips/c1501.mp4",
+   "N": "/home/claude/work/cat25/clips/c1505.mp4"
+  },
+  "walk": {
+   "SE": "/home/claude/work/cat25/clips/c1487.mp4",
+   "S": "/home/claude/work/cat25/clips/c1492.mp4",
+   "E": "/home/claude/work/cat25/clips/c1498.mp4",
+   "NE": "/home/claude/work/cat25/clips/c1502.mp4",
+   "N": "/home/claude/work/cat25/clips/c1506.mp4"
+  },
+  "idle": {
+   "SE": "/home/claude/work/cat25/clips/c1488.mp4",
+   "S": "/home/claude/work/cat25/clips/c1493.mp4",
+   "E": "/home/claude/work/cat25/clips/c1499.mp4",
+   "NE": "/home/claude/work/cat25/clips/c1503.mp4",
+   "N": "/home/claude/work/cat25/clips/c1509.mp4"
+  }
+ },
+ "frames": {
+  "idle/S": [
+   52,
+   58,
+   64,
+   70,
+   76,
+   82,
+   88,
+   94,
+   100,
+   106,
+   112,
+   118
+  ],
+  "idle/N": [
+   92,
+   95,
+   98,
+   101,
+   104,
+   107,
+   110,
+   113,
+   116,
+   119,
+   121,
+   123
+  ]
+ },
+ "attack": {
+  "S": {
+   "frames": [
+    0,
+    9,
+    12,
+    15,
+    18,
+    20,
+    20,
+    28,
+    31,
+    40,
+    55,
+    63,
+    84,
+    90
+   ],
+   "contact": 7,
+   "dur": [
+    55,
+    55,
+    55,
+    55,
+    55,
+    55,
+    40,
+    40,
+    40,
+    75,
+    75,
+    75,
+    75,
+    75
+   ]
+  },
+  "SE": {
+   "frames": [
+    0,
+    9,
+    12,
+    15,
+    17,
+    19,
+    22,
+    30,
+    45,
+    60,
+    69,
+    75,
+    81,
+    90
+   ],
+   "contact": 5,
+   "dur": [
+    55,
+    55,
+    55,
+    55,
+    40,
+    40,
+    40,
+    75,
+    75,
+    75,
+    75,
+    75,
+    75,
+    75
+   ]
+  },
+  "E": {
+   "frames": [
+    0,
+    9,
+    12,
+    15,
+    19,
+    24,
+    26,
+    32,
+    40,
+    51,
+    54,
+    57,
+    60,
+    66
+   ],
+   "contact": 5,
+   "dur": [
+    55,
+    55,
+    55,
+    55,
+    40,
+    40,
+    40,
+    75,
+    75,
+    75,
+    75,
+    75,
+    75,
+    75
+   ]
+  },
+  "NE": {
+   "frames": [
+    0,
+    9,
+    12,
+    15,
+    19,
+    28,
+    31,
+    36,
+    45,
+    51,
+    57,
+    60,
+    63,
+    69
+   ],
+   "contact": 5,
+   "dur": [
+    55,
+    55,
+    55,
+    55,
+    40,
+    40,
+    40,
+    75,
+    75,
+    75,
+    75,
+    75,
+    75,
+    75
+   ]
+  },
+  "N": {
+   "frames": [
+    0,
+    8,
+    12,
+    16,
+    20,
+    34,
+    37,
+    42,
+    55,
+    66,
+    72,
+    84,
+    88,
+    96
+   ],
+   "contact": 5,
+   "dur": [
+    55,
+    55,
+    55,
+    55,
+    40,
+    40,
+    40,
+    75,
+    75,
+    75,
+    75,
+    75,
+    75,
+    75
+   ]
+  }
+ },
+ "buff": {
+  "S": {
+   "frames": [
+    0,
+    6,
+    9,
+    11,
+    12,
+    14,
+    22,
+    36,
+    56,
+    80,
+    84,
+    90
+   ],
+   "peak": 6,
+   "dur": [
+    70,
+    70,
+    70,
+    70,
+    70,
+    70,
+    70,
+    70,
+    70,
+    70,
+    70,
+    70
+   ]
+  },
+  "SE": {
+   "frames": [
+    0,
+    4,
+    6,
+    7,
+    8,
+    10,
+    20,
+    32,
+    46,
+    62,
+    66,
+    72
+   ],
+   "peak": 6,
+   "dur": [
+    70,
+    70,
+    70,
+    70,
+    70,
+    70,
+    70,
+    70,
+    70,
+    70,
+    70,
+    70
+   ]
+  },
+  "E": {
+   "frames": [
+    0,
+    8,
+    12,
+    14,
+    16,
+    18,
+    26,
+    40,
+    58,
+    76,
+    80,
+    86
+   ],
+   "peak": 6,
+   "dur": [
+    70,
+    70,
+    70,
+    70,
+    70,
+    70,
+    70,
+    70,
+    70,
+    70,
+    70,
+    70
+   ]
+  },
+  "NE": {
+   "frames": [
+    0,
+    4,
+    7,
+    9,
+    11,
+    13,
+    22,
+    34,
+    48,
+    60,
+    64,
+    70
+   ],
+   "peak": 6,
+   "dur": [
+    70,
+    70,
+    70,
+    70,
+    70,
+    70,
+    70,
+    70,
+    70,
+    70,
+    70,
+    70
+   ]
+  },
+  "N": {
+   "frames": [
+    0,
+    6,
+    8,
+    9,
+    10,
+    12,
+    24,
+    40,
+    60,
+    86,
+    90,
+    96
+   ],
+   "peak": 6,
+   "dur": [
+    70,
+    70,
+    70,
+    70,
+    70,
+    70,
+    70,
+    70,
+    70,
+    70,
+    70,
+    70
+   ]
+  }
+ },
+ "stateDur": {
+  "walk/S": [
+   120,
+   120,
+   120,
+   120,
+   120,
+   120,
+   120,
+   120
+  ],
+  "walk/SE": [
+   135,
+   135,
+   135,
+   135,
+   135,
+   135,
+   135,
+   135
+  ],
+  "walk/E": [
+   161,
+   161,
+   161,
+   161,
+   161,
+   161,
+   161,
+   161
+  ],
+  "walk/NE": [
+   125,
+   125,
+   125,
+   125,
+   125,
+   125,
+   125,
+   125
+  ],
+  "walk/N": [
+   156,
+   156,
+   156,
+   156,
+   156,
+   156,
+   156,
+   156
+  ],
+  "hurt/S": [
+   70,
+   70,
+   70,
+   70,
+   70,
+   70,
+   70
+  ],
+  "hurt/SE": [
+   70,
+   70,
+   70,
+   70,
+   70,
+   70,
+   70
+  ],
+  "hurt/E": [
+   70,
+   70,
+   70,
+   70,
+   70,
+   70,
+   70
+  ],
+  "hurt/NE": [
+   70,
+   70,
+   70,
+   70,
+   70,
+   70,
+   70
+  ],
+  "hurt/N": [
+   70,
+   70,
+   70,
+   70,
+   70,
+   70,
+   70
+  ],
+  "idle/S": [
+   160,
+   160,
+   160,
+   160,
+   160,
+   160,
+   160,
+   160,
+   160,
+   160,
+   160,
+   160
+  ],
+  "idle/N": [
+   160,
+   160,
+   160,
+   160,
+   160,
+   160,
+   160,
+   160,
+   160,
+   160,
+   160,
+   160
+  ]
+ },
+ "loop": {
+  "idle/NE": [
+   12,
+   48
+  ]
+ }
+}

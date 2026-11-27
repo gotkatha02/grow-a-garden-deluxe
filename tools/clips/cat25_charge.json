@@ -1,0 +1,70 @@
+{
+ "_note": "Nekomata Wanderer cat 2.5D extra pose (owner 2026-11-27 09:32, his sheets from CAT25_POSE_PROMPTS_TH.md; hurt / KO came on his own). iaido charge stance, 8 frames with the old charge roles: 1 stand \u00b7 2-5 into the stance \u00b7 6-8 held (ktChargeSeq loops 5-6-7-6). Scale = his head matched to the 2.5D idle SE frame (masked template match), anchors in sheet px (feet centre of the lowest band; hips for leaps / dash / roll). Rebuild: python3 -I tools/sheet_state.py tools/clips/cat25_charge.json [preview.png]",
+ "js": "assets_cat25.js",
+ "prefix": "CAT",
+ "state": "charge",
+ "sheet": "assets/heroes/cat/poses25/charge.webp",
+ "rows": 2,
+ "cols": 4,
+ "scale": 0.65,
+ "sheet_coords": true,
+ "anchors": [
+  [
+   217,
+   449
+  ],
+  [
+   600,
+   446
+  ],
+  [
+   1007,
+   450
+  ],
+  [
+   1382,
+   450
+  ],
+  [
+   237,
+   930
+  ],
+  [
+   621,
+   930
+  ],
+  [
+   1005,
+   930
+  ],
+  [
+   1389,
+   930
+  ]
+ ],
+ "clean": true,
+ "tone": {
+  "L": 1.0,
+  "C": 0.91,
+  "blur": 0.25
+ },
+ "dirs": [
+  "S",
+  "SE",
+  "E",
+  "NE",
+  "N"
+ ],
+ "flip": false,
+ "dur": [
+  70,
+  70,
+  70,
+  70,
+  90,
+  110,
+  110,
+  110
+ ],
+ "loop": false
+}

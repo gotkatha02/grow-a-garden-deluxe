@@ -1,0 +1,60 @@
+{
+ "_note": "Nekomata Wanderer cat 2.5D extra pose (owner 2026-11-27 09:32, his sheets from CAT25_POSE_PROMPTS_TH.md; hurt / KO came on his own). overhead downward cut: 1 drawing from the hip \u00b7 2 raised overhead \u00b7 3 cut begins \u00b7 4 cutting down \u00b7 5 end of the cut, deep lunge (contact) \u00b7 6 sheathing. Scale = his head matched to the 2.5D idle SE frame (masked template match), anchors in sheet px (feet centre of the lowest band (chop: grey blade pixels left out); hips for leaps / dash / roll). Rebuild: python3 -I tools/sheet_state.py tools/clips/cat25_chop.json [preview.png]",
+ "js": "assets_cat25.js",
+ "prefix": "CAT",
+ "state": "chop",
+ "sheet": "assets/heroes/cat/poses25/chop.webp",
+ "rows": 2,
+ "cols": 3,
+ "scale": 0.565,
+ "sheet_coords": true,
+ "anchors": [
+  [
+   276,
+   468
+  ],
+  [
+   801,
+   468
+  ],
+  [
+   1356,
+   476
+  ],
+  [
+   294,
+   966
+  ],
+  [
+   747,
+   964
+  ],
+  [
+   1283,
+   966
+  ]
+ ],
+ "clean": true,
+ "tone": {
+  "L": 1.0,
+  "C": 0.91,
+  "blur": 0.25
+ },
+ "dirs": [
+  "S",
+  "SE",
+  "E",
+  "NE",
+  "N"
+ ],
+ "flip": false,
+ "dur": [
+  60,
+  60,
+  60,
+  60,
+  120,
+  110
+ ],
+ "loop": false
+}

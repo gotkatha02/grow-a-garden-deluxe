@@ -1,0 +1,58 @@
+{
+ "_note": "Nekomata Wanderer cat 2.5D extra pose (owner 2026-11-27 09:32, his sheets from CAT25_POSE_PROMPTS_TH.md; hurt / KO came on his own). straw hat throw: 1 reach over the shoulder \u00b7 2 wind-up with the hat \u00b7 3 release (the flying hat on the sheet is erased: KtKasa draws it) \u00b7 4 follow-through. Scale = his head matched to the 2.5D idle SE frame (masked template match), anchors in sheet px (feet centre of the lowest band; hips for leaps / dash / roll). Rebuild: python3 -I tools/sheet_state.py tools/clips/cat25_throw.json [preview.png]",
+ "js": "assets_cat25.js",
+ "prefix": "CAT",
+ "state": "throw",
+ "sheet": "assets/heroes/cat/poses25/throw.webp",
+ "rows": 2,
+ "cols": 2,
+ "scale": 0.46,
+ "sheet_coords": true,
+ "anchors": [
+  [
+   375,
+   483
+  ],
+  [
+   1092,
+   480
+  ],
+  [
+   223,
+   966
+  ],
+  [
+   1099,
+   966
+  ]
+ ],
+ "clean": true,
+ "tone": {
+  "L": 1.0,
+  "C": 0.91,
+  "blur": 0.25
+ },
+ "dirs": [
+  "S",
+  "SE",
+  "E",
+  "NE",
+  "N"
+ ],
+ "flip": false,
+ "dur": [
+  90,
+  90,
+  90,
+  140
+ ],
+ "loop": false,
+ "erase": [
+  [
+   524,
+   695,
+   748,
+   831
+  ]
+ ]
+}

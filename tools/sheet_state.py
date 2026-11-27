@@ -30,6 +30,9 @@ SPEC (JSON):
                                               1 = sheet px); "anchors" = sit point (body centre x, ground line y) -> the
                                               tool prints the SIT entry (cx / fy fractions)
   "dirs": ["S","SE","E","NE","N"],            source directions that get these frames (the engine mirrors SW / W / NW)
+  "views": {"S":[0,0,0], "E":[1,1,1], ...}    optional (the 2.5D cat's hurt / KO sheets 2026-11-27: one picture per VIEW): each
+                                              direction's row = these sheet frames (0-based, in sheet order) instead of all of them;
+  "nudge": {"S":[[dx,dy], ...], ...}          optional with "views": every row frame's box moved by dx / dy cell px (a recoil)
   "flip": false,                              true when the sheet faces left (it is mirrored so the frames face right)
   "dur": [ms, ...], "loop": false             default frame times (skills usually build their own timed sequence)
   "store": 1.5478                             optional (the 2.5D wolf 2026-11-26): the atlas stores its frames smaller than
@@ -240,6 +243,11 @@ def grab(name):
 mi, me, meta = grab('SPR_META')
 st = spec['state']; nf = len(rects); dur = spec.get('dur') or [80] * nf
 meta['states'][st] = {'loop': bool(spec.get('loop', False)), 'dirs': {d: {'dur': dur, 'f': rects} for d in spec.get('dirs', ['S', 'SE', 'E', 'NE', 'N'])}}
+if spec.get('views'):   # per-direction rows made of the sheet's frames (one view per direction), each frame box nudged by [dx, dy] cell px
+    VW, NG = spec['views'], spec.get('nudge') or {}
+    meta['states'][st]['dirs'] = {d: {'dur': dur if len(dur) == len(ix) else [dur[0]] * len(ix),
+                                      'f': [rects[i][:4] + [rects[i][4] + round((NG.get(d) or [[0, 0]] * len(ix))[j][0]), rects[i][5] + round((NG.get(d) or [[0, 0]] * len(ix))[j][1])] + rects[i][6:]
+                                            for j, i in enumerate(ix)]} for d, ix in VW.items()}
 if SOCK:
     # weapon sockets like cliphero.py's "axe" ones: head = the blade point, grip = up to 28 (× store) cell px toward the chest
     try: HT = meta['states']['idle']['dirs'][spec.get('dirs', ['SE'])[0]]['f'][0][7]

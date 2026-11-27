@@ -180,7 +180,7 @@ const HZK=window.HERO_K||1;   /* hero size (HERO_SIZE, 2026-11-25): the cat's ha
 const KTV=window.KTV={on:1,PAL,petals,embers,dust,stones,straw};
 const zOf=e=>(e&&e.boss?40:26);
 /* seconds (real) until the i-th contact frame of an action that is running now */
-const leadOf=(a,i)=>{try{const ct=CT(atkDir(player.dir)),k=seqIndex(a.seq,'attack',ct,i);if(k<0)return .04;return cl((seqTimeAt(a.seq,k)-a.t)/TEMPO(),.012,.12);}catch(_){return .04;}};
+const leadOf=(a,i)=>{try{if(a&&a._ctT&&a._ctT[i]!=null)return cl((a._ctT[i]-a.t)/TEMPO(),.012,.12);   /* cat_pose.js (2.5D cat 2026-11-27) swaps the attack frames: contact times kept */const ct=CT(atkDir(player.dir)),k=seqIndex(a.seq,'attack',ct,i);if(k<0)return .04;return cl((seqTimeAt(a.seq,k)-a.t)/TEMPO(),.012,.12);}catch(_){return .04;}};
 /* cut shapes: [tilt, a0, a1] — the cat's attack clip is a rising draw-cut, so 0 is the default */
 const CUTS={rise:[1.05,-1.0,1.7],fall:[-1.05,1.6,-1.0],flat:[.12,-1.5,1.5],flatR:[-.12,1.5,-1.5],up:[1.45,-.7,2.3],down:[1.45,2.4,-.3],slashL:[.6,-1.4,1.5],slashR:[-.6,1.4,-1.5]};
 function cut(shape,o){const c=CUTS[shape]||CUTS.rise;return addFx(new KArc(Object.assign({x:player.x,y:player.y,follow:1,fz:o&&o.z!=null?o.z:40,tilt:c[0],a0:c[1],a1:c[2]},o)));}
@@ -207,7 +207,8 @@ const W={t:0,ki:0,ash:0,sak:0,motes:[],acc:{}};
 const every=(k,sec,dt)=>{W.acc[k]=(W.acc[k]||0)+dt;if(W.acc[k]>=sec){W.acc[k]=0;return true;}return false;};
 /* the hand that holds the sword, good enough for glints and gathering light */
 /* in the iaido stance (atlas state 'charge', 2026-11-24) the power gathers at the paws on the hilt: cell px from the pivot per frame */
-const CHG_HILT=[[-25,97],[-14,88],[-4,76],[6,64],[8,61],[8,61],[8,61],[8,61]];
+const CHG_HILT=window.CAT25?[[48,102],[53,103],[32,98],[40,92],[52,80],[45,78],[45,78],[45,80]]   /* 2.5D Nekomata stance (2026-11-27): the paw on the hilt (cell px from the pivot, like the old ones) */
+  :[[-25,97],[-14,88],[-4,76],[6,64],[8,61],[8,61],[8,61],[8,61]];
 const hand=()=>{let fr=null;try{fr=playerFrame();}catch(_){}if(fr&&fr.st==='charge'){const h=CHG_HILT[fr.f]||CHG_HILT[7],m=isMir(fr.d)?-1:1;return [player.x+m*h[0]*SPR*HZK,player.y+1,h[1]*SPR*HZK+(player.z||0)];}
   return [player.x+Math.cos(player.phi)*10*HZK,player.y+Math.sin(player.phi)*8*HZK,44*HZK+(player.z||0)];};
 function kumoAt(i,t,front){const an=t*.45+i*TAU/4,sn=Math.sin(an);if((sn>=0)!==front)return;const [x,y]=P(player.x+Math.cos(an)*46*HZK,player.y+sn*30*HZK,6+3*Math.sin(t*1.7+i));art('kumo',x,y,(38+6*sn)*HZK,{a:W.ki*(front?.9:.7),ay:.8,under:'#3a5a8a',ua:.28,uy:2});}
@@ -429,7 +430,7 @@ KTV.chargeDraw=function(ch){const k=cl(ch.t/ch.T,0,1),h=hand();ctx.save();ctx.li
   const [fx_,fy]=P(h[0],h[1],h[2]);art('flame'+(((ch.t*14)|0)%3),fx_,fy+2,8+13*k,{ay:.92,a:.92,sy:1+.12*Math.sin(ch.t*30)});return true;};
 
 /* heavy cuts */
-const heavy=(R,W,o)=>(c,lead)=>{cut(o&&o.shape||'up',Object.assign({phi:c.phi,lead,R,W,pal:PAL.oni,emb:.7,sweep:lead+.08,fade:.22,z:42},o&&o.o));return true;};
+const heavy=(R,W,o)=>(c,lead)=>{cut((c.a&&c.a._ktShape)||o&&o.shape||'up',Object.assign({phi:c.phi,lead,R,W,pal:PAL.oni,emb:.7,sweep:lead+.08,fade:.22,z:42},o&&o.o));return true;};
 KTV.SW.kbCleave=heavy(92,34);KTV.SW.kbRising=heavy(84,26);KTV.SW.kbFinal=heavy(100,38,{o:{emb:1}});KTV.SW.kbExec=heavy(104,40,{o:{emb:1,fade:.28}});
 KTV.SW.kbEarth=heavy(86,30,{shape:'down'});KTV.SW.kbSky=heavy(96,36,{shape:'down'});KTV.SW.kbQuake=heavy(72,26,{shape:'flat',o:{pal:PAL.earth,z:16,emb:.4}});
 /* Mountain Cleave: the ground ahead splits in a fan */

@@ -313,3 +313,26 @@ No effects at all: no glow, no cherry petals, no wind lines, no fire, no sparkle
    - ฟันลง: Mountain Cleave · Quake Slash · Final Cleave · Oni Executioner (แทนเฟรมท่าตีทีละช่อง เวลาเท่าเดิม · contact = เฟรม 5 · ท่าชาร์จยังแทนเฟรมก่อน `KT_DRAWF`) + เส้นฟันใน `cat_vfx.js` (KArc) เป็นรูป 'down' สำหรับ 4 สกิลนี้
 4. ท่านั่ง: โหมด `pics` ของ sheet_state (แบบ `jaguar25_sit.json` / `wolf25_sit.json`) → `assets/sit/cat25_<8 ทิศ>.webp` + รายการ cat ใน `hero_sit.js` (เลือกตามแอตลาสที่โหลด)
 5. เช็ก: make() ทุกสกิลที่เปลี่ยน × 8 ทิศ (ความยาว / windup / event เท่ากับ `?catpose=0`) · `tools/fxlab.py hits cat` (FXSEED + sure hits) · herosweep / lostev / combo / leak
+
+## สร้างแล้ว (2026-11-27)
+- **ได้มา:** 8 แผ่นตามกล่อง ① ชาร์จ ② กระโดด ③ พุ่ง ④ กลิ้ง ⑤ หมุน ⑥ ขว้างงอบ ⑦ คำราม ⑧ ฟันลง + 2 แผ่นที่เจ้าของทำเอง (โดนตี 4 มุม · ล้ม KO 4 มุม) · ⑨ หน้ากาก + ⑩ ท่านั่งไม่ได้ทำ — เจ้าของ 2026-11-26 19:40 'แฟชั่นยังไม่ต้องทำ ไม่ต้องทำหน้ากากตอนอัลติด้วย'
+- **ไฟล์:** ภาพดิบ `assets/heroes/cat/poses25/<ท่า>.webp` · spec `tools/clips/cat25_<charge|jump|dash|roll|spin|throw|roar|chop|hurt|ko>.json` (scale = ขนาดหัวเทียบ idle SE, จุดยึดเท้า / สะโพกตอนลอย, erase = สายฟ้า ดาว วงหมุน และงอบที่บินออกไปในเฟรม 3 ของท่าขว้าง เพราะเกมวาดงอบบินเอง) → `python3 -I tools/sheet_state.py tools/clips/cat25_<ท่า>.json [preview.png]` ลงใน `assets_cat25.js` แล้วรัน headtrack ปิดท้าย
+- **ใหม่ใน sheet_state.py:** `"views"` = แถวของแต่ละทิศสร้างจากเฟรมของแผ่น (โดนตี / KO: S กับ SE ใช้ภาพหน้า, E / NE / N ภาพของมุมนั้น) · `"nudge"` = ขยับกล่องแต่ละเฟรม (โดนตีถอยหลังทีละนิดตามทิศ)
+- **ผูกท่า `cat_pose.js`** (เปลี่ยนแค่เฟรม ความยาว / windup / event / contact เท่าเดิม · ท่ามุมเดียวใช้เมื่อหันหน้า S SE E SW W · ทิศหลังใช้เฟรมคลิป · `?catpose=0` = เฟรมคลิปล้วน):
+
+| ท่า | สกิล |
+|---|---|
+| charge | ท่าชาร์จเดิมของ char_cat.js (Mountain Cleave · Sky Drop · Final Cleave · Oni Executioner · Avalanche Rush) — state ใหม่ลำดับเฟรมเดียวกัน ใช้ได้เลย |
+| jump | Sky Drop (ลอย .28 วิสุดท้ายก่อน windup แล้วลงท่าลงพื้น) · Earthfall (ลอยตลอดช่วง wind-up) |
+| dash | Cat Step · Mirage Step (เงาร่างใช้ท่าเดียวกัน) · ช่วงวิ่งของ Avalanche Rush |
+| roll | Nekomata Roll (ทุกทิศ) |
+| spin | Grinding Wheel (4 ด้านหมุนตามเข็มนาฬิกา 3 รอบ ทุกทิศ) |
+| throw | Kasa Throw (เฟรม 3 = ตอนปล่อยงอบ) |
+| roar | Oni Roar · Ashura Mask (ไม่มีหน้ากากบนหน้า) |
+| chop | Mountain Cleave · Quake Slash · Final Cleave · Oni Executioner (ต่อจากท่าชาร์จ · contact = เฟรม 5 · เส้นดาบเป็นแบบฟันลง `_ktShape` 'down') · ท้าย Avalanche Rush |
+| hurt | ท่าโดนตีทุกครั้ง (แถว hurt เดิม 7 เฟรม) |
+| ko | ตอนตายในโหมดเล่น (#deathov ขึ้นและไม่มี action) |
+
+- **อื่น ๆ:** หน้า HUD `assets/heroes/cat/face25.webp` · ไม่มีภาพนั่ง (นั่งได้ ×2 regen แต่วาดท่ายืน) · `cat_vfx.js` จุดอุ้งมือบนด้ามตอนชาร์จ (`CHG_HILT`) + `leadOf` อ่าน `a._ctT` · ปีกแฟชั่นเดิมยังใส่ได้ (รากปีกย้ายมาที่หลัง ตามจุดหัวใหม่) · หน้ากากตอนอัลติปิด (`MASK25` ใน cat_mask.js — ภูตอสูรไฟยังเล่นด้านหลัง)
+- **เช็กแล้ว:** make() 31 สกิล + ตีปกติ × 8 ทิศ เท่ากับ `?catpose=0` ทุกค่า · `tools/fxlab.py hits` ทุกสกิลเท่ากับ `?cat25=0` (FXSEED 7 + sure hits) · ตีปกติ 4.5 วิ + ทุกปุ่มสกิลเวลาเกมเท่ากัน · herosweep / lostev / combo / leak สะอาด · play1 (สร้างแมวใหม่ → jpnT → jpnF1 ฆ่ามอน) · PC + มือถือ 844×390
+- **ยังไม่ได้:** ท่าเสริมมุมหลัง (N NE NW) · ท่านั่ง · ไอคอน / ภาพพื้นหลังต้นสกิล / ภาพเอฟเฟกต์วาด (ยังเป็นแมวขาวลุคเก่า)

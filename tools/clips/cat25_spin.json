@@ -1,0 +1,50 @@
+{
+ "_note": "Nekomata Wanderer cat 2.5D extra pose (owner 2026-11-27 09:32, his sheets from CAT25_POSE_PROMPTS_TH.md; hurt / KO came on his own). spinning sword wheel = 4 views of one turn: 1 front (S) \u00b7 2 facing right (E) \u00b7 3 back (N) \u00b7 4 facing left (W); played with d S. Scale = his head matched to the 2.5D idle SE frame (masked template match), anchors in sheet px (feet centre of the lowest band; hips for leaps / dash / roll). Rebuild: python3 -I tools/sheet_state.py tools/clips/cat25_spin.json [preview.png]",
+ "js": "assets_cat25.js",
+ "prefix": "CAT",
+ "state": "spin",
+ "sheet": "assets/heroes/cat/poses25/spin.webp",
+ "rows": 2,
+ "cols": 2,
+ "scale": 0.46,
+ "sheet_coords": true,
+ "anchors": [
+  [
+   468,
+   465
+  ],
+  [
+   1131,
+   472
+  ],
+  [
+   374,
+   959
+  ],
+  [
+   1072,
+   981
+  ]
+ ],
+ "clean": true,
+ "tone": {
+  "L": 1.0,
+  "C": 0.91,
+  "blur": 0.25
+ },
+ "dirs": [
+  "S",
+  "SE",
+  "E",
+  "NE",
+  "N"
+ ],
+ "flip": false,
+ "dur": [
+  60,
+  60,
+  60,
+  60
+ ],
+ "loop": false
+}

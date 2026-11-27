@@ -1237,7 +1237,8 @@ HEROES['cat25'] = dict(
 - เฟรมตี: เฟรม 3 (`KT_DRAWF` ใน char_cat.js) = ดาบเพิ่งออกจากฝัก — ท่าชาร์จแทนเฟรมก่อนหน้านี้ · เฟรมโดน = แขนเหยียด ปลายดาบชี้สูง · เลี่ยงเฟรมที่โมเดลแอบใส่เส้น / แสง (`frames`, `unstreak`, `deglow`) · ซ็อกเก็ตท่าตี = ปลายดาบ (head) + ด้าม (grip) แบบตัวเลือก `blade` ของจากัวร์ (ใบเหล็กสว่าง ต้องตั้งสีใหม่) หรือ `orbFix` อ่านด้วยตา
 - **ท่าชาร์จ** (state `charge`) มาจากแผ่นแมวขาวลุคเดิม → atlas ใหม่ยังไม่มี = `ktChgDir` ปิดตัวเอง (เช็ก `SPR_META.states.charge`) กลับไปค้างเฟรมคลิป · แผ่นท่าชาร์จ 2.5D ทำทีหลังแบบแผ่นท่าเสริมหมาป่า / จากัวร์
 - **จุดหัว:** `cat_mask.js` ตาราง `HAT` (กลางงอบบนหัวทุกเฟรม) ใช้วางหน้ากากตอนสวม (Ashura Mask) + ปีกแฟชั่น (`cat_wings.js`) → หัวใหม่ไม่มีงอบ ต้องจับจุดหัวใหม่ด้วย `tools/headtrack.py` (+ `cat25_head.json`) · ภาพหน้ากากบนหน้า `mask8_*` ตัดจากแมวเดิม → ทำใหม่ หรือให้โค้ดวาง `mask_white` ที่จุดหน้า
-- `CHAR_SCALE.cat` 1.59 → ตั้ง cellScale ให้ idle S สูงเท่าเดิม · หน้า HUD ตัดจากคลิปยืน S (`window.HUD_FACE`) · ท่านั่ง `assets/sit/cat_*` ยังเป็นแมวเดิม · `cat_vfx.js` `hand()` / `CHG_HILT` ตั้งตามท่าชาร์จเดิม""")
+- `CHAR_SCALE.cat` 1.59 → ตั้ง cellScale ให้ idle S สูงเท่าเดิม · หน้า HUD ตัดจากคลิปยืน S (`window.HUD_FACE`) · ท่านั่ง `assets/sit/cat_*` ยังเป็นแมวเดิม · `cat_vfx.js` `hand()` / `CHG_HILT` ตั้งตามท่าชาร์จเดิม
+- **คลิปมาแล้ว 2026-11-27 09:32** (20 คลิป อัปโหลด 1000001485–1509) → `assets_cat25.js` = ตัวหลักของแมว (`?cat25=0` = แมวขาวลุคเก่า) · สร้างใหม่: `python3 -I tools/cliphero.py tools/clips/cat25_plan.json assets_cat25.js CAT` → ท่าเสริม 10 state ด้วย sheet_state → `python3 -I tools/headtrack.py assets_cat25.js CAT_ tools/clips/cat25_head.json` (ต้องทำตามลำดับนี้: cliphero เขียนทั้งไฟล์ใหม่) · รายละเอียด + ตารางท่า: `CAT25_POSE_PROMPTS_TH.md` 'สร้างแล้ว'""")
 # Ronin Cat 2.5D extra poses (owner 2026-11-27 08:09 'ขอพร้อมทำพวกท่าพิเศษด้วย จะทำเป็นวีดีโอ ยกเว้นท่านั่ง จะทำเป็นรูป'):
 # 9 one-view clips from his own SE standing picture (the first frame, like the 20 clips) + one ChatGPT sit sheet of 8 views.
 # Which skill borrows which frame today was read from char_cat.js (see the header). Words that made earlier video models paint
@@ -1668,7 +1669,30 @@ SHEETS['cat25'] = dict(
    - ขว้าง / คำราม / หน้ากาก: Kasa Throw (เฟรม 3 = ตอนปล่อยงอบ tP×.6) · Oni Roar · Ashura Mask (`buffAct`: เฟรมค้าง = จุด peak เดิม)
    - ฟันลง: Mountain Cleave · Quake Slash · Final Cleave · Oni Executioner (แทนเฟรมท่าตีทีละช่อง เวลาเท่าเดิม · contact = เฟรม 5 · ท่าชาร์จยังแทนเฟรมก่อน `KT_DRAWF`) + เส้นฟันใน `cat_vfx.js` (KArc) เป็นรูป 'down' สำหรับ 4 สกิลนี้
 4. ท่านั่ง: โหมด `pics` ของ sheet_state (แบบ `jaguar25_sit.json` / `wolf25_sit.json`) → `assets/sit/cat25_<8 ทิศ>.webp` + รายการ cat ใน `hero_sit.js` (เลือกตามแอตลาสที่โหลด)
-5. เช็ก: make() ทุกสกิลที่เปลี่ยน × 8 ทิศ (ความยาว / windup / event เท่ากับ `?catpose=0`) · `tools/fxlab.py hits cat` (FXSEED + sure hits) · herosweep / lostev / combo / leak""")
+5. เช็ก: make() ทุกสกิลที่เปลี่ยน × 8 ทิศ (ความยาว / windup / event เท่ากับ `?catpose=0`) · `tools/fxlab.py hits cat` (FXSEED + sure hits) · herosweep / lostev / combo / leak
+
+## สร้างแล้ว (2026-11-27)
+- **ได้มา:** 8 แผ่นตามกล่อง ① ชาร์จ ② กระโดด ③ พุ่ง ④ กลิ้ง ⑤ หมุน ⑥ ขว้างงอบ ⑦ คำราม ⑧ ฟันลง + 2 แผ่นที่เจ้าของทำเอง (โดนตี 4 มุม · ล้ม KO 4 มุม) · ⑨ หน้ากาก + ⑩ ท่านั่งไม่ได้ทำ — เจ้าของ 2026-11-26 19:40 'แฟชั่นยังไม่ต้องทำ ไม่ต้องทำหน้ากากตอนอัลติด้วย'
+- **ไฟล์:** ภาพดิบ `assets/heroes/cat/poses25/<ท่า>.webp` · spec `tools/clips/cat25_<charge|jump|dash|roll|spin|throw|roar|chop|hurt|ko>.json` (scale = ขนาดหัวเทียบ idle SE, จุดยึดเท้า / สะโพกตอนลอย, erase = สายฟ้า ดาว วงหมุน และงอบที่บินออกไปในเฟรม 3 ของท่าขว้าง เพราะเกมวาดงอบบินเอง) → `python3 -I tools/sheet_state.py tools/clips/cat25_<ท่า>.json [preview.png]` ลงใน `assets_cat25.js` แล้วรัน headtrack ปิดท้าย
+- **ใหม่ใน sheet_state.py:** `"views"` = แถวของแต่ละทิศสร้างจากเฟรมของแผ่น (โดนตี / KO: S กับ SE ใช้ภาพหน้า, E / NE / N ภาพของมุมนั้น) · `"nudge"` = ขยับกล่องแต่ละเฟรม (โดนตีถอยหลังทีละนิดตามทิศ)
+- **ผูกท่า `cat_pose.js`** (เปลี่ยนแค่เฟรม ความยาว / windup / event / contact เท่าเดิม · ท่ามุมเดียวใช้เมื่อหันหน้า S SE E SW W · ทิศหลังใช้เฟรมคลิป · `?catpose=0` = เฟรมคลิปล้วน):
+
+| ท่า | สกิล |
+|---|---|
+| charge | ท่าชาร์จเดิมของ char_cat.js (Mountain Cleave · Sky Drop · Final Cleave · Oni Executioner · Avalanche Rush) — state ใหม่ลำดับเฟรมเดียวกัน ใช้ได้เลย |
+| jump | Sky Drop (ลอย .28 วิสุดท้ายก่อน windup แล้วลงท่าลงพื้น) · Earthfall (ลอยตลอดช่วง wind-up) |
+| dash | Cat Step · Mirage Step (เงาร่างใช้ท่าเดียวกัน) · ช่วงวิ่งของ Avalanche Rush |
+| roll | Nekomata Roll (ทุกทิศ) |
+| spin | Grinding Wheel (4 ด้านหมุนตามเข็มนาฬิกา 3 รอบ ทุกทิศ) |
+| throw | Kasa Throw (เฟรม 3 = ตอนปล่อยงอบ) |
+| roar | Oni Roar · Ashura Mask (ไม่มีหน้ากากบนหน้า) |
+| chop | Mountain Cleave · Quake Slash · Final Cleave · Oni Executioner (ต่อจากท่าชาร์จ · contact = เฟรม 5 · เส้นดาบเป็นแบบฟันลง `_ktShape` 'down') · ท้าย Avalanche Rush |
+| hurt | ท่าโดนตีทุกครั้ง (แถว hurt เดิม 7 เฟรม) |
+| ko | ตอนตายในโหมดเล่น (#deathov ขึ้นและไม่มี action) |
+
+- **อื่น ๆ:** หน้า HUD `assets/heroes/cat/face25.webp` · ไม่มีภาพนั่ง (นั่งได้ ×2 regen แต่วาดท่ายืน) · `cat_vfx.js` จุดอุ้งมือบนด้ามตอนชาร์จ (`CHG_HILT`) + `leadOf` อ่าน `a._ctT` · ปีกแฟชั่นเดิมยังใส่ได้ (รากปีกย้ายมาที่หลัง ตามจุดหัวใหม่) · หน้ากากตอนอัลติปิด (`MASK25` ใน cat_mask.js — ภูตอสูรไฟยังเล่นด้านหลัง)
+- **เช็กแล้ว:** make() 31 สกิล + ตีปกติ × 8 ทิศ เท่ากับ `?catpose=0` ทุกค่า · `tools/fxlab.py hits` ทุกสกิลเท่ากับ `?cat25=0` (FXSEED 7 + sure hits) · ตีปกติ 4.5 วิ + ทุกปุ่มสกิลเวลาเกมเท่ากัน · herosweep / lostev / combo / leak สะอาด · play1 (สร้างแมวใหม่ → jpnT → jpnF1 ฆ่ามอน) · PC + มือถือ 844×390
+- **ยังไม่ได้:** ท่าเสริมมุมหลัง (N NE NW) · ท่านั่ง · ไอคอน / ภาพพื้นหลังต้นสกิล / ภาพเอฟเฟกต์วาด (ยังเป็นแมวขาวลุคเก่า)""")
 # Nine-Tail Miko 2.5D (owner 2026-11-26 20:24 'ขอพร้อมทำสไปร้2.5d' + his look-5 sheet 'Nine-Tail Miko Reborn'): her FIRST own
 # sprite (until now she wears the wolf placeholder assets.js) → no flat 'kitsune' entry; written straight for the 2.5D look
 # with every lesson of the wolf / jaguar / rhino / anubis rounds: eyes open in idles, no walking toward the camera, the staff

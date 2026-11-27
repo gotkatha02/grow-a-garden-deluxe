@@ -1,0 +1,60 @@
+{
+ "_note": "Nekomata Wanderer cat 2.5D extra pose (owner 2026-11-27 09:32, his sheets from CAT25_POSE_PROMPTS_TH.md; hurt / KO came on his own). leaping downward cut: 1 crouch, blade low behind \u00b7 2 take-off \u00b7 3 rising, sword overhead \u00b7 4 top of the leap \u00b7 5 landing cut (contact), tip near the ground \u00b7 6 rising. In-air frames anchored at the hips over the lowest foot (the game lifts him by player.z). Scale = his head matched to the 2.5D idle SE frame (masked template match), anchors in sheet px (feet centre of the lowest band; hips for leaps / dash / roll). Rebuild: python3 -I tools/sheet_state.py tools/clips/cat25_jump.json [preview.png]",
+ "js": "assets_cat25.js",
+ "prefix": "CAT",
+ "state": "jump",
+ "sheet": "assets/heroes/cat/poses25/jump.webp",
+ "rows": 2,
+ "cols": 3,
+ "scale": 0.68,
+ "sheet_coords": true,
+ "anchors": [
+  [
+   262,
+   442
+  ],
+  [
+   766,
+   431
+  ],
+  [
+   1285,
+   397
+  ],
+  [
+   286,
+   869
+  ],
+  [
+   753,
+   942
+  ],
+  [
+   1251,
+   940
+  ]
+ ],
+ "clean": true,
+ "tone": {
+  "L": 1.0,
+  "C": 0.91,
+  "blur": 0.25
+ },
+ "dirs": [
+  "S",
+  "SE",
+  "E",
+  "NE",
+  "N"
+ ],
+ "flip": false,
+ "dur": [
+  90,
+  70,
+  90,
+  80,
+  120,
+  110
+ ],
+ "loop": false
+}
