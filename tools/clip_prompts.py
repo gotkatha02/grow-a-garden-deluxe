@@ -1763,27 +1763,123 @@ HEROES['kitsune25'] = dict(
            "still for about one second, then lowers the staff back {spos}, returns to her starting pose and stands still "
            "for the rest of the clip. Her feet stay in place.{pvis} The top of the staff stays inside the frame. Clean "
            "outlines in every frame, no motion blur."},
+  # v2 2026-11-27 21:37 (owner 'ดูพร้อมอีกที ทิศทางมันมั่วอีกแล้ว' = her v1 clips turned / walked off like bastet25's v1; no
+  # clip was sent): the same lock-first template (build2). Staff side named by the picture side (S / SE left, E just in
+  # front of her, NE / N right; the flower sits on the staff's side in every view but E), no direction of travel in the
+  # walk, no '3D game model', no 'gracefully', no names of her effects in the ban list (v1 listed foxfire / moonlight /
+  # petals), the nine tails stay attached and counted. The v1 fields above stay for future pose prompts (pbuild).
+  v2=dict(
+    lock={'S': "Static camera, no camera movement. Front view: the nine-tailed fox shrine maiden in this picture faces the "
+               "viewer, exactly as in the picture, and she keeps facing the viewer in every frame, on the same spot in the "
+               "middle of the frame and at the same size.",
+          'SE': "Static camera, no camera movement. Three-quarter front view: the nine-tailed fox shrine maiden in this "
+                "picture is angled toward the lower right, exactly as in the picture, and she keeps this same angle in every "
+                "frame, on the same spot in the middle of the frame and at the same size.",
+          'E': "Static camera, no camera movement. Side view: the nine-tailed fox shrine maiden in this picture faces right in "
+               "profile, exactly as in the picture, and she stays in this same side view in every frame, on the same spot in "
+               "the middle of the frame and at the same size.",
+          'NE': "Static camera, no camera movement. Three-quarter back view: the nine-tailed fox shrine maiden in this picture "
+                "faces away from the viewer toward the upper right, exactly as in the picture, and she keeps this same angle "
+                "in every frame, on the same spot in the middle of the frame and at the same size; we see mostly her back and "
+                "her fanned-out tails, and only the edge of her cheek shows.",
+          'N': "Static camera, no camera movement. Back view: the nine-tailed fox shrine maiden in this picture has her back to "
+               "the viewer, exactly as in the picture, and her back stays toward the viewer in every frame, on the same spot "
+               "in the middle of the frame and at the same size; her face stays hidden."},
+    spos={'S': 'at the left side of the picture, beside her', 'SE': 'at the left side of the picture, beside her',
+          'E': 'just in front of her chest', 'NE': 'at the right side of the picture, beside her',
+          'N': 'at the right side of the picture, beside her'},
+    fmt={'blink': ('; her big fox ears twitch once', ''),
+         'vis': ('', ' The staff stays visible beside her head, above her tails.'),
+         'pvis': ('', ' The raised staff stays visible beside her head.'),
+         'thr': {'S': 'straight out in front of her toward the viewer and a little upward',
+                 'SE': 'out in front of her toward the lower right and a little upward',
+                 'E': 'straight out in front of her toward the right and a little upward',
+                 'NE': 'out ahead of her toward the upper right and a little upward',
+                 'N': 'straight out ahead of her, away from the viewer and a little upward'},
+         'bpos': {'S': 'at the left side of the picture', 'SE': 'at the left side of the picture', 'E': 'in front of her',
+                  'NE': 'at the right side of the picture', 'N': 'at the right side of the picture'}},
+    act={
+     'idle': "Idle loop: she stands still and breathes slowly; her staff stays upright {spos}, the pink orb at the top, and "
+             "her other hand rests relaxed at her side. Her nine tails sway slowly in a soft wave, one after another, and her "
+             "long white hair, the red tassels and the little bells stir a little{blink}. All nine tails stay attached and "
+             "keep their number. The last frame matches the first frame so the clip loops.",
+     'walk': "Walk loop on the spot: she walks in place like on a treadmill, with small steps in her tall geta, about two "
+             "steps per second. Her body bobs a little with each step but stays on the same spot and keeps the same angle as "
+             "in the picture. Her staff bobs a little with each step but stays upright {spos}. Her nine tails, her wide "
+             "sleeves and her hair bounce a little; all nine tails stay attached and keep their number. The last frame "
+             "matches the first frame so the clip loops.",
+     'attack': "Staff thrust: she takes her staff in both hands, draws it back beside her shoulder, then thrusts it {thr}, "
+               "the pink orb farthest forward and her elbows still a little bent; she holds that pose for a moment, then "
+               "brings the staff back upright {spos}, and she stands still for the rest of the clip. About one second of "
+               "motion. Her feet stay planted, and her tails follow the move.{vis} The staff keeps its full length and "
+               "shape, and the air around the orb stays plain green. Clean outlines, no motion blur.",
+     'buff': "Prayer pose: with the hand that holds it, she lifts her staff straight up {bpos}, still upright, until the "
+             "pink orb is a little above the tips of her ears, no higher; at the same time she raises her other hand open in "
+             "front of her chest like a prayer, and her nine tails spread a little wider. She holds this pose still for "
+             "about one second, then lowers the staff back down {spos}, and she stands still for the rest of the clip. Her feet "
+             "stay planted.{pvis} The top of the staff stays inside the frame. Clean outlines, no motion blur."},
+    keep={d: ("Keep her face as in the picture: big amber-red eyes with red eyeliner, three red stripes on each cheek, a "
+              "serious look, mouth closed; her eyes stay open the whole time. Keep her whole design as in the picture: big "
+              "white fox ears with crimson tips, the red flower with its gold bell on the same side as the staff, her long "
+              "white hair, the white kimono with wide sleeves and red cherry blossoms, the dark-red sash with its big gold "
+              "bell, the short white-and-red skirt, white socks, black geta, her nine white tails with crimson tips and the "
+              "gold staff with its torii top and pink orb.") for d in ('S', 'SE')}
+         | {'E': "Keep her face as in the picture, seen in profile: her amber-red eye with red eyeliner, the red stripes on "
+                 "her cheek, a serious look, mouth closed; her eye stays open the whole time. Keep her whole design as in the "
+                 "picture: big white fox ears with crimson tips, the red rope loop and red flower with its gold bell at the "
+                 "back of her head, the white kimono with wide sleeves and red cherry blossoms, the "
+                 "dark-red sash with its big gold bell, the short white-and-red skirt, white socks, black geta, her nine white "
+                 "tails with crimson tips fanned out behind her and the gold staff with its torii top and pink orb.",
+            'NE': "Keep her whole design as in the picture: her long white hair, both fox ears from behind with crimson "
+                  "tips, the red rope loop and red flower with its gold bell at the back of her head on the same side as the "
+                  "staff, her nine white tails with crimson tips fanned out over her back like a big open flower, the wide "
+                  "white sleeve with a red cherry blossom, the black geta and the gold staff with its torii top and pink "
+                  "orb.",
+            'N': "Keep her whole design as in the picture: her long white hair, both fox ears from behind with crimson tips, "
+                 "the red rope loop and red flower with its gold bell at the back of her head on the same side as the staff, "
+                 "her nine white tails with crimson tips fanned out over her whole back like a big open flower with only her "
+                 "white socks and black geta showing below them, and the gold staff with its torii top and pink orb."},
+    look="Same rendering as the picture: soft toon shading with rounded volume and clean dark-brown outlines, the same "
+         "colours and textures, seen from above at the same camera angle — not photorealistic, not flat.",
+    fx="Plain flat green background for the whole clip, no shadow. Nothing glows: no light around the orb, no flash, no "
+       "sparkles, no particles, no smoke, no light trails, no motion lines, no magic effects, no text.",
+    end="From the first frame to the last she stays on the same spot, at the same size, seen from the same angle as in the "
+        "picture."),
   dirname={'S': 'หน้าตรง', 'SE': 'เฉียงหน้า หันขวา', 'E': 'ข้าง หันขวา', 'NE': 'เฉียงหลัง หันขวา', 'N': 'หลัง'},
-  actname={'idle': 'ยืน (idle · วนลูป)', 'walk': 'เดิน (walk · วนลูป)',
+  actname={'idle': 'ยืน (idle · วนลูป)', 'walk': 'เดินย่ำอยู่กับที่ (walk · วนลูป)',
            'attack': 'ยื่นไม้เท้าร่าย (attack · ตีปกติ — เกมเล่นแค่ช่วงง้าง 3 เฟรม → ยื่นสุด → 2 เฟรมหลัง)',
            'buff': 'ชูไม้เท้าอธิษฐาน (buff · สกิลร่ายทุกท่า — เกมปล่อยสกิลที่เฟรมชูสุด)'},
   start='ภาพยืน 2.5D มุม {d} ที่ได้จาก ChatGPT',
-  header="""เจ้าของเลือกแบบ 5 'มิโกะเก้าหางโฉมใหม่' 2026-11-26 20:24 ('ขอพร้อมทำสไปร้2.5d' + ชีต `assets/heroes/kitsune/sheet_reborn.webp`) → ภาพใหญ่ = หน้าเลือกตัวแล้ว (`select.webp`, SELV kitsune 2) → 20:48 ส่งภาพยืน 2.5D ครบ 5 มุม + "ขอพร้อมทำอนิเมขั่นขยับ ขอพร้อมอย่างเดียว รูปที่ส่งไม่ต้องทำไร" → ไฟล์นี้ = พรอมต์คลิป 20 ตัวอย่างเดียว · ไม่ได้ตัดภาพตั้งต้น ไม่ได้เก็บภาพยืนไว้ใน repo (ตามที่เจ้าของสั่ง แบบแมว 2.5D) · เจ้าของแนบภาพยืนของทิศนั้นเป็นเฟรมแรกเอง · หน้าตา + พรอมต์ภาพยืน: `KITSUNE_LOOK_PROMPTS_TH.md` หัวข้อ 'เลือกแล้ว: แบบ 5' · เป็นสไปรต์ตัวแรกของเธอเอง (ตอนนี้ในเกมยังใส่ร่างหมาป่า `assets.js`) · ไม่มีชุดคลิปลุคแบนของตัวนี้
+  header="""เจ้าของเลือกแบบ 5 'มิโกะเก้าหางโฉมใหม่' 2026-11-26 20:24 ('ขอพร้อมทำสไปร้2.5d' + ชีต `assets/heroes/kitsune/sheet_reborn.webp`) → ภาพใหญ่ = หน้าเลือกตัวแล้ว (`select.webp`, SELV kitsune 2) → 20:48 ส่งภาพยืน 2.5D ครบ 5 มุม + "ขอพร้อมทำอนิเมขั่นขยับ ขอพร้อมอย่างเดียว รูปที่ส่งไม่ต้องทำไร" → พรอมต์ชุดแรก (v1, commit e9e9bf7) → **2026-11-27 21:37 เจ้าของ: "ดูพร้อมอีกที ทิศทางมันมั่วอีกแล้ว"** (อาการเดียวกับคลิปบาสเทตชุดแรก · ไม่ได้ส่งคลิปมา) → ไฟล์นี้ = **ชุดใหม่ v2** โครงเดียวกับ `BASTET25_CLIP_PROMPTS_TH.md` · ไม่ได้ตัดภาพตั้งต้น ไม่ได้เก็บภาพยืนไว้ใน repo (ตามที่เจ้าของสั่ง) · เจ้าของแนบภาพยืนของทิศนั้นเป็นเฟรมแรกเอง · หน้าตา + พรอมต์ภาพยืน: `KITSUNE_LOOK_PROMPTS_TH.md` หัวข้อ 'เลือกแล้ว: แบบ 5' · เป็นสไปรต์ตัวแรกของเธอเอง (ตอนนี้ในเกมยังใส่ร่างหมาป่า `assets.js`) · ไม่มีชุดคลิปลุคแบนของตัวนี้
+
+## ทำไมชุดแรกหมุน (เดาจากตัวพรอมต์ — ยังไม่เห็นคลิป) และ v2 แก้อะไร
+- v1 ยาว 2,200–2,665 ตัวอักษร ประโยคกล้องนิ่ง / ไม่หันอยู่ท้ายสุด และเขียนแบบปฏิเสธ (never turns, does not move across …) → โมเดลวิดีโออ่านคำปฏิเสธไม่เก่ง บางแอปตัดท้ายพรอมต์ยาวทิ้ง → **v2 ขึ้นต้นด้วย `Static camera` + มุมของทิศนั้นแบบบอกให้ทำ** (S keeps facing the viewer in every frame · SE / NE keeps this same angle · E stays in this same side view · N her back stays toward the viewer) แล้ว**ย้ำอีกครั้งท้ายพรอมต์** · ทุกกล่อง 1,685–1,994 ตัวอักษร (ไม่เกิน 2,000)
+- ท่าเดิน v1 สั่ง 'walks … toward the way she is facing' → อ่านเหมือนให้เดินไปจริง → **v2 = เดินย่ำอยู่กับที่ ตัวอยู่จุดเดิม มุมเดิม ไม่มีคำบอกทิศทางการเดินเลย**
+- ตัดคำ '3D game model' (โมเดลวิดีโอชอบทำเป็นคลิปหมุนโชว์รอบตัว) และ 'gracefully' (ชวนหมุนตัวแบบเต้น) · ตัดชื่อเอฟเฟกต์ออกจากประโยคห้าม (ไฟจิ้งจอก แสงจันทร์ กลีบดอกไม้ — เอ่ยชื่อแล้วโมเดลอาจวาดออกมา) เหลือ 'Nothing glows: no light around the orb …'
+- บอกตำแหน่งไม้เท้าเป็นฝั่งของภาพ: S / SE **ซ้ายของภาพ** · E หน้าอก (ตัวหันขวา) · NE / N **ขวาของภาพ** + ดอกไม้แดง 'อยู่ฝั่งเดียวกับไม้เท้า' (ทุกมุมยกเว้น E ที่อยู่ท้ายทอย) → ถ้าตัวกลับด้าน ไม้เท้าจะผิดฝั่ง โมเดลยึดทิศเดิมง่ายขึ้น
+- ที่คงไว้จาก v1: ชูไม้เท้าแค่ลูกแก้วเลยปลายหูนิดเดียว · ยื่นไม้เท้าไม่ก้าว ศอกงอนิด อากาศรอบลูกแก้วเขียวเปล่า · หาง 9 หางติดอยู่และจำนวนเท่าเดิม · มุมหน้าลืมตาตลอด
+
+## วิธีใช้ (สำคัญ)
+- **แนบภาพให้ตรงกล่อง**: S = หน้าตรง มองกล้อง (ไม้เท้าซ้ายของภาพ) · SE = ตัวเอียงไปทางขวาล่าง ตาเหลือบไปทางขวา (ไม้เท้าซ้ายของภาพ — คล้าย S มาก ดูดีๆ) · E = ข้าง หันขวา (ไม้เท้าตั้งหน้าตัว) · NE = เฉียงหลัง หางบานเหมือนดอกไม้ เห็นขอบแก้มนิดเดียว (ไม้เท้าขวาของภาพ) · N = หลังตรง หางคลุมทั้งหลัง (ไม้เท้าขวาของภาพ) — แนบผิดมุม = โมเดลหมุนตัวไปหามุมที่พรอมต์บอก
+- คลิปละ **5 วิ** (ยาวกว่านี้ยิ่งเพี้ยน)
+- ถ้าแอปมีช่อง **เฟรมสุดท้าย / end frame**: ใส่ภาพยืนรูปเดียวกันอีกช่อง → คลิปต้องจบท่าเดิม มุมเดิม (กันหมุน + วนลูปเนียน) ใช้ได้ทั้ง 4 ท่า · ถ้าท่าเดินออกมาขยับน้อยไป ลองแบบไม่ใส่
+- ถ้าแอปมีปุ่ม **กล้องนิ่ง / fixed camera / static camera**: เปิด
+- **ลองทิศ S ก่อน** (ยืน + เดิน) ถ้าโอเคค่อยทำที่เหลือ · ถ้ายังหมุน: ส่งคลิปที่เพี้ยนมา 1 ตัว
+- ไม่ต้องทำทิศซ้าย (เกมกลับด้านเอง) · ส่งกลับเรียง S → SE → E → NE → N ทิศละ ยืน → เดิน → ยื่น → ชู
 
 ## ภาพยืน 2.5D ที่เป็นเฟรมแรก (มาแล้ว 20:48)
 - 1254² พื้นเขียว ตัวสูง 65–67 % ของภาพ (ปลายหูถึงพื้นเกี๊ยะ ~815–845 px) ทุกมุมหันขวา ไม่มีสีเขียวบนตัว · ไม้เท้าตั้งตรงสูงเท่าตัว (ยอดเสมอปลายหู) · ที่ว่างเหนือหัว 262–297 px = 0.31–0.36 เท่าตัว (หมาป่า 2.5D .84 · แมว 2.5D ~.5) · ซ้าย / ขวา 298–354 px · ใต้เท้า 141–152 px → ท่าชูไม้เท้าเขียนให้ชูแค่ **ลูกแก้วเลยปลายหูนิดเดียว** (ชูสุดแขนแล้วยอดไม้เท้าหลุดขอบบน) · ท่ายื่นไม้เท้า: ไม่ก้าว ข้อศอกงอนิด (มุมข้าง ไม้เท้าอยู่หน้าตัว ที่ว่างข้างหน้า ~350 px) · ถ้าคลิปไหนยังหลุดขอบภาพ: ย่อภาพก่อนทำคลิป (`python3 -I tools/dir8cut.py startv <โฟลเดอร์> <ทิศ>=<ภาพ> size=1024 feet=.88 ht=460 clean=0` ทีละมุม)
 - ตามที่วาด: **S** ไม้เท้าซ้ายของภาพ (มือขวาของเธอ) ลูกแก้วสูงระดับหน้า มืออีกข้างห้อยข้างตัว ดอกไม้แดง + กระดิ่งซ้ายของภาพ หาง 9 หางแผ่สองข้าง หน้าจริงจัง คิ้วขมวดนิด · **SE** แบบเดียวกัน ตัวหันขวาล่าง · **E** ไม้เท้าตั้งหน้าตัว (ขวาของภาพ) มือข้างไกลถือระดับอก แขนข้างใกล้ห้อยข้างตัว หางแผ่หลังตัว (ซ้ายของภาพ) ห่วงเชือกแดง + ดอกไม้ท้ายทอย · **NE** ไม้เท้าขวาของภาพ หางแผ่คลุมหลังเหมือนดอกไม้บาน เห็นขอบแก้มนิดเดียวทางขวา ห่วงเชือก + ดอกไม้ท้ายทอยขวา · **N** ไม้เท้าขวาของภาพ หางคลุมหลังทั้งหมด โผล่แค่ถุงเท้า + เกี๊ยะ ห่วงเชือก + ดอกไม้ท้ายทอยขวา ไม่เห็นหน้า
+- ตรวจซ้ำ 2026-11-27 จากไฟล์ที่อัปโหลด: ทั้ง 5 ภาพหันตรงตามชื่อมุม (SE หันขวาล่าง · E หันขวา · NE หันหลังไปทางขวาบน) → ทิศในพรอมต์ตรงกับภาพ ปัญหาอยู่ที่ตัวพรอมต์ v1
 
-## วิธีใช้
-แนบภาพยืน 2.5D ของทิศนั้น + วางพรอมต์ทีละตัว → 4 คลิปต่อทิศ (ยืน · เดิน · ยื่นไม้เท้า · ชูไม้เท้า) · คลิปละ 3–5 วิ · ไม่ต้องทำทิศซ้าย (เกมกลับด้านเอง) · ส่งกลับเรียง S → SE → E → NE → N ทิศละ ยืน → เดิน → ยื่น → ชู (สลับได้)
-
-## กติกาที่อยู่ในทุกพรอมต์ (บทเรียนจากคลิปหมาป่า / จากัวร์ / แรด / อนูบิส / ฮิปโป / บาสเต็ด / แกะ / ลิง)
-- ประโยคบอกทิศขึ้นต้นทุกพรอมต์ กันโมเดลหมุนตัวหันหากล้อง · มุมหลัง (NE, N) 'เห็นแค่หลังหัว หน้าไม่หันมา' + บอกว่าเห็นอะไรตามภาพจริง (ห่วงเชือก ดอกไม้ หางบานเหมือนดอกไม้ ขอบแก้มใน NE)
-- ประโยคลุค 2.5D (คีย์ `look`) + กล้องมองลงจากด้านบนมุมเดิม · **ห้ามใช้ชุดพรอมต์แบนกับภาพ 2.5D**
-- ยืน: **ลืมตาตลอดคลิป** · เดิน: **ไม่เข้าหา / ถอยห่างกล้อง** · **หาง 9 หางติดอยู่ข้างหลังและจำนวนเท่าเดิม** (โมเดลวิดีโอชอบรวม / เพิ่มหาง)
-- ยื่นไม้เท้า: ไม่ใช้คำ attack / slash / strike · อากาศรอบลูกแก้วเป็นพื้นเขียวเปล่าทุกเฟรม · ไม้เท้ายาวเท่าเดิม · ไม่ก้าว ข้อศอกงอนิด · มุมหลังสั่งให้ไม้เท้ายังเห็นข้างตัวเหนือหาง
-- ชูไม้เท้า = ยกไม้เท้าตั้งตรงด้วยมือที่ถือ **จนลูกแก้วเลยปลายหูนิดเดียว ไม่สูงกว่านั้น** อีกมือแบหน้าอกแบบอธิษฐาน ค้าง ~1 วิ (เกมค้างเฟรมชูสุดตอนร่ายนาน) · ยอดไม้เท้าอยู่ในภาพ
-- ห้ามแสงรอบลูกแก้ว ห้ามไฟจิ้งจอก แสงจันทร์ กลีบดอกไม้ เส้นความเร็ว สัญลักษณ์ (เอฟเฟกต์ใส่ในเกม: `kitsune_vfx.js`) · ไม่ระบุมือซ้าย / ขวา (ภาพตั้งต้นบอกเองว่าไม้เท้าอยู่มือไหน)""",
+## โครงพรอมต์ v2 (ทุกกล่อง · `build2()` ใน `tools/clip_prompts.py`)
+1. `Static camera, no camera movement.` + มุมของทิศนั้นแบบบอกให้ทำ + 'on the same spot in the middle of the frame and at the same size' · NE 'we see mostly her back and her fanned-out tails, and only the edge of her cheek shows' · N 'her face stays hidden'
+2. ท่า: ยืน (หายใจ หางโบกเป็นคลื่นทีละหาง หูกระดิกครั้งเดียวในมุมหน้า) · เดินย่ำอยู่กับที่ (treadmill, เกี๊ยะ ~2 ก้าว/วิ ตัวอยู่จุดเดิมมุมเดิม ไม้เท้าตั้งฝั่งเดิม) · ยื่นไม้เท้า (สองมือ ง้างข้างไหล่ → ยื่นไปทางที่หัน ลูกแก้วหน้าสุด ศอกงอนิด → ค้างนิด → ไม้เท้ากลับตั้งฝั่งเดิม ยืนนิ่ง · ไม่ก้าว · มุมหลังไม้เท้าโผล่ข้างหัวเหนือหาง) · ชูไม้เท้า (ยกตรงฝั่งเดิมจนลูกแก้วเลยปลายหูนิดเดียว ไม่สูงกว่านั้น อีกมือแบหน้าอกแบบอธิษฐาน หางกางขึ้นนิด ค้าง ~1 วิ)
+3. หน้า (มุมหน้า: ตาเปิดตลอด) + ดีไซน์ย่อ (หู ดอกไม้แดงฝั่งไม้เท้า ผม กิโมโน ผ้าคาด กระดิ่ง กระโปรง ถุงเท้า เกี๊ยะ หาง 9 หาง ไม้เท้า)
+4. ลุค: `Same rendering as the picture: soft toon shading with rounded volume and clean dark-brown outlines … not photorealistic, not flat`
+5. พื้นเขียวเรียบ ไม่มีเงา · 'Nothing glows': ห้ามแสงรอบลูกแก้ว แฟลช ประกาย อนุภาค ควัน เส้นแสง เส้นความเร็ว เวทมนตร์ ตัวหนังสือ (เอฟเฟกต์ใส่ในเกม: `kitsune_vfx.js`)
+6. ย้ำท้าย: `From the first frame to the last she stays on the same spot, at the same size, seen from the same angle as in the picture.`
+- คำที่เลิกใช้: turn / never turns · toward the way she is facing · does not move across / come closer / move away · 3D game model · gracefully · ชื่อเอฟเฟกต์ (foxfire / moonlight / petals / flames) · ไม่ระบุมือซ้าย / ขวา (ภาพบอกเอง)""",
   footer="""## ตอนคลิปมาถึง (โน้ตสำหรับแชตที่ทำต่อ)
 - ตัดด้วย `tools/cliphero.py` + แผนใหม่ `tools/clips/kitsune25_plan.json` (ดู `wolf25_plan.json` / `jaguar25_plan.json`: frames ช่วงลืมตา, เลี่ยงเฟรมที่โมเดลแอบใส่แสง / รอยวง, perDir, scaleFix, breath)
 - **ไฟล์ใหม่ `assets_kitsune.js`** (prefix ใหม่ เช่น KIT) สลับใน index.html แบบ BST_ART เฉพาะ `?char=kitsune` + รายการ document.write + ตาราง MB หน้าโหลด · **ห้ามเขียนทับ `assets.js`** (หมาป่าเก่า + ร่างชั่วคราวของสิงโต จระเข้ อีกา อนูบิส)
