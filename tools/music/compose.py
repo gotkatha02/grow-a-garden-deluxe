@@ -245,6 +245,105 @@ S['night'] = dict(tempo=62, key=(58, 'major'), seed=111, rt=3.2, feel='sparse',
     mel=dict(inst=0, vel=58, lo=62, hi=81, vib=0), mel2=dict(inst=73, vel=50, oct=0, harm=0),
     perc=None)
 
+
+# ----------------------------------------------------------------- variants (2026-11-28: more tracks, one map group each)
+# V(base, seed, **over): a copy of a style with a new seed (new motif / melody / humanisation) and overrides;
+# a role given as a dict is MERGED into the base role (dict(inst=..) keeps its pattern), None removes the role.
+import copy as _cp
+def V(base, seed, **o):
+    st = _cp.deepcopy(S[base]); st['seed'] = seed
+    for k, v in o.items():
+        if isinstance(v, dict) and isinstance(st.get(k), dict) and k not in ('perc',): st[k].update(v)
+        else: st[k] = v
+    return st
+DRUM_TRIBE = dict(A=[(0, 41, 96), (4, 43, 60), (8, 41, 86), (11, 43, 54), (12, 41, 76)],
+                  B=[(0, 41, 104), (2, 43, 50), (4, 41, 70), (6, 43, 60), (8, 41, 96), (10, 41, 56), (12, 43, 80), (14, 41, 74)])
+DRUM_SOFT = dict(A=[(0, 35, 46), (8, 35, 34)], B=[(0, 35, 52), (6, 35, 34), (8, 35, 44), (12, 41, 30)])
+# Viking: Frost Wind (F3–F4) · War March (F5–F6) · Barrow (dungeons) · Hall of Giants (H / E)
+S['vik2'] = V('vik', 24, tempo=68, key=(64, 'dorian'), mel=dict(inst=73, lo=69, hi=88), mel2=dict(inst=110),
+              prog=[0, 3, 6, 4, 0, 3, 5, 4], bprog=[6, 3, 4, 0], ost=dict(inst=46), taiko=None)
+S['vik3'] = V('vik', 25, tempo=96, feel='lively', key=(62, 'minor'), mel=dict(inst=60, lo=57, hi=74), mel2=dict(inst=57),
+              prog=[0, 0, 5, 6, 0, 0, 3, 4], bprog=[5, 6, 3, 4], perc=DRUM_TRIBE, taiko=dict(inst=116, vel=96, pat=[(0, 108), (6, 70), (8, 96), (14, 80)]))
+S['vik_dun'] = V('dungeon', 26, key=(62, 'minor'), pad=dict(inst=52, vel=42), mel=dict(inst=71, vel=60, lo=55, hi=72),
+                 mel2=dict(inst=42), drone=dict(inst=43))
+S['vik_deep'] = V('vik', 27, tempo=84, key=(62, 'hmin'), rt=3.4, pad=dict(inst=52, vel=60), mel=dict(inst=48, vel=88, lo=62, hi=79),
+                  mel2=dict(inst=60, vel=80), tymp=dict(inst=47, vel=86), taiko=dict(inst=116, vel=100, pat=[(0, 112), (8, 96), (12, 80)]))
+# Greek: Olive Groves · Festival Road · Labyrinth · Olympus
+S['grk2'] = V('grk', 34, tempo=72, key=(60, 'lydian'), mel=dict(inst=73, lo=72, hi=88), mel2=dict(inst=46), arp=dict(pat='wave'))
+S['grk3'] = V('grk', 35, tempo=98, feel='lively', key=(62, 'mixo'), mel=dict(inst=75, lo=69, hi=88), arp=dict(pat='run'),
+              perc=S['grk_town']['perc'])
+S['grk_dun'] = V('dungeon', 36, key=(57, 'phryg'), arp=dict(inst=46, vel=46, pat='drip'), mel=dict(inst=68, vel=60, lo=57, hi=74),
+                 pad=dict(inst=49))
+S['grk_deep'] = V('grk', 37, tempo=90, key=(57, 'mixo'), rt=3.0, pad=dict(inst=52, vel=54), mel=dict(inst=60, vel=90, lo=60, hi=79, scoop=0),
+                  mel2=dict(inst=61, vel=78), tymp=dict(inst=47, vel=82), perc=DRUM_TRIBE)
+# Egypt: Oasis · Caravan · Tomb · Temple of the Sun
+S['egy2'] = V('egy', 44, tempo=76, key=(64, 'phryg'), mel=dict(inst=71, lo=64, hi=83), ost=dict(inst=46), drone=dict(inst=49))
+S['egy3'] = V('egy', 45, tempo=104, feel='lively', key=(62, 'hijaz'), mel=dict(inst=111, lo=64, hi=83), mel2=dict(inst=68))
+S['egy_dun'] = V('dungeon', 46, key=(62, 'hijaz'), mel=dict(inst=68, vel=58, lo=55, hi=72, orn=1), drone=dict(inst=104, vel=46),
+                 arp=dict(inst=24, vel=44, pat='drip'))
+S['egy_deep'] = V('egy', 47, tempo=80, key=(60, 'hijaz'), rt=3.4, pad=dict(inst=52, vel=56), mel=dict(inst=61, vel=86, lo=60, hi=79),
+                  mel2=dict(inst=52, vel=66), tymp=dict(inst=47, vel=80))
+# Japan: Bamboo Path · Festival · Shrine Cave · Oni Mountain
+S['jpn2'] = V('jpn', 54, tempo=78, key=(62, 'yo'), mel=dict(inst=107, vel=80, lo=67, hi=86, scoop=0), mel2=dict(inst=77), arp=dict(inst=46))
+S['jpn3'] = V('jpn', 55, tempo=100, feel='lively', key=(64, 'miyako'), mel=dict(inst=106, lo=64, hi=83, scoop=0), mel2=dict(inst=72),
+              perc=S['jpn_town']['perc'], taiko=dict(inst=116, vel=90, pat=[(0, 100), (6, 64), (8, 90), (12, 70)]))
+S['jpn_dun'] = V('dungeon', 56, key=(62, 'miyako'), step=2, mel=dict(inst=77, vel=62, lo=57, hi=74, scoop=1), arp=dict(inst=112, vel=36, pat='drip'))
+S['jpn_deep'] = V('jpn', 57, tempo=88, feel='boss', key=(62, 'miyako'), rt=3.0, pad=dict(inst=48, vel=52), mel=dict(inst=77, vel=92),
+                  mel2=dict(inst=48, vel=70), taiko=dict(inst=116, vel=104, pat=[(0, 114), (3, 72), (8, 104), (11, 72), (14, 90)]), perc=DRUM_TRIBE)
+# Aztec: Jungle Dawn · Drum Path · Sunken Cenote · Pyramid of the Sun
+S['azt2'] = V('azt', 64, tempo=84, feel='calm', key=(60, 'pmaj'), mel=dict(inst=79, lo=72, hi=88), ost=dict(inst=11, vel=58))
+S['azt3'] = V('azt', 65, tempo=108, key=(57, 'pmin'), mel=dict(inst=75, lo=69, hi=86), perc=DRUM_TRIBE,
+              taiko=dict(inst=117, vel=80, pat=[(0, 96), (4, 60), (8, 86), (12, 70), (14, 60)]))
+S['azt_dun'] = V('dungeon', 66, key=(57, 'phryg'), mel=dict(inst=79, vel=58, lo=60, hi=76), arp=dict(inst=12, vel=40, pat='drip'), perc=DRUM_SOFT)
+S['azt_deep'] = V('azt', 67, tempo=96, feel='boss', key=(57, 'hmin'), step=2, pad=dict(inst=52, vel=56), mel=dict(inst=60, vel=90, lo=60, hi=79),
+                  mel2=dict(inst=79, vel=70), tymp=dict(inst=47, vel=80))
+# shared: capital ring fields · catacombs · the rift · world-boss arenas · a second boss theme
+S['ring'] = V('capital', 12, tempo=88, key=(62, 'mixo'), mel=dict(inst=71, lo=69, hi=86), mel2=dict(inst=73), arp=dict(pat='wave'), glock=None)
+S['crypt'] = V('dungeon', 72, tempo=56, key=(55, 'hmin'), pad=dict(inst=19, vel=40), mel=dict(inst=19, vel=58, lo=55, hi=72),
+               mel2=dict(inst=52, vel=44), arp=dict(inst=14, vel=34, pat='drip'))
+S['rift'] = V('mystic', 102, tempo=72, key=(61, 'phryg'), pad=dict(inst=94), drone=dict(inst=88), mel=dict(inst=98, lo=65, hi=84),
+              arp=dict(inst=10, pat='wave'))
+S['arena'] = V('boss', 82, tempo=124, key=(62, 'minor'), rt=2.6, mel=dict(inst=52, vel=96, lo=62, hi=79), mel2=dict(inst=60),
+               comp=dict(inst=48))
+S['boss2'] = V('boss', 83, tempo=146, key=(65, 'phryg'), mel=dict(inst=61, lo=62, hi=81), mel2=dict(inst=56), ost=dict(inst=45))
+
+
+# 12 Tails-style (owner 2026-11-28 'เสียงดนตรีแนว12หาง'): bright storybook fantasy-MMO music — major keys,
+# flute / ocarina / clarinet tunes, pizzicato strings, harp arpeggios, glockenspiel / celesta sparkle,
+# light march or waltz drums. Used in the capital, its ring fields, night and as extra field tracks.
+PZ = dict(inst=45, vel=72, oct=-1, pat=[(0, 'r', 2), (4, '5', 2), (8, 'r', 2), (12, 'o', 2)])
+DRUM_MARCH = dict(A=[(0, 36, 60), (4, 38, 46), (8, 36, 54), (12, 38, 50), (14, 38, 30)],
+                  B=[(0, 36, 66), (4, 38, 52), (6, 42, 30), (8, 36, 60), (10, 42, 30), (12, 38, 56), (14, 38, 40), (15, 38, 34)])
+DRUM_TAMB = dict(A=[(0, 54, 40), (4, 54, 26), (8, 54, 36), (12, 54, 26)], B=[(0, 54, 46), (2, 54, 24), (4, 54, 34), (8, 54, 42), (10, 54, 24), (12, 54, 34), (14, 81, 22)])
+S['t12_town'] = V('capital', 121, tempo=112, feel='lively', key=(65, 'major'), prog=[0, 3, 4, 0, 5, 3, 1, 4], bprog=[3, 4, 2, 5],
+                  bass=PZ, arp=dict(inst=46, vel=56, pat='up8'), mel=dict(inst=73, vel=84, lo=72, hi=91), mel2=dict(inst=71, vel=66, oct=0, harm=-2),
+                  glock=dict(inst=9, vel=52), perc=DRUM_TAMB)
+S['t12_waltz'] = V('capital', 122, tempo=116, feel='lively', bar=12, key=(58, 'major'), prog=[0, 4, 5, 3, 0, 4, 1, 4], bprog=[3, 0, 1, 4],
+                   pad=dict(inst=49, vel=44), bass=dict(inst=45, vel=70, oct=-1, pat=[(0, 'r', 4), (4, '5', 2), (8, '5', 2)]),
+                   comp=dict(inst=45, vel=48, pat=[(4, 2), (8, 2)]), arp=None, mel=dict(inst=10, vel=80, lo=70, hi=89, vib=0),
+                   mel2=dict(inst=73, vel=62, oct=0, harm=-2), glock=dict(inst=8, vel=44), perc=dict(A=[(0, 54, 30), (4, 54, 20), (8, 54, 20)], B=[(0, 54, 36), (4, 54, 24), (8, 54, 24)]))
+S['t12_field'] = V('capital', 123, tempo=96, feel='calm', key=(67, 'major'), prog=[0, 5, 3, 4, 0, 5, 1, 4], bprog=[3, 4, 5, 4],
+                   pad=dict(inst=49, vel=46), bass=PZ, arp=dict(inst=46, vel=60, pat='wave'), mel=dict(inst=79, vel=82, lo=67, hi=86),
+                   mel2=dict(inst=68, vel=64, oct=0, harm=-2), glock=dict(inst=9, vel=40), perc=DRUM_TAMB)
+S['t12_adv'] = V('capital', 124, tempo=120, feel='lively', key=(62, 'major'), prog=[0, 4, 5, 3, 0, 4, 3, 4], bprog=[5, 3, 1, 4],
+                 pad=dict(inst=48, vel=58), bass=dict(inst=43, vel=70, oct=-2, pat=[(0, 'r', 3), (6, 'r', 2), (8, '5', 3), (12, 'o', 4)]),
+                 comp=dict(inst=61, vel=62, pat=[(0, 3), (6, 2), (12, 4)]), arp=dict(inst=45, vel=56, pat='run'),
+                 mel=dict(inst=56, vel=88, lo=65, hi=84), mel2=dict(inst=73, vel=70, oct=1, harm=0), glock=dict(inst=9, vel=46),
+                 perc=DRUM_MARCH, tymp=dict(inst=47, vel=66))
+S['t12_forest'] = V('capital', 125, tempo=88, feel='calm', key=(64, 'lydian'), prog=[0, 1, 5, 4, 0, 1, 3, 4], bprog=[3, 1, 5, 0],
+                    pad=dict(inst=89, vel=40), bass=PZ, arp=dict(inst=12, vel=60, pat='wave'), mel=dict(inst=74, vel=80, lo=69, hi=88),
+                    mel2=dict(inst=11, vel=56, oct=0, harm=0), glock=dict(inst=8, vel=40), perc=DRUM_TAMB)
+S['t12_cozy'] = V('capital', 126, tempo=100, feel='lively', key=(60, 'major'), prog=[0, 5, 1, 4, 0, 5, 3, 4], bprog=[3, 2, 1, 4],
+                  pad=dict(inst=21, vel=40), bass=PZ, comp=dict(inst=0, vel=48, pat=[(2, 2), (6, 2), (10, 2), (14, 2)]), arp=None,
+                  mel=dict(inst=71, vel=82, lo=65, hi=84), mel2=dict(inst=21, vel=60, oct=0, harm=-2), glock=dict(inst=9, vel=40), perc=DRUM_TAMB)
+S['t12_night'] = V('night', 127, tempo=72, key=(63, 'major'), prog=[0, 5, 3, 4, 0, 2, 5, 4], bprog=[3, 4, 5, 4],
+                   arp=dict(inst=46, vel=52, pat='wave'), mel=dict(inst=8, vel=66, lo=70, hi=89), mel2=dict(inst=73, vel=48), glock=dict(inst=10, vel=34))
+S['t12_hero'] = V('capital', 128, tempo=132, feel='boss', key=(60, 'major'), prog=[0, 5, 3, 4, 0, 5, 1, 4], bprog=[5, 3, 1, 4],
+                  pad=dict(inst=48, vel=62), bass=dict(inst=43, vel=80, oct=-2, pat=[(0, 'r', 2), (2, 'r', 2), (4, 'r', 2), (6, 'r', 2), (8, 'r', 2), (10, 'r', 2), (12, '5', 2), (14, 'r', 2)]),
+                  comp=dict(inst=61, vel=74, pat=[(0, 3), (6, 2), (12, 4)]), arp=dict(inst=45, vel=60, pat='run'),
+                  mel=dict(inst=56, vel=94, lo=67, hi=86), mel2=dict(inst=48, vel=76, oct=0, harm=-2), glock=dict(inst=9, vel=50),
+                  perc=DRUM_MARCH, tymp=dict(inst=47, vel=80), crash=1)
+
 # arpeggio patterns: (16th, chord index, octave, length)
 ARP = {
  'up8':  [(0, 0, 0, 4), (2, 1, 0, 4), (4, 2, 0, 4), (6, 0, 1, 4), (8, 1, 1, 4), (10, 2, 1, 4), (12, 0, 1, 2), (14, 2, 0, 2)],
