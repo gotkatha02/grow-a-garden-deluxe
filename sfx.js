@@ -87,15 +87,15 @@ let bossT=0;setInterval(()=>{let on=0;try{const S=window.WBOSS&&WBOSS.S;if(S&&S.
 
 /* ================= part 2: the game ================= */
 const HERO={   /* weapon swing + impact for normal attacks and physical skills; cast = element of a magic basic; el = default element per branch */
-  wolf:{sw:'sw_heavy',hit:'hit_heavy',el:{A:'phys',B:'ice'}},jaguar:{sw:'sw_light',hit:'hit_slash',el:{A:'phys',B:'dark'},twin:1},
+  wolf:{sw:'sw_great',hit:'hit_blade_heavy',blade:1,el:{A:'phys',B:'ice'}},jaguar:{sw:'sw_dagger',hit:'hit_blade',blade:1,el:{A:'phys',B:'dark'},twin:1},
   rhino:{sw:'sw_gauntlet',hit:'hit_punch_heavy',el:{A:'phys',B:'earth'}},axolotl:{sw:'',cast:'water',hit:'water_hit',el:{A:'water',B:'water'}},
-  croc:{sw:'sw_thrust',hit:'hit_pierce',el:{A:'phys',B:'phys'}},cat:{sw:'sw_sharp',hit:'hit_slash',el:{A:'phys',B:'phys'}},
+  croc:{sw:'sw_thrust',hit:'hit_pierce',el:{A:'phys',B:'phys'}},cat:{sw:'sw_katana',hit:'hit_blade',blade:1,draw:/draw|iai|sheath/,el:{A:'phys',B:'phys'}},
   owl:{sw:'shot_xbow',hit:'hit_pierce',el:{A:'phys',B:'ice'},shot:1},hippo:{sw:'sw_heavy',hit:'hit_blunt',el:{A:'phys',B:'water'}},
   sheep:{sw:'',cast:'holy',hit:'holy_hit',el:{A:'holy',B:'dark'}},dragon:{sw:'sw_fist',hit:'hit_punch',el:{A:'water',B:'wind'}},
   lion:{sw:'sw_fist',hit:'hit_punch',el:{A:'phys',B:'bolt'}},kitsune:{sw:'',cast:'fire',hit:'fire_hit',el:{A:'fire',B:'holy'}},
   bastet:{sw:'',cast:'dark',hit:'dark_hit',el:{A:'dark',B:'dark'}},anubis:{sw:'sw_chain',hit:'hit_blunt',el:{A:'phys',B:'dark'}},
   raven:{sw:'sw_thrust',hit:'hit_pierce',el:{A:'phys',B:'holy'}},wukong:{sw:'sw_staff',hit:'hit_blunt',el:{A:'phys',B:'phys'},rings:1,only:['fire','water','wind']},
-  drake:{sw:'sw_heavy',hit:'hit_heavy',el:{A:'fire',B:'earth'}}};
+  drake:{sw:'sw_great',hit:'hit_blade_heavy',blade:1,el:{A:'fire',B:'earth'}}};
 const ch=()=>{try{return CHAR;}catch(e){return 'wolf';}};
 function hero(){return HERO[ch()]||HERO.wolf;}
 /* element / kind of a skill from its name + Thai text (works for skills added later too); OVR = hand fixes */
@@ -138,6 +138,7 @@ function onAction(a){if(!a||a.key==='hurt')return;const H=hero(),tc=Math.max(0,(
     if(H.sw){play(H.sw,{v:H.shot?.85:.8,at:at(H.sw),gap:.06,x:px,y:py});if(H.twin)play(H.sw,{v:.6,at:at(H.sw)+.07,gap:0,force:1,x:px,y:py});if(H.rings)play('rings',{v:.55,at:at(H.sw),x:px,y:py});}
     return;}
   const I=info(a.skill),cn=castName(I.el);
+  if(H.draw){const s=(typeof SKILLS!=='undefined'&&SKILLS[a.skill])||{};if(H.draw.test(((s.name||'')+' '+a.skill).toLowerCase()))play('blade_draw',{v:.8,at:Math.max(0,tc-pk('blade_draw')-.08),gap:.3,x:px,y:py});}
   switch(I.kind){
     case 'heal':play('heal',{v:.9});break;
     case 'shield':play('shield_up',{v:.9});break;
@@ -165,9 +166,9 @@ function onHit(e,d,o,wasKO){const H=hero(),x=e.x,y=e.y;
   const t=clock();if(t-hb.t>.045||t<hb.t){hb.t=t;hb.n=0;}if(hb.n>=2)return;hb.n++;
   const el=I?I.el:(H.cast||'phys'),n=hitName(el,H),v=(I?1:.85)*(o.big?1.15:1);
   play(n,{v,x,y,gap:.03,max:6});
-  if(I&&I.t==='melee'&&ELS[el]&&!H.cast)play(H.hit,{v:.4,x,y,gap:.05});
-  if(HK.crit)play('hit_crit',{v:.4,x,y,gap:.2});
-  const a=player.action;if(I&&a&&a.skill===k&&!a._sfx1){a._sfx1=1;if(I.slam)play('slam',{v:.85,x,y,gap:.2});if(I.ult)play('ult_boom',{v:.8,x,y,gap:.6});}
+  if(I&&I.t==='melee'&&(ELS[el]||(H.blade&&el==='blood'))&&!H.cast)play(H.hit,{v:H.blade?.55:.4,x,y,gap:.05});
+  if(HK.crit){play('hit_crit',{v:.4,x,y,gap:.2});if(H.blade)play('blade_ring',{v:.45,x,y,gap:.25});}
+  const a=player.action;if(I&&a&&a.skill===k&&!a._sfx1){a._sfx1=1;if(I.slam)play('slam',{v:.85,x,y,gap:.2});if(I.ult){play('ult_boom',{v:.8,x,y,gap:.6});if(H.blade)play('blade_ring',{v:.6,x,y,gap:.6});}}
   if(!wasKO&&e.koOut)play('ko',{v:.65,x,y,gap:.3});
   if(!e.dead&&e.hp>0){const tt=clock();if(!(e._mvH&&tt-e._mvH<.4&&tt>=e._mvH)){e._mvH=tt;mv(e,'hu',e.boss?.75:.45);}}}
 
@@ -270,7 +271,7 @@ W('hurt',f=>function(e,mult,o,...rest){if(!o)o={};const ko=!!(e&&e.koOut);HK.on+
 W('kill',f=>function(e){const r=f.apply(this,arguments);try{if(e){const big=e.boss&&!e.mini;play(big?'boss_die':'mon_die',{v:e.mini?1.1:.85,rate:e.mini?.85:1,x:e.x,y:e.y,gap:big?1:.07,max:4});mv(e,'hu',big?1:.6,{rate:mvRate(e)*.82,max:3});}}catch(x){}return r;});
 W('hitPlayer',f=>function(e,o){o=o||{};const h0=player.hp,a=player.action;let s0=0;try{s0=shieldSum();}catch(x){}const r=f.apply(this,arguments);try{const d=h0-player.hp,s1=shieldSum(),abs=s1<s0-.01;
   if(d>0)play(o.magic?'hurt_magic':'hurt',{v:.7+Math.min(.5,d/Math.max(1,player.maxHp)*3),gap:.07});
-  else if(a&&a.blocked)play('block',{v:.9,gap:.1});else if(abs)play('block',{v:.45,rate:1.25,gap:.12});else play('st_dodge',{v:.8,gap:.25});
+  else if(a&&a.blocked)play(hero().blade?'blade_clash':'block',{v:.9,gap:.1});else if(abs)play('block',{v:.45,rate:1.25,gap:.12});else play('st_dodge',{v:.8,gap:.25});
   if(d>0||abs)STS.hurtT=clock();}catch(x){}return r;});
 W('levelUpFx',f=>function(){const r=f.apply(this,arguments);play('levelup',{v:1,gap:1});return r;});
 W('enterMap',f=>function(id){const prev=curMapId();const r=f.apply(this,arguments);try{onMap(curMapId(),prev);}catch(x){}return r;});
