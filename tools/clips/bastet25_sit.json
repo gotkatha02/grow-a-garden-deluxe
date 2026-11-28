@@ -1,0 +1,66 @@
+{
+ "_note": "Daughter of Ra Bastet 2.5D sitting views (owner 2026-11-27, Drive folder 'Basted' k.jpg = her ChatGPT sheet from the ⑩ sit box of BASTET25_POSE_PROMPTS_TH.md): 8 pictures 2x4 on green in the asked order (front, front 3/4 right, side right, back 3/4 right, back, back 3/4 left, side left, front 3/4 left), kneeling seiza with the book floating beside her. Written as loose pictures (pics mode) assets/sit/bastet25_<dir>.webp at sheet px; anchor x = her head centre (where the standing head is), y = the knees' ground line; k .47 = her head vs the 2.5D idle frames (side by side with the idle S / SE / E / NE frames: the sit sheet draws her ~8 % bigger than the pose sheets, .523 / 1.08 ≈ .47); tone like the pose states. hero_sit.js uses them while window.BST25. Rebuild: python -X utf8 -I tools/sheet_state.py tools/clips/bastet25_sit.json",
+ "js": "assets_bastet25.js",
+ "prefix": "BST",
+ "state": "sit",
+ "sheet": "assets/heroes/bastet/poses25/sit.webp",
+ "rows": 2,
+ "cols": 4,
+ "scale": 1,
+ "sheet_coords": true,
+ "anchors": [
+  [
+   202,
+   440
+  ],
+  [
+   577,
+   442
+  ],
+  [
+   960,
+   450
+  ],
+  [
+   1320,
+   454
+  ],
+  [
+   202,
+   956
+  ],
+  [
+   592,
+   952
+  ],
+  [
+   982,
+   944
+  ],
+  [
+   1350,
+   940
+  ]
+ ],
+ "clean": true,
+ "tone": {
+  "L": 1.0,
+  "C": 0.91,
+  "blur": 0.48
+ },
+ "pics": {
+  "prefix": "assets/sit/bastet25_",
+  "names": [
+   "S",
+   "SE",
+   "E",
+   "NE",
+   "N",
+   "NW",
+   "W",
+   "SW"
+  ],
+  "k": 0.47,
+  "q": 92
+ }
+}

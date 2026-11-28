@@ -1,0 +1,86 @@
+{
+ "_note": "Daughter of Ra Bastet 2.5D extra pose (owner 2026-11-27, Drive folder 'Basted': her ChatGPT sheets from BASTET25_POSE_PROMPTS_TH.md, matched to the boxes by content; LINE_NOTE_261127_<n>.jpg -> assets/heroes/bastet/poses25/<pose>.webp). ① cat leap (LINE_NOTE_261127_8, 6 frames 2x3): 1 crouch, book hand forward · 2 take-off · 3 top of the leap, knees tucked · 4 coming down · 5 landing crouch, hand on the ground · 6 standing. Anchors in sheet px at the torso centre x; the in-air frames 2-4 are anchored 25 / 55 / 30 px BELOW the lowest foot so she is drawn a little off the ground (Cat's Grace is a warp, the game does not lift her with player.z). Scale .523 = the standing frames of the sheets (~440 sheet px from the sun-disc tip to the sandals) vs the 2.5D idle SE frame (230 cell px, perDir), checked on the preview beside the idle pose. Sockets = the cyan flame over her book (found by colour, sheet px). Rebuild AFTER any cliphero rebuild of assets_bastet25.js (that drops the pose states): python -X utf8 -I tools/sheet_state.py tools/clips/bastet25_leap.json [preview.png]",
+ "js": "assets_bastet25.js",
+ "prefix": "BST",
+ "state": "leap",
+ "sheet": "assets/heroes/bastet/poses25/leap.webp",
+ "rows": 2,
+ "cols": 3,
+ "scale": 0.523,
+ "clean": true,
+ "tone": {
+  "L": 1.0,
+  "C": 0.91,
+  "blur": 0.25
+ },
+ "dirs": [
+  "S",
+  "SE",
+  "E",
+  "NE",
+  "N"
+ ],
+ "flip": false,
+ "dur": [
+  90,
+  70,
+  90,
+  80,
+  120,
+  110
+ ],
+ "loop": false,
+ "sheet_coords": true,
+ "anchors": [
+  [
+   262,
+   438
+  ],
+  [
+   772,
+   472
+  ],
+  [
+   1268,
+   441
+  ],
+  [
+   262,
+   902
+  ],
+  [
+   780,
+   961
+  ],
+  [
+   1271,
+   960
+  ]
+ ],
+ "sockets": [
+  [
+   417,
+   208
+  ],
+  [
+   902,
+   162
+  ],
+  [
+   1408,
+   116
+  ],
+  [
+   390,
+   621
+  ],
+  [
+   915,
+   742
+  ],
+  [
+   1397,
+   671
+  ]
+ ]
+}

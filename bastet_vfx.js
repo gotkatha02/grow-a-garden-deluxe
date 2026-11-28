@@ -70,7 +70,9 @@ if(OWN&&typeof drawPlayerAura==='function'){const DPA0=drawPlayerAura;drawPlayer
 function ownSock(){try{const fr=playerFrame(),q=fr&&sockAt(fr.st,fr.d,fr.f);if(!q||!q.head)return null;const k=SPR*CS(),pv=SPR_META.pivot,m=isMir(fr.d)?-1:1;
     return [player.x+(q.head[0]-pv.x)*k*m,player.y+.5,(player.z||0)+(pv.y-q.head[1])*k];}catch(_){return null;}}
 const tip=()=>{const s=player.socket&&player.socket.w;if(s&&isFinite(s[0])&&isFinite(s[2]))return [s[0],s[1],s[2]];const o=OWN&&ownSock();return o||[player.x+Math.cos(player.phi)*12,player.y+Math.sin(player.phi)*9,56+(player.z||0)];};
-const headZ=()=>{if(OWN){let hy=247;try{hy=SPR_META.states.idle.dirs.S.f[0][5]+6;}catch(_){}return (player.z||0)+(SPR_META.pivot.y-hy)*SPR*CS();}return (player.z||0)+80*CS();};
+/* head height = top edge of the S idle frame: the flat atlas tops out at her ear tips (+6 = just under them); the 2.5D atlas
+   (window.BST25) tops out at the tip of her sun disc, so −4 puts the soul ring / cartouche / ankh just ABOVE the disc */
+const headZ=()=>{if(OWN){let hy=247;try{hy=SPR_META.states.idle.dirs.S.f[0][5]+(window.BST25?-4:6);}catch(_){}return (player.z||0)+(SPR_META.pivot.y-hy)*SPR*CS();}return (player.z||0)+80*CS();};
 const nearAt=(x,y,r=36)=>{let b=null,d=r;for(const e of enemies){if(e.dead)continue;const q=Math.hypot(e.x-x,e.y-y);if(q<d){d=q;b=e;}}return b;};
 const bA=k=>{const b=player.buffs&&player.buffs[k];if(!b)return 0;return cl((b.total-b.t)/.25,0,1)*cl(b.t/.4,0,1);};   /* a buff piece fades in .25 s, out over its last .4 s */
 

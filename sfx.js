@@ -7,7 +7,7 @@
 (function(){'use strict';
 const Q=new URLSearchParams(location.search);if(Q.get('sfx')==='0')return;
 const L=window.SFX_LIST||{},DIR='assets/sfx/',VER=window.SFX_V||1;
-const ST={m:.85,fx:1,ui:.75,step:.7,amb:.5,mute:0};try{Object.assign(ST,JSON.parse(localStorage.getItem('af_sfx_v1')||'{}'));}catch(e){}
+const ST={m:.85,fx:1,ui:.75,step:.7,amb:.5,mus:.45,mute:0};try{Object.assign(ST,JSON.parse(localStorage.getItem('af_sfx_v1')||'{}'));}catch(e){}
 const saveST=()=>{try{localStorage.setItem('af_sfx_v1',JSON.stringify(ST));}catch(e){}};
 const CAT=n=>/^amb_/.test(n)?'amb':/^step_/.test(n)?'step':/^(ui_|levelup|refine_|smith_|gem_|carve|extract|skill_learn|hatch|tame|door|potion|sit)/.test(n)?'ui':'fx';
 let ac=null,master=null,comp=null,unlocked=false;const bus={},buf={},pend={},lastV={},lastT={},active={};
@@ -19,10 +19,10 @@ function mk(){if(ac)return ac;const C=window.AudioContext||window.webkitAudioCon
   try{ac=new C({latencyHint:'interactive'});}catch(e){try{ac=new C();}catch(e2){return null;}}
   comp=ac.createDynamicsCompressor();comp.threshold.value=-12;comp.knee.value=10;comp.ratio.value=4;comp.attack.value=.003;comp.release.value=.2;
   master=ac.createGain();master.connect(comp);comp.connect(ac.destination);
-  for(const c of ['fx','ui','step','amb']){const g=ac.createGain();g.connect(master);bus[c]=g;}
+  for(const c of ['fx','ui','step','amb','mus']){const g=ac.createGain();g.connect(master);bus[c]=g;}
   vol();return ac;}
 function vol(){if(!ac)return;const t=ac.currentTime;master.gain.setTargetAtTime(ST.mute?0:ST.m,t,.03);for(const c in bus)bus[c].gain.setTargetAtTime(ST[c],t,.03);}
-function unlock(){if(!mk())return;if(ac.state!=='running')ac.resume().catch(()=>{});if(!unlocked){unlocked=true;preload();amb.kick();}}
+function unlock(){if(!mk())return;if(ac.state!=='running')ac.resume().catch(()=>{});if(!unlocked){unlocked=true;preload();amb.kick();mus.kick();}}
 for(const ev of ['pointerdown','touchend','keydown','mousedown'])window.addEventListener(ev,unlock,{capture:true,passive:true});
 document.addEventListener('visibilitychange',()=>{if(!ac)return;if(document.hidden)ac.suspend().catch(()=>{});else if(unlocked)ac.resume().catch(()=>{});});
 const url=(n,i)=>DIR+n+'_'+i+'.mp3?v='+VER;
@@ -62,6 +62,28 @@ const amb={want:null,lev:1,cur:null,nodes:[],tm:0,
     try{g.gain.setValueCurveAtTime(XC.up.map(v=>v*lv),t0,XF);g.gain.setValueCurveAtTime(XC.down.map(v=>v*lv),t0+seg-XF,XF);}catch(e){g.gain.value=lv;}
     s.start(t0,off,seg);const node={s,g};this.nodes.push(node);s.onended=()=>{this.nodes=this.nodes.filter(x=>x!==node);};
     this.tm=setTimeout(()=>this.copy(n,b),(seg-XF)*1000);}};
+
+/* music: one composed loop per kind of map (tools/music/compose.py). A file = the loop + XF seconds of its next
+   repeat → copies start every LOOP seconds and cross linearly over XF: both hold the same audio there, no seam. */
+const ML=window.MUS_L||{},MDIR='assets/music/',MV=window.MUS_V||1,mbuf={},mpend={};
+function mload(n){if(n in mbuf)return Promise.resolve(mbuf[n]);if(mpend[n])return mpend[n];if(!ac)return Promise.resolve(null);
+  return mpend[n]=fetch(MDIR+n+'.mp3?v='+MV).then(r=>{if(!r.ok)throw 0;return r.arrayBuffer();}).then(decode).then(b=>mbuf[n]=b).catch(()=>mbuf[n]=null);}
+const mus={want:null,cur:null,nodes:[],tm:0,boss:0,
+  set(n){this.want=n;if(LOG)LOG.push({t:+clock().toFixed(3),n:'mus:'+(n||'-')});this.kick();},
+  pick(){return this.boss?'boss':this.want;},
+  kick(){if(!ac||!unlocked)return;const n=this.pick();if(n===this.cur&&(this.nodes.length||!n))return;this.cur=n;clearTimeout(this.tm);
+    const t=ac.currentTime;for(const x of this.nodes){try{x.g.gain.cancelScheduledValues(t);x.g.gain.setValueAtTime(x.g.gain.value,t);x.g.gain.linearRampToValueAtTime(0,t+2.2);x.s.stop(t+2.3);}catch(e){}}this.nodes=[];
+    if(!n||!ML[n])return;mload(n).then(b=>{if(b&&this.cur===n&&!this.nodes.length)this.copy(n,b,ac.currentTime+(t>0?.6:.05),1);});},
+  copy(n,b,t0,first){if(this.cur!==n)return;const [LP,XF2]=ML[n],len=Math.min(b.duration,LP+XF2);
+    const s=ac.createBufferSource();s.buffer=b;const g=ac.createGain();s.connect(g);g.connect(bus.mus);
+    const fi=first?2.5:XF2;g.gain.setValueAtTime(0,t0);g.gain.linearRampToValueAtTime(1,t0+fi);
+    g.gain.setValueAtTime(1,t0+LP);g.gain.linearRampToValueAtTime(0,t0+len);
+    s.start(t0,0,len);const node={s,g};this.nodes.push(node);s.onended=()=>{this.nodes=this.nodes.filter(x=>x!==node);try{g.disconnect();}catch(e){}};
+    const nx=t0+LP;this.tm=setTimeout(()=>this.copy(n,b,nx,0),Math.max(0,(nx-ac.currentTime-1.5)*1000));}};
+/* a fight with a big boss near the hero → boss music, back to the map's track 8 s after it ends */
+let bossT=0;setInterval(()=>{let on=0;try{const S=window.WBOSS&&WBOSS.S;if(S&&S.state==='fight'&&!S.gone)on=1;
+    if(!on&&typeof enemies!=='undefined'&&typeof player!=='undefined')for(const e of enemies){if(e.boss&&!e.mini&&!e.dead&&!e.hidden&&Math.hypot(e.x-player.x,e.y-player.y)<900&&((e.aggro||0)>0||e.hp<e.maxHp)){on=1;break;}}}catch(e){}
+  const t=performance.now()/1000;if(on)bossT=t;const b=on||(bossT&&t-bossT<8)?1:0;if(b!==mus.boss){mus.boss=b;mus.kick();}},500);
 
 /* ================= part 2: the game ================= */
 const HERO={   /* weapon swing + impact for normal attacks and physical skills; cast = element of a magic basic; el = default element per branch */
@@ -182,8 +204,21 @@ function ambOf(id){if(!id)return null;if(isRoom(id))return ['amb_forge',/^craft/
   if(night&&/amb_(forest|summer|town)/.test(n)){n='amb_night';}
   if(/T$/.test(id)&&id!=='capT')lv=.8;
   return [n,lv];}
+/* ---- music per map ---- */
+function musOf(id){if(!id)return null;if(isRoom(id))return mus.want;const c=(window.VK_MAPS||{})[id]||{},m=c.mood||'',night=(()=>{try{return !!mapNight;}catch(e){return false;}})();
+  const reg=/^(vik|snow|frost|iso)/.test(id)?'vik':/^(grk|egy|jpn|azt|sea)/.test(id)?id.slice(0,3):null;
+  const town=id==='capT'||id==='frostheim'||id==='isoTown'||/^[a-z]{3}T\d?$/.test(id)||m==='town';
+  if(/^wb/.test(id))return 'mystic';
+  if(/^rift/.test(id))return 'mystic';
+  if(/^c(N|E|S|W|NE|NW|SE|SW)$/.test(id))return 'night';
+  if(town){if(id==='capT')return night?'night':'capital';if(reg==='sea')return 'sea';return reg?(night?'night':reg+'_town'):'capital';}
+  if(/^cata/.test(id)||c.walls||/mine|cave|necro|hades|dark|oni/.test(m))return 'dungeon';
+  if(/^rift/.test(id)||/rift|spirit|olympus|dream|dragon/.test(m))return 'mystic';
+  if(reg==='sea'||m==='beach')return 'sea';
+  if(reg)return reg;
+  return night?'night':'capital';}
 let mapSeen0=null;
-function onMap(id,prev){FT.n=null;FT.px=null;const A=ambOf(id);amb.set(A&&A[0],A&&A[1]);
+function onMap(id,prev){FT.n=null;FT.px=null;const A=ambOf(id);amb.set(A&&A[0],A&&A[1]);mus.set(musOf(id));
   if(prev==null)return;if(isRoom(id)||isRoom(prev))play('door',{v:.8,gap:.5});else play('warp',{v:.55,gap:1});}
 
 /* ---- wrap the game's functions (this file loads last, so these wrappers are the outermost) ---- */
@@ -240,15 +275,15 @@ setInterval(winScan,180);
 /* ================= part 3: the 'เสียง' block in the ⚙ panel ================= */
 function ui(){const p=document.getElementById('panel');if(!p||document.getElementById('sfxBox'))return;
   const box=document.createElement('div');box.id='sfxBox';
-  const rows=[['m','เสียงรวม'],['fx','ต่อสู้ / สกิล'],['ui','เมนู / ไอเทม'],['step','ฝีเท้า'],['amb','บรรยากาศ']];
+  const rows=[['m','เสียงรวม'],['mus','เพลง'],['fx','ต่อสู้ / สกิล'],['ui','เมนู / ไอเทม'],['step','ฝีเท้า'],['amb','บรรยากาศ']];
   box.innerHTML='<h3>เสียง <button id="sfxMute" class="rob" style="float:right;padding:0 8px">'+(ST.mute?'🔇 ปิดอยู่':'🔊 เปิดอยู่')+'</button></h3>'+
     rows.map(([k,t])=>`<label class="sfxRow" style="display:flex;align-items:center;gap:8px;margin:3px 0"><span style="width:92px">${t}</span><input type="range" min="0" max="100" value="${Math.round(ST[k]*100)}" data-k="${k}" style="flex:1"><b style="width:30px;text-align:right">${Math.round(ST[k]*100)}</b></label>`).join('');
   const h=[...p.querySelectorAll('h3')].find(x=>/VFX QUALITY/.test(x.textContent));p.insertBefore(box,h||p.firstChild.nextSibling);
   box.querySelectorAll('input').forEach(inp=>inp.addEventListener('input',()=>{ST[inp.dataset.k]=inp.value/100;inp.nextElementSibling.textContent=inp.value;vol();saveST();}));
-  box.querySelectorAll('input').forEach(inp=>inp.addEventListener('change',()=>{if(inp.dataset.k==='amb')return;unlock();play(inp.dataset.k==='step'?stepName():inp.dataset.k==='ui'?'ui_click':'hit_heavy',{v:1,gap:.2});}));
+  box.querySelectorAll('input').forEach(inp=>inp.addEventListener('change',()=>{if(inp.dataset.k==='amb'||inp.dataset.k==='mus')return;unlock();play(inp.dataset.k==='step'?stepName():inp.dataset.k==='ui'?'ui_click':'hit_heavy',{v:1,gap:.2});}));
   document.getElementById('sfxMute').onclick=e=>{ST.mute=ST.mute?0:1;e.target.textContent=ST.mute?'🔇 ปิดอยู่':'🔊 เปิดอยู่';vol();saveST();};}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ui);else ui();
-try{const id=curMapId();if(id){const A=ambOf(id);amb.set(A&&A[0],A&&A[1]);}}catch(e){}
+try{const id=curMapId();if(id){const A=ambOf(id);amb.set(A&&A[0],A&&A[1]);mus.set(musOf(id));}}catch(e){}
 
-window.SFX={play,amb,info,hero,stepName,ambOf,ST,vol,get log(){return LOG;},get ctx(){return ac;},unlock,L};
+window.SFX={play,amb,mus,musOf,info,hero,stepName,ambOf,ST,vol,get log(){return LOG;},get ctx(){return ac;},unlock,L};
 })();

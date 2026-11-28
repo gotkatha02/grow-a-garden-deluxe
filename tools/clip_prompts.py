@@ -2440,6 +2440,150 @@ HEROES['sheep25'] = dict(
 - **หน้า HUD:** ภาพยืนไม่ได้เก็บใน repo (เจ้าของสั่ง) → ตัดหัวจากเฟรมแรกของคลิปยืน S เป็น `assets/heroes/sheep/face25.webp` + window.HUD_FACE ใน installSheep (ร่างเก่าใช้ face.webp) · ภาพหน้าเลือกตัว `select.webp` + `portrait.webp` ยังเป็นลุคเก่า (แบบ 5 ไม่มีชีต) → ตัดจากเฟรมแรกของคลิปยืน SE หรือขอภาพใหญ่จากเจ้าของ
 - ยังไม่มี: ท่าเสริมมุมเดียว (แบบจากัวร์ / หมาป่า), ท่านั่ง 8 มุม, ไอคอนสกิล, พื้นหลังผังสกิล · ภาพหน้าโหลด ld1 ld4 ld8 ยังเป็นลุคเก่า""")
 
+
+# Hyena 2.5D = Painted Jester (owner 2026-11-27 21:25 his design-2 sheet + 'ขอพร้อมทำสไปร้8ทิศหน่อย เป็นแบบ2.5d ด้วย' → the 5
+# standing-view boxes of HYENA_LOOK_PROMPTS_TH.md; 2026-11-28 06:53 'ขอพร้อมทำอนอเมชั่นท่าทางหน่อย รูปที่ส่งให้ยังไม่ต้องทำไร'
+# = clip prompts only, his views are the first frames, not cut and not stored in the repo). Written straight in the v2
+# template (lock first, walk on the spot, no '3D game model', no effect names, lock again at the end) that fixed the turning
+# of the bastet25 / kitsune25 v1 clips. The stiletto side of the picture follows what the standing-view boxes asked for
+# (S / SE picture-left, E low in front of the thigh, NE / N picture-right); the face paint sides are left to the picture.
+# Attack = a quick one-hand thrust from the low hold (no stab / strike / attack words), buff = a magician's showman pose
+# (stiletto beside his head blade up, the free hand open), both held still so the game can hold the contact / peak frame.
+HEROES['hyena25'] = dict(
+  title='ไฮยีน่าตัวตลก 2.5D (Painted Jester แบบโมเดล 3D มองจากด้านบน)',
+  who='the hyena jester in this picture', P='He', p='he', pos='his', weapon='stiletto',
+  v2=dict(
+    lock={'S': "Static camera, no camera movement. Front view: the hyena jester in this picture faces the viewer, exactly "
+               "as in the picture, and he keeps facing the viewer in every frame, on the same spot in the middle of the "
+               "frame and at the same size.",
+          'SE': "Static camera, no camera movement. Three-quarter front view: the hyena jester in this picture is angled "
+                "toward the lower right, exactly as in the picture, and he keeps this same angle in every frame, on the same "
+                "spot in the middle of the frame and at the same size.",
+          'E': "Static camera, no camera movement. Side view: the hyena jester in this picture faces right in profile, "
+               "exactly as in the picture, and he stays in this same side view in every frame, on the same spot in the "
+               "middle of the frame and at the same size.",
+          'NE': "Static camera, no camera movement. Three-quarter back view: the hyena jester in this picture faces away from "
+                "the viewer toward the upper right, exactly as in the picture, and he keeps this same angle in every frame, "
+                "on the same spot in the middle of the frame and at the same size; we see mostly his back and his mane, and "
+                "only the edge of his cheek shows.",
+          'N': "Static camera, no camera movement. Back view: the hyena jester in this picture has his back to the viewer, "
+               "exactly as in the picture, and his back stays toward the viewer in every frame, on the same spot in the "
+               "middle of the frame and at the same size; his face stays hidden."},
+    spos={'S': 'low beside his thigh at the left side of the picture, the blade pointing down',
+          'SE': 'low beside his thigh at the left side of the picture, the blade pointing down',
+          'E': 'low in front of his thigh, the blade pointing down and a little forward',
+          'NE': 'low beside his thigh at the right side of the picture, the blade pointing down',
+          'N': 'low beside his thigh at the right side of the picture, the blade pointing down'},
+    fmt={'blink': ('; his round ears twitch once', ''),
+         'vis': ('', ' His thrusting arm and the stiletto stay visible at the side of his body.'),
+         'pvis': ('', ' The raised stiletto stays visible beside his head.'),
+         'thr': {'S': 'straight out in front of him toward the viewer at chest height',
+                 'SE': 'out in front of him toward the lower right at chest height',
+                 'E': 'straight out in front of him toward the right at chest height',
+                 'NE': 'out ahead of him toward the upper right at chest height',
+                 'N': 'straight out ahead of him, away from the viewer, at chest height'},
+         'sup': {'S': 'up beside his head at the left side of the picture', 'SE': 'up beside his head at the left side of the picture',
+                 'E': 'up beside his head', 'NE': 'up beside his head at the right side of the picture',
+                 'N': 'up beside his head at the right side of the picture'},
+         'oth': {'S': 'up beside his head on the other side', 'SE': 'up beside his head on the other side',
+                 'E': 'out in front of his chest', 'NE': 'up beside his head on the other side',
+                 'N': 'up beside his head on the other side'}},
+    act={
+     'idle': "Idle loop: he stands still with a slight forward lean and breathes slowly; his stiletto stays {spos}, and his "
+             "other hand rests relaxed at his side. His spiky mane, the pointed jacket flaps with their little gold bells and "
+             "his bushy tail sway a little{blink}. The last frame matches the first frame so the clip loops.",
+     'walk': "Walk loop on the spot: he walks in place like on a treadmill, with light, springy steps in his curled boots, "
+             "about two steps per second. His body bobs a little with each step but stays on the same spot and keeps the same "
+             "angle as in the picture. The stiletto stays {spos}, and swings a little with his arm. His mane, the jacket flaps "
+             "with their bells and his tail bounce a little. The last frame matches the first frame so the clip loops.",
+     'attack': "Quick thrust: he pulls the stiletto back beside his hip, then thrusts it {thr}, arm out, elbow still a little "
+               "bent, blade pointing forward; he holds that pose for a moment, then brings the stiletto back {spos}, and stands "
+               "still for the rest of the clip. About one second of motion. His feet stay planted.{vis} The stiletto keeps "
+               "its shape, and the air around the blade stays plain green. Clean outlines, no motion blur.",
+     'buff': "Showman pose: he raises the stiletto {sup}, the blade pointing up, and at the same time lifts his other hand "
+             "{oth}, palm open and fingers spread like a stage magician; his ears perk up. He holds this pose still for about "
+             "one second, then lowers both hands, the stiletto goes back {spos}, and he stands still for the rest of the "
+             "clip. His feet stay planted.{pvis} The whole stiletto stays inside the frame. Clean outlines, no motion blur."},
+    keep={d: ("Keep his face as in the picture: a hyena face with a dark-masked muzzle and a big black nose, violet eyes "
+              "under strong dark brows, the violet diamond and star face paint, a sly smirk with his mouth closed; his eyes "
+              "stay open the whole time. Keep his whole design as in the picture: round spotted ears, the spiky dark-brown "
+              "mane, sandy spotted fur, the white ruffled collar, the black harlequin jester jacket with gold-belled flaps, "
+              "the violet sash, the trophy cord, black gloves, puffy violet trousers, curled black boots with gold bells, his "
+              "bushy tail and the violet crystal stiletto.") for d in ('S', 'SE')}
+         | {'E': "Keep his face as in the picture, seen in profile: his short dark-masked muzzle and big black nose, his violet "
+                 "eye under a strong dark brow, the small violet star on his cheek and a sly smirk with his mouth closed; his "
+                 "eye stays open the whole time. Keep his whole design as in the picture: a big round spotted ear, the spiky "
+                 "dark-brown mane down his neck, sandy fur with dark spots, the white ruffled collar, the black jester jacket "
+                 "with gold-belled flaps, the royal-violet sash, black fingerless gloves, puffy violet trousers, curled black "
+                 "boots with gold bells, his bushy spotted tail behind him and the violet crystal stiletto.",
+            'NE': "Keep his whole design as in the picture: the back of his head with both big round ears from behind, dark "
+                  "brown with dark spots, the spiky dark-brown mane down the back of his neck, the white ruffled collar from "
+                  "behind, the small gold diamond on the back of his black jacket, the royal-violet sash, the pointed jacket "
+                  "flaps with their little gold bells, puffy violet trousers, curled black boots, his bushy spotted tail and "
+                  "the violet crystal stiletto.",
+            'N': "Keep his whole design as in the picture: the back of his head with both big round ears from behind, dark "
+                 "brown with dark spots, the spiky dark-brown mane down the back of his neck, the white ruffled collar from "
+                 "behind, the small gold diamond on the back of his black jacket, the royal-violet sash, the pointed jacket "
+                 "flaps with their little gold bells, puffy violet trousers, curled black boots, his bushy spotted tail and "
+                 "the violet crystal stiletto."},
+    look="Same rendering as the picture: soft toon shading with rounded volume and clean dark-brown outlines, the same "
+         "colours and textures, seen from above at the same camera angle — not photorealistic, not flat.",
+    fx="Plain flat green background, no shadow, only him in the frame. Nothing glows: no light on the blade or the face "
+       "paint, no flash, sparkles, particles, smoke, light trails, motion lines, magic effects or text.",
+    end="From the first frame to the last he stays on the same spot, at the same size, seen from the same angle as in the "
+        "picture."),
+  dirname={'S': 'หน้าตรง', 'SE': 'เฉียงหน้า หันขวา', 'E': 'ข้าง หันขวา', 'NE': 'เฉียงหลัง หันขวา', 'N': 'หลัง'},
+  actname={'idle': 'ยืน (idle · วนลูป)', 'walk': 'เดินย่ำอยู่กับที่ (walk · วนลูป)',
+           'attack': 'แทงมีดเร็ว (attack · ตีปกติ + สกิลกายภาพที่ใช้ท่าตี — เฟรมยื่นสุด = จังหวะโดน)',
+           'buff': 'ท่านักมายากล (buff · สกิลร่าย / หน้ากาก / ร่างเงา / ท่าขโมย — เกมค้างเฟรมชูสุดตอนร่าย)'},
+  start='ภาพยืน 2.5D มุม {d} ที่ได้จาก ChatGPT',
+  header="""เจ้าของเลือกแบบ 2 'ตัวตลกเพนต์หน้า' 2026-11-27 14:34 (ชีต `assets/heroes/hyena/sheet_painted_jester.webp`) → 21:25 พรอมต์ภาพยืน 2.5D 5 มุม (`HYENA_LOOK_PROMPTS_TH.md` หัวข้อ 'ภาพยืน 2.5D 5 มุม') → **2026-11-28 06:53 เจ้าของ: "ขอพร้อมทำอนอเมชั่นท่าทางหน่อย รูปที่ส่งให้ยังไม่ต้องทำไร"** → ไฟล์นี้ · ไม่ได้ตัดภาพตั้งต้น ไม่ได้เก็บภาพยืนไว้ใน repo (ตามที่เจ้าของสั่ง) · เจ้าของแนบภาพยืนของทิศนั้นเป็นเฟรมแรกเอง · ตัวละครยังไม่อยู่ในเกม (สกิล: `HYENA_SKILLS_TH.md` · เอฟเฟกต์: `HYENA_FX_PLAN_TH.md`) · เป็นสไปรต์ชุดแรกของตัวนี้ ไม่มีชุดลุคแบน
+
+## โครงพรอมต์ = แม่แบบ v2 ตั้งแต่ต้น (`build2()` ใน `tools/clip_prompts.py`)
+แม่แบบนี้แก้อาการ 'ทิศทางมั่ว เดินหมุน' ของคลิปบาสเทต / จิ้งจอกชุดแรก:
+1. `Static camera, no camera movement.` + มุมของทิศนั้นแบบบอกให้ทำ (S keeps facing the viewer in every frame · SE / NE keeps this same angle · E stays in this same side view · N his back stays toward the viewer) + 'on the same spot in the middle of the frame and at the same size' · NE 'we see mostly his back and his mane, and only the edge of his cheek shows' · N 'his face stays hidden'
+2. ท่า:
+   - ยืน: หายใจ โน้มตัวไปหน้านิด แผงคอ ชายเสื้อกระดิ่ง หาง ไหวเบาๆ · มุมหน้าหูกระดิกครั้งเดียว
+   - เดินย่ำอยู่กับที่: treadmill ~2 ก้าว/วิ ตัวอยู่จุดเดิมมุมเดิม มีดถือต่ำฝั่งเดิม
+   - แทงมีดเร็ว: ดึงมีดมาข้างสะโพก → แทงไปทางที่หันระดับอก แขนเหยียดแต่ศอกงอนิด → ค้างนิด → มีดกลับถือต่ำ ยืนนิ่ง · ไม่ก้าว · มุมหลังแขนกับมีดโผล่ข้างตัว
+   - ท่านักมายากล: ชูมีดข้างหัวใบชี้ขึ้น + อีกมือแบกางนิ้วข้างหัว (มุมข้าง = มือแบหน้าอก) หูตั้ง ค้าง ~1 วิ · แขนชิบิสั้น → เขียนแค่ 'ข้างหัว' (เขียน 'เหนือหัว' โมเดลจะยืดแขน)
+3. หน้า (มุมหน้า: ตาเปิดตลอด ยิ้มเจ้าเล่ห์ปิดปาก) + ดีไซน์ย่อ
+4. ลุค: `Same rendering as the picture: soft toon shading with rounded volume and clean dark-brown outlines … not photorealistic, not flat` (ไม่ใช้คำ '3D game model' — โมเดลวิดีโอชอบทำเป็นคลิปหมุนโชว์)
+5. พื้นเขียวเรียบ ไม่มีเงา มีแค่ตัวเขาในภาพ · 'Nothing glows' ห้ามแสงที่ใบมีด / ลายเพนต์ แฟลช ประกาย อนุภาค ควัน เส้นแสง เส้นความเร็ว เวทมนตร์ ตัวหนังสือ · ไม่เอ่ยชื่อของในชีต (ร่างเงา ไพ่ หน้ากาก ดาว) ในประโยคห้าม — เอ่ยแล้วโมเดลอาจวาดออกมา (เอฟเฟกต์ทั้งหมดใส่ในเกม: `hyena_vfx.js`)
+6. ย้ำท้าย: `From the first frame to the last he stays on the same spot, at the same size, seen from the same angle as in the picture.`
+- ทุกกล่องยาว 1,643–1,974 ตัวอักษร (ไม่เกิน 2,000) · ท่าตีไม่ใช้คำ stab / strike / attack / slash (ชุดก่อนๆ คำพวกนี้ทำให้โมเดลวาดรอยฟัน / แสงวาบติดมา)
+
+## ฝั่งของมีด (ตามที่สั่งไว้ในพรอมต์ภาพยืน — เทียบกับภาพจริงก่อนส่ง)
+| มุม | มีด (มือขวา) ตอนยืน | ชูมีด (buff) | อีกมือ (buff) |
+|---|---|---|---|
+| S หน้าตรง | ถือต่ำข้างต้นขา **ซ้ายของภาพ** ใบชี้ลง | ข้างหัว ซ้ายของภาพ | ข้างหัวอีกฝั่ง |
+| SE เฉียงหน้า | ถือต่ำข้างต้นขา **ซ้ายของภาพ** | ข้างหัว ซ้ายของภาพ | ข้างหัวอีกฝั่ง |
+| E ข้าง | ถือต่ำหน้าต้นขา ใบชี้ลงเฉียงหน้า | ข้างหัว | หน้าอก |
+| NE เฉียงหลัง | ถือต่ำข้างต้นขา **ขวาของภาพ** | ข้างหัว ขวาของภาพ | ข้างหัวอีกฝั่ง |
+| N หลัง | ถือต่ำข้างต้นขา **ขวาของภาพ** | ข้างหัว ขวาของภาพ | ข้างหัวอีกฝั่ง |
+
+ถ้าภาพจริงของมุมไหนมีดอยู่อีกฝั่ง: แก้คำ 'at the left / right side of the picture' ในกล่องของมุมนั้นให้ตรงภาพ (บอกฝั่งผิด = โมเดลหมุนตัวให้มีดไปอยู่ฝั่งที่พรอมต์บอก) · ลายเพนต์หน้าไม่ได้ระบุฝั่ง (ให้ยึดตามภาพ)
+
+## วิธีใช้ (สำคัญ)
+- **แนบภาพให้ตรงกล่อง**: S = หน้าตรง มองกล้อง · SE = ตัวเอียงไปทางขวาล่าง · E = ข้าง หันขวา · NE = เฉียงหลัง เห็นขอบแก้มนิดเดียว · N = หลังตรง ไม่เห็นหน้า — แนบผิดมุม = โมเดลหมุนตัวไปหามุมที่พรอมต์บอก
+- คลิปละ **5 วิ** (ยาวกว่านี้ยิ่งเพี้ยน)
+- ถ้าแอปมีช่อง **เฟรมสุดท้าย / end frame**: ใส่ภาพยืนรูปเดียวกันอีกช่อง → คลิปต้องจบท่าเดิม มุมเดิม (กันหมุน + วนลูปเนียน) ใช้ได้ทั้ง 4 ท่า · ถ้าท่าเดินออกมาขยับน้อยไป ลองแบบไม่ใส่
+- ถ้าแอปมีปุ่ม **กล้องนิ่ง / fixed camera / static camera**: เปิด
+- **ลองทิศ S ก่อน** (ยืน + เดิน) ถ้าโอเคค่อยทำที่เหลือ · ถ้าหมุน / ลายเพนต์ย้ายที่ / มีดเปลี่ยนรูป: ส่งคลิปที่เพี้ยนมา 1 ตัว
+- ไม่ต้องทำทิศซ้าย (เกมกลับด้านเอง) · ส่งกลับเรียง S → SE → E → NE → N ทิศละ ยืน → เดิน → แทง → ชู
+- ถ้าคลิปไหนตัวหลุดขอบภาพ (มีดชูข้างหัว / แขนแทง): ย่อภาพยืนก่อนทำคลิป (`python3 -I tools/dir8cut.py startv <โฟลเดอร์> <ทิศ>=<ภาพ> size=1024 feet=.88 ht=460 clean=0` ทีละมุม) หรือส่งภาพมาให้ย่อ""",
+  footer="""## ตอนคลิปมาถึง (โน้ตสำหรับแชตที่ทำต่อ)
+- ตัวละครยังไม่มีในเกม: ต้องมี `char_hyena.js` ก่อน (สกิลตาม `HYENA_SKILLS_TH.md`, ตอบคำถามเจ้าของในนั้นก่อน) · คลิปตัดเก็บไว้ก่อนได้
+- ตัดด้วย `tools/cliphero.py` + แผนใหม่ `tools/clips/hyena25_plan.json` (ดู `jaguar25_plan.json` / `cat25_plan.json`: frames ช่วงลืมตา, เลี่ยงเฟรมที่โมเดลแอบใส่แสง / รอยวง, perDir, scaleFix, breath) → **ไฟล์ใหม่ `assets_hyena.js`** (prefix ใหม่ เช่น HYN) โหลดเฉพาะ `?char=hyena` + ตาราง MB หน้าโหลด
+- **เวลาเฟรม:** ตัวใหม่ยังไม่เคย bench → ใช้เวลาเดียวกับ `assets.js` (มาตรฐานที่ฮีโร่ส่วนใหญ่ถูก bench) แล้วค่อย bench ทีหลัง:
+  - attack 12 เฟรม 900 ms · S [80,50,90,50,50,50,70,200,50,50,50,110] contact 6 (370 ms) · SE [50,50,190,70,90,50,50,50,50,50,90,110] contact 4 (360) · E [80,50,50,100,50,120,60,120,50,50,50,120] contact 6 (450) · NE ใช้เวลาของ E (atkRemap {} เพราะมีคลิป NE เอง) · N [110,120,50,50,70,50,120,70,50,50,50,110] contact 6 (450) · เฟรม contact = แขนเหยียดสุด ปลายมีดอยู่หน้าสุด
+  - buff 12 เฟรม 1.4 วิ peak 7 · S [170,50,50,230,50,110,390,50,50,50,50,150] · E [70,50,50,50,50,70,170,580,50,50,50,160] · NE [80,60,50,50,50,50,120,160,480,60,60,180] · N [130,50,50,50,50,110,260,450,60,50,50,90] · SE 6 เฟรม [220×6] peak 3 → เฟรม peak = ชูมีดสุด
+  - walk 8 × 100 ms · idle 12 เฟรม 2.4 วิ · hurt 7 เฟรม 550 ms
+- **socket:** ปลายใบมีดคริสตัลม่วง (head) + โคนใบที่กั่นทอง (grip) ทุกเฟรมของ attack / buff → ใช้ตัวเลือก `blade` ของ cliphero (ทำไว้สำหรับมีดคู่จากัวร์: ใบม่วง / ดำยาวบาง) + `fix` ด้วยตาตรงที่เบลอ · เอฟเฟกต์ใน `hyena_vfx.js` (แทง เส้นด้าย ไพ่ ท่าขโมย) ควรออกจาก socket นี้
+- **ขนาด:** วัด `CHAR_SCALE.hyena` ให้ยืนสูงเท่ามาตรฐาน (ถึงปลายหู ไม่รวมแผงคอที่ตั้ง) + เพิ่ม `HERO_SIZE.hyena` (สัดส่วนเท่าแมวโรนิน ~.75 — ถามเจ้าของด้วยเครื่องปรับขนาด)
+- **หน้า HUD:** ภาพยืนไม่ได้เก็บใน repo (เจ้าของสั่ง) → ตัดหัวจากเฟรมแรกของคลิปยืน S เป็น `assets/heroes/hyena/face25.webp` + window.HUD_FACE · หน้าเลือกตัว = ภาพใหญ่จากชีต (`tools/bigpose_cut.py` → `select.webp`, SELA + SELV)
+- ยังไม่มี: ท่าพิเศษมุมเดียว (ร่างเงาโผล่ ม้วนตัวหลบ ตีลังกา โยนมีด — แบบแมว / จากัวร์), ท่านั่ง 8 มุม, ไอคอนสกิล, พื้นหลังผังสกิล""")
+
 def build2(h, d, a):
     """Compact 'lock first' prompt (H['v2'], owner 2026-11-27: the bastet25 v1 clips turned and walked off in every
     direction): camera + view lock, motion, face / design line, look, effects, the lock again. fmt values are per direction

@@ -1,0 +1,73 @@
+{
+ "_note": "Bastet Daughter of Ra in the 2.5D look (owner 2026-11-27: Drive folder 'Basted', 21 clips 544x544 24 fps green, 5 s, hashed file names, made from the 2.5D start frames with the v2 prompts). Directions grouped by the clips' identical first frame (S 0/1/5/6, SE 3/15/16/18, E 8/11/12/13/19, NE 4/10/14/20, N 2/7/9/17 in sorted-name order); E came with two walks (654ebfd6 / 71e366f6) - 71e366f6 used (clearer steps). All face right, one zoom per direction (perDir like the other 2.5D heroes). Attack / buff rows keep the flat atlas's frame counts, contact / peak and frame TIMES per direction (tools/clips/bastet_plan.json = the wolf atlas she was benched on), so every hit / cast release keeps its time. Frames (0-based video frames) skip the clips' baked effects: attack S 27-37 (pink smear + white ring), N 8-15 (white burst + droplets); buff S 15-57 (yellow-green halo / rune ring), SE 15-41 (gold rings), E 35-79 (gold sunburst + rings), N 8-27 (gold star behind the disc). S buff: rise 0-14, peak = the clean raised pose after the halo (59). Idle loops = best self-match with a 2-3 s period (the automatic 1-2.5 s ones played at 90-140 ms a frame): S 7+60, SE 57+40 (she winks at 27-30 / 51-54 / 99), E 15+57, NE 32+61, N 74+44. Walk loops = best self-match (Godot probe): S 61+26, SE 54+29, E 19+24, NE 42+24, N 23+25. Sockets = the cyan flame over her book (R 0-70, G ~205, B ~240; no turquoise gems in these clips); the normal attack's thrust-to-hold frames = her PALM, read by eye on the placed cells of this build (orbFix) like the flat plan. S buff rise keeps her closed eyes (11-12, casting). The pose states (leap sign summon burst pray drain hurt ko, tools/clips/bastet25_<pose>.json) are written into the same file by sheet_state.py, and a cliphero rebuild drops them (its hurt row comes back) -> re-run every pose spec after it. Rebuild (Windows: -X utf8, or the JS header is written in cp1252): python -X utf8 -I tools/cliphero.py tools/clips/bastet25_plan.json assets_bastet25.js BST (clip paths = the owner's Drive download on the Windows machine).",
+ "height": 230,
+ "flip": false,
+ "perDir": true,
+ "orb": true,
+ "orbAll": true,
+ "orbLerp": true,
+ "orbMask": {"b": 190, "g": 140, "br": 60, "bg": -30, "min": 60},
+ "clips": {
+  "idle": {
+   "S": "C:/Users/Admin/Downloads/Basted-20261127T135235Z-1-001/Basted/51477e861bcdc1014bdc5954773c5a3b.mp4",
+   "SE": "C:/Users/Admin/Downloads/Basted-20261127T135235Z-1-001/Basted/985afeb16d16aa8abf0f36e0a89395af.mp4",
+   "E": "C:/Users/Admin/Downloads/Basted-20261127T135235Z-1-001/Basted/5de7716669a1f57c3b7fede07bbab494.mp4",
+   "NE": "C:/Users/Admin/Downloads/Basted-20261127T135235Z-1-001/Basted/31f711d479184ebee15d5d89042f9275.mp4",
+   "N": "C:/Users/Admin/Downloads/Basted-20261127T135235Z-1-001/Basted/61d8d523ba3e3026c682956a1cedcbd3.mp4"
+  },
+  "walk": {
+   "S": "C:/Users/Admin/Downloads/Basted-20261127T135235Z-1-001/Basted/008988e23e471cee97f358d313ec16ac.mp4",
+   "SE": "C:/Users/Admin/Downloads/Basted-20261127T135235Z-1-001/Basted/ce9f21e15ba1a210bd7fca7c436d969c.mp4",
+   "E": "C:/Users/Admin/Downloads/Basted-20261127T135235Z-1-001/Basted/71e366f688bb95b99f0d9ca98cf26b4c.mp4",
+   "NE": "C:/Users/Admin/Downloads/Basted-20261127T135235Z-1-001/Basted/72099c8783dcca6f25f3764270945326.mp4",
+   "N": "C:/Users/Admin/Downloads/Basted-20261127T135235Z-1-001/Basted/1ab15692bcfa5593c8a6ee8c0564098e.mp4"
+  },
+  "attack": {
+   "S": "C:/Users/Admin/Downloads/Basted-20261127T135235Z-1-001/Basted/06205999ccd13344b2681fadb7a69f59.mp4",
+   "SE": "C:/Users/Admin/Downloads/Basted-20261127T135235Z-1-001/Basted/2d72792cbdecc06f7210a8d324889105.mp4",
+   "E": "C:/Users/Admin/Downloads/Basted-20261127T135235Z-1-001/Basted/d48a3402eb483424dd8b4c586b8804ba.mp4",
+   "NE": "C:/Users/Admin/Downloads/Basted-20261127T135235Z-1-001/Basted/d7228419f8cc05ee357c53cb21117a3c.mp4",
+   "N": "C:/Users/Admin/Downloads/Basted-20261127T135235Z-1-001/Basted/caa66da285cb602c47db7d6e5400e551.mp4"
+  },
+  "buff": {
+   "S": "C:/Users/Admin/Downloads/Basted-20261127T135235Z-1-001/Basted/409ecbe534e2d6090d312ef3c2d2ec00.mp4",
+   "SE": "C:/Users/Admin/Downloads/Basted-20261127T135235Z-1-001/Basted/bda43f079a766ade71c45bd68ff1c22d.mp4",
+   "E": "C:/Users/Admin/Downloads/Basted-20261127T135235Z-1-001/Basted/70882d26a2309ebb1e47905bbdc115eb.mp4",
+   "NE": "C:/Users/Admin/Downloads/Basted-20261127T135235Z-1-001/Basted/64f36b2623e69ab65fcccf585bf28d04.mp4",
+   "N": "C:/Users/Admin/Downloads/Basted-20261127T135235Z-1-001/Basted/51d2e6f8f3b47123ef921f82bf98a26b.mp4"
+  }
+ },
+ "loop": {
+  "idle/S": [7, 60],
+  "idle/SE": [57, 40],
+  "idle/E": [15, 57],
+  "idle/NE": [32, 61],
+  "idle/N": [74, 44],
+  "walk/S": [61, 26],
+  "walk/SE": [54, 29],
+  "walk/E": [19, 24],
+  "walk/NE": [42, 24],
+  "walk/N": [23, 25]
+ },
+ "attack": {
+  "S": {"frames": [14, 17, 19, 21, 23, 26, 38, 46, 62, 66, 70, 76], "contact": 6, "dur": [80, 50, 90, 50, 50, 50, 70, 200, 50, 50, 50, 110]},
+  "SE": {"frames": [12, 16, 19, 22, 26, 30, 36, 44, 56, 70, 74, 80], "contact": 4, "dur": [50, 50, 190, 70, 90, 50, 50, 50, 50, 50, 90, 110]},
+  "E": {"frames": [3, 8, 14, 18, 22, 26, 32, 40, 66, 72, 76, 80], "contact": 6, "dur": [80, 50, 50, 100, 50, 120, 60, 120, 50, 50, 50, 120]},
+  "NE": {"frames": [4, 8, 10, 12, 14, 16, 20, 30, 60, 72, 76, 82], "contact": 6, "dur": [80, 50, 50, 100, 50, 120, 60, 120, 50, 50, 50, 120]},
+  "N": {"frames": [2, 4, 5, 6, 7, 17, 19, 26, 50, 58, 61, 66], "contact": 6, "dur": [110, 120, 50, 50, 70, 50, 120, 70, 50, 50, 50, 110]}
+ },
+ "orbFix": {
+  "attack/S": {"6": [312, 322], "7": [312, 322]},
+  "attack/SE": {"3": [394, 342], "4": [405, 320], "5": [401, 319], "6": [402, 319]},
+  "attack/E": {"5": [378, 325], "6": [429, 336], "7": [431, 336], "8": [429, 336]},
+  "attack/NE": {"5": [401, 320], "6": [414, 305], "7": [423, 297], "8": [421, 297]},
+  "attack/N": {"5": [420, 299], "6": [418, 307], "7": [416, 303], "8": [417, 299]}
+ },
+ "buff": {
+  "S": {"frames": [0, 2, 4, 5, 11, 12, 14, 59, 58, 62, 66, 72], "peak": 7, "dur": [170, 50, 50, 230, 50, 110, 390, 50, 50, 50, 50, 150]},
+  "SE": {"frames": [4, 10, 14, 44, 62, 72], "peak": 3, "dur": [220, 220, 220, 220, 220, 220]},
+  "E": {"frames": [2, 6, 10, 14, 16, 18, 22, 30, 80, 82, 84, 88], "peak": 7, "dur": [70, 50, 50, 50, 50, 70, 170, 580, 50, 50, 50, 160]},
+  "NE": {"frames": [4, 8, 10, 12, 14, 16, 18, 24, 40, 64, 70, 76], "peak": 7, "dur": [80, 60, 50, 50, 50, 50, 120, 160, 480, 60, 60, 180]},
+  "N": {"frames": [2, 3, 4, 5, 6, 7, 28, 36, 50, 58, 61, 66], "peak": 7, "dur": [130, 50, 50, 50, 50, 110, 260, 450, 60, 50, 50, 90]}
+ }
+}

@@ -3,6 +3,7 @@
 
   python3 tools/fxlib/sheet.py OUT.png IDS [ground=grass|snow|night|sand] [el=fire] [cols=8] [cw=300] [ch=220]
                                            [phi=0] [size=1] [zoom=1] [pow=1.35] [max=5] [times=.05,.1,…] [rows=12]
+                                           [page=fxlib.html]   (page=hyena_fx.html = the hyena's own gallery, same hooks)
 
 IDS = comma list of ids and / or prefixes ending in '*'  (slash.*  ·  boom.blast,boom.nova  ·  all)
 One row per effect, `cols` frames from its start to its end (early frames closer together). More than `rows` effects
@@ -40,7 +41,7 @@ def main():
             errs = []
             pg.on('console', lambda m: errs.append(m.text) if m.type == 'error' else None)
             pg.on('pageerror', lambda e: errs.append(str(e)))
-            pg.goto('http://localhost:8765/fxlib.html?t=%d' % time.time()); pg.wait_for_function('window.GAL&&window.FXLIB')
+            pg.goto('http://localhost:8765/%s?t=%d' % (kv.get('page', 'fxlib.html'), time.time())); pg.wait_for_function('window.GAL&&window.FXLIB&&(!GAL.ready||GAL.ready())')
             allids = pg.evaluate('GAL.ids()')
             want = []
             for tok in ids.split(','):

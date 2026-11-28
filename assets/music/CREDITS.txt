@@ -1,0 +1,8 @@
+Totem Legend map music — composed by code (tools/music/compose.py) and rendered with:
+
+GeneralUser GS v2.0.3 SoundFont by S. Christian Collins — https://schristiancollins.com
+License: "You may use GeneralUser GS without restriction for your own music creation, private or
+commercial ... Please feel free to use it in your software projects." (documentation/LICENSE.txt
+of the GeneralUser GS package). The soundfont itself is not in this repo; only the rendered music is.
+
+Rendered with FluidSynth (LGPL-2.1, https://www.fluidsynth.org) — used as a tool, not shipped.
