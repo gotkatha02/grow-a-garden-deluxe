@@ -155,7 +155,7 @@ function onAction(a){if(!a||a.key==='hurt')return;const H=hero(),tc=Math.max(0,(
 /* ---- hits on monsters ---- */
 const HK={on:0,crit:0},hb={t:0,n:0},DOT={fire:1,poison:1,blood:1,dark:1};
 function onHit(e,d,o,wasKO){const H=hero(),x=e.x,y=e.y;
-  if(o._miss){play('sw_light',{v:.3,x,y,rate:1.15,gap:.12});return;}
+  if(o._miss){play('st_miss',{v:.75,x,y,gap:.1,max:3});return;}
   if(!(d>0))return;
   const k=o.skill||(o.owShot&&o.owShot.key)||window.SKCTX||null,I=k&&k!=='basic'&&typeof SKILLS!=='undefined'&&SKILLS[k]?info(k):null;
   if(o.dot){const el=I?I.el:(H.cast||'');if(DOT[el])play(hitName(el,H),{v:.18,x,y,gap:.4,rate:1.2});return;}
@@ -264,13 +264,16 @@ W('startAction',f=>function(a){const r=f.apply(this,arguments);try{onAction(a);}
 W('dmgNum',f=>function(x,y,z,val,kind){if(HK.on&&kind==='crit')HK.crit=1;return f.apply(this,arguments);});
 W('hurt',f=>function(e,mult,o,...rest){if(!o)o={};const ko=!!(e&&e.koOut);HK.on++;HK.crit=0;let d;try{d=f.call(this,e,mult,o,...rest);}finally{HK.on--;}try{if(e)onHit(e,d,o,ko);}catch(x){}return d;});
 W('kill',f=>function(e){const r=f.apply(this,arguments);try{if(e){const big=e.boss&&!e.mini;play(big?'boss_die':'mon_die',{v:e.mini?1.1:.85,rate:e.mini?.85:1,x:e.x,y:e.y,gap:big?1:.07,max:4});mv(e,'hu',big?1:.6,{rate:mvRate(e)*.82,max:3});}}catch(x){}return r;});
-W('hitPlayer',f=>function(e,o){o=o||{};const h0=player.hp,a=player.action;const r=f.apply(this,arguments);try{const d=h0-player.hp;
+W('hitPlayer',f=>function(e,o){o=o||{};const h0=player.hp,a=player.action;let s0=0;try{s0=shieldSum();}catch(x){}const r=f.apply(this,arguments);try{const d=h0-player.hp,s1=shieldSum(),abs=s1<s0-.01;
   if(d>0)play(o.magic?'hurt_magic':'hurt',{v:.7+Math.min(.5,d/Math.max(1,player.maxHp)*3),gap:.07});
-  else if(a&&a.blocked)play('block',{v:.9,gap:.1});else play('sw_light',{v:.35,rate:.9,gap:.12});}catch(x){}return r;});
+  else if(a&&a.blocked)play('block',{v:.9,gap:.1});else if(abs)play('block',{v:.45,rate:1.25,gap:.12});else play('st_dodge',{v:.8,gap:.25});
+  if(d>0||abs)STS.hurtT=clock();}catch(x){}return r;});
 W('levelUpFx',f=>function(){const r=f.apply(this,arguments);play('levelup',{v:1,gap:1});return r;});
 W('enterMap',f=>function(id){const prev=curMapId();const r=f.apply(this,arguments);try{onMap(curMapId(),prev);}catch(x){}return r;});
 W('updatePlayer',f=>function(dt){const r=f.apply(this,arguments);try{stepTick(dt);}catch(x){}return r;});
 W('addFx',f=>function(o){try{if(o&&o.text&&typeof o.text==='string'){const t=o.text;
+    if(t==='ขัดจังหวะ!')play('st_interrupt',{v:.85,x:o.x,y:o.y,gap:.2});
+    else if(/^-\d+ SP$/.test(t)&&o.color==='#c8d8ff')play('st_curse',{v:.7,gap:.6});
     if(t==='FULL'||(o.z===76&&/^\+\d+( SP)?$/.test(t)&&(o.color==='#7fe08a'||o.color==='#7fb8ff')))play('potion',{v:.8,gap:.4});}}catch(x){}return f.apply(this,arguments);});
 W('chatLog',f=>function(type,t){try{chatSfx(String(t||''),type);}catch(x){}return f.apply(this,arguments);});
 W('msg',f=>function(t){try{if(/ไม่พอ|ไม่ได้|ไม่มี|ยังไม่|เต็ม|ต้องเลเวล|ติดสถานะ/.test(String(t)))play('ui_error',{v:.8,gap:.5});}catch(x){}return f.apply(this,arguments);});
@@ -322,5 +325,25 @@ function ui(){const p=document.getElementById('panel');if(!p||document.getElemen
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ui);else ui();
 try{const id=curMapId();if(id){const A=ambOf(id);amb.set(A&&A[0],A&&A[1]);mus.set(musOf(id));}}catch(e){}
 
-window.SFX={famOf,mvRate,play,amb,mus,musOf,info,hero,stepName,ambOf,ST,vol,get log(){return LOG;},get ctx(){return ac;},unlock,L};
+/* ================= combat statuses (2026-11-28, owner '2') ================= */
+/* monsters: index.html statusProxy calls window.ST_HOOK(e,key,now,before) when a status goes up → sound on the rising edge
+   from nothing. us: player.buffs db* keys + player.ccT, shields of every hero + the gem guard, low HP heartbeat. */
+const STS={hurtT:-9,pb:{},cc:0,sh:0,hb:0};
+const ESND={frozen:['st_freeze',.85],stun:['st_stun',.8],bleed:['st_bleed',.75],poison:['st_poison',.75],burn:['st_burn',.8],
+  slow:['st_slow',.5],root:['st_root',.75],armor:['st_armor',.75],defdown:['st_armor',.6]};
+{const prev=window.ST_HOOK;window.ST_HOOK=function(e,k,now,before){if(prev)try{prev.apply(this,arguments);}catch(x){}
+  try{const S=ESND[k];if(!S||!e||e.dead||before>.05||!(now>.05))return;if(typeof player!=='undefined'&&Math.hypot(e.x-player.x,e.y-player.y)>760)return;
+    play(S[0],{v:S[1]*(e.boss?1.1:1),x:e.x,y:e.y,gap:k==='slow'?.6:.18,max:3});}catch(x){}};}
+const PSND={dbPoison:'st_poison',dbBurn:'st_burn',dbBleed:'st_bleed',dbSlow:'st_slow',dbArmor:'st_armor',dbWeak:'st_curse'};
+function shieldSum(){let s=0;const g=n=>{try{const o=(0,eval)('typeof '+n+'!=="undefined"?'+n+':null');return o;}catch(e){return null;}};
+  for(const [n,k] of [['AX','shield'],['BA','shield'],['HIP','shield'],['RH','shield'],['ZD','shield'],['ENH','shield']]){const o=g(n);if(o&&+o[k]>0)s+=+o[k];}
+  try{const G=window.totemGems&&totemGems.fxs&&totemGems.fxs().GU;if(G&&G.sh>0&&(!G.shT||G.shT>gameTime-.001))s+=G.sh;}catch(e){}return s;}
+setInterval(()=>{if(typeof player==='undefined'||!unlocked)return;const p=player,t=clock();
+  for(const k in PSND){const on=!!(p.buffs&&p.buffs[k]&&p.buffs[k].t>0);if(on&&!STS.pb[k])play(PSND[k],{v:.85,gap:.5});STS.pb[k]=on;}
+  const cc=(p.ccT||0)>0;if(cc&&!STS.cc&&p.ccK==='stun')play('st_stun',{v:.9,gap:1});STS.cc=cc;
+  const sh=shieldSum();if(STS.sh>0&&sh<=0&&t-STS.hurtT<.35&&t>=STS.hurtT)play('st_shield',{v:1,gap:.6});STS.sh=sh;
+  const low=p.hp>0&&p.maxHp>0&&p.hp/p.maxHp<.25&&t-STS.hurtT<8&&t>=STS.hurtT;
+  if(low&&t-STS.hb>(p.hp/p.maxHp<.12?.7:.95)){STS.hb=t;play('st_heart',{v:.9,gap:.5,pv:0});}},100);
+
+window.SFX={STS,shieldSum,famOf,mvRate,play,amb,mus,musOf,info,hero,stepName,ambOf,ST,vol,get log(){return LOG;},get ctx(){return ac;},unlock,L};
 })();
