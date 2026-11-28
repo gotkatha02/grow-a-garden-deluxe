@@ -344,6 +344,30 @@ S['t12_hero'] = V('capital', 128, tempo=132, feel='boss', key=(60, 'major'), pro
                   mel=dict(inst=56, vel=94, lo=67, hi=86), mel2=dict(inst=48, vel=76, oct=0, harm=-2), glock=dict(inst=9, vel=50),
                   perc=DRUM_MARCH, tymp=dict(inst=47, vel=80), crash=1)
 
+# 12 Tails-style BATTLE set (owner 2026-11-28 'เพลงตื่นเต้นปลุกใจ แบบตอน pvp และสู้บอสใน12หาง'): fast JRPG / MMO battle
+# themes — driving 16th string ostinato, brass stabs + heroic lead, full kit + taiko, timpani, crashes; minor keys
+# that lift to major in the B section (the 'we can win' turn). Used for map / mini / world bosses and PvP later.
+DRUM_ROCK = dict(A=[(0, 36, 104), (2, 42, 52), (4, 38, 96), (6, 42, 50), (7, 36, 70), (8, 36, 98), (10, 42, 52), (12, 38, 98), (14, 42, 54), (15, 38, 50)],
+                 B=[(0, 36, 110), (1, 42, 40), (2, 42, 56), (3, 36, 66), (4, 38, 100), (6, 42, 54), (7, 36, 76), (8, 36, 104), (10, 36, 80),
+                    (11, 42, 40), (12, 38, 104), (13, 38, 64), (14, 38, 80), (15, 38, 92)])
+OST16 = dict(pat=[(i, [0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 4, 0, 3, 0, 2, 1][i], 1) for i in range(16)])
+def _bt(seed, tempo, key, lead, lead2, comp, **o):
+    d = dict(tempo=tempo, key=key, rt=1.8, perc=DRUM_ROCK, mel=dict(inst=lead, vel=100, lo=key[0] - 2, hi=key[0] + 17),
+             mel2=dict(inst=lead2, vel=86, oct=0, harm=-2), comp=dict(inst=comp, vel=90), ost=dict(inst=48, vel=78, **OST16),
+             glock=dict(inst=9, vel=50), crash=1)
+    d.update(o); return V('boss', seed, **d)
+S['t12_battle'] = _bt(131, 152, (62, 'minor'), 56, 48, 61, prog=[0, 5, 6, 4, 0, 5, 3, 4], bprog=[2, 5, 6, 4])            # trumpet lead, D minor
+S['t12_clash'] = _bt(132, 160, (57, 'hmin'), 40, 60, 61, prog=[0, 0, 5, 4, 0, 3, 5, 4], bprog=[5, 3, 6, 4],              # violin lead, fast
+                     arp=dict(inst=45, vel=62, pat='run'))
+S['t12_pvp'] = _bt(133, 164, (64, 'dorian'), 30, 56, 29, prog=[0, 6, 5, 6, 0, 6, 3, 4], bprog=[3, 4, 5, 6],                # rock-orchestra duel
+                   pad=dict(inst=48, vel=64), taiko=dict(inst=116, vel=90))
+S['t12_pvp2'] = _bt(134, 150, (55, 'minor'), 61, 73, 48, prog=[0, 3, 4, 0, 5, 3, 6, 4], bprog=[5, 6, 3, 4],               # brass section + piccolo
+                    taiko=dict(inst=116, vel=100, pat=[(0, 110), (4, 80), (8, 104), (11, 76), (14, 90)]))
+S['t12_rally'] = _bt(135, 144, (60, 'major'), 56, 60, 61, prog=[0, 4, 5, 3, 0, 4, 1, 4], bprog=[5, 3, 1, 4],              # heroic charge, C major
+                     pad=dict(inst=52, vel=60), arp=dict(inst=46, vel=60, pat='run'))
+S['t12_final'] = _bt(136, 148, (59, 'hmin'), 52, 56, 19, prog=[0, 5, 3, 4, 0, 5, 6, 4], bprog=[3, 6, 5, 4],              # choir + organ, last boss
+                     pad=dict(inst=19, vel=58), tymp=dict(inst=47, vel=92))
+
 # arpeggio patterns: (16th, chord index, octave, length)
 ARP = {
  'up8':  [(0, 0, 0, 4), (2, 1, 0, 4), (4, 2, 0, 4), (6, 0, 1, 4), (8, 1, 1, 4), (10, 2, 1, 4), (12, 0, 1, 2), (14, 2, 0, 2)],

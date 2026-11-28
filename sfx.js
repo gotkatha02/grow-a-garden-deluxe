@@ -70,7 +70,10 @@ function mload(n){if(n in mbuf)return Promise.resolve(mbuf[n]);if(mpend[n])retur
   return mpend[n]=fetch(MDIR+n+'.mp3?v='+MV).then(r=>{if(!r.ok)throw 0;return r.arrayBuffer();}).then(decode).then(b=>mbuf[n]=b).catch(()=>mbuf[n]=null);}
 /* a map gives one track or a POOL (array): the current track stays while it is in the new pool, else a random one of it */
 function mres(x){const a=(Array.isArray(x)?x:[x]).filter(n=>n&&ML[n]);if(!a.length)return null;if(a.includes(mus.want))return mus.want;return a[Math.random()*a.length|0];}
-const BOSSPOOL=['boss','boss2','t12_hero'];
+const BPOOL={boss:['boss','boss2','t12_hero','t12_battle','t12_rally','t12_final'],mini:['t12_battle','t12_clash','t12_rally'],
+  wb:['arena','t12_final','t12_pvp2','t12_hero'],pvp:['t12_pvp','t12_pvp2','t12_clash']};
+const BOSSPOOL=BPOOL.boss;
+function bpick(k){const a=(BPOOL[k]||BPOOL.boss).filter(x=>ML[x]);return a[Math.random()*a.length|0]||'boss';}
 const mus={want:null,cur:null,nodes:[],tm:0,boss:0,bossN:'boss',
   set(n){n=mres(n);this.want=n;if(LOG)LOG.push({t:+clock().toFixed(3),n:'mus:'+(n||'-')});this.kick();},
   pick(){return this.boss?this.bossN:this.want;},
@@ -84,9 +87,12 @@ const mus={want:null,cur:null,nodes:[],tm:0,boss:0,bossN:'boss',
     s.start(t0,0,len);const node={s,g};this.nodes.push(node);s.onended=()=>{this.nodes=this.nodes.filter(x=>x!==node);try{g.disconnect();}catch(e){}};
     const nx=t0+LP;this.tm=setTimeout(()=>this.copy(n,b,nx,0),Math.max(0,(nx-ac.currentTime-1.5)*1000));}};
 /* a fight with a big boss near the hero → boss music, back to the map's track 8 s after it ends */
-let bossT=0;setInterval(()=>{let on=0;try{const S=window.WBOSS&&WBOSS.S;if(S&&S.state==='fight'&&!S.gone)on=1;
-    if(!on&&typeof enemies!=='undefined'&&typeof player!=='undefined')for(const e of enemies){if(e.boss&&!e.mini&&!e.dead&&!e.hidden&&Math.hypot(e.x-player.x,e.y-player.y)<900&&((e.aggro||0)>0||e.hp<e.maxHp)){on=1;break;}}}catch(e){}
-  const t=performance.now()/1000;if(on)bossT=t;const b=on||(bossT&&t-bossT<8)?1:0;if(b!==mus.boss){if(b){mus.bossN=(window.WBOSS&&WBOSS.S&&WBOSS.S.state==='fight'&&ML.arena)?'arena':(BOSSPOOL.filter(x=>ML[x])[Math.random()*BOSSPOOL.filter(x=>ML[x]).length|0]||'boss');if(unlocked)bossRoar();}mus.boss=b;mus.kick();}},500);
+let bossT=0,bossK='boss';setInterval(()=>{let on=0,k='boss';try{const S=window.WBOSS&&WBOSS.S;if(S&&S.state==='fight'&&!S.gone){on=1;k='wb';}
+    if(!on&&window.PVP_FIGHT){on=1;k='pvp';}
+    if(!on&&typeof enemies!=='undefined'&&typeof player!=='undefined')for(const e of enemies){if(e.boss&&!e.dead&&!e.hidden&&Math.hypot(e.x-player.x,e.y-player.y)<900&&((e.aggro||0)>0||e.hp<e.maxHp)){if(!e.mini){on=1;k='boss';break;}if(!on){on=1;k='mini';}}}}catch(e){}
+  const t=performance.now()/1000;if(on)bossT=t;const b=on||(bossT&&t-bossT<8)?1:0;
+  if(b&&on&&k!==bossK&&(k==='boss'||k==='wb')&&mus.boss){bossK=k;mus.bossN=bpick(k);mus.kick();}
+  if(b!==mus.boss){if(b){bossK=k;mus.bossN=bpick(k);if(unlocked&&k!=='mini'&&k!=='pvp')bossRoar();}mus.boss=b;mus.kick();}},500);
 
 /* ================= part 2: the game ================= */
 const HERO={   /* weapon swing + impact for normal attacks and physical skills; cast = element of a magic basic; el = default element per branch */
@@ -357,5 +363,5 @@ setInterval(()=>{if(typeof player==='undefined'||!unlocked)return;const p=player
   const low=p.hp>0&&p.maxHp>0&&p.hp/p.maxHp<.25&&t-STS.hurtT<8&&t>=STS.hurtT;
   if(low&&t-STS.hb>(p.hp/p.maxHp<.12?.7:.95)){STS.hb=t;play('st_heart',{v:.9,gap:.5,pv:0});}},100);
 
-window.SFX={mres,STS,shieldSum,famOf,mvRate,play,amb,mus,musOf,info,hero,stepName,ambOf,ST,vol,get log(){return LOG;},get ctx(){return ac;},unlock,L};
+window.SFX={mres,bpick,BPOOL,STS,shieldSum,famOf,mvRate,play,amb,mus,musOf,info,hero,stepName,ambOf,ST,vol,get log(){return LOG;},get ctx(){return ac;},unlock,L};
 })();
