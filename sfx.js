@@ -70,7 +70,8 @@ function mload(n){if(n in mbuf)return Promise.resolve(mbuf[n]);if(mpend[n])retur
   return mpend[n]=fetch(MDIR+n+'.mp3?v='+MV).then(r=>{if(!r.ok)throw 0;return r.arrayBuffer();}).then(decode).then(b=>mbuf[n]=b).catch(()=>mbuf[n]=null);}
 /* a map gives one track or a POOL (array): the current track stays while it is in the new pool, else a random one of it */
 function mres(x){const a=(Array.isArray(x)?x:[x]).filter(n=>n&&ML[n]);if(!a.length)return null;if(a.includes(mus.want))return mus.want;return a[Math.random()*a.length|0];}
-const BPOOL={boss:['boss','boss2','t12_hero','t12_battle','t12_rally','t12_final'],mini:['t12_battle','t12_clash','t12_rally'],
+const BPOOL={boss:['boss','boss2','t12_hero','t12_battle','t12_rally','t12_final'],mini:['t12_battle','t12_clash','t12_rally','war_gather'],
+  prep:['war_eve','war_drums','war_march','war_gather','war_banner'],
   wb:['arena','t12_final','t12_pvp2','t12_hero'],pvp:['t12_pvp','t12_pvp2','t12_clash']};
 const BOSSPOOL=BPOOL.boss;
 function bpick(k){const a=(BPOOL[k]||BPOOL.boss).filter(x=>ML[x]);return a[Math.random()*a.length|0]||'boss';}
@@ -89,10 +90,12 @@ const mus={want:null,cur:null,nodes:[],tm:0,boss:0,bossN:'boss',
 /* a fight with a big boss near the hero → boss music, back to the map's track 8 s after it ends */
 let bossT=0,bossK='boss';setInterval(()=>{let on=0,k='boss';try{const S=window.WBOSS&&WBOSS.S;if(S&&S.state==='fight'&&!S.gone){on=1;k='wb';}
     if(!on&&window.PVP_FIGHT){on=1;k='pvp';}
-    if(!on&&typeof enemies!=='undefined'&&typeof player!=='undefined')for(const e of enemies){if(e.boss&&!e.dead&&!e.hidden&&Math.hypot(e.x-player.x,e.y-player.y)<900&&((e.aggro||0)>0||e.hp<e.maxHp)){if(!e.mini){on=1;k='boss';break;}if(!on){on=1;k='mini';}}}}catch(e){}
+    let near=0;if(!on&&typeof enemies!=='undefined'&&typeof player!=='undefined')for(const e of enemies){if(!e.boss||e.dead||e.hidden)continue;const d=Math.hypot(e.x-player.x,e.y-player.y);
+      if(d<900&&((e.aggro||0)>0||e.hp<e.maxHp)){if(!e.mini){on=1;k='boss';break;}if(!on){on=1;k='mini';}}else if(!e.mini&&d<1300)near=1;}
+    if(!on&&near){on=1;k='prep';}}catch(e){}
   const t=performance.now()/1000;if(on)bossT=t;const b=on||(bossT&&t-bossT<8)?1:0;
-  if(b&&on&&k!==bossK&&(k==='boss'||k==='wb')&&mus.boss){bossK=k;mus.bossN=bpick(k);mus.kick();}
-  if(b!==mus.boss){if(b){bossK=k;mus.bossN=bpick(k);if(unlocked&&k!=='mini'&&k!=='pvp')bossRoar();}mus.boss=b;mus.kick();}},500);
+  if(b&&on&&k!==bossK&&(k==='boss'||k==='wb'||bossK==='prep')&&mus.boss){const wasP=bossK==='prep';bossK=k;mus.bossN=bpick(k);if(wasP&&unlocked&&(k==='boss'||k==='wb'))bossRoar();mus.kick();}
+  if(b!==mus.boss){if(b){bossK=k;mus.bossN=bpick(k);if(unlocked&&(k==='boss'||k==='wb'))bossRoar();}mus.boss=b;mus.kick();}},500);
 
 /* ================= part 2: the game ================= */
 const HERO={   /* weapon swing + impact for normal attacks and physical skills; cast = element of a magic basic; el = default element per branch */
@@ -223,17 +226,17 @@ function musOf(id){if(!id)return null;if(isRoom(id))return mus.want;const c=(win
   const reg=/^(vik|snow|frost|iso)/.test(id)?'vik':/^(grk|egy|jpn|azt|sea)/.test(id)?id.slice(0,3):null;
   const town=id==='capT'||id==='frostheim'||id==='isoTown'||/^[a-z]{3}T\d?$/.test(id)||m==='town';
   const NT=['night','t12_night'];
-  if(/^wb/.test(id))return 'mystic';
+  if(/^wb/.test(id))return ['war_eve','war_drums','war_march','war_gather','war_banner'];
   if(/^rift/.test(id))return ['rift','mystic'];
   if(/^c(N|E|S|W|NE|NW|SE|SW)$/.test(id))return night?NT:['ring','t12_field','t12_adv','t12_forest'];
   if(town){if(id==='capT')return night?NT:['capital','t12_town','t12_waltz','t12_cozy'];if(reg==='sea')return 'sea';return reg?(night?NT:[reg+'_town','t12_cozy']):'capital';}
   if(/^cata/.test(id))return ['crypt','dungeon'];
   if(reg&&reg!=='sea'&&/^[a-z]{3}D/.test(id))return [reg+'_dun'];
   if(c.walls||/mine|cave|necro|hades|dark|oni/.test(m))return reg&&reg!=='sea'?[reg+'_dun','dungeon']:'dungeon';
-  if(reg&&reg!=='sea'&&/^[a-z]{3}[HE]\d/.test(id))return [reg+'_deep'];
+  if(reg&&reg!=='sea'&&/^[a-z]{3}[HE]\d/.test(id))return [reg+'_deep','war_drums','war_eve'];
   if(/rift|spirit|olympus|dream|dragon/.test(m))return 'mystic';
   if(reg==='sea'||m==='beach')return 'sea';
-  if(reg){const f=+((id.match(/F(\d)/)||[])[1]||1);return f<=2?[reg,'t12_field']:f<=4?[reg+'2','t12_forest']:[reg+'3','t12_adv'];}
+  if(reg){const f=+((id.match(/F(\d)/)||[])[1]||1);return f<=2?[reg,'t12_field']:f<=4?[reg+'2','t12_forest']:[reg+'3','t12_adv','war_march'];}
   return night?NT:['capital','t12_field'];}
 let mapSeen0=null;
 function onMap(id,prev){FT.n=null;FT.px=null;try{if(unlocked)mvPreload(id);}catch(x){}const A=ambOf(id);amb.set(A&&A[0],A&&A[1]);mus.set(musOf(id));

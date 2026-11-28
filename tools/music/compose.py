@@ -368,6 +368,27 @@ S['t12_rally'] = _bt(135, 144, (60, 'major'), 56, 60, 61, prog=[0, 4, 5, 3, 0, 4
 S['t12_final'] = _bt(136, 148, (59, 'hmin'), 52, 56, 19, prog=[0, 5, 3, 4, 0, 5, 6, 4], bprog=[3, 6, 5, 4],              # choir + organ, last boss
                      pad=dict(inst=19, vel=58), tymp=dict(inst=47, vel=92))
 
+# WAR set (owner 2026-11-28 'ขอเพลงแบบสงครามๆเตรียมต่อสู้หน่อย'): marching war themes for before / around a big fight —
+# slower than the battle set (96–118), heavy war drums + snare march, low brass + horns, choir pad, timpani swells.
+DRUM_WAR = dict(A=[(0, 36, 100), (4, 38, 70), (6, 38, 46), (8, 36, 92), (12, 38, 80), (14, 38, 52), (15, 38, 60)],
+                B=[(0, 36, 108), (2, 38, 50), (3, 38, 56), (4, 38, 86), (6, 38, 60), (8, 36, 100), (10, 36, 74), (12, 38, 92), (13, 38, 64), (14, 38, 76), (15, 38, 88)])
+def _war(seed, tempo, key, lead, lead2, **o):
+    d = dict(tempo=tempo, key=key, rt=2.6, perc=DRUM_WAR, pad=dict(inst=52, vel=66, oct=0),
+             mel=dict(inst=lead, vel=98, lo=key[0] - 5, hi=key[0] + 14, vib=1), mel2=dict(inst=lead2, vel=84, oct=0, harm=-2),
+             comp=dict(inst=57, vel=88, pat=[(0, 4), (8, 2), (12, 4)]), ost=dict(inst=48, vel=70, oct=-1, short=1),
+             taiko=dict(inst=116, vel=104, pat=[(0, 116), (6, 76), (8, 106), (12, 90), (14, 80)]), tymp=dict(inst=47, vel=92),
+             glock=None, arp=None, crash=1)
+    d.update(o); return V('boss', seed, **d)
+S['war_march'] = _war(141, 104, (62, 'minor'), 60, 56, prog=[0, 5, 3, 4, 0, 5, 6, 4], bprog=[5, 6, 3, 4])           # horns + snare march, D minor
+S['war_drums'] = _war(142, 96, (57, 'phryg'), 52, 60, prog=[0, 0, 1, 0, 0, 5, 1, 0], bprog=[5, 1, 6, 0],            # choir + war drums, A phrygian
+                      pad=dict(inst=48, vel=62), comp=dict(inst=58, vel=90))
+S['war_gather'] = _war(143, 112, (64, 'hmin'), 61, 48, prog=[0, 5, 6, 4, 0, 5, 3, 4], bprog=[3, 4, 5, 4],           # brass section rising, armies gather
+                       ost=dict(inst=48, vel=76, **OST16))
+S['war_eve'] = _war(144, 84, (55, 'minor'), 57, 52, rt=3.2, prog=[0, 6, 5, 4, 0, 6, 3, 4], bprog=[5, 3, 6, 4],      # eve of battle: low brass, choir, slow
+                    taiko=dict(inst=116, vel=100, pat=[(0, 112), (8, 96), (12, 72)]), perc=DRUM_TRIBE)
+S['war_banner'] = _war(145, 118, (60, 'mixo'), 56, 60, prog=[0, 6, 3, 0, 0, 6, 4, 0], bprog=[3, 6, 5, 4],          # banners up: proud, trumpet
+                       pad=dict(inst=52, vel=60))
+
 # arpeggio patterns: (16th, chord index, octave, length)
 ARP = {
  'up8':  [(0, 0, 0, 4), (2, 1, 0, 4), (4, 2, 0, 4), (6, 0, 1, 4), (8, 1, 1, 4), (10, 2, 1, 4), (12, 0, 1, 2), (14, 2, 0, 2)],
