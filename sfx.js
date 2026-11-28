@@ -83,7 +83,7 @@ const mus={want:null,cur:null,nodes:[],tm:0,boss:0,
 /* a fight with a big boss near the hero → boss music, back to the map's track 8 s after it ends */
 let bossT=0;setInterval(()=>{let on=0;try{const S=window.WBOSS&&WBOSS.S;if(S&&S.state==='fight'&&!S.gone)on=1;
     if(!on&&typeof enemies!=='undefined'&&typeof player!=='undefined')for(const e of enemies){if(e.boss&&!e.mini&&!e.dead&&!e.hidden&&Math.hypot(e.x-player.x,e.y-player.y)<900&&((e.aggro||0)>0||e.hp<e.maxHp)){on=1;break;}}}catch(e){}
-  const t=performance.now()/1000;if(on)bossT=t;const b=on||(bossT&&t-bossT<8)?1:0;if(b!==mus.boss){mus.boss=b;mus.kick();}},500);
+  const t=performance.now()/1000;if(on)bossT=t;const b=on||(bossT&&t-bossT<8)?1:0;if(b!==mus.boss){if(b&&unlocked)bossRoar();mus.boss=b;mus.kick();}},500);
 
 /* ================= part 2: the game ================= */
 const HERO={   /* weapon swing + impact for normal attacks and physical skills; cast = element of a magic basic; el = default element per branch */
@@ -165,7 +165,8 @@ function onHit(e,d,o,wasKO){const H=hero(),x=e.x,y=e.y;
   if(I&&I.t==='melee'&&ELS[el]&&!H.cast)play(H.hit,{v:.4,x,y,gap:.05});
   if(HK.crit)play('hit_crit',{v:.4,x,y,gap:.2});
   const a=player.action;if(I&&a&&a.skill===k&&!a._sfx1){a._sfx1=1;if(I.slam)play('slam',{v:.85,x,y,gap:.2});if(I.ult)play('ult_boom',{v:.8,x,y,gap:.6});}
-  if(!wasKO&&e.koOut)play('ko',{v:.65,x,y,gap:.3});}
+  if(!wasKO&&e.koOut)play('ko',{v:.65,x,y,gap:.3});
+  if(!e.dead&&e.hp>0){const tt=clock();if(!(e._mvH&&tt-e._mvH<.4&&tt>=e._mvH)){e._mvH=tt;mv(e,'hu',e.boss?.75:.45);}}}
 
 /* ---- footsteps, sitting (ticker on the game clock) ---- */
 function curMapId(){try{return curMap;}catch(e){return null;}}
@@ -218,15 +219,51 @@ function musOf(id){if(!id)return null;if(isRoom(id))return mus.want;const c=(win
   if(reg)return reg;
   return night?'night':'capital';}
 let mapSeen0=null;
-function onMap(id,prev){FT.n=null;FT.px=null;const A=ambOf(id);amb.set(A&&A[0],A&&A[1]);mus.set(musOf(id));
+function onMap(id,prev){FT.n=null;FT.px=null;try{if(unlocked)mvPreload(id);}catch(x){}const A=ambOf(id);amb.set(A&&A[0],A&&A[1]);mus.set(musOf(id));
   if(prev==null)return;if(isRoom(id)||isRoom(prev))play('door',{v:.8,gap:.5});else play('warp',{v:.55,gap:1});}
 
+
+/* ---- monster voices (2026-11-28): family from the name → mv_<fam>_ag (notices the hero) / _at (attacks) / _hu (is hit, lower on death);
+   bigger monsters play slower / deeper. Big bosses: boss_roar when the fight starts, boss_step while they walk. ---- */
+const MF=[['ghost',/ghost|spirit|wraith|yurei|siren|djinn|lost one|phantom|spect|banshee|\bsoul|styx|\bmist\b|haunt/],
+  ['wisp',/wisp|sprite|petal|fairy|firefly|\bglow|aether/],
+  ['undead',/skeleton|draugr|undying|mumm|rusted|cracked soldier|\bbone|zombie|undead|lich|shadow soldier|ghoul|corpse|revenant|ghost slave/],
+  ['golem',/golem|statue|\bstone(?! mask)|automaton|sentinel|\btrap\b|living trap|\bdoll|bronze bull|construct|marble|scarecrow|kunai|forge|ore\b|colossus|gashadokuro/],
+  ['human',/warrior|soldier|guard(?!ian)|priest|ninja|samurai|ronin|witch|amazon|pirate|villager|satyr|swordsman|shogun|spartan|trainee|dwarf|viking|witchling|hecate|vizier|jonin|bandit|slave|huldra/],
+  ['bat',/\bbats?\b|camazotz/],['bird',/hawk|crow|vulture|harpy|eagle|quetzal|ibis|gull|bird|griffin|tengu|\bowl\b|raven|phoenix|crane|thunderbird/],
+  ['insect',/spider|scorpion|beetle|scarab|\bbees?\b|wasp|\bworm|crab|locust|\bants?\b|mantis|centipede|starfish|jorogumo/],
+  ['reptile',/serpent|snake|cobra|crocodile|\bcroc|wyrm|lizard|salamander|naga|viper|medusa|nidhogg|ahuizotl/],
+  ['slime',/slime|frog|toad|octopus|kappa|jelly|blob|ooze|squid|axolotl|frostling/],
+  ['critter',/\brat\b|hare|monkey|panda|squirrel|rabbit|mouse|pup\b|cub\b/],
+  ['big',/bear|yeti|bull|boar|\bram\b|horse|goat|stag|giant|cyclops|\boni\b|minotaur|hippo|jaguar|\blion|tiger|centaur|sphinx|set beast|gorilla|mammoth|rhino|polyphemus|jotun|ymir|troll/],
+  ['beast',/wolf|hound|jackal|\bfox|dog|fenrir|cerberus|hyena|\bcat\b|lynx|panther|seal|kitsune|tanuki/]];
+const FAMC={};
+function famOf(e){const m=e.m||{},n=String(m.name||(e.vdef&&e.vdef.name)||e.name||e.kind||'').toLowerCase();if(n in FAMC)return FAMC[n];
+  let f=null;for(const [k,re] of MF)if(re.test(n)){f=k;break;}if(!f)f=e.kind==='snowwolf'?'beast':'human';return FAMC[n]=f;}
+function mvRate(e){const sc=e.sc||1;let k=Math.max(.72,Math.min(1.3,1/Math.sqrt(sc)));if(e.mini)k*=.85;if(e.boss&&!e.mini)k*=.75;return k;}
+const MVG={ag:0,at:0,hu:0};
+function mv(e,ev,v,o){if(!e||(e.hidden))return;const x=e.x,y=e.y;if(typeof player!=='undefined'&&Math.hypot(x-player.x,y-player.y)>(e.boss?1100:760))return;
+  const t=clock(),gap={ag:.35,at:.09,hu:.07}[ev]||.1;if(t-MVG[ev]>=0&&t-MVG[ev]<gap)return;MVG[ev]=t;
+  play('mv_'+famOf(e)+'_'+ev,Object.assign({v,x,y,rate:mvRate(e),pv:.07,gap:0,max:ev==='ag'?2:4},o||{}));}
+function mvAI(e,a0,g0){if(e.dead||e.hp<=0)return;const t=clock();
+  if(a0<=0&&e.atk>0)mv(e,'at',e.boss?.95:.6);
+  if(g0<=0&&e.aggro>0&&!(e._mvN&&t-e._mvN<9&&t>=e._mvN)){e._mvN=t;if(!(e.boss&&!e.mini))mv(e,'ag',e.mini?.95:.55);}}
+W('enemyAI',f=>function(e){const a0=(e&&e.atk)||0,g0=(e&&e.aggro)||0;const r=f.apply(this,arguments);try{if(e)mvAI(e,a0,g0);}catch(x){}return r;});
+/* boss footfalls (map / mini bosses walk outside enemyAI too) */
+setInterval(()=>{if(typeof enemies==='undefined'||typeof player==='undefined'||!unlocked)return;
+  for(const e of enemies){if(!e.boss||e.dead||e.hidden||Math.hypot(e.x-player.x,e.y-player.y)>1000){if(e)e._mvSx=null;continue;}
+    if(e._mvSx==null){e._mvSx=e.x;e._mvSy=e.y;e._mvSa=0;continue;}const d=Math.hypot(e.x-e._mvSx,e.y-e._mvSy);e._mvSx=e.x;e._mvSy=e.y;
+    if(d>80)continue;e._mvSa+=d;const stride=e.mini?95:70;if(e._mvSa>=stride){e._mvSa=0;play('boss_step',{v:e.mini?.45:.8,x:e.x,y:e.y,rate:e.mini?1.15:mvRate(e)/.75*.95,gap:.12,max:3});}}},120);
+function bossRoar(){try{let b=null,bd=1e9;for(const e of enemies){if(e.boss&&!e.mini&&!e.dead){const d=Math.hypot(e.x-player.x,e.y-player.y);if(d<bd){bd=d;b=e;}}}
+  play('boss_roar',{v:1,x:b&&b.x,y:b&&b.y,gap:6,max:1});}catch(e){play('boss_roar',{v:1,gap:6});}}
+function mvPreload(id){try{const L2=(window.VK_MONS||{})[id];if(!L2)return;const seen={};for(const d of [].concat(...Object.values(L2).map(v=>Array.isArray(v)?[v]:[v]).flat()))
+  {const n=d&&d.name;if(!n)continue;const f=famOf({m:{name:n},kind:d.base==='snowwolf'?'snowwolf':null});if(seen[f])continue;seen[f]=1;for(const ev of ['ag','at','hu'])loadAll('mv_'+f+'_'+ev);}}catch(e){}}
 /* ---- wrap the game's functions (this file loads last, so these wrappers are the outermost) ---- */
 function W(name,mk){try{const g=(0,eval)(name);if(typeof g!=='function')return false;window.__sfxW=mk(g);(0,eval)(name+'=window.__sfxW;');delete window.__sfxW;return true;}catch(e){if(!(e instanceof ReferenceError))console.warn('sfx wrap',name,e);return false;}}
 W('startAction',f=>function(a){const r=f.apply(this,arguments);try{onAction(a);}catch(e){}return r;});
 W('dmgNum',f=>function(x,y,z,val,kind){if(HK.on&&kind==='crit')HK.crit=1;return f.apply(this,arguments);});
 W('hurt',f=>function(e,mult,o,...rest){if(!o)o={};const ko=!!(e&&e.koOut);HK.on++;HK.crit=0;let d;try{d=f.call(this,e,mult,o,...rest);}finally{HK.on--;}try{if(e)onHit(e,d,o,ko);}catch(x){}return d;});
-W('kill',f=>function(e){const r=f.apply(this,arguments);try{if(e){const big=e.boss&&!e.mini;play(big?'boss_die':'mon_die',{v:e.mini?1.1:.85,rate:e.mini?.85:1,x:e.x,y:e.y,gap:big?1:.07,max:4});}}catch(x){}return r;});
+W('kill',f=>function(e){const r=f.apply(this,arguments);try{if(e){const big=e.boss&&!e.mini;play(big?'boss_die':'mon_die',{v:e.mini?1.1:.85,rate:e.mini?.85:1,x:e.x,y:e.y,gap:big?1:.07,max:4});mv(e,'hu',big?1:.6,{rate:mvRate(e)*.82,max:3});}}catch(x){}return r;});
 W('hitPlayer',f=>function(e,o){o=o||{};const h0=player.hp,a=player.action;const r=f.apply(this,arguments);try{const d=h0-player.hp;
   if(d>0)play(o.magic?'hurt_magic':'hurt',{v:.7+Math.min(.5,d/Math.max(1,player.maxHp)*3),gap:.07});
   else if(a&&a.blocked)play('block',{v:.9,gap:.1});else play('sw_light',{v:.35,rate:.9,gap:.12});}catch(x){}return r;});
@@ -285,5 +322,5 @@ function ui(){const p=document.getElementById('panel');if(!p||document.getElemen
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ui);else ui();
 try{const id=curMapId();if(id){const A=ambOf(id);amb.set(A&&A[0],A&&A[1]);mus.set(musOf(id));}}catch(e){}
 
-window.SFX={play,amb,mus,musOf,info,hero,stepName,ambOf,ST,vol,get log(){return LOG;},get ctx(){return ac;},unlock,L};
+window.SFX={famOf,mvRate,play,amb,mus,musOf,info,hero,stepName,ambOf,ST,vol,get log(){return LOG;},get ctx(){return ac;},unlock,L};
 })();

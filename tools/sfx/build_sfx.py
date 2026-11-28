@@ -12,6 +12,7 @@ swings, or a stereo array for the ambience beds); SPEC[name] = (variants, loudne
 import os, sys, json, subprocess, zlib, numpy as np
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from sfxlib import *
+from voices import *   # monster voices mv_<family>_ag/at/hu + boss_roar / boss_step (2026-11-28)
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 OUT = os.path.join(REPO, 'assets', 'sfx')
@@ -682,6 +683,7 @@ SPEC = {
     'amb_snow': (1, -24, 'a'), 'amb_forest': (1, -25, 'a'), 'amb_summer': (1, -26, 'a'), 'amb_night': (1, -27, 'a'), 'amb_desert': (1, -25, 'a'),
     'amb_jungle': (1, -26, 'a'), 'amb_town': (1, -26, 'a'), 'amb_cave': (1, -26, 'a'), 'amb_sea': (1, -24, 'a'), 'amb_volcano': (1, -25, 'a'),
     'amb_mystic': (1, -27, 'a'), 'amb_crypt': (1, -26, 'a'), 'amb_storm': (1, -24, 'a'), 'amb_forge': (1, -26, 'a'),
+    **VSPEC,
 }
 
 
