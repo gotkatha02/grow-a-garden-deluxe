@@ -13,6 +13,7 @@ import os, sys, json, subprocess, zlib, numpy as np
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from sfxlib import *
 from status import *   # combat status sounds st_* (2026-11-28)
+from hero_sig import r_sig_wolf, r_sig_jaguar, r_sig_rhino, r_sig_axolotl, r_sig_croc, r_sig_cat, r_sig_owl, r_sig_hippo, r_sig_sheep, r_sig_dragon, r_sig_lion, r_sig_kitsune, r_sig_bastet, r_sig_anubis, r_sig_raven, r_sig_wukong, r_sig_drake, SIGSPEC   # hero signatures sig_<hero> (2026-11-28)
 from voices import *   # monster voices mv_<family>_ag/at/hu + boss_roar / boss_step (2026-11-28)
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -686,6 +687,7 @@ SPEC = {
     'amb_mystic': (1, -27, 'a'), 'amb_crypt': (1, -26, 'a'), 'amb_storm': (1, -24, 'a'), 'amb_forge': (1, -26, 'a'),
     **VSPEC,
     **STSPEC,
+    **SIGSPEC,
 }
 
 

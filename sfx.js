@@ -150,7 +150,10 @@ function onAction(a){if(!a||a.key==='hurt')return;const H=hero(),tc=Math.max(0,(
       else if(H.shot&&(I.el==='phys'))play(H.sw,{v:.95,at:tc});
       if(cn)play(cn,{v:H.cast?.85:.6,at:Math.max(0,tc-.1)});break;
     default:if(cn)play(cn,{v:.9,at:Math.max(0,tc-.12)});else if(H.sw)play(H.sw,{v:.9,rate:.92,at:at(H.sw)});}
-  if(I.ult&&I.kind!=='buff')play('buff_up',{v:.6,rate:.8,gap:.5});}
+  if(I.ult&&I.kind!=='buff')play('buff_up',{v:.6,rate:.8,gap:.5});
+  if(I.ult)sig(.95);}
+/* hero signature call (sig_<hero>): every ultimate + the drake's dragon form; one per 3 s */
+function sig(v){const n='sig_'+ch();if(L[n])play(n,{v,gap:3,x:player.x,y:player.y});}
 
 /* ---- hits on monsters ---- */
 const HK={on:0,crit:0},hb={t:0,n:0},DOT={fire:1,poison:1,blood:1,dark:1};
@@ -260,6 +263,7 @@ function mvPreload(id){try{const L2=(window.VK_MONS||{})[id];if(!L2)return;const
   {const n=d&&d.name;if(!n)continue;const f=famOf({m:{name:n},kind:d.base==='snowwolf'?'snowwolf':null});if(seen[f])continue;seen[f]=1;for(const ev of ['ag','at','hu'])loadAll('mv_'+f+'_'+ev);}}catch(e){}}
 /* ---- wrap the game's functions (this file loads last, so these wrappers are the outermost) ---- */
 function W(name,mk){try{const g=(0,eval)(name);if(typeof g!=='function')return false;window.__sfxW=mk(g);(0,eval)(name+'=window.__sfxW;');delete window.__sfxW;return true;}catch(e){if(!(e instanceof ReferenceError))console.warn('sfx wrap',name,e);return false;}}
+W('zdTransform',f=>function(){const was=window.ZD&&ZD.form;const r=f.apply(this,arguments);try{if(!was&&window.ZD&&ZD.form)sig(1);}catch(e){}return r;});
 W('startAction',f=>function(a){const r=f.apply(this,arguments);try{onAction(a);}catch(e){}return r;});
 W('dmgNum',f=>function(x,y,z,val,kind){if(HK.on&&kind==='crit')HK.crit=1;return f.apply(this,arguments);});
 W('hurt',f=>function(e,mult,o,...rest){if(!o)o={};const ko=!!(e&&e.koOut);HK.on++;HK.crit=0;let d;try{d=f.call(this,e,mult,o,...rest);}finally{HK.on--;}try{if(e)onHit(e,d,o,ko);}catch(x){}return d;});
